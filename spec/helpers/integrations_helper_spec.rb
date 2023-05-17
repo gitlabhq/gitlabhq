@@ -165,17 +165,18 @@ RSpec.describe IntegrationsHelper do
 
     with_them do
       before do
-        issue.update!(issue_type: issue_type)
+        issue.assign_attributes(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.save!(validate: false)
       end
 
       it "return the correct i18n issue type" do
-        expect(described_class.integration_issue_type(issue.issue_type)).to eq(expected_i18n_issue_type)
+        expect(described_class.integration_issue_type(issue.work_item_type.base_type)).to eq(expected_i18n_issue_type)
       end
     end
 
     it "only consider these enumeration values are valid" do
       expected_valid_types = %w[issue incident test_case requirement task objective key_result]
-      expect(Issue.issue_types.keys).to contain_exactly(*expected_valid_types)
+      expect(WorkItems::Type.base_types.keys).to contain_exactly(*expected_valid_types)
     end
   end
 

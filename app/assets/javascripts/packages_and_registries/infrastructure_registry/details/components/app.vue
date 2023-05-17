@@ -122,15 +122,15 @@ export default {
   modal: {
     packageDeletePrimaryAction: {
       text: __('Delete'),
-      attributes: [
-        { variant: 'danger' },
-        { category: 'primary' },
-        { 'data-qa-selector': 'delete_modal_button' },
-      ],
+      attributes: {
+        variant: 'danger',
+        category: 'primary',
+        'data-qa-selector': 'delete_modal_button',
+      },
     },
     fileDeletePrimaryAction: {
       text: __('Delete'),
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     cancelAction: {
       text: __('Cancel'),

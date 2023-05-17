@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_management do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }
@@ -18,7 +20,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
     it 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
-      container = page.find('.content .flex-row', text: 'v1.1.0')
+      container = page.find('[data-testid="tag-row"]', text: 'v1.1.0')
       delete_tag container
 
       expect(page).not_to have_content 'v1.1.0'
@@ -28,7 +30,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
       it 'can not delete protected tags' do
         expect(page).to have_content 'v1.1.1'
 
-        container = page.find('.content .flex-row', text: 'v1.1.1')
+        container = page.find('[data-testid="tag-row"]', text: 'v1.1.1')
         expect(container).to have_button('Only a project maintainer or owner can delete a protected tag',
           disabled: true)
       end
@@ -41,8 +43,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
       expect(page).to have_current_path(
         project_tag_path(project, 'v1.0.0'), ignore_query: true)
 
-      container = page.find('.nav-controls')
-      delete_tag container
+      delete_tag
 
       expect(page).to have_current_path(project_tags_path(project), ignore_query: true)
       expect(page).not_to have_content 'v1.0.0'
@@ -58,17 +59,22 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
     end
 
     it 'shows the error message' do
-      container = page.find('.content .flex-row', text: 'v1.1.0')
+      container = page.find('[data-testid="tag-row"]', text: 'v1.1.0')
       delete_tag container
 
       expect(page).to have_content('Do not delete tags')
     end
   end
 
-  def delete_tag(container)
-    container.find('.js-delete-tag-button').click
+  def delete_tag(container = page.document)
+    within container do
+      click_button('Delete tag')
+    end
 
-    page.within('.modal') { click_button('Yes, delete tag') }
+    within_modal do
+      click_button('Yes, delete tag')
+    end
+
     wait_for_requests
   end
 end

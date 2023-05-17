@@ -1,5 +1,12 @@
 import { sprintf, __ } from '~/locale';
-import { BYTES_IN_KIB, THOUSAND } from './constants';
+import {
+  BYTES_IN_KIB,
+  THOUSAND,
+  BYTES_FORMAT_BYTES,
+  BYTES_FORMAT_KIB,
+  BYTES_FORMAT_MIB,
+  BYTES_FORMAT_GIB,
+} from './constants';
 
 /**
  * Function that allows a number with an X amount of decimals
@@ -64,6 +71,28 @@ export function bytesToGiB(number) {
 }
 
 /**
+ * Formats the bytes in number into a more understandable
+ * representation. Returns an array with the first value being the human size
+ * and the second value being the format (e.g., [1.5, 'KiB']).
+ *
+ * @param {Number} size
+ * @param {Number} digits - The number of digits to appear after the decimal point
+ * @returns {String}
+ */
+export function numberToHumanSizeSplit(size, digits = 2) {
+  const abs = Math.abs(size);
+
+  if (abs < BYTES_IN_KIB) {
+    return [size.toString(), BYTES_FORMAT_BYTES];
+  } else if (abs < BYTES_IN_KIB ** 2) {
+    return [bytesToKiB(size).toFixed(digits), BYTES_FORMAT_KIB];
+  } else if (abs < BYTES_IN_KIB ** 3) {
+    return [bytesToMiB(size).toFixed(digits), BYTES_FORMAT_MIB];
+  }
+  return [bytesToGiB(size).toFixed(digits), BYTES_FORMAT_GIB];
+}
+
+/**
  * Port of rails number_to_human_size
  * Formats the bytes in number into a more understandable
  * representation (e.g., giving it 1500 yields 1.5 KB).
@@ -73,16 +102,20 @@ export function bytesToGiB(number) {
  * @returns {String}
  */
 export function numberToHumanSize(size, digits = 2) {
-  const abs = Math.abs(size);
+  const [humanSize, format] = numberToHumanSizeSplit(size, digits);
 
-  if (abs < BYTES_IN_KIB) {
-    return sprintf(__('%{size} bytes'), { size });
-  } else if (abs < BYTES_IN_KIB ** 2) {
-    return sprintf(__('%{size} KiB'), { size: bytesToKiB(size).toFixed(digits) });
-  } else if (abs < BYTES_IN_KIB ** 3) {
-    return sprintf(__('%{size} MiB'), { size: bytesToMiB(size).toFixed(digits) });
+  switch (format) {
+    case BYTES_FORMAT_BYTES:
+      return sprintf(__('%{size} bytes'), { size: humanSize });
+    case BYTES_FORMAT_KIB:
+      return sprintf(__('%{size} KiB'), { size: humanSize });
+    case BYTES_FORMAT_MIB:
+      return sprintf(__('%{size} MiB'), { size: humanSize });
+    case BYTES_FORMAT_GIB:
+      return sprintf(__('%{size} GiB'), { size: humanSize });
+    default:
+      return '';
   }
-  return sprintf(__('%{size} GiB'), { size: bytesToGiB(size).toFixed(digits) });
 }
 
 /**

@@ -193,8 +193,7 @@ RSpec.describe Projects::FeatureFlagsController do
     it 'routes based on iid' do
       other_project = create(:project)
       other_project.add_developer(user)
-      other_feature_flag = create(:operations_feature_flag, project: other_project,
-                                                            name: 'other_flag')
+      other_feature_flag = create(:operations_feature_flag, project: other_project, name: 'other_flag')
       params = {
         namespace_id: other_project.namespace,
         project_id: other_project,
@@ -485,8 +484,7 @@ RSpec.describe Projects::FeatureFlagsController do
 
     context 'when creating a version 2 feature flag with a gitlabUserList strategy' do
       let!(:user_list) do
-        create(:operations_feature_flag_user_list, project: project,
-                                                   name: 'My List', user_xids: 'user1,user2')
+        create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
       end
 
       let(:params) do
@@ -627,10 +625,7 @@ RSpec.describe Projects::FeatureFlagsController do
 
     context 'with a version 2 feature flag' do
       let!(:new_version_flag) do
-        create(:operations_feature_flag,
-               name: 'new-feature',
-               active: true,
-               project: project)
+        create(:operations_feature_flag, name: 'new-feature', active: true, project: project)
       end
 
       it 'creates a new strategy and scope' do

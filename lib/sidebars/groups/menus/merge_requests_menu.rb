@@ -52,6 +52,16 @@ module Sidebars
         def active_routes
           { path: 'groups#merge_requests' }
         end
+
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.merge({
+            pill_count: pill_count,
+            has_pill: has_pill?,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::CodeMenu,
+            item_id: :group_merge_request_list
+          })
+        end
       end
     end
   end

@@ -193,7 +193,6 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
         end
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:user) { current_user }
           let(:property) { 'g_edit_by_snippet_ide' }
           let(:namespace) { project.namespace }
@@ -203,8 +202,6 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
           let(:context) do
             [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
           end
-
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
       end
     end

@@ -259,7 +259,7 @@ RSpec.describe Gitlab::RackAttack::Request do
     other_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
 
     where(:session, :env, :expected) do
-      {}                           | {}                                     | false # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      {}                           | {}                                     | false
       {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token } | false
       { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => other_token } | false
       { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => valid_token } | true

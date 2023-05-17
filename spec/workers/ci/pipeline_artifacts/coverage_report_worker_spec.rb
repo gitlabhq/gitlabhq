@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::CoverageReportWorker do
+RSpec.describe Ci::PipelineArtifacts::CoverageReportWorker, feature_category: :code_testing do
   describe '#perform' do
     let(:pipeline_id) { pipeline.id }
 

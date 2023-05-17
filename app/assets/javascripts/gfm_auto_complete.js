@@ -343,7 +343,9 @@ class GfmAutoComplete {
             icon,
             availabilityStatus:
               availability && isUserBusy(availability)
-                ? `<span class="gl-text-gray-500"> ${s__('UserAvailability|(Busy)')}</span>`
+                ? `<span class="badge badge-warning badge-pill gl-badge sm gl-ml-2"> ${s__(
+                    'UserProfile|Busy',
+                  )}</span>`
                 : '',
           });
         }

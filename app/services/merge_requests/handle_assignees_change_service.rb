@@ -15,6 +15,7 @@ module MergeRequests
     def execute(merge_request, old_assignees, options = {})
       create_assignee_note(merge_request, old_assignees)
       notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees.to_a)
+      Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: merge_request, old_assignees: old_assignees).record
       todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
 
       new_assignees = merge_request.assignees - old_assignees

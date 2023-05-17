@@ -10,14 +10,15 @@ module Ml
         @user = user
       end
 
-      def by_iid(iid)
-        ::Ml::Candidate.with_project_id_and_iid(project.id, iid)
+      def by_eid(eid)
+        ::Ml::Candidate.with_project_id_and_eid(project.id, eid)
       end
 
       def create!(experiment, start_time, tags = nil, name = nil)
         candidate = experiment.candidates.create!(
           user: user,
           name: candidate_name(name, tags),
+          project: project,
           start_time: start_time || 0
         )
 
@@ -47,6 +48,8 @@ module Ml
       end
 
       def add_tag!(candidate, name, value)
+        handle_gitlab_tags(candidate, [{ key: name, value: value }])
+
         candidate.metadata.create!(name: name, value: value)
       end
 
@@ -60,10 +63,22 @@ module Ml
       end
 
       def add_tags(candidate, tag_definitions)
+        return unless tag_definitions.present?
+
+        handle_gitlab_tags(candidate, tag_definitions)
+
         insert_many(candidate, tag_definitions, ::Ml::CandidateMetadata)
       end
 
       private
+
+      def handle_gitlab_tags(candidate, tag_definitions)
+        return unless tag_definitions.any? { |t| t[:key]&.starts_with?('gitlab.') }
+
+        Ml::ExperimentTracking::HandleCandidateGitlabMetadataService
+          .new(candidate, tag_definitions)
+          .execute
+      end
 
       def timestamps
         current_time = Time.zone.now

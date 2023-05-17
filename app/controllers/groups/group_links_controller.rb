@@ -7,7 +7,7 @@ class Groups::GroupLinksController < Groups::ApplicationController
   feature_category :subgroups
 
   def update
-    Groups::GroupLinks::UpdateService.new(@group_link).execute(group_link_params)
+    Groups::GroupLinks::UpdateService.new(@group_link, current_user).execute(group_link_params)
 
     if @group_link.expires?
       render json: {

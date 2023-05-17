@@ -1,0 +1,10 @@
+---
+table_name: schema_inconsistencies
+feature_categories:
+- database
+description: The schema_inconsistencies table contains a list of database schema inconsistencies.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114876
+milestone: '15.11'
+classes:
+- Gitlab::Database::SchemaValidation::SchemaInconsistency
+gitlab_schema: gitlab_main

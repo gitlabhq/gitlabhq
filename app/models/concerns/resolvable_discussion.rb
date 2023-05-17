@@ -24,14 +24,14 @@ module ResolvableDiscussion
     )
 
     delegate :potentially_resolvable?,
-             :noteable_id,
-             :noteable_type,
-             to: :first_note
+      :noteable_id,
+      :noteable_type,
+      to: :first_note
 
-    delegate  :resolved_at,
-              :resolved_by,
-              to: :last_resolved_note,
-              allow_nil: true
+    delegate :resolved_at,
+      :resolved_by,
+      to: :last_resolved_note,
+      allow_nil: true
   end
 
   def resolved_by_push?

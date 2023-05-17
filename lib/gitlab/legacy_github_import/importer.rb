@@ -22,7 +22,7 @@ module Gitlab
 
         unless credentials
           raise Projects::ImportService::Error,
-                "Unable to find project import data credentials for project ID: #{@project.id}"
+            "Unable to find project import data credentials for project ID: #{@project.id}"
         end
 
         opts = {}
@@ -55,9 +55,7 @@ module Gitlab
         import_comments(:issues)
 
         # Gitea doesn't have an API endpoint for pull requests comments
-        unless project.gitea_import?
-          import_comments(:pull_requests)
-        end
+        import_comments(:pull_requests) unless project.gitea_import?
 
         import_wiki
 
@@ -67,9 +65,7 @@ module Gitlab
         # See:
         # 1) https://gitlab.com/gitlab-org/gitlab/-/issues/343448#note_985979730
         # 2) https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89694/diffs#dfc4a8141aa296465ea3c50b095a30292fb6ebc4_180_182
-        unless project.gitea_import?
-          import_releases
-        end
+        import_releases unless project.gitea_import?
 
         handle_errors
 
@@ -142,8 +138,8 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def import_pull_requests
-        fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
-          pull_requests.each do |raw|
+        fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |prs|
+          prs.each do |raw|
             raw = raw.to_h
             gh_pull_request = PullRequestFormatter.new(project, raw, client)
 
@@ -156,11 +152,13 @@ module Gitlab
               merge_request = gh_pull_request.create!
 
               # Gitea doesn't return PR in the Issue API endpoint, so labels must be assigned at this stage
-              if project.gitea_import?
-                apply_labels(merge_request, raw)
-              end
+              apply_labels(merge_request, raw) if project.gitea_import?
             rescue StandardError => e
-              errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(gh_pull_request.url), errors: e.message }
+              errors << {
+                type: :pull_request,
+                url: Gitlab::UrlSanitizer.sanitize(gh_pull_request.url),
+                errors: e.message
+              }
             ensure
               clean_up_restored_branches(gh_pull_request)
             end
@@ -196,9 +194,7 @@ module Gitlab
 
         return unless raw[:labels].count > 0
 
-        label_ids = raw[:labels]
-          .map { |attrs| @labels[attrs[:name]] }
-          .compact
+        label_ids = raw[:labels].filter_map { |attrs| @labels[attrs[:name]] }
 
         issuable.update_attribute(:label_ids, label_ids)
       end
@@ -208,10 +204,14 @@ module Gitlab
         resource_type = "#{issuable_type}_comments".to_sym
 
         # Two notes here:
-        # 1. We don't have a distinctive attribute for comments (unlike issues iid), so we fetch the last inserted note,
-        # compare it against every comment in the current imported page until we find match, and that's where start importing
-        # 2. GH returns comments for _both_ issues and PRs through issues_comments API, while pull_requests_comments returns
-        # only comments on diffs, so select last note not based on noteable_type but on line_code
+        # 1. We don't have a distinctive attribute for comments (unlike issues
+        # iid), so we fetch the last inserted note, compare it against every
+        # comment in the current imported page until we find match, and that's
+        # where start importing
+        # 2. GH returns comments for _both_ issues and PRs through
+        # issues_comments API, while pull_requests_comments returns only
+        # comments on diffs, so select last note not based on noteable_type but
+        # on line_code
         line_code_is = issuable_type == :pull_requests ? 'NOT NULL' : 'NULL'
         last_note    = project.notes.where("line_code IS #{line_code_is}").last
 
@@ -264,7 +264,8 @@ module Gitlab
           comment_attrs.with_indifferent_access == last_note_attrs
         end
 
-        # No matching resource in the collection, which means we got halted right on the end of the last page, so all good
+        # No matching resource in the collection, which means we got halted
+        # right on the end of the last page, so all good
         return unless cut_off_index
 
         # Otherwise, remove the resources we've already inserted
@@ -280,9 +281,7 @@ module Gitlab
         # GitHub error message when the wiki repo has not been created,
         # this means that repo has wiki enabled, but have no pages. So,
         # we can skip the import.
-        if e.message !~ /repository not exported/
-          errors << { type: :wiki, errors: e.message }
-        end
+        errors << { type: :wiki, errors: e.message } if e.message.exclude?('repository not exported')
       end
 
       def import_releases

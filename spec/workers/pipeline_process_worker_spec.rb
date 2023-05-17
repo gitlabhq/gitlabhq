@@ -2,8 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineProcessWorker do
+RSpec.describe PipelineProcessWorker, feature_category: :continuous_integration do
   let_it_be(:pipeline) { create(:ci_pipeline) }
+
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
+  it 'has the option to reschedule once if deduplicated and a TTL of 1 minute' do
+    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once, ttl: 1.minute })
+  end
 
   include_examples 'an idempotent worker' do
     let(:pipeline) { create(:ci_pipeline, :created) }

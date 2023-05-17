@@ -1,3 +1,5 @@
+import { OAUTH_CALLBACK_MESSAGE_TYPE } from '~/jira_connect/subscriptions/constants';
+
 function getOriginURL() {
   const origin = new URL(window.opener.location);
   origin.hash = '';
@@ -7,7 +9,10 @@ function getOriginURL() {
 }
 
 function postMessageToJiraConnectApp(data) {
-  window.opener.postMessage(data, getOriginURL().toString());
+  window.opener.postMessage(
+    { ...data, type: OAUTH_CALLBACK_MESSAGE_TYPE },
+    getOriginURL().toString(),
+  );
 }
 
 function initOAuthCallbacks() {

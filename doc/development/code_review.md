@@ -68,6 +68,9 @@ When a suitable [domain expert](#domain-experts) isn't available, you can choose
 
 To find a domain expert:
 
+- In the Merge Request approvals widget, select [View eligible approvers](../user/project/merge_requests/approvals/rules.md#eligible-approvers).
+  This widget shows recommended and required approvals per area of the codebase.
+  These rules are defined in [Code Owners](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - View the list of team members who work in the [stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages) related to the merge request.
 - View team members' domain expertise on the [engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/). Domains are self-identified, so use your judgment to map the changes on your merge request to a domain.
 - Look for team members who have contributed to the files in the merge request. View the logs by running `git log <file>`.
@@ -163,7 +166,7 @@ with [domain expertise](#domain-experts).
 | End-to-end **and** non-end-to-end changes (*4*) | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
 | Only End-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
 | A new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits) | [Product manager](https://about.gitlab.com/company/team/). |
-| Product Intelligence (telemetry or analytics) changes | [Product Intelligence engineer](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/engineers). |
+| Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
 | Changes related to authentication or authorization | [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
@@ -237,7 +240,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Compliance
 
-1. You have confirmed that the correct [MR type label](contributing/issue_workflow.md#type-labels) has been applied.
+1. You have confirmed that the correct [MR type label](labels/index.md) has been applied.
 
 ### The responsibility of the merge request author
 
@@ -391,9 +394,8 @@ as a reviewer, it is recommended that they are not also picked as the maintainer
 Maintainers should check before merging if the merge request is approved by the
 required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
-Note that certain merge requests may target a stable branch. These are rare
-events. These types of merge requests cannot be merged by the Maintainer.
-Instead, these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
+Certain merge requests may target a stable branch. For an overview of how to handle these requests,
+see the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
 
 After merging, a maintainer should stay as the reviewer listed on the merge request.
 
@@ -532,7 +534,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
-- Confirm that the correct [MR type label](contributing/issue_workflow.md#type-labels) is applied.
+- Confirm that the correct [MR type label](labels/index.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.
@@ -543,7 +545,9 @@ people who add commits to an MR are not authorized to approve or merge the MR an
 must seek a maintainer who has not contributed to the MR to approve and merge it.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
-[Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).
+[Change Management Controls](https://about.gitlab.com/handbook/security/change-management-policy.html).
+
+<!-- Or should it link to: https://about.gitlab.com/handbook/engineering/infrastructure/change-management/ ? -->
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
@@ -718,12 +722,7 @@ Enterprise Edition instance. This has some implications:
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
 1. **Settings** should be added as a
-   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration).
-   If you're adding a new setting in `gitlab.yml`:
-   1. Try to avoid that, and add to `ApplicationSetting` instead.
-   1. Ensure that it is also
-      [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
-   1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
+   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration). See [Adding a new setting to GitLab Rails](architecture.md#adding-a-new-setting-in-gitlab-rails).
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
    information, see the [uploads documentation](uploads/index.md).

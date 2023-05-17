@@ -14,6 +14,7 @@ export default function initNewTagRefSelector() {
           props: {
             value: defaultBranchName,
             name: hiddenInputName,
+            queryParams: { sort: 'updated_desc' },
             projectId,
           },
         });

@@ -49,21 +49,21 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
     end
   end
 
-  shared_examples 'handles non integer project ID' do
-    context 'with a URL-encoded project ID' do
-      let_it_be(:project_id) { 'gitlab-org%2fgitlab' }
+  shared_examples 'handles non integer ID' do
+    context 'with a URL-encoded ID' do
+      let(:id) { 'gitlab-org%2fgitlab' }
 
       it_behaves_like 'decompress middleware'
     end
 
-    context 'with a non URL-encoded project ID' do
-      let_it_be(:project_id) { '1/repository/files/api/v4' }
+    context 'with a non URL-encoded ID' do
+      let(:id) { '1/repository/files/api/v4' }
 
       it_behaves_like 'passes input'
     end
 
-    context 'with a blank project ID' do
-      let_it_be(:project_id) { '' }
+    context 'with a blank ID' do
+      let(:id) { '' }
 
       it_behaves_like 'passes input'
     end
@@ -116,40 +116,78 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
       end
 
       context 'with project level endpoint' do
-        let_it_be(:project_id) { 1 }
+        let(:id) { 1 }
 
         context 'with npm advisory bulk url' do
-          let(:path) { "/api/v4/projects/#{project_id}/packages/npm/-/npm/v1/security/advisories/bulk" }
+          let(:path) { "/api/v4/projects/#{id}/packages/npm/-/npm/v1/security/advisories/bulk" }
 
           it_behaves_like 'decompress middleware'
 
           include_context 'with relative url' do
-            let(:path) { "#{relative_url_root}/api/v4/projects/#{project_id}/packages/npm/-/npm/v1/security/advisories/bulk" } # rubocop disable Layout/LineLength
+            let(:path) { "#{relative_url_root}/api/v4/projects/#{id}/packages/npm/-/npm/v1/security/advisories/bulk" } # rubocop disable Layout/LineLength
 
             it_behaves_like 'decompress middleware'
           end
 
-          it_behaves_like 'handles non integer project ID'
+          it_behaves_like 'handles non integer ID'
         end
 
         context 'with npm quick audit url' do
-          let(:path) { "/api/v4/projects/#{project_id}/packages/npm/-/npm/v1/security/audits/quick" }
+          let(:path) { "/api/v4/projects/#{id}/packages/npm/-/npm/v1/security/audits/quick" }
 
           it_behaves_like 'decompress middleware'
 
           include_context 'with relative url' do
-            let(:path) { "#{relative_url_root}/api/v4/projects/#{project_id}/packages/npm/-/npm/v1/security/audits/quick" } # rubocop disable Layout/LineLength
+            let(:path) { "#{relative_url_root}/api/v4/projects/#{id}/packages/npm/-/npm/v1/security/audits/quick" } # rubocop disable Layout/LineLength
 
             it_behaves_like 'decompress middleware'
           end
 
-          it_behaves_like 'handles non integer project ID'
+          it_behaves_like 'handles non integer ID'
         end
+      end
+    end
+
+    context 'with group level endpoint' do
+      let(:id) { 1 }
+
+      context 'with npm advisory bulk url' do
+        let(:path) { "/api/v4/groups/#{id}/-/packages/npm/-/npm/v1/security/advisories/bulk" }
+
+        it_behaves_like 'decompress middleware'
+
+        include_context 'with relative url' do
+          let(:path) { "#{relative_url_root}/api/v4/groups/#{id}/-/packages/npm/-/npm/v1/security/advisories/bulk" } # rubocop disable Layout/LineLength
+
+          it_behaves_like 'decompress middleware'
+        end
+
+        it_behaves_like 'handles non integer ID'
+      end
+
+      context 'with npm quick audit url' do
+        let(:path) { "/api/v4/groups/#{id}/-/packages/npm/-/npm/v1/security/audits/quick" }
+
+        it_behaves_like 'decompress middleware'
+
+        include_context 'with relative url' do
+          let(:path) { "#{relative_url_root}/api/v4/groups/#{id}/-/packages/npm/-/npm/v1/security/audits/quick" } # rubocop disable Layout/LineLength
+
+          it_behaves_like 'decompress middleware'
+        end
+
+        it_behaves_like 'handles non integer ID'
       end
     end
 
     context 'with some other route' do
       let(:path) { '/api/projects/123' }
+
+      it_behaves_like 'passes input'
+    end
+
+    context 'with the wrong project path' do
+      let(:path) { '/api/v4/projects/123/-/packages/npm/-/npm/v1/security/advisories/bulk' }
 
       it_behaves_like 'passes input'
     end

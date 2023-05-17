@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::CollectErrorService do
+RSpec.describe ErrorTracking::CollectErrorService, feature_category: :error_tracking do
   let_it_be(:project) { create(:project) }
 
   let(:parsed_event_file) { 'error_tracking/parsed_event.json' }

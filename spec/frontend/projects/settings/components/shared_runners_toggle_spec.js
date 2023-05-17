@@ -1,7 +1,7 @@
-import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlToggle } from '@gitlab/ui';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
@@ -9,14 +9,14 @@ import SharedRunnersToggleComponent from '~/projects/settings/components/shared_
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('projects/settings/components/shared_runners', () => {
   let wrapper;
   let mockAxios;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(SharedRunnersToggleComponent, {
+    wrapper = shallowMountExtended(SharedRunnersToggleComponent, {
       propsData: {
         isEnabled: false,
         isDisabledAndUnoverridable: false,
@@ -28,9 +28,9 @@ describe('projects/settings/components/shared_runners', () => {
     });
   };
 
-  const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findErrorAlert = () => wrapper.findByTestId('error-alert');
+  const findUnoverridableAlert = () => wrapper.findByTestId('unoverridable-alert');
   const findSharedRunnersToggle = () => wrapper.findComponent(GlToggle);
-  const findToggleTooltip = () => wrapper.findComponent(GlTooltip);
   const getToggleValue = () => findSharedRunnersToggle().props('value');
   const isToggleLoading = () => findSharedRunnersToggle().props('isLoading');
   const isToggleDisabled = () => findSharedRunnersToggle().props('disabled');
@@ -41,8 +41,6 @@ describe('projects/settings/components/shared_runners', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
   });
 
@@ -57,8 +55,8 @@ describe('projects/settings/components/shared_runners', () => {
       expect(isToggleDisabled()).toBe(true);
     });
 
-    it('tooltip should exist explaining why the toggle is disabled', () => {
-      expect(findToggleTooltip().exists()).toBe(true);
+    it('alert should exist explaining why the toggle is disabled', () => {
+      expect(findUnoverridableAlert().exists()).toBe(true);
     });
   });
 
@@ -74,7 +72,7 @@ describe('projects/settings/components/shared_runners', () => {
     it('loading icon, error message, and tooltip should not exist', () => {
       expect(isToggleLoading()).toBe(false);
       expect(findErrorAlert().exists()).toBe(false);
-      expect(findToggleTooltip().exists()).toBe(false);
+      expect(findUnoverridableAlert().exists()).toBe(false);
     });
 
     describe('with shared runners DISABLED', () => {

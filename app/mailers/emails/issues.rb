@@ -5,18 +5,32 @@ module Emails
     def new_issue_email(recipient_id, issue_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
-      mail_new_thread(@issue, issue_thread_options(@issue.author_id, reason))
+      mail_new_thread(
+        @issue,
+        issue_thread_options(
+          @issue.author_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def issue_due_email(recipient_id, issue_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
-      mail_answer_thread(@issue, issue_thread_options(@issue.author_id, reason))
+      mail_answer_thread(@issue, issue_thread_options(@issue.author_id, reason, confidentiality: @issue.confidential?))
     end
 
     def new_mention_in_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -26,7 +40,14 @@ module Emails
       @previous_assignees = []
       @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
 
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -35,7 +56,14 @@ module Emails
 
       @updated_by = User.find(updated_by_user_id)
 
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def relabeled_issue_email(recipient_id, issue_id, label_names, updated_by_user_id, reason = nil)
@@ -43,13 +71,27 @@ module Emails
 
       @label_names = label_names
       @labels_url = project_labels_url(@project)
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def removed_milestone_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def changed_milestone_issue_email(recipient_id, issue_id, milestone, updated_by_user_id, reason = nil)
@@ -57,9 +99,14 @@ module Emails
 
       @milestone = milestone
       @milestone_url = milestone_url(@milestone)
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason).merge({
-        template_name: 'changed_milestone_email'
-      }))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        ).merge({ template_name: 'changed_milestone_email' })
+      )
     end
 
     def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id, reason = nil)
@@ -67,7 +114,14 @@ module Emails
 
       @issue_status = status
       @updated_by = User.find(updated_by_user_id)
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, reason))
+      mail_answer_thread(
+        @issue,
+        issue_thread_options(
+          updated_by_user_id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def issue_moved_email(recipient, issue, new_issue, updated_by_user, reason = nil)
@@ -76,7 +130,14 @@ module Emails
       @new_issue = new_issue
       @new_project = new_issue.project
       @can_access_project = recipient.can?(:read_project, @new_project)
-      mail_answer_thread(issue, issue_thread_options(updated_by_user.id, reason))
+      mail_answer_thread(
+        issue,
+        issue_thread_options(
+          updated_by_user.id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def issue_cloned_email(recipient, issue, new_issue, updated_by_user, reason = nil)
@@ -86,7 +147,14 @@ module Emails
       @issue = issue
       @new_issue = new_issue
       @can_access_project = recipient.can?(:read_project, @new_issue.project)
-      mail_answer_thread(issue, issue_thread_options(updated_by_user.id, reason))
+      mail_answer_thread(
+        issue,
+        issue_thread_options(
+          updated_by_user.id,
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def import_issues_csv_email(user_id, project_id, results)
@@ -100,18 +168,7 @@ module Emails
     end
 
     def issues_csv_email(user, project, csv_data, export_status)
-      @project = project
-      @count = export_status.fetch(:rows_expected)
-      @written_count = export_status.fetch(:rows_written)
-      @truncated = export_status.fetch(:truncated)
-      @size_limit = ActiveSupport::NumberHelper
-        .number_to_human_size(ExportCsv::BaseService::TARGET_FILESIZE)
-
-      filename = "#{project.full_path.parameterize}_issues_#{Date.today.iso8601}.csv"
-      attachments[filename] = { content: csv_data, mime_type: 'text/csv' }
-      email_with_layout(
-        to: user.notification_email_for(@project.group),
-        subject: subject("Exported issues"))
+      csv_email(user, project, csv_data, export_status, 'issues')
     end
 
     private
@@ -126,12 +183,14 @@ module Emails
       @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
     end
 
-    def issue_thread_options(sender_id, reason)
+    def issue_thread_options(sender_id, reason, confidentiality: false)
+      confidentiality = false if confidentiality.nil?
       {
         from: sender(sender_id),
         to: @recipient.notification_email_for(@project.group),
         subject: subject("#{@issue.title} (##{@issue.iid})"),
-        'X-GitLab-NotificationReason' => reason
+        'X-GitLab-NotificationReason' => reason,
+        'X-GitLab-ConfidentialIssue' => confidentiality
       }
     end
   end

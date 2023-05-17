@@ -1,3 +1,4 @@
+import { GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
 import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
@@ -8,15 +9,18 @@ import BoardCard from '~/boards/components/board_card.vue';
 import eventHub from '~/boards/eventhub';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 
-import { mockIssues } from './mock_data';
+import { mockIssues, mockList, mockIssuesMore } from './mock_data';
 
 describe('Board list component', () => {
   let wrapper;
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
-  const findIssueCountLoadingIcon = () => wrapper.find('[data-testid="count-loading-icon"]');
   const findDraggable = () => wrapper.findComponent(Draggable);
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findBoardListCount = () => wrapper.find('.board-list-count');
+
+  const triggerInfiniteScroll = () => findIntersectionObserver().vm.$emit('appear');
 
   const startDrag = (
     params = {
@@ -35,10 +39,6 @@ describe('Board list component', () => {
   };
 
   useFakeRequestAnimationFrame();
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('When Expanded', () => {
     beforeEach(() => {
@@ -65,41 +65,25 @@ describe('Board list component', () => {
       expect(wrapper.find('.board-card').attributes('data-item-id')).toBe('1');
     });
 
-    it('shows new issue form', async () => {
-      wrapper.vm.toggleForm();
-
-      await nextTick();
-      expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
-    });
-
     it('shows new issue form after eventhub event', async () => {
-      eventHub.$emit(`toggle-issue-form-${wrapper.vm.list.id}`);
+      eventHub.$emit(`toggle-issue-form-${mockList.id}`);
 
       await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
-    it('does not show new issue form for closed list', () => {
-      wrapper.setProps({ list: { type: 'closed' } });
-      wrapper.vm.toggleForm();
+    it('does not show new issue form for closed list', async () => {
+      wrapper = createComponent({
+        listProps: {
+          listType: ListType.closed,
+        },
+      });
+      await waitForPromises();
 
+      eventHub.$emit(`toggle-issue-form-${mockList.id}`);
+
+      await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(false);
-    });
-
-    it('shows count list item', async () => {
-      wrapper.vm.showCount = true;
-
-      await nextTick();
-      expect(wrapper.find('.board-list-count').exists()).toBe(true);
-
-      expect(wrapper.find('.board-list-count').text()).toBe('Showing all issues');
-    });
-
-    it('sets data attribute with invalid id', async () => {
-      wrapper.vm.showCount = true;
-
-      await nextTick();
-      expect(wrapper.find('.board-list-count').attributes('data-issue-id')).toBe('-1');
     });
 
     it('renders the move to position icon', () => {
@@ -122,61 +106,41 @@ describe('Board list component', () => {
   });
 
   describe('load more issues', () => {
-    const actions = {
-      fetchItemsForList: jest.fn(),
-    };
-
-    it('does not load issues if already loading', () => {
-      wrapper = createComponent({
-        actions,
-        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
-      });
-      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
-
-      expect(actions.fetchItemsForList).not.toHaveBeenCalled();
-    });
-
-    it('shows loading more spinner', async () => {
-      wrapper = createComponent({
-        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
-        data: {
-          showCount: true,
-        },
+    describe('when loading is not in progress', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          listProps: {
+            id: 'gid://gitlab/List/1',
+          },
+          componentProps: {
+            boardItems: mockIssuesMore,
+          },
+          actions: {
+            fetchItemsForList: jest.fn(),
+          },
+          state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: false } } },
+        });
       });
 
-      await nextTick();
-
-      expect(findIssueCountLoadingIcon().exists()).toBe(true);
-    });
-
-    it('shows how many more issues to load', async () => {
-      wrapper = createComponent({
-        data: {
-          showCount: true,
-        },
+      it('has intersection observer when the number of board list items are more than 5', () => {
+        expect(findIntersectionObserver().exists()).toBe(true);
       });
 
-      await nextTick();
-      await waitForPromises();
-      await nextTick();
-      await nextTick();
-
-      expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
+      it('shows count when loaded more items and correct data attribute', async () => {
+        triggerInfiniteScroll();
+        await waitForPromises();
+        expect(findBoardListCount().exists()).toBe(true);
+        expect(findBoardListCount().attributes('data-issue-id')).toBe('-1');
+      });
     });
   });
 
   describe('max issue count warning', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        listProps: { issuesCount: 50 },
-      });
-    });
-
     describe('when issue count exceeds max issue count', () => {
       it('sets background to gl-bg-red-100', async () => {
-        wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
+        wrapper = createComponent({ listProps: { issuesCount: 4, maxIssueCount: 3 } });
 
-        await nextTick();
+        await waitForPromises();
         const block = wrapper.find('.gl-bg-red-100');
 
         expect(block.exists()).toBe(true);
@@ -187,16 +151,18 @@ describe('Board list component', () => {
     });
 
     describe('when list issue count does NOT exceed list max issue count', () => {
-      it('does not sets background to gl-bg-red-100', () => {
-        wrapper.setProps({ list: { issuesCount: 2, maxIssueCount: 3 } });
+      it('does not sets background to gl-bg-red-100', async () => {
+        wrapper = createComponent({ list: { issuesCount: 2, maxIssueCount: 3 } });
+        await waitForPromises();
 
         expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });
     });
 
     describe('when list max issue count is 0', () => {
-      it('does not sets background to gl-bg-red-100', () => {
-        wrapper.setProps({ list: { maxIssueCount: 0 } });
+      it('does not sets background to gl-bg-red-100', async () => {
+        wrapper = createComponent({ list: { maxIssueCount: 0 } });
+        await waitForPromises();
 
         expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });

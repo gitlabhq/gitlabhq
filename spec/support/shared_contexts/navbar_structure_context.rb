@@ -5,10 +5,10 @@ RSpec.shared_context 'project navbar structure' do
 
   let(:security_and_compliance_nav_item) do
     {
-      nav_item: _('Security & Compliance'),
+      nav_item: _('Security and Compliance'),
       nav_sub_items: [
         (_('Audit events') if Gitlab.ee?),
-        _('Configuration')
+        _('Security configuration')
       ]
     }
   end
@@ -34,10 +34,10 @@ RSpec.shared_context 'project navbar structure' do
           _('Commits'),
           _('Branches'),
           _('Tags'),
-          _('Contributors'),
+          _('Contributor statistics'),
           _('Graph'),
-          _('Compare'),
-          (_('Locked Files') if Gitlab.ee?)
+          _('Compare revisions'),
+          (_('Locked files') if Gitlab.ee?)
         ]
       },
       {
@@ -68,7 +68,7 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Deployments'),
         nav_sub_items: [
           _('Environments'),
-          _('Feature Flags'),
+          s_('FeatureFlags|Feature flags'),
           _('Releases')
         ]
       },
@@ -76,7 +76,7 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Infrastructure'),
         nav_sub_items: [
           _('Kubernetes clusters'),
-          _('Terraform')
+          s_('Terraform|Terraform states')
         ]
       },
       {
@@ -85,8 +85,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Metrics'),
           _('Error Tracking'),
           _('Alerts'),
-          _('Incidents'),
-          _('Airflow')
+          _('Incidents')
         ]
       },
       {
@@ -141,6 +140,7 @@ RSpec.shared_context 'group navbar structure' do
         _('CI/CD'),
         _('Applications'),
         _('Packages and registries'),
+        s_('UsageQuota|Usage Quotas'),
         _('Domain Verification')
       ]
     }
@@ -155,18 +155,9 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
-  let(:administration_nav_item) do
-    {
-      nav_item: _('Administration'),
-      nav_sub_items: [
-        s_('UsageQuota|Usage Quotas')
-      ]
-    }
-  end
-
   let(:security_and_compliance_nav_item) do
     {
-      nav_item: _('Security & Compliance'),
+      nav_item: _('Security and Compliance'),
       nav_sub_items: [
         _('Audit events')
       ]
@@ -263,6 +254,33 @@ RSpec.shared_context 'dashboard navbar structure' do
       },
       {
         nav_item: _("Activity"),
+        nav_sub_items: []
+      }
+    ]
+  end
+end
+
+RSpec.shared_context '"Explore" navbar structure' do
+  let(:structure) do
+    [
+      {
+        nav_item: "Explore",
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Projects"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Groups"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Topics"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Snippets"),
         nav_sub_items: []
       }
     ]

@@ -11,6 +11,8 @@ RSpec.describe Import::GithubGroupsController, feature_category: :importers do
     let(:params) { {} }
 
     before do
+      stub_application_setting(import_sources: ['github'])
+
       login_as(user)
     end
 

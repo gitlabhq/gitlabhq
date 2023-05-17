@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin::Users::User', feature_category: :user_management do
-  include Spec::Support::Helpers::Features::AdminUsersHelpers
+  include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
@@ -273,8 +273,11 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         end
 
         context 'when viewing the confirm email warning', :js do
-          let_it_be(:another_user) { create(:user, :unconfirmed) }
+          before do
+            stub_application_setting_enum('email_confirmation_setting', 'soft')
+          end
 
+          let_it_be(:another_user) { create(:user, :unconfirmed) }
           let(:warning_alert) { page.find(:css, '[data-testid="alert-warning"]') }
           let(:expected_styling) { { 'pointer-events' => 'none', 'cursor' => 'default' } }
 

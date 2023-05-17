@@ -10,18 +10,15 @@ describe('experiment Utilities', () => {
   const ABC_KEY = 'abc';
   const DEF_KEY = 'def';
 
-  let origGon;
   let origGl;
 
   beforeEach(() => {
-    origGon = window.gon;
     origGl = window.gl;
     window.gon.experiment = {};
     window.gl.experiments = {};
   });
 
   afterEach(() => {
-    window.gon = origGon;
     window.gl = origGl;
   });
 

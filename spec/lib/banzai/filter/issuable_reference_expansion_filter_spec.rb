@@ -21,6 +21,10 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
     create(:issue, state, attributes.merge(project: project))
   end
 
+  def create_item(issuable_type, state, attributes = {})
+    create(issuable_type, state, attributes.merge(project: project))
+  end
+
   def create_merge_request(state, attributes = {})
     create(:merge_request, state, attributes.merge(source_project: project, target_project: project))
   end
@@ -115,53 +119,128 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
     end
   end
 
-  context 'for issue references' do
-    it 'ignores open issue references' do
-      issue = create_issue(:opened)
-      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue')
+  shared_examples 'issue / work item references' do
+    it 'ignores open references' do
+      issuable = create_item(issuable_type, :opened)
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type)
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq(issue.to_reference)
+      expect(doc.css('a').last.text).to eq(issuable.to_reference)
     end
 
-    it 'appends state to closed issue references' do
-      link = create_link(closed_issue.to_reference, issue: closed_issue.id, reference_type: 'issue')
+    it 'appends state to moved references' do
+      moved_issuable = create_item(issuable_type, :closed, project: project,
+        moved_to: create_item(issuable_type, :opened))
+      link = create_link(moved_issuable.to_reference, "#{issuable_type}": moved_issuable.id,
+        reference_type: issuable_type)
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference} (closed)")
+      expect(doc.css('a').last.text).to eq("#{moved_issuable.to_reference} (moved)")
     end
 
-    it 'appends state to moved issue references' do
-      moved_issue = create(:issue, :closed, project: project, moved_to: create_issue(:opened))
-      link = create_link(moved_issue.to_reference, issue: moved_issue.id, reference_type: 'issue')
+    it 'appends state to closed references' do
+      issuable = create_item(issuable_type, :closed)
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type)
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq("#{moved_issue.to_reference} (moved)")
+      expect(doc.css('a').last.text).to eq("#{issuable.to_reference} (closed)")
     end
 
     it 'shows title for references with +' do
-      issue = create_issue(:opened, title: 'Some issue')
-      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      issuable = create_item(issuable_type, :opened, title: 'Some issue')
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
+        reference_format: '+')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference})")
+      expect(doc.css('a').last.text).to eq("#{issuable.title} (#{issuable.to_reference})")
     end
 
     it 'truncates long title for references with +' do
-      issue = create_issue(:opened, title: 'Some issue ' * 10)
-      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      issuable = create_item(issuable_type, :opened, title: 'Some issue ' * 10)
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
+        reference_format: '+')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq("#{issue.title.truncate(50)} (#{issue.to_reference})")
+      expect(doc.css('a').last.text).to eq("#{issuable.title.truncate(50)} (#{issuable.to_reference})")
     end
 
     it 'shows both title and state for closed references with +' do
-      issue = create_issue(:closed, title: 'Some issue')
-      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      issuable = create_item(issuable_type, :closed, title: 'Some issue')
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
+        reference_format: '+')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference} - closed)")
+      expect(doc.css('a').last.text).to eq("#{issuable.title} (#{issuable.to_reference} - closed)")
     end
+
+    it 'shows title for references with +s' do
+      issuable = create_item(issuable_type, :opened, title: 'Some issue')
+      link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
+        reference_format: '+s')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{issuable.title} (#{issuable.to_reference}) • Unassigned")
+    end
+
+    context 'when extended summary props are present' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+      let_it_be(:assignees) { create_list(:user, 3) }
+      let_it_be(:issuable) do
+        create_item(issuable_type, :opened, title: 'Some issue', milestone: milestone,
+          assignees: assignees)
+      end
+
+      let_it_be(:link) do
+        create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
+          reference_format: '+s')
+      end
+
+      it 'shows extended summary for references with +s' do
+        doc = filter(link, context)
+
+        expect(doc.css('a').last.text).to eq(
+          "#{issuable.title} (#{issuable.to_reference}) • #{assignees[0].name}, #{assignees[1].name}+ " \
+          "• #{milestone.title}"
+        )
+      end
+
+      describe 'checking N+1' do
+        let_it_be(:milestone2) { create(:milestone, project: project) }
+        let_it_be(:assignees2) { create_list(:user, 3) }
+
+        it 'does not have N+1 for extended summary', :use_sql_query_cache do
+          issuable2 = create_item(issuable_type, :opened, title: 'Another issue',
+            milestone: milestone2, assignees: assignees2)
+          link2 = create_link(issuable2.to_reference, "#{issuable_type}": issuable2.id,
+            reference_type: issuable_type, reference_format: '+s')
+
+          # warm up
+          filter(link, context)
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            filter(link, context)
+          end.count
+
+          expect(control_count).to eq 12
+
+          expect do
+            filter("#{link} #{link2}", context)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
+    end
+  end
+
+  context 'for work item references' do
+    let_it_be(:issuable_type) { :work_item }
+
+    it_behaves_like 'issue / work item references'
+  end
+
+  context 'for issue references' do
+    let_it_be(:issuable_type) { :issue }
+
+    it_behaves_like 'issue / work item references'
   end
 
   context 'for merge request references' do
@@ -234,6 +313,81 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       doc = filter(link, context)
 
       expect(doc.css('a').last.text).to eq("#{merge_request.title} (#{merge_request.to_reference})")
+    end
+
+    it 'shows title for references with +s' do
+      merge_request = create_merge_request(:opened, title: 'Some merge request')
+
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request',
+        reference_format: '+s'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{merge_request.title} (#{merge_request.to_reference}) • Unassigned")
+    end
+
+    context 'when extended summary props are present' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+      let_it_be(:assignees) { create_list(:user, 2) }
+      let_it_be(:merge_request) do
+        create_merge_request(:opened, title: 'Some merge request', milestone: milestone, assignees: assignees)
+      end
+
+      let_it_be(:link) do
+        create_link(
+          merge_request.to_reference,
+          merge_request: merge_request.id,
+          reference_type: 'merge_request',
+          reference_format: '+s'
+        )
+      end
+
+      it 'shows extended summary for references with +s' do
+        doc = filter(link, context)
+
+        expect(doc.css('a').last.text).to eq(
+          "#{merge_request.title} (#{merge_request.to_reference}) • #{assignees[0].name}, #{assignees[1].name} • " \
+          "#{milestone.title}"
+        )
+      end
+
+      describe 'checking N+1' do
+        let_it_be(:milestone2) { create(:milestone, project: project) }
+        let_it_be(:assignees2) { create_list(:user, 3) }
+
+        it 'does not have N+1 for extended summary', :use_sql_query_cache do
+          merge_request2 = create_merge_request(
+            :closed,
+            title: 'Some merge request',
+            milestone: milestone2,
+            assignees: assignees2
+          )
+
+          link2 = create_link(
+            merge_request2.to_reference,
+            merge_request: merge_request2.id,
+            reference_type: 'merge_request',
+            reference_format: '+s'
+          )
+
+          # warm up
+          filter(link, context)
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            filter(link, context)
+          end.count
+
+          expect(control_count).to eq 10
+
+          expect do
+            filter("#{link} #{link2}", context)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
     end
   end
 end

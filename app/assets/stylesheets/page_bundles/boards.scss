@@ -6,21 +6,30 @@
 }
 
 .boards-app {
+  height: calc(#{$calc-application-viewport-height} - var(--header-height, 48px));
+  display: flex;
+  flex-direction: column;
+
   @include media-breakpoint-up(sm) {
     transition: width $gl-transition-duration-medium;
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter-width});
+      width: calc(100% - #{$right-sidebar-width});
     }
   }
 }
 
 .boards-list,
 .board-swimlanes {
-  overflow-x: scroll;
-  min-height: 200px;
+  flex-grow: 1;
   border-left: 8px solid var(--gray-10, $white);
+
+  min-height: calc(#{$calc-application-viewport-height} - var(--header-height));
+
+  @include media-breakpoint-up(sm) {
+    min-height: 0;
+  }
 }
 
 .board {
@@ -40,6 +49,7 @@
       // We do this because the flow of elements isn't affected by the rotate transform, so we must ensure that a
       // rotated element has square dimensions so it won't overlap with its siblings.
       margin: calc(50% - 8px) 0;
+      max-width: 50vh;
 
       transform-origin: center;
     }
@@ -195,8 +205,8 @@
     padding-top: 10px;
   }
 
-  .boards-list {
-    height: calc(100vh - #{$issue-boards-filter-height});
+  .boards-app {
+    height: 100vh;
   }
 
   // Use !important for these as top and z-index are set on style attribute
@@ -208,14 +218,10 @@
 }
 
 .boards-sidebar {
-  top: $header-height !important;
+  top: $calc-application-header-height !important;
   height: auto;
-  bottom: 0;
+  bottom: $calc-application-footer-height;
   padding-bottom: 0.5rem;
-
-  .with-performance-bar & {
-    top: calc(#{$header-height} + #{$performance-bar-height}) !important;
-  }
 
   .sidebar-collapsed-icon {
     @include gl-display-none;

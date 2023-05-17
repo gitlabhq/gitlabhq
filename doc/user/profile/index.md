@@ -34,9 +34,13 @@ If you do not want to update the namespace, you can create a new user or group a
 
 Prerequisites:
 
-- Your namespace cannot contain a project with [Container Registry](../packages/container_registry/index.md) tags.
-- Your namespace cannot have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+- Your namespace must not:
+  - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
+  - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
+  see [changing your username in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+- Your username must be between 2 and 255 characters in length, and must not:
+  - Contain special characters or emojis.
+  - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
 
 To change your username:
 
@@ -131,11 +135,13 @@ To add links to other accounts:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Main settings** section, add your information from:
-   - Discord ([User ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-))
-   - LinkedIn
-   - Skype
-   - Twitter
+1. In the **Main settings** section, add your:
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - LinkedIn profile name.
+   - Skype username.
+   - Twitter @username.
+
+   Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
 
 ## Show private contributions on your user profile page
@@ -160,7 +166,7 @@ To specify your pronouns:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronouns** text box, enter your pronouns.
+1. In the **Pronouns** text box, enter your pronouns. The text must be 50 characters or less.
 1. Select **Update profile settings**.
 
 ## Add your name pronunciation
@@ -174,7 +180,7 @@ To add your name pronunciation:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronunciation** text box, enter how your name is pronounced.
+1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
 
 ## Set your current status
@@ -220,25 +226,7 @@ To set the busy status indicator, either:
   1. Select **Edit profile**.
   1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
-  The busy status is displayed in the user interface.
-
-  Username:
-
-  | Profile page | Settings menu | User popovers |
-  | --- | --- | --- |
-  | ![Busy status - profile page](img/busy_indicator_profile_page_v13_6.png) | ![Busy status - settings menu](img/busy_indicator_settings_menu_v13_6.png) | ![Busy status - user popovers](img/busy_indicator_user_popovers_v13_6.png) |
-
-  Issue and merge request sidebar:
-
-  | Sidebar| Collapsed sidebar |
-  | --- | --- |
-  | ![Busy status - sidebar](img/busy_indicator_sidebar_v13_9.png) | ![Busy status - sidebar collapsed](img/busy_indicator_sidebar_collapsed_v13_9.png) |
-
-  Notes:
-
-  | Notes | Note headers |
-  | --- | --- |
-  | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
+  The busy status is displayed next to your name, every time your name is shown in the user interface.
 
 ## Set your time zone
 
@@ -310,9 +298,9 @@ and configure it on your local machine by using the following command:
 git config --global user.email <your email address>
 ```
 
-## User activity
+## Follow users
 
-GitLab tracks [user contribution activity](contributions_calendar.md). You can follow or unfollow other users from either:
+You can follow or unfollow users from either:
 
 - Their [user profiles](#access-your-user-profile).
 - The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
@@ -321,66 +309,77 @@ GitLab tracks [user contribution activity](contributions_calendar.md). You can f
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
 
-To view a user's activity in a top-level Activity view:
+### Disable following and being followed by other users
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`. Disabled by default.
+
+You can disable following and being followed by other users.
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select **Preferences**.
+1. Clear the **Enable follow users** checkbox.
+1. Select **Save changes**.
+
+NOTE:
+When this feature is being disabled, all current followed/following connections are deleted.
+
+## View your activity
+
+GitLab tracks [user contribution activity](contributions_calendar.md).
+To view a summary of your activity, or the activity of other users:
 
 1. From a user's profile, select **Follow**.
 1. In the GitLab menu, select **Activity**.
 1. Select the **Followed users** tab.
 
-## Troubleshooting
+## Session duration
 
-### Why do you keep getting signed out?
+### Stay signed in for two weeks
 
-When you sign in to the main GitLab application, a `_gitlab_session` cookie is
-set. When you close your browser, the cookie is cleared client-side
-and it expires after a set duration. GitLab administrators can determine the duration:
+By default, you are signed out of GitLab after seven days (10080 minutes) of inactivity or until you close your browser
+window, whichever comes first.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+GitLab administrators can
+[change this default](../admin_area/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
-The default is `10080`, which equals 7 days.
+### Stay signed in indefinitely
 
-When you sign in to the main GitLab application, you can also check the
-**Remember me** option. This sets the `remember_user_token`
-cookie via [`devise`](https://github.com/heartcombo/devise).
-The `remember_user_token` cookie expires after
-`config/initializers/devise.rb` -> `config.remember_for`. The default is 2 weeks.
+> Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
 
-When the `_gitlab_session` expires or isn't available, GitLab uses the `remember_user_token`
-to get you a new `_gitlab_session` and keep you signed in through browser restarts.
+To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 
-After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
-you are asked to sign in again to verify your identity for security reasons.
+You remain signed in because, although the server sets a session time of one week, your browser stores a secure token
+that enables automatic reauthentication.
 
-NOTE:
-When any session is signed out, or when a session is revoked
-via [Active Sessions](active_sessions.md), all **Remember me** tokens are revoked.
-While other sessions remain active, the **Remember me** feature doesn't restore
-a session if the browser is closed or the existing session expires.
+GitLab administrators can [turn off the **Remember me** setting](../admin_area/settings/account_and_limit_settings.md#session-duration) for environments
+that require sessions to expire periodically for security or compliance purposes.
 
-### Increased sign-in time
+### Cookies used for sign-in
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
-The `remember_user_token` lifetime of a cookie can now extend beyond the deadline set by `config.remember_for`, as the `config.extend_remember_period` flag is now set to true.
+When you sign in, three cookies are set:
 
-GitLab uses both session and persistent cookies:
+- A session cookie called `_gitlab_session`.
+  This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
+- A session cookied called `about_gitlab_active_user`.
+  This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires with the session.
+- A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 
-- Session cookie: Session cookies are typically removed at the end of the browser session when
-  the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
-  it expires based on its [`session_expire_delay`](#why-do-you-keep-getting-signed-out).
-- Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.
-  GitLab activates this cookie if you select **Remember Me** when you sign in.
+When you close your browser, the `_gitlab_session` and `about_gitlab_active_user` cookies are usually cleared client-side.
+When it expires or isn't available, GitLab:
 
-By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.
+- Uses the `remember_user_token`cookie to get you a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
+- Sets the `about_gitlab_active_user` to `true`.
 
-When you close a browser, the session cookie may still remain. For example, Chrome has the "Continue where you left off" option that restores session cookies.
-In other words, as long as you access GitLab at least once every 2 weeks, you could remain signed in with GitLab, as long as your browser tab is open.
-The server continues to reset the TTL for that session, independent of whether 2FA is installed,
-If you close your browser and open it up again, the `remember_user_token` cookie allows your user to reauthenticate itself.
+When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 
-Without the `config.extend_remember_period` flag, you would be forced to sign in again after two weeks.
+NOTE:
+When any session is signed out, or when a session is revoked
+from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
+While other sessions remain active, the **Remember me** feature doesn't restore
+a session if the browser is closed or the existing session expires.
 
 ## Related topics
 
@@ -389,7 +388,7 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 - [Change your password](user_passwords.md)
 - Receive emails for:
   - [Sign-ins from unknown IP addresses or devices](notifications.md#notifications-for-unknown-sign-ins)
-  - [Attempted sign-ins using wrong two-factor authentication codes](notifications.md#notifications-for-attempted-sign-in-using-wrong-two-factor-authentication-codes)
+  - [Attempted sign-ins using incorrect verification codes](notifications.md#notifications-for-attempted-sign-ins-using-incorrect-verification-codes)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Manage [SSH keys](../ssh.md) to access your account via SSH

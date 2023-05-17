@@ -4,6 +4,8 @@ module QA
   module Page
     module MergeRequest
       class New < Page::Issuable::New
+        include QA::Page::Component::Dropdown
+
         view 'app/views/shared/issuable/_form.html.haml' do
           element :issuable_create_button, required: true
         end

@@ -70,7 +70,8 @@ RSpec.describe 'Search bar', :js, feature_category: :team_planning do
       original_size = get_suggestion_count
       send_keys 'autho'
 
-      expect_suggestion_count 1
+      # Expect Author, Search for this text
+      expect_suggestion_count 2
 
       click_button 'Clear'
       click_filtered_search_bar

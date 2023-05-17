@@ -23,10 +23,6 @@ describe('Blob Simple Viewer component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not fail if content is empty', () => {
     const spy = jest.spyOn(window.console, 'error');
     createComponent('');

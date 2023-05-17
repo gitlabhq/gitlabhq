@@ -36,10 +36,10 @@ module DesignManagement
     belongs_to :author, class_name: 'User'
     has_many :actions
     has_many :designs,
-             through: :actions,
-             class_name: "DesignManagement::Design",
-             source: :design,
-             inverse_of: :versions
+      through: :actions,
+      class_name: "DesignManagement::Design",
+      source: :design,
+      inverse_of: :versions
 
     validates :designs, presence: true, unless: :importing?
     validates :sha, presence: true

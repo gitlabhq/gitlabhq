@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
   include MobileHelpers
+  include Features::InviteMembersModalHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -20,8 +21,8 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
 
     context 'when menu is closed' do
       it 'has page content and hides responsive menu', :aggregate_failures do
-        expect(page).to have_css('.page-title', text: 'Projects')
-        expect(page).to have_link('Dashboard', id: 'logo')
+        expect(page).to have_css('.page-title', text: 'Explore projects')
+        expect(page).to have_link('Homepage', id: 'logo')
 
         expect(page).to have_no_css('.top-nav-responsive')
       end
@@ -33,14 +34,15 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
       end
 
       it 'hides everything and shows responsive menu', :aggregate_failures do
-        expect(page).to have_no_css('.page-title', text: 'Projects')
-        expect(page).to have_no_link('Dashboard', id: 'logo')
+        expect(page).to have_no_css('.page-title', text: 'Explore projects')
+        expect(page).to have_no_link('Homepage', id: 'logo')
 
         within '.top-nav-responsive' do
           expect(page).to have_link(nil, href: search_path)
           expect(page).to have_button('Projects')
           expect(page).to have_button('Groups')
-          expect(page).to have_link('Snippets', href: dashboard_snippets_path)
+          expect(page).to have_link('Your work', href: dashboard_projects_path)
+          expect(page).to have_link('Explore', href: explore_projects_path)
         end
       end
 
@@ -61,10 +63,12 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
       visit project_path(project)
     end
 
-    it 'the add menu contains invite members dropdown option and goes to the members page' do
+    it 'the add menu contains invite members dropdown option and opens invite modal' do
       invite_members_from_menu
 
-      expect(page).to have_current_path(project_project_members_path(project))
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{project.name} project")
+      end
     end
   end
 
@@ -75,10 +79,12 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
       visit group_path(group)
     end
 
-    it 'the add menu contains invite members dropdown option and goes to the members page' do
+    it 'the add menu contains invite members dropdown option and opens invite modal' do
       invite_members_from_menu
 
-      expect(page).to have_current_path(group_group_members_path(group))
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{group.name} group")
+      end
     end
   end
 
@@ -86,7 +92,7 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
     click_button('Menu')
     create_new_button.click
 
-    click_link('Invite members')
+    click_button('Invite members')
   end
 
   def create_new_button

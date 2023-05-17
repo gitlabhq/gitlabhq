@@ -47,7 +47,7 @@ namespace :contracts do
     end
 
     desc 'Run all pipeline contract tests'
-    task 'test:pipelines', :contract_pipelines do |_t, arg|
+    task 'test:pipelines', :contract_pipelines do |_t|
       errors = %w[
         create_a_new_pipeline
         get_list_project_pipelines

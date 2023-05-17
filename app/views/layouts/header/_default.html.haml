@@ -8,7 +8,7 @@
       .title-container.hide-when-top-nav-responsive-open.gl-transition-medium.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
         .title
           %span.gl-sr-only GitLab
-          = link_to root_path, title: _('Dashboard'), id: 'logo', class: 'has-tooltip', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
+          = link_to root_path, title: _('Homepage'), id: 'logo', class: 'has-tooltip', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
             = brand_header_logo
         .gl-display-flex.gl-align-items-center
           - if Gitlab.com_and_canary?
@@ -31,10 +31,7 @@
           %ul.nav.navbar-nav.gl-w-full.gl-align-items-center
             %li.nav-item.header-search-new.gl-display-none.gl-lg-display-block.gl-w-full
               - unless current_controller?(:search)
-                - if Feature.enabled?(:new_header_search)
-                  = render 'layouts/header_search'
-                - else
-                  = render 'layouts/search'
+                = render 'layouts/header_search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
               = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) },
                 data: { toggle: 'tooltip', placement: 'bottom', container: 'body',
@@ -106,7 +103,7 @@
                 = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2 #{'hidden' if todos_pending_count == 0}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block
-            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown", track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation_top', track_experiment: 'cross_stage_fdm' } do
+            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown", track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation_top' } do
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question-o')

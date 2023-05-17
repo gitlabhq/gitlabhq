@@ -5,4 +5,5 @@
     has_issue_weights_feature: @project.licensed_feature_available?(:issue_weights).to_s,
     help_path: help_page_path('user/project/issues/related_issues'),
     show_categorized_issues: @project.licensed_feature_available?(:blocked_issues).to_s,
-    has_iterations_feature: @project.licensed_feature_available?(:iterations).to_s } }
+    has_iterations_feature: @project.licensed_feature_available?(:iterations).to_s,
+    report_abuse_path: add_category_abuse_reports_path } }

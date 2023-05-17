@@ -1,0 +1,45 @@
+@import '../mixins_and_variables_and_functions';
+
+.geo-site-header-grid-columns {
+  grid-template-columns: 1fr auto;
+  grid-gap: $gl-spacing-scale-5;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 3fr 1fr;
+  }
+}
+
+.geo-site-details-grid-columns {
+  grid-gap: $gl-spacing-scale-5;
+
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: 1fr 3fr;
+  }
+}
+
+.geo-site-core-details-grid-columns {
+  grid-template-columns: 1fr 1fr;
+  grid-gap: $gl-spacing-scale-5;
+}
+
+.geo-site-replication-details-grid-columns {
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 1fr 1fr 2fr 2fr;
+  }
+}
+
+.geo-site-filter-grid-columns {
+  grid-template-columns: 1fr;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 3fr 1fr;
+  }
+}
+
+.geo-site-replication-counts-grid {
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-gap: 1rem;
+}

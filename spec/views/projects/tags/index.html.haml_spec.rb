@@ -6,9 +6,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:git_tag)  { project.repository.tags.last }
   let_it_be(:release)  do
-    create(:release, project: project,
-                     sha: git_tag.target_commit.sha,
-                     tag: 'v1.1.0')
+    create(:release, project: project, sha: git_tag.target_commit.sha, tag: 'v1.1.0')
   end
 
   let(:pipeline) { create(:ci_pipeline, :success, project: project, ref: git_tag.name, sha: release.sha) }

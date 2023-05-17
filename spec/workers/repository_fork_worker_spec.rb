@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryForkWorker do
+RSpec.describe RepositoryForkWorker, feature_category: :source_code_management do
   include ProjectForksHelper
 
   describe 'modules' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::CreateCloudsqlInstanceService do
+RSpec.describe GoogleCloud::CreateCloudsqlInstanceService, feature_category: :deployment_management do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:gcp_project_id) { 'gcp_project_120' }

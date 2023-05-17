@@ -1,8 +1,0 @@
----
-name: security_reports_mr_widget_prompt
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70086
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340436
-milestone: '14.3'
-type: experiment
-group: group::acquisition
-default_enabled: false

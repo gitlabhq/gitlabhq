@@ -82,7 +82,7 @@ export default {
       <div>{{ __('Commit Message') }}</div>
       <div id="commit-message-popover-container">
         <span id="commit-message-question" class="gl-gray-700 gl-ml-3">
-          <gl-icon name="question" />
+          <gl-icon name="question-o" />
         </span>
         <gl-popover
           target="commit-message-question"

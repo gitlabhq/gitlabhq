@@ -359,9 +359,9 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
       end
 
       describe 'filtering by crm' do
-        let_it_be(:organization) { create(:organization, group: group) }
-        let_it_be(:contact1) { create(:contact, group: group, organization: organization) }
-        let_it_be(:contact2) { create(:contact, group: group, organization: organization) }
+        let_it_be(:crm_organization) { create(:crm_organization, group: group) }
+        let_it_be(:contact1) { create(:contact, group: group, organization: crm_organization) }
+        let_it_be(:contact2) { create(:contact, group: group, organization: crm_organization) }
         let_it_be(:contact3) { create(:contact, group: group) }
         let_it_be(:crm_issue1) { create(:issue, project: project) }
         let_it_be(:crm_issue2) { create(:issue, project: project) }
@@ -381,9 +381,9 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
           end
         end
 
-        context 'when filtering by organization' do
+        context 'when filtering by crm_organization' do
           it 'returns only the issues for the contact' do
-            expect(resolve_issues({ crm_organization_id: organization.id })).to contain_exactly(crm_issue1, crm_issue2)
+            expect(resolve_issues({ crm_organization_id: crm_organization.id })).to contain_exactly(crm_issue1, crm_issue2)
           end
         end
       end

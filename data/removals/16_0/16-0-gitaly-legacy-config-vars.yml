@@ -1,0 +1,19 @@
+---
+- title: "Legacy Gitaly configuration methods with variables"
+  announcement_milestone: "14.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: mjwood
+  stage: Gitaly
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352609
+  body: |
+    The environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` were deprecated in GitLab 14.8 and are removed
+    in GitLab 16.0. These variables are replaced with standard
+    [`config.toml` Gitaly configuration](https://docs.gitlab.com/ee/administration/gitaly/reference.html).
+
+    GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly must switch to configuring
+    using `config.toml`.
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/administration/gitaly/reference.html # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -35,11 +35,7 @@ export default {
       <div class="js-collapsed" :class="{ 'd-none': value }">
         <gl-form-input
           class="form-control"
-          :placeholder="
-            s__(
-              'Snippets|Optionally add a description about what your snippet does or how to use it…',
-            )
-          "
+          :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
           data-qa-selector="description_placeholder"
         />
       </div>

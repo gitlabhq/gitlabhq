@@ -66,6 +66,10 @@ The **CI/CD** settings contain:
   [risks are involved](../../packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)
   in enabling some of these settings.
 
+## Security and Compliance settings
+
+- [License compliance settings](security_and_compliance.md#choose-package-registry-metadata-to-sync): Enable or disable synchronization of package metadata by a registry type.
+
 ### Geo **(PREMIUM SELF)**
 
 The **Geo** setting contains:
@@ -108,8 +112,6 @@ The **Metrics and profiling** settings contain:
   Enable and configure Grafana.
 - [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-for-non-administrators) -
   Enable access to the Performance Bar for non-administrator users in a given group.
-- [Self-monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#create-the-self-monitoring-project) -
-  Enable or disable instance self-monitoring.
 - [Usage statistics](usage_statistics.md) - Enable or disable version check and Service Ping.
 
 ### Network
@@ -130,12 +132,13 @@ The **Network** settings contain:
   - [Search rate limits](../../../administration/instance_limits.md#search-rate-limit) - Configure global search request rate limits for authenticated and unauthenticated users.
   - [Deprecated API Rate Limits](deprecated_api_rate_limits.md) - Configure specific limits
     for deprecated API requests that supersede the user and IP rate limits.
-- [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from hooks and services.
+- [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from webhooks and integrations, or deny all outbound requests.
 - [Protected Paths](protected_paths.md) - Configure paths to be protected by Rack Attack.
 - [Incident Management Limits](../../../operations/incident_management/index.md) - Limit the
   number of inbound alerts that can be sent to a project.
 - [Notes creation limit](rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
 - [Get single user limit](rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
+- [Projects API rate limits for unauthenticated requests](rate_limit_on_projects_api.md) - Set a rate limit on Projects list API endpoint for unauthenticated requests.
 
 ### Preferences
 

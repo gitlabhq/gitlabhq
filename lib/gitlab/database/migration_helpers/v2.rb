@@ -5,24 +5,6 @@ module Gitlab
     module MigrationHelpers
       module V2
         include Gitlab::Database::MigrationHelpers
-
-        # Superseded by `create_table` override below
-        def create_table_with_constraints(*_)
-          raise <<~EOM
-            #create_table_with_constraints is not supported anymore - use #create_table instead, for example:
-
-              create_table :db_guides do |t|
-                t.bigint :stars, default: 0, null: false
-                t.text :title, limit: 128
-                t.text :notes, limit: 1024
-
-                t.check_constraint 'stars > 1000', name: 'so_many_stars'
-              end
-
-            See https://docs.gitlab.com/ee/development/database/strings_and_the_text_data_type.html
-          EOM
-        end
-
         # Creates a new table, optionally allowing the caller to add text limit constraints to the table.
         # This method only extends Rails' `create_table` method
         #
@@ -190,6 +172,28 @@ module Gitlab
           with_lock_retries do
             install_bidirectional_triggers(table, old_column, new_column)
           end
+        end
+
+        # TRUNCATE is a DDL statement (it drops the table and re-creates it), so we want to run the
+        # migration in DDL mode, but we also don't want to execute it against all schemas because
+        # it will be prevented by the lock_writes trigger.
+        #
+        # For example,
+        # a `gitlab_main` table on `:gitlab_main` database will be truncated,
+        # and a `gitlab_main` table on `:gitlab_ci` database will be skipped.
+        #
+        # Note Rails already has a truncate_tables, see
+        # https://github.com/rails/rails/blob/6-1-stable/activerecord/lib/active_record/connection_adapters/abstract/database_statements.rb#L193
+        def truncate_tables!(*table_names, connection: self.connection)
+          table_schemas = Gitlab::Database::GitlabSchema.table_schemas!(table_names)
+
+          raise ArgumentError, "`table_names` must resolve to only one `gitlab_schema`" if table_schemas.size != 1
+
+          return unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(table_schemas.first)
+
+          quoted_tables = table_names.map { |table_name| quote_table_name(table_name) }.join(', ')
+
+          execute("TRUNCATE TABLE #{quoted_tables}")
         end
 
         private

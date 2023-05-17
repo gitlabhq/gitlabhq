@@ -10,12 +10,14 @@ import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
+import eventHub from '~/boards/eventhub';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
+jest.mock('~/boards/eventhub');
 
 Vue.use(Vuex);
 
@@ -59,18 +61,14 @@ describe('BoardForm', () => {
     },
   });
 
-  const createComponent = (props, data) => {
+  const createComponent = (props, provide) => {
     wrapper = shallowMountExtended(BoardForm, {
       propsData: { ...defaultProps, ...props },
-      data() {
-        return {
-          ...data,
-        };
-      },
       provide: {
         boardBaseUrl: 'root',
         isGroupBoard: true,
         isProjectBoard: false,
+        ...provide,
       },
       mocks: {
         $apollo: {
@@ -83,8 +81,6 @@ describe('BoardForm', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mutate = null;
   });
 
@@ -119,7 +115,7 @@ describe('BoardForm', () => {
       expect(findForm().exists()).toBe(true);
     });
 
-    it('focuses an input field', async () => {
+    it('focuses an input field', () => {
       expect(document.activeElement).toBe(wrapper.vm.$refs.name);
     });
   });
@@ -140,7 +136,7 @@ describe('BoardForm', () => {
 
       it('passes correct primary action text and variant', () => {
         expect(findModalActionPrimary().text).toBe('Create board');
-        expect(findModalActionPrimary().attributes[0].variant).toBe('confirm');
+        expect(findModalActionPrimary().attributes.variant).toBe('confirm');
       });
 
       it('does not render delete confirmation message', () => {
@@ -209,6 +205,30 @@ describe('BoardForm', () => {
         expect(setBoardMock).not.toHaveBeenCalled();
         expect(setErrorMock).toHaveBeenCalled();
       });
+
+      describe('when Apollo boards FF is on', () => {
+        it('calls a correct GraphQL mutation and emits addBoard event when creating a board', async () => {
+          createComponent(
+            { canAdminBoard: true, currentPage: formType.new },
+            { isApolloBoard: true },
+          );
+          fillForm();
+
+          await waitForPromises();
+
+          expect(mutate).toHaveBeenCalledWith({
+            mutation: createBoardMutation,
+            variables: {
+              input: expect.objectContaining({
+                name: 'test',
+              }),
+            },
+          });
+
+          await waitForPromises();
+          expect(wrapper.emitted('addBoard')).toHaveLength(1);
+        });
+      });
     });
   });
 
@@ -228,7 +248,7 @@ describe('BoardForm', () => {
 
       it('passes correct primary action text and variant', () => {
         expect(findModalActionPrimary().text).toBe('Save changes');
-        expect(findModalActionPrimary().attributes[0].variant).toBe('confirm');
+        expect(findModalActionPrimary().attributes.variant).toBe('confirm');
       });
 
       it('does not render delete confirmation message', () => {
@@ -308,13 +328,48 @@ describe('BoardForm', () => {
       expect(setBoardMock).not.toHaveBeenCalled();
       expect(setErrorMock).toHaveBeenCalled();
     });
+
+    describe('when Apollo boards FF is on', () => {
+      it('calls a correct GraphQL mutation and emits updateBoard event when updating a board', async () => {
+        mutate = jest.fn().mockResolvedValue({
+          data: {
+            updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
+          },
+        });
+        setWindowLocation('https://test/boards/1');
+
+        createComponent(
+          { canAdminBoard: true, currentPage: formType.edit },
+          { isApolloBoard: true },
+        );
+        findInput().trigger('keyup.enter', { metaKey: true });
+
+        await waitForPromises();
+
+        expect(mutate).toHaveBeenCalledWith({
+          mutation: updateBoardMutation,
+          variables: {
+            input: expect.objectContaining({
+              id: currentBoard.id,
+            }),
+          },
+        });
+
+        await waitForPromises();
+        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateBoard', {
+          id: 'gid://gitlab/Board/321',
+          webPath: 'test-path',
+        });
+      });
+    });
   });
 
   describe('when deleting a board', () => {
     it('passes correct primary action text and variant', () => {
       createComponent({ canAdminBoard: true, currentPage: formType.delete });
       expect(findModalActionPrimary().text).toBe('Delete');
-      expect(findModalActionPrimary().attributes[0].variant).toBe('danger');
+      expect(findModalActionPrimary().attributes.variant).toBe('danger');
     });
 
     it('renders delete confirmation message', () => {

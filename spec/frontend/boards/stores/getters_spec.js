@@ -31,10 +31,6 @@ describe('Boards - Getters', () => {
   });
 
   describe('isSwimlanesOn', () => {
-    afterEach(() => {
-      window.gon = { features: {} };
-    });
-
     it('returns false', () => {
       expect(getters.isSwimlanesOn()).toBe(false);
     });
@@ -171,10 +167,6 @@ describe('Boards - Getters', () => {
   });
 
   describe('isEpicBoard', () => {
-    afterEach(() => {
-      window.gon = { features: {} };
-    });
-
     it('returns false', () => {
       expect(getters.isEpicBoard()).toBe(false);
     });

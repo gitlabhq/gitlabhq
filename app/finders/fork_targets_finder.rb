@@ -24,7 +24,7 @@ class ForkTargetsFinder
 
   def fork_targets(options)
     if options[:only_groups]
-      user.manageable_groups(include_groups_with_developer_maintainer_access: true)
+      Groups::AcceptingProjectCreationsFinder.new(user).execute # rubocop: disable CodeReuse/Finder
     else
       user.forkable_namespaces.sort_by_type
     end

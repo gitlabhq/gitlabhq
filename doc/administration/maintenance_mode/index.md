@@ -8,17 +8,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
 
-Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, and Container repositories.
+Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state. The internal state includes the PostgreSQL database, but especially files, Git repositories, and Container repositories.
 
-When Maintenance Mode is enabled, in-progress actions finish relatively quickly since no new actions are coming in, and internal state changes are minimal.
-In that state, various maintenance tasks are easier, and services can be stopped completely or be
-further degraded for a much shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
+When Maintenance Mode is enabled, in-progress actions finish relatively quickly because no new actions are coming in, and internal state changes are minimal.
+In that state, various maintenance tasks are easier. Services can be stopped completely or
+further degraded for a shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
 
 Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP `POST`, `PUT`, `PATCH`, and `DELETE` requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
 ## Enable Maintenance Mode
 
-There are three ways to enable Maintenance Mode as an administrator:
+Enable Maintenance Mode as an administrator in one of these ways:
 
 - **Web UI**:
   1. On the top bar, select **Main menu > Admin**.
@@ -42,7 +42,7 @@ There are three ways to enable Maintenance Mode as an administrator:
 
 ## Disable Maintenance Mode
 
-There are three ways to disable Maintenance Mode:
+Disable Maintenance Mode in one of three ways:
 
 - **Web UI**:
   1. On the top bar, select **Main menu > Admin**.
@@ -73,7 +73,7 @@ An error is displayed when a user tries to perform a write operation that isn't 
 ![Maintenance Mode banner and error message](img/maintenance_mode_error_message.png)
 
 NOTE:
-In some cases, the visual feedback from an action could be misleading, for example when starring a project, the **Star** button changes to show the **Unstar** action, however, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
+In some cases, the visual feedback from an action could be misleading. For example, when starring a project, the **Star** button changes to show the **Unstar** action. However, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
 
 ### Administrator functions
 
@@ -84,7 +84,7 @@ them to disable Maintenance Mode after it's been enabled.
 
 All users can sign in and out of the GitLab instance but no new users can be created.
 
-If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#configure-saml-support-in-gitlab) fail.
+If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail because user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#configure-saml-support-in-gitlab) fail.
 
 ### Git actions
 
@@ -135,22 +135,22 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
   even if they finish running on the GitLab Runner.
 - Jobs in the `running` state for longer than the project's time limit do not time out.
 - Pipelines cannot be started, retried or canceled. No new jobs can be created either.
-- The status of the runners in `/admin/runners` won't be updated.
-- `gitlab-runner verify` will return the error `ERROR: Verifying runner... is removed`.
+- The status of the runners in `/admin/runners` isn't updated.
+- `gitlab-runner verify` returns the error `ERROR: Verifying runner... is removed`.
 
 After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
 in the `running` state before enabling Maintenance Mode resume and their logs start
 updating again.
 
 NOTE:
-It is recommended that you restart previously `running` pipelines after Maintenance Mode
+You should restart previously `running` pipelines after Maintenance Mode
 is turned off.
 
 ### Deployments
 
 Deployments don't go through because pipelines are unfinished.
 
-It is recommended to disable auto deploys during Maintenance Mode, and enable them when it is disabled.
+You should disable auto deploys during Maintenance Mode, and enable them when it is disabled.
 
 #### Terraform integration
 
@@ -169,7 +169,7 @@ Package Registry allows you to install but not publish packages.
 Background jobs (cron jobs, Sidekiq) continue running as is, because background jobs are not automatically disabled.
 
 [During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site),
-it is recommended that you disable all cron jobs except for those related to Geo.
+you should disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
 
@@ -206,7 +206,7 @@ SAST and Secret Detection cannot be initiated because they depend on passing CI 
 
 ## An example use case: a planned failover
 
-In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, since they are replicated quickly and are not significant in number.
+In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, because they are replicated quickly and are not significant in number.
 
 For the same reason we don't automatically block background jobs when Maintenance Mode is enabled.
 

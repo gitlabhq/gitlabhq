@@ -10,35 +10,52 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillReleasesAuthorId,
 
   let!(:test_user) { user_table.create!(name: 'test', email: 'test@example.com', username: 'test', projects_limit: 10) }
   let!(:ghost_user) do
-    user_table.create!(name: 'ghost', email: 'ghost@example.com',
-                       username: 'ghost', user_type: User::USER_TYPES['ghost'], projects_limit: 100000)
+    user_table.create!(
+      name: 'ghost', email: 'ghost@example.com',
+      username: 'ghost', user_type: User::USER_TYPES['ghost'], projects_limit: 100000
+    )
   end
 
   let(:migration) do
-    described_class.new(start_id: 1, end_id: 100,
-                        batch_table: :releases, batch_column: :id,
-                        sub_batch_size: 10, pause_ms: 0,
-                        job_arguments: [ghost_user.id],
-                        connection: ApplicationRecord.connection)
+    described_class.new(
+      start_id: 1, end_id: 100,
+      batch_table: :releases, batch_column: :id,
+      sub_batch_size: 10, pause_ms: 0,
+      job_arguments: [ghost_user.id],
+      connection: ApplicationRecord.connection
+    )
   end
 
   subject(:perform_migration) { migration.perform }
 
   before do
-    releases_table.create!(tag: 'tag1', name: 'tag1',
-                           released_at: (date_time - 1.minute), author_id: test_user.id)
-    releases_table.create!(tag: 'tag2', name: 'tag2',
-                           released_at: (date_time - 2.minutes), author_id: test_user.id)
-    releases_table.new(tag: 'tag3', name: 'tag3',
-                       released_at: (date_time - 3.minutes), author_id: nil).save!(validate: false)
-    releases_table.new(tag: 'tag4', name: 'tag4',
-                       released_at: (date_time - 4.minutes), author_id: nil).save!(validate: false)
-    releases_table.new(tag: 'tag5', name: 'tag5',
-                       released_at: (date_time - 5.minutes), author_id: nil).save!(validate: false)
-    releases_table.create!(tag: 'tag6', name: 'tag6',
-                           released_at: (date_time - 6.minutes), author_id: test_user.id)
-    releases_table.new(tag: 'tag7', name: 'tag7',
-                       released_at: (date_time - 7.minutes), author_id: nil).save!(validate: false)
+    releases_table.create!(
+      tag: 'tag1', name: 'tag1', released_at: (date_time - 1.minute), author_id: test_user.id
+    )
+
+    releases_table.create!(
+      tag: 'tag2', name: 'tag2', released_at: (date_time - 2.minutes), author_id: test_user.id
+    )
+
+    releases_table.new(
+      tag: 'tag3', name: 'tag3', released_at: (date_time - 3.minutes), author_id: nil
+    ).save!(validate: false)
+
+    releases_table.new(
+      tag: 'tag4', name: 'tag4', released_at: (date_time - 4.minutes), author_id: nil
+    ).save!(validate: false)
+
+    releases_table.new(
+      tag: 'tag5', name: 'tag5', released_at: (date_time - 5.minutes), author_id: nil
+    ).save!(validate: false)
+
+    releases_table.create!(
+      tag: 'tag6', name: 'tag6', released_at: (date_time - 6.minutes), author_id: test_user.id
+    )
+
+    releases_table.new(
+      tag: 'tag7', name: 'tag7', released_at: (date_time - 7.minutes), author_id: nil
+    ).save!(validate: false)
   end
 
   it 'backfills `author_id` for the selected records', :aggregate_failures do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::InProductMarketingEmailRecords do
+RSpec.describe Users::InProductMarketingEmailRecords, feature_category: :onboarding do
   let_it_be(:user) { create :user }
 
   subject(:records) { described_class.new }

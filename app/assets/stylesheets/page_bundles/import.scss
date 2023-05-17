@@ -4,19 +4,11 @@ $import-bar-height: $gl-spacing-scale-11;
 
 .import-table-bar {
   height: $import-bar-height;
-  top: $header-height;
-
-  html.with-performance-bar & {
-    top: calc(#{$header-height} + #{$performance-bar-height});
-  }
+  top: $calc-application-header-height;
 }
 
 .import-table {
   thead {
-    top: calc(#{$header-height} + #{$import-bar-height});
-
-    html.with-performance-bar & {
-      top: calc(#{$header-height} + #{$performance-bar-height} + #{$import-bar-height});
-    }
+    top: calc(#{$calc-application-header-height} + #{$import-bar-height});
   }
 }

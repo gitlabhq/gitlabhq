@@ -20,10 +20,6 @@ describe('Issue Due Date component', () => {
     date = new Date();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render "Today" if the due date is today', () => {
     wrapper = createComponent();
 

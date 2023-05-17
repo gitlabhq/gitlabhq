@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::UpdateService do
+RSpec.describe ProtectedBranches::UpdateService, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     let(:params) { { name: new_name } }
 

@@ -9,8 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Usernames and group names fall under a special category called
 [namespaces](../user/namespace/index.md).
 
-For users and groups supported API calls see the [users](users.md) and
-[groups](groups.md) documentation respectively.
+You might also want to view documentation for:
+
+- [Users](users.md)
+- [Groups](groups.md)
 
 [Pagination](rest/index.md#pagination) is used.
 
@@ -100,9 +102,9 @@ Owners also see the `plan` property associated with a namespace:
 ]
 ```
 
-Users on GitLab.com also see `max_seats_used` and `seats_in_use` parameters.
+Users on GitLab.com also see `max_seats_used`, `seats_in_use` and `max_seats_used_changed_at` parameters.
 `max_seats_used` is the highest number of users the group had. `seats_in_use` is
-the number of license seats currently being used. Both values are updated
+the number of license seats currently being used. `max_seats_used_changed_at` shows the date when the `max_seats_used` value changed. All the values are updated
 once a day.
 
 `max_seats_used` and `seats_in_use` are non-zero only for namespaces on paid plans.
@@ -114,6 +116,7 @@ once a day.
     "name": "user1",
     "billable_members_count": 2,
     "max_seats_used": 3,
+    "max_seats_used_changed_at":"2023-02-13T12:00:02.000Z",
     "seats_in_use": 2,
     ...
   }

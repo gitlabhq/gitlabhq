@@ -57,6 +57,10 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
   end
 
   context 'Menu items' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: false)
+    end
+
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do

@@ -2,7 +2,7 @@
 class Packages::Composer::CacheUploader < GitlabUploader
   include ObjectStorage::Concern
 
-  storage_options Gitlab.config.packages
+  storage_location :packages
 
   alias_method :upload, :model
 

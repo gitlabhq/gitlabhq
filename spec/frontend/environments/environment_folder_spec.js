@@ -35,10 +35,10 @@ describe('~/environments/components/environments_folder.vue', () => {
         ...propsData,
       },
       stubs: { transition: stubTransition() },
-      provide: { helpPagePath: '/help' },
+      provide: { helpPagePath: '/help', projectId: '1' },
     });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     environmentFolderMock = jest.fn();
     [nestedEnvironment] = resolvedEnvironmentsApp.environments;
     environmentFolderMock.mockReturnValue(resolvedFolder);

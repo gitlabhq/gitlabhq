@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Issues::ListService do
+RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
@@ -57,7 +57,15 @@ RSpec.describe Boards::Issues::ListService do
       end
 
       context 'when filtering' do
-        let_it_be(:incident) { create(:labeled_issue, project: project, milestone: m1, labels: [development, p1], issue_type: 'incident') }
+        let_it_be(:incident) do
+          create(
+            :labeled_issue,
+            :incident,
+            project: project,
+            milestone: m1,
+            labels: [development, p1]
+          )
+        end
 
         context 'when filtering by type' do
           it 'only returns the specified type' do
@@ -77,7 +85,6 @@ RSpec.describe Boards::Issues::ListService do
       end
     end
 
-    # rubocop: disable RSpec/MultipleMemoizedHelpers
     context 'when parent is a group' do
       let(:project) { create(:project, :empty_repo, namespace: group) }
       let(:project1) { create(:project, :empty_repo, namespace: group) }
@@ -148,7 +155,6 @@ RSpec.describe Boards::Issues::ListService do
         it_behaves_like 'issues list service'
       end
     end
-    # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
 
   describe '.initialize_relative_positions' do

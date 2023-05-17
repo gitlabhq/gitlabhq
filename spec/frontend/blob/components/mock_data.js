@@ -47,11 +47,13 @@ export const BinaryBlob = {
 };
 
 export const RichBlobContentMock = {
+  __typename: 'Blob',
   path: 'foo.md',
   richData: '<h1>Rich</h1>',
 };
 
 export const SimpleBlobContentMock = {
+  __typename: 'Blob',
   path: 'foo.js',
   plainData: 'Plain',
 };

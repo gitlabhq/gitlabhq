@@ -4,7 +4,6 @@ module Clusters
   module Platforms
     class Kubernetes < ApplicationRecord
       include Gitlab::Kubernetes
-      include EnumWithNil
       include AfterCommitQueue
       include ReactiveCaching
       include NullifyIfBlank
@@ -63,7 +62,7 @@ module Clusters
 
       alias_attribute :ca_pem, :ca_cert
 
-      enum_with_nil authorization_type: {
+      enum authorization_type: {
         unknown_authorization: nil,
         rbac: 1,
         abac: 2

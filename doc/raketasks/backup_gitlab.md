@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up GitLab
+# Back up GitLab **(FREE SELF)**
 
 GitLab provides a command line interface to back up your entire instance,
 including:
@@ -262,6 +262,11 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
+`SKIP=` is also used to:
+
+- [Skip creation of the tar file](#skipping-tar-creation) (`SKIP=tar`).
+- [Skip uploading the backup to remote storage](#skip-uploading-backups-to-remote-storage) (`SKIP=remote`).
+
 ### Skipping tar creation
 
 NOTE:
@@ -348,9 +353,17 @@ to create an incremental backup from:
 
 To create an incremental backup, run:
 
-```shell
-sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
-```
+- In GitLab 15.0 or later:
+
+  ```shell
+  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
+  ```
+
+- In GitLab 14.9 and 14.10:
+
+  ```shell
+  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<timestamp_of_backup>
+  ```
 
 To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:
 
@@ -411,11 +424,8 @@ You can let the backup script upload (using the [Fog library](https://fog.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for
 storage, but Fog also lets you use [other storage providers](https://fog.io/storage/).
 GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
-for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
+for AWS, Google, and Aliyun. A local driver is
 [also available](#upload-to-locally-mounted-shares).
-
-NOTE:
-Support for Openstack Swift and Rackspace APIs will be removed in GitLab 15.10. See [issue #387976](https://gitlab.com/gitlab-org/gitlab/-/issues/387976) for more information.
 
 [Read more about using object storage with GitLab](../administration/object_storage.md).
 

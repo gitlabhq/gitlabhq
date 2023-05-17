@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+sidekiq_args.changed_worker_files.each do |filename|
+  sidekiq_args.add_comment_for_matched_line(filename)
+end

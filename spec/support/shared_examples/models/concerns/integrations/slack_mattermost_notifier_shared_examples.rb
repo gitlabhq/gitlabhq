@@ -465,10 +465,13 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
     context 'when commit comment event executed' do
       let(:commit_note) do
-        create(:note_on_commit, author: user,
-                                project: project,
-                                commit_id: project.repository.commit.id,
-                                note: 'a comment on a commit')
+        create(
+          :note_on_commit,
+          author: user,
+          project: project,
+          commit_id: project.repository.commit.id,
+          note: 'a comment on a commit'
+        )
       end
 
       let(:data) do
@@ -480,8 +483,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
     context 'when merge request comment event executed' do
       let(:merge_request_note) do
-        create(:note_on_merge_request, project: project,
-                                       note: 'a comment on a merge request')
+        create(:note_on_merge_request, project: project, note: 'a comment on a merge request')
       end
 
       let(:data) do
@@ -493,8 +495,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
     context 'when issue comment event executed' do
       let(:issue_note) do
-        create(:note_on_issue, project: project,
-                               note: 'a comment on an issue')
+        create(:note_on_issue, project: project, note: 'a comment on an issue')
       end
 
       let(:data) do
@@ -506,8 +507,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
     context 'when snippet comment event executed' do
       let(:snippet_note) do
-        create(:note_on_project_snippet, project: project,
-                                         note: 'a comment on a snippet')
+        create(:note_on_project_snippet, project: project, note: 'a comment on a snippet')
       end
 
       let(:data) do
@@ -522,9 +522,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     let_it_be(:user) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
     let(:pipeline) do
-      create(:ci_pipeline,
-             project: project, status: status,
-             sha: project.commit.sha, ref: project.default_branch)
+      create(:ci_pipeline, project: project, status: status, sha: project.commit.sha, ref: project.default_branch)
     end
 
     before do
@@ -557,9 +555,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     context 'with failed pipeline' do
       context 'on default branch' do
         let(:pipeline) do
-          create(:ci_pipeline,
-                project: project, status: :failed,
-                sha: project.commit.sha, ref: project.default_branch)
+          create(:ci_pipeline, project: project, status: :failed, sha: project.commit.sha, ref: project.default_branch)
         end
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
@@ -587,9 +583,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         end
 
         let(:pipeline) do
-          create(:ci_pipeline,
-                project: project, status: :failed,
-                sha: project.commit.sha, ref: 'a-protected-branch')
+          create(:ci_pipeline, project: project, status: :failed, sha: project.commit.sha, ref: 'a-protected-branch')
         end
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
@@ -617,9 +611,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         end
 
         let(:pipeline) do
-          create(:ci_pipeline,
-                project: project, status: :failed,
-                sha: project.commit.sha, ref: '1-stable')
+          create(:ci_pipeline, project: project, status: :failed, sha: project.commit.sha, ref: '1-stable')
         end
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
@@ -643,9 +635,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
       context 'on a neither protected nor default branch' do
         let(:pipeline) do
-          create(:ci_pipeline,
-                project: project, status: :failed,
-                sha: project.commit.sha, ref: 'a-random-branch')
+          create(:ci_pipeline, project: project, status: :failed, sha: project.commit.sha, ref: 'a-random-branch')
         end
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }

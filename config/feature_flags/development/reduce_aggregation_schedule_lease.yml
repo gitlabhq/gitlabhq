@@ -1,0 +1,8 @@
+---
+name: reduce_aggregation_schedule_lease
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118472
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408463
+milestone: '16.0'
+type: development
+group: group::utilization
+default_enabled: false

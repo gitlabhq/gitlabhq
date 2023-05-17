@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::StageEvent do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::StageEvent, feature_category: :product_analytics do
   let(:instance) { described_class.new({}) }
 
   it { expect(described_class).to respond_to(:name) }

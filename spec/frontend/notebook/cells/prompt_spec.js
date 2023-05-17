@@ -6,10 +6,6 @@ describe('Prompt component', () => {
 
   const mountComponent = ({ type }) => shallowMount(Prompt, { propsData: { type, count: 1 } });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('input', () => {
     beforeEach(() => {
       wrapper = mountComponent({ type: 'In' });

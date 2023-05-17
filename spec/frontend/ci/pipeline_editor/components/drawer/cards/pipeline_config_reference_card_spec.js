@@ -33,10 +33,6 @@ describe('Pipeline config reference card', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the title', () => {
     expect(wrapper.text()).toContain(wrapper.vm.$options.i18n.title);
   });
@@ -72,7 +68,7 @@ describe('Pipeline config reference card', () => {
       });
     };
 
-    it('tracks help page links', async () => {
+    it('tracks help page links', () => {
       const {
         CI_EXAMPLES_LINK,
         CI_HELP_LINK,

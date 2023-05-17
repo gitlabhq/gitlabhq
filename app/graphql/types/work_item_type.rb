@@ -27,7 +27,10 @@ module Types
           GraphQL::Types::Int,
           null: false,
           description: 'Lock version of the work item. Incremented each time the work item is updated.'
-    field :project, Types::ProjectType, null: false,
+    field :namespace, Types::NamespaceType, null: true,
+                                            description: 'Namespace the work item belongs to.',
+                                            alpha: { milestone: '15.10' }
+    field :project, Types::ProjectType, null: true,
                                         description: 'Project the work item belongs to.',
                                         alpha: { milestone: '15.3' }
     field :state, WorkItemStateEnum, null: false,
@@ -36,6 +39,18 @@ module Types
                                           description: 'Title of the work item.'
     field :updated_at, Types::TimeType, null: false,
                                         description: 'Timestamp of when the work item was last updated.'
+
+    field :create_note_email, GraphQL::Types::String,
+          null: true,
+          description: 'User specific email address for the work item.'
+
+    field :reference, GraphQL::Types::String, null: false,
+          description: 'Internal reference of the work item. Returned in shortened format by default.',
+          method: :to_reference do
+            argument :full, GraphQL::Types::Boolean, required: false, default_value: false,
+                     description: 'Boolean option specifying whether the reference should be returned in full.'
+          end
+
     field :widgets,
           [Types::WorkItems::WidgetInterface],
           null: true,
@@ -50,6 +65,10 @@ module Types
 
     def web_url
       Gitlab::UrlBuilder.build(object)
+    end
+
+    def create_note_email
+      object.creatable_note_email_address(context[:current_user])
     end
   end
 end

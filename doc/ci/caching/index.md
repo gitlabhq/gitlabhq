@@ -38,7 +38,7 @@ can't link to files outside it.
 - Subsequent jobs in later stages of the same pipeline can use artifacts.
 - Different projects cannot share artifacts.
 - Artifacts expire after 30 days by default. You can define a custom [expiration time](../yaml/index.md#artifactsexpire_in).
-- The latest artifacts do not expire if [keep latest artifacts](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
+- The latest artifacts do not expire if [keep latest artifacts](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
 - Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
 
 ## Good caching practices
@@ -65,7 +65,7 @@ For runners to work with caches efficiently, you must do one of the following:
 ## Use multiple caches
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
 
 You can have a maximum of four caches:
 
@@ -91,9 +91,36 @@ test-job:
 ```
 
 If multiple caches are combined with a fallback cache key,
-the fallback cache is fetched every time a cache is not found.
+the global fallback cache is fetched every time a cache is not found.
 
 ## Use a fallback cache key
+
+### Per-cache fallback keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
+
+Each cache entry supports up-to 5 fallback keys:
+
+```yaml
+test-job:
+  stage: build
+  cache:
+    - key: cache-$CI_COMMIT_REF_SLUG
+      fallback_keys:
+        - cache-$CI_DEFAULT_BRANCH
+        - cache-default
+      paths:
+        - vendor/ruby
+  script:
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install
+    - yarn install --cache-folder .yarn-cache
+    - echo Run tests...
+```
+
+Fallback keys follows the same processing logic as `cache:key`, meaning that the fullname may include a `-$index` (based on cache clearance) and `-protected`/`-non_protected` (if cache separation enabled on protected branches) suffixes.
+
+### Global fallback key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 
@@ -120,12 +147,20 @@ job1:
       - binaries/
 ```
 
+The order of caches extraction is:
+
+1. Retrieval attempt for `cache:key`
+1. Retrieval attemps for each entry in order in `fallback_keys`
+1. Retrieval attempt for the global fallback key in `CACHE_FALLBACK_KEY`
+
+The cache extraction process stops after the first successful cache is retrieved.
+
 ## Disable cache for specific jobs
 
 If you define the cache globally, each job uses the
 same definition. You can override this behavior for each job.
 
-To disable it completely for a job, use an empty hash:
+To disable it completely for a job, use an empty list:
 
 ```yaml
 job:
@@ -139,13 +174,14 @@ You can override cache settings without overwriting the global cache by using
 `policy` for one job:
 
 ```yaml
-cache: &global_cache
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - node_modules/
-    - public/
-    - vendor/
-  policy: pull-push
+default:
+  cache: &global_cache
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - public/
+      - vendor/
+    policy: pull-push
 
 job:
   cache:
@@ -330,8 +366,8 @@ before_script:
 test:
   script:
     - python setup.py test
-    - pip install flake8
-    - flake8 .
+    - pip install ruff
+    - ruff --format=gitlab .
 ```
 
 ### Cache Ruby dependencies
@@ -570,7 +606,7 @@ You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the upper right, select **Clear runner caches**.
+1. In the upper-right corner, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
 
@@ -589,6 +625,7 @@ If you have a cache mismatch, follow these steps to troubleshoot.
 | You use runners in autoscale mode without a distributed cache enabled. | Configure the autoscale runner to use a distributed cache. |
 | The machine the runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space. | Make sure you clear some space to allow new caches to be stored. There's no automatic way to do this. |
 | You use the same `key` for jobs where they cache different paths. | Use different cache keys so that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
+| You have not enabled the [distributed runner caching on your runners](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching). | Set `Shared = false` and re-provision your runners. |
 
 #### Cache mismatch example 1
 
@@ -621,10 +658,10 @@ job B:
 ```
 
 1. `job A` runs.
-1. `public/` is cached as cache.zip.
+1. `public/` is cached as `cache.zip`.
 1. `job B` runs.
 1. The previous cache, if any, is unzipped.
-1. `vendor/` is cached as cache.zip and overwrites the previous one.
+1. `vendor/` is cached as `cache.zip` and overwrites the previous one.
 1. The next time `job A` runs it uses the cache of `job B` which is different
    and thus isn't effective.
 

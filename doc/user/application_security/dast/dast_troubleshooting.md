@@ -70,7 +70,7 @@ tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/20
 
 ## Getting warning message `gl-dast-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ## Getting error `dast job: chosen stage does not exist` when including DAST CI template
 

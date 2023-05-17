@@ -9,6 +9,7 @@
     .note-form-actions.clearfix
       .settings-message.note-edit-warning.js-finish-edit-warning
         = _("Finish editing this message first!")
-      = submit_tag _('Save comment'), class: 'gl-button btn btn-confirm js-comment-save-button', data: { qa_selector: 'save_comment_button' }
+      = render Pajamas::ButtonComponent.new(type: 'submit', variant: :confirm, button_options: { class: 'js-comment-save-button', data: { qa_selector: 'save_comment_button' } }) do
+        = _("Save comment")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'note-edit-cancel' }) do
         = _("Cancel")

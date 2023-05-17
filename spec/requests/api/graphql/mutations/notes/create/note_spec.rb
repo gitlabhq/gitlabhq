@@ -104,7 +104,8 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       end
 
       context 'as work item' do
-        let(:noteable) { create(:work_item, :issue, project: project) }
+        let_it_be(:project) { create(:project) }
+        let_it_be(:noteable) { create(:work_item, :issue, project: project) }
 
         context 'when using internal param' do
           let(:variables_extra) { { internal: true } }
@@ -129,6 +130,20 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
           it_behaves_like 'a Note mutation that does not create a Note'
           it_behaves_like 'a mutation that returns top-level errors',
             errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        end
+
+        context 'when body contains quick actions' do
+          let_it_be(:noteable) { create(:work_item, :task, project: project) }
+
+          let(:variables_extra) { {} }
+
+          it_behaves_like 'work item supports labels widget updates via quick actions'
+          it_behaves_like 'work item does not support labels widget updates via quick actions'
+          it_behaves_like 'work item supports assignee widget updates via quick actions'
+          it_behaves_like 'work item does not support assignee widget updates via quick actions'
+          it_behaves_like 'work item supports start and due date widget updates via quick actions'
+          it_behaves_like 'work item does not support start and due date widget updates via quick actions'
+          it_behaves_like 'work item supports type change via quick actions'
         end
       end
     end

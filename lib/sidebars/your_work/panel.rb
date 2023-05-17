@@ -18,6 +18,14 @@ module Sidebars
         "shared/nav/your_work_scope_header"
       end
 
+      override :super_sidebar_context_header
+      def super_sidebar_context_header
+        @super_sidebar_context_header ||= {
+          title: aria_label,
+          icon: 'work'
+        }
+      end
+
       private
 
       def add_menus
@@ -33,3 +41,4 @@ module Sidebars
     end
   end
 end
+Sidebars::YourWork::Panel.prepend_mod_with('Sidebars::YourWork::Panel')

@@ -1,14 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'deployment metrics examples' do
-  def create_deployment(args)
-    project = args[:project]
-    environment = project.environments.production.first || create(:environment, :production, project: project)
-    create(:deployment, :success, args.merge(environment: environment))
-
-    # this is needed for the DORA API so we have aggregated data
-    ::Dora::DailyMetrics::RefreshWorker.new.perform(environment.id, Time.current.to_date.to_s) if Gitlab.ee?
-  end
+  include CycleAnalyticsHelpers
 
   describe "#deploys" do
     subject { stage_summary.third }

@@ -5,7 +5,6 @@ description: Whether shared runners is enabled
 product_section: ops
 product_stage: verify
 product_group: runner
-product_category: runner
 value_type: boolean
 status: active
 time_frame: none

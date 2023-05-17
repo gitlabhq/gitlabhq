@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::Cer do
     describe '#certificate_data' do
       it 'assigns the error message and returns nil' do
         expect(invalid_certificate.certificate_data).to be nil
-        expect(invalid_certificate.error).to eq('not enough data')
+        expect(invalid_certificate.error).to eq('PEM_read_bio_X509: no start line')
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::Cer do
 
     describe '#expires_at' do
       it 'returns the certificate expiration timestamp' do
-        expect(subject.metadata[:expires_at]).to eq('2022-04-26 19:20:40 UTC')
+        expect(subject.metadata[:expires_at]).to eq('2023-04-26 19:20:39 UTC')
       end
     end
 

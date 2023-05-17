@@ -3,7 +3,7 @@ table_name: resource_weight_events
 classes:
 - ResourceWeightEvent
 feature_categories:
-- planning_analytics
+- team_planning
 description: Records the change of weight on issues along with timestamps
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21515
 milestone: '12.7'

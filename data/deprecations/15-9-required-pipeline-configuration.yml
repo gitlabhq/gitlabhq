@@ -3,13 +3,13 @@
 #
 - title: "Required Pipeline Configuration is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
-  reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the change
-  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  reporter: derekferguson  # (required) GitLab username of the person reporting the change
+  stage: Compliance Management  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389467  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    Required Pipeline Configuration will be removed in the 16.0 release. This impacts self-managed users on the Ultimate license.
+    Required Pipeline Configuration will be removed in the 17.0 release. This impacts self-managed users on the Ultimate license.
 
     We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
     that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.

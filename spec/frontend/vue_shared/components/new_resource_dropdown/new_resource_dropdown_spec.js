@@ -21,7 +21,7 @@ import {
   searchProjectsWithinGroupQueryResponse,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('NewResourceDropdown component', () => {
   useLocalStorageSpy();

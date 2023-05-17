@@ -4,6 +4,7 @@ default:
 stages:
   - prepare
   - deploy
+  - post-deploy
   - qa
   - post-qa
   - dast
@@ -89,13 +90,13 @@ review-build-cng:
     strategy: depend
 
 .review-workflow-base:
-  extends:
-    - .default-retry
   image: ${REVIEW_APPS_IMAGE}
+  retry:
+    max: 2  # This is confusing but this means "3 runs at max"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "afcef7854ac72c5ff958035ef210ba6c68ec800b"  # 6.8.0: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/afcef7854ac72c5ff958035ef210ba6c68ec800b
+    GITLAB_HELM_CHART_REF: "febc4ad69acb7bba0eeb4a62daa577d0b7c3ee71"  # 6.9.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/febc4ad69acb7bba0eeb4a62daa577d0b7c3ee71
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -109,7 +110,7 @@ review-deploy:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}dtzar/helm-kubectl:3.9.3
   needs:
     - review-build-cng
-    - review-delete-deployment # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
+    - review-delete-deployment  # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
   cache:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:
@@ -125,6 +126,7 @@ review-deploy:
     - *base-before_script
     - !reference [".use-kube-context", before_script]
   script:
+    - run_timed_command "retry delete_helm_release"
     - run_timed_command "check_kube_domain"
     - run_timed_command "download_chart"
     - run_timed_command "deploy" || (display_deployment_debug && exit 1)

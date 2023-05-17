@@ -6,7 +6,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   include ProjectForksHelper
   include AfterNextHelpers
 
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be_with_refind(:project_with_repo) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -209,6 +209,80 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       pipeline_status = project.instance_variable_get(:@pipeline_status)
 
       expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
+    end
+  end
+
+  describe '#last_pipeline_from_status_cache' do
+    before do
+      # clear cross-example caches
+      project_with_repo.pipeline_status.delete_from_cache
+      project_with_repo.instance_variable_set(:@pipeline_status, nil)
+    end
+
+    context 'without a pipeline' do
+      it 'returns nil', :aggregate_failures do
+        expect(::Gitlab::GitalyClient).to receive(:call).at_least(:once).and_call_original
+        actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+        expect(actual_pipeline).to be_nil
+      end
+
+      context 'when pipeline_status is loaded' do
+        before do
+          project_with_repo.pipeline_status # this loads the status
+        end
+
+        it 'returns nil without calling gitaly when there is no pipeline', :aggregate_failures do
+          expect(::Gitlab::GitalyClient).not_to receive(:call)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to be_nil
+        end
+      end
+
+      context 'when FF load_last_pipeline_from_pipeline_status is disabled' do
+        before do
+          stub_feature_flags(last_pipeline_from_pipeline_status: false)
+        end
+
+        it 'returns nil', :aggregate_failures do
+          expect(project_with_repo).not_to receive(:pipeline_status)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to be_nil
+        end
+      end
+    end
+
+    context 'with a pipeline' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project_with_repo) }
+
+      it 'returns the latest pipeline', :aggregate_failures do
+        expect(::Gitlab::GitalyClient).to receive(:call).at_least(:once).and_call_original
+        actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+        expect(actual_pipeline).to eq pipeline
+      end
+
+      context 'when pipeline_status is loaded' do
+        before do
+          project_with_repo.pipeline_status # this loads the status
+        end
+
+        it 'returns the latest pipeline without calling gitaly' do
+          expect(::Gitlab::GitalyClient).not_to receive(:call)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to eq pipeline
+        end
+
+        context 'when FF load_last_pipeline_from_pipeline_status is disabled' do
+          before do
+            stub_feature_flags(last_pipeline_from_pipeline_status: false)
+          end
+
+          it 'returns the latest pipeline', :aggregate_failures do
+            expect(project_with_repo).not_to receive(:pipeline_status)
+            actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+            expect(actual_pipeline).to eq pipeline
+          end
+        end
+      end
     end
   end
 
@@ -700,6 +774,34 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       subject { helper.show_auto_devops_implicitly_enabled_banner?(project, user) }
 
       it { is_expected.to eq(result) }
+    end
+  end
+
+  describe '#show_mobile_devops_project_promo?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:hide_cookie, :feature_flag_enabled, :mobile_target_platform, :result) do
+      false | true | true | true
+      false | false | true | false
+      false | false | false | false
+      false | true | false | false
+      true | false | false | false
+      true | true | false | false
+      true | true | true | false
+      true | false | true | false
+    end
+
+    with_them do
+      before do
+        allow(Gitlab).to receive(:com?) { gitlab_com }
+        Feature.enable(:mobile_devops_projects_promo, feature_flag_enabled)
+        project.project_setting.target_platforms << 'ios' if mobile_target_platform
+        helper.request.cookies["hide_mobile_devops_promo_#{project.id}"] = true if hide_cookie
+      end
+
+      it 'resolves if the user can import members' do
+        expect(helper.show_mobile_devops_project_promo?(project)).to eq result
+      end
     end
   end
 
@@ -1286,7 +1388,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let_it_be(:has_active_license) { true }
 
       it 'displays the correct messagee' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.'))
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.'))
       end
     end
 
@@ -1359,23 +1461,99 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when fork source is available' do
-      it 'returns the data related to fork divergence' do
-        source_project = project_with_repo
+      let_it_be(:fork_network) { create(:fork_network, root_project: project_with_repo) }
+      let_it_be(:source_project) { project_with_repo }
 
-        allow(helper).to receive(:visible_fork_source).with(project).and_return(source_project)
+      before_all do
+        project.fork_network = fork_network
+        project.add_developer(user)
+        source_project.add_developer(user)
+      end
+
+      it 'returns the data related to fork divergence' do
+        allow(helper).to receive(:current_user).and_return(user)
 
         ahead_path =
           "/#{project.full_path}/-/compare/#{source_project.default_branch}...ref?from_project_id=#{source_project.id}"
         behind_path =
           "/#{source_project.full_path}/-/compare/ref...#{source_project.default_branch}?from_project_id=#{project.id}"
+        create_mr_path = "/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=ref&merge_request%5Btarget_branch%5D=#{source_project.default_branch}&merge_request%5Btarget_project_id%5D=#{source_project.id}"
 
         expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({
+          project_path: project.full_path,
+          selected_branch: 'ref',
           source_name: source_project.full_name,
           source_path: project_path(source_project),
+          can_sync_branch: 'false',
           ahead_compare_path: ahead_path,
-          behind_compare_path: behind_path
+          behind_compare_path: behind_path,
+          source_default_branch: source_project.default_branch,
+          create_mr_path: create_mr_path,
+          view_mr_path: nil
         })
       end
+
+      it 'returns view_mr_path if a merge request for the branch exists' do
+        allow(helper).to receive(:current_user).and_return(user)
+
+        merge_request =
+          create(:merge_request, source_project: project, target_project: project_with_repo,
+            source_branch: project.default_branch, target_branch: project_with_repo.default_branch)
+
+        expect(helper.vue_fork_divergence_data(project, project.default_branch)).to include({
+          can_sync_branch: 'true',
+          create_mr_path: nil,
+          view_mr_path: "/#{source_project.full_path}/-/merge_requests/#{merge_request.iid}"
+        })
+      end
+
+      context 'when a user cannot create a merge request' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:project_role, :source_project_role) do
+          :guest | :developer
+          :developer | :guest
+        end
+
+        with_them do
+          it 'create_mr_path is nil' do
+            allow(helper).to receive(:current_user).and_return(user)
+
+            project.add_member(user, project_role)
+            source_project.add_member(user, source_project_role)
+
+            expect(helper.vue_fork_divergence_data(project, 'ref')).to include({
+              create_mr_path: nil, view_mr_path: nil
+            })
+          end
+        end
+      end
     end
+  end
+
+  describe '#remote_mirror_setting_enabled?' do
+    it 'returns false' do
+      expect(helper.remote_mirror_setting_enabled?).to be_falsy
+    end
+  end
+
+  describe '#http_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:http_url_to_repo).and_return('http_url_to_repo')
+    end
+
+    subject { helper.http_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('http_url_to_repo') }
+  end
+
+  describe '#ssh_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:ssh_url_to_repo).and_return('ssh_url_to_repo')
+    end
+
+    subject { helper.ssh_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('ssh_url_to_repo') }
   end
 end

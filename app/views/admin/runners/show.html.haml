@@ -1,9 +1,9 @@
 - add_page_specific_style 'page_bundles/ci_status'
 - add_page_specific_style 'page_bundles/runner_details'
 
-- title = "##{@runner.id} (#{@runner.short_sha})"
-- breadcrumb_title title
-- page_title title
+- runner_name = runner_short_name(@runner)
+- breadcrumb_title runner_name
+- page_title runner_name
 - add_to_breadcrumbs _('Runners'), admin_runners_path
 
 #js-admin-runner-show{ data: {runner_id: @runner.id, runners_path: admin_runners_path} }

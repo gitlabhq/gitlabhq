@@ -24,7 +24,12 @@ export default {
 </script>
 
 <template>
-  <state-container :mr="mr" status="failed">
+  <state-container
+    status="failed"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <bold-text :message="$options.message" />
   </state-container>
 </template>

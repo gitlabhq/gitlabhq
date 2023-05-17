@@ -37,7 +37,7 @@ RSpec.describe GitlabSchema.types['TimelogConnection'], feature_category: :team_
 
     context 'when requested' do
       it 'returns the total spent time' do
-        expect(total_spent_time).to eq(5064)
+        expect(total_spent_time).to eq('5064')
       end
     end
   end

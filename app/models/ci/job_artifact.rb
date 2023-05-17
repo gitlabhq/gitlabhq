@@ -132,7 +132,7 @@ module Ci
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
     belongs_to :project
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
+    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_artifacts
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
@@ -155,7 +155,7 @@ module Ci
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
     scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
-    scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
+    scope :for_job_name, ->(name) { joins(:job).merge(Ci::Build.by_name(name)) }
     scope :created_at_before, ->(time) { where(arel_table[:created_at].lteq(time)) }
     scope :id_before, ->(id) { where(arel_table[:id].lteq(id)) }
     scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
@@ -176,6 +176,8 @@ module Ci
     scope :erasable, -> do
       where(file_type: self.erasable_file_types)
     end
+
+    scope :non_trace, -> { where.not(file_type: [:trace]) }
 
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }

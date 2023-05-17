@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StuckExportJobsWorker do
+RSpec.describe StuckExportJobsWorker, feature_category: :importers do
   let(:worker) { described_class.new }
 
   shared_examples 'project export job detection' do

@@ -37,7 +37,7 @@ module Ci
     end
 
     ##
-    # Force recemove build from the queue, without checking a transition state
+    # Force remove build from the queue, without checking a transition state
     #
     def remove!(build)
       removed = build.all_queuing_entries.delete_all

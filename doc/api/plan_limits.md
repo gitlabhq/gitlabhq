@@ -37,7 +37,6 @@ Example response:
 {
   "ci_pipeline_size": 0,
   "ci_active_jobs": 0,
-  "ci_active_pipelines": 0,
   "ci_project_subscriptions": 2,
   "ci_pipeline_schedules": 10,
   "ci_needs_size_limit": 50,
@@ -68,7 +67,6 @@ PUT /application/plan_limits
 | `plan_name`                       | string  | yes      | Name of the plan to update. |
 | `ci_pipeline_size`                | integer | no       | Maximum number of jobs in a single pipeline. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_active_jobs`                  | integer | no       | Total number of jobs in currently active pipelines. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
-| `ci_active_pipelines`             | integer | no       | Maximum number of active pipelines per project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_project_subscriptions`        | integer | no       | Maximum number of pipeline subscriptions to and from a project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_pipeline_schedules`           | integer | no       | Maximum number of pipeline schedules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_needs_size_limit`             | integer | no       | Maximum number of [DAG](../ci/directed_acyclic_graph/index.md) dependencies that a job can have. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
@@ -94,7 +92,6 @@ Example response:
 {
   "ci_pipeline_size": 0,
   "ci_active_jobs": 0,
-  "ci_active_pipelines": 0,
   "ci_project_subscriptions": 2,
   "ci_pipeline_schedules": 10,
   "ci_needs_size_limit": 50,

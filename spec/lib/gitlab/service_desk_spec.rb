@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ServiceDesk do
   before do
-    allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-    allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
   end
 
   describe 'enabled?' do
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::ServiceDesk do
 
     context 'when incoming emails are disabled' do
       before do
-        allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(false)
+        allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(false)
       end
 
       it { is_expected.to be_falsy }
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::ServiceDesk do
 
     context 'when email key is not supported' do
       before do
-        allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(false)
+        allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(false)
       end
 
       it { is_expected.to be_falsy }

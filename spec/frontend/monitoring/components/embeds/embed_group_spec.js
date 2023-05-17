@@ -48,9 +48,6 @@ describe('Embed Group', () => {
 
   afterEach(() => {
     metricsWithDataGetter.mockReset();
-    if (wrapper) {
-      wrapper.destroy();
-    }
   });
 
   describe('interactivity', () => {

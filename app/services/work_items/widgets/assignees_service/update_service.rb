@@ -5,6 +5,8 @@ module WorkItems
     module AssigneesService
       class UpdateService < WorkItems::Widgets::BaseService
         def before_update_in_transaction(params:)
+          params[:assignee_ids] = [] if new_type_excludes_widget?
+
           return unless params.present? && params.has_key?(:assignee_ids)
           return unless has_permission?(:set_work_item_metadata)
 

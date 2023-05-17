@@ -4,9 +4,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge, last } from 'lodash';
 import Vuex from 'vuex';
+import tags from 'test_fixtures/api/tags/tags.json';
 import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
-import tags from 'test_fixtures/api/tags/tags.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import {
@@ -22,8 +22,6 @@ import {
   REF_TYPE_BRANCHES,
   REF_TYPE_TAGS,
   REF_TYPE_COMMITS,
-  BRANCH_REF_TYPE,
-  TAG_REF_TYPE,
 } from '~/ref/constants';
 import createStore from '~/ref/stores/';
 
@@ -33,6 +31,9 @@ describe('Ref selector component', () => {
   const fixtures = { branches, tags, commit };
 
   const projectId = '8';
+  const totalBranchesCount = 123;
+  const totalTagsCount = 456;
+  const queryParams = { sort: 'updated_desc' };
 
   let wrapper;
   let branchesApiCallSpy;
@@ -69,10 +70,14 @@ describe('Ref selector component', () => {
 
     branchesApiCallSpy = jest
       .fn()
-      .mockReturnValue([HTTP_STATUS_OK, fixtures.branches, { [X_TOTAL_HEADER]: '123' }]);
+      .mockReturnValue([
+        HTTP_STATUS_OK,
+        fixtures.branches,
+        { [X_TOTAL_HEADER]: totalBranchesCount },
+      ]);
     tagsApiCallSpy = jest
       .fn()
-      .mockReturnValue([HTTP_STATUS_OK, fixtures.tags, { [X_TOTAL_HEADER]: '456' }]);
+      .mockReturnValue([HTTP_STATUS_OK, fixtures.tags, { [X_TOTAL_HEADER]: totalTagsCount }]);
     commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, fixtures.commit]);
     requestSpies = { branchesApiCallSpy, tagsApiCallSpy, commitApiCallSpy };
 
@@ -316,7 +321,7 @@ describe('Ref selector component', () => {
     describe('branches', () => {
       describe('when the branches search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { refType: BRANCH_REF_TYPE, useSymbolicRefNames: true });
+          createComponent({}, { useSymbolicRefNames: true });
 
           return waitForRequests();
         });
@@ -379,7 +384,7 @@ describe('Ref selector component', () => {
     describe('tags', () => {
       describe('when the tags search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { refType: TAG_REF_TYPE, useSymbolicRefNames: true });
+          createComponent({}, { useSymbolicRefNames: true });
 
           return waitForRequests();
         });
@@ -690,7 +695,67 @@ describe('Ref selector component', () => {
       // is updated. For the sake of this test, we'll just test the last call, which
       // represents the final state of the slot props.
       const lastCallProps = last(createFooter.mock.calls)[0];
-      expect(lastCallProps).toMatchSnapshot();
+      expect(lastCallProps.isLoading).toBe(false);
+      expect(lastCallProps.query).toBe('abcd1234');
+
+      const branchesList = fixtures.branches.map((branch) => {
+        return {
+          default: branch.default,
+          name: branch.name,
+        };
+      });
+
+      const commitsList = [
+        {
+          name: fixtures.commit.short_id,
+          subtitle: fixtures.commit.title,
+          value: fixtures.commit.id,
+        },
+      ];
+
+      const tagsList = fixtures.tags.map((tag) => {
+        return {
+          name: tag.name,
+        };
+      });
+
+      const expectedMatches = {
+        branches: {
+          list: branchesList,
+          totalCount: totalBranchesCount,
+        },
+        commits: {
+          list: commitsList,
+          totalCount: 1,
+        },
+        tags: {
+          list: tagsList,
+          totalCount: totalTagsCount,
+        },
+      };
+
+      expect(lastCallProps.matches).toMatchObject(expectedMatches);
+    });
+  });
+  describe('when queryParam prop is present', () => {
+    it('passes params to a branches API call', () => {
+      createComponent({ propsData: { queryParams } });
+
+      return waitForRequests().then(() => {
+        expect(branchesApiCallSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ params: { per_page: 20, search: '', sort: queryParams.sort } }),
+        );
+      });
+    });
+
+    it('does not pass params to tags API call', () => {
+      createComponent({ propsData: { queryParams } });
+
+      return waitForRequests().then(() => {
+        expect(tagsApiCallSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ params: { per_page: 20, search: '' } }),
+        );
+      });
     });
   });
 });

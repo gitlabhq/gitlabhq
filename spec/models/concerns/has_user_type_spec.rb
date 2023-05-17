@@ -2,18 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe User do
+RSpec.describe User, feature_category: :system_access do
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
-      .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot visual_review_bot
-        migration_bot automation_bot admin_bot suggested_reviewers_bot])
+      .to match_array(%w[human human_deprecated ghost alert_bot project_bot support_bot service_user security_bot
+        visual_review_bot migration_bot automation_bot security_policy_bot admin_bot suggested_reviewers_bot
+        service_account llm_bot])
     expect(described_class::USER_TYPES).to include(*described_class::BOT_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::NON_INTERNAL_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::INTERNAL_USER_TYPES)
   end
 
   describe 'scopes & predicates' do
-    User::USER_TYPES.keys.each do |type|
+    User::USER_TYPES.keys.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition
       let_it_be(type) { create(:user, username: type, user_type: type) }
     end
     let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }
@@ -22,7 +23,13 @@ RSpec.describe User do
 
     describe '.humans' do
       it 'includes humans only' do
-        expect(described_class.humans).to match_array([human])
+        expect(described_class.humans).to match_array([human, human_deprecated])
+      end
+    end
+
+    describe '.human' do
+      it 'includes humans only' do
+        expect(described_class.human).to match_array([human, human_deprecated])
       end
     end
 
@@ -69,6 +76,7 @@ RSpec.describe User do
     describe '#human?' do
       it 'is true for humans only' do
         expect(human).to be_human
+        expect(human_deprecated).to be_human
         expect(alert_bot).not_to be_human
         expect(User.new).to be_human
       end

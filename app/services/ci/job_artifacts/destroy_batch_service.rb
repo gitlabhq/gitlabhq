@@ -21,6 +21,7 @@ module Ci
         @job_artifacts = job_artifacts.with_destroy_preloads.to_a
         @pick_up_at = pick_up_at
         @skip_projects_on_refresh = skip_projects_on_refresh
+        @destroyed_ids = []
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -31,16 +32,17 @@ module Ci
           track_artifacts_undergoing_stats_refresh
         end
 
-        exclude_trace_artifacts
-
-        return success(destroyed_artifacts_count: 0, statistics_updates: {}) if @job_artifacts.empty?
+        if @job_artifacts.empty?
+          return success(destroyed_ids: @destroyed_ids, destroyed_artifacts_count: 0, statistics_updates: {})
+        end
 
         destroy_related_records(@job_artifacts)
 
         destroy_around_hook(@job_artifacts) do
+          @destroyed_ids = @job_artifacts.map(&:id)
           Ci::DeletedObject.transaction do
             Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
-            Ci::JobArtifact.id_in(@job_artifacts.map(&:id)).delete_all
+            Ci::JobArtifact.id_in(@destroyed_ids).delete_all
           end
         end
 
@@ -52,7 +54,11 @@ module Ci
 
         Gitlab::Ci::Artifacts::Logger.log_deleted(@job_artifacts, 'Ci::JobArtifacts::DestroyBatchService#execute')
 
-        success(destroyed_artifacts_count: artifacts_count, statistics_updates: statistics_updates_per_project)
+        success(
+          destroyed_ids: @destroyed_ids,
+          destroyed_artifacts_count: artifacts_count,
+          statistics_updates: statistics_updates_per_project
+        )
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -108,11 +114,6 @@ module Ci
         strong_memoize(:artifacts_bytes) do
           @job_artifacts.sum { |artifact| artifact.try(:size) || 0 }
         end
-      end
-
-      # Traces should never be destroyed.
-      def exclude_trace_artifacts
-        _trace_artifacts, @job_artifacts = @job_artifacts.partition(&:trace?)
       end
 
       def track_artifacts_undergoing_stats_refresh

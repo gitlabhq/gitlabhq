@@ -10,5 +10,5 @@ fragment RunnerFieldsShared on CiRunner {
   maximumTimeout
   tagList
   createdAt
-  status(legacyMode: null)
+  status
 }

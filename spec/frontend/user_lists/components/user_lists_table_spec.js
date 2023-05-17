@@ -22,10 +22,6 @@ describe('User Lists Table', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should display the details of a user list', () => {
     expect(wrapper.find('[data-testid="ffUserListName"]').text()).toBe(userList.name);
     expect(wrapper.find('[data-testid="ffUserListIds"]').text()).toBe(

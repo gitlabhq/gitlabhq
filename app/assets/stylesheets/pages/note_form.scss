@@ -31,7 +31,7 @@
 
 .note-textarea {
   display: block;
-  padding: 10px 1px;
+  padding: 10px 16px;
   color: $gl-text-color;
   font-family: $regular-font;
   border: 0;
@@ -48,9 +48,8 @@
 
 .common-note-form {
   .md-area {
-    padding: 0 $gl-padding;
     border: 1px solid $border-color;
-    border-radius: $border-radius-base;
+    border-radius: $border-radius-large;
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
     background-color: $white;
@@ -81,6 +80,10 @@
   @include gl-focus;
 }
 
+.md-header {
+  min-height: 32px;
+}
+
 .md-header .nav-links {
   display: flex;
   flex-flow: row wrap;
@@ -90,6 +93,11 @@
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
+}
+
+
+.md-header .gl-tabs-nav {
+  border-bottom: 0;
 }
 
 .issuable-note-warning {
@@ -305,7 +313,6 @@ table {
 
 .comment-toolbar {
   color: $gl-text-color-secondary;
-  border-top: 1px solid $border-color;
 }
 
 .toolbar-button {
@@ -393,6 +400,10 @@ table {
   @include media-breakpoint-down(xs) {
     float: left;
     margin-top: 5px;
+  }
+
+  button {
+    font-size: $gl-font-size-sm !important;
   }
 }
 

@@ -32,7 +32,7 @@ module Gitlab
           end
 
           def duration_in_seconds(duration_expression = duration)
-            Arel::Nodes::Extract.new(duration_expression, :epoch)
+            Arel::Nodes::NamedFunction.new('CAST', [Arel::Nodes::Extract.new(duration_expression, :epoch).as('double precision')])
           end
         end
       end

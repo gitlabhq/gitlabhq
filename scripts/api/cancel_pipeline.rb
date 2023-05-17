@@ -1,19 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'gitlab'
 require 'optparse'
-require_relative 'default_options'
+require_relative 'base'
 
-class CancelPipeline
+class CancelPipeline < Base
   def initialize(options)
-    @project = options.delete(:project)
+    super
     @pipeline_id = options.delete(:pipeline_id)
-
-    @client = Gitlab.client(
-      endpoint: options.delete(:endpoint) || API::DEFAULT_OPTIONS[:endpoint],
-      private_token: options.delete(:api_token)
-    )
   end
 
   def execute
@@ -22,7 +16,7 @@ class CancelPipeline
 
   private
 
-  attr_reader :project, :pipeline_id, :client
+  attr_reader :pipeline_id
 end
 
 if $PROGRAM_NAME == __FILE__

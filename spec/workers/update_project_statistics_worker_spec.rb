@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UpdateProjectStatisticsWorker do
+RSpec.describe UpdateProjectStatisticsWorker, feature_category: :source_code_management do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }

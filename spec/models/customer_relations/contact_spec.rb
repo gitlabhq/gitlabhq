@@ -241,8 +241,8 @@ RSpec.describe CustomerRelations::Contact, type: :model do
   end
 
   describe 'sorting' do
-    let_it_be(:organization_a) { create(:organization, name: 'a') }
-    let_it_be(:organization_b) { create(:organization, name: 'b') }
+    let_it_be(:crm_organization_a) { create(:crm_organization, name: 'a') }
+    let_it_be(:crm_organization_b) { create(:crm_organization, name: 'b') }
     let_it_be(:contact_a) { create(:contact, group: group, first_name: "c", last_name: "d") }
     let_it_be(:contact_b) do
       create(:contact,
@@ -250,7 +250,7 @@ RSpec.describe CustomerRelations::Contact, type: :model do
         first_name: "a",
         last_name: "b",
         phone: "123",
-        organization: organization_a)
+        organization: crm_organization_a)
     end
 
     let_it_be(:contact_c) do
@@ -259,7 +259,7 @@ RSpec.describe CustomerRelations::Contact, type: :model do
         first_name: "e",
         last_name: "d",
         phone: "456",
-        organization: organization_b)
+        organization: crm_organization_b)
     end
 
     describe '.sort_by_name' do

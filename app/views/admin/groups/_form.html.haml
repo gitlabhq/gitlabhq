@@ -1,11 +1,11 @@
 = gitlab_ui_form_for [:admin, @group] do |f|
   = form_errors(@group)
   = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-mb-6' }) do |c|
-    = c.title { _('Naming, visibility') }
-    = c.description do
+    - c.with_title { _('Naming, visibility') }
+    - c.with_description do
       = _('Update your group name, description, avatar, and visibility.')
       = link_to _('Learn more about groups.'), help_page_path('user/group/index')
-    = c.body do
+    - c.with_body do
       = render 'shared/groups/group_name_and_path_fields', f: f
       = render 'shared/group_form_description', f: f
       .form-group.gl-form-group{ role: 'group' }
@@ -14,10 +14,10 @@
       = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
   = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
-    = c.title { _('Permissions and group features') }
-    = c.description do
+    - c.with_title { _('Permissions and group features') }
+    - c.with_description do
       = _('Configure advanced permissions, Large File Storage, two-factor authentication, and CI/CD settings.')
-    = c.body do
+    - c.with_body do
       = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
       = render_if_exists 'admin/namespace_plan', f: f
       .form-group.gl-form-group{ role: 'group' }
@@ -26,13 +26,13 @@
       = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
 
   = render ::Layouts::HorizontalSectionComponent.new(border: false, options: { class: 'gl-pb-3' }) do |c|
-    = c.title { _('Admin notes') }
-    = c.body do
+    - c.with_title { _('Admin notes') }
+    - c.with_body do
       = render 'shared/admin/admin_note_form', f: f
 
   - if @group.new_record?
     = render Pajamas::AlertComponent.new(dismissible: false) do |c|
-      = c.body do
+      - c.with_body do
         = render 'shared/group_tips'
     .gl-mt-5
       = f.submit _('Create group'), pajamas_button: true

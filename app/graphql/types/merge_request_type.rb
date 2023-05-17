@@ -219,6 +219,13 @@ module Types
     field :timelogs, Types::TimelogType.connection_type, null: false,
                                                          description: 'Timelogs on the merge request.'
 
+    field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
+      null: true,
+      description: 'List of award emojis associated with the merge request.'
+
+    field :prepared_at, Types::TimeType, null: true,
+                                         description: 'Timestamp of when the merge request was prepared.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 
@@ -294,6 +301,13 @@ module Types
 
     def detailed_merge_status
       ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
+    end
+
+    # This is temporary to fix a bug where `committers` is already loaded and memoized
+    # and calling it again with a certain GraphQL query can cause the Rails to to throw
+    # a ActiveRecord::ImmutableRelation error
+    def committers
+      object.commits.committers
     end
   end
 end

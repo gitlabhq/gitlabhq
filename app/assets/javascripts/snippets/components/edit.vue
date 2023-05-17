@@ -2,8 +2,8 @@
 import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
 import eventHub from '~/blob/components/eventhub';
-import { createAlert } from '~/flash';
-import { redirectTo, joinPaths } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
+import { redirectTo, joinPaths } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, sprintf } from '~/locale';
 import {
   SNIPPET_MARK_EDIT_APP_START,
@@ -141,7 +141,7 @@ export default {
       Object.assign(e, { returnValue });
       return returnValue;
     },
-    flashAPIFailure(err) {
+    alertAPIFailure(err) {
       const defaultErrorMsg = this.newSnippet
         ? SNIPPET_CREATE_MUTATION_ERROR
         : SNIPPET_UPDATE_MUTATION_ERROR;
@@ -190,16 +190,16 @@ export default {
 
           const errors = baseObj?.errors;
           if (errors?.length) {
-            this.flashAPIFailure(errors[0]);
+            this.alertAPIFailure(errors[0]);
           } else {
-            redirectTo(baseObj.snippet.webUrl);
+            redirectTo(baseObj.snippet.webUrl); // eslint-disable-line import/no-deprecated
           }
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error('[gitlab] unexpected error while updating snippet', e);
 
-          this.flashAPIFailure(getErrorMessage(e));
+          this.alertAPIFailure(getErrorMessage(e));
         });
     },
     updateActions(actions) {
@@ -256,7 +256,7 @@ export default {
       <form-footer-actions>
         <template #prepend>
           <gl-button
-            class="js-no-auto-disable"
+            class="js-no-auto-disable gl-mr-2"
             category="primary"
             type="submit"
             variant="confirm"

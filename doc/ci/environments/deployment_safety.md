@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -125,6 +125,10 @@ If you want to prevent deployments for a particular period, for example during a
 vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
+
+The next configured deploy freeze is displayed at the top of the
+[environment deployments list](index.md#view-environments-and-deployments)
+page.
 
 ## Protect production secrets
 

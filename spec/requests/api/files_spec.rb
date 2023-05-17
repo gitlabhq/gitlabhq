@@ -55,6 +55,11 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     }
   end
 
+  let(:last_commit_for_path) do
+    Gitlab::Git::Commit
+    .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
+  end
+
   shared_context 'with author parameters' do
     let(:author_email) { 'user@example.org' }
     let(:author_name) { 'John Doe' }
@@ -135,6 +140,12 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
       it 'caches sha256 of the content', :use_clean_rails_redis_caching do
         head api(route(file_path), current_user, **options), params: params
+
+        expect(Gitlab::Cache::Client).to receive(:build_with_metadata).with(
+          cache_identifier: 'API::Files#content_sha',
+          feature_category: :source_code_management,
+          backing_resource: :gitaly
+        ).and_call_original
 
         expect(Rails.cache.fetch("blob_content_sha256:#{project.full_path}:#{response.headers['X-Gitlab-Blob-Id']}"))
           .to eq(content_sha256)
@@ -829,7 +840,6 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect_to_send_git_blob(api(url, current_user), params)
 
         expect(response.headers['Cache-Control']).to eq('max-age=0, private, must-revalidate, no-store, no-cache')
-        expect(response.headers['Pragma']).to eq('no-cache')
         expect(response.headers['Expires']).to eq('Fri, 01 Jan 1990 00:00:00 GMT')
       end
 
@@ -1180,7 +1190,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     context 'when updating an existing file with stale last commit id' do
-      let(:params_with_stale_id) { params.merge(last_commit_id: 'stale') }
+      let(:params_with_stale_id) { params.merge(last_commit_id: last_commit_for_path.parent_id) }
 
       it 'returns a 400 bad request' do
         put api(route(file_path), user), params: params_with_stale_id
@@ -1191,12 +1201,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     context 'with correct last commit id' do
-      let(:last_commit) do
-        Gitlab::Git::Commit
-          .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
-      end
-
-      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }
+      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit_for_path.id) }
 
       it 'updates existing file in project repo' do
         put api(route(file_path), user), params: params_with_correct_id
@@ -1206,12 +1211,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     context 'when file path is invalid' do
-      let(:last_commit) do
-        Gitlab::Git::Commit
-          .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
-      end
-
-      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }
+      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit_for_path.id) }
 
       it 'returns a 400 bad request' do
         put api(route(invalid_file_path), user), params: params_with_correct_id
@@ -1222,12 +1222,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     it_behaves_like 'when path is absolute' do
-      let(:last_commit) do
-        Gitlab::Git::Commit
-        .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
-      end
-
-      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }
+      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit_for_path.id) }
 
       subject { put api(route(absolute_path), user), params: params_with_correct_id }
     end

@@ -14,7 +14,7 @@ Instance-level analytics provide insights into the feature and data usage of you
 
 Prerequisite:
 
-- You must have administrator access for your instance.
+- You must have administrator access to the instance.
 
 To view instance-level analytics:
 

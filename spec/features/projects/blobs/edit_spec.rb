@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Editing file blob', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+  include Features::SourceEditorSpecHelpers
   include TreeHelper
-  include BlobSpecHelpers
+  include Features::BlobSpecHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }
@@ -142,7 +142,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :projects do
       it 'renders content with CommonMark' do
         visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
         fill_editor(content: '1. one\\n  - sublist\\n')
-        click_link 'Preview'
+        click_on "Preview"
         wait_for_requests
 
         # the above generates two separate lists (not embedded) in CommonMark

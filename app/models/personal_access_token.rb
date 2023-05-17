@@ -9,10 +9,13 @@ class PersonalAccessToken < ApplicationRecord
   include Gitlab::SQL::Pattern
   extend ::Gitlab::Utils::Override
 
-  add_authentication_token_field :token, digest: true
+  add_authentication_token_field :token,
+    digest: true,
+    format_with_prefix: :prefix_from_application_current_settings
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40).freeze
+  MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -39,13 +42,14 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_users, -> (users) { where(user: users) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
-  scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
-  scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
+  scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
+  scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, -> (date) { where("last_used_at <= ?", date) }
   scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
 
   validates :scopes, presence: true
   validate :validate_scopes
+  validate :expires_at_before_instance_max_expiry_date, on: :create
 
   def revoke!
     update!(revoked: true)
@@ -53,6 +57,19 @@ class PersonalAccessToken < ApplicationRecord
 
   def active?
     !revoked? && !expired?
+  end
+
+  # fall back to default value until background migration has updated all
+  # existing PATs and we can add a validation
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/369123
+  def expires_at=(value)
+    datetime = if Feature.enabled?(:default_pat_expiration)
+                 value.presence || MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+               else
+                 value
+               end
+
+    super(datetime)
   end
 
   override :simple_sorts
@@ -70,11 +87,6 @@ class PersonalAccessToken < ApplicationRecord
 
   def self.search(query)
     fuzzy_search(query, [:name])
-  end
-
-  override :format_token
-  def format_token(token)
-    "#{self.class.token_prefix}#{token}"
   end
 
   def project_access_token?
@@ -106,6 +118,19 @@ class PersonalAccessToken < ApplicationRecord
 
   def add_admin_mode_scope
     self.scopes += [Gitlab::Auth::ADMIN_MODE_SCOPE.to_s]
+  end
+
+  def prefix_from_application_current_settings
+    self.class.token_prefix
+  end
+
+  def expires_at_before_instance_max_expiry_date
+    return unless Feature.enabled?(:default_pat_expiration)
+    return unless expires_at
+
+    if expires_at > MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      errors.add(:expires_at, _('must expire in 365 days'))
+    end
   end
 end
 

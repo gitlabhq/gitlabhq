@@ -21,13 +21,14 @@ module MergeRequests
         # Update only MRs on projects that we have access to
         next unless can?(current_user, :update_merge_request, other_merge_request.source_project)
 
-        ::MergeRequests::UpdateService
-          .new(project: other_merge_request.source_project, current_user: current_user,
-               params: {
-                 target_branch: merge_request.target_branch,
-                 target_branch_was_deleted: true
-               })
-          .execute(other_merge_request)
+        ::MergeRequests::UpdateService.new(
+          project: other_merge_request.source_project,
+          current_user: current_user,
+          params: {
+            target_branch: merge_request.target_branch,
+            target_branch_was_deleted: true
+          }
+        ).execute(other_merge_request)
       end
     end
   end

@@ -72,7 +72,8 @@ module FormHelper
         multi_select: true,
         'input-meta': 'name',
         'always-show-selectbox': true,
-        current_user_info: UserSerializer.new.represent(current_user)
+        current_user_info: UserSerializer.new.represent(current_user),
+        testid: 'assignee-ids-dropdown-toggle'
       }
     }
 

@@ -32,7 +32,6 @@ RSpec.describe Admin::DevOpsReportController do
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject { get :show, format: :html }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'perform_analytics_usage_action' }
         let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }

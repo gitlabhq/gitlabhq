@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemHookPushWorker do
+RSpec.describe SystemHookPushWorker, feature_category: :source_code_management do
   include RepoHelpers
 
   subject { described_class.new }

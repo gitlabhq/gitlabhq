@@ -2,6 +2,11 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
+export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;
+
+export const STATE_QUERY_POLLING_INTERVAL_DEFAULT = 5000;
+export const STATE_QUERY_POLLING_INTERVAL_BACKOFF = 2;
+
 export const SUCCESS = 'success';
 export const WARNING = 'warning';
 export const INFO = 'info';
@@ -162,9 +167,6 @@ export const EXTENSION_ICON_CLASS = {
   severityInfo: 'gl-text-blue-400',
   severityUnknown: 'gl-text-gray-400',
 };
-
-export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
-export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
 
 export const TELEMETRY_WIDGET_VIEWED = 'WIDGET_VIEWED';
 export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';

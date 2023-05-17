@@ -22,10 +22,16 @@ module Atlassian
         end
         expose :author, using: JiraConnect::Serializers::AuthorEntity
         expose :fileCount do |commit|
-          commit.stats.total
+          # n+1: https://gitlab.com/gitlab-org/gitaly/-/issues/3375
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commit.stats.total
+          end
         end
         expose :files do |commit, options|
-          files = commit.diffs(max_files: 10).diff_files
+          # n+1: https://gitlab.com/gitlab-org/gitaly/-/issues/3374
+          files = Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commit.diffs(max_files: 10).diff_files
+          end
           JiraConnect::Serializers::FileEntity.represent files, options.merge(commit: commit)
         end
         expose :created_at, as: :authorTimestamp

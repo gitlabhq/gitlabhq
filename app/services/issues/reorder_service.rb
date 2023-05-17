@@ -4,11 +4,6 @@ module Issues
   class ReorderService < Issues::BaseService
     include Gitlab::Utils::StrongMemoize
 
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def execute(issue)
       return false unless can?(current_user, :update_issue, issue)
       return false unless move_between_ids

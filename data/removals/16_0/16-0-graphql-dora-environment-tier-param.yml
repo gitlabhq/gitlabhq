@@ -1,0 +1,14 @@
+#
+- title: "Remove the deprecated `environment_tier` parameter from the DORA API"
+  announcement_milestone: "15.2"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: ahegyi
+  stage: Plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365939
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The `environment_tier` parameter has been superseded by the `environment_tiers` parameter.
+
+    If you use the `environment_tier` parameter in your integration (REST or GraphQL) then you need to replace it with the `environment_tiers` parameter which accepts an array of strings.
+  tiers: [Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/api/dora/metrics.html

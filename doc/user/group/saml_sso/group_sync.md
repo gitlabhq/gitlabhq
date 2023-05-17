@@ -22,10 +22,7 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 ## Configure SAML Group Sync
 
 NOTE:
-You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you:
-
-- Use SAML Group Sync.
-- Have multiple GitLab nodes, for example in a distributed or highly available architecture.
+You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you use SAML Group Sync and have multiple GitLab nodes, for example in a distributed or highly available architecture.
 
 NOTE:
 SAML Group Sync is only supported for the [SAML provider named `saml`](../../../integration/saml.md#configure-gitlab-to-use-multiple-saml-idps).
@@ -107,11 +104,37 @@ Users granted:
 - A lower or the same role with Group Sync are displayed as having
   [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
 
+SAML group membership is evaluated each time a user signs in.
+
+### Global SAML group memberships lock **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
+
+GitLab administrators can use the global SAML group memberships lock to prevent group members from inviting new members to subgroups that have their membership synchronized with SAML Group Links.
+
+Global group memberships lock only applies to subgroups of a top-level group where SAML Group Links synchronization is configured. No user can modify the
+membership of a top-level group configured for SAML Group Links synchronization.
+
+When global group memberships lock is enabled:
+
+- Only an administrator can manage memberships of any group including access levels.
+- Users cannot:
+  - Share a project with other groups.
+  - Invite members to a project created in a group.
+
+To enable global group memberships lock:
+
+1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
+
 ### Automatic member removal
 
 After a group sync, users who are not members of a mapped SAML group are removed from the group.
 On GitLab.com, users in the top-level group are assigned the
-[default membership role](index.md#role) instead of being removed.
+default membership role instead of being removed.
 
 For example, in the following diagram:
 

@@ -5,7 +5,6 @@ description: Calculated unique users to trigger a Slack message by creating a no
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 value_type: number
 status: active
 milestone: "13.10"

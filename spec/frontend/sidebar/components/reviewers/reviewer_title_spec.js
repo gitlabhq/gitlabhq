@@ -16,11 +16,6 @@ describe('ReviewerTitle component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('reviewer title', () => {
     it('renders reviewer', () => {
       wrapper = createComponent({

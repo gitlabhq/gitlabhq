@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
 import { thWidthPercent } from '~/lib/utils/table_utility';
 import { s__, __ } from '~/locale';
@@ -135,7 +135,7 @@ export default {
       </template>
 
       <template #cell(settings)="{ item: user }">
-        <user-actions :user="user" :paths="paths" />
+        <user-actions :user="user" :paths="paths" :show-button-labels="true" />
       </template>
     </gl-table>
   </div>

@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     {
       description: 'GitLab instance unique identifier',
       value_type: 'string',
-      product_category: 'collection',
       product_stage: 'growth',
       product_section: 'devops',
       status: 'active',
@@ -263,7 +262,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       {
         description: 'Test metric definition',
         value_type: 'string',
-        product_category: 'collection',
         product_stage: 'growth',
         product_section: 'devops',
         status: 'active',

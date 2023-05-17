@@ -158,9 +158,9 @@ RSpec.describe Projects::ReleasesController do
 
       it_behaves_like 'successful request'
 
-      it 'is accesible at a URL encoded path' do
+      it 'is accessible at a URL encoded path' do
         expect(edit_project_release_path(project, release))
-          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%2Fv1.0/edit")
+          .to eq("/#{project.full_path}/-/releases/awesome%2Fv1.0/edit")
       end
     end
 
@@ -199,7 +199,7 @@ RSpec.describe Projects::ReleasesController do
 
       it 'is accesible at a URL encoded path' do
         expect(project_release_path(project, release))
-          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%2Fv1.0")
+          .to eq("/#{project.full_path}/-/releases/awesome%2Fv1.0")
       end
     end
 

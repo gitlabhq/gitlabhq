@@ -60,10 +60,6 @@ describe('LeaveModal', () => {
   const findForm = () => findModal().findComponent(GlForm);
   const findUserDeletionObstaclesList = () => findModal().findComponent(UserDeletionObstaclesList);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('sets modal ID', async () => {
     await createComponent();
 

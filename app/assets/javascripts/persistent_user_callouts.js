@@ -22,6 +22,8 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-ultimate-feature-removal-banner',
   '.js-geo-enable-hashed-storage-callout',
   '.js-geo-migrate-hashed-storage-callout',
+  '.js-unlimited-members-during-trial-alert',
+  '.js-branch-rules-info-callout',
 ];
 
 const initCallouts = () => {

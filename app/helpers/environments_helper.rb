@@ -22,6 +22,8 @@ module EnvironmentsHelper
   end
 
   def metrics_data(project, environment)
+    return {} if Feature.enabled?(:remove_monitor_metrics)
+
     metrics_data = {}
     metrics_data.merge!(project_metrics_data(project)) if project
     metrics_data.merge!(environment_metrics_data(environment, project)) if environment

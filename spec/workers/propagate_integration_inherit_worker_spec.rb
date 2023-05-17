@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PropagateIntegrationInheritWorker do
+RSpec.describe PropagateIntegrationInheritWorker, feature_category: :integrations do
   describe '#perform' do
     let_it_be(:integration) { create(:redmine_integration, :instance) }
     let_it_be(:integration1) { create(:redmine_integration, inherit_from_id: integration.id) }

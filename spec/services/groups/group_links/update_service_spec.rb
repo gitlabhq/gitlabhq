@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
+RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: :subgroups do
   let(:user) { create(:user) }
 
   let_it_be(:group) { create(:group, :private) }
@@ -18,7 +18,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
       expires_at: expiry_date }
   end
 
-  subject { described_class.new(link).execute(group_link_params) }
+  subject { described_class.new(link, user).execute(group_link_params) }
 
   before do
     group.add_developer(group_member_user)

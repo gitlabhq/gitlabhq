@@ -12,6 +12,10 @@ class DashboardController < Dashboard::ApplicationController
   before_action :set_show_full_reference, only: [:issues, :merge_requests]
   before_action :check_filters_presence!, only: [:issues, :merge_requests]
 
+  before_action only: :merge_requests do
+    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
+  end
+
   respond_to :html
 
   feature_category :user_profile, [:activity]

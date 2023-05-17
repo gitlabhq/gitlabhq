@@ -67,7 +67,7 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
     end
   end
 
-  describe 'Storage', feature_category: :subscription_cost_management do
+  describe 'Storage', feature_category: :consumables_cost_management do
     describe GraphQL::Query, type: :request do
       include GraphqlHelpers
       context 'project storage statistics query' do

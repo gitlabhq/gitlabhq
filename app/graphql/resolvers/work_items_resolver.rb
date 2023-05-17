@@ -4,30 +4,19 @@ module Resolvers
   class WorkItemsResolver < BaseResolver
     include SearchArguments
     include LooksAhead
+    include ::WorkItems::SharedFilterArguments
+
+    argument :iid,
+      GraphQL::Types::String,
+      required: false,
+      description: 'IID of the work item. For example, "1".'
+    argument :sort,
+      Types::WorkItemSortEnum,
+      description: 'Sort work items by criteria.',
+      required: false,
+      default_value: :created_desc
 
     type Types::WorkItemType.connection_type, null: true
-
-    argument :author_username, GraphQL::Types::String,
-             required: false,
-             description: 'Filter work items by author username.',
-             alpha: { milestone: '15.9' }
-    argument :iid, GraphQL::Types::String,
-             required: false,
-             description: 'IID of the issue. For example, "1".'
-    argument :iids, [GraphQL::Types::String],
-             required: false,
-             description: 'List of IIDs of work items. For example, `["1", "2"]`.'
-    argument :sort, Types::WorkItemSortEnum,
-             description: 'Sort work items by this criteria.',
-             required: false,
-             default_value: :created_desc
-    argument :state, Types::IssuableStateEnum,
-             required: false,
-             description: 'Current state of this work item.'
-    argument :types, [Types::IssueTypeEnum],
-             as: :issue_types,
-             description: 'Filter work items by the given work item types.',
-             required: false
 
     def resolve_with_lookahead(**args)
       return WorkItem.none if resource_parent.nil?
@@ -42,7 +31,7 @@ module Resolvers
     def preloads
       {
         work_item_type: :work_item_type,
-        web_url: { project: { namespace: :route } },
+        web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
         widgets: { work_item_type: :enabled_widget_definitions }
       }
     end
@@ -66,7 +55,9 @@ module Resolvers
         parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         labels: :labels,
-        milestone: { milestone: [:project, :group] }
+        milestone: { milestone: [:project, :group] },
+        subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],
+        award_emoji: { award_emoji: :awardable }
       }
     end
 

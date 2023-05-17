@@ -43,9 +43,7 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
       expect(page).to have_content(s_('Incident|No timeline items have been added yet.'))
     end
 
-    it 'submits event data on save with feature flag on' do
-      stub_feature_flags(incident_event_tags: true)
-
+    it 'submits event data on save' do
       # Add event
       click_button(s_('Incident|Add new timeline event'))
 
@@ -96,5 +94,6 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
 
   it_behaves_like 'for each incident details route',
       'add, edit, and delete timeline events',
-      tab_text: s_('Incident|Timeline')
+      tab_text: s_('Incident|Timeline'),
+      tab: 'timeline'
 end

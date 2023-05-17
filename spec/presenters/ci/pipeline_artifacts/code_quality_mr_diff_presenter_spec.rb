@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter do
+RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_category: :code_quality do
   let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_codequality_mr_diff_report) }
   let(:merge_request) { double(id: 123456789, new_paths: filenames) }
 

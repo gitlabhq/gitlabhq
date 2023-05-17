@@ -6,7 +6,7 @@ type: howto
 ---
 
 WARNING:
-This runbook is in [**Alpha**](../../../../policy/alpha-beta-support.md#alpha-features). For complete, production-ready documentation, see the
+This runbook is an [Experiment](../../../../policy/alpha-beta-support.md#experiment). For complete, production-ready documentation, see the
 [disaster recovery documentation](../index.md).
 
 # Disaster Recovery (Geo) promotion runbooks **(PREMIUM SELF)**

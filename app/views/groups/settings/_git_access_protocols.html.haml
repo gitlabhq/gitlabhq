@@ -1,4 +1,4 @@
-- if group.root? && Feature.enabled?(:group_level_git_protocol_control, group)
+- if group.root?
   .form-group
     = f.label _('Enabled Git access protocols'), class: 'label-bold'
     = f.select :enabled_git_access_protocol, options_for_select(enabled_git_access_protocol_options_for_group, group.enabled_git_access_protocol), {}, class: 'form-control', data: { qa_selector: 'enabled_git_access_protocol_dropdown' }, disabled: !::Gitlab::CurrentSettings.enabled_git_access_protocol.blank?

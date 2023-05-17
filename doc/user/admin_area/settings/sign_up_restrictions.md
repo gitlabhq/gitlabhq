@@ -51,16 +51,25 @@ signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in t
 [OmniAuth configuration](../../../integration/omniauth.md#configure-common-settings) or
 [LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
 
-## Require email confirmation
+## Confirm user email
+
+> - Soft email confirmation [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47003) in GitLab 12.2 [with a flag](../../../operations/feature_flags.md) named `soft_email_confirmation`.
+> - Soft email confirmation [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302/diffs) from a feature flag to an application setting in GitLab 15.9.
 
 You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
 
-To enforce confirmation of the email address used for new sign ups:
+For example, to enforce confirmation of the email address used for new sign ups:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
+
+The following settings are available:
+
+- **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can log in.
+- **Soft** - Send a confirmation email during sign up. New users can log in immediately, but must confirm their email in three days. Unconfirmed accounts are deleted.
+- **Off** - New users can sign up without confirming their email address.
 
 ## User cap
 
@@ -94,22 +103,6 @@ New user sign ups are subject to the user cap restriction.
 
 New users sign ups are not subject to the user cap restriction. Users in pending approval state are
 automatically approved in a background job.
-
-## Soft email confirmation
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47003) in GitLab 12.2.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-soft-email-confirmation).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-The soft email confirmation improves the sign-up experience for new users by allowing
-them to sign in without an immediate confirmation when an email confirmation is required.
-GitLab shows the user a reminder to confirm their email address, and the user can't
-create or update pipelines until their email address is confirmed.
 
 ## Minimum password length limit
 
@@ -170,25 +163,6 @@ domains ending in `.io`. Domains must be separated by a whitespace,
 semicolon, comma, or a new line.
 
    ![Domain Denylist](img/domain_denylist_v14_1.png)
-
-### Enable or disable soft email confirmation
-
-Soft email confirmation is under development but ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:soft_email_confirmation)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:soft_email_confirmation)
-```
 
 ## Set up LDAP user filter
 

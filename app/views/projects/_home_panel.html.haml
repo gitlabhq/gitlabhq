@@ -1,9 +1,8 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - emails_disabled = @project.emails_disabled?
-- cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development)
 
-.project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
+.project-home-panel.js-show-on-project-root.gl-mt-4.gl-mb-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
       %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
@@ -25,28 +24,26 @@
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @project
 
-    = cache_if(cache_enabled, [@project, @project.star_count, @project.forks_count, :buttons, current_user, @notification_setting], expires_in: 1.day) do
-      .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
-        - if current_user
-          - if current_user.admin?
-            = link_to [:admin, @project], class: 'btn btn-default gl-button btn-icon', title: _('View project in admin area'),
-              data: {toggle: 'tooltip', placement: 'top', container: 'body'} do
-              = sprite_icon('admin')
-          - if @notification_setting
-            .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
+    .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
+      - if current_user
+        - if current_user.admin?
+          = link_to [:admin, @project], class: 'btn btn-default gl-button btn-icon', title: _('View project in admin area'),
+            data: {toggle: 'tooltip', placement: 'top', container: 'body'} do
+            = sprite_icon('admin')
+        - if @notification_setting
+          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
 
-        = render 'projects/buttons/star'
-        = render 'projects/buttons/fork'
+      = render 'projects/buttons/star'
+      = render 'projects/buttons/fork'
 
   - if can?(current_user, :read_code, @project)
-    = cache_if(cache_enabled, [@project, :read_code], expires_in: 1.minute) do
-      %nav.project-stats
-        - if @project.empty_repo?
-          = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-        - else
-          = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+    %nav.project-stats
+      - if @project.empty_repo?
+        = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+      - else
+        = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
   .gl-my-3
-    = render "shared/projects/topics", project: @project, cache_enabled: cache_enabled
+    = render "shared/projects/topics", project: @project
   .home-panel-home-desc.mt-1
     - if @project.description.present?
       .home-panel-description.text-break
@@ -54,15 +51,6 @@
           = markdown_field(@project, :description)
         %button.btn.gl-button.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")
-
-    - if @project.forked? && Feature.disabled?(:fork_divergence_counts, @project.fork_source)
-      %p
-        - source = visible_fork_source(@project)
-        - if source
-          #{ s_('ForkedFromProjectPath|Forked from') }
-          = link_to source.full_name, project_path(source), data: { qa_selector: 'forked_from_link' }
-        - else
-          = s_('ForkedFromProjectPath|Forked from an inaccessible project.')
 
     = render_if_exists "projects/home_mirror"
 

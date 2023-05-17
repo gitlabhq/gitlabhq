@@ -1,12 +1,17 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Accessibility testing **(FREE)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+# Accessibility testing (deprecated) **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25144) in GitLab 12.8.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390424) in GitLab 15.9
+and is planned for removal in 17.0. This change is a breaking change.
 
 If your application offers a web interface, you can use
 [GitLab CI/CD](../index.md) to determine the accessibility
@@ -25,7 +30,7 @@ As of [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73309)
 ## Accessibility merge request widget
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 13.0 behind the disabled [feature flag](../../administration/feature_flags.md) `:accessibility_report_view`.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
 
 GitLab displays an **Accessibility Report** in the merge request widget area:
 
@@ -63,7 +68,7 @@ The `a11y` job in your CI/CD pipeline generates these files:
   file is named `gl-accessibility.json`. In GitLab versions 12.10 and earlier, this file
   is named [`accessibility.json`](https://gitlab.com/gitlab-org/ci-cd/accessibility/-/merge_requests/9).
 
-You can [view job artifacts in your browser](../pipelines/job_artifacts.md#download-job-artifacts).
+You can [view job artifacts in your browser](../jobs/job_artifacts.md#download-job-artifacts).
 
 NOTE:
 For GitLab versions earlier than 12.9, use `include:remote` and
@@ -74,3 +79,5 @@ The job definition provided by the template does not support Kubernetes.
 
 You cannot pass configurations into Pa11y via CI configuration.
 To change the configuration, edit a copy of the template in your CI file.
+
+<!--- end_remove -->

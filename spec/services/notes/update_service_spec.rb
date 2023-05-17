@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::UpdateService do
+RSpec.describe Notes::UpdateService, feature_category: :team_planning do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }
   let(:private_group) { create(:group, :private) }
@@ -65,7 +65,7 @@ RSpec.describe Notes::UpdateService do
                                                                            .and_call_original
         expect do
           update_note(note: 'new text')
-        end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+        end.to change { counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now) }.by(1)
       end
 
       it_behaves_like 'issue_edit snowplow tracking' do

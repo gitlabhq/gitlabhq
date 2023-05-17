@@ -10,16 +10,17 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { cloneDeep, uniqueId } from 'lodash';
-import { mapActions } from 'vuex';
 import { fetchPolicies } from '~/lib/graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
+import { reportMessageToSentry } from '~/jobs/utils';
 import GetJob from './graphql/queries/get_job.query.graphql';
+import playJobWithVariablesMutation from './graphql/mutations/job_play_with_variables.mutation.graphql';
 import retryJobWithVariablesMutation from './graphql/mutations/job_retry_with_variables.mutation.graphql';
 
 // This component is a port of ~/jobs/components/job/legacy_manual_variables_form.vue
@@ -54,8 +55,9 @@ export default {
         const jobVariables = cloneDeep(data?.project?.job?.manualVariables?.nodes);
         return [...jobVariables.reverse(), ...this.variables];
       },
-      error() {
+      error(error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobQueryErrorText });
+        reportMessageToSentry(this.$options.name, error, {});
       },
     },
   },
@@ -69,13 +71,14 @@ export default {
       required: true,
     },
   },
-  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0'],
+  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0 gl-m-0! gl-ml-3!'],
   inputTypes: {
     key: 'key',
     value: 'value',
   },
   i18n: {
-    clearInputs: s__('CiVariables|Clear inputs'),
+    cancel: s__('CiVariables|Cancel'),
+    removeInputs: s__('CiVariables|Remove inputs'),
     formHelpText: s__(
       'CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default.',
     ),
@@ -86,13 +89,9 @@ export default {
     keyLabel: s__('CiVariables|Key'),
     keyPlaceholder: s__('CiVariables|Input variable key'),
     runAgainButtonText: s__('CiVariables|Run job again'),
-    triggerButtonText: s__('CiVariables|Run job'),
+    runButtonText: s__('CiVariables|Run job'),
     valueLabel: s__('CiVariables|Value'),
     valuePlaceholder: s__('CiVariables|Input variable value'),
-  },
-  variableValueKeys: {
-    rest: 'secret_value',
-    gql: 'value',
   },
   data() {
     return {
@@ -104,30 +103,63 @@ export default {
           value: '',
         },
       ],
-      runAgainBtnDisabled: false,
-      triggerBtnDisabled: false,
+      runBtnDisabled: false,
     };
   },
   computed: {
+    mutationVariables() {
+      return {
+        id: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
+        variables: this.preparedVariables,
+      };
+    },
     preparedVariables() {
-      // filtering out 'id' along with empty variables to send only key, value in the mutation.
-      // This will be removed in: https://gitlab.com/gitlab-org/gitlab/-/issues/377268
-
       return this.variables
         .filter((variable) => variable.key !== '')
-        .map(({ key, value }) => ({ key, [this.valueKey]: value }));
+        .map(({ key, value }) => ({ key, value }));
     },
-    valueKey() {
+    runBtnText() {
       return this.isRetryable
-        ? this.$options.variableValueKeys.gql
-        : this.$options.variableValueKeys.rest;
+        ? this.$options.i18n.runAgainButtonText
+        : this.$options.i18n.runButtonText;
     },
     variableSettings() {
       return helpPagePath('ci/variables/index', { anchor: 'add-a-cicd-variable-to-a-project' });
     },
   },
   methods: {
-    ...mapActions(['triggerManualJob']),
+    async playJob() {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: playJobWithVariablesMutation,
+          variables: this.mutationVariables,
+        });
+        if (data.jobPlay?.errors?.length) {
+          createAlert({ message: data.jobPlay.errors[0] });
+        } else {
+          this.navigateToJob(data.jobPlay?.job?.webPath);
+        }
+      } catch (error) {
+        createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
+        reportMessageToSentry(this.$options.name, error, {});
+      }
+    },
+    async retryJob() {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: retryJobWithVariablesMutation,
+          variables: this.mutationVariables,
+        });
+        if (data.jobRetry?.errors?.length) {
+          createAlert({ message: data.jobRetry.errors[0] });
+        } else {
+          this.navigateToJob(data.jobRetry?.job?.webPath);
+        }
+      } catch (error) {
+        createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
+        reportMessageToSentry(this.$options.name, error, {});
+      }
+    },
     addEmptyVariable() {
       const lastVar = this.variables[this.variables.length - 1];
 
@@ -153,37 +185,17 @@ export default {
     inputRef(type, id) {
       return `${this.$options.inputTypes[type]}-${id}`;
     },
-    navigateToRetriedJob(retryPath) {
-      redirectTo(retryPath);
+    navigateToJob(path) {
+      redirectTo(path); // eslint-disable-line import/no-deprecated
     },
-    async retryJob() {
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: retryJobWithVariablesMutation,
-          variables: {
-            id: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
-            // we need to ensure no empty variables are passed to the API
-            variables: this.preparedVariables,
-          },
-        });
-        if (data.jobRetry?.errors?.length) {
-          createAlert({ message: data.jobRetry.errors[0] });
-        } else {
-          this.navigateToRetriedJob(data.jobRetry?.job?.webPath);
-        }
-      } catch (error) {
-        createAlert({ message: JOB_GRAPHQL_ERRORS.retryMutationErrorText });
+    runJob() {
+      this.runBtnDisabled = true;
+
+      if (this.isRetryable) {
+        this.retryJob();
+      } else {
+        this.playJob();
       }
-    },
-    runAgain() {
-      this.runAgainBtnDisabled = true;
-
-      this.retryJob();
-    },
-    triggerJob() {
-      this.triggerBtnDisabled = true;
-
-      this.triggerManualJob(this.preparedVariables);
     },
   },
 };
@@ -197,7 +209,7 @@ export default {
       <div
         v-for="(variable, index) in variables"
         :key="variable.id"
-        class="gl-display-flex gl-align-items-center gl-mb-4"
+        class="gl-display-flex gl-align-items-center gl-mb-5"
         data-testid="ci-variable-row"
       >
         <gl-form-input-group class="gl-mr-4 gl-flex-grow-1">
@@ -232,12 +244,11 @@ export default {
         <gl-button
           v-if="canRemove(index)"
           v-gl-tooltip
-          :aria-label="$options.i18n.clearInputs"
-          :title="$options.i18n.clearInputs"
+          :aria-label="$options.i18n.removeInputs"
+          :title="$options.i18n.removeInputs"
           :class="$options.clearBtnSharedClasses"
           category="tertiary"
-          variant="danger"
-          icon="clear"
+          icon="remove"
           data-testid="delete-variable-btn"
           @click="deleteVariable(variable.id)"
         />
@@ -248,8 +259,7 @@ export default {
           :class="$options.clearBtnSharedClasses"
           data-testid="delete-variable-btn-placeholder"
           category="tertiary"
-          variant="danger"
-          icon="clear"
+          icon="remove"
         />
       </div>
 
@@ -271,37 +281,23 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div v-if="isRetryable" class="gl-display-flex gl-justify-content-center gl-mt-5">
+      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-button
+          v-if="isRetryable"
           class="gl-mt-5"
-          :aria-label="__('Cancel')"
           data-testid="cancel-btn"
           @click="$emit('hideManualVariablesForm')"
-          >{{ __('Cancel') }}</gl-button
+          >{{ $options.i18n.cancel }}</gl-button
         >
         <gl-button
           class="gl-mt-5"
           variant="confirm"
           category="primary"
-          :aria-label="__('Run manual job again')"
-          :disabled="runAgainBtnDisabled"
+          :disabled="runBtnDisabled"
           data-testid="run-manual-job-btn"
-          @click="runAgain"
+          @click="runJob"
         >
-          {{ $options.i18n.runAgainButtonText }}
-        </gl-button>
-      </div>
-      <div v-else class="gl-display-flex gl-justify-content-center gl-mt-5">
-        <gl-button
-          class="gl-mt-5"
-          variant="confirm"
-          category="primary"
-          :aria-label="__('Trigger manual job')"
-          :disabled="triggerBtnDisabled"
-          data-testid="trigger-manual-job-btn"
-          @click="triggerJob"
-        >
-          {{ $options.i18n.triggerButtonText }}
+          {{ runBtnText }}
         </gl-button>
       </div>
     </div>

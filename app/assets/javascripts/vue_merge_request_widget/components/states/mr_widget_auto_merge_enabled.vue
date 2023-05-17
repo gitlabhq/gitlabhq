@@ -2,7 +2,7 @@
 import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
@@ -131,16 +131,23 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" status="scheduled" :is-loading="loading" :actions="actions">
+  <state-container
+    status="scheduled"
+    :is-loading="loading"
+    :actions="actions"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <template #loading>
-      <gl-skeleton-loader :width="334" :height="30">
-        <rect x="0" y="3" width="24" height="24" rx="4" />
-        <rect x="32" y="7" width="150" height="16" rx="4" />
-        <rect x="190" y="7" width="144" height="16" rx="4" />
+      <gl-skeleton-loader :width="334" :height="24">
+        <rect x="0" y="0" width="24" height="24" rx="4" />
+        <rect x="32" y="2" width="150" height="20" rx="4" />
+        <rect x="190" y="2" width="144" height="20" rx="4" />
       </gl-skeleton-loader>
     </template>
     <template v-if="!loading">
-      <h4 class="gl-mr-3" data-testid="statusText">
+      <h4 class="gl-mr-3 gl-flex-grow-1" data-testid="statusText">
         <gl-sprintf :message="statusText" data-testid="statusText">
           <template #merge_author>
             <mr-widget-author v-if="state.mergeUser" :author="state.mergeUser" />

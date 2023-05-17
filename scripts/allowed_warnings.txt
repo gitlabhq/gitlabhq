@@ -13,3 +13,17 @@ Type application/netcdf is already registered as a variant of application/netcdf
 
 # This warning is emitted by scripts/static-analysis.
 \*\*\*\* .+ had the following warning\(s\):
+
+# Ruby 3 extracts net-protocol into a separate gem, while Ruby 2 has it built-in.
+# This can be removed when support for Ruby 2 is dropped.
+2\.7\.0\/gems\/net-protocol-0\.1\.3\/lib\/net\/protocol\.rb:208: warning: already initialized constant Net::BufferedIO::BUFSIZE
+ruby\/2\.7\.0\/net\/protocol\.rb:206: warning: previous definition of BUFSIZE was here
+2\.7\.0\/gems\/net-protocol-0\.1\.3\/lib\/net\/protocol\.rb:504: warning: already initialized constant Net::NetPrivate::Socket
+ruby\/2\.7\.0\/net\/protocol\.rb:503: warning: previous definition of Socket was here
+2\.7\.0\/gems\/net-protocol-0\.1\.3\/lib\/net\/protocol\.rb:68: warning: already initialized constant Net::ProtocRetryError
+ruby\/2\.7\.0\/net\/protocol\.rb:66: warning: previous definition of ProtocRetryError was here
+
+# Ruby 3 does not emit warnings for pattern matching, and if it's working
+# fine in both Ruby 2 and Ruby 3, it's unlikely it'll change again.
+# This can be removed when support for Ruby 2 is dropped.
+warning: Pattern matching is experimental, and the behavior may change in future versions of Ruby!

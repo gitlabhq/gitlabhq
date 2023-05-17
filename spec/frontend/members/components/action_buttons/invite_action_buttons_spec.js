@@ -19,10 +19,6 @@ describe('InviteActionButtons', () => {
   const findRemoveMemberButton = () => wrapper.findComponent(RemoveMemberButton);
   const findResendInviteButton = () => wrapper.findComponent(ResendInviteButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when user has `canRemove` permissions', () => {
     beforeEach(() => {
       createComponent({

@@ -40,6 +40,7 @@ describe('ProviderRepoTableRow', () => {
   const findImportButton = () => findButton('Import');
   const findReimportButton = () => findButton('Re-import');
   const findGroupDropdown = () => wrapper.findComponent(ImportGroupDropdown);
+  const findImportStatus = () => wrapper.findComponent(ImportStatus);
 
   const findCancelButton = () => {
     const buttons = wrapper
@@ -59,11 +60,6 @@ describe('ProviderRepoTableRow', () => {
       propsData: { userNamespace, optionalStages: {}, ...props },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('when rendering importable project', () => {
     const repo = {
@@ -86,7 +82,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders empty import status', () => {
-      expect(wrapper.findComponent(ImportStatus).props().status).toBe(STATUSES.NONE);
+      expect(findImportStatus().props().status).toBe(STATUSES.NONE);
     });
 
     it('renders a group namespace select', () => {
@@ -203,9 +199,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders proper import status', () => {
-      expect(wrapper.findComponent(ImportStatus).props().status).toBe(
-        repo.importedProject.importStatus,
-      );
+      expect(findImportStatus().props().status).toBe(repo.importedProject.importStatus);
     });
 
     it('does not render a namespace select', () => {
@@ -241,8 +235,11 @@ describe('ProviderRepoTableRow', () => {
       });
     });
 
-    it('passes stats to import status component', () => {
-      expect(wrapper.findComponent(ImportStatus).props().stats).toBe(FAKE_STATS);
+    it('passes props to import status component', () => {
+      expect(findImportStatus().props()).toMatchObject({
+        projectId: repo.importedProject.id,
+        stats: FAKE_STATS,
+      });
     });
   });
 

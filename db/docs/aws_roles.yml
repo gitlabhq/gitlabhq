@@ -3,7 +3,7 @@ table_name: aws_roles
 classes:
 - Aws::Role
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: (Deprecated) AWS IAM role for creating EKS clusters via GitLab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17057
 milestone: '12.4'

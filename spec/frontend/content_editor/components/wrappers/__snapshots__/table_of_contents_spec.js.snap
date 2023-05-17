@@ -8,7 +8,9 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
   
   Table of contents
   
-  <li>
+  <li
+    dir="auto"
+  >
     <a
       href="#"
     >
@@ -17,8 +19,12 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
   
     </a>
      
-    <ul>
-      <li>
+    <ul
+      dir="auto"
+    >
+      <li
+        dir="auto"
+      >
         <a
           href="#"
         >
@@ -27,8 +33,12 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
   
         </a>
          
-        <ul>
-          <li>
+        <ul
+          dir="auto"
+        >
+          <li
+            dir="auto"
+          >
             <a
               href="#"
             >
@@ -41,7 +51,9 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
           </li>
         </ul>
       </li>
-      <li>
+      <li
+        dir="auto"
+      >
         <a
           href="#"
         >
@@ -50,8 +62,12 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
   
         </a>
          
-        <ul>
-          <li>
+        <ul
+          dir="auto"
+        >
+          <li
+            dir="auto"
+          >
             <a
               href="#"
             >
@@ -64,7 +80,9 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
           </li>
         </ul>
       </li>
-      <li>
+      <li
+        dir="auto"
+      >
         <a
           href="#"
         >
@@ -75,7 +93,9 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
          
         <!---->
       </li>
-      <li>
+      <li
+        dir="auto"
+      >
         <a
           href="#"
         >
@@ -84,8 +104,12 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
   
         </a>
          
-        <ul>
-          <li>
+        <ul
+          dir="auto"
+        >
+          <li
+            dir="auto"
+          >
             <a
               href="#"
             >
@@ -100,7 +124,9 @@ exports[`content/components/wrappers/table_of_contents collects all headings and
       </li>
     </ul>
   </li>
-  <li>
+  <li
+    dir="auto"
+  >
     <a
       href="#"
     >

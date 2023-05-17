@@ -2,11 +2,10 @@
 - add_to_breadcrumbs @integration.title, scoped_edit_integration_path(@integration, project: @project, group: @group)
 - breadcrumb_title _('New')
 - page_title @integration.title, _('Integrations')
-- @content_class = 'limit-container-width' unless fluid_layout
 
 - if @teams_error_message
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = @teams_error_message
 
 %h3

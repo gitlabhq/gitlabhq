@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { mapActions, mapState } from 'vuex';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -59,6 +60,10 @@ export default {
       type: Array,
       required: true,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -108,7 +113,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams', 'isUpdateIssueOrderInProgress']),
+    ...mapState(['pageInfoByListId', 'listsFlags', 'isUpdateIssueOrderInProgress']),
     boardListItems() {
       return this.isApolloBoard
         ? this.currentList?.[`${this.issuableType}s`].nodes || []
@@ -125,7 +130,7 @@ export default {
       };
     },
     listItemsCount() {
-      return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
+      return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {
@@ -154,10 +159,10 @@ export default {
       return this.isApolloBoard ? this.isLoadingMore : this.listsFlags[this.list.id]?.isLoadingMore;
     },
     epicCreateFormVisible() {
-      return this.isEpicBoard && this.list.listType !== 'closed' && this.showEpicForm;
+      return this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showEpicForm;
     },
     issueCreateFormVisible() {
-      return !this.isEpicBoard && this.list.listType !== 'closed' && this.showIssueForm;
+      return !this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showIssueForm;
     },
     listRef() {
       // When list is draggable, the reference to the list needs to be accessed differently
@@ -259,6 +264,10 @@ export default {
       } else {
         this.showIssueForm = !this.showIssueForm;
       }
+    },
+    isObservableItem(index) {
+      // observe every 6 item of 10 to achieve smooth loading state
+      return index !== 0 && index % 6 === 0;
     },
     onReachingListBottom() {
       if (!this.loadingMore && this.hasNextPage) {
@@ -393,8 +402,14 @@ export default {
           :list="list"
           :list-items-length="boardListItems.length"
         />
+        <gl-intersection-observer
+          v-if="isObservableItem(index)"
+          data-testid="board-card-gl-io"
+          @appear="onReachingListBottom"
+        />
       </board-card>
-      <gl-intersection-observer @appear="onReachingListBottom">
+      <div>
+        <!-- for supporting previous structure with intersection observer -->
         <li
           v-if="showCount"
           class="board-list-count gl-text-center gl-text-secondary gl-py-4"
@@ -404,12 +419,11 @@ export default {
             v-if="loadingMore"
             size="sm"
             :label="$options.i18n.loadingMoreboardItems"
-            data-testid="count-loading-icon"
           />
           <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
           <span v-else>{{ paginatedIssueText }}</span>
         </li>
-      </gl-intersection-observer>
+      </div>
     </component>
   </div>
 </template>

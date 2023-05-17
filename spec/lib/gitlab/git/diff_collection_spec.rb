@@ -777,6 +777,26 @@ RSpec.describe Gitlab::Git::DiffCollection do
     end
   end
 
+  describe '.limits' do
+    let(:options) { {} }
+
+    subject { described_class.limits(options) }
+
+    context 'when options do not include max_patch_bytes_for_file_extension' do
+      it 'sets max_patch_bytes_for_file_extension as empty' do
+        expect(subject[:max_patch_bytes_for_file_extension]).to eq({})
+      end
+    end
+
+    context 'when options include max_patch_bytes_for_file_extension' do
+      let(:options) { { max_patch_bytes_for_file_extension: { '.file' => 1 } } }
+
+      it 'sets value for max_patch_bytes_for_file_extension' do
+        expect(subject[:max_patch_bytes_for_file_extension]).to eq({ '.file' => 1 })
+      end
+    end
+  end
+
   def fake_diff(line_length, line_count)
     { 'diff' => "#{'a' * line_length}\n" * line_count }
   end

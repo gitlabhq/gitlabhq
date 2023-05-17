@@ -59,7 +59,6 @@ describe('EnsureData', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     Sentry.captureException.mockClear();
   });
 

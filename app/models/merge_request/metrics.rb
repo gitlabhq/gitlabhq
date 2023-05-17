@@ -2,6 +2,7 @@
 
 class MergeRequest::Metrics < ApplicationRecord
   include IgnorableColumns
+  include DatabaseEventTracking
 
   belongs_to :merge_request, inverse_of: :metrics
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :pipeline_id
@@ -24,16 +25,19 @@ class MergeRequest::Metrics < ApplicationRecord
     end
 
     def record!(mr)
+      inserted_columns = %i[merge_request_id target_project_id updated_at created_at]
       sql = <<~SQL
-        INSERT INTO #{self.table_name} (merge_request_id, target_project_id, updated_at, created_at)
+        INSERT INTO #{self.table_name} (#{inserted_columns.join(', ')})
         VALUES (#{mr.id}, #{mr.target_project_id}, NOW(), NOW())
         ON CONFLICT (merge_request_id)
         DO UPDATE SET
         target_project_id = EXCLUDED.target_project_id,
         updated_at = NOW()
+        RETURNING id, #{inserted_columns.join(', ')}
       SQL
 
-      connection.execute(sql)
+      result = connection.execute(sql).first
+      new(result).publish_database_create_event
     end
   end
 
@@ -47,6 +51,31 @@ class MergeRequest::Metrics < ApplicationRecord
     with_valid_time_to_merge
       .pick(time_to_merge_expression)
   end
+
+  SNOWPLOW_ATTRIBUTES = %i[
+    id
+    merge_request_id
+    latest_build_started_at
+    latest_build_finished_at
+    first_deployed_to_production_at
+    merged_at
+    created_at
+    updated_at
+    pipeline_id
+    merged_by_id
+    latest_closed_by_id
+    latest_closed_at
+    first_comment_at
+    first_commit_at
+    last_commit_at
+    diff_size
+    modified_paths_size
+    commits_count
+    first_approved_at
+    first_reassigned_at
+    added_lines
+    removed_lines
+  ].freeze
 end
 
 MergeRequest::Metrics.prepend_mod_with('MergeRequest::Metrics')

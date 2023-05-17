@@ -29,19 +29,19 @@ import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
-  designListQueryResponse,
+  getDesignListQueryResponse,
   designUploadMutationCreatedResponse,
   designUploadMutationUpdatedResponse,
-  permissionsQueryResponse,
+  getPermissionsQueryResponse,
   moveDesignMutationResponse,
   reorderedDesigns,
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 const mockPageEl = {
   classList: {
     remove: jest.fn(),
@@ -100,6 +100,7 @@ describe('Design management index page', () => {
   let wrapper;
   let fakeApollo;
   let moveDesignHandler;
+  let permissionsQueryHandler;
 
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
   const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
@@ -174,14 +175,16 @@ describe('Design management index page', () => {
   }
 
   function createComponentWithApollo({
+    permissionsHandler = jest.fn().mockResolvedValue(getPermissionsQueryResponse()),
     moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
   }) {
     Vue.use(VueApollo);
+    permissionsQueryHandler = permissionsHandler;
     moveDesignHandler = moveHandler;
 
     const requestHandlers = [
-      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
-      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+      [getDesignListQuery, jest.fn().mockResolvedValue(getDesignListQueryResponse())],
+      [permissionsQuery, permissionsQueryHandler],
       [moveDesignMutation, moveDesignHandler],
     ];
 
@@ -196,11 +199,6 @@ describe('Design management index page', () => {
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('designs', () => {
     it('renders loading icon', () => {
@@ -233,13 +231,6 @@ describe('Design management index page', () => {
       expect(findDesigns().length).toBe(3);
       expect(findDesignToolbarWrapper().exists()).toBe(true);
       expect(findDesignUploadButton().exists()).toBe(true);
-    });
-
-    it('does not render toolbar when there is no permission', () => {
-      createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
-
-      expect(findDesignToolbarWrapper().exists()).toBe(false);
-      expect(findDesignUploadButton().exists()).toBe(false);
     });
 
     it('has correct classes applied to design dropzone', () => {
@@ -728,7 +719,7 @@ describe('Design management index page', () => {
         expect(mockMutate).not.toHaveBeenCalled();
       });
 
-      it('removes onPaste listener after mouseleave event', async () => {
+      it('removes onPaste listener after mouseleave event', () => {
         findDesignsWrapper().trigger('mouseleave');
         document.dispatchEvent(event);
 
@@ -746,6 +737,17 @@ describe('Design management index page', () => {
 
       await nextTick();
       expect(scrollIntoViewMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('when there is no permission to create a design', () => {
+    beforeEach(() => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
+    });
+
+    it("doesn't render the design toolbar and dropzone", () => {
+      expect(findToolbar().exists()).toBe(false);
+      expect(findDropzoneWrapper().exists()).toBe(false);
     });
   });
 
@@ -800,7 +802,7 @@ describe('Design management index page', () => {
       expect(draggableAttributes().disabled).toBe(false);
     });
 
-    it('displays flash if mutation had a recoverable error', async () => {
+    it('displays alert if mutation had a recoverable error', async () => {
       createComponentWithApollo({
         moveHandler: jest.fn().mockResolvedValue(moveDesignMutationResponseWithErrors),
       });
@@ -823,6 +825,18 @@ describe('Design management index page', () => {
       expect(findDesignUpdateAlert().text()).toBe(
         'Something went wrong when reordering designs. Please try again',
       );
+    });
+
+    it("doesn't render the design toolbar and dropzone if the user can't edit", async () => {
+      createComponentWithApollo({
+        permissionsHandler: jest.fn().mockResolvedValue(getPermissionsQueryResponse(false)),
+      });
+
+      await waitForPromises();
+
+      expect(permissionsQueryHandler).toHaveBeenCalled();
+      expect(findToolbar().exists()).toBe(false);
+      expect(findDropzoneWrapper().exists()).toBe(false);
     });
   });
 });

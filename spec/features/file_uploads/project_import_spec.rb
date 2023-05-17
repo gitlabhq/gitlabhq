@@ -22,6 +22,10 @@ RSpec.describe 'Upload a project export archive', :api, :js, feature_category: :
     )
   end
 
+  before do
+    stub_application_setting(import_sources: ['gitlab_project'])
+  end
+
   RSpec.shared_examples 'for a project export archive' do
     it { expect { subject }.to change { Project.count }.by(1) }
 

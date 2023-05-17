@@ -2,19 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Spamcheck::Client do
+RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency do
   include_context 'includes Spam constants'
 
   let(:endpoint) { 'grpc://grpc.test.url' }
   let_it_be(:user) { create(:user, organization: 'GitLab') }
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
-  let(:error_value) { "" }
-
-  let(:attribs_value) do
-    extra_attributes = Google::Protobuf::Map.new(:string, :string)
-    extra_attributes["monitorMode"] = "false"
-    extra_attributes
-  end
+  let(:verdict_score) { 0.01 }
+  let(:verdict_evaluated) { true }
 
   let_it_be(:issue) { create(:issue, description: 'Test issue description') }
   let_it_be(:snippet) { create(:personal_snippet, :public, description: 'Test issue description') }
@@ -22,8 +17,8 @@ RSpec.describe Gitlab::Spamcheck::Client do
   let(:response) do
     verdict = ::Spamcheck::SpamVerdict.new
     verdict.verdict = verdict_value
-    verdict.error = error_value
-    verdict.extra_attributes = attribs_value
+    verdict.evaluated = verdict_evaluated
+    verdict.score = verdict_score
     verdict
   end
 
@@ -67,19 +62,19 @@ RSpec.describe Gitlab::Spamcheck::Client do
 
     using RSpec::Parameterized::TableSyntax
 
-    where(:verdict, :expected) do
-      ::Spamcheck::SpamVerdict::Verdict::ALLOW                | Spam::SpamConstants::ALLOW
-      ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW    | Spam::SpamConstants::CONDITIONAL_ALLOW
-      ::Spamcheck::SpamVerdict::Verdict::DISALLOW             | Spam::SpamConstants::DISALLOW
-      ::Spamcheck::SpamVerdict::Verdict::BLOCK                | Spam::SpamConstants::BLOCK_USER
-      ::Spamcheck::SpamVerdict::Verdict::NOOP                 | Spam::SpamConstants::NOOP
+    where(:verdict_value, :expected, :verdict_evaluated, :verdict_score) do
+      ::Spamcheck::SpamVerdict::Verdict::ALLOW              | Spam::SpamConstants::ALLOW              | true  | 0.01
+      ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW  | Spam::SpamConstants::CONDITIONAL_ALLOW  | true  | 0.50
+      ::Spamcheck::SpamVerdict::Verdict::DISALLOW           | Spam::SpamConstants::DISALLOW           | true  | 0.75
+      ::Spamcheck::SpamVerdict::Verdict::BLOCK              | Spam::SpamConstants::BLOCK_USER         | true  | 0.99
+      ::Spamcheck::SpamVerdict::Verdict::NOOP               | Spam::SpamConstants::NOOP               | false | 0.0
     end
 
     with_them do
-      let(:verdict_value) { verdict }
-
-      it "returns expected spam constant" do
-        expect(subject).to eq([expected, { "monitorMode" => "false" }, ""])
+      it "returns expected spam result", :aggregate_failures do
+        expect(subject.verdict).to eq(expected)
+        expect(subject.evaluated?).to eq(verdict_evaluated)
+        expect(subject.score).to be_within(0.000001).of(verdict_score)
       end
     end
 
@@ -106,6 +101,19 @@ RSpec.describe Gitlab::Spamcheck::Client do
   end
 
   describe "#build_protobuf", :aggregate_failures do
+    let_it_be(:generic_spammable) { Object }
+    let_it_be(:generic_created_at) { issue.created_at }
+    let_it_be(:generic_updated_at) { issue.updated_at }
+
+    before do
+      allow(generic_spammable).to receive_messages(
+        spammable_text: 'generic spam',
+        created_at: generic_created_at,
+        updated_at: generic_updated_at,
+        project: nil
+      )
+    end
+
     it 'builds the expected issue protobuf object' do
       cxt = { action: :create }
       issue_pb, _ = described_class.new.send(:build_protobuf,
@@ -132,21 +140,37 @@ RSpec.describe Gitlab::Spamcheck::Client do
       expect(snippet_pb.updated_at).to eq timestamp_to_protobuf_timestamp(snippet.updated_at)
       expect(snippet_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)
       expect(snippet_pb.user.username).to eq user.username
-      expect(snippet_pb.user.username).to eq user.username
       expect(snippet_pb.files.first.path).to eq 'first.rb'
       expect(snippet_pb.files.last.path).to eq 'second.rb'
+    end
+
+    it 'builds the expected generic protobuf object' do
+      cxt = { action: :create }
+      generic_pb, _ = described_class.new.send(:build_protobuf, spammable: generic_spammable, user: user, context: cxt, extra_features: {})
+
+      expect(generic_pb.text).to eq 'generic spam'
+      expect(generic_pb.created_at).to eq timestamp_to_protobuf_timestamp(generic_created_at)
+      expect(generic_pb.updated_at).to eq timestamp_to_protobuf_timestamp(generic_updated_at)
+      expect(generic_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)
+      expect(generic_pb.user.username).to eq user.username
     end
   end
 
   describe '#build_user_protobuf', :aggregate_failures do
+    before do
+      allow(user).to receive(:account_age_in_days).and_return(10)
+    end
+
     it 'builds the expected protobuf object' do
       user_pb = described_class.new.send(:build_user_protobuf, user)
       expect(user_pb.username).to eq user.username
+      expect(user_pb.id).to eq user.id
       expect(user_pb.org).to eq user.organization
       expect(user_pb.created_at).to eq timestamp_to_protobuf_timestamp(user.created_at)
       expect(user_pb.emails.count).to be 1
       expect(user_pb.emails.first.email).to eq user.email
       expect(user_pb.emails.first.verified).to eq user.confirmed?
+      expect(user_pb.abuse_metadata[:account_age]).to eq 10
     end
 
     context 'when user has multiple email addresses' do
@@ -176,15 +200,14 @@ RSpec.describe Gitlab::Spamcheck::Client do
   end
 
   describe "#get_spammable_mappings", :aggregate_failures do
-    it 'is an expected spammable' do
+    it 'is a defined spammable' do
       protobuf_class, _ = described_class.new.send(:get_spammable_mappings, issue)
       expect(protobuf_class).to eq ::Spamcheck::Issue
     end
 
-    it 'is an unexpected spammable' do
-      expect { described_class.new.send(:get_spammable_mappings, 'spam') }.to raise_error(
-        ArgumentError, 'Not a spammable type: String'
-      )
+    it 'is a generic spammable' do
+      protobuf_class, _ = described_class.new.send(:get_spammable_mappings, Object)
+      expect(protobuf_class).to eq ::Spamcheck::Generic
     end
   end
 

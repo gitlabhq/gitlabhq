@@ -49,10 +49,6 @@ describe('DeleteBlobModal', () => {
     await findCommitTextarea().vm.$emit('input', commitText);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders Modal component', () => {
     createComponent();
 
@@ -186,13 +182,13 @@ describe('DeleteBlobModal', () => {
         await fillForm({ targetText: '', commitText: '' });
       });
 
-      it('disables submit button', async () => {
-        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+      it('disables submit button', () => {
+        expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: true }),
         );
       });
 
-      it('does not submit form', async () => {
+      it('does not submit form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
         expect(submitSpy).not.toHaveBeenCalled();
       });
@@ -206,13 +202,13 @@ describe('DeleteBlobModal', () => {
         });
       });
 
-      it('enables submit button', async () => {
-        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+      it('enables submit button', () => {
+        expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: false }),
         );
       });
 
-      it('submits form', async () => {
+      it('submits form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
         expect(submitSpy).toHaveBeenCalled();
       });

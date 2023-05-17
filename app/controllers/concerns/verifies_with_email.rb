@@ -78,7 +78,7 @@ module VerifiesWithEmail
   def send_verification_instructions(user)
     return if send_rate_limited?(user)
 
-    service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token)
+    service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token, user: user)
     raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
     user.lock_access!({ send_instructions: false })

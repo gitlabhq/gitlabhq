@@ -38,11 +38,6 @@ describe('navigation tabs component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should render tabs', () => {
     expect(wrapper.findAllComponents(GlTab)).toHaveLength(data.length);
   });

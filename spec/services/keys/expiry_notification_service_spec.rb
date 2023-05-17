@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Keys::ExpiryNotificationService do
+RSpec.describe Keys::ExpiryNotificationService, feature_category: :source_code_management do
   let_it_be_with_reload(:user) { create(:user) }
 
   let(:params) { { keys: user.keys, expiring_soon: expiring_soon } }

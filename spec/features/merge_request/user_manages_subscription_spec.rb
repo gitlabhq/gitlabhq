@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User manages subscription', :js, feature_category: :code_review_workflow do
+  include CookieHelper
+
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
@@ -10,7 +12,7 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
 
   before do
     stub_feature_flags(moved_mr_sidebar: moved_mr_sidebar_enabled)
-
+    set_cookie('new-actions-popover-viewed', 'true')
     project.add_maintainer(user)
     sign_in(user)
 

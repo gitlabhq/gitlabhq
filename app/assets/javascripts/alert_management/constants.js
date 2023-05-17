@@ -37,12 +37,10 @@ export const ALERTS_STATUS_TABS = [
   },
 ];
 
-/* eslint-disable @gitlab/require-i18n-strings */
-
 /**
  * Tracks snowplow event when user views alerts list
  */
 export const trackAlertListViewsOptions = {
-  category: 'Alert Management',
+  category: 'Alert Management', // eslint-disable-line @gitlab/require-i18n-strings
   action: 'view_alerts_list',
 };

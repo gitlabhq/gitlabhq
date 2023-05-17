@@ -1,5 +1,9 @@
 import { __, s__, sprintf } from '~/locale';
-import { DropdownVariant } from '../constants';
+import {
+  VARIANT_EMBEDDED,
+  VARIANT_SIDEBAR,
+  VARIANT_STANDALONE,
+} from '~/sidebar/components/labels/labels_select_widget/constants';
 
 /**
  * Returns string representing current labels
@@ -36,18 +40,18 @@ export const selectedLabelsList = (state) => state.selectedLabels.map((label) =>
  * is `sidebar`
  * @param {object} state
  */
-export const isDropdownVariantSidebar = (state) => state.variant === DropdownVariant.Sidebar;
+export const isDropdownVariantSidebar = (state) => state.variant === VARIANT_SIDEBAR;
 
 /**
  * Returns boolean representing whether dropdown variant
  * is `standalone`
  * @param {object} state
  */
-export const isDropdownVariantStandalone = (state) => state.variant === DropdownVariant.Standalone;
+export const isDropdownVariantStandalone = (state) => state.variant === VARIANT_STANDALONE;
 
 /**
  * Returns boolean representing whether dropdown variant
  * is `embedded`
  * @param {object} state
  */
-export const isDropdownVariantEmbedded = (state) => state.variant === DropdownVariant.Embedded;
+export const isDropdownVariantEmbedded = (state) => state.variant === VARIANT_EMBEDDED;

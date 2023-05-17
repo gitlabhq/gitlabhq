@@ -392,6 +392,30 @@ RSpec.shared_examples_for "bulk member creation" do
     expect(members.first).to be_invite
   end
 
+  context 'with different source types' do
+    shared_examples 'supports multiple sources' do
+      specify do
+        members = described_class.add_members(sources, [user1, user2], :maintainer)
+
+        expect(members.map(&:user)).to contain_exactly(user1, user2, user1, user2)
+        expect(members).to all(be_a(member_type))
+        expect(members).to all(be_persisted)
+      end
+    end
+
+    context 'with an array of sources' do
+      let_it_be(:sources) { [source, source2] }
+
+      it_behaves_like 'supports multiple sources'
+    end
+
+    context 'with a query producing sources' do
+      let_it_be(:sources) { source_type.id_in([source, source2]) }
+
+      it_behaves_like 'supports multiple sources'
+    end
+  end
+
   context 'with de-duplication' do
     it 'has the same user by id and user' do
       members = described_class.add_members(source, [user1.id, user1, user1.id, user2, user2.id, user2], :maintainer)
@@ -484,11 +508,13 @@ RSpec.shared_examples_for "bulk member creation" do
         create(:member_task, member: member, project: task_project, tasks_to_be_done: %w(code ci))
 
         expect do
-          described_class.add_members(source,
-                                    [user1.id],
-                                    :developer,
-                                    tasks_to_be_done: %w(issues),
-                                    tasks_project_id: task_project.id)
+          described_class.add_members(
+            source,
+            [user1.id],
+            :developer,
+            tasks_to_be_done: %w(issues),
+            tasks_project_id: task_project.id
+          )
         end.not_to change { MemberTask.count }
 
         member.reset
@@ -498,11 +524,13 @@ RSpec.shared_examples_for "bulk member creation" do
 
       it 'adds tasks to be done if they do not exist', :aggregate_failures do
         expect do
-          described_class.add_members(source,
-                                    [user1.id],
-                                    :developer,
-                                    tasks_to_be_done: %w(issues),
-                                    tasks_project_id: task_project.id)
+          described_class.add_members(
+            source,
+            [user1.id],
+            :developer,
+            tasks_to_be_done: %w(issues),
+            tasks_project_id: task_project.id
+          )
         end.to change { MemberTask.count }.by(1)
 
         member = source.members.find_by(user_id: user1.id)

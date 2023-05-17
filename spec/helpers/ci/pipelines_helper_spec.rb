@@ -121,35 +121,7 @@ RSpec.describe Ci::PipelinesHelper do
                                            :has_gitlab_ci,
                                            :pipeline_editor_path,
                                            :suggested_ci_templates,
-                                           :ci_runner_settings_path])
-    end
-
-    describe 'the `any_runners_available` attribute' do
-      subject { data[:any_runners_available] }
-
-      context 'when the `runners_availability_section` experiment variant is control' do
-        before do
-          stub_experiments(runners_availability_section: :control)
-        end
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when the `runners_availability_section` experiment variant is candidate' do
-        before do
-          stub_experiments(runners_availability_section: :candidate)
-        end
-
-        context 'when there are no runners' do
-          it { is_expected.to eq('false') }
-        end
-
-        context 'when there are runners' do
-          let!(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-          it { is_expected.to eq('true') }
-        end
-      end
+                                           :full_path])
     end
 
     describe 'when the project is eligible for the `ios_specific_templates` experiment' do
@@ -192,11 +164,7 @@ RSpec.describe Ci::PipelinesHelper do
         end
       end
 
-      describe 'the `ios_runners_available` attribute' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      describe 'the `ios_runners_available` attribute', :saas do
         subject { data[:ios_runners_available] }
 
         context 'when the `ios_specific_templates` experiment variant is control' do

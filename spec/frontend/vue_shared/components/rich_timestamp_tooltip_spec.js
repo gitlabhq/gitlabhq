@@ -27,10 +27,6 @@ describe('RichTimestampTooltip', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the tooltip text header', () => {
     expect(wrapper.findByTestId('header-text').text()).toBe('Created just now');
   });

@@ -41,7 +41,7 @@ table {
       }
 
       th {
-        @include gl-bg-gray-50;
+        @include gl-bg-gray-10;
         border-bottom: 0;
 
         &.wide {
@@ -159,4 +159,8 @@ table {
   th {
     border-top: 0;
   }
+}
+
+.gl-table-no-top-border th {
+  border-top: 0;
 }

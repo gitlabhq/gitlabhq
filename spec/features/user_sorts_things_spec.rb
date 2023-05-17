@@ -7,7 +7,7 @@ require "spec_helper"
 # The `it`s are named here by convention `starting point -> some pages -> final point`.
 # All those specs are moved out to this spec intentionally to keep them all in one place.
 RSpec.describe "User sorts things", :js do
-  include Spec::Support::Helpers::Features::SortingHelpers
+  include Features::SortingHelpers
   include DashboardHelper
 
   let_it_be(:project) { create(:project_empty_repo, :public) }

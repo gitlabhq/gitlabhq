@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -26,7 +27,24 @@ const DEFAULT_INJECT = {
 describe('BlobButtonGroup component', () => {
   let wrapper;
 
+  let showUploadBlobModalMock;
+  let showDeleteBlobModalMock;
+
   const createComponent = (props = {}) => {
+    showUploadBlobModalMock = jest.fn();
+    showDeleteBlobModalMock = jest.fn();
+
+    const UploadBlobModalStub = stubComponent(UploadBlobModal, {
+      methods: {
+        show: showUploadBlobModalMock,
+      },
+    });
+    const DeleteBlobModalStub = stubComponent(DeleteBlobModal, {
+      methods: {
+        show: showDeleteBlobModalMock,
+      },
+    });
+
     wrapper = mountExtended(BlobButtonGroup, {
       propsData: {
         ...DEFAULT_PROPS,
@@ -35,12 +53,12 @@ describe('BlobButtonGroup component', () => {
       provide: {
         ...DEFAULT_INJECT,
       },
+      stubs: {
+        UploadBlobModal: UploadBlobModalStub,
+        DeleteBlobModal: DeleteBlobModalStub,
+      },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
@@ -61,8 +79,6 @@ describe('BlobButtonGroup component', () => {
   describe('buttons', () => {
     beforeEach(() => {
       createComponent();
-      jest.spyOn(findUploadBlobModal().vm, 'show');
-      jest.spyOn(findDeleteBlobModal().vm, 'show');
     });
 
     it('renders both the replace and delete button', () => {
@@ -77,33 +93,31 @@ describe('BlobButtonGroup component', () => {
     it('triggers the UploadBlobModal from the replace button', () => {
       findReplaceButton().trigger('click');
 
-      expect(findUploadBlobModal().vm.show).toHaveBeenCalled();
+      expect(showUploadBlobModalMock).toHaveBeenCalled();
     });
 
     it('triggers the DeleteBlobModal from the delete button', () => {
       findDeleteButton().trigger('click');
 
-      expect(findDeleteBlobModal().vm.show).toHaveBeenCalled();
+      expect(showDeleteBlobModalMock).toHaveBeenCalled();
     });
 
     describe('showForkSuggestion set to true', () => {
       beforeEach(() => {
         createComponent({ showForkSuggestion: true });
-        jest.spyOn(findUploadBlobModal().vm, 'show');
-        jest.spyOn(findDeleteBlobModal().vm, 'show');
       });
 
       it('does not trigger the UploadBlobModal from the replace button', () => {
         findReplaceButton().trigger('click');
 
-        expect(findUploadBlobModal().vm.show).not.toHaveBeenCalled();
+        expect(showUploadBlobModalMock).not.toHaveBeenCalled();
         expect(wrapper.emitted().fork).toHaveLength(1);
       });
 
       it('does not trigger the DeleteBlobModal from the delete button', () => {
         findDeleteButton().trigger('click');
 
-        expect(findDeleteBlobModal().vm.show).not.toHaveBeenCalled();
+        expect(showDeleteBlobModalMock).not.toHaveBeenCalled();
         expect(wrapper.emitted().fork).toHaveLength(1);
       });
     });

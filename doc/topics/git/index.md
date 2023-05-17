@@ -26,13 +26,12 @@ The following resources can help you get started with Git:
 
 - [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4),
   a video introduction to Git.
-- [Make your first Git commit](../../tutorials/make_your_first_git_commit.md)
+- [Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
 - [Git Basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
 - [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [How to install Git](how_to_install_git/index.md)
-- [Git terminology](terminology.md)
+- [Git concepts](terminology.md)
 - [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
-- [Edit files through the command line](../../gitlab-basics/command-line-commands.md)
 - [GitLab Git Cheat Sheet (download)](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
 - Commits:
   - [Revert a commit](../../user/project/merge_requests/revert_changes.md#revert-a-commit)
@@ -43,7 +42,7 @@ The following resources can help you get started with Git:
 - [Git stash](stash.md)
 - [Git file blame](../../user/project/repository/git_blame.md)
 - [Git file history](../../user/project/repository/git_history.md)
-- [Git tags](tags.md)
+- [Git tags](../../user/project/repository/tags/index.md)
 
 ### Concepts
 
@@ -58,16 +57,11 @@ The following are resources on version control concepts:
 
 You can do many Git tasks from the command line:
 
-- [Bisect](bisect.md).
 - [Cherry-pick](cherry_picking.md).
-- [Feature branching](feature_branching.md).
-- [Getting started with Git](getting_started.md).
+- [Getting started with Git](../../tutorials/make_first_git_commit/index.md).
 - [Git add](git_add.md).
-- [Git log](git_log.md).
 - [Git stash](stash.md).
-- [Merge conflicts](merge_conflicts.md).
 - [Rollback commits](rollback_commits.md).
-- [Subtree](subtree.md).
 - [Unstage](unstage.md).
 
 ## Git tips
@@ -88,7 +82,6 @@ If you have problems with Git, the following may help:
 ## Branching strategies
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
-- [Develop on a feature branch](feature_branch_development.md)
 - [GitLab Flow](../gitlab_flow.md)
 - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)

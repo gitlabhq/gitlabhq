@@ -39,7 +39,6 @@ describe('IssuableItem', () => {
 
   const mockLabels = mockIssuable.labels.nodes;
   const mockAuthor = mockIssuable.author;
-  const originalUrl = gon.gitlab_url;
   let wrapper;
 
   const findTimestampWrapper = () => wrapper.find('[data-testid="issuable-timestamp"]');
@@ -47,11 +46,6 @@ describe('IssuableItem', () => {
 
   beforeEach(() => {
     gon.gitlab_url = MOCK_GITLAB_URL;
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    gon.gitlab_url = originalUrl;
   });
 
   describe('computed', () => {
@@ -337,7 +331,7 @@ describe('IssuableItem', () => {
       });
     });
 
-    it('renders spam icon when issuable is hidden', async () => {
+    it('renders spam icon when issuable is hidden', () => {
       wrapper = createComponent({ issuable: { ...mockIssuable, hidden: true } });
 
       const hiddenIcon = wrapper.findComponent(GlIcon);

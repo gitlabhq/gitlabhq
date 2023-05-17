@@ -72,7 +72,7 @@ module Operations
       end
 
       def link_reference_pattern
-        @link_reference_pattern ||= super("feature_flags", %r{(?<feature_flag>\d+)/edit})
+        @link_reference_pattern ||= compose_link_reference_pattern('feature_flags', %r{(?<feature_flag>\d+)/edit})
       end
 
       def reference_postfix

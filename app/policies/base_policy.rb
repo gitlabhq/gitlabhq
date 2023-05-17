@@ -35,9 +35,17 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:security_bot) { @user&.security_bot? }
 
+  desc "User is security policy bot"
+  with_options scope: :user, score: 0
+  condition(:security_policy_bot) { @user&.security_policy_bot? }
+
   desc "User is automation bot"
   with_options scope: :user, score: 0
   condition(:automation_bot) { @user&.automation_bot? }
+
+  desc "User is llm bot"
+  with_options scope: :user, score: 0
+  condition(:llm_bot) { @user&.llm_bot? }
 
   desc "User email is unconfirmed or user account is locked"
   with_options scope: :user, score: 0
@@ -63,7 +71,7 @@ class BasePolicy < DeclarativePolicy::Base
   end
 
   rule { admin }.policy do
-    # Only for actual administrator accounts, behaviour affected by admin mode application setting
+    # Only for actual administrator accounts, behavior affected by admin mode application setting
     enable :admin_all_resources
     # Policy extended in EE to also enable auditors
     enable :read_all_resources

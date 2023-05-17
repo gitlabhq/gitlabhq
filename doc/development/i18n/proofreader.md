@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -19,6 +19,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Tsegaselassie Tadesse - [GitLab](https://gitlab.com/tsega), [Crowdin](https://crowdin.com/profile/tsegaselassi)
 - Arabic
   - Proofreaders needed.
+- Belarusian
+  - Anton Katsuba - [GitLab](https://gitlab.com/coinvariant), [Crowdin](https://crowdin.com/profile/aerialfiddle)
 - Bosnian
   - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)
 - Bulgarian
@@ -103,7 +105,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Portuguese
   - Diogo Trindade - [GitLab](https://gitlab.com/luisdiogo2071317), [Crowdin](https://crowdin.com/profile/ldiogotrindade)
 - Portuguese, Brazilian
-  - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
+  - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra)
   - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)
   - Eduardo Addad de Oliveira - [GitLab](https://gitlab.com/eduardoaddad), [Crowdin](https://crowdin.com/profile/eduardoaddad)
   - Horberlan Brito - [GitLab](https://gitlab.com/horberlan), [Crowdin](https://crowdin.com/profile/horberlan)
@@ -126,6 +128,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Proofreaders needed.
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
+  - David Elizondo - [GitLab](https://gitlab.com/daelmo), [Crowdin](https://crowdin.com/profile/daelmo)
 - Swedish
   - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
 - Turkish

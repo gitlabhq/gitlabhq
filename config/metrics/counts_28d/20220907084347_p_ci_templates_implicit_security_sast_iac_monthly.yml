@@ -5,7 +5,6 @@ description: Count of pipelines with implicit SAST runs using the stable SAST Ia
 product_section: sec
 product_stage: secure
 product_group: static_analysis
-product_category: SAST
 value_type: number
 status: removed
 milestone: '15.4'

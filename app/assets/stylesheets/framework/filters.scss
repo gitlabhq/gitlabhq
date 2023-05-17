@@ -87,8 +87,8 @@
 .filtered-search-term {
   display: flex;
   flex-shrink: 0;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 
   .selectable {
     display: flex;
@@ -195,9 +195,9 @@
   display: flex;
   width: 100%;
   min-width: 0;
-  border: 1px solid $border-color;
+  border: 1px solid $gray-400;
   background-color: $white;
-  border-radius: $border-radius-default 0 0 $border-radius-default;
+  border-radius: $border-radius-default;
 
   @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
@@ -206,8 +206,7 @@
 
   &.focus,
   &.focus:hover {
-    border-color: $blue-300;
-    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
+    @include gl-focus;
   }
 
   gl-emoji {
@@ -227,7 +226,7 @@
     min-width: 200px;
     padding-right: 25px;
     padding-left: 0;
-    height: $input-height - 2;
+    height: #{$input-height - 2px};
     line-height: inherit;
 
     &,
@@ -261,8 +260,9 @@
   flex: 1;
   position: relative;
   min-width: 0;
-  height: 2rem;
+  height: #{$input-height - 2px};
   background-color: $input-bg;
+  border-radius: $border-radius-default;
 }
 
 .filtered-search-input-dropdown-menu {
@@ -291,10 +291,11 @@
 }
 
 .filtered-search-history-dropdown-toggle-button.gl-button {
-  border-radius: $border-radius-default 0 0 $border-radius-default;
-  border-right: 1px solid $border-color;
-  box-shadow: none;
+  $inner-border: #{$border-radius-default - 1px};
+  border-radius: $inner-border 0 0 $inner-border;
   color: $gl-text-color-secondary;
+  margin: -1px 0 -1px -1px;
+  box-shadow: inset 0 0 0 1px $gray-400;
   flex: 1;
   transition: color 0.1s linear;
   width: auto;
@@ -302,7 +303,6 @@
   &:hover,
   &:focus {
     color: $gl-text-color;
-    border-color: $border-color;
   }
 }
 

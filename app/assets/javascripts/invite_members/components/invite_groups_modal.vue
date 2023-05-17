@@ -190,7 +190,13 @@ export default {
     @submit="sendInvite"
   >
     <template #alert>
-      <invite-group-notification v-if="freeUserCapEnabled" :name="name" />
+      <invite-group-notification
+        v-if="freeUserCapEnabled"
+        :name="name"
+        :notification-text="$options.labels[inviteTo].notificationText"
+        :notification-link="$options.labels[inviteTo].notificationLink"
+        class="gl-mb-5"
+      />
     </template>
 
     <template #select>

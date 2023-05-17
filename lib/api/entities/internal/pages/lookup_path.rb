@@ -5,8 +5,13 @@ module API
     module Internal
       module Pages
         class LookupPath < Grape::Entity
-          expose :project_id, :access_control,
-            :source, :https_only, :prefix
+          expose :access_control,
+            :https_only,
+            :prefix,
+            :project_id,
+            :source,
+            :unique_host,
+            :root_directory
         end
       end
     end

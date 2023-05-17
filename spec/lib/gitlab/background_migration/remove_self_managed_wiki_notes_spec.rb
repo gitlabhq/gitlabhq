@@ -6,14 +6,15 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveSelfManagedWikiNotes, :migrati
   let(:notes) { table(:notes) }
 
   subject(:perform_migration) do
-    described_class.new(start_id: 1,
-                        end_id: 30,
-                        batch_table: :notes,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: 1,
+      end_id: 30,
+      batch_table: :notes,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   it 'removes all wiki notes' do

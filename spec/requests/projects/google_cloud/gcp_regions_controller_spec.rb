@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GoogleCloud::GcpRegionsController, feature_category: :kubernetes_management do
+RSpec.describe Projects::GoogleCloud::GcpRegionsController, feature_category: :deployment_management do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:repository) { project.repository }
 

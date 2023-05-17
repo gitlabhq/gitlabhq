@@ -6,7 +6,7 @@
 # @param exit_code [Int] the resulting exit code.
 module Ci
   class TrackFailedBuildService
-    SCHEMA_URL = 'iglu:com.gitlab/ci_build_failed/jsonschema/1-0-1'
+    SCHEMA_URL = 'iglu:com.gitlab/ci_build_failed/jsonschema/1-0-2'
 
     def initialize(build:, exit_code:, failure_reason:)
       @build = build

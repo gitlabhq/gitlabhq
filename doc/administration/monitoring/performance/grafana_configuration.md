@@ -6,9 +6,40 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Grafana Configuration **(FREE SELF)**
 
+> [Deprecated](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772) in GitLab 16.0.
+
+WARNING:
+Bundled Grafana was deprecated GitLab 16.0 and is no longer supported. It will be removed in GitLab 16.3.
+For more information, see [deprecation notes](#deprecation-of-bundled-grafana).
+
 [Grafana](https://grafana.com/) is a tool that enables you to visualize time
 series metrics through graphs and dashboards. GitLab writes performance data to Prometheus,
 and Grafana allows you to query the data to display useful graphs.
+
+## Deprecation of bundled Grafana
+
+Bundled Grafana was an optional Omnibus GitLab service that provided a user interface to GitLab metrics.
+
+The version of Grafana that is bundled with Omnibus GitLab is no longer supported. If you're using the bundled Grafana, you
+should switch to a newer version from [Grafana Labs](https://grafana.com/grafana/).
+
+### Switch to new Grafana instance
+
+To switch away from bundled Grafana to a newer version of Grafana from Grafana Labs:
+
+1. Set up a version of Grafana from Grafana Labs.
+1. [Export the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#export-a-dashboard) from bundled Grafana.
+1. [Import the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) in the new Grafana instance.
+1. [Configure GitLab](#integration-with-gitlab-ui) to use the new Grafana instance.
+
+### Temporary workaround
+
+In GitLab versions 16.0 to 16.2, you can still force Omnibus GitLab to enable and configure Grafana by setting the following:
+
+- `grafana['enable'] = true`.
+- `grafana['enable_deprecated_service'] = true`. 
+ 
+You see a deprecation message when reconfiguring GitLab.
 
 ## Installation
 

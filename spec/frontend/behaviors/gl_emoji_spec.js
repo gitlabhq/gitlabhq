@@ -51,13 +51,13 @@ describe('gl_emoji', () => {
       'bomb emoji just with name attribute',
       '<gl-emoji data-name="bomb"></gl-emoji>',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb">💣</gl-emoji>',
-      `<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/${EMOJI_VERSION}/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>`,
+      `<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/${EMOJI_VERSION}/bomb.png" width="16" height="16" align="absmiddle"></gl-emoji>`,
     ],
     [
       'bomb emoji with name attribute and unicode version',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0">💣</gl-emoji>',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0">💣</gl-emoji>',
-      `<gl-emoji data-name="bomb" data-unicode-version="6.0"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/${EMOJI_VERSION}/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>`,
+      `<gl-emoji data-name="bomb" data-unicode-version="6.0"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/${EMOJI_VERSION}/bomb.png" width="16" height="16" align="absmiddle"></gl-emoji>`,
     ],
     [
       'bomb emoji with sprite fallback',
@@ -69,19 +69,19 @@ describe('gl_emoji', () => {
       'bomb emoji with image fallback',
       '<gl-emoji data-fallback-src="/bomb.png" data-name="bomb"></gl-emoji>',
       '<gl-emoji data-fallback-src="/bomb.png" data-name="bomb" data-unicode-version="6.0" title="bomb">💣</gl-emoji>',
-      '<gl-emoji data-fallback-src="/bomb.png" data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-fallback-src="/bomb.png" data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/bomb.png" width="16" height="16" align="absmiddle"></gl-emoji>',
     ],
     [
       'invalid emoji',
       '<gl-emoji data-name="invalid_emoji"></gl-emoji>',
       '<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament">❔</gl-emoji>',
-      `<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament"><img class="emoji" title=":grey_question:" alt=":grey_question:" src="/-/emojis/${EMOJI_VERSION}/grey_question.png" width="20" height="20" align="absmiddle"></gl-emoji>`,
+      `<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament"><img class="emoji" title=":grey_question:" alt=":grey_question:" src="/-/emojis/${EMOJI_VERSION}/grey_question.png" width="16" height="16" align="absmiddle"></gl-emoji>`,
     ],
     [
       'custom emoji with image fallback',
       '<gl-emoji data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" data-name="party-parrot" data-unicode-version="custom"></gl-emoji>',
-      '<gl-emoji data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" data-name="party-parrot" data-unicode-version="custom"><img class="emoji" title=":party-parrot:" alt=":party-parrot:" src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" width="20" height="20" align="absmiddle"></gl-emoji>',
-      '<gl-emoji data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" data-name="party-parrot" data-unicode-version="custom"><img class="emoji" title=":party-parrot:" alt=":party-parrot:" src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" data-name="party-parrot" data-unicode-version="custom"><img class="emoji" title=":party-parrot:" alt=":party-parrot:" src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" width="16" height="16" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" data-name="party-parrot" data-unicode-version="custom"><img class="emoji" title=":party-parrot:" alt=":party-parrot:" src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif" width="16" height="16" align="absmiddle"></gl-emoji>',
     ],
   ])('%s', (name, markup, withEmojiSupport, withoutEmojiSupport) => {
     it(`renders correctly with emoji support`, async () => {
@@ -111,7 +111,7 @@ describe('gl_emoji', () => {
     await waitForPromises();
 
     expect(glEmojiElement.outerHTML).toBe(
-      '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/2/grey_question.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/2/grey_question.png" width="16" height="16" align="absmiddle"></gl-emoji>',
     );
   });
 

@@ -1,8 +1,7 @@
 ---
-stage: Manage
-group: Import
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Custom instance-level project templates **(PREMIUM SELF)**
@@ -18,7 +17,7 @@ is created, based on the user's access permissions:
 
 - Public projects can be selected by any authenticated user as a template for a new project,
   if all enabled [project features](../project/settings/index.md#configure-project-visibility-features-and-permissions)
-  except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
+  except for **GitLab Pages** and **Security and Compliance** are set to **Everyone With Access**.
   The same applies to internal projects.
 - Private projects can be selected only by users who are members of the projects.
 
@@ -40,6 +39,24 @@ To select the group to use as the source for the project templates:
 1. Select **Save changes**.
 
 Projects in subgroups of the template group are **not** included in the template list.
+
+## What is copied from the templates
+
+The entire custom instance-level project templates repository is copied, including:
+
+- Branches
+- Commits
+- Tags
+
+If the user:
+
+- Has the Owner role on the custom instance-level project templates project or is a GitLab administrator, all project settings are copied over to the new
+  project.
+- Doesn't have the Owner role or is not a GitLab administrator, project [deploy keys](../project/deploy_keys/index.md#view-deploy-keys) and project
+  [webhooks](../project/integrations/webhooks.md) aren't copied over because they contain sensitive data.
+
+To learn more about what is migrated, see
+[Items that are exported](../project/settings/import_export.md#items-that-are-exported).
 
 <!-- ## Troubleshooting
 

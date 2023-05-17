@@ -72,7 +72,7 @@ module Gitlab
 
         return unless last_bitbucket_issue
 
-        Issue.track_project_iid!(project, last_bitbucket_issue.iid)
+        Issue.track_namespace_iid!(project.project_namespace, last_bitbucket_issue.iid)
       end
 
       def repo

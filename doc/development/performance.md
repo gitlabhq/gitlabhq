@@ -815,6 +815,25 @@ Make sure that you have relevant test data for your filter in the
 [`spec/fixtures/markdown.md.erb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/markdown.md.erb)
 file.
 
+### Benchmarking specific filters
+
+A specific filter can be benchmarked by specifying the filter name as an environment variable.
+For example, to benchmark the `MarkdownFilter` use
+
+```plaintext
+FILTER=MarkdownFilter bin/rake benchmark:banzai
+```
+
+which generates the output
+
+```plaintext
+--> Benchmarking MarkdownFilter for FullPipeline
+Warming up --------------------------------------
+            Markdown   271.000  i/100ms
+Calculating -------------------------------------
+            Markdown      2.584k (±16.5%) i/s -     23.848k in  10.042503s
+```
+
 ## Reading from files and other data sources
 
 Ruby offers several convenience functions that deal with file contents specifically

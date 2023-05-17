@@ -44,10 +44,6 @@ const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
 
 describe('Delete tag modal', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Deleting a regular tag', () => {
     const expectedTitle = 'Delete tag. Are you ABSOLUTELY SURE?';
     const expectedMessage = "You're about to permanently delete the tag test-tag.";
@@ -73,7 +69,7 @@ describe('Delete tag modal', () => {
       expect(submitFormSpy).toHaveBeenCalled();
     });
 
-    it('calls show on the modal when a `openModal` event is received through the event hub', async () => {
+    it('calls show on the modal when a `openModal` event is received through the event hub', () => {
       const showSpy = jest.spyOn(wrapper.vm.$refs.modal, 'show');
 
       eventHub.$emit('openModal', {

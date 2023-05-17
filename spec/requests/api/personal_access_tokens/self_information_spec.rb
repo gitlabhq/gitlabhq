@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :authentication_and_authorization do
+RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :system_access do
   let(:path) { '/personal_access_tokens/self' }
   let(:token) { create(:personal_access_token, user: current_user) }
 
@@ -12,7 +12,7 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :au
     subject(:delete_token) { delete api(path, personal_access_token: token) }
 
     shared_examples 'revoking token succeeds' do
-      it 'revokes token' do
+      it 'revokes token', :aggregate_failures do
         delete_token
 
         expect(response).to have_gitlab_http_status(:no_content)
@@ -72,7 +72,7 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :au
       context "with a '#{scope}' scoped token" do
         let(:token) { create(:personal_access_token, scopes: [scope], user: current_user) }
 
-        it 'shows token info' do
+        it 'shows token info', :aggregate_failures do
           get api(path, personal_access_token: token)
 
           expect(response).to have_gitlab_http_status(:ok)

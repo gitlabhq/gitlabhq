@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::IssuableEscalationStatuses::BuildService do
+RSpec.describe IncidentManagement::IssuableEscalationStatuses::BuildService, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:incident, reload: true) { create(:incident, project: project) }
 

@@ -42,6 +42,10 @@ module API
                 present []
               end
             end
+
+            def generate_metadata_service(packages)
+              ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
+            end
           end
 
           params do
@@ -60,6 +64,7 @@ module API
               ]
               tags %w[npm_packages]
             end
+            route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
@@ -72,7 +77,10 @@ module API
 
               not_found! if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              track_package_event(:list_tags, :npm, project: project, namespace: project.namespace)
+
+              metadata = generate_metadata_service(packages).execute(only_dist_tags: true)
+              present ::Packages::Npm::PackagePresenter.new(metadata),
                       with: ::API::Entities::NpmPackageTag
             end
 
@@ -91,6 +99,7 @@ module API
                 ]
                 tags %w[npm_packages]
               end
+              route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               put format: false do
                 package_name = params[:package_name]
                 version = env['api.request.body']
@@ -105,6 +114,8 @@ module API
                 package = ::Packages::Npm::PackageFinder.new(package_name, project: project)
                                                         .find_by_version(version)
                 not_found!('Package') unless package
+
+                track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
 
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
@@ -122,6 +133,7 @@ module API
                 ]
                 tags %w[npm_packages]
               end
+              route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               delete format: false do
                 package_name = params[:package_name]
                 tag = params[:tag]
@@ -136,6 +148,8 @@ module API
                   .find_by_name(tag)
 
                 not_found!('Package tag') unless package_tag
+
+                track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 
@@ -163,8 +177,13 @@ module API
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
-            packages = ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
-                                                     .execute
+            packages =
+              if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+                finder_for_endpoint_scope(package_name).execute
+              else
+                ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
+                                              .execute
+              end
 
             redirect_request = project_or_nil.blank? || packages.empty?
 
@@ -178,7 +197,7 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
                 with: ::API::Entities::NpmPackage
             end
           end

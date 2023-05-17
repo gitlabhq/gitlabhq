@@ -7,7 +7,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :kubernetes_management
+      feature_category :deployment_management
 
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
@@ -28,7 +28,7 @@ module API
             end
             get do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user).execute
+              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).execute
 
               present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
@@ -43,7 +43,7 @@ module API
             end
             get ':token_id' do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-              token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
+              token = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).find(params[:token_id])
 
               present token, with: Entities::Clusters::AgentToken
             end
@@ -65,7 +65,9 @@ module API
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
               result = ::Clusters::AgentTokens::CreateService.new(
-                container: agent.project, current_user: current_user, params: token_params.merge(agent_id: agent.id)
+                agent: agent,
+                current_user: current_user,
+                params: token_params
               ).execute
 
               bad_request!(result[:message]) if result[:status] == :error
@@ -86,8 +88,9 @@ module API
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
               token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
 
-              # Skipping explicit error handling and relying on exceptions
-              token.revoked!
+              result = ::Clusters::AgentTokens::RevokeService.new(token: token, current_user: current_user).execute
+
+              bad_request!(result[:message]) if result[:status] == :error
 
               status :no_content
             end

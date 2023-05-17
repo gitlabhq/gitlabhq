@@ -78,7 +78,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       it 'replaces existing label to a link' do
         # rubocop:disable Layout/LineLength
         is_expected.to match(
-          %r(<p>.+<a href="[\w/]+-/issues\?label_name=#{label.name}".+style="background-color: #\d{6}".*>#{label.name}</span></a></span> ~unknown</p>)
+          %r{<p>.+<a href="[\w\-/]+-/issues\?label_name=#{label.name}".+style="background-color: #\d{6}".*>#{label.name}</span></a></span> ~unknown</p>}
         )
         # rubocop:enable Layout/LineLength
       end
@@ -95,7 +95,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       let(:markdown) { "issue ##{issue.iid}" }
 
       it 'contains a link to the issue' do
-        is_expected.to match(%r(<p>issue <a href="[\w/]+-/issues/#{issue.iid}".*>##{issue.iid}</a></p>))
+        is_expected.to match(%r{<p>issue <a href="[\w\-/]+-/issues/#{issue.iid}".*>##{issue.iid}</a></p>})
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       let(:markdown) { "MR !#{mr.iid}" }
 
       it 'contains a link to the merge request' do
-        is_expected.to match(%r(<p>MR <a href="[\w/]+-/merge_requests/#{mr.iid}".*>!#{mr.iid}</a></p>))
+        is_expected.to match(%r{<p>MR <a href="[\w\-/]+-/merge_requests/#{mr.iid}".*>!#{mr.iid}</a></p>})
       end
     end
   end

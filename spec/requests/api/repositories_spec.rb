@@ -236,7 +236,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         get api(route, current_user)
 
         expect(response.headers["Cache-Control"]).to eq("max-age=0, private, must-revalidate, no-store, no-cache")
-        expect(response.headers["Pragma"]).to eq("no-cache")
         expect(response.headers["Expires"]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
       end
 

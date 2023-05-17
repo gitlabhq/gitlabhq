@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerExpirationPolicies::CleanupService do
+RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :container_registry do
   let_it_be(:repository, reload: true) { create(:container_repository, expiration_policy_started_at: 30.minutes.ago) }
   let_it_be(:project) { repository.project }
 
@@ -190,6 +190,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
 
       context 'with only the current repository started_at before the policy next_run_at' do
         before do
+          repository.update!(expiration_policy_started_at: policy.next_run_at + 9.minutes)
           repository2.update!(expiration_policy_started_at: policy.next_run_at + 10.minutes)
           repository3.update!(expiration_policy_started_at: policy.next_run_at + 12.minutes)
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
+RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_category: :navigation do
   let_it_be(:project) { create(:project) }
 
   let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
@@ -11,6 +11,10 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   subject { described_class.new(context) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { subject }
+  end
 
   describe '#render?' do
     context 'when menu does not have any menu item to show' do
@@ -35,7 +39,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
     before do
       stub_container_registry_config(enabled: registry_enabled)
       stub_config(packages: { enabled: packages_enabled })
-      stub_feature_flags(harbor_registry_integration: false)
+      stub_feature_flags(harbor_registry_integration: false, ml_experiment_tracking: false)
     end
 
     context 'when Packages Registry is visible' do
@@ -164,6 +168,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
           stub_feature_flags(harbor_registry_integration: true)
 
           is_expected.not_to be_nil
+          expect(subject.active_routes[:controller]).to eq('projects/harbor/repositories')
         end
       end
 
@@ -171,6 +176,26 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
         it 'does not add the menu item to the list' do
           stub_feature_flags(harbor_registry_integration: true)
           project.harbor_integration.update!(active: false)
+
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    describe 'Model experiments' do
+      let(:item_id) { :model_experiments }
+
+      context 'when :ml_experiment_tracking is enabled' do
+        it 'shows the menu item' do
+          stub_feature_flags(ml_experiment_tracking: true)
+
+          is_expected.not_to be_nil
+        end
+      end
+
+      context 'when :ml_experiment_tracking is disabled' do
+        it 'does not show the menu item' do
+          stub_feature_flags(ml_experiment_tracking: false)
 
           is_expected.to be_nil
         end

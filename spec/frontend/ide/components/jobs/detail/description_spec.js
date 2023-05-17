@@ -14,10 +14,6 @@ describe('IDE job description', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders job details', () => {
     expect(wrapper.text()).toContain('#1');
     expect(wrapper.text()).toContain('test');

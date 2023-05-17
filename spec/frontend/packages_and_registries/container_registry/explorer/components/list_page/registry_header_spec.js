@@ -35,11 +35,6 @@ describe('registry_header', () => {
     await nextTick();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('header', () => {
     it('has a title', () => {
       mountComponent({ metadataLoading: true });
@@ -86,7 +81,7 @@ describe('registry_header', () => {
         });
       });
 
-      describe('expiration policy', () => {
+      describe('cleanup policy', () => {
         it('when is disabled', async () => {
           await mountComponent({
             expirationPolicy: { enabled: false },
@@ -116,11 +111,11 @@ describe('registry_header', () => {
           const cleanupLink = findSetupCleanUpLink();
 
           expect(text.exists()).toBe(true);
-          expect(text.props('text')).toBe('Expiration policy will run in ');
+          expect(text.props('text')).toBe('Cleanup will run in ');
           expect(cleanupLink.exists()).toBe(true);
           expect(cleanupLink.text()).toBe(SET_UP_CLEANUP);
         });
-        it('when the expiration policy is completely disabled', async () => {
+        it('when the cleanup policy is not scheduled', async () => {
           await mountComponent({
             expirationPolicy: { enabled: true },
             expirationPolicyHelpPagePath: 'foo',

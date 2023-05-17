@@ -8,15 +8,19 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
 
+  let(:visible_label_selection_on_metadata) { false }
+
   context "when unauthenticated" do
     before do
       sign_out(:user)
     end
 
-    it "redirects to signin then back to new issue after signin", :js do
+    it "redirects to signin then back to new issue after signin", :js, quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1486' do
       create(:issue, project: project)
 
       visit project_issues_path(project)
+
+      wait_for_all_requests
 
       page.within ".nav-controls" do
         click_link "New issue"
@@ -32,6 +36,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
 
   context "when signed in as guest", :js do
     before do
+      stub_feature_flags(visible_label_selection_on_metadata: visible_label_selection_on_metadata)
       project.add_guest(user)
       sign_in(user)
 
@@ -61,18 +66,18 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         page.within(form) do
           click_button("Preview")
 
-          preview = find(".js-md-preview") # this element is findable only when the "Preview" link is clicked.
+          preview = find(".js-vue-md-preview") # this element is findable only when the "Preview" link is clicked.
 
           expect(preview).to have_content("Nothing to preview.")
 
-          click_button("Write")
+          click_button("Continue editing")
           fill_in("Description", with: "Bug fixed :smile:")
           click_button("Preview")
 
           expect(preview).to have_css("gl-emoji")
           expect(textarea).not_to be_visible
 
-          click_button("Write")
+          click_button("Continue editing")
           fill_in("Description", with: "/confidential")
           click_button("Preview")
 
@@ -90,18 +95,50 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         end
       end
 
-      it "creates issue" do
-        issue_title = "500 error on profile"
+      context 'with the visible_label_selection_on_metadata feature flag enabled' do
+        let(:visible_label_selection_on_metadata) { true }
 
-        fill_in("Title", with: issue_title)
-        click_button("Label")
-        click_link(label_titles.first)
-        click_button("Create issue")
+        it "creates issue" do
+          issue_title = "500 error on profile"
 
-        expect(page).to have_content(issue_title)
-          .and have_content(user.name)
-          .and have_content(project.name)
-          .and have_content(label_titles.first)
+          fill_in("Title", with: issue_title)
+
+          click_button _('Select label')
+
+          wait_for_all_requests
+
+          page.within '[data-testid="sidebar-labels"]' do
+            click_button label_titles.first
+            click_button _('Close')
+
+            wait_for_requests
+          end
+
+          click_button("Create issue")
+
+          expect(page).to have_content(issue_title)
+                      .and have_content(user.name)
+                      .and have_content(project.name)
+                      .and have_content(label_titles.first)
+        end
+      end
+
+      context 'with the visible_label_selection_on_metadata feature flag disabled' do
+        let(:visible_label_selection_on_metadata) { false }
+
+        it "creates issue" do
+          issue_title = "500 error on profile"
+
+          fill_in("Title", with: issue_title)
+          click_button("Label")
+          click_link(label_titles.first)
+          click_button("Create issue")
+
+          expect(page).to have_content(issue_title)
+                      .and have_content(user.name)
+                      .and have_content(project.name)
+                      .and have_content(label_titles.first)
+        end
       end
     end
 
@@ -126,6 +163,8 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         end
       end
     end
+
+    it_behaves_like 'edits content using the content editor'
 
     context 'dropzone upload file', :js do
       before do
@@ -184,7 +223,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with issue type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Issue')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Issue')
       end
 
       it 'does not hide the milestone select' do
@@ -200,7 +239,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'does not pre-fill the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).not_to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).not_to have_content('Incident')
       end
 
       it 'shows the milestone select' do
@@ -231,11 +270,27 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         wait_for_requests
 
         expect(page).to have_field('Title', with: '')
+        expect(page).to have_field('Description', with: '')
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
 
         click_button 'Create issue'
+      end
+    end
+
+    it 'clears local storage after cancelling a new issue creation', :js do
+      2.times do
+        visit new_project_issue_path(project)
+        wait_for_requests
+
+        expect(page).to have_field('Title', with: '')
+        expect(page).to have_field('Description', with: '')
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_link 'Cancel'
       end
     end
   end
@@ -257,7 +312,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Incident')
       end
 
       it 'hides the epic select' do

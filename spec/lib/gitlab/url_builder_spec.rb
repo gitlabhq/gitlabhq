@@ -22,8 +22,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
-      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}?iid_path=true" }
-      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}?iid_path=true" }
+      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
+      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -225,28 +225,6 @@ RSpec.describe Gitlab::UrlBuilder do
 
       it 'returns the URL for the real object' do
         expect(subject.build(object, only_path: true)).to eq("/#{project.full_path}")
-      end
-    end
-
-    context 'when use_iid_in_work_items_path feature flag is disabled' do
-      before do
-        stub_feature_flags(use_iid_in_work_items_path: false)
-      end
-
-      context 'when a task issue is passed' do
-        it 'returns a path using the work item\'s ID and no query params' do
-          task = create(:issue, :task)
-
-          expect(subject.build(task, only_path: true)).to eq("/#{task.project.full_path}/-/work_items/#{task.id}")
-        end
-      end
-
-      context 'when a work item is passed' do
-        it 'returns a path using the work item\'s ID and no query params' do
-          work_item = create(:work_item)
-
-          expect(subject.build(work_item, only_path: true)).to eq("/#{work_item.project.full_path}/-/work_items/#{work_item.id}")
-        end
       end
     end
   end

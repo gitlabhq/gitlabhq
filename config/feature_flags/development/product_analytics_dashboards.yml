@@ -1,0 +1,8 @@
+---
+name: product_analytics_dashboards
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115177
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398653
+milestone: '15.11'
+type: development
+group: group::product analytics
+default_enabled: false

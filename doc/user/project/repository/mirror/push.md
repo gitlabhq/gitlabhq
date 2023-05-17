@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
 # Push mirroring **(FREE)**
@@ -26,8 +25,10 @@ When you push a change to the upstream repository, the push mirror receives it:
 - Within five minutes.
 - Within one minute, if you enabled **Only mirror protected branches**.
 
-In the case of a diverged branch, an error displays in the **Mirroring repositories**
-section.
+When a branch is merged into the default branch and deleted in the source project,
+it is deleted from the remote mirror on the next push. Branches with unmerged
+changes are kept. If a branch diverges, the **Mirroring repositories** section
+displays an error.
 
 ## Configure push mirroring
 
@@ -194,4 +195,4 @@ If it isn't working correctly, a red `error` tag appears, and shows the error me
 
 ## Related topics
 
-- [Remote mirrors API](../../../../api/remote_mirrors.md).
+- [Remote mirrors API](../../../../api/remote_mirrors.md)

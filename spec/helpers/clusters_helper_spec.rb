@@ -166,6 +166,90 @@ RSpec.describe ClustersHelper do
     end
   end
 
+  describe '#render_cluster_info_tab_content' do
+    subject { helper.render_cluster_info_tab_content(tab, expanded) }
+
+    let(:expanded) { true }
+
+    context 'environments' do
+      let(:tab) { 'environments' }
+
+      it 'renders environemtns tab' do
+        expect(helper).to receive(:render_if_exists).with('clusters/clusters/environments')
+        subject
+      end
+    end
+
+    context 'health' do
+      let(:tab) { 'health' }
+
+      it 'renders details tab' do
+        expect(helper).to receive(:render).with('details', { expanded: expanded })
+        subject
+      end
+    end
+
+    context 'apps' do
+      let(:tab) { 'apps' }
+
+      it 'renders apps tab' do
+        expect(helper).to receive(:render).with('applications')
+        subject
+      end
+    end
+
+    context 'integrations ' do
+      let(:tab) { 'integrations' }
+
+      it 'renders details tab' do
+        expect(helper).to receive(:render).with('details', { expanded: expanded })
+        subject
+      end
+    end
+
+    context 'settings' do
+      let(:tab) { 'settings' }
+
+      it 'renders settings tab' do
+        expect(helper).to receive(:render).with('advanced_settings_container')
+        subject
+      end
+    end
+
+    context 'details ' do
+      let(:tab) { 'details' }
+
+      it 'renders details tab' do
+        expect(helper).to receive(:render).with('details', { expanded: expanded })
+        subject
+      end
+    end
+
+    context 'when remove_monitor_metrics FF is disabled' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: false)
+      end
+
+      context 'health' do
+        let(:tab) { 'health' }
+
+        it 'renders health tab' do
+          expect(helper).to receive(:render_if_exists).with('clusters/clusters/health')
+          subject
+        end
+      end
+
+      context 'integrations ' do
+        let(:tab) { 'integrations' }
+
+        it 'renders integrations tab' do
+          expect(helper).to receive(:render).with('integrations')
+          subject
+        end
+      end
+    end
+  end
+
   describe '#cluster_type_label' do
     subject { helper.cluster_type_label(cluster_type) }
 

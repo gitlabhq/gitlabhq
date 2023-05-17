@@ -4,7 +4,7 @@
 - if @snippets.exists?
   - if current_user
     .top-area
-      - include_private = @project.team.member?(current_user) || current_user.admin?
+      - include_private = @project.member?(current_user) || current_user.admin?
       = render partial: 'snippets/snippets_scope_menu', locals: { subject: @project, include_private: include_private, counts: @snippet_counts }
 
       - if new_project_snippet_link.present?

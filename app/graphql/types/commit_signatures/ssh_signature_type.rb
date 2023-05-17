@@ -10,14 +10,19 @@ module Types
 
       authorize :download_code
 
-      field :user, Types::UserType, null: true,
-                                    method: :signed_by_user,
-                                    calls_gitaly: true,
-                                    description: 'User associated with the key.'
+      field :user, Types::UserType,
+        null: true,
+        method: :signed_by_user,
+        calls_gitaly: true,
+        description: 'User associated with the key.'
 
       field :key, Types::KeyType,
-                  null: true,
-                  description: 'SSH key used for the signature.'
+        null: true,
+        description: 'SSH key used for the signature.'
+
+      field :key_fingerprint_sha256, String,
+        null: true,
+        description: 'Fingerprint of the key.'
     end
   end
 end

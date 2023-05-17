@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PostCreationWorker do
+RSpec.describe Projects::PostCreationWorker, feature_category: :source_code_management do
   let_it_be(:user) { create :user }
 
   let(:worker) { described_class.new }

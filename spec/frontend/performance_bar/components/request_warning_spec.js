@@ -5,10 +5,6 @@ describe('request warning', () => {
   let wrapper;
   const htmlId = 'request-123';
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the request has warnings', () => {
     beforeEach(() => {
       wrapper = shallowMount(RequestWarning, {

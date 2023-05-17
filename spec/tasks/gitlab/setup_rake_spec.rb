@@ -7,6 +7,8 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/dev'
+    Rake.application.rake_require 'tasks/gitlab/db/validate_config'
+    Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
     Rake.application.rake_require 'tasks/gitlab/setup'
   end
 
@@ -115,11 +117,13 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
 
     def expect_database_to_be_setup
       expect(Rake::Task['db:reset']).to receive(:invoke)
+      expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).to receive(:invoke)
     end
 
     def expect_database_not_to_be_setup
       expect(Rake::Task['db:reset']).not_to receive(:invoke)
+      expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
     end
   end

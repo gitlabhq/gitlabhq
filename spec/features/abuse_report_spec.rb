@@ -12,28 +12,10 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
   before do
     sign_in(reporter1)
+    stub_feature_flags(moved_mr_sidebar: false)
   end
 
   describe 'report abuse to administrator' do
-    shared_examples 'reports the user with an abuse category' do
-      it do
-        fill_and_submit_abuse_category_form
-        fill_and_submit_report_abuse_form
-
-        expect(page).to have_content 'Thank you for your report'
-      end
-    end
-
-    shared_examples 'reports the user without an abuse category' do
-      it do
-        click_link 'Report abuse to administrator'
-
-        fill_and_submit_report_abuse_form
-
-        expect(page).to have_content 'Thank you for your report'
-      end
-    end
-
     context 'when reporting an issue for abuse' do
       before do
         visit project_issue_path(project, issue)
@@ -133,7 +115,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit project_issue_path(project, issue)
-        click_button 'More actions'
+        find('.more-actions-toggle button').click
       end
 
       it_behaves_like 'reports the user with an abuse category'
@@ -143,7 +125,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
   private
 
   def fill_and_submit_abuse_category_form(category = "They're posting spam.")
-    click_button 'Report abuse to administrator'
+    click_button 'Report abuse'
 
     choose category
     click_button 'Next'

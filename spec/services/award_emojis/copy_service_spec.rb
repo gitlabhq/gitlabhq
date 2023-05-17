@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AwardEmojis::CopyService do
+RSpec.describe AwardEmojis::CopyService, feature_category: :team_planning do
   let_it_be(:from_awardable) do
     create(
       :issue,

@@ -10,11 +10,8 @@ export const LEVEL_TYPES = {
   DEPLOY_KEY: 'deploy_key',
 };
 
-export const LEVEL_ID_PROP = {
-  ROLE: 'access_level',
-  USER: 'user_id',
-  GROUP: 'group_id',
-  DEPLOY_KEY: 'deploy_key_id',
-};
+export const BRANCH_RULES_ANCHOR = '#branch-rules';
 
-export const ACCESS_LEVEL_NONE = 0;
+export const IS_PROTECTED_BRANCH_CREATED = 'is_protected_branch_created';
+
+export const PROTECTED_BRANCHES_ANCHOR = '#js-protected-branches-settings';

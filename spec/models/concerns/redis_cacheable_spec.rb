@@ -50,6 +50,58 @@ RSpec.describe RedisCacheable do
 
       subject
     end
+
+    context 'with existing cached attributes' do
+      before do
+        instance.cache_attributes({ existing_attr: 'value' })
+      end
+
+      it 'sets the cache attributes' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:set).with(cache_key, payload.to_json, anything).and_call_original
+        end
+
+        expect { subject }.to change { instance.cached_attribute(:existing_attr) }.from('value').to(nil)
+      end
+    end
+  end
+
+  describe '#merge_cache_attributes' do
+    subject { instance.merge_cache_attributes(payload) }
+
+    let(:existing_attributes) { { existing_attr: 'value', name: 'value' } }
+
+    before do
+      instance.cache_attributes(existing_attributes)
+    end
+
+    context 'with different attribute values' do
+      let(:payload) { { name: 'new_value' } }
+
+      it 'merges the cache attributes with existing values' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:set).with(cache_key, existing_attributes.merge(payload).to_json, anything)
+            .and_call_original
+        end
+
+        subject
+
+        expect(instance.cached_attribute(:existing_attr)).to eq 'value'
+        expect(instance.cached_attribute(:name)).to eq 'new_value'
+      end
+    end
+
+    context 'with no new or changed attribute values' do
+      let(:payload) { { name: 'value' } }
+
+      it 'does not try to set Redis key' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).not_to receive(:set)
+        end
+
+        subject
+      end
+    end
   end
 
   describe '#cached_attr_reader', :clean_gitlab_redis_cache do

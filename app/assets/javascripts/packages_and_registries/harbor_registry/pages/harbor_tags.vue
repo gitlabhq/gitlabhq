@@ -4,7 +4,7 @@ import TagsList from '~/packages_and_registries/harbor_registry/components/tags/
 import { getHarborTags } from '~/rest_api';
 import { FETCH_TAGS_ERROR_MESSAGE } from '~/packages_and_registries/harbor_registry/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { formatPagination } from '~/packages_and_registries/harbor_registry/utils';
 
 export default {

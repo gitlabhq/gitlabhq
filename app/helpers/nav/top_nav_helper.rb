@@ -64,7 +64,6 @@ module Nav
     end
 
     def build_anonymous_view_model(builder:)
-      # These come from `app/views/layouts/nav/_explore.html.ham`
       if explore_nav_link?(:projects)
         builder.add_primary_menu_item_with_shortcut(
           header: top_nav_localized_headers[:explore],
@@ -80,6 +79,15 @@ module Nav
           href: explore_groups_path,
           active: nav == 'group' || active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
           **groups_menu_item_attrs
+        )
+      end
+
+      if explore_nav_link?(:topics)
+        builder.add_primary_menu_item_with_shortcut(
+          header: top_nav_localized_headers[:explore],
+          active: active_nav_link?(page: topics_explore_projects_path, path: 'projects#topic'),
+          href: topics_explore_projects_path,
+          **topics_menu_item_attrs
         )
       end
 
@@ -123,39 +131,54 @@ module Nav
         builder.add_view(GROUPS_VIEW, container_view_props(namespace: 'groups', current_item: current_item, submenu: groups_submenu))
       end
 
+      if dashboard_nav_link?(:your_work)
+        builder.add_primary_menu_item(
+          id: 'your-work',
+          header: top_nav_localized_headers[:switch_to],
+          title: _('Your work'),
+          href: dashboard_projects_path,
+          active: active_nav_link?(controller: []),
+          icon: 'work',
+          data: { **menu_data_tracking_attrs('your-work') }
+        )
+      end
+
+      if dashboard_nav_link?(:explore)
+        builder.add_primary_menu_item(
+          id: 'explore',
+          header: top_nav_localized_headers[:switch_to],
+          title: _('Explore'),
+          href: explore_projects_path,
+          active: active_nav_link?(controller: ["explore/groups", "explore/snippets"], page: ["/explore/projects", "/explore", "/explore/projects/topics"], path: ["projects#topic"]),
+          icon: 'compass',
+          data: { **menu_data_tracking_attrs('explore') }
+        )
+      end
+
       if dashboard_nav_link?(:milestones)
-        builder.add_primary_menu_item_with_shortcut(
-          id: 'milestones',
-          header: top_nav_localized_headers[:explore],
+        builder.add_shortcut(
+          id: 'milestones-shortcut',
           title: _('Milestones'),
           href: dashboard_milestones_path,
-          active: active_nav_link?(controller: 'dashboard/milestones'),
-          icon: 'clock',
-          data: { **menu_data_tracking_attrs('milestones') },
-          shortcut_class: 'dashboard-shortcuts-milestones'
+          css_class: 'dashboard-shortcuts-milestones'
         )
       end
 
       if dashboard_nav_link?(:snippets)
-        builder.add_primary_menu_item_with_shortcut(
-          header: top_nav_localized_headers[:explore],
-          active: active_nav_link?(controller: 'dashboard/snippets'),
-          data: { qa_selector: 'snippets_link', **menu_data_tracking_attrs('snippets') },
+        builder.add_shortcut(
+          id: 'snippets-shortcut',
+          title: _('Snippets'),
           href: dashboard_snippets_path,
-          **snippets_menu_item_attrs
+          css_class: 'dashboard-shortcuts-snippets'
         )
       end
 
       if dashboard_nav_link?(:activity)
-        builder.add_primary_menu_item_with_shortcut(
-          id: 'activity',
-          header: top_nav_localized_headers[:explore],
+        builder.add_shortcut(
+          id: 'activity-shortcut',
           title: _('Activity'),
           href: activity_dashboard_path,
-          active: active_nav_link?(path: 'dashboard#activity'),
-          icon: 'history',
-          data: { **menu_data_tracking_attrs('activity') },
-          shortcut_class: 'dashboard-shortcuts-activity'
+          css_class: 'dashboard-shortcuts-activity'
         )
       end
 
@@ -180,14 +203,14 @@ module Nav
         if header_link?(:admin_mode)
           builder.add_secondary_menu_item(
             id: 'leave_admin_mode',
-            title: _('Leave Admin Mode'),
+            title: _('Leave admin mode'),
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock-open',
             href: destroy_admin_session_path,
             data: { method: 'post', **menu_data_tracking_attrs('leave_admin_mode') }
           )
         elsif current_user.admin?
-          title = _('Enter Admin Mode')
+          title = _('Enter admin mode')
 
           builder.add_secondary_menu_item(
             id: 'enter_admin_mode',
@@ -217,6 +240,15 @@ module Nav
         title: _('Groups'),
         icon: 'group',
         shortcut_class: 'dashboard-shortcuts-groups'
+      }
+    end
+
+    def topics_menu_item_attrs
+      {
+        id: 'topics',
+        title: _('Topics'),
+        icon: 'labels',
+        shortcut_class: 'dashboard-shortcuts-topics'
       }
     end
 

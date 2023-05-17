@@ -112,7 +112,7 @@ module Gitlab
     end
 
     def parse_entries(values, klass)
-      values.map { |value| parse_entry(value, klass) }.compact
+      values.filter_map { |value| parse_entry(value, klass) }
     end
   end
 end

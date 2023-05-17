@@ -19,7 +19,7 @@ module QA
             element :markdown_editor_form_field
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/markdown/editor_mode_dropdown.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/markdown/editor_mode_switcher.vue' do
             element :editing_mode_switcher
           end
 
@@ -59,9 +59,6 @@ module QA
 
         def use_new_editor
           click_element(:editing_mode_switcher)
-          within_element(:editing_mode_switcher) do
-            find('button', text: 'Rich text').click
-          end
 
           wait_until(reload: false) do
             has_element?(:content_editor_container)

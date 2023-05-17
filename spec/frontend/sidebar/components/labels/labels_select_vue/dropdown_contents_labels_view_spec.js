@@ -5,27 +5,31 @@ import {
   GlSearchBoxByType,
   GlLink,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue';
 import LabelItem from '~/sidebar/components/labels/labels_select_vue/label_item.vue';
-
+import { stubComponent } from 'helpers/stub_component';
 import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
 import * as getters from '~/sidebar/components/labels/labels_select_vue/store/getters';
 import mutations from '~/sidebar/components/labels/labels_select_vue/store/mutations';
 import defaultState from '~/sidebar/components/labels/labels_select_vue/store/state';
 
-import { mockConfig, mockLabels, mockRegularLabel } from './mock_data';
+import { mockConfig, mockLabels } from './mock_data';
 
 Vue.use(Vuex);
 
 describe('DropdownContentsLabelsView', () => {
   let wrapper;
+  let store;
 
-  const createComponent = (initialState = mockConfig) => {
-    const store = new Vuex.Store({
+  const focusInputMock = jest.fn();
+  const updateSelectedLabelsMock = jest.fn();
+  const toggleDropdownContentsMock = jest.fn();
+
+  const createComponent = (initialState = mockConfig, mountFn = shallowMountExtended) => {
+    store = new Vuex.Store({
       getters,
       mutations,
       state: {
@@ -36,14 +40,20 @@ describe('DropdownContentsLabelsView', () => {
       actions: {
         ...actions,
         fetchLabels: jest.fn(),
+        updateSelectedLabels: updateSelectedLabelsMock,
+        toggleDropdownContents: toggleDropdownContentsMock,
       },
     });
 
     store.dispatch('setInitialState', initialState);
-    store.dispatch('receiveLabelsSuccess', mockLabels);
 
-    wrapper = shallowMount(DropdownContentsLabelsView, {
+    wrapper = mountFn(DropdownContentsLabelsView, {
       store,
+      stubs: {
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: { focusInput: focusInputMock },
+        }),
+      },
     });
   };
 
@@ -51,48 +61,95 @@ describe('DropdownContentsLabelsView', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
+  const findDropdownContent = () => wrapper.findByTestId('dropdown-content');
+  const findDropdownTitle = () => wrapper.findByTestId('dropdown-title');
+  const findDropdownFooter = () => wrapper.findByTestId('dropdown-footer');
+  const findNoMatchingResults = () => wrapper.findByTestId('no-matching-results');
+  const findCreateLabelLink = () => wrapper.findByTestId('create-label-link');
+  const findLabelsList = () => wrapper.findByTestId('labels-list');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findLabelItems = () => wrapper.findAllComponents(LabelItem);
+
+  const setCurrentHighlightItem = (value) => {
+    let initialValue = -1;
+
+    while (initialValue < value) {
+      findLabelsList().trigger('keydown.down');
+      initialValue += 1;
+    }
+  };
+
+  describe('component', () => {
+    it('calls `focusInput` on searchInput field when the component appears', async () => {
+      findIntersectionObserver().vm.$emit('appear');
+
+      await nextTick();
+
+      expect(focusInputMock).toHaveBeenCalled();
+    });
+
+    it('removes loaded labels when the component disappears', async () => {
+      jest.spyOn(store, 'dispatch');
+
+      await findIntersectionObserver().vm.$emit('disappear');
+
+      expect(store.dispatch).toHaveBeenCalledWith(expect.anything(), []);
+    });
   });
 
-  const findDropdownContent = () => wrapper.find('[data-testid="dropdown-content"]');
-  const findDropdownTitle = () => wrapper.find('[data-testid="dropdown-title"]');
-  const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-
-  describe('computed', () => {
-    describe('visibleLabels', () => {
-      it('returns matching labels filtered with `searchKey`', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          searchKey: 'bug',
-        });
-
-        expect(wrapper.vm.visibleLabels.length).toBe(1);
-        expect(wrapper.vm.visibleLabels[0].title).toBe('Bug');
+  describe('labels', () => {
+    describe('when it is visible', () => {
+      beforeEach(() => {
+        createComponent(undefined, mountExtended);
+        store.dispatch('receiveLabelsSuccess', mockLabels);
       });
 
-      it('returns matching labels with fuzzy filtering', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          searchKey: 'bg',
-        });
+      it('returns matching labels filtered with `searchKey`', async () => {
+        await findSearchBoxByType().vm.$emit('input', 'bug');
 
-        expect(wrapper.vm.visibleLabels.length).toBe(2);
-        expect(wrapper.vm.visibleLabels[0].title).toBe('Bug');
-        expect(wrapper.vm.visibleLabels[1].title).toBe('Boog');
+        const labelItems = findLabelItems();
+        expect(labelItems).toHaveLength(1);
+        expect(labelItems.at(0).text()).toBe('Bug');
       });
 
-      it('returns all labels when `searchKey` is empty', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          searchKey: '',
-        });
+      it('returns matching labels with fuzzy filtering', async () => {
+        await findSearchBoxByType().vm.$emit('input', 'bg');
 
-        expect(wrapper.vm.visibleLabels.length).toBe(mockLabels.length);
+        const labelItems = findLabelItems();
+        expect(labelItems).toHaveLength(2);
+        expect(labelItems.at(0).text()).toBe('Bug');
+        expect(labelItems.at(1).text()).toBe('Boog');
+      });
+
+      it('returns all labels when `searchKey` is empty', async () => {
+        await findSearchBoxByType().vm.$emit('input', '');
+
+        expect(findLabelItems()).toHaveLength(mockLabels.length);
+      });
+    });
+
+    describe('when it is clicked', () => {
+      beforeEach(() => {
+        createComponent(undefined, mountExtended);
+        store.dispatch('receiveLabelsSuccess', mockLabels);
+      });
+
+      it('calls action `updateSelectedLabels` with provided `label` param', () => {
+        findLabelItems().at(0).findComponent(GlLink).vm.$emit('click');
+
+        expect(updateSelectedLabelsMock).toHaveBeenCalledWith(expect.anything(), [
+          { ...mockLabels[0], indeterminate: expect.anything(), set: expect.anything() },
+        ]);
+      });
+
+      it('calls action `toggleDropdownContents` when `state.allowMultiselect` is false', () => {
+        store.state.allowMultiselect = false;
+
+        findLabelItems().at(0).findComponent(GlLink).vm.$emit('click');
+
+        expect(toggleDropdownContentsMock).toHaveBeenCalled();
       });
     });
 
@@ -106,190 +163,110 @@ describe('DropdownContentsLabelsView', () => {
       `(
         'returns $returnValue when searchKey is "$searchKey" and visibleLabels is $labelsDescription',
         async ({ searchKey, labels, returnValue }) => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            searchKey,
-          });
+          store.dispatch('receiveLabelsSuccess', labels);
 
-          wrapper.vm.$store.dispatch('receiveLabelsSuccess', labels);
+          await findSearchBoxByType().vm.$emit('input', searchKey);
 
-          await nextTick();
-
-          expect(wrapper.vm.showNoMatchingResultsMessage).toBe(returnValue);
+          expect(findNoMatchingResults().isVisible()).toBe(returnValue);
         },
       );
     });
   });
 
-  describe('methods', () => {
+  describe('create label link', () => {
+    it('calls actions `receiveLabelsSuccess` with empty array and `toggleDropdownContentsCreateView`', async () => {
+      jest.spyOn(store, 'dispatch');
+
+      await findCreateLabelLink().vm.$emit('click');
+
+      expect(store.dispatch).toHaveBeenCalledWith('receiveLabelsSuccess', []);
+      expect(store.dispatch).toHaveBeenCalledWith('toggleDropdownContentsCreateView');
+    });
+  });
+
+  describe('keyboard navigation', () => {
     const fakePreventDefault = jest.fn();
 
-    describe('isLabelSelected', () => {
-      it('returns true when provided `label` param is one of the selected labels', () => {
-        expect(wrapper.vm.isLabelSelected(mockRegularLabel)).toBe(true);
-      });
+    beforeEach(() => {
+      createComponent(undefined, mountExtended);
+      store.dispatch('receiveLabelsSuccess', mockLabels);
+    });
 
-      it('returns false when provided `label` param is not one of the selected labels', () => {
-        expect(wrapper.vm.isLabelSelected(mockLabels[1])).toBe(false);
+    describe('when the "down" key is pressed', () => {
+      it('highlights the item', async () => {
+        expect(findLabelItems().at(0).classes()).not.toContain('is-focused');
+
+        await findLabelsList().trigger('keydown.down');
+
+        expect(findLabelItems().at(0).classes()).toContain('is-focused');
       });
     });
 
-    describe('handleComponentAppear', () => {
-      it('calls `focusInput` on searchInput field', async () => {
-        wrapper.vm.$refs.searchInput.focusInput = jest.fn();
+    describe('when the "up" arrow key is pressed', () => {
+      it('un-highlights the item', async () => {
+        await setCurrentHighlightItem(1);
 
-        await wrapper.vm.handleComponentAppear();
+        expect(findLabelItems().at(1).classes()).toContain('is-focused');
 
-        expect(wrapper.vm.$refs.searchInput.focusInput).toHaveBeenCalled();
+        await findLabelsList().trigger('keydown.up');
+
+        expect(findLabelItems().at(1).classes()).not.toContain('is-focused');
       });
     });
 
-    describe('handleComponentDisappear', () => {
-      it('calls action `receiveLabelsSuccess` with empty array', () => {
-        jest.spyOn(wrapper.vm, 'receiveLabelsSuccess');
+    describe('when the "enter" key is pressed', () => {
+      it('resets the search text', async () => {
+        await setCurrentHighlightItem(1);
+        await findSearchBoxByType().vm.$emit('input', 'bug');
+        await findLabelsList().trigger('keydown.enter', { preventDefault: fakePreventDefault });
 
-        wrapper.vm.handleComponentDisappear();
-
-        expect(wrapper.vm.receiveLabelsSuccess).toHaveBeenCalledWith([]);
-      });
-    });
-
-    describe('handleCreateLabelClick', () => {
-      it('calls actions `receiveLabelsSuccess` with empty array and `toggleDropdownContentsCreateView`', () => {
-        jest.spyOn(wrapper.vm, 'receiveLabelsSuccess');
-        jest.spyOn(wrapper.vm, 'toggleDropdownContentsCreateView');
-
-        wrapper.vm.handleCreateLabelClick();
-
-        expect(wrapper.vm.receiveLabelsSuccess).toHaveBeenCalledWith([]);
-        expect(wrapper.vm.toggleDropdownContentsCreateView).toHaveBeenCalled();
-      });
-    });
-
-    describe('handleKeyDown', () => {
-      it('decreases `currentHighlightItem` value by 1 when Up arrow key is pressed', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 1,
-        });
-
-        wrapper.vm.handleKeyDown({
-          keyCode: UP_KEY_CODE,
-        });
-
-        expect(wrapper.vm.currentHighlightItem).toBe(0);
-      });
-
-      it('increases `currentHighlightItem` value by 1 when Down arrow key is pressed', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 1,
-        });
-
-        wrapper.vm.handleKeyDown({
-          keyCode: DOWN_KEY_CODE,
-        });
-
-        expect(wrapper.vm.currentHighlightItem).toBe(2);
-      });
-
-      it('resets the search text when the Enter key is pressed', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 1,
-          searchKey: 'bug',
-        });
-
-        wrapper.vm.handleKeyDown({
-          keyCode: ENTER_KEY_CODE,
-          preventDefault: fakePreventDefault,
-        });
-
-        expect(wrapper.vm.searchKey).toBe('');
+        expect(findSearchBoxByType().props('value')).toBe('');
         expect(fakePreventDefault).toHaveBeenCalled();
       });
 
-      it('calls action `updateSelectedLabels` with currently highlighted label when Enter key is pressed', () => {
-        jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 2,
-        });
+      it('calls action `updateSelectedLabels` with currently highlighted label', async () => {
+        await setCurrentHighlightItem(2);
+        await findLabelsList().trigger('keydown.enter', { preventDefault: fakePreventDefault });
 
-        wrapper.vm.handleKeyDown({
-          keyCode: ENTER_KEY_CODE,
-          preventDefault: fakePreventDefault,
-        });
-
-        expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([mockLabels[2]]);
-      });
-
-      it('calls action `toggleDropdownContents` when Esc key is pressed', () => {
-        jest.spyOn(wrapper.vm, 'toggleDropdownContents').mockImplementation();
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 1,
-        });
-
-        wrapper.vm.handleKeyDown({
-          keyCode: ESC_KEY_CODE,
-        });
-
-        expect(wrapper.vm.toggleDropdownContents).toHaveBeenCalled();
-      });
-
-      it('calls action `scrollIntoViewIfNeeded` in next tick when any key is pressed', async () => {
-        jest.spyOn(wrapper.vm, 'scrollIntoViewIfNeeded').mockImplementation();
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          currentHighlightItem: 1,
-        });
-
-        wrapper.vm.handleKeyDown({
-          keyCode: DOWN_KEY_CODE,
-        });
-
-        await nextTick();
-        expect(wrapper.vm.scrollIntoViewIfNeeded).toHaveBeenCalled();
+        expect(updateSelectedLabelsMock).toHaveBeenCalledWith(expect.anything(), [mockLabels[2]]);
       });
     });
 
-    describe('handleLabelClick', () => {
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
+    describe('when the "esc" key is pressed', () => {
+      it('calls action `toggleDropdownContents`', async () => {
+        await setCurrentHighlightItem(1);
+        await findLabelsList().trigger('keydown.esc');
+
+        expect(toggleDropdownContentsMock).toHaveBeenCalled();
       });
 
-      it('calls action `updateSelectedLabels` with provided `label` param', () => {
-        wrapper.vm.handleLabelClick(mockRegularLabel);
+      it('scrolls dropdown content into view', async () => {
+        const containerTop = 500;
+        const labelTop = 0;
 
-        expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([mockRegularLabel]);
-      });
+        jest
+          .spyOn(findDropdownContent().element, 'getBoundingClientRect')
+          .mockReturnValueOnce({ top: containerTop });
 
-      it('calls action `toggleDropdownContents` when `state.allowMultiselect` is false', () => {
-        jest.spyOn(wrapper.vm, 'toggleDropdownContents');
-        wrapper.vm.$store.state.allowMultiselect = false;
+        await setCurrentHighlightItem(1);
+        await findLabelsList().trigger('keydown.esc');
 
-        wrapper.vm.handleLabelClick(mockRegularLabel);
-
-        expect(wrapper.vm.toggleDropdownContents).toHaveBeenCalled();
+        expect(findDropdownContent().element.scrollTop).toBe(labelTop - containerTop);
       });
     });
   });
 
   describe('template', () => {
+    beforeEach(() => {
+      store.dispatch('receiveLabelsSuccess', mockLabels);
+    });
+
     it('renders gl-intersection-observer as component root', () => {
       expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
     });
 
     it('renders gl-loading-icon component when `labelsFetchInProgress` prop is true', async () => {
-      wrapper.vm.$store.dispatch('requestLabels');
+      store.dispatch('requestLabels');
 
       await nextTick();
       const loadingIconEl = findLoadingIcon();
@@ -329,30 +306,19 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders label elements for all labels', () => {
-      expect(wrapper.findAllComponents(LabelItem)).toHaveLength(mockLabels.length);
+      expect(findLabelItems()).toHaveLength(mockLabels.length);
     });
 
     it('renders label element with `highlight` set to true when value of `currentHighlightItem` is more than -1', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        currentHighlightItem: 0,
-      });
+      await setCurrentHighlightItem(0);
 
-      await nextTick();
       const labelItemEl = findDropdownContent().findComponent(LabelItem);
 
       expect(labelItemEl.attributes('highlight')).toBe('true');
     });
 
     it('renders element containing "No matching results" when `searchKey` does not match with any label', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        searchKey: 'abc',
-      });
-
-      await nextTick();
+      await findSearchBoxByType().vm.$emit('input', 'abc');
       const noMatchEl = findDropdownContent().find('li');
 
       expect(noMatchEl.isVisible()).toBe(true);
@@ -360,7 +326,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders empty content while loading', async () => {
-      wrapper.vm.$store.state.labelsFetchInProgress = true;
+      store.state.labelsFetchInProgress = true;
 
       await nextTick();
       const dropdownContent = findDropdownContent();
@@ -384,7 +350,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('does not render "Create label" footer link when `state.allowLabelCreate` is `false`', async () => {
-      wrapper.vm.$store.state.allowLabelCreate = false;
+      store.state.allowLabelCreate = false;
 
       await nextTick();
       const createLabelLink = findDropdownFooter().findAllComponents(GlLink).at(0);

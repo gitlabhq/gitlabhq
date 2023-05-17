@@ -41,6 +41,14 @@ module Sidebars
           external_wiki.present?
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.merge({
+            item_id: :external_wiki,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu
+          })
+        end
+
         private
 
         def external_wiki

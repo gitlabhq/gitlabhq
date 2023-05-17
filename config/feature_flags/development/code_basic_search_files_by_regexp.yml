@@ -1,9 +1,0 @@
----
-name: code_basic_search_files_by_regexp
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109987
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389551
-milestone: '15.9'
-type: development
-group: group::global search
-default_enabled: false
-

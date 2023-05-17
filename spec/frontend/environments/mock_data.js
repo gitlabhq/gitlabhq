@@ -313,6 +313,8 @@ const createEnvironment = (data = {}) => ({
   ...data,
 });
 
+const mockKasTunnelUrl = 'https://kas.gitlab.com/k8s-proxy';
+
 export {
   environment,
   environmentsList,
@@ -321,4 +323,5 @@ export {
   tableData,
   deployBoardMockData,
   createEnvironment,
+  mockKasTunnelUrl,
 };

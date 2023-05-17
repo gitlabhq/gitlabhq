@@ -9,6 +9,20 @@ RSpec.describe Admin::IntegrationsController, :enable_admin_mode, feature_catego
     sign_in(admin)
   end
 
+  describe 'GET #edit' do
+    context 'when remove_monitor_metrics is true' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'renders a 404 for the prometheus integration' do
+        get edit_admin_application_settings_integration_path(:prometheus)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET #overrides' do
     let_it_be(:integration) { create(:jira_integration, :instance) }
     let_it_be(:overridden_integration) { create(:jira_integration) }

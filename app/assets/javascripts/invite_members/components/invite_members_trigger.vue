@@ -1,15 +1,17 @@
 <script>
-import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
+  TRIGGER_ELEMENT_WITH_EMOJI,
+  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
+  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '../constants';
 
 export default {
-  components: { GlButton, GlLink, GlIcon },
+  components: { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem },
   props: {
     displayText: {
       type: String,
@@ -40,16 +42,6 @@ export default {
       required: false,
       default: 'button',
     },
-    event: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    label: {
-      type: String,
-      required: false,
-      default: '',
-    },
     qaSelector: {
       type: String,
       required: false,
@@ -58,39 +50,43 @@ export default {
   },
   computed: {
     componentAttributes() {
-      const baseAttributes = {
+      return {
         class: this.classes,
         'data-qa-selector': this.qaSelector,
         'data-test-id': 'invite-members-button',
       };
-
-      if (this.event && this.label) {
-        return {
-          ...baseAttributes,
-          'data-track-action': this.event,
-          'data-track-label': this.label,
-        };
-      }
-
-      return baseAttributes;
+    },
+    item() {
+      return { text: this.displayText };
+    },
+    isButtonTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_BUTTON;
+    },
+    isWithEmojiTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_WITH_EMOJI;
+    },
+    isDropdownWithEmojiTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI;
+    },
+    isDisclosureTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN;
     },
   },
   methods: {
-    checkTrigger(targetTriggerElement) {
-      return this.triggerElement === targetTriggerElement;
-    },
     openModal() {
       eventHub.$emit('openModal', { source: this.triggerSource });
     },
+    handleDisclosureDropdownAction() {
+      this.openModal();
+      this.$emit('modal-opened');
+    },
   },
-  TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
 };
 </script>
 
 <template>
   <gl-button
-    v-if="checkTrigger($options.TRIGGER_ELEMENT_BUTTON)"
+    v-if="isButtonTrigger"
     v-bind="componentAttributes"
     :variant="variant"
     :icon="icon"
@@ -98,17 +94,25 @@ export default {
   >
     {{ displayText }}
   </gl-button>
-  <gl-link
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_SIDE_NAV)"
+  <gl-link v-else-if="isWithEmojiTrigger" v-bind="componentAttributes" @click="openModal">
+    {{ displayText }}
+    <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
+  </gl-link>
+  <gl-dropdown-item
+    v-else-if="isDropdownWithEmojiTrigger"
     v-bind="componentAttributes"
-    data-is-link="true"
+    button-class="top-nav-menu-item"
     @click="openModal"
   >
-    <span class="nav-icon-container">
-      <gl-icon :name="icon" />
-    </span>
-    <span class="nav-item-name"> {{ displayText }} </span>
-  </gl-link>
+    {{ displayText }}
+    <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
+  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item
+    v-else-if="isDisclosureTrigger"
+    v-bind="componentAttributes"
+    :item="item"
+    @action="handleDisclosureDropdownAction"
+  />
   <gl-link v-else v-bind="componentAttributes" data-is-link="true" @click="openModal">
     {{ displayText }}
   </gl-link>

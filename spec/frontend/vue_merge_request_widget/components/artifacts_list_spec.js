@@ -18,10 +18,6 @@ describe('Artifacts List', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     mountComponent(data);
   });

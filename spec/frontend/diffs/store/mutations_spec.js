@@ -93,15 +93,20 @@ describe('DiffsStoreMutations', () => {
 
   describe('SET_DIFF_DATA_BATCH_DATA', () => {
     it('should set diff data batch type properly', () => {
-      const state = { diffFiles: [] };
+      const mockFile = getDiffFileMock();
+      const state = {
+        diffFiles: [],
+        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
+      };
       const diffMock = {
-        diff_files: [getDiffFileMock()],
+        diff_files: [mockFile],
       };
 
       mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
 
       expect(state.diffFiles[0].renderIt).toEqual(true);
       expect(state.diffFiles[0].collapsed).toEqual(false);
+      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
   });
 

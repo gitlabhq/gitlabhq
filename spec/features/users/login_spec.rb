@@ -109,6 +109,10 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     end
 
     context 'within the grace period' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+      end
+
       it 'allows to login' do
         expect(authentication_metrics).to increment(:user_authenticated_counter)
 
@@ -137,11 +141,9 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     end
 
     context 'when resending the confirmation email' do
+      let_it_be(:user) { create(:user) }
+
       it 'redirects to the "almost there" page' do
-        stub_feature_flags(soft_email_confirmation: false)
-
-        user = create(:user)
-
         visit new_user_confirmation_path
         fill_in 'user_email', with: user.email
         click_button 'Resend'
@@ -206,18 +208,96 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
   end
 
   describe 'with two-factor authentication', :js do
-    def enter_code(code)
+    def enter_code(code, only_two_factor_webauthn_enabled: false)
+      click_on("Sign in via 2FA code") if only_two_factor_webauthn_enabled
+
       fill_in 'user_otp_attempt', with: code
       click_button 'Verify code'
     end
 
-    context 'with valid username/password' do
+    shared_examples_for 'can login with recovery codes' do |only_two_factor_webauthn_enabled: false|
+      context 'using backup code' do
+        let(:codes) { user.generate_otp_backup_codes! }
+
+        before do
+          expect(codes.size).to eq 10
+
+          # Ensure the generated codes get saved
+          user.save!(touch: false)
+        end
+
+        context 'with valid code' do
+          it 'allows login' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
+
+            enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+
+            expect(page).to have_current_path root_path, ignore_query: true
+          end
+
+          it 'invalidates the used code' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
+
+            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
+          end
+
+          it 'invalidates backup codes twice in a row' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter).twice
+              .and increment(:user_two_factor_authenticated_counter).twice
+              .and increment(:user_session_destroyed_counter)
+
+            random_code = codes.delete(codes.sample)
+            expect { enter_code(random_code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
+
+            gitlab_sign_out
+            gitlab_sign_in(user)
+
+            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
+          end
+
+          it 'triggers ActiveSession.cleanup for the user' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
+            expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
+
+            enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+          end
+        end
+
+        context 'with invalid code' do
+          it 'blocks login' do
+            # TODO, invalid two factor authentication does not increment
+            # metrics / counters, see gitlab-org/gitlab-ce#49785
+
+            code = codes.sample
+            expect(user.invalidate_otp_backup_code!(code)).to eq true
+
+            user.save!(touch: false)
+            expect(user.reload.otp_backup_codes.size).to eq 9
+
+            enter_code(code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+            expect(page).to have_content('Invalid two-factor code.')
+          end
+        end
+      end
+    end
+
+    # Freeze time to prevent failures when time between code being entered and
+    # validated greater than otp_allowed_drift
+    context 'with valid username/password', :freeze_time do
       let(:user) { create(:user, :two_factor) }
 
       before do
         gitlab_sign_in(user, remember: true)
-
-        expect(page).to have_content('Two-factor authentication code')
       end
 
       it 'does not show a "You are already signed in." error message' do
@@ -290,78 +370,16 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         end
       end
 
-      context 'using backup code' do
-        let(:codes) { user.generate_otp_backup_codes! }
+      context 'when user with TOTP enabled' do
+        let(:user) { create(:user, :two_factor) }
 
-        before do
-          expect(codes.size).to eq 10
+        include_examples 'can login with recovery codes'
+      end
 
-          # Ensure the generated codes get saved
-          user.save!(touch: false)
-        end
+      context 'when user with only Webauthn enabled' do
+        let(:user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
-        context 'with valid code' do
-          it 'allows login' do
-            expect(authentication_metrics)
-              .to increment(:user_authenticated_counter)
-              .and increment(:user_two_factor_authenticated_counter)
-
-            enter_code(codes.sample)
-
-            expect(page).to have_current_path root_path, ignore_query: true
-          end
-
-          it 'invalidates the used code' do
-            expect(authentication_metrics)
-              .to increment(:user_authenticated_counter)
-              .and increment(:user_two_factor_authenticated_counter)
-
-            expect { enter_code(codes.sample) }
-              .to change { user.reload.otp_backup_codes.size }.by(-1)
-          end
-
-          it 'invalidates backup codes twice in a row' do
-            expect(authentication_metrics)
-              .to increment(:user_authenticated_counter).twice
-              .and increment(:user_two_factor_authenticated_counter).twice
-              .and increment(:user_session_destroyed_counter)
-
-            random_code = codes.delete(codes.sample)
-            expect { enter_code(random_code) }
-              .to change { user.reload.otp_backup_codes.size }.by(-1)
-
-            gitlab_sign_out
-            gitlab_sign_in(user)
-
-            expect { enter_code(codes.sample) }
-              .to change { user.reload.otp_backup_codes.size }.by(-1)
-          end
-
-          it 'triggers ActiveSession.cleanup for the user' do
-            expect(authentication_metrics)
-              .to increment(:user_authenticated_counter)
-                    .and increment(:user_two_factor_authenticated_counter)
-            expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
-
-            enter_code(codes.sample)
-          end
-        end
-
-        context 'with invalid code' do
-          it 'blocks login' do
-            # TODO, invalid two factor authentication does not increment
-            # metrics / counters, see gitlab-org/gitlab-ce#49785
-
-            code = codes.sample
-            expect(user.invalidate_otp_backup_code!(code)).to eq true
-
-            user.save!(touch: false)
-            expect(user.reload.otp_backup_codes.size).to eq 9
-
-            enter_code(code)
-            expect(page).to have_content('Invalid two-factor code.')
-          end
-        end
+        include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
       end
     end
 
@@ -376,11 +394,29 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
                                   providers: [mock_saml_config_with_upstream_two_factor_authn_contexts])
       end
 
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        expect(page).to have_field('remember_me_omniauth')
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          expect(page).not_to have_field('remember_me_omniauth')
+        end
+      end
+
       context 'when authn_context is worth two factors' do
         let(:mock_saml_response) do
           File.read('spec/fixtures/authentication/saml_response.xml')
-              .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
-                    'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+            .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
+                  'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
         end
 
         it 'signs user in without prompting for second factor' do
@@ -394,12 +430,14 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           sign_in_using_saml!
 
           expect_single_session_with_authenticated_ttl
-          expect(page).not_to have_content('Two-Factor Authentication')
+          expect(page).not_to have_content(_('Enter verification code'))
           expect(page).to have_current_path root_path, ignore_query: true
         end
       end
 
-      context 'when two factor authentication is required' do
+      # Freeze time to prevent failures when time between code being entered and
+      # validated greater than otp_allowed_drift
+      context 'when two factor authentication is required', :freeze_time do
         it 'shows 2FA prompt after OAuth login' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
@@ -408,7 +446,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
           sign_in_using_saml!
 
-          expect(page).to have_content('Two-factor authentication code')
+          expect(page).to have_content('Enter verification code')
 
           enter_code(user.current_otp)
 
@@ -424,6 +462,24 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
   end
 
   describe 'without two-factor authentication' do
+    it 'displays the remember me checkbox' do
+      visit new_user_session_path
+
+      expect(page).to have_content(_('Remember me'))
+    end
+
+    context 'when remember me is not enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: false)
+      end
+
+      it 'does not display the remember me checkbox' do
+        visit new_user_session_path
+
+        expect(page).not_to have_content(_('Remember me'))
+      end
+    end
+
     context 'with correct username and password' do
       let(:user) { create(:user) }
 
@@ -455,6 +511,43 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
         gitlab_sign_in(user)
+      end
+
+      context 'when the session expires' do
+        it 'signs the user out' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+
+          gitlab_sign_in(user)
+          expire_session
+          visit root_path
+
+          expect(page).to have_current_path new_user_session_path
+        end
+
+        it 'extends the session when using remember me' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter).twice
+
+          gitlab_sign_in(user, remember: true)
+          expire_session
+          visit root_path
+
+          expect(page).to have_current_path root_path
+        end
+
+        it 'does not extend the session when remember me is not enabled' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+
+          gitlab_sign_in(user, remember: true)
+          expire_session
+          stub_application_setting(remember_me_enabled: false)
+
+          visit root_path
+
+          expect(page).to have_current_path new_user_session_path
+        end
       end
 
       context 'when the users password is expired' do
@@ -591,23 +684,21 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         end
 
         context 'within the grace period' do
-          it 'redirects to two-factor configuration page' do
-            freeze_time do
-              expect(authentication_metrics)
-                .to increment(:user_authenticated_counter)
+          it 'redirects to two-factor configuration page', :freeze_time do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
 
-              gitlab_sign_in(user)
+            gitlab_sign_in(user)
 
-              expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
-              expect(page).to have_content(
-                'The group settings for Group 1 and Group 2 require you to enable '\
-                'Two-Factor Authentication for your account. '\
-                'You can leave Group 1 and leave Group 2. '\
-                'You need to do this '\
-                'before '\
-                "#{(Time.zone.now + 2.days).strftime("%a, %d %b %Y %H:%M:%S %z")}"
-              )
-            end
+            expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
+            expect(page).to have_content(
+              'The group settings for Group 1 and Group 2 require you to enable '\
+              'Two-Factor Authentication for your account. '\
+              'You can leave Group 1 and leave Group 2. '\
+              'You need to do this '\
+              'before '\
+              "#{(Time.zone.now + 2.days).strftime("%a, %d %b %Y %H:%M:%S %z")}"
+            )
           end
 
           it 'allows skipping two-factor configuration', :js do
@@ -732,16 +823,36 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           allow(instance).to receive(:"user_#{provider}_omniauth_callback_path")
             .and_return("/users/auth/#{provider}/callback")
         end
-
-        visit new_user_session_path
       end
 
       it 'correctly renders tabs and panes' do
+        visit new_user_session_path
+
         ensure_tab_pane_correctness(['Main LDAP', 'Standard'])
       end
 
       it 'renders link to sign up path' do
+        visit new_user_session_path
+
         expect(page.body).to have_link('Register now', href: new_user_registration_path)
+      end
+
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        ensure_remember_me_in_tab(ldap_server_config['label'])
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          ensure_remember_me_not_in_tab(ldap_server_config['label'])
+        end
       end
     end
 
@@ -757,12 +868,30 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           allow(instance).to receive(:user_crowd_omniauth_authorize_path)
             .and_return("/users/auth/crowd/callback")
         end
-
-        visit new_user_session_path
       end
 
       it 'correctly renders tabs and panes' do
+        visit new_user_session_path
+
         ensure_tab_pane_correctness(%w(Crowd Standard))
+      end
+
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        ensure_remember_me_in_tab(_('Crowd'))
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          ensure_remember_me_not_in_tab(_('Crowd'))
+        end
       end
     end
   end
@@ -928,22 +1057,22 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
       it 'asks the user to accept the terms before setting an email',
         quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388049', type: :flaky } do
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
 
-        gitlab_sign_in_via('saml', user, 'my-uid')
+          gitlab_sign_in_via('saml', user, 'my-uid')
 
-        expect_to_be_on_terms_page
-        click_button 'Accept terms'
+          expect_to_be_on_terms_page
+          click_button 'Accept terms'
 
-        expect(page).to have_current_path(profile_path, ignore_query: true)
+          expect(page).to have_current_path(profile_path, ignore_query: true)
 
-        fill_in 'Email', with: 'hello@world.com'
+          fill_in 'Email', with: 'hello@world.com'
 
-        click_button 'Update profile settings'
+          click_button 'Update profile settings'
 
-        expect(page).to have_content('Profile was successfully updated')
-      end
+          expect(page).to have_content('Profile was successfully updated')
+        end
     end
   end
 
@@ -954,8 +1083,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     let(:alert_message) { "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select Resend confirmation email" }
 
     before do
-      stub_application_setting_enum('email_confirmation_setting', 'hard')
-      stub_feature_flags(soft_email_confirmation: true)
+      stub_application_setting_enum('email_confirmation_setting', 'soft')
       stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end

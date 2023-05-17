@@ -22,10 +22,6 @@ describe('New feature flag form', () => {
   });
 
   const factory = (opts = {}) => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     wrapper = shallowMount(NewFeatureFlag, {
       store,
       provide: {
@@ -44,10 +40,6 @@ describe('New feature flag form', () => {
 
   beforeEach(() => {
     factory();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('with error', () => {

@@ -215,5 +215,31 @@ RSpec.describe Subscribable, 'Subscribable' do
       expect(lazy_queries.count).to eq(0)
       expect(preloaded_queries.count).to eq(1)
     end
+
+    context 'with work items' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:issue) { create(:issue, project: project) }
+
+      before do
+        [issue, work_item].each do |item|
+          create(:subscription, user: user, subscribable: item, subscribed: true, project: project)
+        end
+      end
+
+      it 'loads correct subscribable type' do
+        expect(issue).to receive(:subscribable_type).and_return('Issue')
+        issue.lazy_subscription(user, project)
+
+        expect(work_item).to receive(:subscribable_type).and_return('Issue')
+        work_item.lazy_subscription(user, project)
+      end
+
+      it 'matches existing subscription type' do
+        expect(issue.subscribed?(user, project)).to eq(true)
+        expect(work_item.subscribed?(user, project)).to eq(true)
+      end
+    end
   end
 end

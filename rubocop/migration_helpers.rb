@@ -21,7 +21,7 @@ module RuboCop
     # or through a create/alter table (TABLE_METHODS)
     ADD_COLUMN_METHODS = %i(add_column change_column_type_concurrently).freeze
 
-    TABLE_METHODS = %i(create_table create_table_if_not_exists change_table create_table_with_constraints).freeze
+    TABLE_METHODS = %i(create_table create_table_if_not_exists change_table).freeze
 
     def high_traffic_tables
       @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')
@@ -42,11 +42,11 @@ module RuboCop
     end
 
     def in_deployment_migration?(node)
-      dirname(node).end_with?('db/migrate', 'db/geo/migrate')
+      dirname(node).end_with?('db/migrate', 'db/embedding/migrate', 'db/geo/migrate')
     end
 
     def in_post_deployment_migration?(node)
-      dirname(node).end_with?('db/post_migrate', 'db/geo/post_migrate')
+      dirname(node).end_with?('db/post_migrate', 'db/embedding/post_migrate', 'db/geo/post_migrate')
     end
 
     # Returns true if we've defined an 'EnforcedSince' variable in rubocop.yml and the migration version

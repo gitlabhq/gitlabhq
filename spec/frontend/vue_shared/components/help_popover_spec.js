@@ -23,10 +23,6 @@ describe('HelpPopover', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with title and content', () => {
     beforeEach(() => {
       createComponent();

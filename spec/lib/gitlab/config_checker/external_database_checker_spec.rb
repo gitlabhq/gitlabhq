@@ -89,9 +89,9 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
     {
       type: 'warning',
       message: _('Database \'%{database_name}\' is using PostgreSQL %{pg_version_current}, ' \
-                 'but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. ' \
-                 'Please upgrade your environment to a supported PostgreSQL version, ' \
-                 'see %{pg_requirements_url} for details.') % \
+                 'but this version of GitLab requires PostgreSQL %{pg_version_minimum}. ' \
+                 'Please upgrade your environment to a supported PostgreSQL version. ' \
+                 'See %{pg_requirements_url} for details.') % \
         {
           database_name: database_name,
           pg_version_current: database_version,

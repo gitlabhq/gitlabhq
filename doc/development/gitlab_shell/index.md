@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Shell
+# GitLab Shell development guidelines
 
 [![pipeline status](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/pipeline.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main) [![coverage report](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main) [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlab-shell.svg)](https://codeclimate.com/github/gitlabhq/gitlab-shell)
 
@@ -21,8 +21,8 @@ Ruby to build and test, but not to run.
 GitLab Shell runs on `port 22` on an Omnibus installation. To use a regular SSH
 service, configure it on an alternative port.
 
-Download and install the current version of Go from [golang.org](https://go.dev/dl/).
-We follow the [Golang Release Policy](https://golang.org/doc/devel/release.html#policy)
+Download and install the [current version of Go](https://go.dev/dl/).
+We follow the [Go Release Policy](https://go.dev/doc/devel/release#policy)
 and support:
 
 - The current stable version.
@@ -217,6 +217,6 @@ sequenceDiagram
 
 ## Related topics
 
-- [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE).
+- [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE)
 - [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/PROCESS.md)
 - [Using the GitLab Shell chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)

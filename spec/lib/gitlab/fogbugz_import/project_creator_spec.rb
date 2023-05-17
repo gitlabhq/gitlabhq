@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::FogbugzImport::ProjectCreator do
+RSpec.describe Gitlab::FogbugzImport::ProjectCreator, feature_category: :importers do
   let(:user) { create(:user) }
   let(:repo) do
     instance_double(Gitlab::FogbugzImport::Repository,
@@ -20,6 +20,10 @@ RSpec.describe Gitlab::FogbugzImport::ProjectCreator do
 
   subject do
     project_creator.execute
+  end
+
+  before do
+    stub_application_setting(import_sources: ['fogbugz'])
   end
 
   it 'creates project with private visibility level' do

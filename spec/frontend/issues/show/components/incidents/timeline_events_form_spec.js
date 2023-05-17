@@ -10,12 +10,12 @@ import {
   TIMELINE_EVENT_TAGS,
   timelineEventTagsI18n,
 } from '~/issues/show/components/incidents/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { useFakeDate } from 'helpers/fake_date';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const fakeDate = '2020-07-08T00:00:00.000Z';
 
@@ -51,7 +51,6 @@ describe('Timeline events form', () => {
 
   afterEach(() => {
     createAlert.mockReset();
-    wrapper.destroy();
   });
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
@@ -114,17 +113,7 @@ describe('Timeline events form', () => {
     ]);
   });
 
-  describe('with incident_event_tag feature flag enabled', () => {
-    beforeEach(() => {
-      mountComponent(
-        {},
-        {},
-        {
-          incidentEventTags: true,
-        },
-      );
-    });
-
+  describe('Event Tags', () => {
     describe('event tags listbox', () => {
       it('should render option list from provided array', () => {
         expect(findTagsListbox().props('items')).toEqual(mockTags);
@@ -256,7 +245,7 @@ describe('Timeline events form', () => {
       expect(findMinuteInput().element.value).toBe('0');
     });
 
-    it('should disable the save buttons when event content does not exist', async () => {
+    it('should disable the save buttons when event content does not exist', () => {
       expect(findSubmitButton().props('disabled')).toBe(true);
       expect(findSubmitAndAddButton().props('disabled')).toBe(true);
     });

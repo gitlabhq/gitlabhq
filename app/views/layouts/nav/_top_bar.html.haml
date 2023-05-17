@@ -1,0 +1,14 @@
+- if show_super_sidebar?
+  - top_bar_class = 'top-bar-fixed container-fluid'
+  - top_bar_container_class = nil
+- else
+  - top_bar_class = [@no_top_bar_container ? 'container-fluid' : container_class, @content_class]
+  - top_bar_container_class = 'gl-border-b'
+
+%div{ class: top_bar_class }
+  .top-bar-container.gl-display-flex.gl-align-items-center{ :class => top_bar_container_class }
+    - if show_super_sidebar?
+      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle gl-ml-n3 gl-mr-2', title: _('Expand sidebar'), aria: { controls: 'super-sidebar', expanded: 'false', label: _('Navigation sidebar') } })
+    - elsif defined?(@left_sidebar)
+      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3 gl-mr-2', data: { qa_selector: 'toggle_mobile_nav_button' }, aria: { label: _('Open sidebar') } })
+    = render "layouts/nav/breadcrumbs/breadcrumbs"

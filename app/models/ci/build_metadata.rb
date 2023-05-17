@@ -10,15 +10,16 @@ module Ci
     include Presentable
     include ChronicDurationAttribute
     include Gitlab::Utils::StrongMemoize
+    include SafelyChangeColumnDefault
 
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
+    columns_changing_default :partition_id
 
     partitionable scope: :build
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project
-    belongs_to :runner_machine, class_name: 'Ci::RunnerMachine'
 
     before_create :set_build_project
 

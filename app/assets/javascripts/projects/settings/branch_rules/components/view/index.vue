@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
 import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -12,6 +12,10 @@ import {
   BRANCH_PARAM_NAME,
   WILDCARDS_HELP_PATH,
   PROTECTED_BRANCHES_HELP_PATH,
+  REQUIRED_ICON,
+  NOT_REQUIRED_ICON,
+  REQUIRED_ICON_CLASS,
+  NOT_REQUIRED_ICON_CLASS,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
@@ -22,7 +26,7 @@ export default {
   i18n: I18N,
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
-  components: { Protection, GlSprintf, GlLink, GlLoadingIcon },
+  components: { Protection, GlSprintf, GlLink, GlLoadingIcon, GlIcon },
   inject: {
     projectPath: {
       default: '',
@@ -33,6 +37,9 @@ export default {
     branchesPath: {
       default: '',
     },
+    showStatusChecks: { default: false },
+    showApprovers: { default: false },
+    showCodeOwners: { default: false },
   },
   apollo: {
     project: {
@@ -63,10 +70,28 @@ export default {
     };
   },
   computed: {
-    forcePushDescription() {
-      return this.branchProtection?.allowForcePush
-        ? this.$options.i18n.allowForcePushDescription
-        : this.$options.i18n.disallowForcePushDescription;
+    forcePushAttributes() {
+      const { allowForcePush } = this.branchProtection || {};
+      const icon = allowForcePush ? REQUIRED_ICON : NOT_REQUIRED_ICON;
+      const iconClass = allowForcePush ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
+      const title = allowForcePush
+        ? this.$options.i18n.allowForcePushTitle
+        : this.$options.i18n.doesNotAllowForcePushTitle;
+
+      return { icon, iconClass, title };
+    },
+    codeOwnersApprovalAttributes() {
+      const { codeOwnerApprovalRequired } = this.branchProtection || {};
+      const icon = codeOwnerApprovalRequired ? REQUIRED_ICON : NOT_REQUIRED_ICON;
+      const iconClass = codeOwnerApprovalRequired ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
+      const title = codeOwnerApprovalRequired
+        ? this.$options.i18n.requiresCodeOwnerApprovalTitle
+        : this.$options.i18n.doesNotRequireCodeOwnerApprovalTitle;
+      const description = codeOwnerApprovalRequired
+        ? this.$options.i18n.requiresCodeOwnerApprovalDescription
+        : this.$options.i18n.doesNotRequireCodeOwnerApprovalDescription;
+
+      return { icon, iconClass, title, description };
     },
     mergeAccessLevels() {
       const { mergeAccessLevels } = this.branchProtection || {};
@@ -98,7 +123,7 @@ export default {
         : this.$options.i18n.branchNameOrPattern;
     },
     matchingBranchesLinkHref() {
-      return mergeUrlParams({ state: 'all', search: this.branch }, this.branchesPath);
+      return mergeUrlParams({ state: 'all', search: `^${this.branch}$` }, this.branchesPath);
     },
     matchingBranchesLinkTitle() {
       const total = this.matchingBranchesCount;
@@ -162,11 +187,8 @@ export default {
       :roles="pushAccessLevels.roles"
       :users="pushAccessLevels.users"
       :groups="pushAccessLevels.groups"
+      data-qa-selector="allowed_to_push_content"
     />
-
-    <!-- Force push -->
-    <strong>{{ $options.i18n.forcePushTitle }}</strong>
-    <p>{{ forcePushDescription }}</p>
 
     <!-- Allowed to merge -->
     <protection
@@ -176,11 +198,40 @@ export default {
       :roles="mergeAccessLevels.roles"
       :users="mergeAccessLevels.users"
       :groups="mergeAccessLevels.groups"
+      data-qa-selector="allowed_to_merge_content"
     />
 
+    <!-- Force push -->
+    <div class="gl-display-flex gl-align-items-center">
+      <gl-icon
+        :size="14"
+        data-testid="force-push-icon"
+        :name="forcePushAttributes.icon"
+        :class="forcePushAttributes.iconClass"
+      />
+      <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
+    </div>
+
+    <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+
     <!-- EE start -->
+    <!-- Code Owners -->
+    <div v-if="showCodeOwners">
+      <div class="gl-display-flex gl-align-items-center">
+        <gl-icon
+          data-testid="code-owners-icon"
+          :size="14"
+          :name="codeOwnersApprovalAttributes.icon"
+          :class="codeOwnersApprovalAttributes.iconClass"
+        />
+        <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+      </div>
+
+      <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+    </div>
+
     <!-- Approvals -->
-    <template v-if="approvalsHeader">
+    <template v-if="showApprovers">
       <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
       <gl-sprintf :message="$options.i18n.approvalsDescription">
         <template #link="{ content }">
@@ -200,7 +251,7 @@ export default {
     </template>
 
     <!-- Status checks -->
-    <template v-if="statusChecksHeader">
+    <template v-if="showStatusChecks">
       <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
       <gl-sprintf :message="$options.i18n.statusChecksDescription">
         <template #link="{ content }">

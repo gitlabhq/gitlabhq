@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CloseIssueWorker do
+RSpec.describe MergeRequests::CloseIssueWorker, feature_category: :code_review_workflow do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

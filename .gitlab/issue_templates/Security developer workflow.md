@@ -13,6 +13,7 @@ Set the title to: `Description of the original issue`
 - [ ] Add a `~severity::x` label to the issue and all associated merge requests.
 - [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it [here](https://gitlab.com/gitlab-org/gitlab/-/issues?sort=created_date&state=opened&label_name[]=upcoming+security+release). This issue
 MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
+- [ ] Mark this [issue as linked] to the `gitlab-org/gitlab` issue that describes the security vulnerability.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
 - [ ] If this change affects the public interface (public API or UI) of the product, post in the `#support_gitlab-com` Slack channel  to explain the impact and discuss a mitigation plan for users that might be affected. If you need Support feedback or approval, reach out in `#spt_managers` Slack channel or mention `@gitlab-com/support/managers`.

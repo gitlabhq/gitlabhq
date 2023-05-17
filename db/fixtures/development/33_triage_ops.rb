@@ -85,6 +85,7 @@ class Gitlab::Seeder::TriageOps
       Sidekiq::Testing.inline! do
         puts "Ensuring required groups"
         ensure_group('gitlab-com')
+        ensure_group('gitlab-com/support')
         ensure_group('gitlab-com/gl-security/appsec')
         ensure_group('gitlab-jh/jh-team')
         ensure_group('gitlab-org')
@@ -192,7 +193,7 @@ class Gitlab::Seeder::TriageOps
     group = Group.new(
       name: group_path.titleize,
       path: group_path,
-      parent_id: parent&.id
+      parent: parent
     )
     group.description = FFaker::Lorem.sentence
     group.save!

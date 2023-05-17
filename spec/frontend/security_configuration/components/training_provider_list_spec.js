@@ -106,7 +106,7 @@ describe('TrainingProviderList component', () => {
         projectFullPath: testProjectPath,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         securityTrainingEnabled: true,
@@ -132,7 +132,6 @@ describe('TrainingProviderList component', () => {
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
   });
 
@@ -254,7 +253,7 @@ describe('TrainingProviderList component', () => {
         expect(findLogos().at(provider).attributes('role')).toBe('presentation');
       });
 
-      it.each(providerIndexArray)('renders the svg content for provider %s', async (provider) => {
+      it.each(providerIndexArray)('renders the svg content for provider %s', (provider) => {
         expect(findLogos().at(provider).html()).toContain(
           TEMP_PROVIDER_LOGOS[testProviderName[provider]].svg,
         );
@@ -402,7 +401,7 @@ describe('TrainingProviderList component', () => {
 
       it('has disabled state for radio', () => {
         findPrimaryProviderRadios().wrappers.forEach((radio) => {
-          expect(radio.attributes('disabled')).toBe('true');
+          expect(radio.attributes('disabled')).toBeDefined();
         });
       });
 

@@ -61,18 +61,27 @@ export default function mountImportProjectsTable({
   mountElement,
   Component = ImportProjectsTable,
   extraProps = () => ({}),
+  extraProvide = () => ({}),
 }) {
   if (!mountElement) return undefined;
 
   const store = initStoreFromElement(mountElement);
   const props = initPropsFromElement(mountElement);
+  const { detailsPath } = mountElement.dataset;
 
   return new Vue({
     el: mountElement,
+    name: 'ImportProjectsRoot',
     store,
     apolloProvider,
+    provide: {
+      detailsPath,
+      ...extraProvide(mountElement.dataset),
+    },
     render(createElement) {
-      return createElement(Component, { props: { ...props, ...extraProps(mountElement.dataset) } });
+      // We are using attrs instead of props so root-level component with inheritAttrs
+      // will be able to pass them down
+      return createElement(Component, { attrs: { ...props, ...extraProps(mountElement.dataset) } });
     },
   });
 }

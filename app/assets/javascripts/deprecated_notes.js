@@ -16,7 +16,7 @@ import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -53,9 +53,9 @@ const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
-  static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM) {
+  static initialize(notes_url, last_fetched_at, view, enableGFM) {
     if (!this.instance) {
-      this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
+      this.instance = new Notes(notes_url, last_fetched_at, view, enableGFM);
     }
   }
 
@@ -63,7 +63,7 @@ export default class Notes {
     return this.instance;
   }
 
-  constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
+  constructor(notes_url, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);
     this.visibilityChange = this.visibilityChange.bind(this);
@@ -85,9 +85,9 @@ export default class Notes {
     this.postComment = this.postComment.bind(this);
     this.clearAlertWrapper = this.clearAlert.bind(this);
     this.onHashChange = this.onHashChange.bind(this);
+    this.note_ids = [];
 
     this.notes_url = notes_url;
-    this.note_ids = note_ids;
     this.enableGFM = enableGFM;
     // Used to keep track of updated notes while people are editing things
     this.updatedNotesTrackingMap = {};
@@ -449,8 +449,6 @@ export default class Notes {
         return;
       }
 
-      this.note_ids.push(noteEntity.id);
-
       if ($notesList.length) {
         $notesList.find('.system-note.being-posted').remove();
       }
@@ -497,7 +495,6 @@ export default class Notes {
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
       return;
     }
-    this.note_ids.push(noteEntity.id);
 
     const form =
       $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
@@ -602,7 +599,10 @@ export default class Notes {
     // remove validation errors
     form.find('.js-errors').remove();
     // reset text and preview
-    form.find('.js-md-write-button').click();
+    if (form.find('.js-md-preview-button').val() === 'edit') {
+      form.find('.js-md-preview-button').click();
+    }
+
     form.find('.js-note-text').val('').trigger('input');
     form.find('.js-note-text').each(function reset() {
       this.$autosave.reset();
@@ -745,7 +745,7 @@ export default class Notes {
 
     $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);
-    renderGFM($noteEntityEl.get(0));
+    renderGFM(Notes.getNodeToRender($noteEntityEl));
     // Find the note's `li` element by ID and replace it with the updated HTML
     const $note_li = $(`.note-row-${noteEntity.id}`);
 
@@ -942,6 +942,7 @@ export default class Notes {
     const replyLink = $(target).closest('.js-discussion-reply-button');
     // insert the form after the button
     replyLink.closest('.discussion-reply-holder').hide().after(form);
+
     // show the form
     return this.setupDiscussionNoteForm(replyLink, form);
   }
@@ -1182,9 +1183,11 @@ export default class Notes {
     const form = textarea.parents('form');
     const reopenbtn = form.find('.js-note-target-reopen');
     const closebtn = form.find('.js-note-target-close');
+    const savebtn = form.find('.js-comment-save-button');
     const commentTypeComponent = form.get(0)?.commentTypeComponent;
 
     if (textarea.val().trim().length > 0) {
+      savebtn.enable();
       reopentext = reopenbtn.attr('data-alternative-text');
       closetext = closebtn.attr('data-alternative-text');
       if (reopenbtn.text() !== reopentext) {
@@ -1203,6 +1206,7 @@ export default class Notes {
         commentTypeComponent.disabled = false;
       }
     } else {
+      savebtn.disable();
       reopentext = reopenbtn.data('originalText');
       closetext = closebtn.data('originalText');
       if (reopenbtn.text() !== reopentext) {
@@ -1241,7 +1245,10 @@ export default class Notes {
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
     $editForm.find('.js-note-text').focus().val(originalContent);
-    $editForm.find('.js-md-write-button').trigger('click');
+    // reset preview
+    if ($editForm.find('.js-md-preview-button').val() === 'edit') {
+      $editForm.find('.js-md-preview-button').click();
+    }
     $editForm.find('.referenced-users').hide();
   }
 
@@ -1396,8 +1403,29 @@ export default class Notes {
   /**
    * Check if note does not exist on page
    */
-  static isNewNote(noteEntity, noteIds) {
-    return $.inArray(noteEntity.id, noteIds) === -1;
+  static isNewNote(noteEntity, note_ids) {
+    if (note_ids.length === 0) {
+      note_ids = Notes.getNotesIds();
+    }
+    const isNewEntry = $.inArray(noteEntity.id, note_ids) === -1;
+    if (isNewEntry) {
+      note_ids.push(noteEntity.id);
+    }
+    return isNewEntry;
+  }
+
+  /**
+   * Get notes ids
+   */
+  static getNotesIds() {
+    /**
+     * The selector covers following notes
+     *  - notes and thread below the snippets and commit page
+     *  - notes on the file of commit page
+     *  - notes on an image file of commit page
+     */
+    const notesList = [...document.querySelectorAll('.notes:not(.notes-form) li[id]')];
+    return notesList.map((noteItem) => parseInt(noteItem.dataset.noteId, 10));
   }
 
   /**
@@ -1422,7 +1450,7 @@ export default class Notes {
     const $note = $(noteHtml);
 
     $note.addClass('fade-in-full');
-    renderGFM($note.get(0));
+    renderGFM(Notes.getNodeToRender($note));
     $notesList.append($note);
     return $note;
   }
@@ -1431,9 +1459,18 @@ export default class Notes {
     const $updatedNote = $(noteHtml);
 
     $updatedNote.addClass('fade-in');
-    renderGFM($updatedNote.get(0));
+    renderGFM(Notes.getNodeToRender($updatedNote));
     $note.replaceWith($updatedNote);
     return $updatedNote;
+  }
+
+  static getNodeToRender($note) {
+    for (const $item of $note) {
+      if (Notes.isNodeTypeElement($item)) {
+        return $item;
+      }
+    }
+    return '';
   }
 
   /**
@@ -1828,5 +1865,12 @@ export default class Notes {
       });
 
     return $closeBtn.text($closeBtn.data('originalText'));
+  }
+
+  /**
+   * Function to check if node is element to avoid comment and text
+   */
+  static isNodeTypeElement($node) {
+    return $node.nodeType === Node.ELEMENT_NODE;
   }
 }

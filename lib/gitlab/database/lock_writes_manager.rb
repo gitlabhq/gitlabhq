@@ -10,6 +10,8 @@ module Gitlab
       # See https://www.postgresql.org/message-id/16934.1568989957%40sss.pgh.pa.us
       EXPECTED_TRIGGER_RECORD_COUNT = 3
 
+      # table_name can include schema name as a prefix. For example: 'gitlab_partitions_static.events_03',
+      # otherwise, it will default to current used schema, for example 'public'.
       def initialize(table_name:, connection:, database_name:, with_retries: true, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection
@@ -19,7 +21,7 @@ module Gitlab
         @with_retries = with_retries
 
         @table_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
-          .extract_schema_qualified_name(table_name)
+          .extract_schema_qualified_name(table_name.to_s)
           .identifier
       end
 
@@ -36,7 +38,7 @@ module Gitlab
       def lock_writes
         if table_locked_for_writes?
           logger&.info "Skipping lock_writes, because #{table_name} is already locked for writes"
-          return
+          return result_hash(action: 'skipped')
         end
 
         logger&.info "Database: '#{database_name}', Table: '#{table_name}': Lock Writes".color(:yellow)
@@ -48,6 +50,8 @@ module Gitlab
         SQL
 
         execute_sql_statement(sql_statement)
+
+        result_hash(action: 'locked')
       end
 
       def unlock_writes
@@ -57,6 +61,8 @@ module Gitlab
         SQL
 
         execute_sql_statement(sql_statement)
+
+        result_hash(action: 'unlocked')
       end
 
       private
@@ -110,6 +116,10 @@ module Gitlab
 
       def write_trigger_name
         "gitlab_schema_write_trigger_for_#{table_name_without_schema}"
+      end
+
+      def result_hash(action:)
+        { action: action, database: database_name, table: table_name, dry_run: dry_run }
       end
     end
   end

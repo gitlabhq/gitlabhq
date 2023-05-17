@@ -256,14 +256,8 @@
 
 @mixin build-log-top-bar($height) {
   @include build-log-bar($height);
-
-  position: -webkit-sticky;
   position: sticky;
-  top: $header-height;
-
-  .with-performance-bar & {
-    top: calc(#{$header-height} + #{$performance-bar-height});
-  }
+  top: $calc-application-header-height;
 }
 
 /*
@@ -455,5 +449,23 @@
   &:hover {
     background-color: $border-color;
     color: $gl-text-color;
+  }
+}
+
+@mixin omniauth-divider {
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--gray-100, $gray-100);
+    margin: $gl-padding-24 0;
+  }
+
+  &::before {
+    margin-right: $gl-padding;
+  }
+
+  &::after {
+    margin-left: $gl-padding;
   }
 }

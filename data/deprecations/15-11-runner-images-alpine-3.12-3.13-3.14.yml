@@ -1,0 +1,24 @@
+- title: "GitLab Runner images based on Alpine 3.12, 3.13, 3.14"  # (required) The name of the feature to be deprecated
+  announcement_milestone: "15.11"  # (required) The milestone when this feature was first announced as deprecated.
+  announcement_date: "2023-04-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "16.1"  # (required) The milestone when this feature is planned to be removed
+  removal_date: "2023-06-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: false  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: DarrenEastman  # (required) GitLab username of the person reporting the deprecation
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29639  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    We will stop publishing runner images based on the following, end-of-life Alpine versions:
+
+    - Alpine 3.12
+    - Alpine 3.13
+    - Alpine 3.14 (end-of-life on 2023-05-23)
+  end_of_support_milestone: "16.1"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_date: "2023-06-22"  # (optional) The date of the milestone release when support for this feature will end.
+
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/runner/install/docker.html#gitlab-runner-container-images-support-lifecycle  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

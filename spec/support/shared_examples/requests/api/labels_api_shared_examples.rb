@@ -9,6 +9,6 @@ RSpec.shared_examples 'fetches labels' do
     expect(json_response).to be_an Array
     expect(json_response).to all(match_schema('public_api/v4/labels/label'))
     expect(json_response.size).to eq(expected_labels.size)
-    expect(json_response.map { |r| r['name'] }).to match_array(expected_labels)
+    expect(json_response.pluck('name')).to match_array(expected_labels)
   end
 end

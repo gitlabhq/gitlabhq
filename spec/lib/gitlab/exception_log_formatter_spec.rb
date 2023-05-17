@@ -45,6 +45,12 @@ RSpec.describe Gitlab::ExceptionLogFormatter do
         allow(exception).to receive(:cause).and_return(ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1'))
       end
 
+      it 'adds the cause_class to payload' do
+        described_class.format!(exception, payload)
+
+        expect(payload['exception.cause_class']).to eq('ActiveRecord::StatementInvalid')
+      end
+
       it 'adds the normalized SQL query to payload' do
         described_class.format!(exception, payload)
 

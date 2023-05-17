@@ -21,6 +21,15 @@ feature_category: :projects do
   end
 
   context 'as owner', :js do
+    it 'passes axe automated accessibility testing' do
+      subject
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
+                                  .skipping :'link-in-text-block'
+    end
+
     it 'shows active tab on sidebar' do
       subject
 
@@ -33,10 +42,10 @@ feature_category: :projects do
       subject
 
       settings_block = find('[data-testid="container-expiration-policy-project-settings"]')
-      expect(settings_block).to have_text 'Clean up image tags'
+      expect(settings_block).to have_text 'Cleanup policies'
     end
 
-    it 'contains link to clean up image tags page' do
+    it 'contains link to cleanup policies page' do
       subject
 
       expect(page).to have_link('Edit cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))

@@ -23,11 +23,6 @@ describe('Partial Cleanup alert', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it(`gl-alert has the correct properties`, () => {
     mountComponent();
 

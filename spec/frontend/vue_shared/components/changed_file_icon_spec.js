@@ -21,10 +21,6 @@ describe('Changed file icon', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findIconName = () => findIcon().props('name');
   const findIconClasses = () => findIcon().classes();

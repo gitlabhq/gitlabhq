@@ -26,10 +26,11 @@ class BulkImports::Entity < ApplicationRecord
   belongs_to :parent, class_name: 'BulkImports::Entity', optional: true
 
   belongs_to :project, optional: true
-  belongs_to :group, foreign_key: :namespace_id, optional: true
+  belongs_to :group, foreign_key: :namespace_id, optional: true, inverse_of: :bulk_import_entities
 
   has_many :trackers,
     class_name: 'BulkImports::Tracker',
+    inverse_of: :entity,
     foreign_key: :bulk_import_entity_id
 
   has_many :failures,
@@ -40,27 +41,14 @@ class BulkImports::Entity < ApplicationRecord
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
   validates :source_type, presence: true
-  validates :source_full_path,
-            presence: true,
-            format: { with: Gitlab::Regex.bulk_import_source_full_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message }
+  validates :source_full_path, presence: true, format: {
+    with: Gitlab::Regex.bulk_import_source_full_path_regex,
+    message: Gitlab::Regex.bulk_import_source_full_path_regex_message
+  }
 
-  validates :destination_name,
-            presence: true,
-            format: { with: Gitlab::Regex.group_path_regex,
-                      message: Gitlab::Regex.group_path_regex_message }
-
-  validates :destination_namespace,
-            exclusion: [nil],
-            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
-            if: :group
-
-  validates :destination_namespace,
-            presence: true,
-            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
-            if: :project
+  validates :destination_name, presence: true, if: -> { group || project }
+  validates :destination_namespace, exclusion: [nil], if: :group
+  validates :destination_namespace, presence: true, if: :project?
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
@@ -76,9 +64,8 @@ class BulkImports::Entity < ApplicationRecord
 
   alias_attribute :destination_slug, :destination_name
 
-  delegate  :default_project_visibility,
-            :default_group_visibility,
-            to: :'Gitlab::CurrentSettings.current_application_settings'
+  delegate :default_project_visibility, :default_group_visibility,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   state_machine :status, initial: :created do
     state :created, value: 0
@@ -104,6 +91,12 @@ class BulkImports::Entity < ApplicationRecord
       transition created: :timeout
       transition started: :timeout
     end
+
+    # rubocop:disable Style/SymbolProc
+    after_transition any => [:finished, :failed, :timeout] do |entity|
+      entity.update_has_failures
+    end
+    # rubocop:enable Style/SymbolProc
   end
 
   def self.all_human_statuses
@@ -185,6 +178,13 @@ class BulkImports::Entity < ApplicationRecord
     default_project_visibility
   end
 
+  def update_has_failures
+    return if has_failures
+    return unless failures.any?
+
+    update!(has_failures: true)
+  end
+
   private
 
   def validate_parent_is_a_group
@@ -194,13 +194,6 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def validate_imported_entity_type
-    if project_entity? && !BulkImports::Features.project_migration_enabled?(destination_namespace)
-      errors.add(
-        :base,
-        s_('BulkImport|invalid entity source type')
-      )
-    end
-
     if group.present? && project_entity?
       errors.add(
         :group,

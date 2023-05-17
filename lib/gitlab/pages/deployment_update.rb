@@ -46,9 +46,13 @@ module Gitlab
         end
       end
 
+      def root_dir
+        build.options[:publish] || PUBLIC_DIR
+      end
+
       # Calculate page size after extract
       def total_size
-        @total_size ||= build.artifacts_metadata_entry(PUBLIC_DIR + '/', recursive: true).total_size
+        @total_size ||= build.artifacts_metadata_entry("#{root_dir}/", recursive: true).total_size
       end
 
       def max_size_from_settings
@@ -74,7 +78,10 @@ module Gitlab
 
       def validate_public_folder
         if total_size <= 0
-          errors.add(:base, 'Error: The `public/` folder is missing, or not declared in `.gitlab-ci.yml`.')
+          errors.add(
+            :base,
+            'Error: You need to either include a `public/` folder in your artifacts, or specify ' \
+            'which one to use for Pages using `publish` in `.gitlab-ci.yml`')
         end
       end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectSetting, type: :model do
+RSpec.describe ProjectSetting, type: :model, feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 
@@ -38,6 +38,44 @@ RSpec.describe ProjectSetting, type: :model do
 
     [nil, 'not_allowed', :invalid].each do |invalid_value|
       it { is_expected.not_to allow_value([invalid_value]).for(:target_platforms) }
+    end
+
+    context "when pages_unique_domain is required", feature_category: :pages do
+      it "is not required if pages_unique_domain_enabled is false" do
+        project_setting = build(:project_setting, pages_unique_domain_enabled: false)
+
+        expect(project_setting).to be_valid
+        expect(project_setting.errors.full_messages).not_to include("Pages unique domain can't be blank")
+      end
+
+      it "is required when pages_unique_domain_enabled is true" do
+        project_setting = build(:project_setting, pages_unique_domain_enabled: true)
+
+        expect(project_setting).not_to be_valid
+        expect(project_setting.errors.full_messages).to include("Pages unique domain can't be blank")
+      end
+
+      it "is required if it is already saved in the database" do
+        project_setting = create(
+          :project_setting,
+          pages_unique_domain: "random-unique-domain-here",
+          pages_unique_domain_enabled: true
+        )
+
+        project_setting.pages_unique_domain = nil
+
+        expect(project_setting).not_to be_valid
+        expect(project_setting.errors.full_messages).to include("Pages unique domain can't be blank")
+      end
+    end
+
+    it "validates uniqueness of pages_unique_domain", feature_category: :pages do
+      create(:project_setting, pages_unique_domain: "random-unique-domain-here")
+
+      project_setting = build(:project_setting, pages_unique_domain: "random-unique-domain-here")
+
+      expect(project_setting).not_to be_valid
+      expect(project_setting.errors.full_messages).to include("Pages unique domain has already been taken")
     end
   end
 
@@ -166,6 +204,36 @@ RSpec.describe ProjectSetting, type: :model do
 
           expect(project).to be_show_diff_preview_in_email
         end
+      end
+    end
+  end
+
+  describe '#runner_registration_enabled' do
+    let_it_be(:settings) { create(:project_setting) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, project_setting: settings, group: group) }
+
+    it 'returns true' do
+      expect(project.runner_registration_enabled).to eq true
+    end
+
+    context 'when project has runner registration disabled' do
+      before do
+        project.update!(runner_registration_enabled: false)
+      end
+
+      it 'returns false' do
+        expect(project.runner_registration_enabled).to eq false
+      end
+    end
+
+    context 'when all projects have runner registration disabled' do
+      before do
+        stub_application_setting(valid_runner_registrars: ['group'])
+      end
+
+      it 'returns false' do
+        expect(project.runner_registration_enabled).to eq false
       end
     end
   end

@@ -2,7 +2,6 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 type: index
 ---
 
@@ -27,7 +26,7 @@ It's easier and faster to use an existing image and run it as an additional cont
 than to install `mysql`, for example, every time the project is built.
 
 You're not limited to only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
+services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 Any image found at [Docker Hub](https://hub.docker.com/) or your private Container Registry can be
 used as a service.
 
@@ -190,7 +189,7 @@ following these rules:
 - Slash (`/`) is replaced with double underscores (`__`) and the primary alias
   is created.
 - Slash (`/`) is replaced with a single dash (`-`) and the secondary alias is
-  created (requires GitLab Runner v1.1.0 or higher).
+  created (requires GitLab Runner v1.1.0 or later).
 
 To override the default behavior, you can
 [specify a service alias](#available-settings-for-services).
@@ -269,7 +268,7 @@ test:
 | `entrypoint` | no     | 9.4 |Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
 | `command`    | no       | 9.4 |Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/engine/reference/builder/#cmd) directive, where each shell token is a separate string in the array. |
 | `alias` (1)     | no       | 9.4 | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
-| `variables` (2)     | no       | 14.5 | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). |
+| `variables` (2)     | no       | 14.5 | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). Service variables cannot reference themselves. |
 
 (1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 

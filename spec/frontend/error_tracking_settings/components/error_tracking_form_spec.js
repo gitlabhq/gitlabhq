@@ -24,12 +24,6 @@ describe('error tracking settings form', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('an empty form', () => {
     it('is rendered', () => {
       expect(wrapper.findAllComponents(GlFormInput).length).toBe(2);

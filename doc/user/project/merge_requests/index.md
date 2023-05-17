@@ -26,11 +26,27 @@ view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
 
 Learn the various ways to [create a merge request](creating_merge_requests.md).
 
+### Use merge request templates
+
+When you create a merge request, GitLab checks for the existence of a
+[description template](../description_templates.md) to add data to your merge request.
+GitLab checks these locations in order from 1 to 5, and applies the first template
+found to your merge request:
+
+| Name | Project UI<br>setting | Group<br>`default.md` | Instance<br>`default.md` | Project<br>`default.md` | No template |
+| :-- | :--: | :--: | :--: | :--: | :--: |
+| Standard commit message | 1 | 2 | 3 | 4 | 5 |
+| Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
+| Branch name [prefixed with an issue ID](../repository/branches/index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
+
+NOTE:
+Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
+
 ## View merge requests
 
 You can view merge requests for your project, group, or yourself.
 
-### View merge requests for a project
+### For a project
 
 To view all merge requests for a project:
 
@@ -39,7 +55,7 @@ To view all merge requests for a project:
 
 Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
 
-### View merge requests for all projects in a group
+### For all projects in a group
 
 To view merge requests for all projects in a group:
 
@@ -48,7 +64,7 @@ To view merge requests for all projects in a group:
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
-### View all merge requests assigned to you
+### Assigned to you
 
 To view all merge requests assigned to you:
 
@@ -65,7 +81,7 @@ or:
 
 or:
 
-1. On the top bar, in the upper right, select **{merge-request-open}** **Merge requests**.
+1. On the top bar, in the upper-right corner, select **Merge requests** (**{merge-request-open}**).
 1. From the dropdown list, select **Assigned to you**.
 
 ## Filter the list of merge requests
@@ -79,12 +95,12 @@ To filter the list of merge requests:
 
 1. Above the list of merge requests, select **Search or filter results...**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
-   - [**By environment or deployment date**](#filter-merge-requests-by-environment-or-deployment-date).
+   - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved-By**, for merge requests already approved by a user. **(PREMIUM)**.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../code_owners.md)). **(PREMIUM)**
+       (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM)**
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -100,7 +116,7 @@ To filter the list of merge requests:
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
 
-### Filter merge requests by environment or deployment date
+### By environment or deployment date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
@@ -251,20 +267,23 @@ after merging does not retarget open merge requests. This improvement is
 <!-- When the `moved_mr_sidebar` feature flag is removed, delete this topic and update the steps for these actions
 like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_id=522279685#5d9afba799c4af9920dab533571d7abb8b9e9163 -->
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`.
 On GitLab.com, this feature is enabled in the following projects: `gitlab-org/gitlab`, `gitlab-com/www-gitlab-com`, and `gitlab-org/customers-gitlab-com`.
 
-When this feature flag is enabled, you can find the following actions in
-**Merge request actions** (**{ellipsis_v}**) in the upper right:
+When this feature flag is enabled, in the upper-right corner,
+**Merge request actions** (**{ellipsis_v}**) contains the following actions:
 
 - The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
 - Mark merge request as ready or [draft](../merge_requests/drafts.md)
 - Close merge request
 - [Lock discussion](../../discussions/index.md#prevent-comments-by-locking-the-discussion)
 - Copy reference
+
+In GitLab 16.0 and later, similar action menus are available on issues, incidents, and epics.
 
 When this feature flag is disabled, these actions are in the right sidebar.
 
@@ -295,6 +314,43 @@ For a web developer writing a webpage for your company's website:
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 1. Your production team [cherry-picks](cherry_pick_changes.md) the merge commit into production.
 
+## Filter activity in a merge request
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115383) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `mr_activity_filters`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available per user, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
+On GitLab.com, this feature unavailable.
+
+To understand the history of a merge request, filter its activity feed to show you
+only the items that are relevant to you.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. Select a merge request.
+1. Scroll to **Activity**.
+1. On the right side of the page, select **Activity filter** to show the filter options.
+   If you've selected filter options previously, this field shows a summary of your
+   choices, like **Activity + 5 more**.
+1. Select the types of activity you want to see. Options include:
+
+   - Assignees & Reviewers
+   - Approvals
+   - Comments
+   - Commits & branches
+   - Edits
+   - Labels
+   - Lock status
+   - Mentions
+   - Merge request status
+   - Tracking
+
+1. Optional. Select **Sort** (**{sort-lowest}**) to reverse the sort order.
+
+Your selection persists across all merge requests. You can also change the
+sort order by clicking the sort button on the right.
+
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)
@@ -304,7 +360,6 @@ For a web developer writing a webpage for your company's website:
 - [GitLab keyboard shortcuts](../../shortcuts.md)
 - [Comments and threads](../../discussions/index.md)
 - [Suggest code changes](reviews/suggestions.md)
-- [Commits](commits.md)
 - [CI/CD pipelines](../../../ci/index.md)
 - [Push options](../push_options.md) for merge requests
 

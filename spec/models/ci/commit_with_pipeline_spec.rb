@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CommitWithPipeline do
-  let(:project) { create(:project, :public, :repository) }
-  let(:commit)  { described_class.new(project.commit) }
+RSpec.describe Ci::CommitWithPipeline, feature_category: :continuous_integration do
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let(:commit) { described_class.new(project.commit) }
 
   describe '#last_pipeline' do
     let!(:first_pipeline) do
@@ -27,28 +27,43 @@ RSpec.describe Ci::CommitWithPipeline do
   end
 
   describe '#lazy_latest_pipeline' do
-    let(:commit_1) do
-      described_class.new(Commit.new(RepoHelpers.sample_commit, project))
+    let_it_be(:other_project) { create(:project, :repository) }
+
+    let_it_be(:commits_with_pipelines) do
+      [
+        described_class.new(Commit.new(RepoHelpers.sample_commit, project)),
+        described_class.new(Commit.new(RepoHelpers.another_sample_commit, project)),
+        described_class.new(Commit.new(RepoHelpers.sample_big_commit, project)),
+        described_class.new(Commit.new(RepoHelpers.sample_commit, other_project))
+      ]
     end
 
-    let(:commit_2) do
-      described_class.new(Commit.new(RepoHelpers.another_sample_commit, project))
+    let_it_be(:commits) do
+      commits_with_pipelines + [
+        described_class.new(Commit.new(RepoHelpers.another_sample_commit, other_project))
+      ]
     end
 
-    let!(:commits) { [commit_1, commit_2] }
+    before(:all) do
+      commits_with_pipelines.each do |commit|
+        create(:ci_empty_pipeline, project: commit.project, sha: commit.sha)
+      end
+    end
 
-    it 'executes only 1 SQL query' do
+    it 'returns the correct pipelines with only 1 SQL query per project', :aggregate_failures do
       recorder = ActiveRecord::QueryRecorder.new do
-        # Running this first ensures we don't run one query for every
-        # commit.
+        # batch commits
         commits.each(&:lazy_latest_pipeline)
 
-        # This forces the execution of the SQL queries necessary to load the
-        # data.
-        commits.each { |c| c.latest_pipeline.try(:id) }
+        # assert result correctness
+        commits_with_pipelines.each do |commit|
+          expect(commit.lazy_latest_pipeline.project).to eq(commit.project)
+        end
+
+        expect(commits.last.lazy_latest_pipeline&.itself).to be_nil
       end
 
-      expect(recorder.count).to eq(1)
+      expect(recorder.count).to eq(2)
     end
   end
 

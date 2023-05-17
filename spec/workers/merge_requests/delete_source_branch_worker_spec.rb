@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::DeleteSourceBranchWorker do
+RSpec.describe MergeRequests::DeleteSourceBranchWorker, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request, author: user) }
 
@@ -12,8 +12,11 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker do
   describe '#perform' do
     before do
       allow_next_instance_of(::Projects::DeleteBranchWorker) do |instance|
-        allow(instance).to receive(:perform).with(merge_request.source_project.id, user.id,
-                                                  merge_request.source_branch)
+        allow(instance).to receive(:perform).with(
+          merge_request.source_project.id,
+          user.id,
+          merge_request.source_branch
+        )
       end
     end
 
@@ -36,8 +39,11 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker do
     context 'with existing user and merge request' do
       it 'calls delete branch worker' do
         expect_next_instance_of(::Projects::DeleteBranchWorker) do |instance|
-          expect(instance).to receive(:perform).with(merge_request.source_project.id, user.id,
-                                                     merge_request.source_branch)
+          expect(instance).to receive(:perform).with(
+            merge_request.source_project.id,
+            user.id,
+            merge_request.source_branch
+          )
         end
 
         worker.perform(merge_request.id, sha, user.id)

@@ -1,15 +1,7 @@
-default:
-  interruptible: true
-
 include:
-  - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
-
-dont-interrupt-me:
-  extends: .rules:dont-interrupt
-  stage: test
-  interruptible: false
-  script:
-    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
 
 .run-tests:
   stage: test
@@ -21,19 +13,19 @@ dont-interrupt-me:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - sysctl -n -w fs.inotify.max_user_watches=524288
+    - echo "SUITE_RAN=true" > suite_status.env
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     QA_GDK_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-qa-gdk:master"
-    QA_GENERATE_ALLURE_REPORT: "false"
+    QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "false"
-    QA_RUN_TYPE: e2e-test-on-gdk
     TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    QA_KNAPSACK_REPORTS: qa-smoke,ee-instance-parallel
+    RSPEC_REPORT_OPTS: "--format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec-${CI_JOB_ID}.htm --color --format documentation"
   timeout: 2 hours
   artifacts:
     when: always
@@ -41,6 +33,9 @@ dont-interrupt-me:
       - test_output
       - logs
     expire_in: 7 days
+    reports:
+      junit: test_output/**/rspec-*.xml
+      dotenv: suite_status.env
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
     - docker pull ${QA_GDK_IMAGE}
@@ -49,7 +44,7 @@ dont-interrupt-me:
     - cd qa && bundle install --jobs=$(nproc) --retry=3 --quiet
     - mkdir -p $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs/gdk $CI_PROJECT_DIR/logs/gitlab
     # This command matches the permissions of the user that runs GDK inside the container.
-    - chown -R 1000:1000 $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs
+    - chown -R 1000:1000 $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs $CI_PROJECT_DIR/qa/knapsack
     - |
       docker run --rm --name gdk --add-host gdk.test:127.0.0.1 --shm-size=2gb \
         --env-file <(bundle exec rake ci:env_var_name_list) \
@@ -57,9 +52,20 @@ dont-interrupt-me:
         --volume $CI_PROJECT_DIR/test_output:/home/gdk/gdk/gitlab/qa/tmp:z \
         --volume $CI_PROJECT_DIR/logs/gdk:/home/gdk/gdk/log \
         --volume $CI_PROJECT_DIR/logs/gitlab:/home/gdk/gdk/gitlab/log \
-        ${QA_GDK_IMAGE} "${CI_COMMIT_REF_SLUG}" "$TEST_GDK_TAGS --tag ~requires_praefect" || true
-    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk_and_tests\r\e[0K"
+        --volume $CI_PROJECT_DIR/qa/knapsack:/home/gdk/gdk/gitlab/qa/knapsack \
+        ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$RSPEC_REPORT_OPTS $TEST_GDK_TAGS --tag ~requires_praefect"
+    # The above image's launch script takes two arguments only - first one is the commit sha and the second one Rspec Args
   allow_failure: true
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        echo "SUITE_FAILED=true" >> suite_status.env
+      fi
+
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .rules:download-knapsack
 
 test-on-gdk-smoke:
   extends:
@@ -67,7 +73,6 @@ test-on-gdk-smoke:
   parallel: 2
   variables:
     TEST_GDK_TAGS: "--tag smoke"
-    QA_KNAPSACK_REPORT_NAME: qa-smoke
   rules:
     - when: always
 
@@ -75,7 +80,50 @@ test-on-gdk-full:
   extends:
     - .run-tests
   parallel: 5
-  variables:
-    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
   rules:
     - when: manual
+
+# ==========================================
+# Post test stage
+# ==========================================
+e2e-test-report:
+  extends:
+    - .e2e-test-report
+    - .rules:report:allure-report
+  variables:
+    ALLURE_RESULTS_GLOB: test_output/allure-results
+
+upload-knapsack-report:
+  extends:
+    - .upload-knapsack-report
+    - .rules:report:process-results
+  variables:
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/test_output/knapsack/*/*.json
+
+export-test-metrics:
+  extends:
+    - .export-test-metrics
+    - .rules:report:process-results
+  variables:
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/test_output/test-metrics-*.json
+
+relate-test-failures:
+  extends:
+    - .relate-test-failures
+    - .rules:report:process-results
+  variables:
+    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
+
+generate-test-session:
+  extends:
+    - .generate-test-session
+    - .rules:report:process-results
+  variables:
+    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
+
+notify-slack:
+  extends:
+    - .notify-slack
+    - .rules:report:process-results
+  variables:
+    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.xml

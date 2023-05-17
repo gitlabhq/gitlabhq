@@ -16,18 +16,16 @@ RSpec.describe Profiles::AccountsController do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    [:saml, :cas3].each do |provider|
-      describe "#{provider} provider" do
-        let(:user) { create(:omniauth_user, provider: provider.to_s) }
+    describe "saml provider" do
+      let(:user) { create(:omniauth_user, provider: 'saml') }
 
-        it "does not allow to unlink connected account" do
-          identity = user.identities.last
+      it "does not allow to unlink connected account" do
+        identity = user.identities.last
 
-          delete :unlink, params: { provider: provider.to_s }
+        delete :unlink, params: { provider: 'saml' }
 
-          expect(response).to have_gitlab_http_status(:found)
-          expect(user.reload.identities).to include(identity)
-        end
+        expect(response).to have_gitlab_http_status(:found)
+        expect(user.reload.identities).to include(identity)
       end
     end
 

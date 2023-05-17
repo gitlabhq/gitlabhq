@@ -17,9 +17,11 @@ module Users
     def user_dismissed_for_group(feature_name, group, ignore_dismissal_earlier_than = nil)
       return false unless current_user
 
-      current_user.dismissed_callout_for_group?(feature_name: feature_name,
-                                                group: group,
-                                                ignore_dismissal_earlier_than: ignore_dismissal_earlier_than)
+      current_user.dismissed_callout_for_group?(
+        feature_name: feature_name,
+        group: group,
+        ignore_dismissal_earlier_than: ignore_dismissal_earlier_than
+      )
     end
 
     def just_created?

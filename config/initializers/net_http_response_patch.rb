@@ -24,10 +24,12 @@ module Net
         line = line.sub(/\s{0,10}\z/, '')
         break if line.empty?
         if line[0] == ?\s or line[0] == ?\t and value
+          # rubocop:disable Gitlab/NoCodeCoverageComment
           # :nocov:
           value << ' ' unless value.empty?
           value << line.strip
           # :nocov:
+          # rubocop:enable Gitlab/NoCodeCoverageComment
         else
           yield key, value if key
           key, value = line.strip.split(/\s{0,10}:\s{0,10}/, 2)

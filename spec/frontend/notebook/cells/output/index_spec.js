@@ -2,7 +2,13 @@ import { mount } from '@vue/test-utils';
 import json from 'test_fixtures/blob/notebook/basic.json';
 import Output from '~/notebook/cells/output/index.vue';
 import MarkdownOutput from '~/notebook/cells/output/markdown.vue';
-import { relativeRawPath, markdownCellContent } from '../../mock_data';
+import DataframeOutput from '~/notebook/cells/output/dataframe.vue';
+import {
+  relativeRawPath,
+  markdownCellContent,
+  outputWithDataframe,
+  outputWithDataframeContent,
+} from '../../mock_data';
 
 describe('Output component', () => {
   let wrapper;
@@ -16,10 +22,6 @@ describe('Output component', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('text output', () => {
     beforeEach(() => {
@@ -106,6 +108,16 @@ describe('Output component', () => {
 
     it('renders a markdown component', () => {
       expect(wrapper.findComponent(MarkdownOutput).props('rawCode')).toBe(markdownCellContent);
+    });
+  });
+
+  describe('Dataframe output', () => {
+    it('renders DataframeOutput component', () => {
+      createComponent(outputWithDataframe);
+
+      expect(wrapper.findComponent(DataframeOutput).props('rawCode')).toBe(
+        outputWithDataframeContent.join(''),
+      );
     });
   });
 

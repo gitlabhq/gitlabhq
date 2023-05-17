@@ -8,7 +8,7 @@ describe('content/components/wrappers/table_cell_header', () => {
   let editor;
   let node;
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     wrapper = shallowMount(TableCellHeaderWrapper, {
       propsData: {
         editor,
@@ -20,10 +20,6 @@ describe('content/components/wrappers/table_cell_header', () => {
   beforeEach(() => {
     node = {};
     editor = createTestEditor({});
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders a TableCellBase component', () => {

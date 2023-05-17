@@ -5,6 +5,7 @@ module Admin
     def batched_migration_status_badge_variant(migration)
       variants = {
         active: :info,
+        finalizing: :info,
         paused: :warning,
         failed: :danger,
         finished: :success

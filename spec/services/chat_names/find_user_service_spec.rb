@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
+RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state, feature_category: :user_profile do
   describe '#execute' do
     subject { described_class.new(team_id, user_id).execute }
 

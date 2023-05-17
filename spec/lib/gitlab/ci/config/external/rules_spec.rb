@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_composition do
   let(:rule_hashes) {}
 
   subject(:rules) { described_class.new(rule_hashes) }

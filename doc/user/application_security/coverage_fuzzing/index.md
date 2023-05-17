@@ -15,6 +15,9 @@ We recommend that you use fuzz testing in addition to the other security scanner
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Coverage Fuzzing](https://www.youtube.com/watch?v=bbIenVVcjW0).
+
 ## Coverage-guided fuzz testing process
 
 The fuzz testing process:
@@ -40,7 +43,7 @@ You can use the following fuzzing engines to test the specified languages.
 | Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
 |---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
-| GoLang                                      | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
+| Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
 | Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
 | Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
 | Java                                        | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
@@ -54,7 +57,7 @@ You can use the following fuzzing engines to test the specified languages.
 To confirm the status of coverage-guided fuzz testing:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
    - **Enabled**
@@ -145,7 +148,7 @@ Each fuzzing step outputs these artifacts:
     previous jobs.
 
 You can download the JSON report file from the CI/CD pipelines page. For more information, see
-[Downloading artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[Downloading artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Corpus registry
 
@@ -168,7 +171,7 @@ artifacts files you can download from the CI/CD pipeline. Also, a project member
 To view details of the corpus registry:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
 ### Create a corpus in the corpus registry
@@ -196,7 +199,7 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 To upload an existing corpus file:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.
 1. Complete the fields.
@@ -222,7 +225,7 @@ Prerequisites:
 
 ## Coverage-guided fuzz testing report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](../../../policy/alpha-beta-support.md#alpha-features).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/alpha-beta-support.md#experiment).
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

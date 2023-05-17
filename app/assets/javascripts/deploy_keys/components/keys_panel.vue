@@ -34,10 +34,12 @@ export default {
         <div role="rowheader" class="table-section section-40">
           {{ s__('DeployKeys|Deploy key') }}
         </div>
-        <div role="rowheader" class="table-section section-30">
+        <div role="rowheader" class="table-section section-20">
           {{ s__('DeployKeys|Project usage') }}
         </div>
-        <div role="rowheader" class="table-section section-15 text-right">{{ __('Created') }}</div>
+        <div role="rowheader" class="table-section section-15">{{ __('Created') }}</div>
+        <div role="rowheader" class="table-section section-15">{{ __('Expires') }}</div>
+        <!-- leave 10% space for actions --->
       </div>
       <deploy-key
         v-for="deployKey in keys"

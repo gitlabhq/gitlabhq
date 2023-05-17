@@ -13,4 +13,11 @@ class PagesDomainPresenter < Gitlab::View::Presenter::Delegated
 
     ::Gitlab::LetsEncrypt.enabled? && auto_ssl_failed
   end
+
+  def user_defined_certificate?
+    persisted? &&
+      certificate.present? &&
+      certificate_user_provided? &&
+      errors[:certificate].blank?
+  end
 end

@@ -21,8 +21,9 @@ RSpec.describe Gitlab::ColorSchemes do
   end
 
   describe '.default' do
-    it 'returns the default scheme' do
-      expect(described_class.default.id).to eq 1
+    it 'use config default' do
+      stub_application_setting(default_syntax_highlighting_theme: 2)
+      expect(described_class.default.id).to eq 2
     end
   end
 
@@ -36,7 +37,8 @@ RSpec.describe Gitlab::ColorSchemes do
 
   describe '.for_user' do
     it 'returns default when user is nil' do
-      expect(described_class.for_user(nil).id).to eq 1
+      stub_application_setting(default_syntax_highlighting_theme: 2)
+      expect(described_class.for_user(nil).id).to eq 2
     end
 
     it "returns user's preferred color scheme" do

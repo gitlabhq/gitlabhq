@@ -1,0 +1,75 @@
+- name: Users with the Guest role can view private repositories
+  description: |  # Do not modify this line, instead modify the lines below.
+    Users with the Guest role and an Ultimate license can now view private repository content if their administrator gives them permission. Administrators must create a new role through the API, and assign that role to users who the administrator wants to have view repository permissions. Previously, users with the Guest role could not view code in private projects, limiting their utility.
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/permissions.html#custom-roles
+  image_url: https://img.youtube.com/vi/46cp_-Rtxps/hqdefault.jpg
+  published_at: 2023-02-22  # YYYY-MM-DD
+  release: 15.9
+- name: Manage license approval policies
+  description: |  # Do not modify this line, instead modify the lines below.
+    GitLab now supports flexible license approval policies as the replacement for the [deprecated License-Check feature](https://docs.gitlab.com/ee/update/deprecations.html#license-check-and-the-policies-tab-on-the-license-compliance-page). License approval policies improve the experience over the License-check feature in several ways:
+
+    - Users can choose who is allowed to edit license approval policies.
+    - Multiple policy rules can be created and chained together.
+    - A two-step approval process can be enforced for any desired changes to license approval policies.
+    - A single set of license policies can be applied to multiple development projects, or can be applied at the group or subgroup level, to allow for ease in maintaining a single, centralized ruleset.
+    - Policies can be used to require approval for any license that is not specifically allowed.
+
+    License approval policies can be used alongside the existing License-Check feature, as the two policies are additive and don't conflict. To get started, verify that the `license_scanning_policies` feature flag is enabled for your instance and then navigate to **Security & Compliance > Policies**, create a new Scan Result type policy, and select **License scanning** for your policy rule.
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html
+  image_url: https://img.youtube.com/vi/34qBQ9t8qO8/hqdefault.jpg
+  published_at: 2023-02-22  # YYYY-MM-DD
+  release: 15.9
+- name: New License Compliance scanner
+  description: |  # Do not modify this line, instead modify the lines below.
+    GitLab now supports a new method of detecting licenses that is capable of parsing and identifying over 500 different types of licenses and can extract license information from packages that are dual-licensed or have multiple different licenses that apply. In GitLab's development testing, this has empirically resulted in dramatically improved accuracy and completeness of results. Fewer CI pipeline minutes are consumed because the License Compliance job is no longer required. Additionally the new method has support for the same languages and versions as GitLab Dependency Scanning.
+
+    To use this new scanner, remove the inclusion of the `Jobs/License-Scanning.yml` template in your CI configuration and instead include the `Jobs/Dependency-Scanning.yml` template. After GitLab 16.0, the old method of scanning with the `Jobs/License-Scanning.yml` template will no longer be supported.
+
+    Currently this feature is available for GitLab SaaS users behind the `license_scanning_sbom_scanner` and `package_metadata_synchronization` feature flags. Users can follow along in GitLab to track the work to enable the [license_scanning_sbom_scanner](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) and the [package_metadata_synchronization](https://gitlab.com/gitlab-org/gitlab/-/issues/390836) feature flags by default along with work to add support for [self-managed instances](https://gitlab.com/gitlab-org/gitlab/-/issues/391904) and [offline instances](https://gitlab.com/gitlab-org/gitlab/-/issues/384047).
+  stage: secure
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/
+  image_url: https://about.gitlab.com/images/15_9/new_license_scanner.png
+  published_at: 2023-02-22  # YYYY-MM-DD
+  release: 15.9
+- name: Notifications now available in the GitLab for Slack app
+  description: |  # Do not modify this line, instead modify the lines below.
+    The GitLab for Slack app is the new home for managing notifications from GitLab to your Slack workspace. Not only can you use existing app features such as [slash commands](https://docs.gitlab.com/ee/user/project/integrations/slack_slash_commands.html), but you can now also specify which Slack channels you want to notify based on merge request changes, push events, issue changes, and many other GitLab events.
+
+    The [Slack notifications integration](https://docs.gitlab.com/ee/user/project/integrations/slack.html) is now deprecated for SaaS customers and will eventually [be removed](https://gitlab.com/groups/gitlab-org/-/epics/8673) as we continue to expand support for our GitLab for Slack app to better meet your needs.
+
+    To keep your teams in sync with what's happening in GitLab, get the [GitLab for Slack app](https://gitlab.slack.com/apps/A676ADMV5-gitlab) today!
+  stage: manage
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html#slack-notifications
+  image_url: https://about.gitlab.com/images/15_9/slack_notifications_jan_31-optimized.png
+  published_at: 2023-02-22  # YYYY-MM-DD
+  release: 15.9
+- name: Code Suggestions available in closed beta
+  description: |  # Do not modify this line, instead modify the lines below.
+    Every day millions of developers use GitLab to contribute code. We’re starting to empower developers to code more efficiently and effectively with a closed beta of Gitlab Code Suggestions.
+
+    Closed beta participants can use the GitLab Workflow VSCode extension to get code suggestions as they type. Depending on the prompt, the extension either provides entire code snippets like generating functions, or completes the current line. Simply pressing the tab key allows you to accept the suggestions.
+
+    GitLab Code Suggestions can improve developer productivity, focus, and innovation without context switching and within a single DevSecOps platform. While currently limited in closed beta, interested Ultimate customers can express interest by filling out this form to be considered for early access.
+  stage: modelops
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta
+  image_url: https://about.gitlab.com/images/15_9/DemoFastApi.gif
+  published_at: 2023-02-22  # YYYY-MM-DD
+  release: 15.9

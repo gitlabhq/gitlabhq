@@ -1,10 +1,15 @@
 <script>
-import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf, GlBadge } from '@gitlab/ui';
+import { GlModal, GlTabs, GlTab, GlSprintf, GlBadge, GlFilteredSearch } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
+import {
+  OPERATORS_IS,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import eventHub from '../event_hub';
 import {
   findCommitIndex,
@@ -12,6 +17,8 @@ import {
   removeIfReadyToBeRemoved,
   removeIfPresent,
 } from '../utils';
+import Token from './token.vue';
+import DateOption from './date_option.vue';
 
 export default {
   components: {
@@ -19,9 +26,9 @@ export default {
     GlTabs,
     GlTab,
     ReviewTabContainer,
-    GlSearchBoxByType,
     GlSprintf,
     GlBadge,
+    GlFilteredSearch,
   },
   props: {
     contextCommitsPath: {
@@ -40,6 +47,51 @@ export default {
       type: Number,
       required: true,
     },
+  },
+  data() {
+    return {
+      availableTokens: [
+        {
+          icon: 'pencil',
+          title: __('Author'),
+          type: TOKEN_TYPE_AUTHOR,
+          operators: OPERATORS_IS,
+          token: UserToken,
+          defaultAuthors: [],
+          unique: true,
+          fetchAuthors: this.fetchAuthors,
+          initialAuthors: [],
+        },
+        {
+          formattedKey: __('Committed-before'),
+          key: 'committed-before',
+          type: 'committed-before-date',
+          param: '',
+          symbol: '',
+          icon: 'clock',
+          tag: 'committed_before',
+          title: __('Committed-before'),
+          operators: OPERATORS_IS,
+          token: Token,
+          unique: true,
+          optionComponent: DateOption,
+        },
+        {
+          formattedKey: __('Committed-after'),
+          key: 'committed-after',
+          type: 'committed-after-date',
+          param: '',
+          symbol: '',
+          icon: 'clock',
+          tag: 'committed_after',
+          title: __('Committed-after'),
+          operators: OPERATORS_IS,
+          token: Token,
+          unique: true,
+          optionComponent: DateOption,
+        },
+      ],
+    };
   },
   computed: {
     ...mapState([
@@ -98,8 +150,6 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off('openModal', this.openModal);
-    clearTimeout(this.timeout);
-    this.timeout = null;
   },
   methods: {
     ...mapActions([
@@ -114,10 +164,8 @@ export default {
       'setSearchText',
       'setToRemoveCommits',
       'resetModalState',
+      'fetchAuthors',
     ]),
-    focusSearch() {
-      this.$refs.searchInput.focusInput();
-    },
     openModal() {
       this.searchCommits();
       this.fetchContextCommits();
@@ -125,7 +173,6 @@ export default {
     },
     handleTabChange(tabIndex) {
       if (tabIndex === 0) {
-        this.focusSearch();
         if (this.shouldPurge) {
           this.setSelectedCommits(
             [...this.commits, ...this.selectedCommits].filter((commit) => commit.isSelected),
@@ -133,17 +180,36 @@ export default {
         }
       }
     },
-    handleSearchCommits(value) {
-      // We only call the service, if we have 3 characters or we don't have any characters
-      if (value.length >= 3) {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          this.searchCommits(value);
-        }, 500);
-      } else if (value.length === 0) {
-        this.searchCommits();
+    blurSearchInput() {
+      const searchInputEl = this.$refs.filteredSearchInput.$el.querySelector(
+        '.gl-filtered-search-token-segment-input',
+      );
+      if (searchInputEl) {
+        searchInputEl.blur();
       }
-      this.setSearchText(value);
+    },
+    handleSearchCommits(value = []) {
+      const searchValues = value.reduce((acc, searchFilter) => {
+        const isEqualSearch = searchFilter?.value?.operator === '=';
+
+        if (!isEqualSearch && typeof searchFilter === 'object') return acc;
+
+        if (typeof searchFilter === 'string' && searchFilter.length >= 3) {
+          acc.searchText = searchFilter;
+        } else if (searchFilter?.type === 'author' && searchFilter?.value?.data?.length >= 3) {
+          acc.author = searchFilter?.value?.data;
+        } else if (searchFilter?.type === 'committed-before-date') {
+          acc.committed_before = searchFilter?.value?.data;
+        } else if (searchFilter?.type === 'committed-after-date') {
+          acc.committed_after = searchFilter?.value?.data;
+        }
+
+        return acc;
+      }, {});
+
+      this.searchCommits(searchValues);
+      this.blurSearchInput();
+      this.setSearchText(searchValues.searchText);
     },
     handleCommitRowSelect(event) {
       const index = event[0];
@@ -208,11 +274,12 @@ export default {
     },
     handleModalClose() {
       this.resetModalState();
-      clearTimeout(this.timeout);
     },
     handleModalHide() {
       this.resetModalState();
-      clearTimeout(this.timeout);
+    },
+    shouldShowInputDateFormat(value) {
+      return ['Committed-before', 'Committed-after'].indexOf(value) !== -1;
     },
   },
 };
@@ -223,13 +290,14 @@ export default {
     ref="modal"
     cancel-variant="light"
     size="md"
+    no-focus-on-show
+    modal-class="add-review-item-modal"
     body-class="add-review-item pt-0"
     :scrollable="true"
     :ok-title="__('Save changes')"
     modal-id="add-review-item"
     :title="__('Add or remove previously merged commits')"
     :ok-disabled="disableSaveButton"
-    @shown="focusSearch"
     @ok="handleCreateContextCommits"
     @cancel="handleModalClose"
     @close="handleModalClose"
@@ -245,11 +313,15 @@ export default {
           </gl-sprintf>
         </template>
         <div class="gl-mt-3">
-          <gl-search-box-by-type
-            ref="searchInput"
-            :placeholder="__(`Search by commit title or SHA`)"
-            @input="handleSearchCommits"
+          <gl-filtered-search
+            ref="filteredSearchInput"
+            class="flex-grow-1"
+            :placeholder="__(`Search or filter commits`)"
+            :available-tokens="availableTokens"
+            @clear="handleSearchCommits"
+            @submit="handleSearchCommits"
           />
+
           <review-tab-container
             :is-loading="isLoadingCommits"
             :loading-error="commitsLoadingError"

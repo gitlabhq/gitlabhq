@@ -34,7 +34,7 @@ This area of the merge request is where all of the options and commit messages a
 
 Reports are widgets within the merge request that report information about changes within the merge request. These widgets provide information to better help the author understand the changes and further improvements to the proposed changes.
 
-[Design Documentation](https://design.gitlab.com/regions/merge-request-reports/)
+[Design Documentation](https://design.gitlab.com/patterns/merge-request-reports)
 
 ![merge request reports](../img/merge_request_reports_v14_7.png)
 
@@ -61,7 +61,7 @@ Additionally, approval settings provide configuration options to define how thos
 Examples of approval rules and settings include:
 
 - [Merge request approval rules](../../user/project/merge_requests/approvals/rules.md)
-- [Code owner approvals](../../user/project/code_owners.md)
+- [Code owner approvals](../../user/project/codeowners/index.md)
 - [Security approvals](../../user/application_security/index.md#security-approvals-in-merge-requests)
 - [Prevent editing approval rules](../../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests)
 - [Remove all approvals when commits are added](../../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)

@@ -46,7 +46,7 @@ describe('Container Expiration Policy Settings Form', () => {
   const findOlderThanDropdown = () => wrapper.find('[data-testid="older-than-dropdown"]');
   const findRemoveRegexInput = () => wrapper.find('[data-testid="remove-regex-input"]');
 
-  const submitForm = async () => {
+  const submitForm = () => {
     findForm().trigger('submit');
     return waitForPromises();
   };
@@ -122,10 +122,6 @@ describe('Container Expiration Policy Settings Form', () => {
 
   beforeEach(() => {
     jest.spyOn(Tracking, 'event');
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe.each`

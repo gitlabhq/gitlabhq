@@ -16,7 +16,7 @@ module QA
       end
 
       def finished_all_ajax_requests?
-        requests = %w[window.pendingRequests window.pendingRailsUJSRequests 0]
+        requests = %w[window.pendingRequests window.pendingApolloRequests window.pendingRailsUJSRequests 0]
 
         if Runtime::Env.can_intercept?
           requests.unshift('(window.Interceptor && window.Interceptor.activeFetchRequests)')
@@ -24,6 +24,10 @@ module QA
 
         script = requests.join(' || ')
         Capybara.page.evaluate_script(script).zero? # rubocop:disable Style/NumericPredicate
+      end
+
+      def spinner_exists?
+        Capybara.page.has_css?('.gl-spinner', wait: 2)
       end
 
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)

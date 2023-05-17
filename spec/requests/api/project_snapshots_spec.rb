@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectSnapshots, feature_category: :source_code_management do
+RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :source_code_management do
   include WorkhorseHelpers
 
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
+  let(:path) { "/projects/#{project.id}/snapshot" }
 
   before do
     allow(Feature::Gitaly).to receive(:server_feature_flags).and_return({
@@ -32,27 +33,29 @@ RSpec.describe API::ProjectSnapshots, feature_category: :source_code_management 
       expect(response.parsed_body).to be_empty
     end
 
+    it_behaves_like 'GET request permissions for admin mode'
+
     it 'returns authentication error as project owner' do
-      get api("/projects/#{project.id}/snapshot", project.first_owner)
+      get api(path, project.first_owner)
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'returns authentication error as unauthenticated user' do
-      get api("/projects/#{project.id}/snapshot", nil)
+      get api(path, nil)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'requests project repository raw archive as administrator' do
-      get api("/projects/#{project.id}/snapshot", admin), params: { wiki: '0' }
+      get api(path, admin, admin_mode: true), params: { wiki: '0' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect_snapshot_response_for(project.repository)
     end
 
     it 'requests wiki repository raw archive as administrator' do
-      get api("/projects/#{project.id}/snapshot", admin), params: { wiki: '1' }
+      get api(path, admin, admin_mode: true), params: { wiki: '1' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect_snapshot_response_for(project.wiki.repository)

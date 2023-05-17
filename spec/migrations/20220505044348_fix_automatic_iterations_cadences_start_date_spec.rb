@@ -28,19 +28,19 @@ RSpec.describe FixAutomaticIterationsCadencesStartDate, feature_category: :team_
 
   before do
     sprints.create!(id: 2, start_date: jan2022, due_date: jan2022 + 1.week, iterations_cadence_id: cadence1.id,
-                    group_id: group1.id, iid: 1)
+      group_id: group1.id, iid: 1)
     sprints.create!(id: 1, start_date: dec2022, due_date: dec2022 + 1.week, iterations_cadence_id: cadence1.id,
-                    group_id: group1.id, iid: 2)
+      group_id: group1.id, iid: 2)
 
     sprints.create!(id: 4, start_date: feb2022, due_date: feb2022 + 1.week, iterations_cadence_id: cadence3.id,
-                    group_id: group2.id, iid: 1)
+      group_id: group2.id, iid: 1)
     sprints.create!(id: 3, start_date: may2022, due_date: may2022 + 1.week, iterations_cadence_id: cadence3.id,
-                    group_id: group2.id, iid: 2)
+      group_id: group2.id, iid: 2)
 
     sprints.create!(id: 5, start_date: may2022, due_date: may2022 + 1.week, iterations_cadence_id: cadence4.id,
-                    group_id: group2.id, iid: 4)
+      group_id: group2.id, iid: 4)
     sprints.create!(id: 6, start_date: feb2022, due_date: feb2022 + 1.week, iterations_cadence_id: cadence4.id,
-                    group_id: group2.id, iid: 3)
+      group_id: group2.id, iid: 3)
   end
 
   describe '#up' do

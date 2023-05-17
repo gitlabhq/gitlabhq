@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AfterImportWorker do
+RSpec.describe Projects::AfterImportWorker, feature_category: :importers do
   subject { worker.perform(project.id) }
 
   let(:worker) { described_class.new }

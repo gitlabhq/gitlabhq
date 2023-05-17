@@ -18,10 +18,6 @@ describe('DiffViewer', () => {
     wrapper = mount(DiffViewer, { propsData });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders image diff', () => {
     window.gon = {
       relative_url_root: '',

@@ -25,7 +25,6 @@ RSpec.describe 'groups/group_members/index', :aggregate_failures, feature_catego
 
       expect(rendered).to have_selector('.js-invite-group-trigger')
       expect(rendered).to have_selector('.js-invite-members-trigger')
-      expect(response).to render_template(partial: 'groups/_invite_members_modal')
     end
   end
 

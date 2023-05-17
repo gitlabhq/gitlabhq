@@ -19,13 +19,6 @@ describe('AlertMappingBuilder', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   beforeEach(() => {
     mountComponent();
   });
@@ -49,7 +42,7 @@ describe('AlertMappingBuilder', () => {
 
     const fallbackColumnIcon = findColumnInRow(0, 3).findComponent(GlIcon);
     expect(fallbackColumnIcon.exists()).toBe(true);
-    expect(fallbackColumnIcon.attributes('name')).toBe('question');
+    expect(fallbackColumnIcon.attributes('name')).toBe('question-o');
     expect(fallbackColumnIcon.attributes('title')).toBe(i18n.fallbackTooltip);
   });
 

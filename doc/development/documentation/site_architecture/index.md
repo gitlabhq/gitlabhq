@@ -33,7 +33,7 @@ Then you can use one of these approaches:
   of the documentation in the external repository. The landing page is indexed and
   searchable on <https://docs.gitlab.com>, but the rest of the documentation is not.
   For example, the [GitLab Workflow extension for VS Code](../../../user/project/repository/vscode.md).
-  We do not encourage the use of [pages with lists of links](../topic_types/index.md#topics-and-resources),
+  We do not encourage the use of [pages with lists of links](../topic_types/index.md#pages-and-topics-to-avoid),
   so only use this option if the recommended options are not feasible.
 
 ## Monthly release process (versions)

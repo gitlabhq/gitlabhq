@@ -1,6 +1,6 @@
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
-import LabelWrapper from '../components/wrappers/label.vue';
+import LabelWrapper from '../components/wrappers/reference_label.vue';
 import Reference from './reference';
 
 export default Reference.extend({

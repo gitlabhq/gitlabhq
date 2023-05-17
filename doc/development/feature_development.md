@@ -55,6 +55,7 @@ Consult these topics for information on contributing to specific GitLab features
 
 - [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](../administration/sidekiq/sidekiq_troubleshooting.md)
+- [VS Code debugging](vs_code_debugging.md)
 
 ### Git specifics
 
@@ -79,8 +80,8 @@ Consult these topics for information on contributing to specific GitLab features
   - [Adding a new Redis instance](redis/new_redis_instance.md)
 - [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
-- [Elasticsearch integration docs](elasticsearch.md)
-- [Working with merge request diffs](diffs.md)
+- [Advanced search integration docs](advanced_search.md)
+- [Working with merge request diffs](merge_request_concepts/diffs/index.md)
 - [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
 - [Uploads development guide](uploads/index.md)
@@ -94,6 +95,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Application limits](application_limits.md)
+- [AI features](ai_features.md)
 
 ### Import and Export
 
@@ -127,13 +129,11 @@ See [database guidelines](database/index.md).
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
-- [How to run local CodeSandbox integration for Web IDE Live Preview](integrations/codesandbox.md)
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 
-- [Jira app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/jira.md)
-- [Slack app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/slack.md)
-- [ZenTao development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/zentao.md)
+- [Jira app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/jira.md)
+- [GitLab for Slack app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/slack.md)
 
 ## Testing guides
 

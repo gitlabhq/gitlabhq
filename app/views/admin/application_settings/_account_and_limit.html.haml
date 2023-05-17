@@ -30,6 +30,11 @@
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('Restart GitLab to apply changes.')
+    .form-group
+      = f.label :remember_me_enabled, _('Remember me'), class: 'label-light'
+      - remember_me_help_link = help_page_path('user/profile/index.md', anchor: 'stay-signed-in-for-two-weeks')
+      - remember_me_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: remember_me_help_link }
+      = f.gitlab_ui_checkbox_component :remember_me_enabled, _('Allow users to extend their session'), help_text: _("Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more.%{link_end}").html_safe % { link_start: remember_me_help_link_start, link_end: '</a>'.html_safe }
 
     = render_if_exists 'admin/application_settings/git_two_factor_session_expiry', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f

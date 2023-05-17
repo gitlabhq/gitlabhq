@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -9,6 +9,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
+
+## GitLab 16.0
+
+Fields removed in GitLab 16.0.
+
+### GraphQL Fields
+
+| Field name | GraphQL type | Deprecated in | Removal MR | Use instead |
+|---|---|---|---|---|
+| `name` | `PipelineSecurityReportFinding` | [15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89571) | [!119055](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119055) | `title` |
+| `external` | `ReleaseAssetLink` | 15.9 | [!111750](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111750) | None |
+| `confidence` | `PipelineSecurityReportFinding` | 15.4 | [!118617](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118617) | None |
+| `PAUSED` | `CiRunnerStatus` | 14.8 | [!118635](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118635) | `CiRunner.paused: true` |
+| `ACTIVE` | `CiRunnerStatus` | 14.8 | [!118635](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118635) | `CiRunner.paused: false` |
+
+### GraphQL Mutations
+
+| Argument name        | Mutation                 | Deprecated in                                                       | Use instead                                    |
+| -------------------- | --------------------     |---------------------------------------------------------------------|------------------------------------------------|
+| -                    | `vulnerabilityFindingDismiss` | [15.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99170) | `vulnerabilityDismiss` or `securityFindingDismiss` |
+| -                    | `apiFuzzingCiConfigurationCreate` | [15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87241) | `todos`                                        |
+| -                    | `CiCdSettingsUpdate` | [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/361801) | `ProjectCiCdSettingsUpdate` |
 
 ## GitLab 15.0
 

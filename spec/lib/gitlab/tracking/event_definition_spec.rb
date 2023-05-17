@@ -12,7 +12,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       property_description: 'The string "issue_id"',
       value_description: 'ID of the issue',
       extra_properties: { confidential: false },
-      product_category: 'collection',
       product_stage: 'growth',
       product_section: 'dev',
       product_group: 'group::product analytics',
@@ -47,7 +46,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       :property_description | 1
       :value_description    | 1
       :extra_properties     | 'smth'
-      :product_category     | 1
       :product_stage        | 1
       :product_section      | nil
       :product_group        | nil

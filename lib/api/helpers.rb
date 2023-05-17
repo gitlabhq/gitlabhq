@@ -167,10 +167,6 @@ module API
         current_authenticated_job.project == project
     end
 
-    def enforce_jobs_api_rate_limits(project)
-      ::Feature.enabled?(:ci_enforce_rate_limits_jobs_api, project)
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ INTEGER_ID_REGEX
@@ -330,6 +326,10 @@ module API
 
     def authorize_read_builds!
       authorize! :read_build, user_project
+    end
+
+    def authorize_read_code!
+      authorize! :read_code, user_project
     end
 
     def authorize_read_build_trace!(build)
@@ -683,6 +683,8 @@ module API
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
+      finder_params[:updated_after] = declared_params[:updated_after] if declared_params[:updated_after]
+      finder_params[:updated_before] = declared_params[:updated_before] if declared_params[:updated_before]
       finder_params
     end
 

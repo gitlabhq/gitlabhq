@@ -24,10 +24,6 @@ describe('MemberList', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders email as name', () => {
     expect(getByText(invite.email).exists()).toBe(true);
   });

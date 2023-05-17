@@ -10,7 +10,7 @@ module Gitlab
     end
 
     def self.supported?
-      Gitlab::IncomingEmail.enabled? && Gitlab::IncomingEmail.supports_wildcard?
+      Gitlab::Email::IncomingEmail.enabled? && Gitlab::Email::IncomingEmail.supports_wildcard?
     end
   end
 end

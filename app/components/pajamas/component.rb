@@ -2,6 +2,8 @@
 
 module Pajamas
   class Component < ViewComponent::Base
+    warn_on_deprecated_slot_setter
+
     private
 
     # Filter a given a value against a list of allowed values

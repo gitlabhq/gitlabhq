@@ -1,7 +1,6 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -277,6 +276,9 @@ export const labels = [
   },
 ];
 
+export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
+export const mockEpicFullPath = 'gitlab-org/test-subgroup';
+
 export const rawIssue = {
   title: 'Issue 1',
   id: 'gid://gitlab/Issue/436',
@@ -302,11 +304,23 @@ export const rawIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  totalTimeSpent: 0,
+  humanTimeEstimate: null,
+  humanTotalTimeSpent: null,
+  emailsDisabled: false,
+  hidden: false,
+  webUrl: `${mockIssueFullPath}/-/issue/27`,
+  relativePosition: null,
+  severity: null,
+  milestone: null,
+  weight: null,
+  blocked: false,
+  blockedByCount: 0,
+  iteration: null,
+  healthStatus: null,
   type: 'ISSUE',
+  __typename: 'Issue',
 };
-
-export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
-export const mockEpicFullPath = 'gitlab-org/test-subgroup';
 
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
@@ -329,7 +343,22 @@ export const mockIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  totalTimeSpent: 0,
+  humanTimeEstimate: null,
+  humanTotalTimeSpent: null,
+  emailsDisabled: false,
+  hidden: false,
+  webUrl: `${mockIssueFullPath}/-/issue/27`,
+  relativePosition: null,
+  severity: null,
+  milestone: null,
+  weight: null,
+  blocked: false,
+  blockedByCount: 0,
+  iteration: null,
+  healthStatus: null,
   type: 'ISSUE',
+  __typename: 'Issue',
 };
 
 export const mockEpic = {
@@ -425,44 +454,58 @@ export const mockIssue4 = {
   epic: null,
 };
 
+export const mockIssue5 = {
+  id: 'gid://gitlab/Issue/440',
+  iid: 40,
+  title: 'Issue 5',
+  referencePath: '#40',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/40',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssue6 = {
+  id: 'gid://gitlab/Issue/441',
+  iid: 41,
+  title: 'Issue  6',
+  referencePath: '#41',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/41',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssue7 = {
+  id: 'gid://gitlab/Issue/442',
+  iid: 42,
+  title: 'Issue  6',
+  referencePath: '#42',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/42',
+  assignees,
+  labels,
+  epic: null,
+};
+
 export const mockIssues = [mockIssue, mockIssue2];
-
-export const BoardsMockData = {
-  GET: {
-    '/test/-/boards/1/lists/300/issues?id=300&page=1': {
-      issues: [
-        {
-          title: 'Testing',
-          id: 1,
-          iid: 1,
-          confidential: false,
-          labels: [],
-          assignees: [],
-        },
-      ],
-    },
-    '/test/issue-boards/-/milestones.json': [
-      {
-        id: 1,
-        title: 'test',
-      },
-    ],
-  },
-  POST: {
-    '/test/-/boards/1/lists': listObj,
-  },
-  PUT: {
-    '/test/issue-boards/-/board/1/lists{/id}': {},
-  },
-  DELETE: {
-    '/test/issue-boards/-/board/1/lists{/id}': {},
-  },
-};
-
-export const boardsMockInterceptor = (config) => {
-  const body = BoardsMockData[config.method.toUpperCase()][config.url];
-  return [HTTP_STATUS_OK, body];
-};
+export const mockIssuesMore = [
+  mockIssue,
+  mockIssue2,
+  mockIssue3,
+  mockIssue4,
+  mockIssue5,
+  mockIssue6,
+  mockIssue7,
+];
 
 export const mockList = {
   id: 'gid://gitlab/List/1',
@@ -477,6 +520,9 @@ export const mockList = {
   loading: false,
   issuesCount: 1,
   maxIssueCount: 0,
+  metadata: {
+    epicsCount: 1,
+  },
   __typename: 'BoardList',
 };
 
@@ -552,23 +598,6 @@ export const issues = {
   [mockIssue4.id]: mockIssue4,
 };
 
-// The response from group project REST API
-export const mockRawGroupProjects = [
-  {
-    id: 0,
-    name: 'Example Project',
-    name_with_namespace: 'Awesome Group / Example Project',
-    path_with_namespace: 'awesome-group/example-project',
-  },
-  {
-    id: 1,
-    name: 'Foobar Project',
-    name_with_namespace: 'Awesome Group / Foobar Project',
-    path_with_namespace: 'awesome-group/foobar-project',
-  },
-];
-
-// The response from GraphQL endpoint
 export const mockGroupProject1 = {
   id: 0,
   name: 'Example Project',
@@ -898,6 +927,22 @@ export const boardListsQueryResponse = {
   },
 };
 
+export const issueBoardListsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      board: {
+        id: 'gid://gitlab/Board/1',
+        hideBacklogList: false,
+        lists: {
+          nodes: [mockLabelList],
+        },
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
 export const boardListQueryResponse = (issuesCount = 20) => ({
   data: {
     boardList: {
@@ -915,10 +960,50 @@ export const epicBoardListQueryResponse = (totalWeight = 5) => ({
       __typename: 'EpicList',
       id: 'gid://gitlab/Boards::EpicList/3',
       metadata: {
+        epicsCount: 1,
         totalWeight,
       },
     },
   },
 });
+
+export const updateIssueTitleResponse = {
+  data: {
+    updateIssuableTitle: {
+      issue: {
+        id: 'gid://gitlab/Issue/436',
+        title: 'Issue 1 edit',
+      },
+    },
+  },
+};
+
+export const updateEpicTitleResponse = {
+  data: {
+    updateIssuableTitle: {
+      epic: {
+        id: 'gid://gitlab/Epic/426',
+        title: 'Epic 1 edit',
+      },
+    },
+  },
+};
+
+export const updateBoardListResponse = {
+  data: {
+    updateBoardList: {
+      list: mockList,
+    },
+  },
+};
+
+export const destroyBoardListMutationResponse = {
+  data: {
+    destroyBoardList: {
+      errors: [],
+      __typename: 'DestroyBoardListPayload',
+    },
+  },
+};
 
 export const DEFAULT_COLOR = '#1068bf';

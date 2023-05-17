@@ -2,9 +2,13 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_vue/constants';
 import DropdownContents from '~/sidebar/components/labels/labels_select_vue/dropdown_contents.vue';
 import labelsSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
+import {
+  VARIANT_EMBEDDED,
+  VARIANT_SIDEBAR,
+  VARIANT_STANDALONE,
+} from '~/sidebar/components/labels/labels_select_widget/constants';
 
 import { mockConfig } from './mock_data';
 
@@ -26,10 +30,6 @@ describe('DropdownContent', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('computed', () => {
@@ -54,10 +54,10 @@ describe('DropdownContent', () => {
 
     describe('when `renderOnTop` is true', () => {
       it.each`
-        variant                       | expected
-        ${DropdownVariant.Sidebar}    | ${'bottom: 3rem'}
-        ${DropdownVariant.Standalone} | ${'bottom: 2rem'}
-        ${DropdownVariant.Embedded}   | ${'bottom: 2rem'}
+        variant               | expected
+        ${VARIANT_SIDEBAR}    | ${'bottom: 3rem'}
+        ${VARIANT_STANDALONE} | ${'bottom: 2rem'}
+        ${VARIANT_EMBEDDED}   | ${'bottom: 2rem'}
       `('renders upward for $variant variant', ({ variant, expected }) => {
         wrapper = createComponent({ ...mockConfig, variant }, { renderOnTop: true });
 

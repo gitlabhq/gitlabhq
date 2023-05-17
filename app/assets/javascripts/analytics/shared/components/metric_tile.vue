@@ -1,6 +1,6 @@
 <script>
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import MetricPopover from './metric_popover.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   methods: {
     clickHandler({ links }) {
       if (this.hasLinks) {
-        redirectTo(links[0].url);
+        redirectTo(links[0].url); // eslint-disable-line import/no-deprecated
       }
     },
   },

@@ -14,12 +14,21 @@ module Gitlab
 
       sidekiq_options dead: false, retry: 5
 
+      sidekiq_retries_exhausted do |msg, _|
+        new.track_gist_import('failed', msg['args'][0])
+      end
+
       def perform(user_id, gist_hash, notify_key)
         gist = ::Gitlab::GithubGistsImport::Representation::Gist.from_json_hash(gist_hash)
 
         with_logging(user_id, gist.github_identifiers) do
           result = importer_class.new(gist, user_id).execute
-          error(user_id, result.errors, gist.github_identifiers) unless result.success?
+          if result.success?
+            track_gist_import('success', user_id)
+          else
+            error(user_id, result.errors, gist.github_identifiers)
+            track_gist_import('failed', user_id)
+          end
 
           JobWaiter.notify(notify_key, jid)
         end
@@ -27,6 +36,18 @@ module Gitlab
         log_and_track_error(user_id, e, gist.github_identifiers)
 
         raise
+      end
+
+      def track_gist_import(status, user_id)
+        user = User.find(user_id)
+
+        Gitlab::Tracking.event(
+          self.class.name,
+          'create',
+          label: 'github_gist_import',
+          user: user,
+          status: status
+        )
       end
 
       private

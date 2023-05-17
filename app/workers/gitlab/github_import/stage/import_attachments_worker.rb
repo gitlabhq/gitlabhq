@@ -15,7 +15,7 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          return skip_to_next_stage(project) if feature_disabled?(project)
+          return skip_to_next_stage(project) if import_settings(project).disabled?(:attachments_import)
 
           waiters = importers.each_with_object({}) do |importer, hash|
             waiter = start_importer(project, importer, client)
@@ -52,10 +52,6 @@ module Gitlab
             waiters,
             :protected_branches
           )
-        end
-
-        def feature_disabled?(project)
-          import_settings(project).disabled?(:attachments_import)
         end
       end
     end

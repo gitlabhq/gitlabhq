@@ -22,25 +22,12 @@ module VersionCheckHelper
   end
 
   def link_to_version
+    link = link_to(Gitlab::Source.ref, Gitlab::Source.release_url)
+
     if Gitlab.pre_release?
-      commit_link = link_to(Gitlab.revision, source_host_url + namespace_project_commits_path(source_code_group, source_code_project, Gitlab.revision))
-      [Gitlab::VERSION, content_tag(:small, commit_link)].join(' ').html_safe
+      [Gitlab::VERSION, content_tag(:small, link)].join(' ').html_safe
     else
-      link_to Gitlab::VERSION, source_host_url + namespace_project_tag_path(source_code_group, source_code_project, "v#{Gitlab::VERSION}")
+      link
     end
   end
-
-  def source_host_url
-    Gitlab::Saas.com_url
-  end
-
-  def source_code_group
-    'gitlab-org'
-  end
-
-  def source_code_project
-    'gitlab-foss'
-  end
 end
-
-VersionCheckHelper.prepend_mod

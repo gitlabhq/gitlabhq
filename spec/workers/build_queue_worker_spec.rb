@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildQueueWorker do
+RSpec.describe BuildQueueWorker, feature_category: :continuous_integration do
   describe '#perform' do
     context 'when build exists' do
       let!(:build) { create(:ci_build) }
@@ -24,7 +24,5 @@ RSpec.describe BuildQueueWorker do
     end
   end
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :sticky
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 end

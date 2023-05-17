@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::RejectService do
+RSpec.describe Users::RejectService, feature_category: :user_management do
   let_it_be(:current_user) { create(:admin) }
 
   let(:user) { create(:user, :blocked_pending_approval) }

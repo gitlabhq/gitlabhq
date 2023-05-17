@@ -3,8 +3,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { createAlert } from '~/alert';
+import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
@@ -25,7 +25,7 @@ import {
   mockRegularLabel,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -36,9 +36,9 @@ const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a proble
 
 const updateLabelsMutation = {
   [TYPE_ISSUE]: updateIssueLabelsMutation,
-  [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
+  [TYPE_MERGE_REQUEST]: updateMergeRequestLabelsMutation,
   [TYPE_EPIC]: updateEpicLabelsMutation,
-  [IssuableType.TestCase]: updateTestCaseLabelsMutation,
+  [TYPE_TEST_CASE]: updateTestCaseLabelsMutation,
 };
 
 describe('LabelsSelectRoot', () => {
@@ -82,10 +82,6 @@ describe('LabelsSelectRoot', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders component with classes `labels-select-wrapper gl-relative`', () => {
     createComponent();
@@ -150,7 +146,7 @@ describe('LabelsSelectRoot', () => {
       });
     });
 
-    it('creates flash with error message when query is rejected', async () => {
+    it('creates alert with error message when query is rejected', async () => {
       createComponent({ queryHandler: errorQueryHandler });
       await waitForPromises();
       expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
@@ -203,7 +199,7 @@ describe('LabelsSelectRoot', () => {
     });
   });
 
-  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if iid is not set', async () => {
+  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if iid is not set', () => {
     const label = { id: 'gid://gitlab/ProjectLabel/1' };
     createComponent({ config: { ...mockConfig, iid: undefined } });
 
@@ -214,9 +210,9 @@ describe('LabelsSelectRoot', () => {
   describe.each`
     issuableType
     ${TYPE_ISSUE}
-    ${IssuableType.MergeRequest}
+    ${TYPE_MERGE_REQUEST}
     ${TYPE_EPIC}
-    ${IssuableType.TestCase}
+    ${TYPE_TEST_CASE}
   `('when updating labels for $issuableType', ({ issuableType }) => {
     const label = { id: 'gid://gitlab/ProjectLabel/2' };
 

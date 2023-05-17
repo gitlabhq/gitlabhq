@@ -9,14 +9,11 @@ describe('google_cloud/components/google_cloud_menu', () => {
     configurationUrl: 'configuration-url',
     deploymentsUrl: 'deployments-url',
     databasesUrl: 'databases-url',
+    aimlUrl: 'aiml-url',
   };
 
   beforeEach(() => {
     wrapper = mountExtended(GoogleCloudMenu, { propsData: props });
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('contains active configuration link', () => {
@@ -36,5 +33,11 @@ describe('google_cloud/components/google_cloud_menu', () => {
     const link = wrapper.findByTestId('databasesLink');
     expect(link.text()).toBe(GoogleCloudMenu.i18n.databases.title);
     expect(link.attributes('href')).toBe(props.databasesUrl);
+  });
+
+  it('contains ai/ml link', () => {
+    const link = wrapper.findByTestId('aimlLink');
+    expect(link.text()).toBe(GoogleCloudMenu.i18n.aiml.title);
+    expect(link.attributes('href')).toBe(props.aimlUrl);
   });
 });

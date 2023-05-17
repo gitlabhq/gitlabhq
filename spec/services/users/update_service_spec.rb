@@ -2,18 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpdateService do
+RSpec.describe Users::UpdateService, feature_category: :user_profile do
   let(:password) { User.random_password }
   let(:user) { create(:user, password: password, password_confirmation: password) }
 
   describe '#execute' do
     it 'updates time preferences' do
-      result = update_user(user, timezone: 'Europe/Warsaw', time_display_relative: true, time_format_in_24h: false)
+      result = update_user(user, timezone: 'Europe/Warsaw', time_display_relative: true)
 
       expect(result).to eq(status: :success)
       expect(user.reload.timezone).to eq('Europe/Warsaw')
       expect(user.time_display_relative).to eq(true)
-      expect(user.time_format_in_24h).to eq(false)
     end
 
     it 'returns an error result when record cannot be updated' do
@@ -183,6 +182,49 @@ RSpec.describe Users::UpdateService do
       expect do
         update_user(build(:user), job_title: 'supreme leader of the universe')
       end.not_to raise_error
+    end
+
+    describe 'updates the enabled_following' do
+      let(:user) { create(:user) }
+
+      before do
+        3.times do
+          user.follow(create(:user))
+          create(:user).follow(user)
+        end
+        user.reload
+      end
+
+      it 'removes followers and followees' do
+        expect do
+          update_user(user, enabled_following: false)
+        end.to change { user.followed_users.count }.from(3).to(0)
+                                                   .and change { user.following_users.count }.from(3).to(0)
+        expect(user.enabled_following).to eq(false)
+      end
+
+      it 'does not remove followers/followees if feature flag is off' do
+        stub_feature_flags(disable_follow_users: false)
+
+        expect do
+          update_user(user, enabled_following: false)
+        end.to not_change { user.followed_users.count }
+                                                   .and not_change { user.following_users.count }
+      end
+
+      context 'when there is more followers/followees then batch limit' do
+        before do
+          stub_env('BATCH_SIZE', 1)
+        end
+
+        it 'removes followers and followees' do
+          expect do
+            update_user(user, enabled_following: false)
+          end.to change { user.followed_users.count }.from(3).to(0)
+                                                     .and change { user.following_users.count }.from(3).to(0)
+          expect(user.enabled_following).to eq(false)
+        end
+      end
     end
 
     def update_user(user, opts)

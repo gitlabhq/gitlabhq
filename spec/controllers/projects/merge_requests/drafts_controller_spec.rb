@@ -299,8 +299,7 @@ RSpec.describe Projects::MergeRequests::DraftsController do
 
     it 'publishes a draft note with quick actions and applies them', :sidekiq_inline do
       project.add_developer(user2)
-      create(:draft_note, merge_request: merge_request, author: user,
-                          note: "/assign #{user2.to_reference}")
+      create(:draft_note, merge_request: merge_request, author: user, note: "/assign #{user2.to_reference}")
 
       expect(merge_request.assignees).to be_empty
 
@@ -350,12 +349,13 @@ RSpec.describe Projects::MergeRequests::DraftsController do
       let(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
       def create_reply(discussion_id, resolves: false)
-        create(:draft_note,
-               merge_request: merge_request,
-               author: user,
-               discussion_id: discussion_id,
-               resolve_discussion: resolves
-              )
+        create(
+          :draft_note,
+          merge_request: merge_request,
+          author: user,
+          discussion_id: discussion_id,
+          resolve_discussion: resolves
+        )
       end
 
       it 'resolves a thread if the draft note resolves it' do

@@ -18,7 +18,6 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
   let wrapper;
   let mock;
   let before;
-  let originalGon;
 
   const createWrapper = (opts = {}) =>
     shallowMount(StopStaleEnvironmentsModal, {
@@ -28,8 +27,7 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
     });
 
   beforeEach(() => {
-    originalGon = window.gon;
-    window.gon = { api_version: 'v4' };
+    window.gon.api_version = 'v4';
 
     mock = new MockAdapter(axios);
     jest.spyOn(axios, 'post');
@@ -39,17 +37,15 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
     jest.resetAllMocks();
-    window.gon = originalGon;
   });
 
-  it('sets the correct min and max dates', async () => {
+  it('sets the correct min and max dates', () => {
     expect(before.props().minDate.toISOString()).toBe(TEN_YEARS_AGO.toISOString());
     expect(before.props().maxDate.toISOString()).toBe(ONE_WEEK_AGO.toISOString());
   });
 
-  it('requests cleanup when submit is clicked', async () => {
+  it('requests cleanup when submit is clicked', () => {
     mock.onPost().replyOnce(HTTP_STATUS_OK);
     wrapper.findComponent(GlModal).vm.$emit('primary');
     const url = STOP_STALE_ENVIRONMENTS_PATH.replace(':id', 1).replace(':version', 'v4');

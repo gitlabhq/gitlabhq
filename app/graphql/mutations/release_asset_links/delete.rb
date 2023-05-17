@@ -19,17 +19,17 @@ module Mutations
             description: 'Deleted release asset link.'
 
       def resolve(id:)
-        link = authorized_find!(id)
+        link = authorized_find!(id: id)
 
-        unless link.destroy
-          return { link: nil, errors: link.errors.full_messages }
+        result = ::Releases::Links::DestroyService
+          .new(link.release, current_user)
+          .execute(link)
+
+        if result.success?
+          { link: result.payload[:link], errors: [] }
+        else
+          { link: nil, errors: result.message }
         end
-
-        { link: link, errors: [] }
-      end
-
-      def find_object(id)
-        GitlabSchema.find_by_gid(id)
       end
     end
   end

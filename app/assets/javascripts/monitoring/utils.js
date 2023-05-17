@@ -97,7 +97,6 @@ export const graphDataValidatorForValues = (isValues, graphData) => {
  */
 const isClusterHealthBoard = () => (document.body.dataset.page || '').includes(':clusters:show');
 
-/* eslint-disable @gitlab/require-i18n-strings */
 /**
  * Tracks snowplow event when user generates link to metric chart
  * @param {String}  chart link that will be sent as a property for the event
@@ -107,13 +106,13 @@ export const generateLinkToChartOptions = (chartLink) => {
   const isCLusterHealthBoard = isClusterHealthBoard();
 
   const category = isCLusterHealthBoard
-    ? 'Cluster Monitoring'
+    ? 'Cluster Monitoring' // eslint-disable-line @gitlab/require-i18n-strings
     : 'Incident Management::Embedded metrics';
   const action = isCLusterHealthBoard
     ? 'generate_link_to_cluster_metric_chart'
     : 'generate_link_to_metrics_chart';
 
-  return { category, action, label: 'Chart link', property: chartLink };
+  return { category, action, label: 'Chart link', property: chartLink }; // eslint-disable-line @gitlab/require-i18n-strings
 };
 
 /**
@@ -125,13 +124,13 @@ export const downloadCSVOptions = (title) => {
   const isCLusterHealthBoard = isClusterHealthBoard();
 
   const category = isCLusterHealthBoard
-    ? 'Cluster Monitoring'
+    ? 'Cluster Monitoring' // eslint-disable-line @gitlab/require-i18n-strings
     : 'Incident Management::Embedded metrics';
   const action = isCLusterHealthBoard
     ? 'download_csv_of_cluster_metric_chart'
     : 'download_csv_of_metrics_dashboard_chart';
 
-  return { category, action, label: 'Chart title', property: title };
+  return { category, action, label: 'Chart title', property: title }; // eslint-disable-line @gitlab/require-i18n-strings
 };
 /* eslint-enable @gitlab/require-i18n-strings */
 

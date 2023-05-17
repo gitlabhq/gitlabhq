@@ -13,6 +13,7 @@ module API
           component: ::Packages::Debian::COMPONENT_REGEX,
           architecture: ::Packages::Debian::ARCHITECTURE_REGEX
         }.freeze
+        LIST_PACKAGE = 'list_package'
 
         included do
           feature_category :package_registry
@@ -40,6 +41,8 @@ module API
 
               package_file = distribution_from!(project).package_files.with_file_name(params[:file_name]).last!
 
+              track_debian_package_event 'pull_package'
+
               present_package_file!(package_file)
             end
 
@@ -58,9 +61,33 @@ module API
                 .with_compression_type(nil)
                 .order_created_asc
 
+              # Empty component files are not persisted in DB
+              no_content! if params[:file_sha256] == ::Packages::Debian::EMPTY_FILE_SHA256
+
               relation = relation.with_file_sha256(params[:file_sha256]) if params[:file_sha256]
 
-              present_carrierwave_file!(relation.last!.file)
+              component_file = relation.last
+
+              if component_file.nil? || component_file.empty?
+                not_found! if params[:file_sha256] # asking for a non existing component file.
+                no_content! # empty component files are not always persisted in DB
+              end
+
+              track_debian_package_event LIST_PACKAGE
+
+              present_carrierwave_file!(component_file.file)
+            end
+
+            def track_debian_package_event(action)
+              if project_or_group.is_a?(Project)
+                project = project_or_group
+                namespace = project_or_group.namespace
+              else
+                project = nil
+                namespace = project_or_group
+              end
+
+              track_package_event(action, :debian, project: project, namespace: namespace, user: current_user)
             end
           end
 
@@ -73,7 +100,7 @@ module API
           end
 
           authenticate_with do |accept|
-            accept.token_types(:personal_access_token, :deploy_token, :job_token)
+            accept.token_types(:personal_access_token_with_username, :deploy_token_with_username, :job_token_with_username)
                   .sent_through(:http_basic_auth)
           end
 
@@ -99,7 +126,6 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'Release.gpg' do
               distribution_from!(project_or_group).file_signature
             end
@@ -118,9 +144,10 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'Release' do
-              present_carrierwave_file!(distribution_from!(project_or_group).file)
+              distribution = distribution_from!(project_or_group)
+              track_debian_package_event LIST_PACKAGE
+              present_carrierwave_file!(distribution.file)
             end
 
             # GET {projects|groups}/:id/packages/debian/dists/*distribution/InRelease
@@ -137,9 +164,10 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'InRelease' do
-              present_carrierwave_file!(distribution_from!(project_or_group).signed_file)
+              distribution = distribution_from!(project_or_group)
+              track_debian_package_event LIST_PACKAGE
+              present_carrierwave_file!(distribution.signed_file)
             end
 
             params do
@@ -156,7 +184,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
                 desc 'The installer (udeb) binary files index' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -166,7 +197,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
                   present_index_file!(:di_packages)
                 end
@@ -175,7 +205,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The installer (udeb) binary files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -185,7 +218,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:di_packages)
                 end
@@ -196,7 +228,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Sources.22_Indices
                 desc 'The source files index' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -206,7 +241,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Sources' do
                   present_index_file!(:sources)
                 end
@@ -215,7 +249,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The source files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -225,7 +262,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:sources)
                 end
@@ -240,7 +276,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
                 desc 'The binary files index' do
                   detail 'This feature was introduced in GitLab 13.5'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -250,7 +289,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
                   present_index_file!(:packages)
                 end
@@ -259,7 +297,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The binary files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -269,7 +310,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:packages)
                 end

@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -107,70 +107,71 @@ This error occurs when your GitLab instance is using a certificate signed by an 
 certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
-by using a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
-is picked up automatically.
+by [customizing the Helm installation](install/index.md#customize-the-helm-installation).
+Add `--set config.caCert="$(cat ~/path/to/ca.crt)"` to the `helm install` command. Make sure to replace `~/path/to/ca.crt`
+with the path to your internal CA's certificate file. The file should be a valid PEM or DER-encoded certificate.
 
-For example, if your internal CA certificate is `myCA.pem`:
-
-```plaintext
-kubectl -n gitlab-agent create configmap ca-pemstore --from-file=myCA.pem
-```
-
-Then in `resources.yml`:
+When you deploy `agentk` with a set `config.caCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
 
 ```yaml
-    spec:
-      serviceAccountName: gitlab-agent
-      containers:
-      - name: agent
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<version>"
-        args:
-        - --token-file=/config/token
-        - --kas-address
-        - wss://kas.host.tld:443 # replace this line with the line below if using Omnibus GitLab or GitLab.com.
-        # - wss://gitlab.host.tld:443/-/kubernetes-agent/
-        # - wss://kas.gitlab.com # for GitLab.com users, use this KAS.
-        # - grpc://host.docker.internal:8150 # use this attribute when connecting from Docker.
-        volumeMounts:
-        - name: token-volume
-          mountPath: /config
-        - name: ca-pemstore-volume
-          mountPath: /etc/ssl/certs/myCA.pem
-          subPath: myCA.pem
-      volumes:
-      - name: token-volume
-        secret:
-          secretName: gitlab-agent-token
-      - name: ca-pemstore-volume
-        configMap:
-          name: ca-pemstore
-          items:
-          - key: myCA.pem
-            path: myCA.pem
+$ kubectl get configmap -lapp=gitlab-agent -o yaml
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIFmzCCA4OgAwIBAgIUE+FvXfDpJ869UgJitjRX7HHT84cwDQYJKoZIhvcNAQEL
+      ...truncated certificate...
+      GHZCTQkbQyUwBWJOUyOxW1lro4hWqtP4xLj8Dpq1jfopH72h0qTGkX0XhFGiSaM=
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: self-signed
+      meta.helm.sh/release-namespace: gitlab-agent-self-signed
+    creationTimestamp: "2023-03-07T20:12:26Z"
+    labels:
+      app: gitlab-agent
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: gitlab-agent
+      app.kubernetes.io/version: v15.9.0
+      helm.sh/chart: gitlab-agent-1.11.0
+    name: self-signed-gitlab-agent
+    resourceVersion: "263184207"
+kind: List
 ```
 
-Alternatively, you can mount the certificate file at a different location and specify it for the
-`--ca-cert-file` agent parameter:
+You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/index.md#gitlab-agent-server) of your GitLab application server:
 
-```yaml
-      containers:
-      - name: agent
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<version>"
-        args:
-        - --ca-cert-file=/tmp/myCA.pem
-        - --token-file=/config/token
-        - --kas-address
-        - wss://kas.host.tld:443 # replace this line with the line below if using Omnibus GitLab or GitLab.com.
-        # - wss://gitlab.host.tld:443/-/kubernetes-agent/
-        # - wss://kas.gitlab.com # for GitLab.com users, use this KAS.
-        # - grpc://host.docker.internal:8150 # use this attribute when connecting from Docker.
-        volumeMounts:
-        - name: token-volume
-          mountPath: /config
-        - name: ca-pemstore-volume
-          mountPath: /tmp/myCA.pem
-          subPath: myCA.pem
+```json
+{"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
 ```
+
+To fix it, [install your internal CA's public certificate](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) in the `/etc/gitlab/trusted-certs` directory.
+
+Alternatively, you can configure the agent server (KAS) to read the certificate from a custom directory.
+Add the following configuration to `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_kas['env'] = {
+   'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/"
+ }
+```
+
+To apply the changes:
+
+1. Reconfigure GitLab.
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Restart `gitlab-kas`.
+
+   ```shell
+   gitlab-ctl restart gitlab-kas
+   ```
 
 ## Project not found
 
@@ -238,4 +239,4 @@ When you install the agent, you might encounter an error that states:
 Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): unclosed action
 ```
 
-This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-cluster-versions).
+This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).

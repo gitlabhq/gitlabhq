@@ -4,7 +4,7 @@ export default () => ({
   customImportTargets: {},
   isLoadingRepos: false,
   ciCdOnly: false,
-  filter: '',
+  filter: {},
   pageInfo: {
     page: 0,
     startCursor: null,

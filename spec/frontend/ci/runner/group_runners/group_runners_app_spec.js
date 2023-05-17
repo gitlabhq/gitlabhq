@@ -9,7 +9,7 @@ import {
   mountExtended,
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -58,23 +58,22 @@ import {
   groupRunnersCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  mockRegistrationToken,
+  newRunnerPath,
   emptyPageInfo,
-  emptyStateSvgPath,
-  emptyStateFilteredSvgPath,
 } from '../mock_data';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
 const mockGroupFullPath = 'group1';
-const mockRegistrationToken = 'AABBCC';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
 const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 
 const mockGroupRunnersHandler = jest.fn();
 const mockGroupRunnersCountHandler = jest.fn();
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -87,6 +86,7 @@ describe('GroupRunnersApp', () => {
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
+  const findNewRunnerBtn = () => wrapper.findByText(s__('Runners|New group runner'));
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
@@ -114,14 +114,13 @@ describe('GroupRunnersApp', () => {
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
+        newRunnerPath,
         ...props,
       },
       provide: {
         localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
-        emptyStateSvgPath,
-        emptyStateFilteredSvgPath,
         ...provide,
       },
       ...options,
@@ -138,7 +137,6 @@ describe('GroupRunnersApp', () => {
   afterEach(() => {
     mockGroupRunnersHandler.mockReset();
     mockGroupRunnersCountHandler.mockReset();
-    wrapper.destroy();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
@@ -288,7 +286,7 @@ describe('GroupRunnersApp', () => {
       });
     });
 
-    it('When runner is paused or unpaused, some data is refetched', async () => {
+    it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
@@ -300,7 +298,7 @@ describe('GroupRunnersApp', () => {
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
-    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+    it('When runner is deleted, data is refetched and a toast message is shown', () => {
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
 
       expect(showToast).toHaveBeenCalledTimes(1);
@@ -389,7 +387,7 @@ describe('GroupRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
-    expect(findRunnerPagination().attributes('disabled')).toBe('true');
+    expect(findRunnerPagination().attributes('disabled')).toBeDefined();
   });
 
   it('runners can be deleted in bulk', () => {
@@ -417,8 +415,12 @@ describe('GroupRunnersApp', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('shows an empty state', async () => {
-      expect(findRunnerListEmptyState().exists()).toBe(true);
+    it('shows an empty state', () => {
+      expect(findRunnerListEmptyState().props()).toMatchObject({
+        isSearchFiltered: false,
+        newRunnerPath,
+        registrationToken: mockRegistrationToken,
+      });
     });
   });
 
@@ -428,11 +430,11 @@ describe('GroupRunnersApp', () => {
       await createComponent();
     });
 
-    it('error is shown to the user', async () => {
+    it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('error is reported to sentry', async () => {
+    it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Error!'),
         component: 'GroupRunnersApp',
@@ -469,32 +471,69 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('when user has permission to register group runner', () => {
-    beforeEach(() => {
+    it('shows the register group runner button', () => {
       createComponent({
-        propsData: {
+        props: {
           registrationToken: mockRegistrationToken,
-          groupFullPath: mockGroupFullPath,
         },
       });
+      expect(findRegistrationDropdown().exists()).toBe(true);
     });
 
-    it('shows the register group runner button', () => {
-      expect(findRegistrationDropdown().exists()).toBe(true);
+    it('when create_runner_workflow_for_namespace is enabled', () => {
+      createComponent({
+        props: {
+          newRunnerPath,
+        },
+        provide: {
+          glFeatures: {
+            createRunnerWorkflowForNamespace: true,
+          },
+        },
+      });
+
+      expect(findNewRunnerBtn().attributes('href')).toBe(newRunnerPath);
+    });
+
+    it('when create_runner_workflow_for_namespace is disabled', () => {
+      createComponent({
+        props: {
+          newRunnerPath,
+        },
+        provide: {
+          glFeatures: {
+            createRunnerWorkflowForNamespace: false,
+          },
+        },
+      });
+
+      expect(findNewRunnerBtn().exists()).toBe(false);
     });
   });
 
   describe('when user has no permission to register group runner', () => {
-    beforeEach(() => {
+    it('does not show the register group runner button', () => {
       createComponent({
-        propsData: {
+        props: {
           registrationToken: null,
-          groupFullPath: mockGroupFullPath,
         },
       });
+      expect(findRegistrationDropdown().exists()).toBe(false);
     });
 
-    it('does not show the register group runner button', () => {
-      expect(findRegistrationDropdown().exists()).toBe(false);
+    it('when create_runner_workflow_for_namespace is enabled', () => {
+      createComponent({
+        props: {
+          newRunnerPath: null,
+        },
+        provide: {
+          glFeatures: {
+            createRunnerWorkflowForNamespace: true,
+          },
+        },
+      });
+
+      expect(findNewRunnerBtn().exists()).toBe(false);
     });
   });
 });

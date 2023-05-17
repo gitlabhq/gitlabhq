@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlUtility from '~/lib/utils/url_utility';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
 import { createStore } from '~/projects/commits/store';
@@ -54,7 +55,6 @@ describe('Author Select', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 
@@ -65,39 +65,23 @@ describe('Author Select', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
   describe('user is searching via "filter by commit message"', () => {
-    it('disables dropdown container', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ hasSearchParam: true });
+    beforeEach(() => {
+      setWindowLocation(`?search=foo`);
+      createComponent();
+    });
 
-      await nextTick();
+    it('does not disable dropdown container', () => {
       expect(findDropdownContainer().attributes('disabled')).toBeUndefined();
     });
 
-    it('has correct tooltip message', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ hasSearchParam: true });
-
-      await nextTick();
+    it('has correct tooltip message', () => {
       expect(findDropdownContainer().attributes('title')).toBe(
         'Searching by both author and message is currently not supported.',
       );
     });
 
-    it('disables dropdown', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ hasSearchParam: false });
-
-      await nextTick();
-      expect(findDropdown().attributes('disabled')).toBeUndefined();
-    });
-
-    it('hasSearchParam if user types a truthy string', () => {
-      wrapper.vm.setSearchParam('false');
-
-      expect(wrapper.vm.hasSearchParam).toBe(true);
+    it('disables dropdown', () => {
+      expect(findDropdown().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -107,9 +91,8 @@ describe('Author Select', () => {
     });
 
     it('displays the current selected author', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ currentAuthor });
+      setWindowLocation(`?author=${currentAuthor}`);
+      createComponent();
 
       await nextTick();
       expect(findDropdown().attributes('text')).toBe(currentAuthor);
@@ -147,12 +130,14 @@ describe('Author Select', () => {
       expect(findDropdownItems().at(0).text()).toBe('Any Author');
     });
 
-    it('displays the project authors', async () => {
-      await nextTick();
+    it('displays the project authors', () => {
       expect(findDropdownItems()).toHaveLength(authors.length + 1);
     });
 
     it('has the correct props', async () => {
+      setWindowLocation(`?author=${currentAuthor}`);
+      createComponent();
+
       const [{ avatar_url: avatarUrl, username }] = authors;
       const result = {
         avatarUrl,
@@ -160,16 +145,11 @@ describe('Author Select', () => {
         isChecked: true,
       };
 
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ currentAuthor });
-
       await nextTick();
       expect(findDropdownItems().at(1).props()).toEqual(expect.objectContaining(result));
     });
 
-    it("display the author's name", async () => {
-      await nextTick();
+    it("display the author's name", () => {
       expect(findDropdownItems().at(1).text()).toBe(currentAuthor);
     });
 

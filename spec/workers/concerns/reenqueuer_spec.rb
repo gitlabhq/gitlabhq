@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Reenqueuer do
+RSpec.describe Reenqueuer, feature_category: :shared do
   include ExclusiveLeaseHelpers
 
   let_it_be(:worker_class) do

@@ -56,10 +56,6 @@ describe('SignInOauthButton', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButton = () => wrapper.findComponent(GlButton);
   describe('when `gitlabBasePath` is GitLab.com', () => {
     it('displays a button', () => {
@@ -161,6 +157,7 @@ describe('SignInOauthButton', () => {
               const mockEvent = {
                 origin: messageOrigin,
                 data: {
+                  type: 'jiraConnectOauthCallback',
                   state: messageState,
                   code: '1234',
                 },
@@ -186,6 +183,7 @@ describe('SignInOauthButton', () => {
         const mockEvent = {
           origin: window.origin,
           data: {
+            type: 'jiraConnectOauthCallback',
             state: mockOauthMetadata.state,
             code: '1234',
           },

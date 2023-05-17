@@ -19,7 +19,7 @@ module Gitlab
       end
 
       def user_ids_for_emails(emails)
-        emails.map { |email| user_id_for_email(email) }.compact.uniq
+        emails.filter_map { |email| user_id_for_email(email) }.uniq
       end
 
       def for_user(user)

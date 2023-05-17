@@ -50,10 +50,10 @@ module Gitlab
 
       def execute
         track_exception
-        persist_failure
-
-        track_metrics if metrics
-        import_state.mark_as_failed(exception.message) if fail_import
+        persist_failure.tap do
+          import_state.mark_as_failed(exception.message) if fail_import
+          track_metrics if metrics
+        end
       end
 
       private

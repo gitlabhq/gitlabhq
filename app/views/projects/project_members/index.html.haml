@@ -25,7 +25,6 @@
               classes: 'gl-md-w-auto gl-w-full gl-md-ml-3 gl-md-mt-0 gl-mt-3',
               trigger_source: 'project-members-page',
               display_text: _('Invite members') } }
-        = render 'projects/invite_members_modal', project: @project, reload_page_on_submit: true
       - else
         - if project_can_be_shared?
           %h4

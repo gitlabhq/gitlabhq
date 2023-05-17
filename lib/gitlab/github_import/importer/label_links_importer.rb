@@ -25,6 +25,8 @@ module Gitlab
           items = []
           target_id = find_target_id
 
+          return if target_id.blank?
+
           issue.label_names.each do |label_name|
             # Although unlikely it's technically possible for an issue to be
             # given a label that was created and assigned after we imported all

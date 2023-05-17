@@ -88,6 +88,14 @@ RSpec.describe API::Unleash, feature_category: :feature_flags do
     end
   end
 
+  describe 'GET /feature_flags/unleash/:project_id/client/features', :use_clean_rails_redis_caching do
+    specify do
+      get api("/feature_flags/unleash/#{project_id}/client/features"), params: params, headers: headers
+
+      is_expected.to have_request_urgency(:medium)
+    end
+  end
+
   %w(/feature_flags/unleash/:project_id/features /feature_flags/unleash/:project_id/client/features).each do |features_endpoint|
     describe "GET #{features_endpoint}", :use_clean_rails_redis_caching do
       let(:features_url) { features_endpoint.sub(':project_id', project_id.to_s) }

@@ -76,7 +76,7 @@ module IssuableActions
       title_text: issuable.title,
       description: view_context.markdown_field(issuable, :description),
       description_text: issuable.description,
-      task_status: issuable.task_status,
+      task_completion_status: issuable.task_completion_status,
       lock_version: issuable.lock_version
     }
 
@@ -97,7 +97,7 @@ module IssuableActions
     index_path = polymorphic_path([parent, issuable.class])
 
     respond_to do |format|
-      format.html { redirect_to index_path }
+      format.html { redirect_to index_path, status: :see_other }
       format.json do
         render json: {
           web_url: index_path
@@ -151,9 +151,7 @@ module IssuableActions
     end
 
     case issuable
-    when MergeRequest
-      render_mr_discussions(discussion_notes, discussion_serializer, discussion_cache_context)
-    when Issue
+    when MergeRequest, Issue
       if stale?(etag: [discussion_cache_context, discussion_notes])
         render json: discussion_serializer.represent(discussion_notes, context: self)
       end
@@ -163,23 +161,6 @@ module IssuableActions
   end
 
   private
-
-  def render_mr_discussions(discussions, serializer, cache_context)
-    return unless stale?(etag: [cache_context, discussions])
-
-    if Feature.enabled?(:disabled_mr_discussions_redis_cache, project)
-      render json: serializer.represent(discussions, context: self)
-    else
-      render_cached_discussions(discussions, serializer, cache_context)
-    end
-  end
-
-  def render_cached_discussions(discussions, serializer, cache_context)
-    render_cached(discussions,
-                  with: serializer,
-                  cache_context: ->(_) { cache_context },
-                  context: self)
-  end
 
   def notes_filter
     strong_memoize(:notes_filter) do
@@ -209,7 +190,7 @@ module IssuableActions
   end
 
   def discussion_cache_context
-    [current_user&.cache_key, project.team.human_max_access(current_user&.id)].join(':')
+    [current_user&.cache_key, project.team.human_max_access(current_user&.id), 'v2'].join(':')
   end
 
   def discussion_serializer

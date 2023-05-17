@@ -1,0 +1,8 @@
+---
+name: revert_daily_hll_events_to_weekly_aggregation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114967
+rollout_issue_url:
+milestone: '16.0'
+type: development
+group: group::analytics instrumentation
+default_enabled: false

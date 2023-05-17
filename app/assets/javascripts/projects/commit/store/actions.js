@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { PROJECT_BRANCHES_ERROR } from '../constants';
 import * as types from './mutation_types';

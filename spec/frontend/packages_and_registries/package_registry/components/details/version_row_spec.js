@@ -1,4 +1,4 @@
-import { GlFormCheckbox, GlIcon, GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
+import { GlDropdownItem, GlFormCheckbox, GlIcon, GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -24,6 +24,7 @@ describe('VersionRow', () => {
   const findPackageName = () => wrapper.findComponent(GlTruncate);
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
+  const findDeleteDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
   function createComponent({ packageEntity = packageVersion, selected = false } = {}) {
     wrapper = shallowMountExtended(VersionRow, {
@@ -36,14 +37,10 @@ describe('VersionRow', () => {
         GlTruncate,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('has a link to the version detail', () => {
     createComponent();
@@ -109,6 +106,31 @@ describe('VersionRow', () => {
 
       expect(findBulkDeleteAction().attributes('checked')).toBe('true');
       expect(findListItem().props('selected')).toBe(true);
+    });
+  });
+
+  describe('delete button', () => {
+    it('does not exist when package cannot be destroyed', () => {
+      createComponent({ packageEntity: { ...packageVersion, canDestroy: false } });
+
+      expect(findDeleteDropdownItem().exists()).toBe(false);
+    });
+
+    it('exists and has the correct props', () => {
+      createComponent();
+
+      expect(findDeleteDropdownItem().exists()).toBe(true);
+      expect(findDeleteDropdownItem().attributes()).toMatchObject({
+        variant: 'danger',
+      });
+    });
+
+    it('emits the delete event when the delete button is clicked', () => {
+      createComponent();
+
+      findDeleteDropdownItem().vm.$emit('click');
+
+      expect(wrapper.emitted('delete')).toHaveLength(1);
     });
   });
 

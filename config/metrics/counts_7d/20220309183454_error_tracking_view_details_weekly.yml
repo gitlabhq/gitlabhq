@@ -4,7 +4,6 @@ description: Unique users viewing the error details page
 product_section: ops
 product_stage: monitor
 product_group: respond
-product_category: error_tracking
 value_type: number
 status: active
 milestone: "14.9"

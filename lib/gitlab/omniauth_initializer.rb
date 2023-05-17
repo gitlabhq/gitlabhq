@@ -21,8 +21,6 @@ module Gitlab
     class << self
       def default_arguments_for(provider_name)
         case provider_name
-        when 'cas3'
-          { on_single_sign_out: cas3_signout_handler }
         when 'shibboleth'
           { fail_with_empty_uid: true }
         when 'google_oauth2'
@@ -38,18 +36,6 @@ module Gitlab
 
       def full_host
         proc { |_env| Settings.gitlab['base_url'] }
-      end
-
-      private
-
-      def cas3_signout_handler
-        lambda do |request|
-          ticket = request.params[:session_index]
-          raise "Service Ticket not found." unless Gitlab::Auth::OAuth::Session.valid?(:cas3, ticket)
-
-          Gitlab::Auth::OAuth::Session.destroy(:cas3, ticket)
-          true
-        end
       end
     end
 
@@ -74,7 +60,7 @@ module Gitlab
         # An Array from the configuration will be expanded
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
-      when Hash
+      when Hash, GitlabSettings::Options
         hash_arguments = arguments.deep_symbolize_keys.deep_merge(defaults)
         normalized = normalize_hash_arguments(hash_arguments)
 

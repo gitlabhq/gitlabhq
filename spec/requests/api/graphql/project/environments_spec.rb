@@ -102,7 +102,7 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
   end
 
   describe 'last deployments of environments' do
-    ::Deployment.statuses.each do |status, _|
+    ::Deployment.statuses.each do |status, _| # rubocop:disable RSpec/UselessDynamicDefinition
       let_it_be(:"production_#{status}_deployment") do
         create(:deployment, status.to_sym, environment: production, project: project)
       end

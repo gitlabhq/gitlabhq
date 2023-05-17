@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_authoring do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition do
+  include Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
@@ -101,7 +101,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_authoring do
         end
       end
 
-      it 'user who tries to navigate away can cancel the action and keep their changes' do
+      it 'user who tries to navigate away can cancel the action and keep their changes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.dismiss
@@ -113,7 +113,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_authoring do
         end
       end
 
-      it 'user who tries to navigate away can confirm the action and discard their change' do
+      it 'user who tries to navigate away can confirm the action and discard their change', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.accept

@@ -20,6 +20,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
   before do
     stub_feature_flags(moved_mr_sidebar: false)
+    stub_feature_flags(hide_create_issue_resolve_all: false)
   end
 
   describe 'as a user with access to the project' do
@@ -33,7 +34,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
       find('.discussions-counter .dropdown-toggle').click
 
       within('.discussions-counter') do
-        expect(page).to have_link(_("Create issue to resolve all threads"), href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid))
+        expect(page).to have_link(_("Resolve all with new issue"), href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid))
       end
     end
 
@@ -44,7 +45,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
       it 'hides the link for creating a new issue' do
         expect(page).not_to have_selector resolve_all_discussions_link_selector
-        expect(page).not_to have_content "Create issue to resolve all threads"
+        expect(page).not_to have_content "Resolve all with new issue"
       end
     end
 
@@ -69,7 +70,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
         end
 
         it 'does not show a link to create a new issue' do
-          expect(page).not_to have_link 'Create issue to resolve all threads'
+          expect(page).not_to have_link 'Resolve all with new issue'
         end
       end
 
@@ -83,13 +84,13 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
         end
 
         it 'has a link to resolve all threads by creating an issue' do
-          expect(page).to have_link 'Create issue to resolve all threads', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+          expect(page).to have_link 'Resolve all with new issue', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
         end
 
         context 'creating an issue for threads' do
           before do
             page.within '.mr-state-widget' do
-              page.click_link 'Create issue to resolve all threads', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+              page.click_link 'Resolve all with new issue', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
 
               wait_for_all_requests
             end

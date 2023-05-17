@@ -4,11 +4,11 @@ module ApplicationSettingsHelper
   extend self
 
   delegate :allow_signup?,
-           :gravatar_enabled?,
-           :password_authentication_enabled_for_web?,
-           :akismet_enabled?,
-           :spam_check_endpoint_enabled?,
-           to: :'Gitlab::CurrentSettings.current_application_settings'
+    :gravatar_enabled?,
+    :password_authentication_enabled_for_web?,
+    :akismet_enabled?,
+    :spam_check_endpoint_enabled?,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
     Gitlab::CurrentSettings.user_oauth_applications
@@ -248,7 +248,9 @@ module ApplicationSettingsHelper
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
+      :default_syntax_highlighting_theme,
       :delete_inactive_projects,
+      :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,
@@ -347,6 +349,7 @@ module ApplicationSettingsHelper
       :repository_storages_weighted,
       :require_admin_approval_after_user_signup,
       :require_two_factor_authentication,
+      :remember_me_enabled,
       :restricted_visibility_levels,
       :rsa_key_restriction,
       :session_expire_delay,
@@ -354,6 +357,12 @@ module ApplicationSettingsHelper
       :shared_runners_text,
       :sign_in_text,
       :signup_enabled,
+      :silent_mode_enabled,
+      :slack_app_enabled,
+      :slack_app_id,
+      :slack_app_secret,
+      :slack_app_signing_secret,
+      :slack_app_verification_token,
       :sourcegraph_enabled,
       :sourcegraph_url,
       :sourcegraph_public_only,
@@ -401,6 +410,7 @@ module ApplicationSettingsHelper
       :protected_paths_raw,
       :time_tracking_limit_to_hours,
       :two_factor_grace_period,
+      :update_runner_versions_enabled,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
@@ -478,7 +488,10 @@ module ApplicationSettingsHelper
       :bulk_import_enabled,
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
-      :deactivation_email_additional_text
+      :deactivation_email_additional_text,
+      :projects_api_rate_limit_unauthenticated,
+      :gitlab_dedicated_instance,
+      :ci_max_includes
     ].tap do |settings|
       next if Gitlab.com?
 
@@ -535,28 +548,6 @@ module ApplicationSettingsHelper
     Rack::Attack.throttles.key?('protected paths')
   end
 
-  def self_monitoring_project_data
-    {
-      'create_self_monitoring_project_path' =>
-        create_self_monitoring_project_admin_application_settings_path,
-
-      'status_create_self_monitoring_project_path' =>
-        status_create_self_monitoring_project_admin_application_settings_path,
-
-      'delete_self_monitoring_project_path' =>
-        delete_self_monitoring_project_admin_application_settings_path,
-
-      'status_delete_self_monitoring_project_path' =>
-        status_delete_self_monitoring_project_admin_application_settings_path,
-
-      'self_monitoring_project_exists' =>
-        Gitlab::CurrentSettings.self_monitoring_project.present?.to_s,
-
-      'self_monitoring_project_full_path' =>
-        Gitlab::CurrentSettings.self_monitoring_project&.full_path
-    }
-  end
-
   def valid_runner_registrars
     Gitlab::CurrentSettings.valid_runner_registrars
   end
@@ -595,9 +586,7 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count,
-      project_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-a-project-from-being-shared-with-groups'),
-      group_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-group-sharing-outside-the-group-hierarchy')
+      pending_user_count: pending_user_count
     }
   end
 end

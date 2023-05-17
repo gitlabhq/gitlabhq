@@ -45,7 +45,6 @@ Style/HashAsLastArrayItem:
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'spec/lib/gitlab/database/migration_helpers/v2_spec.rb'
-    - 'spec/migrations/20210914095310_cleanup_orphan_project_access_tokens_spec.rb'
     - 'spec/requests/rack_attack_global_spec.rb'
     - 'spec/services/git/branch_hooks_service_spec.rb'
     - 'spec/services/metrics/dashboard/panel_preview_service_spec.rb'

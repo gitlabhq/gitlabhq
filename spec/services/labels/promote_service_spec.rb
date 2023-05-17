@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Labels::PromoteService do
+RSpec.describe Labels::PromoteService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 

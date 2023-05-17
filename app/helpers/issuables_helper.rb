@@ -12,8 +12,8 @@ module IssuablesHelper
     end
   end
 
-  def sidebar_gutter_collapsed_class
-    return "right-sidebar-expanded" if moved_mr_sidebar_enabled?
+  def sidebar_gutter_collapsed_class(is_merge_request_with_flag)
+    return "right-sidebar-expanded" if is_merge_request_with_flag
 
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
@@ -144,7 +144,7 @@ module IssuablesHelper
   def issuable_meta(issuable, project)
     output = []
 
-    if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.work_item_type.base_type)
+    if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.issue_type)
       output << content_tag(:span, sprite_icon(issuable.work_item_type.icon_name.to_s, css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
       output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: IntegrationsHelper.integration_issue_type(issuable.issue_type), created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     else
@@ -156,7 +156,7 @@ module IssuablesHelper
     end
 
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       author_output << issuable_meta_author_slot(issuable.author, css_class: 'ml-1')
@@ -172,9 +172,6 @@ module IssuablesHelper
     end
 
     output << content_tag(:span, (sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
-
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-md-inline-block gl-ml-3")
-    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
     output.join.html_safe
   end
@@ -252,7 +249,7 @@ module IssuablesHelper
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
-      initialTaskStatus: issuable.task_status
+      initialTaskCompletionStatus: issuable.task_completion_status
     }
     data.merge!(issue_only_initial_data(issuable))
     data.merge!(path_data(parent))
@@ -277,11 +274,13 @@ module IssuablesHelper
   end
 
   def incident_only_initial_data(issue)
-    return {} unless issue.incident?
+    return {} unless issue.incident_type_issue?
 
     {
       hasLinkedAlerts: issue.alert_management_alerts.any?,
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue)
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue),
+      currentPath: url_for(safe_params),
+      currentTab: safe_params[:incident_tab]
     }
   end
 
@@ -378,11 +377,52 @@ module IssuablesHelper
   end
 
   def hidden_issuable_icon(issuable)
-    title = format(_('This %{issuable} is hidden because its author has been banned'),
-                   issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request'))
+    title = format(
+      _('This %{issuable} is hidden because its author has been banned'),
+      issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request')
+    )
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
     end
+  end
+
+  def issuable_type_selector_data(issuable)
+    {
+      selected_type: issuable.issue_type,
+      is_issue_allowed: create_issue_type_allowed?(@project, :issue).to_s,
+      is_incident_allowed: create_issue_type_allowed?(@project, :incident).to_s,
+      issue_path: new_project_issue_path(@project),
+      incident_path: new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+    }
+  end
+
+  def issuable_label_selector_data(project, issuable)
+    initial_labels = issuable.labels.map do |label|
+      {
+        __typename: "Label",
+        id: label.id,
+        title: label.title,
+        description: label.description,
+        color: label.color,
+        text_color: label.text_color
+      }
+    end
+
+    filter_base_path =
+      if issuable.issuable_type == "merge_request"
+        project_merge_requests_path(project)
+      else
+        project_issues_path(project)
+      end
+
+    {
+      field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
+      full_path: project.full_path,
+      initial_labels: initial_labels.to_json,
+      issuable_type: issuable.issuable_type,
+      labels_filter_base_path: filter_base_path,
+      labels_manage_path: project_labels_path(project)
+    }
   end
 
   private
@@ -434,7 +474,7 @@ module IssuablesHelper
       toggleSubscriptionEndpoint: issuable[:toggle_subscription_path],
       moveIssueEndpoint: issuable[:move_issue_path],
       projectsAutocompleteEndpoint: issuable[:projects_autocomplete_path],
-      editable: issuable.dig(:current_user, :can_edit),
+      editable: issuable.dig(:current_user, :can_edit).to_s,
       currentUser: issuable[:current_user],
       rootPath: root_path,
       fullPath: issuable[:project_full_path],

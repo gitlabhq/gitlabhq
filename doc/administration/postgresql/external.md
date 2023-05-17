@@ -17,7 +17,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
 
 1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
-1. Set up a `gitlab` user with a password of your choice, create the `gitlabhq_production` database, and make the user an owner of the database. You can see an example of this setup in the [installation from source documentation](../../install/installation.md#6-database).
+1. Set up a `gitlab` user with a password of your choice, create the `gitlabhq_production` database, and make the user an owner of the database. You can see an example of this setup in the [installation from source documentation](../../install/installation.md#7-database).
 1. If you are using a cloud-managed service, you may need to grant additional
    roles to your `gitlab` user:
    - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
@@ -30,18 +30,18 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
 1. Configure the GitLab application servers with the appropriate connection details
    for your external PostgreSQL service in your `/etc/gitlab/gitlab.rb` file:
 
-    ```ruby
-    # Disable the bundled Omnibus provided PostgreSQL
-    postgresql['enable'] = false
+   ```ruby
+   # Disable the bundled Omnibus provided PostgreSQL
+   postgresql['enable'] = false
 
-    # PostgreSQL connection details
-    gitlab_rails['db_adapter'] = 'postgresql'
-    gitlab_rails['db_encoding'] = 'unicode'
-    gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
-    gitlab_rails['db_password'] = 'DB password'
-    ```
+   # PostgreSQL connection details
+   gitlab_rails['db_adapter'] = 'postgresql'
+   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
+   gitlab_rails['db_password'] = 'DB password'
+   ```
 
-    For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/index.md).
+   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/index.md).
 
 1. Reconfigure for the changes to take effect:
 

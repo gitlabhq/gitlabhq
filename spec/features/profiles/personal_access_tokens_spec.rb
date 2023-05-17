@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Profile > Personal Access Tokens', :js, feature_category: :user_profile do
   include Spec::Support::Helpers::ModalHelpers
-  include Spec::Support::Helpers::AccessTokenHelpers
+  include Features::AccessTokenHelpers
 
   let(:user) { create(:user) }
   let(:pat_create_service) { double('PersonalAccessTokens::CreateService', execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new })) }

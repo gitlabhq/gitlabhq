@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, :sidekiq_inline do
+RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, :sidekiq_inline,
+  feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
   include ExclusiveLeaseHelpers
 

@@ -8,6 +8,6 @@ module FixtureHelpers
   end
 
   def expand_fixture_path(filename, dir: '')
-    File.expand_path(Rails.root.join(dir, 'spec', 'fixtures', filename))
+    File.expand_path(rails_root_join(dir, 'spec', 'fixtures', filename))
   end
 end

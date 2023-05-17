@@ -5,7 +5,6 @@ description: Count of WAU using the `/rebase` quick action on a Merge Request
 product_section: dev
 product_stage: source_code
 product_group: source_code
-product_category: source_code_management
 value_type: number
 status: active
 time_frame: 7d

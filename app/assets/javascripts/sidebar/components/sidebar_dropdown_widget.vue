@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -71,7 +71,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, TYPE_MERGE_REQUEST].includes(value);
       },
     },
     icon: {
@@ -81,7 +81,7 @@ export default {
     },
   },
   apollo: {
-    currentAttribute: {
+    issuable: {
       query() {
         const { current } = this.issuableAttributeQuery;
         const { query } = current[this.issuableType];
@@ -95,11 +95,12 @@ export default {
         };
       },
       update(data) {
+        return data.workspace?.issuable || {};
+      },
+      result({ data }) {
         if (this.glFeatures?.epicWidgetEditConfirmation && this.isEpic) {
           this.hasCurrentAttribute = data?.workspace?.issuable.hasEpic;
         }
-
-        return data?.workspace?.issuable.attribute;
       },
       error(error) {
         createAlert({
@@ -108,13 +109,26 @@ export default {
           error,
         });
       },
+      subscribeToMore: {
+        document() {
+          return issuableAttributesQueries[this.issuableAttribute].subscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return this.shouldSkipRealTimeEpicLinkUpdates;
+        },
+      },
     },
   },
   data() {
     return {
       updating: false,
       selectedTitle: null,
-      currentAttribute: null,
+      issuable: {},
       hasCurrentAttribute: false,
       editConfirmation: false,
       tracking: {
@@ -125,6 +139,12 @@ export default {
     };
   },
   computed: {
+    currentAttribute() {
+      return this.issuable.attribute;
+    },
+    issuableId() {
+      return this.issuable.id;
+    },
     issuableAttributeQuery() {
       return this.issuableAttributesQueries[this.issuableAttribute];
     },
@@ -135,7 +155,7 @@ export default {
       return this.currentAttribute?.webUrl;
     },
     loading() {
-      return this.$apollo.queries.currentAttribute.loading;
+      return this.$apollo.queries.issuable.loading;
     },
     attributeTypeTitle() {
       return this.widgetTitleText[this.issuableAttribute];
@@ -169,6 +189,9 @@ export default {
       return this.isEpic && this.currentAttribute === null && this.hasCurrentAttribute
         ? !this.editConfirmation
         : false;
+    },
+    shouldSkipRealTimeEpicLinkUpdates() {
+      return !this.issuableId || this.issuableAttribute !== IssuableAttributeType.Epic;
     },
   },
   methods: {

@@ -22,9 +22,11 @@ class GlobalPolicy < BasePolicy
   condition(:project_bot, scope: :user) { @user&.project_bot? }
   condition(:migration_bot, scope: :user) { @user&.migration_bot? }
 
-  condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow)
+  condition(:create_runner_workflow_enabled, scope: :user) do
+    Feature.enabled?(:create_runner_workflow_for_admin, @user)
   end
+
+  condition(:service_account, scope: :user) { @user&.service_account? }
 
   rule { anonymous }.policy do
     prevent :log_in
@@ -60,11 +62,15 @@ class GlobalPolicy < BasePolicy
 
   rule { ~can?(:access_api) }.prevent :execute_graphql_mutation
 
-  rule { blocked | (internal & ~migration_bot & ~security_bot) }.policy do
+  rule { blocked | (internal & ~migration_bot & ~security_bot & ~security_policy_bot) }.policy do
     prevent :access_git
   end
 
-  rule { project_bot }.policy do
+  rule { security_policy_bot }.policy do
+    enable :access_git
+  end
+
+  rule { project_bot | service_account }.policy do
     prevent :log_in
     prevent :receive_notifications
   end
@@ -119,11 +125,11 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
-    enable :create_instance_runners
+    enable :create_instance_runner
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_instance_runners
+    prevent :create_instance_runner
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

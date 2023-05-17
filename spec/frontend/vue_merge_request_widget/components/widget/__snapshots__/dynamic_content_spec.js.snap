@@ -1,35 +1,63 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue renders given data 1`] = `
-"<content-row-stub level=\\"2\\" statusiconname=\\"success\\" widgetname=\\"MyWidget\\" header=\\"This is a header,This is a subheader\\" helppopover=\\"[object Object]\\" actionbuttons=\\"\\">
-  <div class=\\"gl-display-flex gl-flex-direction-column\\">
-    <div>
-      <p class=\\"gl-mb-0\\">Main text for the row</p>
-      <gl-link-stub href=\\"https://gitlab.com\\">Optional link to display after text</gl-link-stub>
-      <!---->
-      <gl-badge-stub size=\\"md\\" variant=\\"info\\" iconsize=\\"md\\">
-        Badge is optional. Text to be displayed inside badge
-      </gl-badge-stub>
-      <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
-      <p class=\\"gl-m-0 gl-font-sm\\">Optional: Smaller sub-text to be displayed below the main text</p>
+"<div class=\\"gl-display-flex gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline\\">
+  <!---->
+  <div class=\\"gl-w-full gl-min-w-0\\">
+    <div class=\\"gl-display-flex\\">
+      <div class=\\"gl-mb-2\\"><strong class=\\"gl-display-block\\">This is a header</strong><span class=\\"gl-display-block\\">This is a subheader</span></div>
+      <div class=\\"gl-ml-auto gl-display-flex gl-align-items-baseline\\">
+        <help-popover-stub options=\\"[object Object]\\" icon=\\"information-o\\" class=\\"\\">
+          <p class=\\"gl-mb-0\\">Widget help popover content</p>
+          <!---->
+        </help-popover-stub>
+        <!---->
+      </div>
     </div>
-    <ul class=\\"gl-m-0 gl-p-0 gl-list-style-none\\">
-      <li>
-        <content-row-stub level=\\"3\\" statusiconname=\\"\\" widgetname=\\"MyWidget\\" header=\\"Child row header\\" actionbuttons=\\"\\" data-qa-selector=\\"child_content\\">
-          <div class=\\"gl-display-flex gl-flex-direction-column\\">
-            <div>
-              <p class=\\"gl-mb-0\\">This is recursive. It will be listed in level 3.</p>
+    <div class=\\"gl-display-flex gl-align-items-baseline\\">
+      <status-icon-stub level=\\"2\\" name=\\"MyWidget\\" iconname=\\"success\\"></status-icon-stub>
+      <div class=\\"gl-display-flex gl-flex-direction-column\\">
+        <div>
+          <p class=\\"gl-mb-0\\">Main text for the row</p>
+          <gl-link-stub href=\\"https://gitlab.com\\">Optional link to display after text</gl-link-stub>
+          <!---->
+          <gl-badge-stub size=\\"md\\" variant=\\"info\\" iconsize=\\"md\\">
+            Badge is optional. Text to be displayed inside badge
+          </gl-badge-stub>
+          <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
+          <p class=\\"gl-m-0 gl-font-sm\\">Optional: Smaller sub-text to be displayed below the main text</p>
+        </div>
+        <ul class=\\"gl-m-0 gl-p-0 gl-list-style-none\\">
+          <li>
+            <div class=\\"gl-display-flex gl-align-items-center\\" data-qa-selector=\\"child_content\\">
               <!---->
-              <!---->
-              <!---->
-              <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
-              <!---->
+              <div class=\\"gl-w-full gl-min-w-0\\">
+                <div class=\\"gl-display-flex\\">
+                  <div class=\\"gl-mb-2\\"><strong class=\\"gl-display-block\\">Child row header</strong>
+                    <!---->
+                  </div>
+                  <!---->
+                </div>
+                <div class=\\"gl-display-flex gl-align-items-baseline\\">
+                  <!---->
+                  <div class=\\"gl-display-flex gl-flex-direction-column\\">
+                    <div>
+                      <p class=\\"gl-mb-0\\">This is recursive. It will be listed in level 3.</p>
+                      <!---->
+                      <!---->
+                      <!---->
+                      <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
+                      <!---->
+                    </div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
             </div>
-            <!---->
-          </div>
-        </content-row-stub>
-      </li>
-    </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-</content-row-stub>"
+</div>"
 `;

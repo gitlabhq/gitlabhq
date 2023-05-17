@@ -1,4 +1,4 @@
-- return if @issue.incident?
+- return if @issue.work_item_type&.incident?
 
 - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
 - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
@@ -12,7 +12,8 @@
     issue_iid: @issue.iid,
     issue_path: project_issue_path(@project, @issue),
     register_path: new_user_registration_path(redirect_to_referer: 'yes'),
-    sign_in_path: new_session_path(:user, redirect_to_referer: 'yes') } }
+    sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
+    new_comment_template_path: profile_comment_templates_path } }
 - else
   .gl-border-solid.gl-border-1.gl-border-gray-100.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
     = enable_lfs_message

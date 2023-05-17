@@ -124,8 +124,10 @@ If you get this error, [check the batched background migration options](#databas
 
 ### Pause batched background migrations in GitLab 14.x
 
-To pause an ongoing batched background migration, use the `disable` command above.
-This command causes the migration to complete the current batch, and then wait to start the next batch.
+To pause an ongoing batched background migration,
+[disable the batched background migrations feature](#enable-or-disable-background-migrations).
+Disabling the feature completes the current batch of migrations, then waits to start
+the next batch until after the feature is enabled again.
 
 Use the following database queries to see the state of the current batched background migration:
 
@@ -199,6 +201,47 @@ To disable it:
 
 ```ruby
 Feature.disable(:optimize_batched_migrations)
+```
+
+### Parallel execution
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027)
+>   in GitLab 15.7, [behind a feature flag](../user/feature_flags.md),
+>   [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/372316).
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to
+>   [disable it](#enable-or-disable-parallel-execution-for-batched-background-migrations).
+
+There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
+
+To speed up the execution of batched background migrations, two migrations are executed at the same time.
+
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md) can change
+the number of batched background migrations executed in parallel:
+
+```ruby
+ApplicationSetting.update_all(database_max_running_batched_background_migrations: 4)
+```
+
+#### Enable or disable parallel execution for batched background migrations
+
+Parallel execution for batched background migrations is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:batched_migrations_parallel_execution)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:batched_migrations_parallel_execution)
 ```
 
 ## Troubleshooting

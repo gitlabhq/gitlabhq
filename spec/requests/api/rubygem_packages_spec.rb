@@ -8,6 +8,14 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
+  let(:tokens) do
+    {
+      personal_access_token: personal_access_token.token,
+      deploy_token: deploy_token.token,
+      job_token: job.token
+    }
+  end
+
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:user) { personal_access_token.user }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
@@ -15,14 +23,14 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:headers) { {} }
 
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_rubygems_user' } }
+  let(:snowplow_gitlab_standard_context) { snowplow_context }
 
-  let(:tokens) do
-    {
-      personal_access_token: personal_access_token.token,
-      deploy_token: deploy_token.token,
-      job_token: job.token
-    }
+  def snowplow_context(user_role: :developer)
+    if user_role == :anonymous
+      { project: project, namespace: project.namespace, property: 'i_package_rubygems_user' }
+    else
+      { project: project, namespace: project.namespace, property: 'i_package_rubygems_user', user: user }
+    end
   end
 
   shared_examples 'when feature flag is disabled' do
@@ -164,7 +172,13 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_rubygems_user' } }
+        let(:snowplow_gitlab_standard_context) do
+          if token_type == :deploy_token
+            snowplow_context.merge(user: deploy_token)
+          else
+            snowplow_context(user_role: user_role)
+          end
+        end
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))

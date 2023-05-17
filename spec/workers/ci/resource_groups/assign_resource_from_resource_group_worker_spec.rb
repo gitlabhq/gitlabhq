@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker do
+RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker, feature_category: :continuous_delivery do
   let(:worker) { described_class.new }
 
   it 'has the `until_executed` deduplicate strategy' do

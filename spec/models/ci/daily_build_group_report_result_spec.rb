@@ -6,7 +6,11 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   let(:daily_build_group_report_result) { build(:ci_daily_build_group_report_result) }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:last_pipeline) }
+    it do
+      is_expected.to belong_to(:last_pipeline).class_name('Ci::Pipeline')
+        .with_foreign_key(:last_pipeline_id).inverse_of(:daily_build_group_report_results)
+    end
+
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:group) }
   end

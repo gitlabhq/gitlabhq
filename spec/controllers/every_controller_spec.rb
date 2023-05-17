@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+
 RSpec.describe "Every controller" do
   context "feature categories" do
     let_it_be(:feature_categories) do
@@ -52,7 +53,7 @@ RSpec.describe "Every controller" do
         non_existing_used_actions = used_actions - existing_actions
 
         expect(non_existing_used_actions).to be_empty,
-                                             "#{controller} used #{non_existing_used_actions} to define feature category, but the route does not exist"
+          "#{controller} used #{non_existing_used_actions} to define feature category, but the route does not exist"
       end
     end
   end

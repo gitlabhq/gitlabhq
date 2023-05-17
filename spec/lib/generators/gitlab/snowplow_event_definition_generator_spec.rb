@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout do
+RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout, feature_category: :product_analytics do
   let(:ce_temp_dir) { Dir.mktmpdir }
   let(:ee_temp_dir) { Dir.mktmpdir }
-  let(:timestamp) { Time.current.to_i }
+  let(:timestamp) { Time.now.utc.strftime('%Y%m%d%H%M%S') }
   let(:generator_options) { { 'category' => 'Groups::EmailCampaignsController', 'action' => 'click' } }
 
   before do
@@ -30,7 +30,8 @@ RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout do
     let(:file_name) { Dir.children(ce_temp_dir).first }
 
     it 'creates CE event definition file using the template' do
-      sample_event = ::Gitlab::Config::Loader::Yaml.new(fixture_file(File.join(sample_event_dir, 'sample_event.yml'))).load_raw!
+      sample_event = ::Gitlab::Config::Loader::Yaml
+                       .new(fixture_file(File.join(sample_event_dir, 'sample_event.yml'))).load_raw!
 
       described_class.new([], generator_options).invoke_all
 
@@ -62,25 +63,13 @@ RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout do
       end
     end
 
-    context 'event definition already exists' do
+    context 'when event definition with same file name already exists' do
       before do
         stub_const('Gitlab::VERSION', '12.11.0-pre')
         described_class.new([], generator_options).invoke_all
       end
 
-      it 'overwrites event definition --force flag set to true' do
-        sample_event = ::Gitlab::Config::Loader::Yaml.new(fixture_file(File.join(sample_event_dir, 'sample_event.yml'))).load_raw!
-
-        stub_const('Gitlab::VERSION', '13.11.0-pre')
-        described_class.new([], generator_options.merge('force' => true)).invoke_all
-
-        event_definition_path = File.join(ce_temp_dir, file_name)
-        event_data = ::Gitlab::Config::Loader::Yaml.new(File.read(event_definition_path)).load_raw!
-
-        expect(event_data).to eq(sample_event)
-      end
-
-      it 'raises error when --force flag set to false' do
+      it 'raises error' do
         expect { described_class.new([], generator_options.merge('force' => false)).invoke_all }
           .to raise_error(StandardError, /Event definition already exists at/)
       end
@@ -90,7 +79,8 @@ RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout do
       let(:file_name) { Dir.children(ee_temp_dir).first }
 
       it 'creates EE event definition file using the template' do
-        sample_event = ::Gitlab::Config::Loader::Yaml.new(fixture_file(File.join(sample_event_dir, 'sample_event_ee.yml'))).load_raw!
+        sample_event = ::Gitlab::Config::Loader::Yaml
+                         .new(fixture_file(File.join(sample_event_dir, 'sample_event_ee.yml'))).load_raw!
 
         described_class.new([], generator_options.merge('ee' => true)).invoke_all
 

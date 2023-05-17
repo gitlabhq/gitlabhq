@@ -40,19 +40,6 @@ module Feature
   class << self
     delegate :group, to: :flipper
 
-    def feature_flags_available?
-      # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
-      active_db_connection = begin
-        ActiveRecord::Base.connection.active? # rubocop:disable Database/MultipleDatabases
-      rescue StandardError
-        false
-      end
-
-      active_db_connection && Feature::FlipperFeature.table_exists?
-    rescue ActiveRecord::NoDatabaseError
-      false
-    end
-
     def all
       flipper.features.to_a
     end
@@ -205,9 +192,9 @@ module Feature
     # This method is called from config/initializers/flipper.rb and can be used
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags/index.html
-    def register_feature_groups
-      Flipper.register(:gitlab_team_members) { |actor| FeatureGroups::GitlabTeamMembers.enabled?(actor.thing) }
-    end
+    #
+    # EE feature groups should go inside the ee/lib/ee/feature.rb version of this method.
+    def register_feature_groups; end
 
     def register_definitions
       Feature::Definition.reload!
@@ -339,7 +326,7 @@ module Feature
     end
 
     def l2_cache_backend
-      Rails.cache
+      ::Gitlab::Redis::FeatureFlag.cache_store
     end
 
     def log(key:, action:, **extra)

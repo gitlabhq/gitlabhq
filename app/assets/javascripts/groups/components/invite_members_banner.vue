@@ -45,10 +45,7 @@ export default {
       });
     },
     openModal() {
-      eventHub.$emit('openModal', {
-        source: this.$options.openModalSource,
-      });
-      this.track(this.$options.buttonClickEvent);
+      eventHub.$emit('openModal', { source: this.$options.openModalSource });
     },
   },
   i18n: {
@@ -59,7 +56,6 @@ export default {
     button_text: s__('InviteMembersBanner|Invite your colleagues'),
   },
   displayEvent: 'invite_members_banner_displayed',
-  buttonClickEvent: 'invite_members_banner_button_clicked',
   openModalSource: 'invite_members_banner',
   dismissEvent: 'invite_members_banner_dismissed',
 };

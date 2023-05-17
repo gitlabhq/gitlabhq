@@ -5,6 +5,8 @@ module BulkImports
     module Transformers
       class GroupAttributesTransformer
         include BulkImports::VisibilityLevel
+        include BulkImports::PathNormalization
+        include BulkImports::Uniquify
 
         # rubocop: disable Style/IfUnlessModifier
         def transform(context, data)
@@ -14,9 +16,11 @@ module BulkImports
             namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
           end
 
+          path = normalize_path(import_entity.destination_slug)
+
           params = {
-            'name' => group_name(namespace, data),
-            'path' => import_entity.destination_slug.parameterize,
+            'name' => uniquify(namespace, data['name'], :name),
+            'path' => uniquify(namespace, path, :path),
             'description' => data['description'],
             'lfs_enabled' => data['lfs_enabled'],
             'emails_disabled' => data['emails_disabled'],
@@ -57,22 +61,6 @@ module BulkImports
           params.with_indifferent_access
         end
         # rubocop: enable Style/IfUnlessModifier
-
-        private
-
-        def group_name(namespace, data)
-          if namespace.present?
-            namespace_children_names = namespace.children.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
-
-            if namespace_children_names.include?(data['name'])
-              data['name'] = Uniquify.new(1).string(-> (counter) { "#{data['name']}(#{counter})" }) do |base|
-                namespace_children_names.include?(base)
-              end
-            end
-          end
-
-          data['name']
-        end
       end
     end
   end

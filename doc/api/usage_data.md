@@ -1,6 +1,6 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, api
 ---
@@ -35,7 +35,6 @@ Example response:
   product_section: enablement
   product_stage: enablement
   product_group: global_search
-  product_category: global_search
   value_type: number
   status: active
   time_frame: 28d

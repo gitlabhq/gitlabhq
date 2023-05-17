@@ -20,9 +20,11 @@ module MergeRequestMetricsHelper
     closed_event = merge_request.closed_event
     merge_event = merge_request.merge_event
 
-    MergeRequest::Metrics.new(latest_closed_at: closed_event&.updated_at,
-                              latest_closed_by: closed_event&.author,
-                              merged_at: merge_event&.updated_at,
-                              merged_by: merge_event&.author)
+    MergeRequest::Metrics.new(
+      latest_closed_at: closed_event&.updated_at,
+      latest_closed_by: closed_event&.author,
+      merged_at: merge_event&.updated_at,
+      merged_by: merge_event&.author
+    )
   end
 end

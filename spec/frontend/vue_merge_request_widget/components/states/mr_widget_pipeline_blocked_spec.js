@@ -10,11 +10,6 @@ describe('MRWidgetPipelineBlocked', () => {
     wrapper = shallowMount(PipelineBlockedComponent);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders error icon', () => {
     expect(wrapper.findComponent(StatusIcon).exists()).toBe(true);
     expect(wrapper.findComponent(StatusIcon).props().status).toBe('failed');

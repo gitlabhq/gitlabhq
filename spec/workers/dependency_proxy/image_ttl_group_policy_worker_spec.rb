@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker do
+RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, feature_category: :dependency_proxy do
   let(:worker) { described_class.new }
 
   describe '#perform' do

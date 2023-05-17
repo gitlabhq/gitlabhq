@@ -1,8 +1,0 @@
----
-name: detect_android_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85681
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360902
-milestone: '15.0'
-type: development
-group: group::activation
-default_enabled: false

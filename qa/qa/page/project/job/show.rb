@@ -68,6 +68,14 @@ module QA
             end
           end
 
+          def has_locked_artifact?
+            has_element? :artifacts_locked_message_content
+          end
+
+          def has_unlocked_artifact?
+            has_element? :artifacts_unlocked_message_content
+          end
+
           private
 
           def loaded?(wait: 60)

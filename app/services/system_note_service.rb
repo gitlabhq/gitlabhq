@@ -388,8 +388,8 @@ module SystemNoteService
     ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project).log_resolving_alert(monitoring_tool)
   end
 
-  def change_issue_type(issue, author)
-    ::SystemNotes::IssuablesService.new(noteable: issue, project: issue.project, author: author).change_issue_type
+  def change_issue_type(issue, author, previous_type)
+    ::SystemNotes::IssuablesService.new(noteable: issue, project: issue.project, author: author).change_issue_type(previous_type)
   end
 
   def add_timeline_event(timeline_event)

@@ -181,6 +181,108 @@ RSpec.describe Gitlab::Ci::Build::Rules do
       end
     end
 
+    context 'with needs' do
+      context 'when single needs is specified' do
+        let(:rule_list) do
+          [{ if: '$VAR == null', needs: [{ name: 'test', artifacts: true, optional: false }] }]
+        end
+
+        it {
+          is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil,
+            [{ name: 'test', artifacts: true, optional: false }], nil))
+        }
+      end
+
+      context 'when multiple needs are specified' do
+        let(:rule_list) do
+          [{ if: '$VAR == null',
+             needs: [{ name: 'test', artifacts: true, optional: false },
+               { name: 'rspec', artifacts: true, optional: false }] }]
+        end
+
+        it {
+          is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil,
+            [{ name: 'test', artifacts: true, optional: false },
+              { name: 'rspec', artifacts: true, optional: false }], nil))
+        }
+      end
+
+      context 'when there are no needs specified' do
+        let(:rule_list) { [{ if: '$VAR == null' }] }
+
+        it { is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil, nil, nil)) }
+      end
+
+      context 'when need is specified with additional attibutes' do
+        let(:rule_list) do
+          [{ if: '$VAR == null', needs: [{
+            artifacts: true,
+            name: 'test',
+            optional: false,
+            when: 'never'
+          }] }]
+        end
+
+        it {
+          is_expected.to eq(
+            described_class::Result.new('on_success', nil, nil, nil,
+              [{ artifacts: true, name: 'test', optional: false, when: 'never' }], nil))
+        }
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(introduce_rules_with_needs: false)
+        end
+
+        context 'with needs' do
+          context 'when single needs is specified' do
+            let(:rule_list) do
+              [{ if: '$VAR == null', needs: [{ name: 'test', artifacts: true, optional: false }] }]
+            end
+
+            it {
+              is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil, nil, nil))
+            }
+          end
+
+          context 'when multiple needs are specified' do
+            let(:rule_list) do
+              [{ if: '$VAR == null',
+                 needs: [{ name: 'test', artifacts: true, optional: false },
+                   { name: 'rspec', artifacts: true, optional: false }] }]
+            end
+
+            it {
+              is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil, nil, nil))
+            }
+          end
+
+          context 'when there are no needs specified' do
+            let(:rule_list) { [{ if: '$VAR == null' }] }
+
+            it { is_expected.to eq(described_class::Result.new('on_success', nil, nil, nil, nil, nil)) }
+          end
+
+          context 'when need is specified with additional attibutes' do
+            let(:rule_list) do
+              [{ if: '$VAR == null', needs:  [{
+                artifacts: true,
+                name: 'test',
+                optional: false,
+                when: 'never'
+              }] }]
+            end
+
+            it {
+              is_expected.to eq(
+                described_class::Result.new('on_success', nil, nil, nil, nil, nil))
+            }
+          end
+        end
+      end
+    end
+
     context 'with variables' do
       context 'with matching rule' do
         let(:rule_list) { [{ if: '$VAR == null', variables: { MY_VAR: 'my var' } }] }
@@ -208,9 +310,10 @@ RSpec.describe Gitlab::Ci::Build::Rules do
     let(:start_in) { nil }
     let(:allow_failure) { nil }
     let(:variables) { nil }
+    let(:needs) { nil }
 
     subject(:result) do
-      Gitlab::Ci::Build::Rules::Result.new(when_value, start_in, allow_failure, variables)
+      Gitlab::Ci::Build::Rules::Result.new(when_value, start_in, allow_failure, variables, needs)
     end
 
     describe '#build_attributes' do
@@ -220,6 +323,45 @@ RSpec.describe Gitlab::Ci::Build::Rules do
 
       it 'compacts nil values' do
         is_expected.to eq(options: {}, when: 'on_success')
+      end
+
+      context 'scheduling_type' do
+        context 'when rules have needs' do
+          context 'single need' do
+            let(:needs) do
+              { job: [{ name: 'test' }] }
+            end
+
+            it 'saves needs' do
+              expect(subject[:needs_attributes]).to eq([{ name: "test" }])
+            end
+
+            it 'adds schedule type to the build_attributes' do
+              expect(subject[:scheduling_type]).to eq(:dag)
+            end
+          end
+
+          context 'multiple needs' do
+            let(:needs) do
+              { job: [{ name: 'test' }, { name: 'test_2', artifacts: true, optional: false }] }
+            end
+
+            it 'saves needs' do
+              expect(subject[:needs_attributes]).to match_array([{ name: "test" },
+                { name: 'test_2', artifacts: true, optional: false }])
+            end
+
+            it 'adds schedule type to the build_attributes' do
+              expect(subject[:scheduling_type]).to eq(:dag)
+            end
+          end
+        end
+
+        context 'when rules do not have needs' do
+          it 'does not add schedule type to the build_attributes' do
+            expect(subject.key?(:scheduling_type)).to be_falsy
+          end
+        end
       end
     end
 

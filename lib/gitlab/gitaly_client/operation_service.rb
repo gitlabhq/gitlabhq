@@ -45,7 +45,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :access_check
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls
@@ -82,7 +82,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
                                                  fallback_message: e.details)
@@ -124,7 +124,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
                                                  fallback_message: e.details)
@@ -188,7 +188,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :access_check
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls
@@ -247,7 +247,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :access_check
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls
@@ -329,7 +329,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :access_check
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls
@@ -366,7 +366,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :resolve_revision, :rebase_conflict
           # Theoretically, we could now raise specific errors based on the type
           # of the detailed error. Most importantly, we get error details when
@@ -458,7 +458,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :access_check
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls

@@ -3,7 +3,7 @@ class Packages::Debian::DistributionReleaseFileUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
 
-  storage_options Gitlab.config.packages
+  storage_location :packages
 
   alias_method :upload, :model
 

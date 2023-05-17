@@ -16,7 +16,7 @@ RSpec.describe AccessTokenEntityBase do
         revoked: false,
         created_at: token.created_at,
         scopes: token.scopes,
-        expires_at: nil,
+        expires_at: token.expires_at.iso8601,
         expired: false,
         expires_soon: false
       ))

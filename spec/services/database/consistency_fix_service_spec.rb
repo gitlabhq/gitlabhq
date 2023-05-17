@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::ConsistencyFixService do
+RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
   describe '#execute' do
     context 'fixing namespaces inconsistencies' do
       subject(:consistency_fix_service) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::ProgressWorker, '#perform' do
+RSpec.describe Onboarding::ProgressWorker, '#perform', feature_category: :onboarding do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:action) { 'git_pull' }
 

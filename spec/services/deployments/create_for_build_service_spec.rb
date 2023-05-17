@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::CreateForBuildService do
+RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

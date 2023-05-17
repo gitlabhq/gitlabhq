@@ -19,7 +19,8 @@ require_relative 'api/default_options'
 # Push into expected format for failed tests
 class PipelineTestReportBuilder
   DEFAULT_OPTIONS = {
-    target_project: Host::DEFAULT_OPTIONS[:target_project],
+    target_project: Host::DEFAULT_OPTIONS[:target_project] || API::DEFAULT_OPTIONS[:project],
+    current_pipeline_id: API::DEFAULT_OPTIONS[:pipeline_id],
     mr_iid: Host::DEFAULT_OPTIONS[:mr_iid],
     api_endpoint: API::DEFAULT_OPTIONS[:endpoint],
     output_file_path: 'test_results/test_reports.json',
@@ -28,6 +29,7 @@ class PipelineTestReportBuilder
 
   def initialize(options)
     @target_project = options.delete(:target_project)
+    @current_pipeline_id = options.delete(:current_pipeline_id)
     @mr_iid = options.delete(:mr_iid)
     @api_endpoint = options.delete(:api_endpoint).to_s
     @output_file_path = options.delete(:output_file_path).to_s
@@ -47,7 +49,7 @@ class PipelineTestReportBuilder
   end
 
   def latest_pipeline
-    pipelines_sorted_descending[0]
+    fetch("#{target_project_api_base_url}/pipelines/#{current_pipeline_id}")
   end
 
   def previous_pipeline
@@ -57,6 +59,8 @@ class PipelineTestReportBuilder
   end
 
   private
+
+  attr_reader :target_project, :current_pipeline_id, :mr_iid, :api_endpoint, :output_file_path, :pipeline_index
 
   def pipeline
     @pipeline ||=
@@ -75,8 +79,6 @@ class PipelineTestReportBuilder
     # Second from top will be the previous pipeline
     pipelines_for_mr.sort_by { |a| -a['id'] }
   end
-
-  attr_reader :target_project, :mr_iid, :api_endpoint, :output_file_path, :pipeline_index
 
   def pipeline_project_api_base_url(pipeline)
     "#{api_endpoint}/projects/#{pipeline['project_id']}"

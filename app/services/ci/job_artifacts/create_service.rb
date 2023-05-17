@@ -23,7 +23,11 @@ module Ci
         result = validate_requirements(artifact_type: artifact_type, filesize: filesize)
         return result unless result[:status] == :success
 
-        headers = JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size(artifact_type))
+        headers = JobArtifactUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: max_size(artifact_type),
+          use_final_store_path: Feature.enabled?(:ci_artifacts_upload_to_final_location, project)
+        )
 
         if lsif?(artifact_type)
           headers[:ProcessLsif] = true
@@ -39,14 +43,18 @@ module Ci
 
         return success if sha256_matches_existing_artifact?(params[:artifact_type], artifacts_file)
 
-        artifact, artifact_metadata = build_artifact(artifacts_file, params, metadata_file)
-        result = parse_artifact(artifact)
+        build_result = build_artifact(artifacts_file, params, metadata_file)
+        return build_result unless build_result[:status] == :success
+
+        artifact = build_result[:artifact]
+        artifact_metadata = build_result[:artifact_metadata]
 
         track_artifact_uploader(artifact)
 
-        return result unless result[:status] == :success
+        parse_result = parse_artifact(artifact)
+        return parse_result unless parse_result[:status] == :success
 
-        persist_artifact(artifact, artifact_metadata, params)
+        persist_artifact(artifact, artifact_metadata)
       end
 
       private
@@ -76,44 +84,54 @@ module Ci
       end
 
       def build_artifact(artifacts_file, params, metadata_file)
-        expire_in = params['expire_in'] ||
-          Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
-
         artifact_attributes = {
           job: job,
           project: project,
-          expire_in: expire_in
+          expire_in: expire_in(params),
+          accessibility: accessibility(params),
+          locked: pipeline.locked
         }
 
-        artifact_attributes[:locked] = pipeline.locked
+        file_attributes = {
+          file_type: params[:artifact_type],
+          file_format: params[:artifact_format],
+          file_sha256: artifacts_file.sha256,
+          file: artifacts_file
+        }
 
-        artifact = Ci::JobArtifact.new(
-          artifact_attributes.merge(
-            file: artifacts_file,
-            file_type: params[:artifact_type],
-            file_format: params[:artifact_format],
-            file_sha256: artifacts_file.sha256,
-            accessibility: accessibility(params)
-          )
+        artifact = Ci::JobArtifact.new(artifact_attributes.merge(file_attributes))
+
+        artifact_metadata = build_metadata_artifact(artifact, metadata_file) if metadata_file
+
+        success(artifact: artifact, artifact_metadata: artifact_metadata)
+      end
+
+      def build_metadata_artifact(job_artifact, metadata_file)
+        Ci::JobArtifact.new(
+          job: job_artifact.job,
+          project: job_artifact.project,
+          expire_at: job_artifact.expire_at,
+          locked: job_artifact.locked,
+          file: metadata_file,
+          file_type: :metadata,
+          file_format: :gzip,
+          file_sha256: metadata_file.sha256,
+          accessibility: job_artifact.accessibility
         )
+      end
 
-        artifact_metadata = if metadata_file
-                              Ci::JobArtifact.new(
-                                artifact_attributes.merge(
-                                  file: metadata_file,
-                                  file_type: :metadata,
-                                  file_format: :gzip,
-                                  file_sha256: metadata_file.sha256,
-                                  accessibility: accessibility(params)
-                                )
-                              )
-                            end
-
-        [artifact, artifact_metadata]
+      def expire_in(params)
+        params['expire_in'] || Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
       end
 
       def accessibility(params)
-        params[:accessibility] || 'public'
+        accessibility = params[:accessibility]
+
+        return :public if Feature.disabled?(:non_public_artifacts, type: :development)
+
+        return accessibility if accessibility.present?
+
+        job.artifacts_public? ? :public : :private
       end
 
       def parse_artifact(artifact)
@@ -123,24 +141,26 @@ module Ci
         end
       end
 
-      def persist_artifact(artifact, artifact_metadata, params)
-        Ci::JobArtifact.transaction do
+      def persist_artifact(artifact, artifact_metadata)
+        job.transaction do
+          # NOTE: The `artifacts_expire_at` column is already deprecated and to be removed in the near future.
+          # Running it first because in migrations we lock the `ci_builds` table
+          # first and then the others. This reduces the chances of deadlocks.
+          job.update_column(:artifacts_expire_at, artifact.expire_at)
+
           artifact.save!
           artifact_metadata&.save!
-
-          # NOTE: The `artifacts_expire_at` column is already deprecated and to be removed in the near future.
-          job.update_column(:artifacts_expire_at, artifact.expire_at)
         end
 
         success(artifact: artifact)
       rescue ActiveRecord::RecordNotUnique => error
-        track_exception(error, params)
+        track_exception(error, artifact.file_type)
         error('another artifact of the same type already exists', :bad_request)
       rescue *OBJECT_STORAGE_ERRORS => error
-        track_exception(error, params)
+        track_exception(error, artifact.file_type)
         error(error.message, :service_unavailable)
       rescue StandardError => error
-        track_exception(error, params)
+        track_exception(error, artifact.file_type)
         error(error.message, :bad_request)
       end
 
@@ -151,11 +171,12 @@ module Ci
         existing_artifact.file_sha256 == artifacts_file.sha256
       end
 
-      def track_exception(error, params)
-        Gitlab::ErrorTracking.track_exception(error,
+      def track_exception(error, artifact_type)
+        Gitlab::ErrorTracking.track_exception(
+          error,
           job_id: job.id,
           project_id: job.project_id,
-          uploading_type: params[:artifact_type]
+          uploading_type: artifact_type
         )
       end
 

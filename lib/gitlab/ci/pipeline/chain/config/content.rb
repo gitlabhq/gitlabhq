@@ -14,6 +14,7 @@ module Gitlab
                 @pipeline.build_pipeline_config(content: pipeline_config.content)
                 @command.config_content = pipeline_config.content
                 @pipeline.config_source = pipeline_config.source
+                @command.pipeline_config = pipeline_config
               else
                 error('Missing CI config file')
               end

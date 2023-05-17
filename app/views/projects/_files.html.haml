@@ -1,4 +1,3 @@
-- @no_breadcrumb_border = true
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
 - ref = local_assigns.fetch(:ref) { current_ref }
@@ -7,18 +6,17 @@
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
-#tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
-  .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column
+#tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+  .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
     #js-last-commit.gl-m-auto
       = gl_loading_icon(size: 'md')
-    #js-code-owners
+    #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
   .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
     = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
 
-  - if project.forked? && Feature.enabled?(:fork_divergence_counts, @project.fork_source)
-
-    #js-fork-info{ data: vue_fork_divergence_data(project, ref), project_id: @project.id }
+  - if project.forked?
+    #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
   - if is_project_overview
     .project-buttons.gl-mb-5.js-show-on-project-root{ data: { qa_selector: 'project_buttons' } }

@@ -44,7 +44,7 @@ automatically includes these options.
 
 If you are making a warm cache query, you see only the `shared hits`.
 
-For example in #database-lab:
+For example, using [Database Lab](database_lab.md):
 
 ```plaintext
 Shared buffers:
@@ -60,7 +60,7 @@ Buffers: shared hit=7323
 
 If the cache is cold, you also see `reads`.
 
-In #database-lab:
+Using [Database Lab](database_lab.md):
 
 ```plaintext
 Shared buffers:

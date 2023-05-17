@@ -533,8 +533,8 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
         end
       end
 
-      context 'with partitions' do
-        let(:current_partition_id) { 123 }
+      context 'with partitions', :ci_partitionable do
+        let(:current_partition_id) { ci_testing_partition_id }
 
         before do
           allow(Ci::Pipeline)

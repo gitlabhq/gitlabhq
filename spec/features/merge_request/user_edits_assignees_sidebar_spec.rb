@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_category: :code_review_workflow do
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   let(:project) { create(:project, :public, :repository) }
   let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: 'master', project: project) }
@@ -162,8 +162,6 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
 
           page.within '.dropdown-menu-user' do
             expect(page).to have_link('Invite members')
-            expect(page).to have_selector('[data-track-action="click_invite_members"]')
-            expect(page).to have_selector('[data-track-label="edit_assignee"]')
 
             click_link 'Invite members'
           end

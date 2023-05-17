@@ -25,9 +25,7 @@ module MergeRequests
       commit = project.commit(commit_id)
       target_id, source_id = commit.parent_ids
 
-      success(commit_id: commit.id,
-              target_id: target_id,
-              source_id: source_id)
+      success(commit_id: commit.id, target_id: target_id, source_id: source_id)
     rescue MergeError, ArgumentError => error
       error(error.message)
     end

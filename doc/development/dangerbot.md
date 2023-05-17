@@ -141,27 +141,27 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
 1. Add [`gitlab-dangerfiles`](https://rubygems.org/gems/gitlab-dangerfiles) to your `Gemfile`.
 1. Create a `Dangerfile` with the following content:
 
-    ```ruby
-    require "gitlab-dangerfiles"
+   ```ruby
+   require "gitlab-dangerfiles"
 
-    Gitlab::Dangerfiles.for_project(self, &:import_defaults)
-    ```
+   Gitlab::Dangerfiles.for_project(self, &:import_defaults)
+   ```
 
 1. Add the following to your CI/CD configuration:
 
-    ```yaml
-    include:
-      - project: 'gitlab-org/quality/pipeline-common'
-        file:
-          - '/ci/danger-review.yml'
-        rules:
-          - if: $CI_SERVER_HOST == "gitlab.com"
-    ```
+   ```yaml
+   include:
+     - project: 'gitlab-org/quality/pipeline-common'
+       file:
+         - '/ci/danger-review.yml'
+       rules:
+         - if: $CI_SERVER_HOST == "gitlab.com"
+   ```
 
 1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`
   variable is available at the group level. If not, follow these last steps:
-    1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
-    1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
+   1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
+   1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
 
 You should add the ~"Danger bot" label to the merge request before sending it
 for review.

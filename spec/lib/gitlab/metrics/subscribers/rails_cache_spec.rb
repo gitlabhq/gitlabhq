@@ -6,13 +6,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
   let(:env) { {} }
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
   let(:subscriber) { described_class.new }
-
-  let(:event) { double(:event, duration: 15.2, payload: { key: %w[a b c] }) }
+  let(:store) { 'Gitlab::CustomStore' }
+  let(:store_label) { 'CustomStore' }
+  let(:event) { double(:event, duration: 15.2, payload: { key: %w[a b c], store: store }) }
 
   describe '#cache_read' do
     it 'increments the cache_read duration' do
       expect(subscriber).to receive(:observe)
-                              .with(:read, event.duration)
+                              .with(:read, event)
 
       subscriber.cache_read(event)
     end
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
         let(:event) { double(:event, duration: 15.2, payload: { hit: true }) }
 
         context 'when super operation is fetch' do
-          let(:event) { double(:event, duration: 15.2, payload: { hit: true, super_operation: :fetch }) }
+          let(:event) { double(:event, duration: 15.2, payload: { hit: true, super_operation: :fetch, store: store }) }
 
           it 'does not increment cache read miss total' do
             expect(transaction).not_to receive(:increment)
@@ -39,7 +40,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       context 'with miss event' do
-        let(:event) { double(:event, duration: 15.2, payload: { hit: false }) }
+        let(:event) { double(:event, duration: 15.2, payload: { hit: false, store: store }) }
 
         it 'increments the cache_read_miss total' do
           expect(transaction).to receive(:increment)
@@ -51,7 +52,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
         end
 
         context 'when super operation is fetch' do
-          let(:event) { double(:event, duration: 15.2, payload: { hit: false, super_operation: :fetch }) }
+          let(:event) { double(:event, duration: 15.2, payload: { hit: false, super_operation: :fetch, store: store }) }
 
           it 'does not increment cache read miss total' do
             expect(transaction).not_to receive(:increment)
@@ -75,7 +76,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
 
       it 'observes multi-key count' do
         expect(transaction).to receive(:observe)
-                                 .with(:gitlab_cache_read_multikey_count, event.payload[:key].size)
+                                 .with(:gitlab_cache_read_multikey_count,
+                                   event.payload[:key].size,
+                                   { store: store_label })
 
         subject
       end
@@ -92,7 +95,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
 
     it 'observes read_multi duration' do
       expect(subscriber).to receive(:observe)
-                              .with(:read_multi, event.duration)
+                              .with(:read_multi, event)
 
       subject
     end
@@ -101,7 +104,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
   describe '#cache_write' do
     it 'observes write duration' do
       expect(subscriber).to receive(:observe)
-                              .with(:write, event.duration)
+                              .with(:write, event)
 
       subscriber.cache_write(event)
     end
@@ -110,7 +113,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
   describe '#cache_delete' do
     it 'observes delete duration' do
       expect(subscriber).to receive(:observe)
-                              .with(:delete, event.duration)
+                              .with(:delete, event)
 
       subscriber.cache_delete(event)
     end
@@ -119,7 +122,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
   describe '#cache_exist?' do
     it 'observes the exists duration' do
       expect(subscriber).to receive(:observe)
-                              .with(:exists, event.duration)
+                              .with(:exists, event)
 
       subscriber.cache_exist?(event)
     end
@@ -179,7 +182,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
       it 'returns' do
         expect(transaction).not_to receive(:increment)
 
-        subscriber.observe(:foo, 15.2)
+        subscriber.observe(:foo, event)
       end
     end
 
@@ -192,17 +195,17 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
       it 'observes cache metric' do
         expect(subscriber.send(:metric_cache_operation_duration_seconds))
           .to receive(:observe)
-          .with({ operation: :delete }, event.duration / 1000.0)
+          .with({ operation: :delete, store: store_label }, event.duration / 1000.0)
 
-        subscriber.observe(:delete, event.duration)
+        subscriber.observe(:delete, event)
       end
 
       it 'increments the operations total' do
         expect(transaction)
           .to receive(:increment)
-          .with(:gitlab_cache_operations_total, 1, { operation: :delete })
+          .with(:gitlab_cache_operations_total, 1, { operation: :delete, store: store_label })
 
-        subscriber.observe(:delete, event.duration)
+        subscriber.observe(:delete, event)
       end
     end
   end

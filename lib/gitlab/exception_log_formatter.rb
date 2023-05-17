@@ -17,6 +17,10 @@ module Gitlab
           payload['exception.backtrace'] = Rails.backtrace_cleaner.clean(exception.backtrace)
         end
 
+        if exception.cause
+          payload['exception.cause_class'] = exception.cause.class.name
+        end
+
         if sql = find_sql(exception)
           payload['exception.sql'] = sql
         end

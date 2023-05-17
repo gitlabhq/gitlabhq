@@ -1,7 +1,6 @@
 ---
-type: reference, howto
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -26,11 +25,18 @@ created as private in GitLab as well.
 
 > Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
-Prerequisites:
+You can import Bitbucket repositories to GitLab.
 
-- An administrator must enable **Bitbucket Server** in  **Admin > Settings > General > Visibility and access controls > Import sources**.
-- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+### Prerequisites
+
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+- [Bitbucket Server import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+  must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
+  by default on GitLab.com.
+- At least the Maintainer role on the destination group to import to.
+
+### Import repositories
 
 To import your Bitbucket repositories:
 
@@ -120,7 +126,16 @@ If the project import completes but LFS objects can't be downloaded or cloned, y
 password or personal access token containing special characters. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
 
+### Pull requests are missing
+
+Importing large projects spawns a process that can consume a lot of memory. Sometimes you can see messages such as `Sidekiq worker RSS out of range` in the
+[Sidekiq logs](../../../administration/logs/index.md#sidekiq-logs). This can mean that MemoryKiller is interrupting the `RepositoryImportWorker` because it's using
+too much memory.
+
+To resolve this problem, temporarily increase the `SIDEKIQ_MEMORY_KILLER_MAX_RSS` environment variable using
+[custom environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) from the default `2000000` value to a larger value like `3000000`.
+Consider memory constraints on the system before deciding to increase `SIDEKIQ_MEMORY_KILLER_MAX_RSS`.
+
 ## Related topics
 
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](index.md#automate-group-and-project-import).
+- [Automate group and project import](index.md#automate-group-and-project-import)

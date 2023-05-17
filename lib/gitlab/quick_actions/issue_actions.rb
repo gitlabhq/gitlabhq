@@ -255,11 +255,12 @@ module Gitlab
         execution_message { _('Issue has been promoted to incident') }
         types Issue
         condition do
-          !quick_action_target.incident? &&
+          !quick_action_target.work_item_type&.incident? &&
             current_user.can?(:"set_#{quick_action_target.issue_type}_metadata", quick_action_target)
         end
         command :promote_to_incident do
-          @updates[:issue_type] = "incident"
+          @updates[:issue_type] = :incident
+          @updates[:work_item_type] = ::WorkItems::Type.default_by_type(:incident)
         end
 
         desc { _('Add customer relation contacts') }
@@ -297,7 +298,7 @@ module Gitlab
         params '<timeline comment> | <date(YYYY-MM-DD)> <time(HH:MM)>'
         types Issue
         condition do
-          quick_action_target.incident? &&
+          quick_action_target.work_item_type&.incident? &&
             current_user.can?(:admin_incident_management_timeline_event, quick_action_target)
         end
         parse_params do |event_params|

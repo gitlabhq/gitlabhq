@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :projects do
+RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
@@ -29,6 +29,7 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :pr
   let(:first_alert) { alerts.first }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     project.add_developer(current_user)
   end
 
@@ -44,6 +45,17 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :pr
 
       expect(first_alert).to include('metricsDashboardUrl' => dashboard_url_for_alert)
     end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns nil' do
+        post_graphql(graphql_query, current_user: current_user)
+        expect(first_alert['metricsDashboardUrl']).to be_nil
+      end
+    end
   end
 
   context 'with gitlab-managed prometheus payload' do
@@ -57,6 +69,17 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :pr
       post_graphql(graphql_query, current_user: current_user)
 
       expect(first_alert).to include('metricsDashboardUrl' => dashboard_url_for_alert)
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns nil' do
+        post_graphql(graphql_query, current_user: current_user)
+        expect(first_alert['metricsDashboardUrl']).to be_nil
+      end
     end
   end
 end

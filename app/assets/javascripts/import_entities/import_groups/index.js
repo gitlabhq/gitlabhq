@@ -31,6 +31,7 @@ export function mountImportGroupsApp(mountElement) {
 
   return new Vue({
     el: mountElement,
+    name: 'ImportGroupsRoot',
     apolloProvider,
     render(createElement) {
       return createElement(ImportTable, {

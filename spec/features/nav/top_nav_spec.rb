@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
+  include Features::InviteMembersModalHelpers
+
   let_it_be(:user) { create(:user) }
 
   before do
@@ -16,10 +18,12 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
       visit project_path(project)
     end
 
-    it 'the add menu contains invite members dropdown option and goes to the members page' do
+    it 'the add menu contains invite members dropdown option and opens invite modal' do
       invite_members_from_menu
 
-      expect(page).to have_current_path(project_project_members_path(project))
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{project.name} project")
+      end
     end
   end
 
@@ -30,10 +34,12 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
       visit group_path(group)
     end
 
-    it 'the add menu contains invite members dropdown option and goes to the members page' do
+    it 'the add menu contains invite members dropdown option and opens invite modal' do
       invite_members_from_menu
 
-      expect(page).to have_current_path(group_group_members_path(group))
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{group.name} group")
+      end
     end
   end
 

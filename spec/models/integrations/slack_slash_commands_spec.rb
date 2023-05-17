@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::SlackSlashCommands do
+RSpec.describe Integrations::SlackSlashCommands, feature_category: :integrations do
   it_behaves_like Integrations::BaseSlashCommands
 
   describe '#trigger' do
@@ -38,13 +38,6 @@ RSpec.describe Integrations::SlackSlashCommands do
 
         expect(response[:text]).to include("<#{authorize_url}|connect your GitLab account>")
       end
-    end
-  end
-
-  describe '#chat_responder' do
-    it 'returns the responder to use for Slack' do
-      expect(described_class.new.chat_responder)
-        .to eq(Gitlab::Chat::Responder::Slack)
     end
   end
 end

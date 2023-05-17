@@ -622,10 +622,12 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def diffs_in_batch_collection(batch_page, batch_size, diff_options:)
-    Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(self,
-                                                            batch_page,
-                                                            batch_size,
-                                                            diff_options: diff_options)
+    Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(
+      self,
+      batch_page,
+      batch_size,
+      diff_options: diff_options
+    )
   end
 
   def encode_in_base64?(diff_text)

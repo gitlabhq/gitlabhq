@@ -83,7 +83,7 @@ module QA
       end
 
       it 'uploads a generic package and downloads it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
-        Page::Project::Menu.perform(&:click_packages_link)
+        Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_package(package.name)

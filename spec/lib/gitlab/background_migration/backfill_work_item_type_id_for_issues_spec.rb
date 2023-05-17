@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :migration, schema: 20220825142324 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues,
+  :migration,
+  schema: 20220825142324,
+  feature_category: :team_planning do
   let(:batch_column) { 'id' }
   let(:sub_batch_size) { 2 }
   let(:pause_ms) { 0 }
@@ -13,6 +16,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :mi
   let(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
   let(:issues_table) { table(:issues) }
   let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_type_enum[:issue]) }
+  let(:task_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_type_enum[:task]) }
 
   let(:issue1) { issues_table.create!(project_id: project.id, issue_type: issue_type_enum[:issue]) }
   let(:issue2) { issues_table.create!(project_id: project.id, issue_type: issue_type_enum[:issue]) }
@@ -25,7 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :mi
   let(:start_id) { issue1.id }
   let(:end_id) { requirement1.id }
 
-  let(:all_issues) { [issue1, issue2, issue3, incident1, test_case1, requirement1] }
+  let!(:all_issues) { [issue1, issue2, issue3, incident1, test_case1, requirement1] }
 
   let(:migration) do
     described_class.new(
@@ -50,6 +54,27 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :mi
 
     expect([issue1, issue2, issue3]).to all(have_attributes(work_item_type_id: issue_type.id))
     expect(all_issues - [issue1, issue2, issue3]).to all(have_attributes(work_item_type_id: nil))
+  end
+
+  context 'when a record already had a work_item_type_id assigned' do
+    let!(:issue4) do
+      issues_table.create!(
+        project_id: project.id,
+        issue_type: issue_type_enum[:issue],
+        work_item_type_id: task_type.id
+      )
+    end
+
+    let(:end_id) { issue4.id }
+
+    it 'ovewrites the work_item_type_id' do
+      # creating with the wrong issue_type/work_item_type_id on purpose so we can test
+      # that the migration is capable of fixing such inconsistencies
+      expect do
+        migrate
+        issue4.reload
+      end.to change { issue4.work_item_type_id }.from(task_type.id).to(issue_type.id)
+    end
   end
 
   it 'tracks timings of queries' do

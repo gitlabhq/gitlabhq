@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlOauthRememberMe from 'test_fixtures_static/oauth_remember_me.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
@@ -8,7 +9,7 @@ describe('OAuthRememberMe', () => {
   };
 
   beforeEach(() => {
-    loadHTMLFixture('static/oauth_remember_me.html');
+    setHTMLFixture(htmlOauthRememberMe);
 
     new OAuthRememberMe({ container: $('#oauth-container') }).bindEvents();
   });
@@ -17,19 +18,16 @@ describe('OAuthRememberMe', () => {
     resetHTMLFixture();
   });
 
-  it('adds the "remember_me" query parameter to all OAuth login buttons', () => {
-    $('#oauth-container #remember_me').click();
+  it('adds and removes the "remember_me" query parameter from all OAuth login buttons', () => {
+    $('#oauth-container #remember_me_omniauth').click();
 
     expect(findFormAction('.twitter')).toBe('http://example.com/?remember_me=1');
     expect(findFormAction('.github')).toBe('http://example.com/?remember_me=1');
     expect(findFormAction('.facebook')).toBe(
       'http://example.com/?redirect_fragment=L1&remember_me=1',
     );
-  });
 
-  it('removes the "remember_me" query parameter from all OAuth login buttons', () => {
-    $('#oauth-container #remember_me').click();
-    $('#oauth-container #remember_me').click();
+    $('#oauth-container #remember_me_omniauth').click();
 
     expect(findFormAction('.twitter')).toBe('http://example.com/');
     expect(findFormAction('.github')).toBe('http://example.com/');

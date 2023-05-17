@@ -61,16 +61,16 @@ module Gitlab
               [params, context.project&.full_path, context.sha].hash
             end
 
-            def load_and_validate_expanded_hash!
-              context.logger.instrument(:config_file_fetch_content_hash) do
-                content_hash # calling the method loads then memoizes the result
-              end
+            # This method is overridden to load context into the memoized result
+            # or to lazily load context via BatchLoader
+            def preload_context
+              # no-op
+            end
 
-              context.logger.instrument(:config_file_expand_content_includes) do
-                expanded_content_hash # calling the method expands then memoizes the result
-              end
-
-              validate_hash!
+            def preload_content
+              # calling the `content` method either loads content into the memoized result
+              # or lazily loads it via BatchLoader
+              content
             end
 
             def validate_location!
@@ -82,37 +82,77 @@ module Gitlab
             end
 
             def validate_context!
-              raise NotImplementedError, 'subclass must implement validate_context'
+              raise NotImplementedError, 'subclass must implement `validate_context!`'
             end
 
             def validate_content!
-              if content.blank?
-                errors.push("Included file `#{masked_location}` is empty or does not exist!")
+              errors.push("Included file `#{masked_location}` is empty or does not exist!") if content.blank?
+            end
+
+            def load_and_validate_expanded_hash!
+              context.logger.instrument(:config_file_fetch_content_hash) do
+                content_result # calling the method loads YAML then memoizes the content result
               end
+
+              context.logger.instrument(:config_file_interpolate_result) do
+                interpolator.interpolate!
+              end
+
+              return validate_interpolation! unless interpolator.valid?
+
+              context.logger.instrument(:config_file_expand_content_includes) do
+                expanded_content_hash # calling the method expands then memoizes the result
+              end
+
+              validate_hash!
             end
 
             protected
 
+            def content_result
+              ::Gitlab::Ci::Config::Yaml
+                .load_result!(content, project: context.project)
+            end
+            strong_memoize_attr :content_result
+
+            def content_inputs
+              # TODO: remove support for `with` syntax in 16.1, see https://gitlab.com/gitlab-org/gitlab/-/issues/408369
+              # In the interim prefer `inputs` over `with` while allow either syntax.
+              params.to_h.slice(:inputs, :with).each_value.first
+            end
+            strong_memoize_attr :content_inputs
+
+            def content_hash
+              interpolator.interpolate!
+
+              interpolator.to_hash
+            end
+            strong_memoize_attr :content_hash
+
+            def interpolator
+              External::Interpolator
+                .new(content_result, content_inputs, context)
+            end
+            strong_memoize_attr :interpolator
+
             def expanded_content_hash
-              return unless content_hash
+              return if content_hash.blank?
 
               strong_memoize(:expanded_content_hash) do
                 expand_includes(content_hash)
               end
             end
 
-            def content_hash
-              strong_memoize(:content_hash) do
-                ::Gitlab::Ci::Config::Yaml.load!(content)
-              end
-            rescue Gitlab::Config::Loader::FormatError
-              nil
-            end
-
             def validate_hash!
               if to_hash.blank?
                 errors.push("Included file `#{masked_location}` does not have valid YAML syntax!")
               end
+            end
+
+            def validate_interpolation!
+              return if interpolator.valid?
+
+              errors.push("`#{masked_location}`: #{interpolator.error_message}")
             end
 
             def expand_includes(hash)

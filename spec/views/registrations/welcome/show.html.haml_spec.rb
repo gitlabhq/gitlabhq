@@ -7,7 +7,7 @@ RSpec.describe 'registrations/welcome/show' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:glm_tracking_params).and_return({})
+    allow(view).to receive(:welcome_update_params).and_return({})
 
     render
   end

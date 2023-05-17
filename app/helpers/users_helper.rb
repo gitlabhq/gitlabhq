@@ -8,10 +8,15 @@ module UsersHelper
     }
   end
 
+  def user_clear_status_at(user)
+    # The user.status can be nil when the user has no status, so we need to protect against that case.
+    # iso8601 is the official RFC supported format for frontend parsing of date:
+    # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
+    user.status&.clear_status_at&.to_s(:iso8601)
+  end
+
   def user_link(user)
-    link_to(user.name, user_path(user),
-            title: user.email,
-            class: 'has-tooltip commit-committer-link')
+    link_to(user.name, user_path(user), title: user.email, class: 'has-tooltip commit-committer-link')
   end
 
   def user_email_help_text(user)
@@ -53,12 +58,21 @@ module UsersHelper
   end
 
   # Used to preload when you are rendering many projects and checking access
-  #
-  # rubocop: disable CodeReuse/ActiveRecord: `projects` can be array which also responds to pluck
   def load_max_project_member_accesses(projects)
-    current_user&.max_member_access_for_project_ids(projects.pluck(:id))
+    # There are two different request store paradigms for max member access and
+    # we need to preload both of them. One is keyed User the other is keyed by
+    # Project. See https://gitlab.com/gitlab-org/gitlab/-/issues/396822
+
+    # rubocop: disable CodeReuse/ActiveRecord: `projects` can be array which also responds to pluck
+    project_ids = projects.pluck(:id)
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    Preloaders::UserMaxAccessLevelInProjectsPreloader
+      .new(project_ids, current_user)
+      .execute
+
+    current_user&.max_member_access_for_project_ids(project_ids)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def max_project_member_access(project)
     current_user&.max_member_access_for_project(project.id) || Gitlab::Access::NO_ACCESS
@@ -79,9 +93,9 @@ module UsersHelper
     return unless user.status
 
     content_tag :span,
-                class: 'user-status-emoji has-tooltip',
-                title: user.status.message_html,
-                data: { html: true, placement: 'top' } do
+      class: 'user-status-emoji has-tooltip',
+      title: user.status.message_html,
+      data: { html: true, placement: 'top' } do
       emoji_icon user.status.emoji
     end
   end
@@ -168,6 +182,16 @@ module UsersHelper
     user.public_email.present?
   end
 
+  def user_profile_tabs_app_data(user)
+    {
+      followees: user.followees.count,
+      followers: user.followers.count,
+      user_calendar_path: user_calendar_path(user, :json),
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
+      user_id: user.id
+    }
+  end
+
   private
 
   def admin_users_paths
@@ -211,14 +235,6 @@ module UsersHelper
     tabs
   end
 
-  def trials_link_url
-    'https://about.gitlab.com/free-trial/'
-  end
-
-  def trials_allowed?(user)
-    false
-  end
-
   def get_current_user_menu_items
     items = []
 
@@ -229,7 +245,6 @@ module UsersHelper
     items << :help
     items << :profile if can?(current_user, :read_user, current_user)
     items << :settings if can?(current_user, :update_user, current_user)
-    items << :start_trial if trials_allowed?(current_user)
 
     items
   end

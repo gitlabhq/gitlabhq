@@ -83,8 +83,6 @@ describe('Agents', () => {
   const findBanner = () => wrapper.findComponent(GlBanner);
 
   afterEach(() => {
-    wrapper.destroy();
-
     localStorage.removeItem(AGENT_FEEDBACK_KEY);
   });
 

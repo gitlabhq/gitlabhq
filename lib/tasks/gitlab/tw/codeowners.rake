@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do
+    require 'yaml'
+
     CodeOwnerRule = Struct.new(:category, :writer)
     DocumentOwnerMapping = Struct.new(:path, :writer) do
       def writer_owns_directory?(mappings)
@@ -19,67 +19,68 @@ namespace :tw do
     end
 
     CODE_OWNER_RULES = [
-      CodeOwnerRule.new('Activation', '@phillipwells'),
-      CodeOwnerRule.new('Acquisition', '@phillipwells'),
+      # CodeOwnerRule.new('Activation', ''),
+      # CodeOwnerRule.new('Acquisition', ''),
+      # CodeOwnerRule.new('AI Assisted', ''),
+      CodeOwnerRule.new('Analytics Instrumentation', '@lciutacu'),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
+      CodeOwnerRule.new('Application Performance', '@jglassman1'),
       CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
-      CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
+      # CodeOwnerRule.new('Billing and Subscription Management', ''),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
-      CodeOwnerRule.new('Commerce Integrations', '@drcatherinepope'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Configure', '@phillipwells'),
-      CodeOwnerRule.new('Container Registry', '@dianalogan'),
+      CodeOwnerRule.new('Environments', '@phillipwells'),
+      CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
-      CodeOwnerRule.new('Conversion', '@kpaizee'),
       CodeOwnerRule.new('Database', '@aqualls'),
+      # CodeOwnerRule.new('DataOps', ''),
+      # CodeOwnerRule.new('Delivery', ''),
       CodeOwnerRule.new('Development', '@sselhorn'),
       CodeOwnerRule.new('Distribution', '@axil'),
       CodeOwnerRule.new('Distribution (Charts)', '@axil'),
-      CodeOwnerRule.new('Distribution (Omnibus)', '@axil'),
+      CodeOwnerRule.new('Distribution (Omnibus)', '@eread'),
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Editor', '@ashrafkhamis'),
-      CodeOwnerRule.new('Foundations', '@rdickenson'),
+      CodeOwnerRule.new('IDE', '@ashrafkhamis'),
+      CodeOwnerRule.new('Foundations', '@sselhorn'),
+      # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
       CodeOwnerRule.new('Gitaly', '@eread'),
+      CodeOwnerRule.new('GitLab Dedicated', '@drcatherinepope'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
-      CodeOwnerRule.new('Import', '@eread'),
+      CodeOwnerRule.new('Import and Integrate', '@eread @ashrafkhamis'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
-      CodeOwnerRule.new('Integrations', '@ashrafkhamis'),
-      CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('Application Performance', '@jglassman1'),
-      CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
+      # CodeOwnerRule.new('Knowledge', ''),
+      # CodeOwnerRule.new('MLOps', '')
       CodeOwnerRule.new('Observability', '@drcatherinepope'),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
-      CodeOwnerRule.new('Package Registry', '@dianalogan'),
+      CodeOwnerRule.new('Organization', '@lciutacu'),
+      CodeOwnerRule.new('Package Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@drcatherinepope'),
-      CodeOwnerRule.new('Pipeline Insights', '@marcel.amirault'),
-      CodeOwnerRule.new('Portfolio Management', '@msedlakjakubowski'),
+      CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
       CodeOwnerRule.new('Product Analytics', '@lciutacu'),
-      CodeOwnerRule.new('Product Intelligence', '@dianalogan'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Provision', '@fneill'),
       CodeOwnerRule.new('Purchase', '@fneill'),
       CodeOwnerRule.new('Redirect', 'Redirect'),
-      CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
-      CodeOwnerRule.new('Pods', '@jglassman1'),
-      CodeOwnerRule.new('Security Policies', '@dianalogan'),
+      CodeOwnerRule.new('Security Policies', '@rdickenson'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
+      CodeOwnerRule.new('Tenant Scale', '@lciutacu'),
       CodeOwnerRule.new('Testing', '@eread'),
-      CodeOwnerRule.new('Threat Insights', '@dianalogan'),
+      CodeOwnerRule.new('Threat Insights', '@rdickenson'),
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
-      CodeOwnerRule.new('Utilization', '@fneill'),
-      CodeOwnerRule.new('Vulnerability Research', '@dianalogan'),
-      CodeOwnerRule.new('Organization', '@lciutacu')
+      # CodeOwnerRule.new('US Public Sector Services', ''),
+      CodeOwnerRule.new('Utilization', '@fneill')
+      # CodeOwnerRule.new('Vulnerability Research', '')
     ].freeze
 
     ERRORS_EXCLUDED_FILES = [

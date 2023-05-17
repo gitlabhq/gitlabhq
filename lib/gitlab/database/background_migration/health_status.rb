@@ -6,11 +6,12 @@ module Gitlab
       module HealthStatus
         DEFAULT_INIDICATORS = [
           Indicators::AutovacuumActiveOnTable,
-          Indicators::WriteAheadLog
+          Indicators::WriteAheadLog,
+          Indicators::PatroniApdex
         ].freeze
 
         # Rather than passing along the migration, we use a more explicitly defined context
-        Context = Struct.new(:connection, :tables)
+        Context = Struct.new(:connection, :tables, :gitlab_schema)
 
         def self.evaluate(migration, indicators = DEFAULT_INIDICATORS)
           indicators.map do |indicator|
@@ -30,9 +31,12 @@ module Gitlab
         end
 
         def self.log_signal(signal, migration)
-          Gitlab::AppLogger.info(
-            message: "#{migration} signaled: #{signal}",
-            migration_id: migration.id
+          Gitlab::BackgroundMigration::Logger.info(
+            migration_id: migration.id,
+            health_status_indicator: signal.indicator_class.to_s,
+            indicator_signal: signal.short_name,
+            signal_reason: signal.reason,
+            message: "#{migration} signaled: #{signal}"
           )
         end
       end

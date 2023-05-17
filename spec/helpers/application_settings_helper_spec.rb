@@ -68,11 +68,13 @@ RSpec.describe ApplicationSettingsHelper do
         ))
     end
 
-    context 'when GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
+    it 'contains GitLab for Slack app parameters' do
+      params = %i(slack_app_enabled slack_app_id slack_app_secret slack_app_signing_secret slack_app_verification_token)
 
+      expect(helper.visible_attributes).to include(*params)
+    end
+
+    context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)
       end
@@ -99,70 +101,6 @@ RSpec.describe ApplicationSettingsHelper do
       helper.instance_variable_set(:@application_setting, application_setting)
 
       expect(helper.integration_expanded?('plantuml_')).to be_falsey
-    end
-  end
-
-  describe '.self_monitoring_project_data' do
-    context 'when self-monitoring project does not exist' do
-      it 'returns create_self_monitoring_project_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'create_self_monitoring_project_path' =>
-            create_self_monitoring_project_admin_application_settings_path
-        )
-      end
-
-      it 'returns status_create_self_monitoring_project_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'status_create_self_monitoring_project_path' =>
-            status_create_self_monitoring_project_admin_application_settings_path
-        )
-      end
-
-      it 'returns delete_self_monitoring_project_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'delete_self_monitoring_project_path' =>
-            delete_self_monitoring_project_admin_application_settings_path
-        )
-      end
-
-      it 'returns status_delete_self_monitoring_project_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'status_delete_self_monitoring_project_path' =>
-            status_delete_self_monitoring_project_admin_application_settings_path
-        )
-      end
-
-      it 'returns self_monitoring_project_exists false' do
-        expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_exists' => "false"
-        )
-      end
-
-      it 'returns nil for project full_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_full_path' => nil
-        )
-      end
-    end
-
-    context 'when self-monitoring project exists' do
-      let(:project) { build(:project) }
-
-      before do
-        stub_application_setting(self_monitoring_project: project)
-      end
-
-      it 'returns self_monitoring_project_exists true' do
-        expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_exists' => "true"
-        )
-      end
-
-      it 'returns project full_path' do
-        expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_full_path' => project.full_path
-        )
-      end
     end
   end
 

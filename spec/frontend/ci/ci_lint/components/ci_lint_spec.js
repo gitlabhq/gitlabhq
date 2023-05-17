@@ -48,7 +48,6 @@ describe('CI Lint', () => {
 
   afterEach(() => {
     mockMutate.mockClear();
-    wrapper.destroy();
   });
 
   it('displays the editor', () => {

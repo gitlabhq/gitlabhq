@@ -88,6 +88,8 @@ module API
         use :pagination, :todo_filters
       end
       get do
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408576')
+
         todos = paginate(find_todos.with_entity_associations)
         todos = ::Todos::AllowedTargetFilterService.new(todos, current_user).execute
         options = { with: Entities::Todo, current_user: current_user }

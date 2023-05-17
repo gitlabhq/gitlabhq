@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportWorker do
+RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportWorker, feature_category: :code_quality do
   describe '#perform' do
     subject { described_class.new.perform(pipeline_id) }
 

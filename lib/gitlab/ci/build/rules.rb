@@ -6,12 +6,14 @@ module Gitlab
       class Rules
         include ::Gitlab::Utils::StrongMemoize
 
-        Result = Struct.new(:when, :start_in, :allow_failure, :variables, :errors) do
+        Result = Struct.new(:when, :start_in, :allow_failure, :variables, :needs, :errors) do
           def build_attributes
             {
               when: self.when,
               options: { start_in: start_in }.compact,
-              allow_failure: allow_failure
+              allow_failure: allow_failure,
+              scheduling_type: (:dag if needs),
+              needs_attributes: needs&.[](:job)
             }.compact
           end
 
@@ -33,13 +35,14 @@ module Gitlab
               matched_rule.attributes[:when] || @default_when,
               matched_rule.attributes[:start_in],
               matched_rule.attributes[:allow_failure],
-              matched_rule.attributes[:variables]
+              matched_rule.attributes[:variables],
+              (matched_rule.attributes[:needs] if Feature.enabled?(:introduce_rules_with_needs, pipeline.project))
             )
           else
             Result.new('never')
           end
         rescue Rule::Clause::ParseError => e
-          Result.new('never', nil, nil, nil, [e.message])
+          Result.new('never', nil, nil, nil, nil, [e.message])
         end
 
         private

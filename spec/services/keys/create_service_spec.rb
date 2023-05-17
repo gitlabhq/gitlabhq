@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Keys::CreateService do
+RSpec.describe Keys::CreateService, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:key) }
 

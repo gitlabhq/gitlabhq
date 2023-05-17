@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import ClipboardJS from 'clipboard';
-import Mousetrap from 'mousetrap';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/sidebar/components/labels/labels_select_widget/constants';
@@ -9,7 +8,6 @@ import { s__ } from '~/locale';
 import Sidebar from '~/right_sidebar';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import {
-  keysFor,
   ISSUE_MR_CHANGE_ASSIGNEE,
   ISSUE_MR_CHANGE_MILESTONE,
   ISSUABLE_CHANGE_LABEL,
@@ -32,18 +30,14 @@ export default class ShortcutsIssuable extends Shortcuts {
       toast(s__('GlobalShortcuts|Unable to copy the source branch name at this time.'));
     });
 
-    Mousetrap.bind(keysFor(ISSUE_MR_CHANGE_ASSIGNEE), () =>
-      ShortcutsIssuable.openSidebarDropdown('assignee'),
-    );
-    Mousetrap.bind(keysFor(ISSUE_MR_CHANGE_MILESTONE), () =>
-      ShortcutsIssuable.openSidebarDropdown('milestone'),
-    );
-    Mousetrap.bind(keysFor(ISSUABLE_CHANGE_LABEL), () =>
-      ShortcutsIssuable.openSidebarDropdown('labels'),
-    );
-    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), ShortcutsIssuable.replyWithSelectedText);
-    Mousetrap.bind(keysFor(ISSUABLE_EDIT_DESCRIPTION), ShortcutsIssuable.editIssue);
-    Mousetrap.bind(keysFor(MR_COPY_SOURCE_BRANCH_NAME), () => this.copyBranchName());
+    this.bindCommands([
+      [ISSUE_MR_CHANGE_ASSIGNEE, () => ShortcutsIssuable.openSidebarDropdown('assignee')],
+      [ISSUE_MR_CHANGE_MILESTONE, () => ShortcutsIssuable.openSidebarDropdown('milestone')],
+      [ISSUABLE_CHANGE_LABEL, () => ShortcutsIssuable.openSidebarDropdown('labels')],
+      [ISSUABLE_COMMENT_OR_REPLY, ShortcutsIssuable.replyWithSelectedText],
+      [ISSUABLE_EDIT_DESCRIPTION, ShortcutsIssuable.editIssue],
+      [MR_COPY_SOURCE_BRANCH_NAME, () => this.copyBranchName()],
+    ]);
 
     /**
      * We're attaching a global focus event listener on document for

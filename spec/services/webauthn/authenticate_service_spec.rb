@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'webauthn/fake_client'
 
-RSpec.describe Webauthn::AuthenticateService do
+RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access do
   let(:client) { WebAuthn::FakeClient.new(origin) }
   let(:user) { create(:user) }
   let(:challenge) { Base64.strict_encode64(SecureRandom.random_bytes(32)) }

@@ -1,5 +1,3 @@
-/* eslint-disable func-names */
-
 import $ from 'jquery';
 import Api from '~/api';
 import { humanize } from '~/lib/utils/text_utility';
@@ -37,6 +35,8 @@ export default class CreateLabelDropdown {
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.$newColorField.off('keyup change');
     // eslint-disable-next-line @gitlab/no-global-event-off
+    this.$colorPreview.off('keyup change');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$dropdownBack.off('click');
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.$cancelButton.off('click');
@@ -47,6 +47,7 @@ export default class CreateLabelDropdown {
   addBinding() {
     const self = this;
 
+    // eslint-disable-next-line func-names
     this.$colorSuggestions.on('click', function (e) {
       const $this = $(this);
       self.addColorValue(e, $this);
@@ -54,6 +55,10 @@ export default class CreateLabelDropdown {
 
     this.$newLabelField.on('keyup change', this.enableLabelCreateButton.bind(this));
     this.$newColorField.on('keyup change', this.enableLabelCreateButton.bind(this));
+    this.$colorPreview.on('keyup change', this.enableLabelCreateButton.bind(this));
+
+    this.$newColorField.on('input', this.updateColorPreview.bind(this));
+    this.$colorPreview.on('input', this.updateColorPickerPreview.bind(this));
 
     this.$dropdownBack.on('click', this.resetForm.bind(this));
 
@@ -73,7 +78,19 @@ export default class CreateLabelDropdown {
     e.stopPropagation();
 
     this.$newColorField.val($this.data('color')).trigger('change');
-    this.$colorPreview.css('background-color', $this.data('color')).parent().addClass('is-active');
+    this.$colorPreview.val($this.data('color')).trigger('change');
+  }
+
+  updateColorPreview() {
+    const previewColor = this.$newColorField.val();
+    return this.$colorPreview.val(previewColor);
+    // Updates the preview color with the hex-color input
+  }
+
+  updateColorPickerPreview() {
+    const previewColor = this.$colorPreview.val();
+    return this.$newColorField.val(previewColor);
+    // Updates the input color with the hex-color from the picker
   }
 
   enableLabelCreateButton() {
@@ -92,7 +109,7 @@ export default class CreateLabelDropdown {
 
     this.$addList.prop('checked', this.addListDefault);
 
-    this.$colorPreview.css('background-color', '').parent().removeClass('is-active');
+    this.$colorPreview.val('');
   }
 
   saveLabel(e) {

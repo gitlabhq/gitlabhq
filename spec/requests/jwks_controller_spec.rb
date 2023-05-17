@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JwksController, feature_category: :authentication_and_authorization do
+RSpec.describe JwksController, feature_category: :system_access do
   describe 'Endpoints from the parent Doorkeeper::OpenidConnect::DiscoveryController' do
     it 'respond successfully' do
       [
@@ -33,6 +33,15 @@ RSpec.describe JwksController, feature_category: :authentication_and_authorizati
 
       ids = json_response['keys'].map { |jwk| jwk['kid'] }
       expect(ids).to contain_exactly(ci_jwk['kid'], oidc_jwk['kid'])
+    end
+
+    it 'includes the OIDC signing key ID' do
+      get jwks_url
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      ids = json_response['keys'].map { |jwk| jwk['kid'] }
+      expect(ids).to include(Doorkeeper::OpenidConnect.signing_key_normalized.symbolize_keys[:kid])
     end
 
     it 'does not leak private key data' do

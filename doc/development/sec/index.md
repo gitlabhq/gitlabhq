@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# Sec section development
+# Sec section development guidelines
 
 The Sec section is responsible for GitLab application security features, the "Sec" part of
 DevSecOps. Development guides that are specific to the Sec section are listed here.
@@ -52,7 +52,7 @@ The Analyzers are mainly written in Go.
 
 Some 3rd party integrators also make additional Scanners available by following our [integration documentation](../integrations/secure.md), which leverages the same architecture.
 
-The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/pipelines/job_artifacts.md) to make them available for processing after the pipelines completes.
+The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/jobs/job_artifacts.md) to make them available for processing after the pipelines completes.
 
 ### Processing, visualization, and management
 
@@ -88,7 +88,7 @@ In most other cases, the `identifiers` collection is unordered, where the remain
 Any time the primary identifier changes and a project pipeline is re-run, ingestion of the new report will "orphan" the previous DB record.
 Because our processing logic relies on generating a delta of two different vulnerabilities, it can end up looking rather confusing. For example:
 
-[!Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
+![Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
 
 After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilities), the previous vulnerability is listed as "remediated" and the introduced as ["detected"](../../user/application_security/vulnerabilities/index.md#vulnerability-status-values).
 

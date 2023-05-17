@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::DestroyService do
+RSpec.describe Snippets::DestroyService, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
@@ -144,7 +144,7 @@ RSpec.describe Snippets::DestroyService do
       end
     end
 
-    context 'when the repository does not exists' do
+    context 'when the repository does not exist' do
       let(:snippet) { create(:personal_snippet, author: user) }
 
       it 'does not schedule anything and return success' do

@@ -69,8 +69,7 @@ Sometimes pages for deprecated features are not in the global nav, depending on 
 All other pages should be in the global nav.
 
 The technical writing team runs a report to determine which pages are not in the nav.
-For now this report is manual, but [an issue exists](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1212)
-to automate it.
+The team reviews this list each month.
 
 ### Where to add
 

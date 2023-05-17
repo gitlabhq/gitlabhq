@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PushEventPayloadService do
+RSpec.describe PushEventPayloadService, feature_category: :source_code_management do
   let(:event) { create(:push_event) }
 
   describe '#execute' do

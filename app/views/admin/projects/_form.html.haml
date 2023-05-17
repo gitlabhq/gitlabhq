@@ -1,0 +1,38 @@
+= gitlab_ui_form_for [:admin, @project] do |f|
+  = form_errors(@project)
+  = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
+    - c.with_title { _('Naming') }
+    - c.with_description do
+      = _('Update your project name and description.')
+    - c.with_body do
+      .form-group.gl-form-group
+        = f.label :name, _('Project name')
+        = f.text_field :name, class: 'form-control gl-form-input gl-md-form-input-md'
+
+      .form-group.gl-form-group
+        = f.label :id, _('Project ID')
+        = f.text_field :id, class: 'form-control gl-form-input gl-md-form-input-sm', readonly: true
+
+      .form-group.gl-form-group
+        = f.label :description, _('Project description (optional)')
+        = f.text_area :description, class: 'form-control gl-form-input gl-form-textarea gl-lg-form-input-xl', rows: 5
+
+  = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
+    - c.with_title { _('Permissions and project features') }
+    - c.with_description do
+      = _('Configure advanced permissions')
+    - c.with_body do
+      - if @project.project_setting.present?
+        .form-group.gl-form-group
+          %legend.col-form-label.col-form-label
+            = s_('Runners|Runner Registration')
+          - all_disabled = Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
+          = f.gitlab_ui_checkbox_component :runner_registration_enabled,
+            s_('Runners|New project runners can be registered'),
+            checkbox_options: { checked: @project.runner_registration_enabled, disabled: all_disabled },
+            help_text: html_escape_once(s_('Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin Area in Settings &gt; CI/CD.')).html_safe
+
+  .gl-mt-5
+    = f.submit _('Save changes'), pajamas_button: true
+    = render Pajamas::ButtonComponent.new(href: admin_project_path(@project)) do
+      = _('Cancel')

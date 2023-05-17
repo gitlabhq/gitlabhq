@@ -24,6 +24,11 @@ export const multipleFindingsArr = [
     description: 'mocked blocker Issue',
     line: 3,
   },
+  {
+    severity: 'unknown',
+    description: 'mocked unknown Issue',
+    line: 3,
+  },
 ];
 
 export const fiveFindings = {

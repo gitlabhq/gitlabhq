@@ -6,7 +6,6 @@ Style/ExplicitBlockArgument:
     - 'app/controllers/admin/batched_jobs_controller.rb'
     - 'app/controllers/application_controller.rb'
     - 'app/models/application_record.rb'
-    - 'app/models/broadcast_message.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_trace_chunks/redis.rb'
     - 'app/models/ci/build_trace_chunks/redis_trace_chunks.rb'

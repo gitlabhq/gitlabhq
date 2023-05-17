@@ -2,11 +2,13 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
+Vue.use(GlToast);
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -26,14 +28,12 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     exposeSecurityDashboard,
     exposeLicenseScanningData,
     failedJobsCount,
-    failedJobsSummary,
-    fullPath,
+    projectPath,
     graphqlResourceEtag,
     pipelineIid,
     pipelineProjectPath,
     totalJobCount,
     licenseManagementApiUrl,
-    licenseManagementSettingsPath,
     licenseScanCount,
     licensesApiPath,
     canManageLicenses,
@@ -45,11 +45,10 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     emptyStateImagePath,
     artifactsExpiredImagePath,
     isFullCodequalityReportAvailable,
+    securityPoliciesPath,
     testsCount,
   } = dataset;
 
-  // TODO remove projectPath variable once https://gitlab.com/gitlab-org/gitlab/-/issues/371641 is resolved
-  const projectPath = fullPath;
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
 
   return {
@@ -80,14 +79,11 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       exposeSecurityDashboard: parseBoolean(exposeSecurityDashboard),
       exposeLicenseScanningData: parseBoolean(exposeLicenseScanningData),
       failedJobsCount,
-      failedJobsSummary: JSON.parse(failedJobsSummary),
-      fullPath,
       graphqlResourceEtag,
       pipelineIid,
       pipelineProjectPath,
       totalJobCount,
       licenseManagementApiUrl,
-      licenseManagementSettingsPath,
       licenseScanCount,
       licensesApiPath,
       canManageLicenses: parseBoolean(canManageLicenses),
@@ -98,6 +94,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       emptyDagSvgPath,
       emptyStateImagePath,
       artifactsExpiredImagePath,
+      securityPoliciesPath,
       testsCount,
     },
     errorCaptured(err, _vm, info) {

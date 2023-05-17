@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::LogDestroyWorker do
+RSpec.describe WebHooks::LogDestroyWorker, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }

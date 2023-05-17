@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe RemoveTempIndexForProjectStatisticsUploadSizeMigration,
-feature_category: :subscription_cost_management do
+  feature_category: :consumables_cost_management do
   let(:table_name) { 'project_statistics' }
   let(:index_name) { described_class::INDEX_NAME }
 

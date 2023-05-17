@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :model do
+RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :model, feature_category: :database do
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
@@ -325,6 +325,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     it 'returns active and paused migrations' do
       expect(described_class.queued).to contain_exactly(migration2, migration3)
+    end
+  end
+
+  describe '.finalizing' do
+    let!(:migration1) { create(:batched_background_migration, :active) }
+    let!(:migration2) { create(:batched_background_migration, :paused) }
+    let!(:migration3) { create(:batched_background_migration, :finalizing) }
+    let!(:migration4) { create(:batched_background_migration, :finished) }
+
+    it 'returns only finalizing migrations' do
+      expect(described_class.finalizing).to contain_exactly(migration3)
     end
   end
 

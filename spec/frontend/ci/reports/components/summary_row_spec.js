@@ -31,11 +31,6 @@ describe('Summary row', () => {
   const findStatusIcon = () => wrapper.findByTestId('summary-row-icon');
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders provided summary', () => {
     createComponent();
     expect(findSummary().text()).toContain(summary);

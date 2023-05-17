@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::DeleteTagsService do
+RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'container repository delete tags service shared context'
 

@@ -166,6 +166,10 @@ You can change this default in Gitaly configuration. The following snippet
 enables daily background repository maintenance starting at 23:00 for 1 hour
 for the `default` storage:
 
+::Tabs
+
+:::TabTitle Self-compiled (source)
+
 ```toml
 [daily_maintenance]
 start_hour = 23
@@ -181,6 +185,33 @@ maintenance:
 [daily_maintenance]
 disabled = true
 ```
+
+:::TabTitle Linux package (Omnibus)
+
+```ruby
+gitaly['configuration'] = {
+  daily_maintenance: {
+    disabled: false,
+    start_hour: 23,
+    start_minute: 00,
+    duration: '1h',
+    storages: ['default'],
+  },
+}
+```
+
+Use the following snippet to completely disable background repository
+maintenance:
+
+```ruby
+gitaly['configuration'] = {
+  daily_maintenance: {
+    disabled: true,
+  },
+}
+```
+
+::EndTabs
 
 ## Object pool repositories
 

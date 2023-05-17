@@ -19,7 +19,7 @@ Package Registry, see the [Helm registry documentation](../../user/packages/helm
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Helm registry documentation](../../user/packages/helm_repository/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Download a chart index
 

@@ -18,10 +18,6 @@ describe('MRWidgetAutoMergeFailed', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     createComponent({
       mr: { mergeError },
@@ -48,7 +44,7 @@ describe('MRWidgetAutoMergeFailed', () => {
 
     await nextTick();
 
-    expect(findButton().attributes('disabled')).toBe('disabled');
+    expect(findButton().attributes('disabled')).toBeDefined();
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

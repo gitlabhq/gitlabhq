@@ -22,15 +22,10 @@ module Gitlab
       Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { GitHub::Markup.render(file_name, input) }
     rescue Timeout::Error => e
       class_name = name.demodulize
-      timeout_counter.increment(source: class_name)
       Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name,
                                                file_name: file_name)
 
       ActionController::Base.helpers.simple_format(input)
-    end
-
-    def self.timeout_counter
-      Gitlab::Metrics.counter(:banzai_filter_timeouts_total, 'Count of the Banzai filters that time out')
     end
   end
 end

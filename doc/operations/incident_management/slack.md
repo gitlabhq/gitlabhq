@@ -4,13 +4,14 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incident management for Slack **(FREE SAAS)**
+# Incident management for Slack (Beta) **(FREE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/378072) in GitLab 15.10 in [Beta](../../policy/alpha-beta-support.md#beta).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_declare_slash_command`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, this feature is not available.
+On GitLab.com, this feature is available.
 The feature is not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.
@@ -68,7 +69,7 @@ To declare a GitLab incident from Slack:
    - The project where the incident should be created.
    - The severity of the incident.
 
-   If there is an existing [incident template](../metrics/alerts.md#trigger-actions-from-alerts) for your
+   If there is an existing [incident template](alerts.md#trigger-actions-from-alerts) for your
    project, that template is automatically applied to the description text box. The template is applied
    only if the description text box is empty.
 

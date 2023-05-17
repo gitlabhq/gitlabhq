@@ -1,0 +1,11 @@
+- title: "Removed `external` field from GraphQL `ReleaseAssetLink` type"
+  announcement_milestone: "15.9"
+  announcement_date: "2023-02-22"
+  removal_milestone: "16.0"
+  removal_date: "2023-05-22"
+  breaking_change: true
+  reporter: missy-davies
+  stage: Deploy
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388983
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    From GitLab 15.9, all Release links are external. The `external` field of the `ReleaseAssetLink` type was deprecated in 15.9, and removed in GitLab 16.0.

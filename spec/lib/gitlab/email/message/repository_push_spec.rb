@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Email::Message::RepositoryPush do
     describe '#project_name_with_namespace' do
       subject { message.project_name_with_namespace }
 
-      it { is_expected.to eq "#{group.name} / #{project.path}" }
+      it { is_expected.to eq "#{group.name} / #{project.name}" }
     end
 
     describe '#author' do

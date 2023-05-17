@@ -159,6 +159,22 @@
       background-color: $search-and-nav-links-a30 !important;
     }
 
+    &.is-focused {
+      input {
+        background-color: $white;
+        color: $gl-text-color !important;
+        box-shadow: inset 0 0 0 1px $gray-900;
+
+        &:focus {
+          box-shadow: inset 0 0 0 1px $gray-900, 0 0 0 1px $white, 0 0 0 3px $blue-400;
+        }
+
+        &::placeholder {
+          color: $gray-400;
+        }
+      }
+    }
+
     svg.gl-search-box-by-type-search-icon {
       color: $search-and-nav-links-a80;
     }

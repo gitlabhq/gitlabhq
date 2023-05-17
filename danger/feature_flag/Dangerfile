@@ -3,6 +3,9 @@
 
 SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
 FEATURE_FLAG_LABEL = "feature flag"
+FEATURE_FLAG_EXISTS_LABEL = "#{FEATURE_FLAG_LABEL}::exists"
+FEATURE_FLAG_SKIPPED_LABEL = "#{FEATURE_FLAG_LABEL}::skipped"
+DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW = ["devops::verify"]
 
 SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
 ```suggestion
@@ -11,6 +14,17 @@ group: "%<group>s"
 
 #{SEE_DOC}
 SUGGEST_COMMENT
+
+FEATURE_FLAG_ENFORCEMENT_WARNING = <<~WARNING_MESSAGE
+There were no new or modified feature flag YAML files detected in this MR.
+
+If the changes here are already controlled under an existing feature flag, please add
+the ~"#{FEATURE_FLAG_EXISTS_LABEL}". Otherwise, if you think the changes here don't need
+to be under a feature flag, please add the label ~"#{FEATURE_FLAG_SKIPPED_LABEL}", and
+add a short comment about why we skipped the feature flag.
+
+For guidance on when to use a feature flag, please see the [documentation](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
+WARNING_MESSAGE
 
 def check_feature_flag_yaml(feature_flag)
   mr_group_label = helper.group_label
@@ -64,22 +78,56 @@ def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
   end
 end
 
+def added_feature_flag_files
+  feature_flag.feature_flag_files(change_type: :added)
+end
+
+def modified_feature_flag_files
+  feature_flag.feature_flag_files(change_type: :modified)
+end
+
 def feature_flag_file_added?
-  feature_flag.feature_flag_files(change_type: :added).any?
+  added_feature_flag_files.any?
 end
 
-def feature_flag_file_added_or_removed?
-  feature_flag_file_added? || feature_flag.feature_flag_files(change_type: :deleted).any?
+def feature_flag_file_modified?
+  modified_feature_flag_files.any?
 end
 
-feature_flag.feature_flag_files(change_type: :added).each do |feature_flag|
+def feature_flag_file_added_or_modified?
+  feature_flag_file_added? || feature_flag_file_modified?
+end
+
+def mr_has_backend_or_frontend_changes?
+  changes = helper.changes_by_category
+  changes.has_key?(:backend) || changes.has_key?(:frontend)
+end
+
+def mr_missing_feature_flag_status_label?
+  ([FEATURE_FLAG_EXISTS_LABEL, FEATURE_FLAG_SKIPPED_LABEL] & helper.mr_labels).none?
+end
+
+def stage_requires_feature_flag_review?
+  DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW.include?(feature_flag.stage_label)
+end
+
+added_feature_flag_files.each do |feature_flag|
   check_feature_flag_yaml(feature_flag)
 end
 
-feature_flag.feature_flag_files(change_type: :modified).each do |feature_flag|
+modified_feature_flag_files.each do |feature_flag|
   message_for_global_rollout(feature_flag)
 end
 
 if helper.security_mr? && feature_flag_file_added?
   fail "Feature flags are discouraged from security merge requests. Read the [security documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/feature_flags.md) for details."
+end
+
+if !helper.security_mr? && mr_has_backend_or_frontend_changes? && stage_requires_feature_flag_review?
+  if feature_flag_file_added_or_modified? && !helper.mr_has_labels?(FEATURE_FLAG_EXISTS_LABEL)
+    # Feature flag config file touched in this MR, so let's add the label to avoid the warning.
+    helper.labels_to_add << FEATURE_FLAG_EXISTS_LABEL
+  end
+
+  warn FEATURE_FLAG_ENFORCEMENT_WARNING if mr_missing_feature_flag_status_label?
 end

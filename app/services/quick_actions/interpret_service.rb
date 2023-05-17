@@ -11,6 +11,7 @@ module QuickActions
     include Gitlab::QuickActions::CommitActions
     include Gitlab::QuickActions::CommonActions
     include Gitlab::QuickActions::RelateActions
+    include Gitlab::QuickActions::WorkItemActions
 
     attr_reader :quick_action_target
 
@@ -49,12 +50,13 @@ module QuickActions
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and array of changes explained.
-    def explain(content, quick_action_target)
+    # `keep_actions: true` will keep the quick actions in the content.
+    def explain(content, quick_action_target, keep_actions: false)
       return [content, []] unless current_user.can?(:use_quick_actions)
 
       @quick_action_target = quick_action_target
 
-      content, commands = extractor.extract_commands(content)
+      content, commands = extractor(keep_actions).extract_commands(content)
       commands = explain_commands(commands)
       [content, commands]
     end
@@ -65,8 +67,8 @@ module QuickActions
       raise Gitlab::QuickActions::CommandDefinition::ParseError, message
     end
 
-    def extractor
-      Gitlab::QuickActions::Extractor.new(self.class.command_definitions)
+    def extractor(keep_actions = false)
+      Gitlab::QuickActions::Extractor.new(self.class.command_definitions, keep_actions: keep_actions)
     end
 
     # Find users for commands like /assign

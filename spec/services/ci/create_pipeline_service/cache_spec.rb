@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
+  feature_category: :continuous_integration do
   context 'cache' do
     let(:project)  { create(:project, :custom_repo, files: files) }
     let(:user)     { project.first_owner }
@@ -38,7 +39,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           policy: 'pull-push',
           untracked: true,
           unprotect: false,
-          when: 'on_success'
+          when: 'on_success',
+          fallback_keys: []
         }
 
         expect(pipeline).to be_persisted
@@ -71,7 +73,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -88,7 +91,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -122,7 +126,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -139,7 +144,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted

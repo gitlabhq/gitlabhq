@@ -9,7 +9,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
 
       expect(package_row).to have_content(pkg.name)
       expect(package_row).to have_content(pkg.version)
-      expect(package_row).to have_content(pkg.project.name) if check_project_name
+      expect(package_row).to have_content(pkg.project.path) if check_project_name
     end
   end
 
@@ -18,7 +18,35 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 end
 
+RSpec.shared_examples 'pipelines on packages list' do
+  let_it_be(:pipelines) do
+    %w[c83d6e391c22777fca1ed3012fce84f633d7fed0
+      d83d6e391c22777fca1ed3012fce84f633d7fed0].map do |sha|
+      create(:ci_pipeline, project: project, sha: sha)
+    end
+  end
+
+  before do
+    pipelines.each do |pipeline|
+      create(:package_build_info, package: package, pipeline: pipeline)
+    end
+  end
+
+  it 'shows the latest pipeline' do
+    # Test after reload
+    page.evaluate_script 'window.location.reload()'
+
+    wait_for_requests
+
+    expect(page).to have_content('d83d6e39')
+  end
+end
+
 RSpec.shared_examples 'package details link' do |property|
+  before do
+    stub_application_setting(npm_package_requests_forwarding: false)
+  end
+
   it 'navigates to the correct url' do
     page.within(packages_table_selector) do
       click_link package.name
@@ -30,6 +58,45 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_content('Installation')
     expect(page).to have_content('Registry setup')
+    expect(page).to have_content('Other versions 0')
+  end
+
+  context 'with other versions' do
+    let_it_be(:npm_package1) { create(:npm_package, project: project, name: 'zzz', version: '1.1.0') }
+    let_it_be(:npm_package2) { create(:npm_package, project: project, name: 'zzz', version: '1.2.0') }
+
+    before do
+      page.within(packages_table_selector) do
+        first(:link, package.name).click
+      end
+    end
+
+    it 'shows tab with count' do
+      expect(page).to have_content('Other versions 2')
+    end
+
+    it 'visiting tab shows total on page' do
+      click_link 'Other versions'
+
+      expect(page).to have_content('2 versions')
+    end
+
+    it 'deleting version updates count' do
+      click_link 'Other versions'
+
+      find('[data-testid="delete-dropdown"]', match: :first).click
+      find('[data-testid="action-delete"]', match: :first).click
+      click_button('Permanently delete')
+
+      expect(page).to have_content 'Package deleted successfully'
+
+      expect(page).to have_content('Other versions 1')
+      expect(page).to have_content('1 version')
+
+      expect(page).not_to have_content('1.0.0')
+      expect(page).to have_content('1.1.0')
+      expect(page).to have_content('1.2.0')
+    end
   end
 end
 

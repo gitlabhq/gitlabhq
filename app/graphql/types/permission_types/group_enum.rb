@@ -10,6 +10,9 @@ module Types
       value 'TRANSFER_PROJECTS',
         value: :transfer_projects,
         description: 'Groups where the user can transfer projects to.'
+      value 'IMPORT_PROJECTS',
+        value: :import_projects,
+        description: 'Groups where the user can import projects to.'
     end
   end
 end

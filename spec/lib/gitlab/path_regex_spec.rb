@@ -177,7 +177,12 @@ RSpec.describe Gitlab::PathRegex do
                         missing_words: missing_words, additional_words: additional_words)
       end
 
-      expect(described_class::TOP_LEVEL_ROUTES)
+      # We have to account for routes that are added by gems into the RAILS_ENV=test only.
+      test_only_top_level_routes = [
+        '_system_test_entrypoint' # added by the view_component gem
+      ]
+
+      expect(described_class::TOP_LEVEL_ROUTES + test_only_top_level_routes)
         .to contain_exactly(*top_level_words), failure_block
     end
 

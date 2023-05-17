@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Net::HTTPResponse patch header read timeout' do
+RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: :integrations do
   describe '.each_response_header' do
     let(:server_response) do
-      <<~EOS
+      <<~HTTP
         Content-Type: text/html
         Header-Two: foo
 
         Hello World
-      EOS
+      HTTP
     end
 
     before do
@@ -30,14 +30,12 @@ RSpec.describe 'Net::HTTPResponse patch header read timeout' do
       end
 
       context 'when the response contains many consecutive spaces' do
-        before do
+        it 'has no regex backtracking issues' do
           expect(socket).to receive(:readuntil).and_return(
             "a: #{' ' * 100_000} b",
             ''
           )
-        end
 
-        it 'has no regex backtracking issues' do
           Timeout.timeout(1) do
             each_response_header
           end

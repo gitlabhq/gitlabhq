@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -166,7 +166,7 @@ If you get this error message while configuring GitLab, the following are possib
 - GitLab is unable to reach your Jenkins instance at the address. If your GitLab instance is self-managed, try pinging the
   Jenkins instance at the domain provided on the GitLab instance.
 - The Jenkins instance is at a local address and is not included in the
-  [GitLab installation's allowlist](../security/webhooks.md#create-an-allowlist-for-local-requests).
+  [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 - The credentials for the Jenkins instance do not have sufficient access or are invalid.
 - The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server).
 
@@ -190,26 +190,21 @@ This issue can occur when the request exceeds the
 [webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
 which is set to 10 seconds by default.
 
-Check the [service hook logs](../user/project/integrations/index.md#troubleshooting-integrations)
-for request failures or check the `/var/log/gitlab/gitlab-rails/production.log`
-file for messages like:
+For this issue, check:
 
-```plaintext
-WebHook Error => Net::ReadTimeout
-```
+- [Integration webhook logs](../user/project/integrations/index.md#troubleshooting)
+for request failures.
+- `/var/log/gitlab/gitlab-rails/production.log` for messages like:
 
-or
+  ```plaintext
+  WebHook Error => Net::ReadTimeout
+  ```
 
-```plaintext
-WebHook Error => execution expired
-```
+  or
 
-Or check for duplicate messages in `/var/log/gitlab/gitlab-rail`, like:
-
-```plaintext
-2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
-2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
-```
+  ```plaintext
+  WebHook Error => execution expired
+  ```
 
 On self-managed GitLab instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
 

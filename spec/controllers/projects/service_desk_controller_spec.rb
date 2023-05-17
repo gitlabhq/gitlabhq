@@ -12,8 +12,8 @@ RSpec.describe Projects::ServiceDeskController do
   let_it_be(:user) { create(:user) }
 
   before do
-    allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
-    allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
 
     project.add_maintainer(user)
     sign_in(user)

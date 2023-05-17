@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { COMMIT_BATCH_SIZE, I18N_COMMIT_DATA_FETCH_ERROR } from './constants';
 
 let requestedOffsets = [];

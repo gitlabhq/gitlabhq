@@ -11,7 +11,7 @@
 
   = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       - if @merge_request.for_fork? && !@merge_request.source_project
         = err_fork_project_removed
       - elsif !@merge_request.source_branch_exists?

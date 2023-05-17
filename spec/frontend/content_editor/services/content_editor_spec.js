@@ -64,13 +64,13 @@ describe('content_editor/services/content_editor', () => {
   });
 
   describe('editable', () => {
-    it('returns true when tiptapEditor is editable', async () => {
+    it('returns true when tiptapEditor is editable', () => {
       contentEditor.setEditable(true);
 
       expect(contentEditor.editable).toBe(true);
     });
 
-    it('returns false when tiptapEditor is readonly', async () => {
+    it('returns false when tiptapEditor is readonly', () => {
       contentEditor.setEditable(false);
 
       expect(contentEditor.editable).toBe(false);

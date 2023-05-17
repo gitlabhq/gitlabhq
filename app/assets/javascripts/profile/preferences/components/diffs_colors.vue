@@ -1,7 +1,9 @@
 <script>
-import { validateHexColor, hexToRgb } from '~/lib/utils/color_utils';
+import { hexToRgba } from '@gitlab/ui/dist/utils/utils';
+
 import { s__ } from '~/locale';
 import { getCssVariable } from '~/lib/utils/css_utils';
+import { validateHexColor } from '~/lib/utils/color_utils';
 import ColorPicker from '~/vue_shared/components/color_picker/color_picker.vue';
 import DiffsColorsPreview from './diffs_colors_preview.vue';
 
@@ -48,17 +50,15 @@ export default {
     previewStyle() {
       let style = {};
       if (this.isValidColor(this.deletionColor)) {
-        const colorRgb = hexToRgb(this.deletionColor).join();
         style = {
           ...style,
-          '--diff-deletion-color': `rgba(${colorRgb},0.2)`,
+          '--diff-deletion-color': hexToRgba(this.deletionColor, 0.2),
         };
       }
       if (this.isValidColor(this.additionColor)) {
-        const colorRgb = hexToRgb(this.additionColor).join();
         style = {
           ...style,
-          '--diff-addition-color': `rgba(${colorRgb},0.2)`,
+          '--diff-addition-color': hexToRgba(this.additionColor, 0.2),
         };
       }
       return style;

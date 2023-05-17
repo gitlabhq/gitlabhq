@@ -10,9 +10,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   after_action :verify_known_sign_in
 
-  protect_from_forgery except: [:cas3, :failure] + AuthHelper.saml_providers, with: :exception, prepend: true
+  protect_from_forgery except: [:failure] + AuthHelper.saml_providers, with: :exception, prepend: true
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
@@ -20,6 +20,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   AuthHelper.providers_for_base_controller.each do |provider|
     alias_method provider, :handle_omniauth
+  end
+
+  # overridden in EE
+  def openid_connect
+    handle_omniauth
   end
 
   # Extend the standard implementation to also increment
@@ -50,15 +55,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     omniauth_flow(Gitlab::Auth::Saml)
   rescue Gitlab::Auth::Saml::IdentityLinker::UnverifiedRequest
     redirect_unverified_saml_initiation
-  end
-
-  def cas3
-    ticket = params['ticket']
-    if ticket
-      handle_service_ticket oauth['provider'], ticket
-    end
-
-    handle_omniauth
   end
 
   def auth0
@@ -141,12 +137,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to profile_account_path, notice: _('Authentication method updated')
   end
 
-  def handle_service_ticket(provider, ticket)
-    Gitlab::Auth::OAuth::Session.create provider, ticket
-    session[:service_tickets] ||= {}
-    session[:service_tickets][provider] = ticket
-  end
-
   def build_auth_user(auth_user_class)
     auth_user_class.new(oauth)
   end
@@ -178,7 +168,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         persist_accepted_terms_if_required(user) if new_user
 
         store_after_sign_up_path_for_user if intent_to_register?
-        sign_in_and_redirect_or_confirm_identity(user, auth_user, new_user)
+        sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
       end
     else
       fail_login(user)
@@ -310,7 +300,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   # overridden in EE
-  def sign_in_and_redirect_or_confirm_identity(user, _, _)
+  def sign_in_and_redirect_or_verify_identity(user, _, _)
     sign_in_and_redirect(user, event: :authentication)
   end
 end

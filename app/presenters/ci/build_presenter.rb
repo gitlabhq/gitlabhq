@@ -27,6 +27,10 @@ module Ci
       scheduled? && scheduled_at && [0, scheduled_at - Time.now].max
     end
 
+    def failure_message
+      callout_failure_message if build.failed?
+    end
+
     private
 
     def tooltip_for_badge(status)

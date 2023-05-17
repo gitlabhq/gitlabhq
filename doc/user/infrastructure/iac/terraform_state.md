@@ -1,16 +1,14 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab-managed Terraform state **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
-> - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106861) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default support for state names that contain periods is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. On GitLab.com, support for state names that contain periods is available. Requests for state files might generate HTTP 404 errors after enabling this feature. For more information, see [Troubleshooting the Terraform integration with GitLab](troubleshooting.md#state-not-found-if-the-state-name-contains-a-period).
+> - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
+> - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
 
 Terraform uses state files to store details about your infrastructure configuration.
 With Terraform remote [backends](https://www.terraform.io/language/settings/backends/configuration),
@@ -42,7 +40,7 @@ For self-managed GitLab, before you can use GitLab for your Terraform state file
 
 - An administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
 - You must enable the **Infrastructure** menu for your project. Go to **Settings > General**,
-  expand **Visibility, project features, permissions**, and under **Operations**, turn on the toggle.
+  expand **Visibility, project features, permissions**, and under **Infrastructure**, turn on the toggle.
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 
@@ -58,7 +56,7 @@ WARNING:
 Like any other job artifact, Terraform plan data is viewable by anyone with the Guest role on the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
 includes sensitive data, like passwords, access tokens, or certificates, you should
-encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable** 
+encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable**
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
 by setting the artifact's public flag to false (`public: false`). This setting ensures artifacts are
 accessible only to GitLab Administrators and project members with the Reporter role and above.
@@ -119,7 +117,7 @@ inconsistent. Instead, use a remote storage resource.
 1. Copy a pre-populated Terraform `init` command:
 
    1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Infrastructure > Terraform**.
+   1. On the left sidebar, select **Infrastructure > Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       (**{ellipsis_v}**) and select **Copy Terraform init command**.
 
@@ -297,7 +295,7 @@ To read the Terraform state in the target project, you need at least the Develop
 To view Terraform state files:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Infrastructure > Terraform**.
+1. On the left sidebar, select **Infrastructure > Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 
@@ -323,7 +321,7 @@ curl --header "Private-Token: <your_access_token>" --request DELETE "https://git
 
 If you have at least the Maintainer role, you can remove a state file.
 
-1. On the left sidebar, select **Infrastructure > Terraform**.
+1. On the left sidebar, select **Infrastructure > Terraform states**.
 1. In the **Actions** column, select **Actions** (**{ellipsis_v}**) and then **Remove state file and versions**.
 
 ### Remove a state file by using the API
@@ -338,6 +336,5 @@ You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutat
 
 ## Related topics
 
-- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md).
-- To use GitLab and Terraform to deploy an AWS EC2 instance in a custom VPC,
-  see [this sample project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws).
+- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)
+- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws)

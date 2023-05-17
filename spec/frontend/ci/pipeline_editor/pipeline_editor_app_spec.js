@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -6,7 +6,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
-import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
+import { objectToQuery, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
@@ -96,7 +96,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({
+  const createComponentWithApollo = ({
     provide = {},
     stubs = {},
     withUndefinedBranch = false,
@@ -160,10 +160,6 @@ describe('Pipeline editor app component', () => {
     mockGetTemplate = jest.fn();
     mockLatestCommitShaQuery = jest.fn();
     mockPipelineQuery = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('loading state', () => {
@@ -264,7 +260,7 @@ describe('Pipeline editor app component', () => {
         expect(findAlert().exists()).toBe(false);
       });
 
-      it('ci config query is called with correct variables', async () => {
+      it('ci config query is called with correct variables', () => {
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
@@ -291,7 +287,7 @@ describe('Pipeline editor app component', () => {
           .mockImplementation(jest.fn());
       });
 
-      it('shows an empty state and does not show editor home component', async () => {
+      it('shows an empty state and does not show editor home component', () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(false);
@@ -351,7 +347,9 @@ describe('Pipeline editor app component', () => {
       });
 
       it('shows that the lint service is down', () => {
-        expect(findValidationSegment().text()).toContain(
+        const validationMessage = findValidationSegment().findComponent(GlSprintf);
+
+        expect(validationMessage.attributes('message')).toContain(
           validationSegmenti18n.unavailableValidation,
         );
       });
@@ -436,7 +434,7 @@ describe('Pipeline editor app component', () => {
             'merge_request[target_branch]': mockDefaultBranch,
           });
 
-          expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`);
+          expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`); // eslint-disable-line import/no-deprecated
         });
       });
 

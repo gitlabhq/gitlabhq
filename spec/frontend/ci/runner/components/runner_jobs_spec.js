@@ -4,18 +4,19 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 import RunnerJobsTable from '~/ci/runner/components/runner_jobs_table.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import RunnerJobsEmptyState from '~/ci/runner/components/runner_jobs_empty_state.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
-import { I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/ci/runner/constants';
+import { RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/ci/runner/constants';
 
 import runnerJobsQuery from '~/ci/runner/graphql/show/runner_jobs.query.graphql';
 
 import { runnerData, runnerJobsData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;
@@ -31,7 +32,7 @@ describe('RunnerJobs', () => {
   const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoader);
   const findRunnerJobsTable = () => wrapper.findComponent(RunnerJobsTable);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
-
+  const findEmptyState = () => wrapper.findComponent(RunnerJobsEmptyState);
   const createComponent = ({ mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerJobs, {
       apolloProvider: createMockApollo([[runnerJobsQuery, mockRunnerJobsQuery]]),
@@ -47,7 +48,6 @@ describe('RunnerJobs', () => {
 
   afterEach(() => {
     mockRunnerJobsQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('Requests runner jobs', async () => {
@@ -100,7 +100,7 @@ describe('RunnerJobs', () => {
 
       expect(findGlSkeletonLoading().exists()).toBe(true);
       expect(findRunnerJobsTable().exists()).toBe(false);
-      expect(findRunnerPagination().attributes('disabled')).toBe('true');
+      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -128,8 +128,8 @@ describe('RunnerJobs', () => {
       await waitForPromises();
     });
 
-    it('Shows a "None" label', () => {
-      expect(wrapper.text()).toBe(I18N_NO_JOBS_FOUND);
+    it('should render empty state', () => {
+      expect(findEmptyState().exists()).toBe(true);
     });
   });
 

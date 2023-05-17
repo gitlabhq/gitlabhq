@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline do
+RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:packages) { create_list(:npm_package, 3, project: project) }
 
@@ -75,6 +75,11 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline do
 
         it 'returns an error ServiceResponse' do
           expect(::Packages::Maven::Metadata::SyncService).not_to receive(:new)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            package_ids: package_ids
+          )
 
           expect { subject }.to not_change { ::Packages::Package.pending_destruction.count }
                                   .and not_change { ::Packages::PackageFile.pending_destruction.count }

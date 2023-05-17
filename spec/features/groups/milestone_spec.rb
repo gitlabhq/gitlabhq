@@ -25,17 +25,17 @@ RSpec.describe 'Group milestones', feature_category: :subgroups do
 
       description.native.send_keys('')
 
-      click_button('Preview')
+      click_button("Preview")
 
       preview = find('.js-md-preview')
 
       expect(preview).to have_content('Nothing to preview.')
 
-      click_button('Write')
+      click_button("Continue editing")
 
       description.native.send_keys(':+1: Nice')
 
-      click_button('Preview')
+      click_button("Preview")
 
       expect(preview).to have_css('gl-emoji')
       expect(find('#milestone_description', visible: false)).not_to be_visible

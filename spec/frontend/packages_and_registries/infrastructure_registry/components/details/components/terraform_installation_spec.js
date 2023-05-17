@@ -30,10 +30,6 @@ describe('TerraformInstallation', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders all the messages', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

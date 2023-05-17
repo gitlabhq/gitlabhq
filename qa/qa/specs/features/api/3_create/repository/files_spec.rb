@@ -99,7 +99,6 @@ module QA
             #
             expect(response.headers[:cache_control]).to include("no-store")
             expect(response.headers[:cache_control]).to include("no-cache")
-            expect(response.headers[:pragma]).to eq("no-cache")
             expect(response.headers[:expires]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
             expect(response.headers[:content_disposition]).to include("attachment")
             expect(response.headers[:content_disposition]).not_to include("inline")

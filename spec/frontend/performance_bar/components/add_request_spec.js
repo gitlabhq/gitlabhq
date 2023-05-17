@@ -13,10 +13,6 @@ describe('add request form', () => {
     wrapper = mount(AddRequest);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('hides the input on load', () => {
     expect(findGlFormInput().exists()).toBe(false);
   });

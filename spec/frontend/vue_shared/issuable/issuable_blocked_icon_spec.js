@@ -7,8 +7,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { blockingIssuablesQueries } from '~/vue_shared/components/issuable_blocked_icon/constants';
-import { issuableTypes } from '~/boards/constants';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import {
   mockIssue,
@@ -48,11 +47,6 @@ describe('IssuableBlockedIcon', () => {
     await nextTick();
     await waitForApollo();
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   const createWrapperWithApollo = ({
     item = mockBlockedIssue1,
@@ -121,9 +115,9 @@ describe('IssuableBlockedIcon', () => {
   };
 
   it.each`
-    mockIssuable | issuableType          | expectedIcon
-    ${mockIssue} | ${TYPE_ISSUE}         | ${'issue-block'}
-    ${mockEpic}  | ${issuableTypes.epic} | ${'entity-blocked'}
+    mockIssuable | issuableType  | expectedIcon
+    ${mockIssue} | ${TYPE_ISSUE} | ${'issue-block'}
+    ${mockEpic}  | ${TYPE_EPIC}  | ${'entity-blocked'}
   `(
     'should render blocked icon for $issuableType',
     ({ mockIssuable, issuableType, expectedIcon }) => {
@@ -145,7 +139,7 @@ describe('IssuableBlockedIcon', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('should not query for blocking issuables by default', async () => {
+  it('should not query for blocking issuables by default', () => {
     createWrapperWithApollo();
 
     expect(findGlPopover().text()).not.toContain(mockBlockingIssue1.title);
@@ -153,9 +147,9 @@ describe('IssuableBlockedIcon', () => {
 
   describe('on mouseenter on blocked icon', () => {
     it.each`
-      item                 | issuableType          | mockBlockingIssuable  | issuableItem | blockingIssuablesSpy
-      ${mockBlockedIssue1} | ${TYPE_ISSUE}         | ${mockBlockingIssue1} | ${mockIssue} | ${jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1)}
-      ${mockBlockedEpic1}  | ${issuableTypes.epic} | ${mockBlockingEpic1}  | ${mockEpic}  | ${jest.fn().mockResolvedValue(mockBlockingEpicIssuablesResponse1)}
+      item                 | issuableType  | mockBlockingIssuable  | issuableItem | blockingIssuablesSpy
+      ${mockBlockedIssue1} | ${TYPE_ISSUE} | ${mockBlockingIssue1} | ${mockIssue} | ${jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1)}
+      ${mockBlockedEpic1}  | ${TYPE_EPIC}  | ${mockBlockingEpic1}  | ${mockEpic}  | ${jest.fn().mockResolvedValue(mockBlockingEpicIssuablesResponse1)}
     `(
       'should query for blocking issuables and render the result for $issuableType',
       async ({ item, issuableType, issuableItem, mockBlockingIssuable, blockingIssuablesSpy }) => {
@@ -201,18 +195,18 @@ describe('IssuableBlockedIcon', () => {
         await mouseenter();
       });
 
-      it('should render a title of the issuable', async () => {
+      it('should render a title of the issuable', () => {
         expect(findIssuableTitle().text()).toBe(mockBlockingIssue1.title);
       });
 
-      it('should render issuable reference and link to the issuable', async () => {
+      it('should render issuable reference and link to the issuable', () => {
         const formattedRef = mockBlockingIssue1.reference.split('/')[1];
 
         expect(findGlLink().text()).toBe(formattedRef);
         expect(findGlLink().attributes('href')).toBe(mockBlockingIssue1.webUrl);
       });
 
-      it('should render popover title with correct blocking issuable count', async () => {
+      it('should render popover title with correct blocking issuable count', () => {
         expect(findPopoverTitle().text()).toBe('Blocked by 1 issue');
       });
     });
@@ -247,7 +241,7 @@ describe('IssuableBlockedIcon', () => {
         expect(wrapper.html()).toMatchSnapshot();
       });
 
-      it('should render popover title with correct blocking issuable count', async () => {
+      it('should render popover title with correct blocking issuable count', () => {
         expect(findPopoverTitle().text()).toBe('Blocked by 4 issues');
       });
 
@@ -255,7 +249,7 @@ describe('IssuableBlockedIcon', () => {
         expect(findHiddenBlockingCount().text()).toBe('+ 1 more issue');
       });
 
-      it('should link to the blocked issue page at the related issue anchor', async () => {
+      it('should link to the blocked issue page at the related issue anchor', () => {
         expect(findViewAllIssuableLink().text()).toBe('View all blocking issues');
         expect(findViewAllIssuableLink().attributes('href')).toBe(
           `${mockBlockedIssue2.webUrl}#related-issues`,

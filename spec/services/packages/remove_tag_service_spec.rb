@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::RemoveTagService do
+RSpec.describe Packages::RemoveTagService, feature_category: :package_registry do
   let!(:package_tag) { create(:packages_tag) }
 
   describe '#execute' do

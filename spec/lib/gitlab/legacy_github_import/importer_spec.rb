@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LegacyGithubImport::Importer do
+RSpec.describe Gitlab::LegacyGithubImport::Importer, feature_category: :importers do
+  subject(:importer) { described_class.new(project) }
+
   shared_examples 'Gitlab::LegacyGithubImport::Importer#execute' do
     let(:expected_not_called) { [] }
 
@@ -11,8 +13,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
     end
 
     it 'calls import methods' do
-      importer = described_class.new(project)
-
       expected_called = [
         :import_labels, :import_milestones, :import_pull_requests, :import_issues,
         :import_wiki, :import_releases, :handle_errors,
@@ -51,11 +51,13 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       allow_any_instance_of(Octokit::Client).to receive(:labels).and_return([label1, label2])
       allow_any_instance_of(Octokit::Client).to receive(:milestones).and_return([milestone, milestone])
       allow_any_instance_of(Octokit::Client).to receive(:issues).and_return([issue1, issue2])
-      allow_any_instance_of(Octokit::Client).to receive(:pull_requests).and_return([pull_request, pull_request])
+      allow_any_instance_of(Octokit::Client).to receive(:pull_requests).and_return([pull_request, pull_request_missing_source_branch])
       allow_any_instance_of(Octokit::Client).to receive(:issues_comments).and_raise(Octokit::NotFound)
       allow_any_instance_of(Octokit::Client).to receive(:pull_requests_comments).and_return([])
       allow_any_instance_of(Octokit::Client).to receive(:last_response).and_return(double(rels: { next: nil }))
       allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
+
+      allow(importer).to receive(:restore_source_branch).and_raise(StandardError, 'Some error')
     end
 
     let(:label1) do
@@ -153,8 +155,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       }
     end
 
-    subject { described_class.new(project) }
-
     it 'returns true' do
       expect(subject.execute).to eq true
     end
@@ -163,18 +163,19 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       expect { subject.execute }.not_to raise_error
     end
 
-    it 'stores error messages' do
+    it 'stores error messages', :unlimited_max_formatted_output_length do
       error = {
         message: 'The remote data could not be fully imported.',
         errors: [
           { type: :label, url: "#{api_root}/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
+          { type: :pull_request, url: "#{api_root}/repos/octocat/Hello-World/pulls/1347", errors: 'Some error' },
           { type: :issue, url: "#{api_root}/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank" },
           { type: :issues_comments, errors: 'Octokit::NotFound' },
           { type: :wiki, errors: "Gitlab::Git::CommandError" }
         ]
       }
 
-      described_class.new(project).execute
+      importer.execute
 
       expect(project.import_state.last_error).to eq error.to_json
     end
@@ -182,8 +183,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
 
   shared_examples 'Gitlab::LegacyGithubImport unit-testing' do
     describe '#clean_up_restored_branches' do
-      subject { described_class.new(project) }
-
       before do
         allow(gh_pull_request).to receive(:source_branch_exists?).at_least(:once) { false }
         allow(gh_pull_request).to receive(:target_branch_exists?).at_least(:once) { false }
@@ -240,6 +239,16 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
     }
   end
 
+  let(:pull_request_missing_source_branch) do
+    pull_request.merge(
+      head: {
+        ref: 'missing',
+        repo: repository,
+        sha: RepoHelpers.another_sample_commit
+      }
+    )
+  end
+
   let(:closed_pull_request) do
     {
       number: 1347,
@@ -263,8 +272,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
   context 'when importing a Gitea project' do
     let(:api_root) { 'https://try.gitea.io/api/v1' }
     let(:repo_root) { 'https://try.gitea.io' }
-
-    subject { described_class.new(project) }
 
     before do
       project.update!(import_type: 'gitea', import_url: "#{repo_root}/foo/group/project.git")

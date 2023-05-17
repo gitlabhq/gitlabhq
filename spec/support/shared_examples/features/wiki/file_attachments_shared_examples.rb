@@ -62,7 +62,7 @@ RSpec.shared_examples 'wiki file attachments' do
         attach_with_dropzone(true)
         wait_for_requests
 
-        find('.js-md-preview-button').click
+        click_button("Preview")
         file_path = page.find('input[name="files[]"]', visible: :hidden).value
         link = page.find('a.no-attachment-icon')['href']
         img_link = page.find('a.no-attachment-icon img')['src']

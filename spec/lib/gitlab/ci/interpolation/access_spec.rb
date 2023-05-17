@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Interpolation::Access, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Interpolation::Access, feature_category: :pipeline_composition do
   subject { described_class.new(access, ctx) }
 
   let(:access) do

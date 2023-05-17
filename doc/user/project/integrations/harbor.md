@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,11 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80999) in GitLab 14.9.
 
-Use Harbor as the container registry for your GitLab project.
+You can use Harbor as the container registry for your GitLab project.
 
-[Harbor](https://goharbor.io/) is an open source registry that can help you manage artifacts across cloud-native compute platforms, like Kubernetes and Docker.
+[Harbor](https://goharbor.io/) is an open-source registry that can help you manage artifacts across cloud-native compute platforms like Kubernetes and Docker.
 
-This integration can help you if you need GitLab CI/CD and a container image repository.
+The Harbor integration can help you if you need GitLab CI/CD and a container image repository.
 
 ## Prerequisites
 

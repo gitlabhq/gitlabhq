@@ -4,64 +4,43 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Support for Alpha, Beta, Limited Availability, and Generally Available features **(PREMIUM)**
+# Support for Experiment, Beta, and Generally Available features **(PREMIUM)**
 
-Some GitLab features are released as Alpha or Beta versions and are
+Some GitLab features are released as Experiment or Beta versions and are
 [not fully supported](https://about.gitlab.com/support/statement-of-support/#alpha-beta-features).
 All other features are considered to be Generally Available (GA).
 
-## Alpha features
+## Experiment
 
-Support is **not** provided for Alpha features and issues with them should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
-
-Characteristics of Alpha features:
+Support is not provided for features listed as "Experimental" or "Alpha" or any similar designation. Issues regarding such features should be opened in the GitLab issue tracker.
 
 - Not ready for production use.
-- Unstable and can cause performance and stability issues.
-- Configuration and dependencies are likely to change.
-- Features and functions may be removed. Breaking changes may occur outside of major releases or with less notice than for Beta or Generally Available features.
-- Data loss can occur (be that through bugs or updates).
-- Documentation reflects the Alpha status.
-- Behind flags that are off by default.
-- Not announced in release posts.
+- No support available.
+- May be unstable or have performance issues.
+- Can be removed at any time.
+- Data loss may occur.
+- Documentation may not exist or just be in a blog format.
+- Behind a feature flag that is on by default and the [UI reflects Experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Behind a toggle that is off by default and the [UI reflects Experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Feedback issue to engage with team.
+- UX not finalized, might be just quick action access.
+- Not announced in a release post.
 
-## Beta features
+## Beta
 
-Your Support Contract provides **commercially-reasonable effort** support for Beta features, with the expectation that issues require extra time and assistance from development to troubleshoot.
+Commercially-reasonable efforts are made to provide limited support for features designated as "Beta," with the expectation that issues require extra time and assistance from development to troubleshoot.
 
-### Closed Beta features
-
-Closed Beta features are available to selected users only.
-
-- Not ready for production use.
-- Unstable and can cause performance and stability issues.
-- Configuration and dependencies unlikely to change.
-- Features and functions unlikely to change. However, breaking changes may occur outside of major releases or with less notice than for Generally Available features.
-- Data loss less likely.
-- Behind a feature flag that is off by default and the UI reflects Beta status.
-- Documentation reflects Beta status.
-- Can be announced in a release post that reflects Beta status.
-
-### Open Beta features
-
-- Not ready for production use.
-- Unstable and can cause performance and stability issues.
+- May not be ready for production use and the UI and documentation will reflect this status.
+- May be unstable and can cause performance and stability issues.
 - Configuration and dependencies unlikely to change.
 - Features and functions unlikely to change. However, breaking changes may occur outside of major releases or with less notice than for Generally Available features.
 - Data loss not likely.
 - Support on a commercially-reasonable effort basis.
 - Documentation reflects Beta status.
-- Behind a feature flag that is on by default and the UI reflects Beta status.
-- Behind a toggle that is off by default and the UI reflects Beta status.
+- UX complete or near completion.
+- Behind a feature flag that is on by default and the [UI reflects Beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Behind a toggle that is off by default and the [UI reflects Beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
 - Can be announced in a release post that reflects Beta status.
-
-## Limited Availability (LA)
-
-Characteristics of Limited Availability features:
-
-- Ready for production use by a small set of customers.
-- Can be booked by Deal Desk as part of an order.
-- Fully documented and [supported](https://about.gitlab.com/support/statement-of-support/#starter-premium-and-ultimate-users).
 
 ## Generally Available (GA)
 
@@ -69,3 +48,18 @@ Generally Available features means that they passed the [Production Readiness Re
 
 - Ready for production use at any scale.
 - Fully documented and supported.
+- UX complete and in line with GitLab design standards.
+
+## Never internal
+
+Features are never internal (GitLab team-members) only.
+Our [mission is "everyone can contribute"](https://about.gitlab.com/company/mission/), and that is only possible if people outside the company can try a feature.
+We will get higher quality (more diverse) feedback if people from different organizations try something.
+We've also learned that internal only as a state slows us down more than it speeds us up.
+Release the experiment instead of testing internally or waiting for the feature to be in a Beta state.
+The experimental features are only shown when people/organizations opt-in to experiments, we are allowed to make mistakes here and literally experiment.
+
+## All features are in production
+
+All features that are available on GitLab.com are considered "in production."
+Because all Experiment, Beta, and Generally Available features are available on GitLab.com, they are all considered to be in production.

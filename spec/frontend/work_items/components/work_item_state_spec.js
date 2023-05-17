@@ -44,10 +44,6 @@ describe('WorkItemState component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders state', () => {
     createComponent();
 

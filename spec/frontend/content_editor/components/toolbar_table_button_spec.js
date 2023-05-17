@@ -30,7 +30,6 @@ describe('content_editor/components/toolbar_table_button', () => {
 
   afterEach(() => {
     editor.destroy();
-    wrapper.destroy();
   });
 
   it('renders a grid of 5x5 buttons to create a table', () => {

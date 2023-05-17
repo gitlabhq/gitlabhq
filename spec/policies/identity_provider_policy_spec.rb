@@ -19,13 +19,11 @@ RSpec.describe IdentityProviderPolicy do
       it { is_expected.not_to be_allowed(:unlink) }
     end
 
-    %w[saml cas3].each do |provider_name|
-      context "when provider is #{provider_name}" do
-        let(:provider) { provider_name }
+    context "when provider is saml" do
+      let(:provider) { 'saml' }
 
-        it { is_expected.to be_allowed(:link) }
-        it { is_expected.not_to be_allowed(:unlink) }
-      end
+      it { is_expected.to be_allowed(:link) }
+      it { is_expected.not_to be_allowed(:unlink) }
     end
   end
 end

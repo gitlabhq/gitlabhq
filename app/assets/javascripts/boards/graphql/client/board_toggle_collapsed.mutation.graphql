@@ -1,0 +1,9 @@
+#import "ee_else_ce/boards/graphql/board_list.fragment.graphql"
+
+mutation toggleListCollapsed($list: BoardList!, $collapsed: Boolean!) {
+  clientToggleListCollapsed(list: $list, collapsed: $collapsed) @client {
+    list {
+      ...BoardListFragment
+    }
+  }
+}

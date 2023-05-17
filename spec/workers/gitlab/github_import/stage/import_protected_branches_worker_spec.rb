@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:import_state) { create(:import_state, project: project) }
 

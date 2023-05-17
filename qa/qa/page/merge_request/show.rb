@@ -31,6 +31,7 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/tree_list.vue' do
           element :file_tree_container
+          element :diff_tree_search
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -198,7 +199,15 @@ module QA
         end
 
         def click_diffs_tab
-          click_element(:diffs_tab)
+          # Do not wait for spinner due to https://gitlab.com/gitlab-org/gitlab/-/issues/398584
+          click_element(:diffs_tab, skip_finished_loading_check: true)
+
+          # If the diff isn't available when we navigate to the Changes tab
+          # we must reload the page. https://gitlab.com/gitlab-org/gitlab/-/issues/398557
+          wait_until(reload: true, skip_finished_loading_check_on_refresh: true) do
+            QA::Runtime::Logger.debug('Ensuring that diff has loaded async')
+            has_element?(:file_tree_button, skip_finished_loading_check: true, wait: 5)
+          end
         end
 
         def click_pipeline_link
@@ -206,7 +215,10 @@ module QA
         end
 
         def edit!
-          click_element(:edit_button)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:edit_button))
         end
 
         def fast_forward_not_possible?
@@ -215,12 +227,23 @@ module QA
 
         def has_file?(file_name)
           open_file_tree
+
+          return true if has_element?(:file_name_content, file_name: file_name)
+
+          # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
+          search_file_tree(file_name)
           has_element?(:file_name_content, file_name: file_name)
         end
 
         def has_no_file?(file_name)
-          open_file_tree
+          # Since the file tree uses virtual scrolling, search for file to ensure non-existence
+          search_file_tree(file_name)
           has_no_element?(:file_name_content, file_name: file_name)
+        end
+
+        def search_file_tree(file_name)
+          open_file_tree
+          fill_element(:diff_tree_search, file_name)
         end
 
         def open_file_tree
@@ -231,6 +254,17 @@ module QA
           refresh
 
           has_element?(:merge_button)
+        end
+
+        def has_no_merge_button?
+          refresh
+
+          has_no_element?(:merge_button)
+        end
+
+        RSpec::Matchers.define :have_merge_button do
+          match(&:has_merge_button?)
+          match_when_negated(&:has_no_merge_button?)
         end
 
         def has_pipeline_status?(text)
@@ -359,12 +393,18 @@ module QA
         end
 
         def view_email_patches
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           visit_link_in_element(:download_email_patches_menu_item)
         end
 
         def view_plain_diff
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           visit_link_in_element(:download_plain_diff_menu_item)
         end
 
@@ -375,7 +415,10 @@ module QA
         end
 
         def click_open_in_web_ide
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           click_element(:open_in_web_ide_button)
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
@@ -386,6 +429,7 @@ module QA
             click_element(:dropdown_button)
             click_element(:edit_in_ide_button)
           end
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def add_suggestion_to_diff(suggestion, line)

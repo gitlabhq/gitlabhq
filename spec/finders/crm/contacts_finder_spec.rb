@@ -148,7 +148,7 @@ RSpec.describe Crm::ContactsFinder do
             :contact,
             group: search_test_group,
             email: "a@test.com",
-            organization: create(:organization, name: "Company Z")
+            organization: create(:crm_organization, name: "Company Z")
           )
         end
 
@@ -157,7 +157,7 @@ RSpec.describe Crm::ContactsFinder do
             :contact,
             group: search_test_group,
             email: "b@test.com",
-            organization: create(:organization, name: "Company A")
+            organization: create(:crm_organization, name: "Company A")
           )
         end
 

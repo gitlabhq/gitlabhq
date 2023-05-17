@@ -37,6 +37,11 @@ RSpec.describe Gitlab::GitRefValidator do
     it { expect(described_class.validate("\xA0\u0000\xB0")).to be false }
     it { expect(described_class.validate("")).to be false }
     it { expect(described_class.validate(nil)).to be false }
+    it { expect(described_class.validate('HEAD')).to be false }
+
+    context 'when skip_head_ref_check is true' do
+      it { expect(described_class.validate('HEAD', skip_head_ref_check: true)).to be true }
+    end
   end
 
   describe '.validate_merge_request_branch' do

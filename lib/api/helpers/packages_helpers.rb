@@ -90,6 +90,7 @@ module API
         service.execute
 
         category = args.delete(:category) || self.options[:for].name
+        args[:user] = current_user if current_user
         event_name = "i_package_#{scope}_user"
         ::Gitlab::Tracking.event(
           category,
@@ -99,8 +100,6 @@ module API
           context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context],
           **args
         )
-
-        return unless Feature.enabled?(:route_hll_to_snowplow_phase3)
 
         if action.to_s == 'push_package' && service.originator_type == :deploy_token
           track_snowplow_event("push_package_by_deploy_token", category, args)

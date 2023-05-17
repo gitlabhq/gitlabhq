@@ -22,6 +22,12 @@ class ContainerRepository < ApplicationRecord
 
   MAX_TAGS_PAGES = 2000
 
+  # The Registry client uses JWT token to authenticate to Registry. We cache the client using expiration
+  # time of JWT token. However it's possible that the token is valid but by the time the request is made to
+  # Regsitry, it's already expired. To prevent this case, we are subtracting a few seconds, defined by this constant
+  # from the cache expiration time.
+  AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS = 5
+
   TooManyImportsError = Class.new(StandardError)
 
   belongs_to :project
@@ -32,8 +38,8 @@ class ContainerRepository < ApplicationRecord
   validates :migration_aborted_in_state, inclusion: { in: ABORTABLE_MIGRATION_STATES }, allow_nil: true
 
   validates :migration_retries_count, presence: true,
-                                      numericality: { greater_than_or_equal_to: 0 },
-                                      allow_nil: false
+    numericality: { greater_than_or_equal_to: 0 },
+    allow_nil: false
 
   enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
@@ -69,7 +75,7 @@ class ContainerRepository < ApplicationRecord
   scope :with_migration_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
-  scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.expiration_policy_started_at_nil_or_before(threshold) }
   scope :with_stale_delete_at, ->(threshold) { where('delete_started_at < ?', threshold) }
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
@@ -118,9 +124,7 @@ class ContainerRepository < ApplicationRecord
     state :import_done
 
     state :import_skipped do
-      validates :migration_skipped_reason,
-                :migration_skipped_at,
-                presence: true
+      validates :migration_skipped_reason, :migration_skipped_at, presence: true
     end
 
     state :import_aborted do
@@ -289,6 +293,10 @@ class ContainerRepository < ApplicationRecord
     all
   end
 
+  def self.registry_client_expiration_time
+    (Gitlab::CurrentSettings.container_registry_token_expire_delay * 60) - AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS
+  end
+
   class << self
     alias_method :pending_destruction, :delete_scheduled # needed by Packages::Destructible
   end
@@ -395,7 +403,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def migrated?
-    (self.created_at && MIGRATION_PHASE_1_ENDED_AT < self.created_at) || import_done?
+    Gitlab.com?
   end
 
   def last_import_step_done_at
@@ -410,7 +418,7 @@ class ContainerRepository < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def registry
-    @registry ||= begin
+    strong_memoize_with_expiration(:registry, self.class.registry_client_expiration_time) do
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
 
       url = Gitlab.config.registry.api_url
@@ -509,7 +517,11 @@ class ContainerRepository < ApplicationRecord
   end
 
   def start_expiration_policy!
-    update!(expiration_policy_started_at: Time.zone.now, last_cleanup_deleted_tags_count: nil)
+    update!(
+      expiration_policy_started_at: Time.zone.now,
+      last_cleanup_deleted_tags_count: nil,
+      expiration_policy_cleanup_status: :cleanup_ongoing
+    )
   end
 
   def size
@@ -589,8 +601,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.build_from_path(path)
-    self.new(project: path.repository_project,
-             name: path.repository_name)
+    self.new(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_or_create_from_path(path)
@@ -608,13 +619,11 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.find_by_path!(path)
-    self.find_by!(project: path.repository_project,
-                  name: path.repository_name)
+    self.find_by!(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_by_path(path)
-    self.find_by(project: path.repository_project,
-                 name: path.repository_name)
+    self.find_by(project: path.repository_project, name: path.repository_name)
   end
 
   private

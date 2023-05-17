@@ -19,12 +19,8 @@ describe('Multi-file editor commit sidebar list', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with a list of files', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const f = file('file name');
       f.changed = true;
       wrapper = mountComponent({ fileList: [f] });

@@ -27,8 +27,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   shared_examples 'support bot with service desk enabled' do
     before do
-      allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+      allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
 
       project.update!(service_desk_enabled: true)
     end

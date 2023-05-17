@@ -115,11 +115,13 @@ RSpec.describe DiffNote do
   describe '#create_diff_file callback' do
     context 'merge request' do
       let(:position) do
-        Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                                   new_path: "files/ruby/popen.rb",
-                                   old_line: nil,
-                                   new_line: 9,
-                                   diff_refs: merge_request.diff_refs)
+        Gitlab::Diff::Position.new(
+          old_path: "files/ruby/popen.rb",
+          new_path: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: 9,
+          diff_refs: merge_request.diff_refs
+        )
       end
 
       subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
@@ -131,10 +133,12 @@ RSpec.describe DiffNote do
       let(:diff_file) do
         diffs = merge_request.diffs
         raw_diff = diffs.diffable.raw_diffs(diffs.diff_options.merge(paths: ['files/ruby/popen.rb'])).first
-        Gitlab::Diff::File.new(raw_diff,
-                               repository: diffs.project.repository,
-                               diff_refs: diffs.diff_refs,
-                               fallback_diff_refs: diffs.fallback_diff_refs)
+        Gitlab::Diff::File.new(
+          raw_diff,
+          repository: diffs.project.repository,
+          diff_refs: diffs.diff_refs,
+          fallback_diff_refs: diffs.fallback_diff_refs
+        )
       end
 
       let(:diff_line) { diff_file.diff_lines.first }
@@ -188,10 +192,12 @@ RSpec.describe DiffNote do
               end
 
               it 'raises an error' do
-                expect { subject.save! }.to raise_error(::DiffNote::NoteDiffFileCreationError,
-                                                       "Failed to find diff line for: #{diff_file.file_path}, "\
-                                                       "old_line: #{position.old_line}"\
-                                                       ", new_line: #{position.new_line}")
+                expect { subject.save! }.to raise_error(
+                  ::DiffNote::NoteDiffFileCreationError,
+                  "Failed to find diff line for: #{diff_file.file_path}, "\
+                  "old_line: #{position.old_line}"\
+                  ", new_line: #{position.new_line}"
+                )
               end
             end
 
@@ -383,8 +389,7 @@ RSpec.describe DiffNote do
         subject { create(:diff_note_on_commit, project: project, position: position, commit_id: commit.id) }
 
         it "doesn't update the position" do
-          is_expected.to have_attributes(original_position: position,
-                                         position: position)
+          is_expected.to have_attributes(original_position: position, position: position)
         end
       end
 

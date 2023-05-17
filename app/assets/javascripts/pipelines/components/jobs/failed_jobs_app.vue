@@ -1,10 +1,8 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { createAlert } from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { createAlert } from '~/alert';
 import GetFailedJobsQuery from '../../graphql/queries/get_failed_jobs.query.graphql';
-import { prepareFailedJobs } from './utils';
 import FailedJobsTable from './failed_jobs_table.vue';
 
 export default {
@@ -13,17 +11,11 @@ export default {
     FailedJobsTable,
   },
   inject: {
-    fullPath: {
+    projectPath: {
       default: '',
     },
     pipelineIid: {
       default: '',
-    },
-  },
-  props: {
-    failedJobsSummary: {
-      type: Array,
-      required: true,
     },
   },
   apollo: {
@@ -31,20 +23,21 @@ export default {
       query: GetFailedJobsQuery,
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.projectPath,
           pipelineIid: this.pipelineIid,
         };
       },
       update({ project }) {
-        if (project?.pipeline?.jobs?.nodes) {
-          return project.pipeline.jobs.nodes.map((job) => {
-            return { normalizedId: getIdFromGraphQLId(job.id), ...job };
-          });
-        }
-        return [];
-      },
-      result() {
-        this.preparedFailedJobs = prepareFailedJobs(this.failedJobs, this.failedJobsSummary);
+        const jobNodes = project?.pipeline?.jobs?.nodes || [];
+
+        return jobNodes.map((job) => {
+          return {
+            ...job,
+            // this field is needed for the slot row-details
+            // on the failed_jobs_table.vue component
+            _showDetails: true,
+          };
+        });
       },
       error() {
         createAlert({ message: s__('Jobs|There was a problem fetching the failed jobs.') });
@@ -54,7 +47,6 @@ export default {
   data() {
     return {
       failedJobs: [],
-      preparedFailedJobs: [],
     };
   },
   computed: {
@@ -68,6 +60,6 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="loading" size="lg" class="gl-mt-4" />
-    <failed-jobs-table v-else :failed-jobs="preparedFailedJobs" />
+    <failed-jobs-table v-else :failed-jobs="failedJobs" />
   </div>
 </template>

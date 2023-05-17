@@ -32,6 +32,7 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
         1. For **Site key**, use: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
         1. For **Secret key**, use: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
     1. Go to **Admin -> Settings -> Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
+    1. Expand the **Spam and Anti-bot Protection** section.
     1. Select **Enable reCAPTCHA**. Enabling for login is not required unless you are testing that feature.
     1. Enter the **Site key** and **Secret key**.
 1. To set up Akismet:

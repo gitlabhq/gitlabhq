@@ -25,10 +25,6 @@ describe('ActivityHistoryItem', () => {
   const findHistoryItem = () => wrapper.findComponent(HistoryItem);
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     kind                    | icon                                              | title                                                                   | lineNumber
     ${'token_created'}      | ${EVENT_DETAILS.token_created.eventTypeIcon}      | ${sprintf(EVENT_DETAILS.token_created.title, { tokenName: agentName })} | ${0}

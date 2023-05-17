@@ -59,7 +59,10 @@ module Limitable
   def check_plan_limit_not_exceeded(limits, relation)
     return unless limits&.exceeded?(limit_name, relation)
 
-    errors.add(:base, _("Maximum number of %{name} (%{count}) exceeded") %
-        { name: limit_name.humanize(capitalize: false), count: limits.public_send(limit_name) }) # rubocop:disable GitlabSecurity/PublicSend
+    errors.add(
+      :base,
+      _("Maximum number of %{name} (%{count}) exceeded") %
+        { name: limit_name.humanize(capitalize: false), count: limits.public_send(limit_name) } # rubocop:disable GitlabSecurity/PublicSend
+    )
   end
 end

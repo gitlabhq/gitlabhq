@@ -49,10 +49,6 @@ describe('Batch comments draft note component', () => {
     draft = createDraft();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders template', () => {
     createComponent();
     expect(wrapper.findComponent(GlBadge).exists()).toBe(true);

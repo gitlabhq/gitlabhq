@@ -57,12 +57,12 @@ describe('FormUrlMaskItem', () => {
       });
 
       it('renders disabled key and value', () => {
-        expect(findMaskItemKey().findComponent(GlFormInput).attributes('disabled')).toBe('true');
-        expect(findMaskItemValue().findComponent(GlFormInput).attributes('disabled')).toBe('true');
+        expect(findMaskItemKey().findComponent(GlFormInput).attributes('disabled')).toBeDefined();
+        expect(findMaskItemValue().findComponent(GlFormInput).attributes('disabled')).toBeDefined();
       });
 
       it('renders disabled remove button', () => {
-        expect(findRemoveButton().attributes('disabled')).toBe('true');
+        expect(findRemoveButton().attributes('disabled')).toBeDefined();
       });
 
       it('displays ************ as input value', () => {

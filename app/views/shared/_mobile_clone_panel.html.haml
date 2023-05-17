@@ -9,8 +9,8 @@
   %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
     - if ssh_enabled?
       %li
-        = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' }, default: true)
+        = dropdown_item_with_description(ssh_copy_label, ssh_clone_url_to_repo(project), href: ssh_clone_url_to_repo(project), data: { clone_type: 'ssh' }, default: true)
     - if http_enabled?
       %li
-        = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })
+        = dropdown_item_with_description(http_copy_label, http_clone_url_to_repo(project), href: http_clone_url_to_repo(project), data: { clone_type: 'http' })
     = render_if_exists 'shared/mobile_kerberos_clone'

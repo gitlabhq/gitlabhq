@@ -18,7 +18,7 @@ module Gitlab
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
-    MINIMUM_POSTGRES_VERSION = 12
+    MINIMUM_POSTGRES_VERSION = 13
 
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     MAX_INT_VALUE = 2147483647
@@ -35,7 +35,7 @@ module Gitlab
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
     # Migrations before this version may have been removed
-    MIN_SCHEMA_GITLAB_VERSION = '15.0'
+    MIN_SCHEMA_GITLAB_VERSION = '15.11'
 
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
@@ -50,6 +50,11 @@ module Gitlab
     PRIMARY_DATABASE_NAME = ActiveRecord::Base.connection_db_config.name.to_sym # rubocop:disable Database/MultipleDatabases
 
     FULLY_QUALIFIED_IDENTIFIER = /^\w+\.\w+$/
+
+    ## Database Modes
+    MODE_SINGLE_DATABASE = "single-database"
+    MODE_SINGLE_DATABASE_CI_CONNECTION = "single-database-ci-connection"
+    MODE_MULTIPLE_DATABASES = "multiple-databases"
 
     def self.database_base_models
       @database_base_models ||= {
@@ -128,10 +133,27 @@ module Gitlab
       Gitlab::Runtime.max_threads + headroom
     end
 
+    # Database configured. Returns true even if the database is shared
     def self.has_config?(database_name)
       ActiveRecord::Base.configurations
         .configs_for(env_name: Rails.env, name: database_name.to_s, include_replicas: true)
         .present?
+    end
+
+    # Database configured. Returns false if the database is shared
+    def self.has_database?(database_name)
+      db_config = ::Gitlab::Database.database_base_models[database_name]&.connection_db_config
+      db_config.present? && db_config_share_with(db_config).nil?
+    end
+
+    def self.database_mode
+      if !has_config?(CI_DATABASE_NAME)
+        MODE_SINGLE_DATABASE
+      elsif has_database?(CI_DATABASE_NAME)
+        MODE_MULTIPLE_DATABASES
+      else
+        MODE_SINGLE_DATABASE_CI_CONNECTION
+      end
     end
 
     class PgUser < ApplicationRecord
@@ -171,13 +193,12 @@ module Gitlab
                      ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  
 
           ******************************************************************************
-            You are using PostgreSQL #{database.version} for the #{name} database, but PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>
-            is required for this version of GitLab.
+            You are using PostgreSQL #{database.version} for the #{name} database, but this version of GitLab requires PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>.
             <% if Rails.env.development? || Rails.env.test? %>
             If using gitlab-development-kit, please find the relevant steps here:
               https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#upgrade-postgresql
             <% end %>
-            Please upgrade your environment to a supported PostgreSQL version, see
+            Please upgrade your environment to a supported PostgreSQL version. See
             https://docs.gitlab.com/ee/install/requirements.html#database for details.
           ******************************************************************************
         EOS

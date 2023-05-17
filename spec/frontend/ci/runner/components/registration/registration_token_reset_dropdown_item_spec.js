@@ -5,20 +5,20 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/ci/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
-const mockNewToken = 'NEW_TOKEN';
+const mockNewRegistrationToken = 'MOCK_NEW_REGISTRATION_TOKEN';
 const modalID = 'token-reset-modal';
 
 describe('RegistrationTokenResetDropdownItem', () => {
@@ -43,7 +43,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
         [runnersRegistrationTokenResetMutation, runnersRegistrationTokenResetMutationHandler],
       ]),
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
 
@@ -54,17 +54,13 @@ describe('RegistrationTokenResetDropdownItem', () => {
     runnersRegistrationTokenResetMutationHandler = jest.fn().mockResolvedValue({
       data: {
         runnersRegistrationTokenReset: {
-          token: mockNewToken,
+          token: mockNewRegistrationToken,
           errors: [],
         },
       },
     });
 
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Displays reset button', () => {
@@ -113,7 +109,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
       it('emits result', () => {
         expect(wrapper.emitted('tokenReset')).toHaveLength(1);
-        expect(wrapper.emitted('tokenReset')[0]).toEqual([mockNewToken]);
+        expect(wrapper.emitted('tokenReset')[0]).toEqual([mockNewRegistrationToken]);
       });
 
       it('does not show a loading state', () => {

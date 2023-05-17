@@ -3,7 +3,7 @@ table_name: namespaces_storage_limit_exclusions
 classes:
   - Namespaces::Storage::LimitExclusion
 feature_categories:
-  - subscription_cost_management
+  - consumables_cost_management
 description: |
   Stores namespaces that are excluded from the storage limit.
   Any namespaces that are included in this table will not have storage limitations applied.

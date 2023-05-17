@@ -45,10 +45,6 @@ describe('CE IssueCardTimeInfo component', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('milestone', () => {
     it('renders', () => {
       wrapper = mountComponent();

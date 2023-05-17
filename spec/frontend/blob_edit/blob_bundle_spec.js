@@ -5,12 +5,19 @@ import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
 
 import SourceEditor from '~/blob_edit/edit_blob';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 jest.mock('~/blob_edit/edit_blob');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('BlobBundle', () => {
+  beforeAll(() => {
+    // HACK: Workaround readonly property in Jest
+    Object.defineProperty(window, 'onbeforeunload', {
+      writable: true,
+    });
+  });
+
   it('does not load SourceEditor by default', () => {
     blobBundle();
     expect(SourceEditor).not.toHaveBeenCalled();

@@ -14,6 +14,10 @@ describe('ScopeNavigation', () => {
     fetchSidebarCount: jest.fn(),
   };
 
+  const getterSpies = {
+    currentScope: jest.fn(() => 'issues'),
+  };
+
   const createComponent = (initialState) => {
     const store = new Vuex.Store({
       state: {
@@ -22,6 +26,7 @@ describe('ScopeNavigation', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: getterSpies,
     });
 
     wrapper = shallowMount(ScopeNavigation, {
@@ -29,16 +34,12 @@ describe('ScopeNavigation', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findNavElement = () => wrapper.find('nav');
   const findGlNav = () => wrapper.findComponent(GlNav);
   const findGlNavItems = () => wrapper.findAllComponents(GlNavItem);
-  const findGlNavItemActive = () => findGlNavItems().wrappers.filter((w) => w.attributes('active'));
-  const findGlNavItemActiveLabel = () => findGlNavItemActive().at(0).findAll('span').at(0).text();
-  const findGlNavItemActiveCount = () => findGlNavItemActive().at(0).findAll('span').at(1);
+  const findGlNavItemActive = () => wrapper.find('[active=true]');
+  const findGlNavItemActiveLabel = () => findGlNavItemActive().find('[data-testid="label"]');
+  const findGlNavItemActiveCount = () => findGlNavItemActive().find('[data-testid="count"]');
 
   describe('scope navigation', () => {
     beforeEach(() => {
@@ -71,8 +72,8 @@ describe('ScopeNavigation', () => {
     });
 
     it('has correct active item', () => {
-      expect(findGlNavItemActive()).toHaveLength(1);
-      expect(findGlNavItemActiveLabel()).toBe('Issues');
+      expect(findGlNavItemActive().exists()).toBe(true);
+      expect(findGlNavItemActiveLabel().text()).toBe('Issues');
     });
 
     it('has correct active item count', () => {
@@ -80,7 +81,7 @@ describe('ScopeNavigation', () => {
     });
 
     it('does not have plus sign after count text', () => {
-      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(false);
+      expect(findGlNavItemActive().findComponent(GlIcon).exists()).toBe(false);
     });
 
     it('has count is highlighted correctly', () => {
@@ -90,14 +91,26 @@ describe('ScopeNavigation', () => {
 
   describe('scope navigation sets proper state with NO url scope set', () => {
     beforeEach(() => {
+      getterSpies.currentScope = jest.fn(() => 'projects');
       createComponent({
         urlQuery: {},
+        navigation: {
+          ...MOCK_NAVIGATION,
+          projects: {
+            ...MOCK_NAVIGATION.projects,
+            active: true,
+          },
+          issues: {
+            ...MOCK_NAVIGATION.issues,
+            active: false,
+          },
+        },
       });
     });
 
     it('has correct active item', () => {
-      expect(findGlNavItems().at(0).attributes('active')).toBe('true');
-      expect(findGlNavItemActiveLabel()).toBe('Projects');
+      expect(findGlNavItemActive().exists()).toBe(true);
+      expect(findGlNavItemActiveLabel().text()).toBe('Projects');
     });
 
     it('has correct active item count', () => {
@@ -105,7 +118,25 @@ describe('ScopeNavigation', () => {
     });
 
     it('has correct active item count and over limit sign', () => {
-      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(true);
+      expect(findGlNavItemActive().findComponent(GlIcon).exists()).toBe(true);
+    });
+  });
+
+  describe.each`
+    searchTherm | hasBeenCalled
+    ${null}     | ${0}
+    ${'test'}   | ${1}
+  `('fetchSidebarCount', ({ searchTherm, hasBeenCalled }) => {
+    beforeEach(() => {
+      createComponent({
+        urlQuery: {
+          search: searchTherm,
+        },
+      });
+    });
+
+    it('is only called when search term is set', () => {
+      expect(actionSpies.fetchSidebarCount).toHaveBeenCalledTimes(hasBeenCalled);
     });
   });
 });

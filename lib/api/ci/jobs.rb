@@ -49,7 +49,7 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:jobs_index, scope: current_user) if enforce_jobs_api_rate_limits(@project)
+          check_rate_limit!(:jobs_index, scope: current_user)
 
           authorize_read_builds!
 
@@ -250,7 +250,7 @@ module API
           ]
         end
         route_setting :authentication, job_token_allowed: true
-        get '/allowed_agents', urgency: :low, feature_category: :kubernetes_management do
+        get '/allowed_agents', urgency: :low, feature_category: :deployment_management do
           validate_current_authenticated_job
 
           status 200
@@ -266,14 +266,14 @@ module API
           persisted_environment = current_authenticated_job.actual_persisted_environment
           environment = { tier: persisted_environment.tier, slug: persisted_environment.slug } if persisted_environment
 
-          agent_authorizations = ::Clusters::Agents::FilterAuthorizationsService.new(
-            ::Clusters::AgentAuthorizationsFinder.new(project).execute,
+          agent_authorizations = ::Clusters::Agents::Authorizations::CiAccess::FilterService.new(
+            ::Clusters::Agents::Authorizations::CiAccess::Finder.new(project).execute,
             environment: persisted_environment&.name
           ).execute
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api
           {
-            allowed_agents: Entities::Clusters::AgentAuthorization.represent(agent_authorizations),
+            allowed_agents: Entities::Clusters::Agents::Authorizations::CiAccess.represent(agent_authorizations),
             job: { id: current_authenticated_job.id },
             pipeline: { id: pipeline.id },
             project: { id: project.id, groups: project_groups },

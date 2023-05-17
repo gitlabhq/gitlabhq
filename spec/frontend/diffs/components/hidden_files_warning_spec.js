@@ -23,10 +23,6 @@ describe('HiddenFilesWarning', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a correct plain diff URL', () => {
     const plainDiffLink = wrapper.findAllComponents(GlButton).at(0);
 
@@ -41,7 +37,9 @@ describe('HiddenFilesWarning', () => {
 
   it('has a correct visible/total files text', () => {
     expect(wrapper.text()).toContain(
-      __('To preserve performance only 5 of 10 files are displayed.'),
+      __(
+        'For a faster browsing experience, only 5 of 10 files are shown. Download one of the files below to see all changes',
+      ),
     );
   });
 });

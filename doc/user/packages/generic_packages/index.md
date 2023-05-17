@@ -22,6 +22,8 @@ do not support the other available mechanisms. The `user-id` is not checked and
 may be any value, and the `password` must be either a [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
 a [CI/CD job token](../../../ci/jobs/ci_job_token.md), or a [deploy token](../../project/deploy_tokens/index.md).
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ## Publish a package file
 
 When you publish a package file, if the package does not exist, it is created.

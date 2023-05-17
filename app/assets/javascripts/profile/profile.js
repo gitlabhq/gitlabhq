@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/flash';
+import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';

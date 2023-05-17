@@ -104,7 +104,7 @@ export default {
       return this.permissions.createDesign;
     },
     showToolbar() {
-      return this.canCreateDesign && this.allVersions.length > 0;
+      return this.allVersions.length > 0;
     },
     hasDesigns() {
       return this.designs.length > 0;
@@ -140,6 +140,12 @@ export default {
         return 'col-12 gl-mt-5';
       }
       return 'col-12';
+    },
+    designContentWrapperClass() {
+      if (this.hasDesigns) {
+        return 'gl-bg-gray-10 gl-border gl-border-t-0 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-5';
+      }
+      return null;
     },
   },
   mounted() {
@@ -364,7 +370,7 @@ export default {
     </gl-alert>
     <header
       v-if="showToolbar"
-      class="gl-display-flex gl-my-0 gl-text-gray-900"
+      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!"
       data-testid="design-toolbar-wrapper"
     >
       <div
@@ -375,6 +381,7 @@ export default {
           <design-version-dropdown />
         </div>
         <div
+          v-if="canCreateDesign"
           v-show="hasDesigns"
           class="gl-display-flex gl-align-items-center"
           data-testid="design-selector-toolbar"
@@ -417,7 +424,7 @@ export default {
         </div>
       </div>
     </header>
-    <div>
+    <div :class="designContentWrapperClass">
       <gl-loading-icon v-if="isLoading" size="lg" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
@@ -482,14 +489,18 @@ export default {
             v-if="canSelectDesign(design.filename)"
             :checked="isDesignSelected(design.filename)"
             type="checkbox"
-            class="design-checkbox"
+            class="design-checkbox gl-absolute gl-top-4 gl-left-6 gl-ml-2"
             data-qa-selector="design_checkbox"
             :data-qa-design="design.filename"
             @change="changeSelectedDesigns(design.filename)"
           />
         </li>
         <template #header>
-          <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
+          <li
+            v-if="canCreateDesign"
+            :class="designDropzoneWrapperClass"
+            data-testid="design-dropzone-wrapper"
+          >
             <design-dropzone
               :enable-drag-behavior="isDraggingDesign"
               :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"

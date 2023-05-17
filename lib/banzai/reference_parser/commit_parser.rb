@@ -5,6 +5,8 @@ module Banzai
     class CommitParser < BaseParser
       self.reference_type = :commit
 
+      COMMITS_LIMIT = 1000
+
       def referenced_by(nodes, options = {})
         commit_ids = commit_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(commit_ids)
@@ -19,24 +21,11 @@ module Banzai
       end
 
       def find_commits(project, ids)
-        commits = []
+        return [] unless project.valid_repo?
 
-        return commits unless project.valid_repo?
+        ids = ids.take(COMMITS_LIMIT)
 
-        ids.each do |id|
-          commit = project.commit(id)
-
-          commits << commit if commit
-        end
-
-        commits
-      end
-
-      def nodes_visible_to_user(user, nodes)
-        projects = lazy { projects_for_nodes(nodes) }
-        user.preloaded_member_roles_for_projects(projects.values) if user
-
-        super
+        project.commits_by(oids: ids)
       end
 
       private

@@ -3,7 +3,7 @@ table_name: project_security_settings
 classes:
 - ProjectSecuritySetting
 feature_categories:
-- dependency_scanning
+- software_composition_analysis
 - container_scanning
 description: Project settings related to security features.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32577

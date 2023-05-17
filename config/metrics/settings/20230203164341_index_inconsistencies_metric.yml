@@ -1,0 +1,24 @@
+---
+key_path: index_inconsistencies
+name: "index_inconsistencies"
+description: "List the index inconsistencies in the database"
+product_section: enablement
+product_stage: enablement
+product_group: database
+value_type: object
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111015
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: IndexInconsistenciesMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+value_json_schema: "config/metrics/objects_schemas/index_inconsistencies_metric.json"

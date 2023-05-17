@@ -8,7 +8,9 @@ module QA
           include Page::Component::Note
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
-          prepend Mobile::Page::Project::Issue::Show if Runtime::Env.mobile_layout?
+          # We need to check phone_layout? instead of mobile_layout? here
+          # since tablets have the regular top navigation bar
+          prepend Mobile::Page::Project::Issue::Show if Runtime::Env.phone_layout?
 
           view 'app/assets/javascripts/issuable/components/related_issuable_item.vue' do
             element :remove_related_issue_button
@@ -64,7 +66,10 @@ module QA
           end
 
           def click_close_issue_button
-            click_element :close_issue_button
+            # Click by JS is needed to bypass the Moved MR actions popover
+            # Change back to regular click_element when moved_mr_sidebar FF is removed
+            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+            click_by_javascript(find_element(:close_issue_button))
           end
 
           def has_reopen_issue_button?
@@ -72,12 +77,15 @@ module QA
           end
 
           def has_delete_issue_button?
-            click_element(:issue_actions_ellipsis_dropdown)
+            # Click by JS is needed to bypass the Moved MR actions popover
+            # Change back to regular click_element when moved_mr_sidebar FF is removed
+            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+            click_by_javascript(find('[data-qa-selector="issue_actions_ellipsis_dropdown"] > button'))
             has_element?(:delete_issue_button)
           end
 
           def delete_issue
-            click_element(:issue_actions_ellipsis_dropdown)
+            has_delete_issue_button?
 
             click_element(:delete_issue_button,
                           Page::Modal::DeleteIssue,

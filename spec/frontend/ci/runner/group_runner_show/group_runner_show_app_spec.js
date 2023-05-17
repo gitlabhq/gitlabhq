@@ -4,8 +4,8 @@ import VueApollo from 'vue-apollo';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
@@ -24,7 +24,7 @@ import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_al
 import { runnerData } from '../mock_data';
 
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility');
 
@@ -74,7 +74,6 @@ describe('GroupRunnerShowApp', () => {
 
   afterEach(() => {
     mockRunnerQuery.mockReset();
-    wrapper.destroy();
   });
 
   describe('When showing runner details', () => {
@@ -84,7 +83,7 @@ describe('GroupRunnerShowApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    it('expect GraphQL ID to be requested', async () => {
+    it('expect GraphQL ID to be requested', () => {
       expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
     });
 
@@ -92,7 +91,7 @@ describe('GroupRunnerShowApp', () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
     });
 
-    it('displays the runner edit and pause buttons', async () => {
+    it('displays the runner edit and pause buttons', () => {
       expect(findRunnerEditButton().attributes('href')).toBe(mockEditGroupRunnerPath);
       expect(findRunnerPauseButton().exists()).toBe(true);
       expect(findRunnerDeleteButton().exists()).toBe(true);
@@ -186,7 +185,7 @@ describe('GroupRunnerShowApp', () => {
           message: 'Runner deleted',
           variant: VARIANT_SUCCESS,
         });
-        expect(redirectTo).toHaveBeenCalledWith(mockRunnersPath);
+        expect(redirectTo).toHaveBeenCalledWith(mockRunnersPath); // eslint-disable-line import/no-deprecated
       });
     });
   });

@@ -11,7 +11,7 @@ RSpec.describe "Compare", :js, feature_category: :projects do
     sign_in user
   end
 
-  describe "branches" do
+  shared_examples "compare view of branches" do
     shared_examples 'compares branches' do
       it 'compares branches' do
         visit project_compare_index_path(project, from: 'master', to: 'master')
@@ -114,7 +114,7 @@ RSpec.describe "Compare", :js, feature_category: :projects do
         click_button('Compare')
 
         page.within('[data-testid="too-many-changes-alert"]') do
-          expect(page).to have_text("Too many changes to show. To preserve performance only 3 of 3+ files are displayed.")
+          expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown. Download one of the files below to see all changes.")
         end
       end
     end
@@ -148,7 +148,7 @@ RSpec.describe "Compare", :js, feature_category: :projects do
     end
   end
 
-  describe "tags" do
+  shared_examples "compare view of tags" do
     it "compares tags" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
@@ -181,5 +181,18 @@ RSpec.describe "Compare", :js, feature_category: :projects do
       dropdown.find(".js-compare-#{dropdown_type}-dropdown .dropdown-item", text: selection, match: :first)
       dropdown.all(".js-compare-#{dropdown_type}-dropdown .dropdown-item", text: selection).first.click
     end
+  end
+
+  it_behaves_like "compare view of branches"
+  it_behaves_like "compare view of tags"
+
+  context "when super sidebar is enabled" do
+    before do
+      user.update!(use_new_navigation: true)
+      stub_feature_flags(super_sidebar_nav: true)
+    end
+
+    it_behaves_like "compare view of branches"
+    it_behaves_like "compare view of tags"
   end
 end

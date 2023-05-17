@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::ApplicationsController, :enable_admin_mode,
-feature_category: :authentication_and_authorization do
+feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:application) { create(:oauth_application, owner_id: nil, owner_type: nil) }
   let_it_be(:show_path) { admin_application_path(application) }

@@ -58,7 +58,7 @@ git-lfs --version
 ```
 
 If it doesn't recognize this command, you must install it. There are
-several [installation methods](https://git-lfs.github.com/) that you can
+several [installation methods](https://git-lfs.com/) that you can
 choose according to your OS. To install it with Homebrew:
 
 ```shell
@@ -195,8 +195,7 @@ Suggested workflow for shared projects:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
 
 This process allows you to lock one file at a time through the GitLab UI and
-requires access to [GitLab Premium](https://about.gitlab.com/pricing/)
-or higher tiers.
+requires access to the [GitLab Premium or Ultimate tier](https://about.gitlab.com/pricing/).
 
 Default branch file and directory locks only apply to the
 [default branch](repository/branches/default.md) set in the project's settings.
@@ -209,7 +208,7 @@ requests that modify locked files. Unlock the file to allow changes.
 To lock a file:
 
 1. Open the file or directory in GitLab.
-1. In the upper right, above the file, select **Lock**.
+1. In the upper-right corner, above the file, select **Lock**.
 1. On the confirmation dialog box, select **OK**.
 
 If you do not have permission to lock the file, the button is not enabled.
@@ -221,7 +220,7 @@ To view the user who locked the file (if it was not you), hover over the button.
 To view and remove file locks:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Locked Files**.
+1. On the left sidebar, select **Repository > Locked files**.
 
 This list shows all the files locked either through LFS or GitLab UI.
 

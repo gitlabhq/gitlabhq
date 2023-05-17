@@ -1,46 +1,43 @@
+import Vue from 'vue';
+import { createWrapper } from '@vue/test-utils';
 import renderObservability from '~/behaviors/markdown/render_observability';
-import * as ColorUtils from '~/lib/utils/color_utils';
+import { INLINE_EMBED_DIMENSIONS, SKELETON_VARIANT_EMBED } from '~/observability/constants';
+import ObservabilityApp from '~/observability/components/observability_app.vue';
 
-describe('Observability iframe renderer', () => {
-  const findObservabilityIframes = (theme = 'light') =>
-    document.querySelectorAll(`iframe[src="https://observe.gitlab.com/?theme=${theme}&kiosk"]`);
-
-  const renderEmbeddedObservability = () => {
-    renderObservability([...document.querySelectorAll('.js-render-observability')]);
-    jest.runAllTimers();
-  };
+describe('renderObservability', () => {
+  let subject;
 
   beforeEach(() => {
-    document.body.dataset.page = '';
-    document.body.innerHTML = '';
+    subject = document.createElement('div');
+    subject.classList.add('js-render-observability');
+    subject.dataset.frameUrl = 'https://observe.gitlab.com/';
+    document.body.appendChild(subject);
   });
 
-  it('renders an observability iframe', () => {
-    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/"  data-observability-url="https://observe.gitlab.com/" ></div>`;
-
-    expect(findObservabilityIframes()).toHaveLength(0);
-
-    renderEmbeddedObservability();
-
-    expect(findObservabilityIframes()).toHaveLength(1);
+  afterEach(() => {
+    subject.remove();
   });
 
-  it('renders iframe with dark param when GL has dark theme', () => {
-    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/" data-observability-url="https://observe.gitlab.com/"></div>`;
-    jest.spyOn(ColorUtils, 'darkModeEnabled').mockImplementation(() => true);
-
-    expect(findObservabilityIframes('dark')).toHaveLength(0);
-
-    renderEmbeddedObservability();
-
-    expect(findObservabilityIframes('dark')).toHaveLength(1);
+  it('should return an array of Vue instances', () => {
+    const vueInstances = renderObservability([
+      ...document.querySelectorAll('.js-render-observability'),
+    ]);
+    expect(vueInstances).toEqual([expect.any(Vue)]);
   });
 
-  it('does not render if url is different from observability url', () => {
-    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://example.com/" data-observability-url="https://observe.gitlab.com/"></div>`;
+  it('should correctly pass props to the ObservabilityApp component', () => {
+    const vueInstances = renderObservability([
+      ...document.querySelectorAll('.js-render-observability'),
+    ]);
 
-    renderEmbeddedObservability();
+    const wrapper = createWrapper(vueInstances[0]);
 
-    expect(findObservabilityIframes()).toHaveLength(0);
+    expect(wrapper.findComponent(ObservabilityApp).props()).toMatchObject({
+      observabilityIframeSrc: 'https://observe.gitlab.com/',
+      skeletonVariant: SKELETON_VARIANT_EMBED,
+      inlineEmbed: true,
+      height: INLINE_EMBED_DIMENSIONS.HEIGHT,
+      width: INLINE_EMBED_DIMENSIONS.WIDTH,
+    });
   });
 });

@@ -569,7 +569,7 @@ def disable_two_factor!
 end
 
 def two_factor_enabled?
-  two_factor_otp_enabled? || two_factor_u2f_enabled?
+  two_factor_otp_enabled? || two_factor_webauthn_enabled?
 end
 ```
 

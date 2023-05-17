@@ -39,10 +39,6 @@ describe('pipeline graph component', () => {
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findPipelineGraph = () => wrapper.find('[data-testid="graph-container"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with `VALID` status', () => {
     beforeEach(() => {
       wrapper = createComponent({

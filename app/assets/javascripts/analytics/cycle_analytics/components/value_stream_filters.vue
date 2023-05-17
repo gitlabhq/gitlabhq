@@ -31,8 +31,8 @@ export default {
       required: false,
       default: true,
     },
-    groupId: {
-      type: Number,
+    namespacePath: {
+      type: String,
       required: true,
     },
     groupPath: {
@@ -73,7 +73,7 @@ export default {
     <filter-bar
       data-testid="vsa-filter-bar"
       class="filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
-      :group-path="groupPath"
+      :namespace-path="namespacePath"
     />
     <div
       v-if="hasDateRangeFilter || hasProjectFilter"
@@ -82,9 +82,7 @@ export default {
       <div>
         <projects-dropdown-filter
           v-if="hasProjectFilter"
-          :key="groupId"
           class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
-          :group-id="groupId"
           :group-namespace="groupPath"
           :query-params="projectsQueryParams"
           :multi-select="$options.multiProjectSelect"

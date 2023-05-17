@@ -5,7 +5,7 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Style guides
+# Development style guides
 
 ## Editor/IDE styling standardization
 
@@ -30,7 +30,9 @@ We were using Overcommit prior to Lefthook, so you may want to uninstall it firs
 
 ### Install Lefthook
 
-1. Install the `lefthook` Ruby gem:
+1. You can install lefthook in [different ways](https://github.com/evilmartians/lefthook/blob/master/docs/install.md#install-lefthook).
+   If you do not choose to install it globally (e.g. via Homebrew or package managers), and only want to use it for the GitLab project,
+   you can install the Ruby gem via:
 
    ```shell
    bundle install
@@ -39,12 +41,18 @@ We were using Overcommit prior to Lefthook, so you may want to uninstall it firs
 1. Install Lefthook managed Git hooks:
 
    ```shell
+   # If installed globally
+   lefthook install
+   # Or if installed via ruby gem
    bundle exec lefthook install
    ```
 
 1. Test Lefthook is working by running the Lefthook `pre-push` Git hook:
 
    ```shell
+   # If installed globally
+   lefthook run pre-push
+   # Or if installed via ruby gem
    bundle exec lefthook run pre-push
    ```
 
@@ -56,6 +64,18 @@ Lefthook is configured with a combination of:
 
 - Project configuration in [`lefthook.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lefthook.yml).
 - Any [local configuration](https://github.com/evilmartians/lefthook/blob/master/README.md#local-config).
+
+### Lefthook auto-fixing files
+
+We have a custom lefthook target to run all the linters with auto-fix capabilities,
+but just on the files which changed in your branch.
+
+```shell
+# If installed globally
+lefthook run auto-fix
+# Or if installed via ruby gem
+bundle exec lefthook run auto-fix
+```
 
 ### Disable Lefthook temporarily
 

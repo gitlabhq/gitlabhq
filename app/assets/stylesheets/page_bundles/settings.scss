@@ -138,42 +138,32 @@
   border-radius: $gl-border-radius-base;
 }
 
-.prometheus-metrics-monitoring {
-  .card {
-    .card-toggle {
-      width: 14px;
-    }
 
+.prometheus-metrics-monitoring {
+  .gl-card {
     .badge.badge-pill {
       font-size: 12px;
       line-height: 12px;
     }
 
-    .card-header .label-count {
+    .gl-card-header .label-count {
       color: var(--white, $white);
       background: var(--gray-800, $gray-800);
-    }
-
-    .card-body {
-      padding: 0;
     }
 
     .flash-container {
       margin-bottom: 0;
       cursor: default;
 
-      .flash-notice {
+      .flash-notice,
+      .flash-warning {
+        margin-top: 0;
         border-radius: 0;
       }
     }
   }
 
   .custom-monitored-metrics {
-    .card-header {
-      display: flex;
-      align-items: center;
-    }
-
     .custom-metric {
       display: flex;
       align-items: center;

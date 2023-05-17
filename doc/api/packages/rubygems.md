@@ -19,7 +19,7 @@ package registry, see the [Ruby gems registry documentation](../../user/packages
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Ruby gems registry documentation](../../user/packages/rubygems_registry/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Ruby gems API
 

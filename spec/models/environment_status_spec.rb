@@ -17,6 +17,7 @@ RSpec.describe EnvironmentStatus do
   it { is_expected.to delegate_method(:name).to(:environment) }
   it { is_expected.to delegate_method(:deployed_at).to(:deployment) }
   it { is_expected.to delegate_method(:status).to(:deployment) }
+  it { is_expected.to delegate_method(:deployable).to(:deployment) }
 
   describe '#project' do
     subject { environment_status.project }
@@ -177,11 +178,13 @@ RSpec.describe EnvironmentStatus do
       let(:pipeline) { create(:ci_pipeline, sha: sha, project: forked) }
 
       let(:merge_request) do
-        create(:merge_request,
-               source_project: forked,
-               target_project: project,
-               target_branch: 'master',
-               head_pipeline: pipeline)
+        create(
+          :merge_request,
+          source_project: forked,
+          target_project: project,
+          target_branch: 'master',
+          head_pipeline: pipeline
+        )
       end
 
       it 'returns environment status' do
@@ -198,12 +201,14 @@ RSpec.describe EnvironmentStatus do
       let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
 
       let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'feature',
-               target_project: project,
-               target_branch: 'master',
-               head_pipeline: pipeline)
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_project: project,
+          target_branch: 'master',
+          head_pipeline: pipeline
+        )
       end
 
       it 'returns environment status' do
@@ -265,11 +270,23 @@ RSpec.describe EnvironmentStatus do
 
       context 'when environment is stopped' do
         before do
+          stub_feature_flags(review_apps_redeploy_mr_widget: false)
           environment.stop!
         end
 
         it 'does not return environment status' do
           expect(subject.count).to eq(0)
+        end
+      end
+
+      context 'when environment is stopped and review_apps_redeploy_mr_widget is turned on' do
+        before do
+          stub_feature_flags(review_apps_redeploy_mr_widget: true)
+          environment.stop!
+        end
+
+        it 'returns environment regardless of status' do
+          expect(subject.count).to eq(1)
         end
       end
     end

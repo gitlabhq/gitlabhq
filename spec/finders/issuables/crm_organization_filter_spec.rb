@@ -6,11 +6,11 @@ RSpec.describe Issuables::CrmOrganizationFilter do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  let_it_be(:organization1) { create(:organization, group: group) }
-  let_it_be(:organization2) { create(:organization, group: group) }
-  let_it_be(:contact1) { create(:contact, group: group, organization: organization1) }
-  let_it_be(:contact2) { create(:contact, group: group, organization: organization1) }
-  let_it_be(:contact3) { create(:contact, group: group, organization: organization2) }
+  let_it_be(:crm_organization1) { create(:crm_organization, group: group) }
+  let_it_be(:crm_organization2) { create(:crm_organization, group: group) }
+  let_it_be(:contact1) { create(:contact, group: group, organization: crm_organization1) }
+  let_it_be(:contact2) { create(:contact, group: group, organization: crm_organization1) }
+  let_it_be(:contact3) { create(:contact, group: group, organization: crm_organization2) }
 
   let_it_be(:contact1_issue) { create(:issue, project: project) }
   let_it_be(:contact2_issue) { create(:issue, project: project) }
@@ -24,14 +24,14 @@ RSpec.describe Issuables::CrmOrganizationFilter do
   end
 
   describe 'when an organization has issues' do
-    it 'returns all organization1 issues' do
-      params = { crm_organization_id: organization1.id }
+    it 'returns all crm_organization1 issues' do
+      params = { crm_organization_id: crm_organization1.id }
 
       expect(described_class.new(params: params).filter(issues)).to contain_exactly(contact1_issue, contact2_issue)
     end
 
-    it 'returns all organization2 issues' do
-      params = { crm_organization_id: organization2.id }
+    it 'returns all crm_organization2 issues' do
+      params = { crm_organization_id: crm_organization2.id }
 
       expect(described_class.new(params: params).filter(issues)).to contain_exactly(contact3_issue)
     end
@@ -39,8 +39,8 @@ RSpec.describe Issuables::CrmOrganizationFilter do
 
   describe 'when an organization has no issues' do
     it 'returns no issues' do
-      organization3 = create(:organization, group: group)
-      params = { crm_organization_id: organization3.id }
+      crm_organization3 = create(:crm_organization, group: group)
+      params = { crm_organization_id: crm_organization3.id }
 
       expect(described_class.new(params: params).filter(issues)).to be_empty
     end

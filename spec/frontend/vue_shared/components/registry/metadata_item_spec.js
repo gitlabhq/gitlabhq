@@ -14,15 +14,10 @@ describe('Metadata Item', () => {
     wrapper = shallowMount(component, {
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLink = (w = wrapper) => w.findComponent(GlLink);

@@ -34,10 +34,6 @@ module Ci
         order(relation)
       end
 
-      def builds_queued_before(relation, time)
-        relation.queued_before(time)
-      end
-
       def builds_for_protected_runner(relation)
         relation.ref_protected
       end

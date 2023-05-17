@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :aggregate_failures,
-:ci_partitionable, feature_category: :continuous_integration do
+  :ci_partitionable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user)    { project.first_owner }
 

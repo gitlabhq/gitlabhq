@@ -39,14 +39,16 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
 
   describe '#execute' do
     before_all do
-      create(:group_group_link, :owner,
-             shared_with_group: group_where_user_has_owner_access,
-             shared_group: shared_with_group_where_direct_owner_as_owner
+      create(
+        :group_group_link, :owner,
+        shared_with_group: group_where_user_has_owner_access,
+        shared_group: shared_with_group_where_direct_owner_as_owner
       )
 
-      create(:group_group_link, :guest,
-             shared_with_group: group_where_user_has_owner_access,
-             shared_group: shared_with_group_where_direct_owner_as_guest
+      create(
+        :group_group_link, :guest,
+        shared_with_group: group_where_user_has_owner_access,
+        shared_group: shared_with_group_where_direct_owner_as_guest
       )
     end
 

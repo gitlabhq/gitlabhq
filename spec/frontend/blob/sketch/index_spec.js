@@ -1,10 +1,11 @@
 import SketchLoader from '~/blob/sketch';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
+import htmlSketchViewer from 'test_fixtures_static/sketch_viewer.html';
 
 describe('Sketch viewer', () => {
   beforeEach(() => {
-    loadHTMLFixture('static/sketch_viewer.html');
+    setHTMLFixture(htmlSketchViewer);
   });
 
   afterEach(() => {

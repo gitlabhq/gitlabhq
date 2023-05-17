@@ -21,7 +21,8 @@
     "Epic",
     "EpicIssue",
     "Issue",
-    "MergeRequest"
+    "MergeRequest",
+    "WorkItemWidgetCurrentUserTodos"
   ],
   "DependencyLinkMetadata": [
     "NugetDependencyLinkMetadata"
@@ -38,6 +39,10 @@
   "Eventable": [
     "BoardEpic",
     "Epic"
+  ],
+  "ExternalAuditEventDestinationInterface": [
+    "ExternalAuditEventDestination",
+    "InstanceExternalAuditEventDestination"
   ],
   "Issuable": [
     "Epic",
@@ -83,6 +88,22 @@
     "MavenMetadata",
     "NugetMetadata",
     "PypiMetadata"
+  ],
+  "Registrable": [
+    "CiSecureFileRegistry",
+    "ContainerRepositoryRegistry",
+    "DependencyProxyBlobRegistry",
+    "DependencyProxyManifestRegistry",
+    "JobArtifactRegistry",
+    "LfsObjectRegistry",
+    "MergeRequestDiffRegistry",
+    "PackageFileRegistry",
+    "PagesDeploymentRegistry",
+    "PipelineArtifactRegistry",
+    "ProjectWikiRepositoryRegistry",
+    "SnippetRepositoryRegistry",
+    "TerraformStateVersionRegistry",
+    "UploadRegistry"
   ],
   "ResolvableInterface": [
     "Discussion",
@@ -145,6 +166,8 @@
   ],
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
+    "WorkItemWidgetAwardEmoji",
+    "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
@@ -152,6 +175,7 @@
     "WorkItemWidgetLabels",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
+    "WorkItemWidgetNotifications",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetStartAndDueDate",

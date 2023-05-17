@@ -40,9 +40,12 @@ For this bot:
 
 Other examples of internal users:
 
-- [Alert Bot](../operations/metrics/alerts.md#trigger-actions-from-alerts)
+- [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk.md#support-bot-user)
 - Visual Review Bot
-- Resource access tokens (including [project access tokens](../user/project/settings/project_access_tokens.md)).
-  These are implemented as `project_bot` users with a `PersonalAccessToken`.
+- Resource access tokens, including:
+  - [Project access tokens](../user/project/settings/project_access_tokens.md).
+  - [Group access tokens](../user/group/settings/group_access_tokens.md).
+
+  These are implemented as `project_{project_id}_bot_{random_string}` i.e. `group_{group_id}_bot_{random_string}` users, with a `PersonalAccessToken`.

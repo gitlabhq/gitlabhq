@@ -1,12 +1,13 @@
 import Vue from 'vue';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { s__ } from '~/locale';
 import component from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
 import {
-  PACKAGE_FORWARDING_SETTINGS_DESCRIPTION,
+  REQUEST_FORWARDING_HELP_PAGE_PATH,
   PACKAGE_FORWARDING_SETTINGS_HEADER,
 } from '~/packages_and_registries/settings/group/constants';
 
@@ -25,7 +26,7 @@ import {
   mavenProps,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');
 
 describe('Packages Forwarding Settings', () => {
@@ -60,6 +61,7 @@ describe('Packages Forwarding Settings', () => {
         forwardSettings,
       },
       stubs: {
+        GlSprintf,
         SettingsBlock,
       },
     });
@@ -72,6 +74,7 @@ describe('Packages Forwarding Settings', () => {
   const findMavenForwardingSettings = () => wrapper.findByTestId('maven');
   const findNpmForwardingSettings = () => wrapper.findByTestId('npm');
   const findPyPiForwardingSettings = () => wrapper.findByTestId('pypi');
+  const findRequestForwardingDocsLink = () => wrapper.findComponent(GlLink);
 
   const fillApolloCache = () => {
     apolloProvider.defaultClient.cache.writeQuery({
@@ -111,8 +114,18 @@ describe('Packages Forwarding Settings', () => {
   it('has the correct description text', () => {
     mountComponent();
 
-    expect(findDescription().text()).toMatchInterpolatedText(
-      PACKAGE_FORWARDING_SETTINGS_DESCRIPTION,
+    expect(findDescription().text()).toBe(
+      s__(
+        'PackageRegistry|Forward package requests to a public registry if the packages are not found in the GitLab package registry.',
+      ),
+    );
+  });
+
+  it('has the right help link', () => {
+    mountComponent();
+
+    expect(findRequestForwardingDocsLink().attributes('href')).toBe(
+      REQUEST_FORWARDING_HELP_PAGE_PATH,
     );
   });
 

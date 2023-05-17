@@ -74,7 +74,7 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
     end
 
     it 'does not build milestones that are invalid' do
-      milestone = { id: 1, title: nil }
+      milestone = { id: 123456, title: nil, number: 2 }
 
       expect(importer)
         .to receive(:each_milestone)
@@ -86,14 +86,14 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
           project_id: project.id,
           importer: described_class.name,
           message: ["Title can't be blank"],
-          github_identifier: 1
+          github_identifiers: { iid: 2, object_type: :milestone, title: nil }
         )
 
       rows, errors = importer.build_milestones
 
       expect(rows).to be_empty
       expect(errors.length).to eq(1)
-      expect(errors[0].full_messages).to match_array(["Title can't be blank"])
+      expect(errors[0][:validation_errors].full_messages).to match_array(["Title can't be blank"])
     end
   end
 

@@ -1,26 +1,16 @@
 <script>
-import { isEmpty } from 'lodash';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEMS_TREE_TEXT_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../../constants';
-import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
-import WorkItemLinkChild from './work_item_link_child.vue';
+import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
   FORM_TYPES,
@@ -31,9 +21,9 @@ export default {
     OkrActionsSplitButton,
     WidgetWrapper,
     WorkItemLinksForm,
-    WorkItemLinkChild,
+    WorkItemChildrenWrapper,
   },
-  mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath'],
   props: {
     workItemType: {
       type: String,
@@ -47,6 +37,11 @@ export default {
     workItemId: {
       type: String,
       required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
     },
     confidential: {
       type: Boolean,
@@ -63,10 +58,6 @@ export default {
       required: false,
       default: false,
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -77,9 +68,6 @@ export default {
     };
   },
   computed: {
-    fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
-    },
     childrenIds() {
       return this.children.map((c) => c.id);
     },
@@ -90,26 +78,6 @@ export default {
         )
         .some((hierarchy) => hierarchy.hasChildren);
     },
-    childUrlParams() {
-      const params = {};
-      if (this.fetchByIid) {
-        const iid = getParameterByName('work_item_iid');
-        if (iid) {
-          params.iid = iid;
-        }
-      } else {
-        const workItemId = getParameterByName('work_item_id');
-        if (workItemId) {
-          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
-        }
-      }
-      return params;
-    },
-  },
-  mounted() {
-    if (!isEmpty(this.childUrlParams)) {
-      this.addWorkItemQuery(this.childUrlParams);
-    }
   },
   methods: {
     showAddForm(formType, childType) {
@@ -124,40 +92,27 @@ export default {
     hideAddForm() {
       this.isShownAddForm = false;
     },
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.projectPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    showModal({ event, child }) {
+      this.$emit('show-modal', { event, modalWorkItem: child });
+    },
+    addWorkItemQuery(iid) {
+      if (!iid) {
+        return;
+      }
+
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.fullPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
         },
       });
-    },
-    prefetchWorkItem({ id, iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
-        this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ id, iid }),
-          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-        );
-      }
-    },
-    clearPrefetching() {
-      if (this.prefetch) {
-        clearTimeout(this.prefetch);
-      }
     },
   },
 };
@@ -170,6 +125,7 @@ export default {
     </template>
     <template #header-right>
       <okr-actions-split-button
+        v-if="canUpdate"
         @showCreateObjectiveForm="
           showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
         "
@@ -186,7 +142,7 @@ export default {
     </template>
     <template #body>
       <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
-        <p class="gl-mb-3">
+        <p class="gl-mb-0 gl-py-2 gl-ml-3 gl-text-gray-500">
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
         </p>
       </div>
@@ -203,20 +159,15 @@ export default {
         @addWorkItemChild="$emit('addWorkItemChild', $event)"
         @cancel="hideAddForm"
       />
-      <work-item-link-child
-        v-for="child in children"
-        :key="child.id"
-        :project-path="projectPath"
+      <work-item-children-wrapper
+        :children="children"
         :can-update="canUpdate"
-        :issuable-gid="workItemId"
-        :child-item="child"
-        :confidential="child.confidential"
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
         :work-item-type="workItemType"
-        :has-indirect-children="hasIndirectChildren"
-        @mouseover="prefetchWorkItem(child)"
-        @mouseout="clearPrefetching"
+        fetch-by-iid
         @removeChild="$emit('removeChild', $event)"
-        @click="$emit('show-modal', $event, $event.childItem || child)"
+        @show-modal="showModal"
       />
     </template>
   </widget-wrapper>

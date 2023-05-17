@@ -1,11 +1,18 @@
 - breadcrumb_title _("General Settings")
 - page_title _("General")
 - add_page_specific_style 'page_bundles/projects_edit'
-- @content_class = "limit-container-width" unless fluid_layout
 - expanded = expanded_by_default?
 - reduce_visibility_form_id = 'reduce-visibility-form'
+- @force_desktop_expanded_sidebar = true
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
+
+- if Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
+  = render Pajamas::AlertComponent.new(variant: :info,
+      title: _('GitLab Pages has moved'),
+      alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
+    - c.with_body do
+      = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deployments > Pages', project_pages_path(@project)).html_safe}
 
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
@@ -27,16 +34,15 @@
       %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
       %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
       .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
-
 - if show_merge_request_settings_callout?(@project)
   %section.settings.expanded
     = render Pajamas::AlertComponent.new(variant: :info,
         title: _('Merge requests and approvals settings have moved.'),
         alert_options: { class: 'js-merge-request-settings-callout gl-my-5', data: { feature_id: Users::CalloutsHelper::MERGE_REQUEST_SETTINGS_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-      = c.body do
+      - c.with_body do
         = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
-= render_if_exists 'projects/settings/analytics_dashboards', expanded: expanded
+= render_if_exists 'projects/settings/analytics', expanded: expanded
 
 %section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'badges_settings_content' } }
   .settings-header
@@ -55,6 +61,8 @@
 = render_if_exists 'projects/settings/default_issue_template'
 
 = render 'projects/service_desk_settings'
+
+= render_if_exists 'product_analytics/project_settings', expanded: expanded
 
 %section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header

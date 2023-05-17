@@ -54,10 +54,6 @@ describe('stage column component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when mounted', () => {
     beforeEach(() => {
       createComponent({ method: mount });

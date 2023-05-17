@@ -89,10 +89,6 @@ describe('DiffRow', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
-    window.gon = {};
     showCommentForm.mockReset();
     enterdragging.mockReset();
     stopdragging.mockReset();

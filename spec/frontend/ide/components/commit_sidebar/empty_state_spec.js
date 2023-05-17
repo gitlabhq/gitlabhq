@@ -11,10 +11,6 @@ describe('IDE commit panel EmptyState component', () => {
     wrapper = shallowMount(EmptyState, { store });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders no changes text when last commit message is empty', () => {
     expect(wrapper.find('h4').text()).toBe('No changes');
   });

@@ -6,6 +6,7 @@ RSpec.describe Admin::IntegrationsController do
   let(:admin) { create(:admin) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(admin)
   end
 
@@ -29,11 +30,7 @@ RSpec.describe Admin::IntegrationsController do
       end
     end
 
-    context 'when GitLab.com' do
-      before do
-        allow(::Gitlab).to receive(:com?) { true }
-      end
-
+    context 'when GitLab.com', :saas do
       it 'returns 404' do
         get :edit, params: { id: Integration.available_integration_names.sample }
 

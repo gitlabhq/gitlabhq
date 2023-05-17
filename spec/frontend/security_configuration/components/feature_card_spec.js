@@ -1,10 +1,16 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { securityFeatures } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
-import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
+import {
+  REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
+  REPORT_TYPE_SAST,
+  REPORT_TYPE_SAST_IAC,
+} from '~/vue_shared/security_reports/constants';
+import { manageViaMRErrorMessage } from '../constants';
 import { makeFeature } from './utils';
 
 describe('FeatureCard component', () => {
@@ -78,7 +84,6 @@ describe('FeatureCard component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     feature = undefined;
   });
 
@@ -107,8 +112,8 @@ describe('FeatureCard component', () => {
     });
 
     it('should catch and emit manage-via-mr-error', () => {
-      findManageViaMr().vm.$emit('error', 'There was a manage via MR error');
-      expect(wrapper.emitted('error')).toEqual([['There was a manage via MR error']]);
+      findManageViaMr().vm.$emit('error', manageViaMRErrorMessage);
+      expect(wrapper.emitted('error')).toEqual([[manageViaMRErrorMessage]]);
     });
   });
 
@@ -265,6 +270,56 @@ describe('FeatureCard component', () => {
           expect(links.exists()).toBe(false);
         });
       });
+
+      describe('given an available secondary with a configuration guide', () => {
+        beforeEach(() => {
+          feature = makeFeature({
+            available: true,
+            configurationHelpPath: null,
+            secondary: {
+              name: 'secondary name',
+              description: 'secondary description',
+              configurationHelpPath: '/secondary',
+              configurationText: null,
+            },
+          });
+          createComponent({ feature });
+        });
+
+        it('shows the secondary action', () => {
+          const links = findLinks({
+            text: 'Configuration guide',
+            href: feature.secondary.configurationHelpPath,
+          });
+          expect(links.exists()).toBe(true);
+          expect(links).toHaveLength(1);
+        });
+      });
+
+      describe('given an unavailable secondary with a configuration guide', () => {
+        beforeEach(() => {
+          feature = makeFeature({
+            available: false,
+            configurationHelpPath: null,
+            secondary: {
+              name: 'secondary name',
+              description: 'secondary description',
+              configurationHelpPath: '/secondary',
+              configurationText: null,
+            },
+          });
+          createComponent({ feature });
+        });
+
+        it('does not show the secondary action', () => {
+          const links = findLinks({
+            text: 'Configuration guide',
+            href: feature.secondary.configurationHelpPath,
+          });
+          expect(links.exists()).toBe(false);
+          expect(links).toHaveLength(0);
+        });
+      });
     });
 
     describe('information badge', () => {
@@ -287,6 +342,50 @@ describe('FeatureCard component', () => {
         it('should show badge when badge given in configuration and available', () => {
           expect(findBadge().exists()).toBe(Boolean(available && badge && badge.text));
         });
+      });
+    });
+  });
+
+  describe('status and badge', () => {
+    describe.each`
+      context                       | available | configured | expectedStatus
+      ${'configured BAS feature'}   | ${true}   | ${true}    | ${null}
+      ${'unavailable BAS feature'}  | ${false}  | ${false}   | ${'Available with Ultimate'}
+      ${'unconfigured BAS feature'} | ${true}   | ${false}   | ${null}
+    `('given $context', ({ available, configured, expectedStatus }) => {
+      beforeEach(() => {
+        const securityFeature = securityFeatures.find(
+          ({ type }) => REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION === type,
+        );
+        feature = { ...securityFeature, available, configured };
+        createComponent({ feature });
+      });
+
+      it('should show an incubating feature badge', () => {
+        expect(findBadge().exists()).toBe(true);
+      });
+
+      if (expectedStatus) {
+        it(`should show the status "${expectedStatus}"`, () => {
+          expect(wrapper.findByTestId('feature-status').text()).toBe(expectedStatus);
+        });
+      }
+    });
+
+    describe.each`
+      context                            | available | configured
+      ${'configured SAST IaC feature'}   | ${true}   | ${true}
+      ${'unavailable SAST IaC feature'}  | ${false}  | ${false}
+      ${'unconfigured SAST IaC feature'} | ${true}   | ${false}
+    `('given $context', ({ available, configured }) => {
+      beforeEach(() => {
+        const securityFeature = securityFeatures.find(({ type }) => REPORT_TYPE_SAST_IAC === type);
+        feature = { ...securityFeature, available, configured };
+        createComponent({ feature });
+      });
+
+      it(`should not show a status`, () => {
+        expect(wrapper.findByTestId('feature-status').exists()).toBe(false);
       });
     });
   });

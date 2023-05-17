@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
       wait_for_requests
 
-      fill_in('confirm_name_input', with: forked_project.name)
+      fill_in('confirm_name_input', with: forked_project.path)
       click_button('Confirm')
 
       wait_for_requests

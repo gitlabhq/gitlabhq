@@ -38,7 +38,7 @@ namespace :contracts do
     end
 
     desc 'Run all merge request contract tests'
-    task 'test:merge_requests', :contract_merge_requests do |_t, arg|
+    task 'test:merge_requests', :contract_merge_requests do |_t|
       errors = %w[get_diffs_batch get_diffs_metadata get_discussions].each_with_object([]) do |task, err|
         Rake::Task["contracts:merge_requests:pact:verify:#{task}"].execute
       rescue StandardError, SystemExit

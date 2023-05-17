@@ -38,11 +38,6 @@ describe('GlobalSearchSort', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findSortButtonGroup = () => wrapper.findComponent(GlButtonGroup);
   const findSortDropdown = () => wrapper.findComponent(GlDropdown);
   const findSortDirectionButton = () => wrapper.findComponent(GlButton);

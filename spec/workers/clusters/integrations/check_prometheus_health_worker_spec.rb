@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Integrations::CheckPrometheusHealthWorker, '#perform' do
+RSpec.describe Clusters::Integrations::CheckPrometheusHealthWorker, '#perform', feature_category: :incident_management do
   subject { described_class.new.perform }
 
   it 'triggers health service' do

@@ -1,0 +1,12 @@
+- title: "Changing MobSF-based SAST analyzer behavior in multi-module Android projects"
+  removal_milestone: "16.0"
+  announcement_milestone: "16.0"
+  breaking_change: true
+  reporter: connorgilbert
+  stage: Secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408396
+  body: |
+    **Update:** We previously announced a change to how the MobSF-based GitLab SAST analyzer would scan multi-module Android projects.
+    We've cancelled that change, and no action is required.
+
+    Instead of changing which single module would be scanned, we [improved multi-module support](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/merge_requests/73).

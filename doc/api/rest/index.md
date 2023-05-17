@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -12,7 +12,7 @@ developers who are more comfortable with traditional API architecture.
 
 ## Compatibility guidelines
 
-The HTTP API is versioned with a single number, which is currently `4`. This number
+The HTTP API is versioned with a single number, which is `4`. This number
 symbolizes the major version number, as described by [SemVer](https://semver.org/).
 Because of this, backward-incompatible changes require this version number to
 change.
@@ -83,9 +83,9 @@ authentication isn't provided. When authentication is not required, the document
 for each endpoint specifies this. For example, the
 [`/projects/:id` endpoint](../projects.md#get-single-project) does not require authentication.
 
-There are several ways you can authenticate with the GitLab API:
+You can authenticate with the GitLab API in several ways:
 
-- [OAuth2 tokens](#oauth2-tokens)
+- [OAuth 2.0 tokens](#oauth-20-tokens)
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Project access tokens](../../user/project/settings/project_access_tokens.md)
 - [Group access tokens](../../user/group/settings/group_access_tokens.md)
@@ -94,8 +94,8 @@ There are several ways you can authenticate with the GitLab API:
 
 Project access tokens are supported by:
 
-- Self-managed GitLab Free and higher.
-- GitLab SaaS Premium and higher.
+- Self-managed GitLab: Free, Premium, and Ultimate.
+- GitLab SaaS: Premium and Ultimate.
 
 If you are an administrator, you or your application can authenticate as a specific user.
 To do so, use:
@@ -116,30 +116,30 @@ NOTE:
 Deploy tokens can't be used with the GitLab public API. For details, see
 [Deploy Tokens](../../user/project/deploy_tokens/index.md).
 
-### OAuth2 tokens
+### OAuth 2.0 tokens
 
-You can use an [OAuth2 token](../oauth2.md) to authenticate with the API by passing
+You can use an [OAuth 2.0 token](../oauth2.md) to authenticate with the API by passing
 it in either the `access_token` parameter or the `Authorization` header.
 
-Example of using the OAuth2 token in a parameter:
+Example of using the OAuth 2.0 token in a parameter:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects?access_token=OAUTH-TOKEN"
 ```
 
-Example of using the OAuth2 token in a header:
+Example of using the OAuth 2.0 token in a header:
 
 ```shell
 curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/projects"
 ```
 
-Read more about [GitLab as an OAuth2 provider](../oauth2.md).
+Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
 NOTE:
-We recommend OAuth access tokens have an expiration. You can use the `refresh_token` parameter
+You should give OAuth access tokens an expiration. You can use the `refresh_token` parameter
 to refresh tokens. Integrations may need to be updated to use refresh tokens prior to
 expiration, which is based on the [`expires_in`](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14)
-property in the token endpoint response. See [OAuth2 token](../oauth2.md) documentation
+property in the token endpoint response. See [OAuth 2.0 token](../oauth2.md) documentation
 for examples requesting a new access token using a refresh token.
 
 A default refresh setting of two hours is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336598).
@@ -299,52 +299,52 @@ insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
 
-| Request type  | Description |
-|---------------|-------------|
-| `GET`         | Access one or more resources and return the result as JSON. |
-| `POST`        | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
-| `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
+| Request type  | Description                                                                                                                     |
+|:--------------|:--------------------------------------------------------------------------------------------------------------------------------|
+| `GET`         | Access one or more resources and return the result as JSON.                                                                     |
+| `POST`        | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON.                     |
+| `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON.                |
 | `DELETE`      | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
 
 The following table shows the possible return codes for API requests.
 
-| Return values            | Description |
-|--------------------------|-------------|
-| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON. |
-| `202 Accepted`           | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing. |
-| `204 No Content`         | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
-| `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
-| `304 Not Modified`       | The resource hasn't been modified since the last request. |
-| `400 Bad Request`        | A required attribute of the API request is missing. For example, the title of an issue is not given. |
-| `401 Unauthorized`       | The user isn't authenticated. A valid [user token](#authentication) is necessary. |
-| `403 Forbidden`          | The request isn't allowed. For example, the user isn't allowed to delete a project. |
-| `404 Not Found`          | A resource couldn't be accessed. For example, an ID for a resource couldn't be found. |
-| `405 Method Not Allowed` | The request isn't supported. |
-| `409 Conflict`           | A conflicting resource already exists. For example, creating a project with a name that already exists. |
-| `412`                    | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
-| `422 Unprocessable`      | The entity couldn't be processed. |
-| `429 Too Many Requests`  | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
-| `500 Server Error`       | While handling the request, something went wrong on the server. |
+| Return values             | Description                                                                                                                                              |
+|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `200 OK`                  | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON.                                                        |
+| `201 Created`             | The `POST` request was successful, and the resource is returned as JSON.                                                                                 |
+| `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing.                                                       |
+| `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body.                              |
+| `304 Not Modified`        | The resource hasn't been modified since the last request.                                                                                                |
+| `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given.                                                     |
+| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](#authentication) is necessary.                                                                        |
+| `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project.                                                                      |
+| `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource.               |
+| `405 Method Not Allowed`  | The request isn't supported.                                                                                                                             |
+| `409 Conflict`            | A conflicting resource already exists. For example, creating a project with a name that already exists.                                                  |
+| `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `422 Unprocessable`       | The entity couldn't be processed.                                                                                                                        |
+| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits).                                                    |
+| `500 Server Error`        | While handling the request, something went wrong on the server.                                                                                          |
 
 ## Pagination
 
 GitLab supports the following pagination methods:
 
-- Offset-based pagination. This is the default method and is available on all endpoints.
+- Offset-based pagination. The default method and available on all endpoints.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
-For large collections, for performance reasons we recommend keyset pagination
-(when available) instead of offset pagination.
+For large collections, you should use keyset pagination
+(when available) instead of offset pagination, for performance reasons.
 
 ### Offset-based pagination
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:
 
-| Parameter  | Description |
-|------------|-------------|
-| `page`     | Page number (default: `1`). |
+| Parameter  | Description                                                   |
+|:-----------|:--------------------------------------------------------------|
+| `page`     | Page number (default: `1`).                                   |
 | `per_page` | Number of items to list per page (default: `20`, max: `100`). |
 
 In the following example, we list 50 [namespaces](../namespaces.md) per page:
@@ -397,14 +397,14 @@ x-total-pages: 3
 
 GitLab also returns the following additional pagination headers:
 
-| Header          | Description |
-|-----------------|-------------|
-| `x-next-page`   | The index of the next page. |
+| Header          | Description                                    |
+|:----------------|:-----------------------------------------------|
+| `x-next-page`   | The index of the next page.                    |
 | `x-page`        | The index of the current page (starting at 1). |
-| `x-per-page`    | The number of items per page. |
-| `x-prev-page`   | The index of the previous page. |
-| `x-total`       | The total number of items. |
-| `x-total-pages` | The total number of pages. |
+| `x-per-page`    | The number of items per page.                  |
+| `x-prev-page`   | The index of the previous page.                |
+| `x-total`       | The total number of items.                     |
+| `x-total-pages` | The total number of pages.                     |
 
 For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/index.md#pagination-response-headers).
 
@@ -476,19 +476,23 @@ When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
 empty.
 
-We recommend using only the given link to retrieve the next page instead of
+You should use only the given link to retrieve the next page instead of
 building your own URL. Apart from the headers shown, we don't expose additional
 pagination headers.
+
+#### Supported resources
 
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                                                 | Options                          | Availability                                                                                                 |
-|:---------------------------------------------------------|:---------------------------------|:-------------------------------------------------------------------------------------------------------------|
-| [Projects](../projects.md)                                  | `order_by=id` only               | Authenticated and unauthenticated users                                                                      |
-| [Groups](../groups.md)                                      | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                   |
-| [Group audit events](../audit_events.md#group-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2) |
-| [Jobs](../jobs.md)                                           | `order_by=id`, `sort=desc` only | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9) |
+| Resource                                                          | Options                          | Availability                                                                                                  |
+|:------------------------------------------------------------------|:---------------------------------|:--------------------------------------------------------------------------------------------------------------|
+| [Group audit events](../audit_events.md#group-audit-events)       | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2)  |
+| [Groups](../groups.md)                                            | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                    |
+| [Instance audit events](../audit_events.md#instance-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11) |
+| [Jobs](../jobs.md)                                                | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9)  |
+| [Project audit events](../audit_events.md#project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10) |
+| [Projects](../projects.md)                                        | `order_by=id` only               | Authenticated and unauthenticated users                                                                       |
 
 ### Pagination response headers
 
@@ -641,6 +645,14 @@ For example, suppose a project with `id: 42` has an issue with `id: 46` and
 
 Not all resources with the `iid` field are fetched by `iid`. For guidance
 regarding which field to use, see the documentation for the specific resource.
+
+## `null` vs `false`
+
+In API responses, some boolean fields can have `null` values.
+A `null` boolean has no default value and is neither `true` nor `false`.
+GitLab treats `null` values in boolean fields the same as `false`.
+
+In boolean arguments, you should only set `true` or `false` values (not `null`).
 
 ## Data validation and error reporting
 

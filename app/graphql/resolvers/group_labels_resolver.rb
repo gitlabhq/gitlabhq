@@ -13,5 +13,9 @@ module Resolvers
              required: false,
              description: 'Include only group level labels.',
              default_value: false
+
+    before_connection_authorization do |nodes, current_user|
+      Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
+    end
   end
 end

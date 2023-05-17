@@ -124,7 +124,7 @@ Instead of relying on the local storage, you can use an object storage to store
 packages.
 
 For more information, see how to use the
-[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrate local packages to object storage
 

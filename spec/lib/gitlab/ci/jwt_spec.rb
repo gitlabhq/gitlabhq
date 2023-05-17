@@ -58,26 +58,31 @@ RSpec.describe Gitlab::Ci::Jwt do
       expect { payload }.not_to raise_error
     end
 
-    describe 'ref type' do
-      context 'branches' do
+    describe 'references' do
+      context 'with a branch pipepline' do
         it 'is "branch"' do
           expect(payload[:ref_type]).to eq('branch')
+          expect(payload[:ref_path]).to eq('refs/heads/auto-deploy-2020-03-19')
         end
       end
 
-      context 'tags' do
-        let(:build) { build_stubbed(:ci_build, :on_tag, project: project) }
+      context 'with a tag pipeline' do
+        let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19', tag: true) }
+        let(:build) { build_stubbed(:ci_build, :on_tag, project: project, pipeline: pipeline) }
 
         it 'is "tag"' do
           expect(payload[:ref_type]).to eq('tag')
+          expect(payload[:ref_path]).to eq('refs/tags/auto-deploy-2020-03-19')
         end
       end
 
-      context 'merge requests' do
-        let(:pipeline) { build_stubbed(:ci_pipeline, :detached_merge_request_pipeline) }
+      context 'with a merge request pipeline' do
+        let(:merge_request) { build_stubbed(:merge_request, source_branch: 'feature-branch') }
+        let(:pipeline) { build_stubbed(:ci_pipeline, :detached_merge_request_pipeline, merge_request: merge_request) }
 
         it 'is "branch"' do
           expect(payload[:ref_type]).to eq('branch')
+          expect(payload[:ref_path]).to eq('refs/heads/feature-branch')
         end
       end
     end

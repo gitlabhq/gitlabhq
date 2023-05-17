@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunScheduledBuildService do
+RSpec.describe Ci::RunScheduledBuildService, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -13,8 +13,7 @@ RSpec.describe Ci::RunScheduledBuildService do
     before do
       project.add_developer(user)
 
-      create(:protected_branch, :developers_can_merge,
-             name: pipeline.ref, project: project)
+      create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
     end
 
     context 'when build is scheduled' do

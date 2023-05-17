@@ -39,9 +39,6 @@ describe('sidebar assignees', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;

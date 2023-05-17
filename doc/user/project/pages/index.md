@@ -1,7 +1,7 @@
 ---
 description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -125,6 +125,13 @@ If you are running a self-managed instance of GitLab,
 [follow the administration steps](../../../administration/pages/index.md) to configure Pages.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=dD8c7WNcc6s) about how to get started with GitLab Pages administration.
+
+### Configure GitLab Pages in a Helm Chart (Kubernetes) instance
+
+To configure GitLab Pages on instances deployed via Helm chart (Kubernetes), use either:
+ 
+- [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/). 
+- [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/). 
 
 ## Security for GitLab Pages
 

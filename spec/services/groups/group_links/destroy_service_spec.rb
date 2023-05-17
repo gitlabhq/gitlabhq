@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::GroupLinks::DestroyService, '#execute' do
+RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category: :subgroups do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:shared_group) { create(:group, :private) }

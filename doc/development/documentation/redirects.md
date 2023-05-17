@@ -81,7 +81,6 @@ To redirect a page to another page in the same repository:
    - Replace both instances of `../newpath/to/file/index.md` with the new file path.
    - Replace both instances of `YYYY-MM-DD` with the expiration date, as explained in the template.
 
-1. If the page has Disqus comments, follow [the steps for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
 1. If the page had images that aren't used on any other pages, delete them.
 
 After your changes are committed, search for and update all links that point to the old file:
@@ -159,25 +158,13 @@ If you create a new page and then rename it before it's added to a release on th
 Instead of following that procedure, ask a Technical Writer to manually add the redirect
 to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
 
-## Redirections for pages with Disqus comments
+## Exceptions to creating a redirect
 
-If the documentation page being relocated already has Disqus comments,
-we need to preserve the Disqus thread.
+In some cases you can skip adding the redirect and just delete the file. The page
+must have already been removed from (or never existed in) the navigation, and one
+of the following must be true:
 
-Disqus uses an identifier per page, and for <https://docs.gitlab.com>, the page identifier
-is configured to be the page URL. Therefore, when we change the document location,
-we need to preserve the old URL as the same Disqus identifier.
-
-To do that, add to the front matter the variable `disqus_identifier`,
-using the old URL as value. For example, let's say we moved the document
-available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
-`https://docs.gitlab.com/my-new-location/index.html`.
-
-Into the **new document** front matter, we add the following information. You must
-include the filename in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
-
-```yaml
----
-disqus_identifier: 'https://docs.gitlab.com/my-old-location/README.html'
----
-```
+- The page was added and removed in the same release, so it was never included in
+  a self-managed release.
+- The page does not contain any content of value, like a placeholder page or a page
+  with extremely low usage statistics.

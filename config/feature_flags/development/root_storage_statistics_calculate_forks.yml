@@ -1,0 +1,8 @@
+---
+name: root_storage_statistics_calculate_forks
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118105
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408139
+milestone: '16.0'
+type: development
+group: group::utilization
+default_enabled: false

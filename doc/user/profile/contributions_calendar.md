@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
@@ -83,7 +83,7 @@ GitLab provides RSS feeds of user activity. To subscribe to the
 RSS feed of a user's activity:
 
 1. Go to the [user's profile](index.md#access-your-user-profile).
-1. In the upper right, select the feed symbol **{rss}** to display the results as an RSS feed in Atom format.
+1. In the upper-right corner, select the feed symbol (**{rss}**) to display the results as an RSS feed in Atom format.
 
 The URL of the result contains both a feed token, and
 the user's activity that you're authorized to view.

@@ -16,7 +16,7 @@ RSpec.describe Resolvers::Crm::ContactsResolver do
       last_name: "DEF",
       email: "ghi@test.com",
       description: "LMNO",
-      organization: create(:organization, group: group),
+      organization: create(:crm_organization, group: group),
       state: "inactive"
     )
   end

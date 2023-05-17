@@ -1,17 +1,17 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Jira integrations **(FREE)**
+# Troubleshooting Jira **(FREE)**
 
 This page contains a list of common issues you might encounter when working with Jira integrations.
 
 ## GitLab cannot comment on a Jira issue
 
 If GitLab cannot comment on Jira issues, make sure the Jira user you
-set up for the integration has permission to:
+set up for the [Jira integration](configure.md) has permission to:
 
 - Post comments on a Jira issue.
 - Transition the Jira issue.
@@ -91,16 +91,16 @@ To reset the Jira user's password for all projects with active Jira integrations
 run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations i ON p.id = i.project_id WHERE i.type_new = 'Integrations::Jira' AND i.active = true")
 
 p.each do |project|
   project.jira_integration.update_attribute(:password, '<your-new-password>')
 end
 ```
 
-## `500 Whoops` when accessing a Jira issue in GitLab
+## `500 We're sorry` when accessing a Jira issue in GitLab
 
-When accessing a Jira issue in GitLab, you might get a `500 Whoops, something went wrong on our end` error.
+When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
 Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains the following exception:
 
 ```plaintext

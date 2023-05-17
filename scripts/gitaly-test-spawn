@@ -9,8 +9,6 @@ class GitalyTestSpawn
   include GitalySetup
 
   def run
-    install_gitaly_gems
-
     # Run Praefect migrations
     setup_praefect
 

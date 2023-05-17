@@ -3,7 +3,7 @@
 - breadcrumb_title _("Metrics and profiling")
 - page_title _("Metrics and profiling")
 - add_page_specific_style 'page_bundles/settings'
-- @content_class = "limit-container-width" unless fluid_layout
+- @force_desktop_expanded_sidebar = true
 
 %section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
@@ -40,8 +40,6 @@
       = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar.md', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'performance_bar'
-
-.js-self-monitoring-settings{ data: self_monitoring_project_data }
 
 %section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'usage_statistics_settings_content' } }
   .settings-header#usage-statistics

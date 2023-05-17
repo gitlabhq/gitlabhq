@@ -53,6 +53,22 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::NumberStrategy do
       end
     end
 
+    shared_examples 'single parallelized job' do
+      it { expect(subject.size).to eq(1) }
+
+      it 'has attributes' do
+        expect(subject.map(&:attributes)).to match_array(
+          [
+            { name: 'test 1/1', instance: 1, parallel: { total: 1 } }
+          ]
+        )
+      end
+
+      it 'has parallelized name' do
+        expect(subject.map(&:name)).to match_array(['test 1/1'])
+      end
+    end
+
     context 'with numbers' do
       let(:config) { 3 }
 
@@ -63,6 +79,12 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::NumberStrategy do
       let(:config) { { number: 3 } }
 
       it_behaves_like 'parallelized job'
+    end
+
+    context 'with one' do
+      let(:config) { 1 }
+
+      it_behaves_like 'single parallelized job'
     end
   end
 end

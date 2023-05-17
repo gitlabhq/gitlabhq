@@ -5,11 +5,12 @@ module QA
     module Project
       module Settings
         class Alerts < Page::Base
+          include ::QA::Page::Component::Dropdown
+
           view 'app/assets/javascripts/alerts_settings/components/alerts_form.vue' do
             element :create_incident_checkbox
             element :incident_templates_dropdown
             element :save_changes_button
-            element :incident_templates_item
             element :enable_email_notification_checkbox
           end
 
@@ -42,7 +43,7 @@ module QA
           def select_issue_template(template)
             click_element(:incident_templates_dropdown)
             within_element :incident_templates_dropdown do
-              find_element(:incident_templates_item, text: template).click
+              select_item(template)
             end
           end
 

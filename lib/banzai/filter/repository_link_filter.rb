@@ -204,7 +204,7 @@ module Banzai
       end
 
       def repo_visible_to_user?
-        project && Ability.allowed?(current_user, :download_code, project)
+        project && Ability.allowed?(current_user, :read_code, project)
       end
 
       def ref

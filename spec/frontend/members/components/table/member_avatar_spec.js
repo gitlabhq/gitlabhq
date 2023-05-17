@@ -18,10 +18,6 @@ describe('MemberList', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     memberType                    | member           | expectedComponent | expectedComponentName
     ${MEMBER_TYPES.user}          | ${memberMock}    | ${UserAvatar}     | ${'UserAvatar'}

@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Health Check", feature_category: :continuous_verification do
+RSpec.describe "Admin Health Check", :js, feature_category: :error_budgets do
   include StubENV
+  include Spec::Support::Helpers::ModalHelpers
   let_it_be(:admin) { create(:admin) }
 
   before do
@@ -30,7 +31,8 @@ RSpec.describe "Admin Health Check", feature_category: :continuous_verification 
     describe 'reload access token' do
       it 'changes the access token' do
         orig_token = Gitlab::CurrentSettings.health_check_access_token
-        click_button 'Reset health check access token'
+        click_link 'Reset health check access token'
+        accept_gl_confirm('Are you sure you want to reset the health check token?')
 
         expect(page).to have_content('New health check access token has been generated!')
         expect(find('#health-check-token').text).not_to eq orig_token

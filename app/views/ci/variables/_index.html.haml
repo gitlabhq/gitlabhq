@@ -1,12 +1,4 @@
 - save_endpoint = local_assigns.fetch(:save_endpoint, nil)
-
-- if ci_variable_protected_by_default?
-  = render Pajamas::AlertComponent.new(variant: :warning, show_icon: false, dismissible: false,
-    alert_options: { class: 'gl-mb-3'}) do |c|
-    = c.body do
-      - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable') }
-      = _('Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-
 - is_group = !@group.nil?
 - is_project = !@project.nil?
 

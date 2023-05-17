@@ -8,6 +8,8 @@ that reviewers can understand your intent. Keeping the description updated is
 especially important if they didn't participate in the discussion.
 -->
 
+%{first_multiline_commit}
+
 ## Screenshots or screen recordings
 
 _Screenshots are required for UI changes, and strongly recommended for all other merge requests._
@@ -25,10 +27,6 @@ _Numbered steps to set up and validate the change are strongly suggested._
 <!--
 Example below:
 
-1. Enable the invite modal
-   ```ruby
-   Feature.enable(:invite_members_group_modal)
-   ```
 1. In rails console enable the experiment fully
    ```ruby
    Feature.enable(:member_areas_of_focus)

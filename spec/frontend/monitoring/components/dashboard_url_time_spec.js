@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {
   queryToObject,
-  redirectTo,
+  redirectTo, // eslint-disable-line import/no-deprecated
   removeParams,
   mergeUrlParams,
   updateHistory,
@@ -18,7 +18,7 @@ import { defaultTimeRange } from '~/vue_shared/constants';
 import { dashboardProps } from '../fixture_data';
 import { mockProjectDir } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 describe('dashboard invalid url parameters', () => {
@@ -46,9 +46,6 @@ describe('dashboard invalid url parameters', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
     mock.restore();
     queryToObject.mockReset();
   });
@@ -139,7 +136,7 @@ describe('dashboard invalid url parameters', () => {
 
     // redirect to with new parameters
     expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
-    expect(redirectTo).toHaveBeenCalledTimes(1);
+    expect(redirectTo).toHaveBeenCalledTimes(1); // eslint-disable-line import/no-deprecated
   });
 
   it('changes the url when a panel moves the time slider', async () => {

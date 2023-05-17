@@ -2,11 +2,6 @@
 
 module Issues
   class ReopenService < Issues::BaseService
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def execute(issue, skip_authorization: false)
       return issue unless can_reopen?(issue, skip_authorization: skip_authorization)
 
@@ -18,7 +13,7 @@ module Issues
         execute_hooks(issue, 'reopen')
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
-        delete_milestone_closed_issue_counter_cache(issue.milestone)
+        Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
         track_incident_action(current_user, issue, :incident_reopened)
       end
 
@@ -27,20 +22,12 @@ module Issues
 
     private
 
-    # overriding this because IssuableBaseService#constructor_container_arg returns { project: value }
-    # Issues::ReopenService constructor signature is different now, it takes container instead of project also
-    # IssuableBaseService#change_state dynamically picks one of the `Issues::ReopenService`, `Epics::ReopenService` or
-    # MergeRequests::ReopenService, so we need this method to return { }container: value } for Issues::ReopenService
-    def self.constructor_container_arg(value)
-      { container: value }
-    end
-
     def can_reopen?(issue, skip_authorization: false)
       skip_authorization || can?(current_user, :reopen_issue, issue)
     end
 
     def perform_incident_management_actions(issue)
-      return unless issue.incident?
+      return unless issue.work_item_type&.incident?
 
       create_timeline_event(issue)
     end

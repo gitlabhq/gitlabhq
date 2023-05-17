@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -15,12 +15,24 @@ The visibility level is determined by the `visibility` field in the project.
 
 For details, see [Project visibility](../user/public_access.md).
 
+The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
+
+## Removals in API v5
+
+These attributes are deprecated, and are scheduled to be removed in v5 of the API:
+
+- `tag_list`: Use the `topics` attribute instead.
+- `marked_for_deletion_at`: Use the `marked_for_deletion_on` attribute instead.
+  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
+- `approvals_before_merge`: Use the [Merge request approvals API](merge_request_approvals.md) instead.
+  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
+
 ## Project merge method
 
-There are three options for `merge_method` to choose from:
+The `merge_method` can use these options:
 
 - `merge`: a merge commit is created for every merge, and merging is allowed if
-  there are no conflicts.
+ no conflicts are present.
 - `rebase_merge`: a merge commit is created for every merge, but merging is only
   allowed if fast-forward merge is possible. You can make sure that the target
   branch would build after this merge request builds and merges.
@@ -55,10 +67,10 @@ GET /projects
 | `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`                        | boolean  | **{dotted-circle}** No | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                   | string   | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
+| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned. |
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `topic_id`                                 | integer  | **{dotted-circle}** No | Limit results to projects with the assigned topic given by the topic ID. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
@@ -67,6 +79,8 @@ GET /projects
 | `with_issues_enabled`                      | boolean  | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled`              | boolean  | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 | `with_programming_language`                | string   | **{dotted-circle}** No | Limit by projects which use the given programming language. |
+| `updated_before`                           | datetime | **{dotted-circle}** No | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
+| `updated_after`                           | datetime | **{dotted-circle}** No | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
 
 This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
 for selected `order_by` options.
@@ -128,12 +142,14 @@ When the user is authenticated and `simple` is not set this returns something li
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "name": "Diaspora Client",
     "name_with_namespace": "Diaspora / Diaspora Client",
     "path": "diaspora-client",
     "path_with_namespace": "diaspora/diaspora-client",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "default_branch": "main",
     "tag_list": [ //deprecated, use `topics` instead
       "example",
@@ -260,29 +276,6 @@ When the user is authenticated and `simple` is not set this returns something li
 ]
 ```
 
-NOTE:
-The `tag_list` attribute has been deprecated
-and is removed in API v5 in favor of the `topics` attribute.
-
-NOTE:
-For users of [GitLab Premium or higher](https://about.gitlab.com/pricing/),
-the `marked_for_deletion_at` attribute has been deprecated, and is removed
-in API v5 in favor of the `marked_for_deletion_on` attribute.
-
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
-can also see the `approvals_before_merge` parameter:
-
-```json
-[
-  {
-    "id": 4,
-    "description": null,
-    "approvals_before_merge": 0,
-    ...
-  }
-]
-```
-
 You can filter by [custom attributes](custom_attributes.md) with:
 
 ```plaintext
@@ -332,21 +325,24 @@ GET /users/:user_id/projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 | `with_programming_language`   | string  | **{dotted-circle}** No | Limit by projects which use the given programming language. |
+| `updated_before`              | datetime | **{dotted-circle}** No | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
+| `updated_after`               | datetime | **{dotted-circle}** No | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
 
 ```json
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
@@ -382,6 +378,7 @@ GET /users/:user_id/projects
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "import_url": null,
@@ -451,7 +448,8 @@ GET /users/:user_id/projects
   },
   {
     "id": 6,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
@@ -487,6 +485,7 @@ GET /users/:user_id/projects
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "import_url": null,
@@ -536,7 +535,7 @@ GET /users/:user_id/projects
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
-    "approvals_before_merge": 0,
+    "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
     "mirror": false,
     "mirror_user_id": 45,
     "mirror_trigger_builds": false,
@@ -599,14 +598,16 @@ GET /users/:user_id/starred_projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean | **{dotted-circle}** No | Limit by enabled merge requests feature. |
+| `updated_before`              | datetime | **{dotted-circle}** No | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
+| `updated_after`               | datetime | **{dotted-circle}** No | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/starred_projects"
@@ -618,7 +619,8 @@ Example response:
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
@@ -654,6 +656,7 @@ Example response:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -712,7 +715,8 @@ Example response:
   },
   {
     "id": 6,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
@@ -748,6 +752,7 @@ Example response:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -789,7 +794,7 @@ Example response:
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
-    "approvals_before_merge": 0,
+    "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
     "mirror": false,
     "mirror_user_id": 45,
     "mirror_trigger_builds": false,
@@ -846,13 +851,14 @@ GET /projects/:id
 |--------------------------|----------------|------------------------|-------------|
 | `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `license`                | boolean        | **{dotted-circle}** No | Include project license data. |
-| `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -898,6 +904,7 @@ GET /projects/:id
     "next_run_at": "2020-01-07T21:42:58.658Z"
   },
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -969,7 +976,7 @@ GET /projects/:id
   "squash_option": "default_on",
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
-  "approvals_before_merge": 0,
+  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
   "mirror_user_id": 45,
   "mirror_trigger_builds": false,
@@ -1014,22 +1021,6 @@ GET /projects/:id
 }
 ```
 
-NOTE:
-The `tag_list` attribute has been deprecated
-and is removed in API v5 in favor of the `topics` attribute.
-
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
-can also see the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 3,
-  "description": null,
-  "approvals_before_merge": 0,
-  ...
-}
-```
-
 Users of [GitLab Ultimate](https://about.gitlab.com/pricing/)
 can also see the `only_allow_merge_if_all_status_checks_passed`
 parameters using GitLab 15.5 and later:
@@ -1046,7 +1037,7 @@ parameters using GitLab 15.5 and later:
 If the project is a fork, the `forked_from_project` field appears in the response.
 For this field, if the upstream project is private, a valid token for authentication must be provided.
 The field `mr_default_target_self` appears as well. If this value is `false`, then all merge requests
-will target the upstream project by default.
+target the upstream project by default.
 
 ```json
 {
@@ -1100,7 +1091,7 @@ will target the upstream project by default.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `issues_template` and `merge_requests_template` parameters for managing
 [issue and merge request description templates](../user/project/description_templates.md).
 
@@ -1226,6 +1217,8 @@ Refer to the [Events API documentation](events.md#list-a-projects-visible-events
 
 ## Create project
 
+> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+
 Creates a new project owned by the authenticated user.
 
 If your HTTP repository isn't publicly accessible, add authentication information
@@ -1253,8 +1246,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
-| `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
@@ -1272,8 +1265,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
-| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. When this isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
-| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
+| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. When the URL value isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
+| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this boolean is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
 | `issues_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
@@ -1288,7 +1281,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) in the project settings. |
-| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
@@ -1312,7 +1304,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `tag_list`                                                  | array   | **{dotted-circle}** No | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `template_name`                                             | string  | **{dotted-circle}** No | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
-| `template_project_id` **(PREMIUM)**                         | integer | **{dotted-circle}** No | When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous. |
+| `template_project_id` **(PREMIUM)**                         | integer | **{dotted-circle}** No | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` since `template_name` may be ambiguous. |
 | `topics`                                                    | array   | **{dotted-circle}** No | The list of topics for a project; put array of topics, that should be finally assigned to a project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `use_custom_template` **(PREMIUM)**                         | boolean | **{dotted-circle}** No | Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. |
 | `visibility`                                                | string  | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
@@ -1320,6 +1312,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `wiki_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
 ## Create project for user
+
+> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 
 Creates a new project owned by the specified user. Available only for administrators.
 
@@ -1338,8 +1332,8 @@ POST /projects/user/:user_id
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
-| `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
@@ -1372,7 +1366,6 @@ POST /projects/user/:user_id
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
-| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string  | **{dotted-circle}** No | Custom repository name for new project. By default generated based on name. |
@@ -1408,6 +1401,8 @@ POST /projects/user/:user_id
 
 ## Edit project
 
+> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+
 Updates an existing project.
 
 If your HTTP repository isn't publicly accessible, add authentication information
@@ -1433,10 +1428,11 @@ Supported attributes:
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `allow_pipeline_trigger_approve_deployment` **(PREMIUM)**   | boolean        | **{dotted-circle}** No | Set whether or not a pipeline triggerer is allowed to approve deployments. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
-| `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean        | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
@@ -1476,12 +1472,11 @@ Supported attributes:
 | `mirror_trigger_builds` **(PREMIUM)**                       | boolean        | **{dotted-circle}** No | Pull mirroring triggers builds. |
 | `mirror_user_id` **(PREMIUM)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(administrators only)_ |
 | `mirror` **(PREMIUM)**                                      | boolean        | **{dotted-circle}** No | Enables pull mirroring in a project. |
-| `mr_default_target_self`                                    | boolean        | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target will be the upstream project. |
+| `mr_default_target_self`                                    | boolean        | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target is the upstream project. |
 | `name`                                                      | string         | **{dotted-circle}** No | The name of the project. |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches` **(PREMIUM)**              | boolean        | **{dotted-circle}** No | Only mirror protected branches. |
-| `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean        | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string         | **{dotted-circle}** No | Custom repository name for the project. By default generated based on name. |
@@ -1531,7 +1526,7 @@ POST /projects/:id/fork
 |------------------|----------------|------------------------|-------------|
 | `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `description`    | string         | **{dotted-circle}** No | The description assigned to the resultant project after forking.                 |
-| `mr_default_target_self` | boolean | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target will be the upstream project. |
+| `mr_default_target_self` | boolean | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target is the upstream project. |
 | `name`           | string         | **{dotted-circle}** No | The name assigned to the resultant project after forking.                        |
 | `namespace_id`   | integer        | **{dotted-circle}** No | The ID of the namespace that the project is forked to.                           |
 | `namespace_path` | string         | **{dotted-circle}** No | The path of the namespace that the project is forked to.                         |
@@ -1559,14 +1554,16 @@ GET /projects/:id/forks
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean        | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string         | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
+| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string         | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean        | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string         | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 | `with_issues_enabled`         | boolean        | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean        | **{dotted-circle}** No | Limit by enabled merge requests feature. |
+| `updated_before`              | datetime       | **{dotted-circle}** No | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
+| `updated_after`               | datetime       | **{dotted-circle}** No | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/forks"
@@ -1578,7 +1575,8 @@ Example responses:
 [
   {
     "id": 3,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "internal",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1609,6 +1607,7 @@ Example responses:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -1678,7 +1677,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1709,6 +1709,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -1784,7 +1785,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1815,6 +1817,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -1965,7 +1968,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -2001,6 +2005,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -2094,7 +2099,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -2130,6 +2136,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -2205,15 +2212,18 @@ This endpoint:
 - Deletes a project including all associated resources (including issues and
   merge requests).
 - In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) and later, on
-  [Premium or higher](https://about.gitlab.com/pricing/) tiers,
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
   [delayed project deletion](../user/project/settings/index.md#delayed-project-deletion)
   is applied if enabled.
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, group
   administrators can [configure](../user/group/manage.md#enable-delayed-project-deletion)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
+  marked for deletion, and the `permanently_remove` and `full_path` parameters are passed.
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
@@ -2224,9 +2234,11 @@ in GitLab 13.2, as discussed in [Enable delayed project deletion](../user/group/
 DELETE /projects/:id
 ```
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| Attribute                          | Type              | Required               | Description                                                                                                                                                                                                                                              |
+|------------------------------------|-------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                               | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                     |
+| `permanently_remove` **(PREMIUM)** | boolean/string    | no                     | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11                                                                                                           |
+| `full_path` **(PREMIUM)**          | string            | no                     | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project) |
 
 ## Restore project marked for deletion **(PREMIUM)**
 
@@ -2244,9 +2256,12 @@ POST /projects/:id/restore
 
 ## Upload a file
 
+> - Maximum attachment size enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11 [with a flag](../administration/feature_flags.md) named `enforce_max_attachment_size_upload_api`. Disabled by default.
+> - Maximum attachment size [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62542) in GitLab 13.11.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
+
 Uploads a file to the specified project to be used in an issue or merge request
-description, or a comment. GitLab versions 14.0 and later
-[enforce](#max-attachment-size-enforcement) this limit.
+description, or a comment.
 
 ```plaintext
 POST /projects/:id/uploads
@@ -2281,42 +2296,6 @@ Returned object:
 The returned `url` is relative to the project path. The returned `full_path` is
 the absolute path to the file. In Markdown contexts, the link is expanded when
 the format in `markdown` is used.
-
-### Max attachment size enforcement
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11.
-
-GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 enables this by default.
-To disable this enforcement:
-
-**In Omnibus installations:**
-
-1. Enter the Rails console:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-1. Disable the feature flag:
-
-   ```ruby
-   Feature.disable(:enforce_max_attachment_size_upload_api)
-   ```
-
-**In installations from source:**
-
-1. Enter the Rails console:
-
-   ```shell
-   cd /home/git/gitlab
-   sudo -u git -H bundle exec rails console -e production
-   ```
-
-1. Disable the feature flag:
-
-   ```ruby
-   Feature.disable(:enforce_max_attachment_size_upload_api)
-   ```
 
 ## Upload a project avatar
 
@@ -2501,7 +2480,7 @@ POST /projects/:id/hooks
 | `push_events`                | boolean        | **{dotted-circle}** No | Trigger hook on push events. |
 | `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 | `tag_push_events`            | boolean        | **{dotted-circle}** No | Trigger hook on tag push events. |
-| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
+| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`           | boolean        | **{dotted-circle}** No | Trigger hook on wiki events. |
 
 ### Edit project hook
@@ -2535,7 +2514,7 @@ PUT /projects/:id/hooks/:hook_id
 
 ### Delete project hook
 
-Removes a hook from a project. This is an idempotent method and can be called
+Removes a hook from a project. This method is idempotent, and can be called
 multiple times. Either the hook is available or not.
 
 ```plaintext
@@ -2692,7 +2671,7 @@ PUT /projects/:id/push_rule
 
 > Moved to GitLab Premium in 13.9.
 
-Removes a push rule from a project. This is an idempotent method and can be
+Removes a push rule from a project. This method is idempotent and can be
 called multiple times. Either the push rule is available or not.
 
 ```plaintext
@@ -2774,12 +2753,14 @@ Example response:
 ```json
   {
   "id": 7,
-  "description": "",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "name": "hello-world",
   "name_with_namespace": "cute-cats / hello-world",
   "path": "hello-world",
   "path_with_namespace": "cute-cats/hello-world",
   "created_at": "2020-10-15T16:25:22.415Z",
+  "updated_at": "2020-10-15T16:25:22.415Z",
   "default_branch": "master",
   "tag_list": [], //deprecated, use `topics` instead
   "topics": [],
@@ -2872,7 +2853,7 @@ Example response:
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "autoclose_referenced_issues": true,
-  "approvals_before_merge": 0,
+  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
   "compliance_frameworks": []
 }
@@ -2933,13 +2914,14 @@ Example response:
 ## Configure pull mirroring for a project **(PREMIUM)**
 
 > - Moved to GitLab Premium in GitLab 13.9.
-> - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+On self-managed GitLab, by default the field `mirror_branch_regex` is available.
+To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md)
 named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 Configure pull mirroring while [creating a new project](#create-project)
 or [updating an existing project](#edit-project) using the API

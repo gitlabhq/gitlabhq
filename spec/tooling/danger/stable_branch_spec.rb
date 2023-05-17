@@ -93,7 +93,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       let(:pipeline_bridges_response) do
         [
           {
-            'name' => 'e2e:package-and-test',
+            'name' => 'e2e:package-and-test-ee',
             'status' => pipeline_bridge_state,
             'downstream_pipeline' => {
               'id' => '123',
@@ -197,7 +197,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         let(:pipeline_bridges_response) do
           [
             {
-              'name' => 'e2e:package-and-test',
+              'name' => 'e2e:package-and-test-ee',
               'status' => pipeline_bridge_state,
               'downstream_pipeline' => nil
             }
@@ -241,13 +241,23 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when not an applicable version' do
         let(:target_branch) { '14-9-stable-ee' }
 
-        it_behaves_like 'with a warning', described_class::VERSION_WARNING_MESSAGE
+        it 'warns about the package-and-test pipeline and the version' do
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
+          expect(stable_branch).to receive(:warn).with(described_class::VERSION_WARNING_MESSAGE)
+
+          subject
+        end
       end
 
       context 'when the version API request fails' do
         let(:response_success) { false }
 
-        it_behaves_like 'with a warning', described_class::FAILED_VERSION_REQUEST_MESSAGE
+        it 'warns about the package-and-test pipeline and the version request' do
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
+          expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
+
+          subject
+        end
       end
 
       context 'when more than one page of versions is needed' do
@@ -293,6 +303,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
         it 'adds a warning' do
           expect(HTTParty).to receive(:get).and_return(version_response).at_least(10).times
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
           expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
 
           subject
@@ -349,6 +360,28 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       end
 
       it { is_expected.to eq(result) }
+    end
+  end
+
+  describe '#valid_stable_branch?' do
+    it "returns false when on the default branch" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('main')
+
+      expect(stable_branch.valid_stable_branch?).to be(false)
+    end
+
+    it "returns true when on a stable branch" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
+      allow(fake_helper).to receive(:security_mr?).and_return(false)
+
+      expect(stable_branch.valid_stable_branch?).to be(true)
+    end
+
+    it "returns false when on a stable branch on a security MR" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
+      allow(fake_helper).to receive(:security_mr?).and_return(true)
+
+      expect(stable_branch.valid_stable_branch?).to be(false)
     end
   end
 end

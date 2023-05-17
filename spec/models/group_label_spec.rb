@@ -41,11 +41,13 @@ RSpec.describe GroupLabel do
 
     context 'cross-project' do
       let(:namespace) { build_stubbed(:namespace) }
-      let(:source_project) { build_stubbed(:project, name: 'project-1', namespace: namespace) }
-      let(:target_project) { build_stubbed(:project, name: 'project-2', namespace: namespace) }
+      let(:source_project) { build_stubbed(:project, namespace: namespace) }
+      let(:target_project) { build_stubbed(:project, namespace: namespace) }
 
       it 'returns a String reference to the object' do
-        expect(label.to_reference(source_project, target_project: target_project)).to eq %(project-1~#{label.id})
+        expect(label.to_reference(source_project, target_project: target_project)).to(
+          eq("#{source_project.path}~#{label.id}")
+        )
       end
     end
 
@@ -53,6 +55,41 @@ RSpec.describe GroupLabel do
       it 'raises error' do
         expect { label.to_reference(format: :invalid) }
           .to raise_error StandardError, /Unknown format/
+      end
+    end
+  end
+
+  describe '#preloaded_parent_container' do
+    let_it_be(:label) { create(:group_label) }
+
+    before do
+      label.reload # ensure associations are not loaded
+    end
+
+    context 'when group is loaded' do
+      it 'does not invoke a DB query' do
+        label.group
+
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(0)
+        expect(label.preloaded_parent_container).to eq(label.group)
+      end
+    end
+
+    context 'when parent_container is loaded' do
+      it 'does not invoke a DB query' do
+        label.parent_container
+
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(0)
+        expect(label.preloaded_parent_container).to eq(label.parent_container)
+      end
+    end
+
+    context 'when none of them are loaded' do
+      it 'invokes a DB query' do
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(1)
       end
     end
   end

@@ -1,0 +1,46 @@
+# invalid rules:needs
+lint_job:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs:
+
+# invalid rules:needs
+lint_job_2:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: [20]
+
+# invalid rules:needs
+lint_job_3:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: 
+        - job:      
+
+# invalid rules:needs
+lint_job_5:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: 
+        - pipeline: 5
+
+# invalid rules:needs
+lint_job_6:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: 
+        - project: namespace/group/project-name
+
+# invalid rules:needs
+lint_job_7:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: 
+        - pipeline: 5
+          job: lint_job_6

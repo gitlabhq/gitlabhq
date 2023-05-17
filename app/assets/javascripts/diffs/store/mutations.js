@@ -15,6 +15,7 @@ import {
   prepareDiffData,
   isDiscussionApplicableToLine,
   updateLineInFile,
+  markTreeEntriesLoaded,
 } from './utils';
 
 function updateDiffFilesInState(state, files) {
@@ -33,6 +34,7 @@ export default {
       endpoint,
       endpointMetadata,
       endpointBatch,
+      endpointDiffForPath,
       endpointCoverage,
       endpointUpdateUser,
       projectPath,
@@ -46,6 +48,7 @@ export default {
       endpoint,
       endpointMetadata,
       endpointBatch,
+      endpointDiffForPath,
       endpointCoverage,
       endpointUpdateUser,
       projectPath,
@@ -80,9 +83,15 @@ export default {
   },
 
   [types.SET_DIFF_DATA_BATCH](state, data) {
-    state.diffFiles = prepareDiffData({
-      diff: data,
-      priorFiles: state.diffFiles,
+    Object.assign(state, {
+      diffFiles: prepareDiffData({
+        diff: data,
+        priorFiles: state.diffFiles,
+      }),
+      treeEntries: markTreeEntriesLoaded({
+        priorEntries: state.treeEntries,
+        loadedFiles: data.diff_files,
+      }),
     });
   },
 

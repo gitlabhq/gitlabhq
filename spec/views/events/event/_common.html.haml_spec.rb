@@ -18,22 +18,9 @@ RSpec.describe 'events/event/_common.html.haml' do
       create(:event, :created, project: project, target: work_item, target_type: 'WorkItem', author: user)
     end
 
-    context 'when use_iid_in_work_items_path feature flag is disabled' do
-      before do
-        stub_feature_flags(use_iid_in_work_items_path: false)
-        render partial: 'events/event/common', locals: { event: event.present }
-      end
-
-      it 'renders the correct url' do
-        expect(rendered).to have_link(
-          work_item.reference_link_text, href: "/#{project.full_path}/-/work_items/#{work_item.id}"
-        )
-      end
-    end
-
     it 'renders the correct url with iid' do
       expect(rendered).to have_link(
-        work_item.reference_link_text, href: "/#{project.full_path}/-/work_items/#{work_item.iid}?iid_path=true"
+        work_item.reference_link_text, href: "/#{project.full_path}/-/work_items/#{work_item.iid}"
       )
     end
 

@@ -30,7 +30,7 @@ module Backup
 
     override :restore
     def restore(destination_path)
-      strategy.start(:restore, destination_path)
+      strategy.start(:restore, destination_path, remove_all_repositories: remove_all_repositories)
       enqueue_consecutive
 
     ensure
@@ -43,6 +43,12 @@ module Backup
     private
 
     attr_reader :strategy, :storages, :paths
+
+    def remove_all_repositories
+      return if paths.present?
+
+      storages.presence || Gitlab.config.repositories.storages.keys
+    end
 
     def enqueue_consecutive
       enqueue_consecutive_projects

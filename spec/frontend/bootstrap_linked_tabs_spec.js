@@ -1,9 +1,10 @@
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlLinkedTabs from 'test_fixtures_static/linked_tabs.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
 describe('Linked Tabs', () => {
   beforeEach(() => {
-    loadHTMLFixture('static/linked_tabs.html');
+    setHTMLFixture(htmlLinkedTabs);
   });
 
   afterEach(() => {

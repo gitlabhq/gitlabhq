@@ -11,7 +11,7 @@ module BlobViewer
     end
 
     def yarn?
-      json_data['engines'].present? && json_data['engines']['yarn'].present?
+      fetch_from_json('engines', 'yarn').present?
     end
 
     def manager_url
@@ -19,7 +19,7 @@ module BlobViewer
     end
 
     def package_name
-      @package_name ||= package_name_from_json('name')
+      @package_name ||= fetch_from_json('name')
     end
 
     def package_type
@@ -33,11 +33,11 @@ module BlobViewer
     private
 
     def private?
-      !!json_data['private']
+      !!fetch_from_json('private')
     end
 
     def homepage
-      url = json_data['homepage']
+      url = fetch_from_json('homepage')
       url if Gitlab::UrlSanitizer.valid?(url)
     end
 

@@ -79,7 +79,7 @@ You must not:
 
 When the SCIM app changes:
 
-- Users can follow the instructions in the [Change the SAML app](index.md#change-the-saml-app) section.
+- Users can follow the instructions in the [Change the SAML app](index.md#change-the-identity-provider) section.
 - Administrators of the identity provider can:
   1. Remove users from the SCIM app, which unlinks all removed users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
@@ -163,3 +163,27 @@ error. The error response can include a HTML result of the GitLab URL `https://g
 This error is harmless and occurs because group provisioning was turned on but GitLab SCIM integration does not support
 it nor require it. To remove the error, follow the instructions in the Azure configuration guide to disable the option
 to [synchronize Azure Active Directory groups to AppName](scim_setup.md#configure-azure-active-directory).
+
+## Okta
+
+The following troubleshooting information is specifically for SCIM provisioned through Okta.
+
+### `Error authenticating: null` message when testing API SCIM credentials
+
+When testing the API credentials in your Okta SCIM application, you may encounter an error:
+
+```plaintext
+Error authenticating: null
+```
+
+Okta needs to be able to connect to your GitLab instance to provision or deprovision users.
+
+In your Okta SCIM application, check that the SCIM **Base URL** is correct and pointing to a valid GitLab
+SCIM API endpoint URL. Check the following documentation to find information on this URL for:
+
+- [GitLab.com groups](scim_setup.md#configure-gitlab).
+- [Self-managed GitLab instances](../../admin_area/settings/scim_setup.md#configure-gitlab).
+
+For self-managed GitLab instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
+you can [allow access to Okta IP addresses](https://help.okta.com/en-us/Content/Topics/Security/ip-address-allow-listing.htm)
+on your firewall.

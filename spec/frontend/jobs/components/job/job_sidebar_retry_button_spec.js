@@ -24,12 +24,6 @@ describe('Job Sidebar Retry Button', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   beforeEach(createWrapper);
 
   it.each([

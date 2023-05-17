@@ -1,0 +1,10 @@
+- title: "PipelineSecurityReportFinding name GraphQL field"
+  announcement_milestone: "15.1"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: abellucci
+  stage: Govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/346335
+  body: |
+    Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/335372) to include a new `title` field. This field is an alias for the current `name` field, making the less specific `name` field redundant. The `name` field is removed from the PipelineSecurityReportFinding type in GitLab 16.0.
+  tiers: [Ultimate]

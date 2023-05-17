@@ -16,9 +16,9 @@ You can create users:
 
 ## Create users on sign-in page
 
-Prerequisites:
+Prerequisite:
 
-- [Sign-up enabled](../../admin_area/settings/sign_up_restrictions.md)
+- [Sign-up must be enabled](../../admin_area/settings/sign_up_restrictions.md).
 
 Users can create their own accounts by either:
 
@@ -27,17 +27,35 @@ Users can create their own accounts by either:
 
 ## Create users in Admin Area
 
-Prerequisites:
+Prerequisite:
 
-- You must have administrator access for the instance.
+- You must have administrator access to the instance.
 
 To create a user manually:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users** (`/admin/users`).
 1. Select **New user**.
-1. Complete the fields.
+1. Complete the required fields, such as name, username, and email.
 1. Select **Create user**.
+
+A reset link is sent to the user's email and they are forced to set their
+password on first sign in.
+
+To set a user's password without relying on the email confirmation, after you
+create a user following the previous steps:
+
+1. Select the user.
+1. Select **Edit**.
+1. Complete the password and password confirmation fields.
+1. Select **Save changes**.
+
+The user can now sign in with the new username and password, and they are asked
+to change the password you set up for them.
+
+NOTE:
+If you wanted to create a test user, you could follow the previous steps
+by providing a fake email and using the same password in the final confirmation.
 
 ## Create users through authentication integrations
 

@@ -14,7 +14,7 @@ class PipelineProcessWorker
   loggable_arguments 1
 
   idempotent!
-  deduplicate :until_executing
+  deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: 1.minute
 
   def perform(pipeline_id)
     Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|

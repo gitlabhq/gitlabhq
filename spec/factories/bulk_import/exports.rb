@@ -20,5 +20,9 @@ FactoryBot.define do
     trait :failed do
       status { -1 }
     end
+
+    trait :batched do
+      batched { true }
+    end
   end
 end

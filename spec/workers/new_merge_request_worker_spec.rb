@@ -107,18 +107,6 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
               stub_feature_flags(add_prepared_state_to_mr: true)
             end
 
-            context 'when the merge request is prepared' do
-              before do
-                merge_request.update!(prepared_at: Time.current)
-              end
-
-              it 'does not call the create service' do
-                expect(MergeRequests::AfterCreateService).not_to receive(:new)
-
-                worker.perform(merge_request.id, user.id)
-              end
-            end
-
             context 'when the merge request is not prepared' do
               it 'calls the create service' do
                 expect_next_instance_of(MergeRequests::AfterCreateService, project: merge_request.target_project, current_user: user) do |service|

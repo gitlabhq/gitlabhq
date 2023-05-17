@@ -142,21 +142,21 @@ To use the Vue performance plugin:
 
 1. Import the plugin:
 
-    ```javascript
-    import PerformancePlugin from '~/performance/vue_performance_plugin';
-    ```
+   ```javascript
+   import PerformancePlugin from '~/performance/vue_performance_plugin';
+   ```
 
 1. Use it before initializing your Vue application:
 
-    ```javascript
-    Vue.use(PerformancePlugin, {
-      components: [
-        'IdeTreeList',
-        'FileTree',
-        'RepoEditor',
-      ]
-    });
-    ```
+   ```javascript
+   Vue.use(PerformancePlugin, {
+     components: [
+       'IdeTreeList',
+       'FileTree',
+       'RepoEditor',
+     ]
+   });
+   ```
 
 The plugin accepts the list of components, performance of which should be measured. The components
 should be specified by their `name` option.
@@ -474,4 +474,4 @@ General tips:
 - [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
 - [Google PageSpeed Insights](https://pagespeed.web.dev/) grades web pages and provides feedback to improve the page.
 - [Profiling with Chrome DevTools](https://developer.chrome.com/docs/devtools/)
-- [Browser Diet](https://browserdiet.com/) is a community-built guide that catalogues practical tips for improving web page performance.
+- [Browser Diet](https://github.com/zenorocha/browser-diet) was a community-built guide that cataloged practical tips for improving web page performance.

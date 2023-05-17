@@ -3,7 +3,7 @@ table_name: project_group_links
 classes:
 - ProjectGroupLink
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3ac5a759e93e632539438d4564582c645a9f6799
 milestone: "<6.0"

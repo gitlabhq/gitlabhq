@@ -5,20 +5,10 @@ module Projects
       require 'json'
       include ActionView::Helpers::NumberHelper
 
-      def show_candidate_view_model(candidate)
+      def experiment_as_data(experiment)
         data = {
-          candidate: {
-            params: candidate.params,
-            metrics: candidate.latest_metrics,
-            info: {
-              iid: candidate.iid,
-              path_to_artifact: link_to_artifact(candidate),
-              experiment_name: candidate.experiment.name,
-              path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
-              status: candidate.status
-            },
-            metadata: candidate.metadata
-          }
+          name: experiment.name,
+          path: link_to_experiment(experiment.project, experiment)
         }
 
         Gitlab::Json.generate(data)
@@ -29,6 +19,7 @@ module Projects
           {
             **candidate.params.to_h { |p| [p.name, p.value] },
             **candidate.latest_metrics.to_h { |m| [m.name, number_with_precision(m.value, precision: 4)] },
+            ci_job: job_info(candidate),
             artifact: link_to_artifact(candidate),
             details: link_to_details(candidate),
             name: candidate.name,
@@ -79,6 +70,17 @@ module Projects
 
       def link_to_details(candidate)
         project_ml_candidate_path(candidate.project, candidate.iid)
+      end
+
+      def job_info(candidate)
+        return unless candidate.from_ci?
+
+        build = candidate.ci_build
+
+        {
+          path: project_job_path(build.project, build),
+          name: build.name
+        }
       end
 
       def link_to_experiment(project, experiment)

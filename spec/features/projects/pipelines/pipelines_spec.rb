@@ -288,16 +288,21 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         it 'has link to the manual action' do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
+          wait_for_requests
+
           expect(page).to have_button('manual build')
         end
 
         context 'when manual action was played' do
           before do
             find('[data-testid="pipelines-manual-actions-dropdown"]').click
+
+            wait_for_requests
+
             click_button('manual build')
           end
 
-          it 'enqueues manual action job' do
+          it 'enqueues manual action job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409984' do
             expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] .gl-dropdown-toggle:disabled')
           end
         end
@@ -308,7 +313,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
             name: 'delayed job 1',
-            stage: 'test')
+            stage: 'test',
+            scheduled_at: 2.hours.since + 2.minutes)
         end
 
         before do
@@ -322,9 +328,12 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         it "has link to the delayed job's action" do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
-          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
+          wait_for_requests
+
           expect(page).to have_button('delayed job 1')
-          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+
+          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
+          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M"))
         end
 
         context 'when delayed job is expired already' do
@@ -337,6 +346,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it "shows 00:00:00 as the remaining time" do
             find('[data-testid="pipelines-manual-actions-dropdown"]').click
+
+            wait_for_requests
 
             expect(page).to have_content("00:00:00")
           end
@@ -358,7 +369,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js do
+          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410129' do
             expect(delayed_job.reload).to be_pending
           end
         end
@@ -675,7 +686,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('.gl-new-dropdown-item', text: 'master').click
+          find('.gl-new-dropdown-item', text: '2-mb-file').click
           wait_for_requests
         end
 
@@ -686,7 +697,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it 'creates a new pipeline' do
             expect do
-              click_on 'Run pipeline'
+              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -695,14 +706,14 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           end
 
           context 'when variables are specified' do
-            it 'creates a new pipeline with variables', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
+            it 'creates a new pipeline with variables' do
               page.within(find("[data-testid='ci-variable-row']")) do
                 find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
                 find("[data-testid='pipeline-form-ci-variable-value']").set('value')
               end
 
               expect do
-                click_on 'Run pipeline'
+                find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -715,17 +726,17 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Run pipeline'
+            find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
             wait_for_requests
           end
 
           it { expect(page).to have_content('Missing CI config file') }
 
-          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
+          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              click_on 'Run pipeline'
+              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -787,9 +798,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
       describe 'find pipelines' do
         it 'shows filtered pipelines', :js do
           click_button project.default_branch
-          send_keys('fix')
+          send_keys('2-mb-file')
 
-          expect_listbox_item('fix')
+          expect_listbox_item('2-mb-file')
         end
       end
     end

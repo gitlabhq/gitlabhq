@@ -24,7 +24,11 @@ module Groups
           Gitlab::AppLogger.info(
             "Failed to delete GroupGroupLinks with ids: #{links.map(&:id)}.")
         end
+
+        links
       end
     end
   end
 end
+
+Groups::GroupLinks::DestroyService.prepend_mod

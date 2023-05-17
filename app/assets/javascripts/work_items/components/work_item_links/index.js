@@ -9,21 +9,20 @@ export default function initWorkItemLinks() {
   const workItemLinksRoot = document.querySelector('.js-work-item-links-root');
 
   if (!workItemLinksRoot) {
-    return;
+    return null;
   }
 
   const {
-    projectPath,
+    fullPath,
     wiHasIssueWeightsFeature,
-    iid,
     wiHasIterationsFeature,
     wiHasIssuableHealthStatusFeature,
     registerPath,
     signInPath,
+    wiReportAbusePath,
   } = workItemLinksRoot.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  return new Vue({
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
     apolloProvider,
@@ -31,14 +30,13 @@ export default function initWorkItemLinks() {
       WorkItemLinks,
     },
     provide: {
-      projectPath,
-      iid,
-      fullPath: projectPath,
+      fullPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
       hasIterationsFeature: wiHasIterationsFeature,
       hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
       registerPath,
       signInPath,
+      reportAbusePath: wiReportAbusePath,
     },
     render: (createElement) =>
       createElement('work-item-links', {

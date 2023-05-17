@@ -1,8 +1,0 @@
----
-name: integration_slack_app_notifications
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98663
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381012
-milestone: '15.5'
-type: development
-group: group::integrations
-default_enabled: false

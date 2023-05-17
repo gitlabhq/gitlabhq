@@ -39,7 +39,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags do
       it 'creates a package event' do
         expect(::Packages::CreateEventService)
           .to receive(:new).with(nil, user, event_name: :delete_tag_bulk, scope: :tag).and_call_original
-        expect { subject }.to change { ::Packages::Event.count }.by(1)
+        subject
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags do
 
       it 'does not create a package event' do
         expect(::Packages::CreateEventService).not_to receive(:new)
-        expect { subject }.not_to change { ::Packages::Event.count }
+        subject
       end
     end
   end

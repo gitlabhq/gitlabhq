@@ -24,6 +24,11 @@
             = Gitlab.config.gitlab.host
         %tr
           %td{ style: "#{default_style}border-top:1px solid #ededed;" }
+            = _('User')
+          %td{ style: "#{default_style}color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+            #{sanitize_name(@user.name)} (#{@user.username})
+        %tr
+          %td{ style: "#{default_style}border-top:1px solid #ededed;" }
             = _('IP Address')
           %td{ style: "#{default_style}color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
             %span.muted{ style: "color:#333333;text-decoration:none;" }

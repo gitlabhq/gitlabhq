@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking do
+RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation do
   include StubENV
 
   before do
@@ -102,12 +102,28 @@ RSpec.describe Gitlab::Tracking do
     end
   end
 
-  describe '.event' do
+  context 'event tracking' do
     let(:namespace) { create(:namespace) }
 
-    shared_examples 'delegates to destination' do |klass|
+    shared_examples 'rescued error raised by destination class' do
+      it 'rescues error' do
+        error = StandardError.new("something went wrong")
+        allow_any_instance_of(destination_class).to receive(:event).and_raise(error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                                           .with(
+                                             error,
+                                             snowplow_category: category,
+                                             snowplow_action: action
+                                           )
+
+        expect { tracking_method }.not_to raise_error
+      end
+    end
+
+    shared_examples 'delegates to destination' do |klass, method|
       before do
-        allow_any_instance_of(Gitlab::Tracking::Destinations::Snowplow).to receive(:event)
+        allow_any_instance_of(klass).to receive(:event)
       end
 
       it "delegates to #{klass} destination" do
@@ -118,8 +134,8 @@ RSpec.describe Gitlab::Tracking do
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)
-          .with(project: project, user: user, namespace: namespace, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
-          .and_call_original
+                .with(project_id: project.id, user_id: user.id, namespace_id: namespace.id, plan_name: namespace.actual_plan_name, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
+                .and_call_original
 
         expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
           expect(category).to eq('category')
@@ -132,7 +148,7 @@ RSpec.describe Gitlab::Tracking do
           expect(args[:context].last).to eq(other_context)
         end
 
-        described_class.event('category', 'action',
+        described_class.method(method).call('category', 'action',
           label: 'label',
           property: 'property',
           value: 1.5,
@@ -141,44 +157,95 @@ RSpec.describe Gitlab::Tracking do
           user: user,
           namespace: namespace,
           extra_key_1: 'extra value 1',
-          extra_key_2: 'extra value 2')
+          extra_key_2: 'extra value 2'
+        )
       end
     end
 
-    context 'when the action is not passed in as a string' do
-      it 'allows symbols' do
-        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+    describe '.database_event' do
+      context 'when the action is not passed in as a string' do
+        it 'allows symbols' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
 
-        described_class.event('category', :some_action)
+          described_class.database_event('category', :some_action)
+        end
+
+        it 'allows nil' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.database_event('category', nil)
+        end
+
+        it 'allows integers' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.database_event('category', 1)
+        end
       end
 
-      it 'allows nil' do
-        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+      it_behaves_like 'rescued error raised by destination class' do
+        let(:category) { 'Issue' }
+        let(:action) { 'created' }
+        let(:destination_class) { Gitlab::Tracking::Destinations::DatabaseEventsSnowplow }
 
-        described_class.event('category', nil)
+        subject(:tracking_method) { described_class.database_event(category, action) }
       end
 
-      it 'allows integers' do
-        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-
-        described_class.event('category', 1)
-      end
+      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::DatabaseEventsSnowplow, :database_event
     end
 
-    context 'when destination is Snowplow' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
+    describe '.event' do
+      context 'when the action is not passed in as a string' do
+        it 'allows symbols' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.event('category', :some_action)
+        end
+
+        it 'allows nil' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.event('category', nil)
+        end
+
+        it 'allows integers' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+          described_class.event('category', 1)
+        end
       end
 
-      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::Snowplow
-    end
+      context 'when destination is Snowplow' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+        end
 
-    context 'when destination is SnowplowMicro' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
+        it_behaves_like 'rescued error raised by destination class' do
+          let(:category) { 'category' }
+          let(:action) { 'action' }
+          let(:destination_class) { Gitlab::Tracking::Destinations::Snowplow }
+
+          subject(:tracking_method) { described_class.event(category, action) }
+        end
+
+        it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::Snowplow, :event
       end
 
-      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro
+      context 'when destination is SnowplowMicro' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+        end
+
+        it_behaves_like 'rescued error raised by destination class' do
+          let(:category) { 'category' }
+          let(:action) { 'action' }
+          let(:destination_class) { Gitlab::Tracking::Destinations::Snowplow }
+
+          subject(:tracking_method) { described_class.event(category, action) }
+        end
+
+        it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro, :event
+      end
     end
   end
 
@@ -245,7 +312,7 @@ RSpec.describe Gitlab::Tracking do
     end
 
     it 'returns false when snowplow_micro is not configured' do
-      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
+      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
 
       expect(described_class).not_to be_snowplow_micro_enabled
     end

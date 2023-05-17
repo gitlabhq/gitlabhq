@@ -4,12 +4,19 @@ import { removeBreakLine } from 'helpers/text_helper';
 import notesEventHub from '~/notes/event_hub';
 import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 
-function createComponent({ path = '' } = {}) {
+function createComponent({ path = '', propsData = {}, provide = {} } = {}) {
   return mount(UnresolvedDiscussions, {
     propsData: {
       mr: {
         createIssueToResolveDiscussionsPath: path,
       },
+      ...propsData,
+    },
+    provide: {
+      glFeatures: {
+        hideCreateIssueResolveAll: false,
+      },
+      ...provide,
     },
   });
 }
@@ -21,11 +28,7 @@ describe('UnresolvedDiscussions', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  it('triggers the correct notes event when the jump to first unresolved discussion button is clicked', () => {
+  it('triggers the correct notes event when the go to first unresolved discussion button is clicked', () => {
     jest.spyOn(notesEventHub, '$emit');
 
     wrapper.find('[data-testid="jump-to-first"]').trigger('click');
@@ -38,17 +41,13 @@ describe('UnresolvedDiscussions', () => {
       wrapper = createComponent({ path: TEST_HOST });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should have correct elements', () => {
       const text = removeBreakLine(wrapper.text()).trim();
       expect(text).toContain('Merge blocked:');
       expect(text).toContain('all threads must be resolved.');
 
-      expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
-      expect(wrapper.element.innerText).toContain('Create issue to resolve all threads');
+      expect(wrapper.element.innerText).toContain('Resolve all with new issue');
+      expect(wrapper.element.innerText).toContain('Go to first unresolved thread');
       expect(wrapper.element.querySelector('.js-create-issue').getAttribute('href')).toEqual(
         TEST_HOST,
       );
@@ -61,9 +60,26 @@ describe('UnresolvedDiscussions', () => {
       expect(text).toContain('Merge blocked:');
       expect(text).toContain('all threads must be resolved.');
 
-      expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
-      expect(wrapper.element.innerText).not.toContain('Create issue to resolve all threads');
+      expect(wrapper.element.innerText).not.toContain('Resolve all with new issue');
+      expect(wrapper.element.innerText).toContain('Go to first unresolved thread');
       expect(wrapper.element.querySelector('.js-create-issue')).toEqual(null);
+    });
+  });
+
+  describe('when `hideCreateIssueResolveAll` is enabled', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        path: TEST_HOST,
+        provide: {
+          glFeatures: {
+            hideCreateIssueResolveAll: true,
+          },
+        },
+      });
+    });
+
+    it('do not show jump to first button', () => {
+      expect(wrapper.text()).not.toContain('Create issue to resolve all threads');
     });
   });
 });

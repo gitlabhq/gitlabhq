@@ -1,6 +1,6 @@
 ---
-stage: Monitor
-group: Respond
+stage: Shared responsibility based on functional area
+group: Shared responsibility based on functional area
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -30,16 +30,16 @@ For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#side
 
 ## Metrics available
 
+> `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
+
 The following metrics are available:
 
 | Metric                                                           | Type        | Since   | Description                                                                                                           | Labels                                                    |
 | :--------------------------------------------------------------- | :---------- | ------: | :-------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------- |
-| `gitlab_banzai_cached_render_real_duration_seconds`              | Histogram   | 9.4     | Duration of rendering Markdown into HTML when cached output exists                                                    | `controller`, `action`                                    |
-| `gitlab_banzai_cacheless_render_real_duration_seconds`           | Histogram   | 9.4     | Duration of rendering Markdown into HTML when cached output does not exist                                            | `controller`, `action`                                    |
 | `gitlab_cache_misses_total`                                      | Counter     | 10.2    | Cache read miss                                                                                                       | `controller`, `action`                                    |
-| `gitlab_cache_operation_duration_seconds`                        | Histogram   | 10.2    | Cache access time                                                                                                     |                                                           |
-| `gitlab_cache_operations_total`                                  | Counter     | 12.2    | Cache operations by controller or action                                                                              | `controller`, `action`, `operation`                       |
-| `gitlab_cache_read_multikey_count`                               | Histogram   | 15.7    | Count of keys in multi-key cache read operations                                                                      | `controller`, `action`                   |
+| `gitlab_cache_operation_duration_seconds`                        | Histogram   | 10.2    | Cache access time                                                                                                     | `operation`, `store`                                      |
+| `gitlab_cache_operations_total`                                  | Counter     | 12.2    | Cache operations by controller or action                                                                              | `controller`, `action`, `operation`, `store`              |
+| `gitlab_cache_read_multikey_count`                               | Histogram   | 15.7    | Count of keys in multi-key cache read operations                                                                      | `controller`, `action`, `store`                   |
 | `gitlab_ci_pipeline_builder_scoped_variables_duration`           | Histogram   | 14.5   | Time in seconds it takes to create the scoped variables for a CI/CD job
 | `gitlab_ci_pipeline_creation_duration_seconds`                   | Histogram   | 13.0    | Time in seconds it takes to create a CI/CD pipeline                                                                   | `gitlab`                                                  |
 | `gitlab_ci_pipeline_size_builds`                                 | Histogram   | 13.1    | Total number of builds within a pipeline grouped by a pipeline source                                                 | `source`                                                  |
@@ -129,10 +129,12 @@ The following metrics are available:
 | `action_cable_single_client_transmissions_total`                 | Counter     | 13.10   | The number of ActionCable messages transmitted to any client in any channel                                           | `server_mode`                                             |
 | `action_cable_subscription_confirmations_total`                  | Counter     | 13.10   | The number of ActionCable subscriptions from clients confirmed                                                        | `server_mode`                                             |
 | `action_cable_subscription_rejections_total`                     | Counter     | 13.10   | The number of ActionCable subscriptions from clients rejected                                                         | `server_mode`                                             |
-| `action_cable_transmitted_bytes`                                 | Histogram   | 14.1    | Message size, in bytes, transmitted over action cable                                                                 | `operation`, `channel`                                    |
+| `action_cable_transmitted_bytes_total`                           | Counter     | 16.0    |  Total number of bytes transmitted over ActionCable                                                                   | `operation`, `channel`                                    |
 | `gitlab_issuable_fast_count_by_state_total`                      | Counter     | 13.5    | Total number of row count operations on issue/merge request list pages                                                |                                                           |
 | `gitlab_issuable_fast_count_by_state_failures_total`             | Counter     | 13.5    | Number of soft-failed row count operations on issue/merge request list pages                                          |                                                           |
 | `gitlab_ci_trace_finalize_duration_seconds`                      | Histogram   | 13.6    | Duration of build trace chunks migration to object storage                                                            |                                                           |
+| `gitlab_vulnerability_report_branch_comparison_real_duration_seconds`  | Histogram   | 15.11    | Execution duration of vulnerability report present on default branch sql query                                                            |                                                           |
+| `gitlab_vulnerability_report_branch_comparison_cpu_duration_seconds`  | Histogram   | 15.11    | Execution duration of vulnerability report present on default branch sql query                                                            |                                                           |
 | `gitlab_external_http_total`                                     | Counter     | 13.8    | Total number of HTTP calls to external systems                                                                        | `controller`, `action`                                    |
 | `gitlab_external_http_duration_seconds`                          | Counter     | 13.8    | Duration in seconds spent on each HTTP call to external systems                                                       |                                                           |
 | `gitlab_external_http_exception_total`                           | Counter     | 13.8    | Total number of exceptions raised when making external HTTP calls                                                     |                                                           |
@@ -151,8 +153,8 @@ The following metrics are available:
 | `gitlab_ci_build_trace_errors_total`                             | Counter     | 14.4    | Total amount of different error types on a build trace                                                                | `error_reason`                                            |
 | `gitlab_presentable_object_cacheless_render_real_duration_seconds`              | Histogram   | 15.3     | Duration of real time spent caching and representing specific web request objects                                                    | `controller`, `action`                                    |
 | `cached_object_operations_total`                                      | Counter     | 15.3    | Total number of objects cached for specific web requests                                                                                                      | `controller`, `action`                                    |
-| `redis_hit_miss_operations_total`                                | Counter     | 15.6    | Total number of Redis cache hits and misses                                                                           | `cache_hit`, `caller_id`, `cache_identifier`, `feature_category`, `backing_resource` |
-| `redis_cache_generation_duration_seconds`                        | Histogram   | 15.6    | Time to generate Redis cache                                                                                          | `cache_hit`, `caller_id`, `cache_identifier`, `feature_category`, `backing_resource` |
+| `redis_hit_miss_operations_total`                                | Counter     | 15.6    | Total number of Redis cache hits and misses                                                                           | `cache_hit`, `cache_identifier`, `feature_category`, `backing_resource` |
+| `redis_cache_generation_duration_seconds`                        | Histogram   | 15.6    | Time to generate Redis cache                                                                                          | `cache_hit`, `cache_identifier`, `feature_category`, `backing_resource` |
 | `gitlab_diffs_reorder_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spend on reordering of diff files on diffs batch request | `controller`, `action` |
 | `gitlab_diffs_collection_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on querying merge request diff files on diffs batch request | `controller`, `action` |
 | `gitlab_diffs_comparison_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on getting comparison data on diffs batch request | `controller`, `action` |
@@ -163,12 +165,15 @@ The following metrics are available:
 | `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9  | Total number of times a Ruby process violated a memory threshold | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9  | Total number of times Ruby process memory violations were handled | |
+| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
 
 ## Metrics controlled by a feature flag
 
 The following metrics can be controlled by feature flags:
 
-| Metric                                                         | Feature Flag                                                       |
+| Metric                                                         | Feature flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
@@ -206,16 +211,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_repositories`                             | Gauge   | 10.2  | Total number of repositories available on primary | `url` |
 | `geo_repositories_synced`                      | Gauge   | 10.2  | Number of repositories synced on secondary | `url` |
 | `geo_repositories_failed`                      | Gauge   | 10.2  | Number of repositories failed to sync on secondary | `url` |
-| `geo_lfs_objects`                              | Gauge   | 10.2 | Number of LFS objects on primary | `url` |
+| `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |
 | `geo_lfs_objects_checksummed`                  | Gauge   | 14.6  | Number of LFS objects checksummed successfully on primary | `url` |
 | `geo_lfs_objects_checksum_failed`              | Gauge   | 14.6  | Number of LFS objects failed to calculate the checksum on primary | `url` |
-| `geo_lfs_objects_checksum_total`               | Gauge   | 14.6  | Number of LFS objects tried to checksum on primary | `url` |
+| `geo_lfs_objects_checksum_total`               | Gauge   | 14.6  | Number of LFS objects that need to be checksummed on primary | `url` |
 | `geo_lfs_objects_synced`                       | Gauge   | 10.2  | Number of syncable LFS objects synced on secondary | `url` |
 | `geo_lfs_objects_failed`                       | Gauge   | 10.2  | Number of syncable LFS objects failed to sync on secondary | `url` |
 | `geo_lfs_objects_registry`                     | Gauge   | 14.6  | Number of LFS objects in the registry | `url` |
-| `geo_lfs_objects_verified`                     | Gauge   | 14.6  | Number of LFS objects verified on secondary | `url` |
-| `geo_lfs_objects_verification_failed`          | Gauge   | 14.6 | Number of LFS objects' verifications failed on secondary | `url` |
-| `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects' verifications tried on secondary | `url` |LFS objects failed to sync on secondary | `url` |
+| `geo_lfs_objects_verified`                     | Gauge   | 14.6  | Number of LFS objects successfully verified on secondary | `url` |
+| `geo_lfs_objects_verification_failed`          | Gauge   | 14.6  | Number of LFS objects that failed verifications on secondary | `url` |
+| `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects to attempt to verify on secondary | `url` |
 | `geo_attachments`                              | Gauge   | 10.2  | Total number of file attachments available on primary | `url` |
 | `geo_attachments_synced`                       | Gauge   | 10.2  | Number of attachments synced on secondary | `url` |
 | `geo_attachments_failed`                       | Gauge   | 10.2  | Number of attachments failed to sync on secondary | `url` |
@@ -230,11 +235,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_repositories_checksum_failed`             | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | `url` |
 | `geo_wikis_checksummed`                        | Gauge   | 10.7  | Number of wikis checksummed on primary | `url` |
 | `geo_wikis_checksum_failed`                    | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | `url` |
-| `geo_repositories_verified`                    | Gauge   | 10.7  | Number of repositories verified on secondary | `url` |
-| `geo_repositories_verification_failed`         | Gauge   | 10.7  | Number of repositories failed to verify on secondary | `url` |
+| `geo_repositories_verified`                    | Gauge   | 10.7  | Number of repositories successfully verified on secondary | `url` |
+| `geo_repositories_verification_failed`         | Gauge   | 10.7  | Number of repositories that failed verification on secondary | `url` |
 | `geo_repositories_checksum_mismatch`           | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | `url` |
-| `geo_wikis_verified`                           | Gauge   | 10.7  | Number of wikis verified on secondary | `url` |
-| `geo_wikis_verification_failed`                | Gauge   | 10.7  | Number of wikis failed to verify on secondary | `url` |
+| `geo_wikis_verified`                           | Gauge   | 10.7  | Number of wikis successfully verified on secondary | `url` |
+| `geo_wikis_verification_failed`                | Gauge   | 10.7  | Number of wikis that failed verification on secondary | `url` |
 | `geo_wikis_checksum_mismatch`                  | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | `url` |
 | `geo_repositories_checked`                     | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | `url` |
 | `geo_repositories_checked_failed`              | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | `url` |
@@ -249,25 +254,25 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_terraform_state_versions`                 | Gauge   | 13.5  | Number of terraform state versions on primary | `url` |
 | `geo_terraform_state_versions_checksummed`     | Gauge   | 13.5  | Number of terraform state versions checksummed successfully on primary | `url` |
 | `geo_terraform_state_versions_checksum_failed` | Gauge   | 13.5  | Number of terraform state versions failed to calculate the checksum on primary | `url` |
-| `geo_terraform_state_versions_checksum_total`  | Gauge   | 13.12  | Number of terraform state versions tried to checksum on primary | `url` |
+| `geo_terraform_state_versions_checksum_total`  | Gauge   | 13.12  | Number of terraform state versions that need to be checksummed on primary | `url` |
 | `geo_terraform_state_versions_synced`          | Gauge   | 13.5  | Number of syncable terraform state versions synced on secondary | `url` |
 | `geo_terraform_state_versions_failed`          | Gauge   | 13.5  | Number of syncable terraform state versions failed to sync on secondary | `url` |
 | `geo_terraform_state_versions_registry`        | Gauge   | 13.5  | Number of terraform state versions in the registry | `url` |
-| `geo_terraform_state_versions_verified`        | Gauge   | 13.12  | Number of terraform state versions verified on secondary | `url` |
-| `geo_terraform_state_versions_verification_failed` | Gauge   | 13.12  | Number of terraform state versions verifications failed on secondary | `url` |
-| `geo_terraform_state_versions_verification_total` | Gauge   | 13.12  | Number of terraform state versions verifications tried on secondary | `url` |
+| `geo_terraform_state_versions_verified`        | Gauge   | 13.12  | Number of terraform state versions successfully verified on secondary | `url` |
+| `geo_terraform_state_versions_verification_failed` | Gauge   | 13.12  | Number of terraform state versions that failed verification on secondary | `url` |
+| `geo_terraform_state_versions_verification_total` | Gauge   | 13.12  | Number of terraform state versions to attempt to verify on secondary | `url` |
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 | `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
-| `geo_merge_request_diffs_checksum_total`       | Gauge   | 13.12 | Number of merge request diffs tried to checksum on primary | `url` |
-| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs successfully checksummed on primary | `url` |
+| `geo_merge_request_diffs_checksum_total`       | Gauge   | 13.12 | Number of merge request diffs to checksum on primary | `url` |
+| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs that successfully calculated the checksum on primary | `url` |
 | `geo_merge_request_diffs_checksum_failed`      | Gauge   | 13.4  | Number of merge request diffs failed to calculate the checksum on primary | `url` |
 | `geo_merge_request_diffs_synced`               | Gauge   | 13.4  | Number of syncable merge request diffs synced on secondary | `url` |
 | `geo_merge_request_diffs_failed`               | Gauge   | 13.4  | Number of syncable merge request diffs failed to sync on secondary | `url` |
 | `geo_merge_request_diffs_registry`             | Gauge   | 13.4  | Number of merge request diffs in the registry | `url` |
-| `geo_merge_request_diffs_verification_total`   | Gauge   | 13.12 | Number of merge request diffs verifications tried on secondary | `url` |
-| `geo_merge_request_diffs_verified`             | Gauge   | 13.12 | Number of merge request diffs verified on secondary | `url` |
-| `geo_merge_request_diffs_verification_failed`  | Gauge   | 13.12 | Number of merge request diffs verifications failed on secondary | `url` |
+| `geo_merge_request_diffs_verification_total`   | Gauge   | 13.12 | Number of merge request diffs to attempt to verify on secondary | `url` |
+| `geo_merge_request_diffs_verified`             | Gauge   | 13.12 | Number of merge request diffs successfully verified on secondary | `url` |
+| `geo_merge_request_diffs_verification_failed`  | Gauge   | 13.12 | Number of merge request diffs that failed verification on secondary | `url` |
 | `geo_snippet_repositories`                     | Gauge   | 13.4  | Number of snippets on primary | `url` |
 | `geo_snippet_repositories_checksummed`         | Gauge   | 13.4  | Number of snippets checksummed on primary | `url` |
 | `geo_snippet_repositories_checksum_failed`     | Gauge   | 13.4  | Number of snippets failed to calculate the checksum on primary | `url` |
@@ -281,25 +286,25 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
 | `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
 | `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
-| `geo_pages_deployments_checksum_total`         | Gauge   | 14.6  | Number of pages deployments tried to checksum on primary | `url` |
-| `geo_pages_deployments_checksummed`            | Gauge   | 14.6  | Number of pages deployments successfully checksummed on primary | `url` |
+| `geo_pages_deployments_checksum_total`         | Gauge   | 14.6  | Number of pages deployments to checksum on primary | `url` |
+| `geo_pages_deployments_checksummed`            | Gauge   | 14.6  | Number of pages deployments that successfully calculated the checksum on primary | `url` |
 | `geo_pages_deployments_checksum_failed`        | Gauge   | 14.6  | Number of pages deployments failed to calculate the checksum on primary | `url` |
 | `geo_pages_deployments_synced`                 | Gauge   | 14.3  | Number of syncable pages deployments synced on secondary | `url` |
 | `geo_pages_deployments_failed`                 | Gauge   | 14.3  | Number of syncable pages deployments failed to sync on secondary | `url` |
 | `geo_pages_deployments_registry`               | Gauge   | 14.3  | Number of pages deployments in the registry | `url` |
-| `geo_pages_deployments_verification_total`     | Gauge   | 14.6  | Number of pages deployments verifications tried on secondary | `url` |
-| `geo_pages_deployments_verified`               | Gauge   | 14.6  | Number of pages deployments verified on secondary | `url` |
+| `geo_pages_deployments_verification_total`     | Gauge   | 14.6  | Number of pages deployments to attempt to verify on secondary | `url` |
+| `geo_pages_deployments_verified`               | Gauge   | 14.6  | Number of pages deployments successfully verified on secondary | `url` |
 | `geo_pages_deployments_verification_failed`    | Gauge   | 14.6  | Number of pages deployments verifications failed on secondary | `url` |
 | `geo_job_artifacts`                            | Gauge   | 14.8  | Number of job artifacts on primary | `url` |
-| `geo_job_artifacts_checksum_total`             | Gauge   | 14.8  | Number of job artifacts tried to checksum on primary | `url` |
-| `geo_job_artifacts_checksummed`                | Gauge   | 14.8  | Number of job artifacts successfully checksummed on primary | `url` |
+| `geo_job_artifacts_checksum_total`             | Gauge   | 14.8  | Number of job artifacts to checksum on primary | `url` |
+| `geo_job_artifacts_checksummed`                | Gauge   | 14.8  | Number of job artifacts that successfully calculated the checksum on primary | `url` |
 | `geo_job_artifacts_checksum_failed`            | Gauge   | 14.8  | Number of job artifacts failed to calculate the checksum on primary | `url` |
 | `geo_job_artifacts_synced`                     | Gauge   | 14.8  | Number of syncable job artifacts synced on secondary | `url` |
 | `geo_job_artifacts_failed`                     | Gauge   | 14.8  | Number of syncable job artifacts failed to sync on secondary | `url` |
 | `geo_job_artifacts_registry`                   | Gauge   | 14.8  | Number of job artifacts in the registry | `url` |
-| `geo_job_artifacts_verification_total`         | Gauge   | 14.8  | Number of job artifacts verifications tried on secondary | `url` |
-| `geo_job_artifacts_verified`                   | Gauge   | 14.8  | Number of job artifacts verified on secondary | `url` |
-| `geo_job_artifacts_verification_failed`        | Gauge   | 14.8  | Number of job artifacts verifications failed on secondary | `url` |
+| `geo_job_artifacts_verification_total`         | Gauge   | 14.8  | Number of job artifacts to attempt to verify on secondary | `url` |
+| `geo_job_artifacts_verified`                   | Gauge   | 14.8  | Number of job artifacts successfully verified on secondary | `url` |
+| `geo_job_artifacts_verification_failed`        | Gauge   | 14.8  | Number of job artifacts that failed verification on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |
@@ -310,51 +315,66 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_uploads_synced`               | Gauge   | 14.1  | Number of uploads synced on secondary | `url` |
 | `geo_uploads_failed`               | Gauge   | 14.1  | Number of syncable uploads failed to sync on secondary | `url` |
 | `geo_uploads_registry`             | Gauge   | 14.1  | Number of uploads in the registry | `url` |
-| `geo_uploads_checksum_total`       | Gauge   | 14.6 | Number of uploads tried to checksum on primary | `url` |
-| `geo_uploads_checksummed`          | Gauge   | 14.6  | Number of uploads successfully checksummed on primary | `url` |
+| `geo_uploads_checksum_total`       | Gauge   | 14.6 | Number of uploads to checksum on primary | `url` |
+| `geo_uploads_checksummed`          | Gauge   | 14.6  | Number of uploads that successfully calculated the checksum on primary | `url` |
 | `geo_uploads_checksum_failed`      | Gauge   | 14.6  | Number of uploads failed to calculate the checksum on primary | `url` |
-| `geo_uploads_verification_total`   | Gauge   | 14.6 | Number of uploads verifications tried on secondary | `url` |
-| `geo_uploads_verified`             | Gauge   | 14.6 | Number of uploads verified on secondary | `url` |
-| `geo_uploads_verification_failed`  | Gauge   | 14.6 | Number of uploads verifications failed on secondary | `url` |
+| `geo_uploads_verification_total`   | Gauge   | 14.6 | Number of uploads to attempt to verify on secondary | `url` |
+| `geo_uploads_verified`             | Gauge   | 14.6 | Number of uploads successfully verified on secondary | `url` |
+| `geo_uploads_verification_failed`  | Gauge   | 14.6 | Number of uploads that failed verification on secondary | `url` |
 | `geo_container_repositories`           | Gauge   | 15.4  | Number of container repositories on primary | `url` |
 | `geo_container_repositories_synced`    | Gauge   | 15.4  | Number of container repositories synced on secondary | `url` |
 | `geo_container_repositories_failed`    | Gauge   | 15.4  | Number of syncable container repositories failed to sync on secondary | `url` |
 | `geo_container_repositories_registry`  | Gauge   | 15.4  | Number of container repositories in the registry | `url` |
-| `gitlab_sli:rails_request_apdex:total` | Counter | 14.4 | The number of request-apdex measurements, [more information the development documentation](../../../development/application_slis/rails_request_apdex.md) | `endpoint_id`, `feature_category`, `request_urgency` |
-| `gitlab_sli:rails_request_apdex:success_total` | Counter | 14.4 | The number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli:rails_requests_apdex:total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
+| `geo_container_repositories_checksum_total`           | Gauge   | 15.10  | Number of container repositories checksummed successfully on primary | `url` |
+| `geo_container_repositories_checksummed`    | Gauge   | 15.10  | Number of container repositories tried to checksum on primary | `url` |
+| `geo_container_repositories_checksum_failed`    | Gauge   | 15.10  | Number of container repositories failed to calculate the checksum on primary | `url` |
+| `geo_container_repositories_verification_total`  | Gauge   | 15.10  | Number of container repositories' verifications tried on secondary | `url` |
+| `geo_container_repositories_verified`    | Gauge   | 15.10  | Number of container repositories verified on secondary | `url` |
+| `geo_container_repositories_verification_failed`    | Gauge   | 15.10  | Number of container repositories' failed verifications on secondary | `url` |
 | `geo_ci_secure_files`                            | Gauge   | 15.3  | Number of secure files on primary | `url` |
-| `geo_ci_secure_files_checksum_total`             | Gauge   | 15.3  | Number of secure files tried to checksum on primary | `url` |
-| `geo_ci_secure_files_checksummed`                | Gauge   | 15.3  | Number of secure files successfully checksummed on primary | `url` |
+| `geo_ci_secure_files_checksum_total`             | Gauge   | 15.3  | Number of secure files to checksum on primary | `url` |
+| `geo_ci_secure_files_checksummed`                | Gauge   | 15.3  | Number of secure files that successfully calculated the checksum on primary | `url` |
 | `geo_ci_secure_files_checksum_failed`            | Gauge   | 15.3  | Number of secure files failed to calculate the checksum on primary | `url` |
 | `geo_ci_secure_files_synced`                     | Gauge   | 15.3  | Number of syncable secure files synced on secondary | `url` |
 | `geo_ci_secure_files_failed`                     | Gauge   | 15.3  | Number of syncable secure files failed to sync on secondary | `url` |
 | `geo_ci_secure_files_registry`                   | Gauge   | 15.3  | Number of secure files in the registry | `url` |
-| `geo_ci_secure_files_verification_total`         | Gauge   | 15.3  | Number of secure files verifications tried on secondary | `url` |
-| `geo_ci_secure_files_verified`                   | Gauge   | 15.3  | Number of secure files verified on secondary | `url` |
-| `geo_ci_secure_files_verification_failed`        | Gauge   | 15.3  | Number of secure files verifications failed on secondary | `url` |
+| `geo_ci_secure_files_verification_total`         | Gauge   | 15.3  | Number of secure files to attempt to verify on secondary | `url` |
+| `geo_ci_secure_files_verified`                   | Gauge   | 15.3  | Number of secure files successfully verified on secondary | `url` |
+| `geo_ci_secure_files_verification_failed`        | Gauge   | 15.3  | Number of secure files that failed verification on secondary | `url` |
 | `geo_dependency_proxy_blob`                      | Gauge   | 15.6  | Number of dependency proxy blobs on primary | |
-| `geo_dependency_proxy_blob_checksum_total`       | Gauge   | 15.6  | Number of dependency proxy blobs tried to checksum on primary | |
-| `geo_dependency_proxy_blob_checksummed`          | Gauge   | 15.6  | Number of dependency proxy blobs successfully checksummed on primary | |
+| `geo_dependency_proxy_blob_checksum_total`       | Gauge   | 15.6  | Number of dependency proxy blobs to checksum on primary | |
+| `geo_dependency_proxy_blob_checksummed`          | Gauge   | 15.6  | Number of dependency proxy blobs that successfully calculated the checksum on primary | |
 | `geo_dependency_proxy_blob_checksum_failed`      | Gauge   | 15.6  | Number of dependency proxy blobs failed to calculate the checksum on primary | |
 | `geo_dependency_proxy_blob_synced`               | Gauge   | 15.6  | Number of dependency proxy blobs synced on secondary | |
 | `geo_dependency_proxy_blob_failed`               | Gauge   | 15.6  | Number of dependency proxy blobs failed to sync on secondary | |
 | `geo_dependency_proxy_blob_registry`             | Gauge   | 15.6  | Number of dependency proxy blobs in the registry | |
-| `geo_dependency_proxy_blob_verification_total`   | Gauge   | 15.6  | Number of dependency proxy blobs verifications tried on secondary | |
-| `geo_dependency_proxy_blob_verified`             | Gauge   | 15.6  | Number of dependency proxy blobs verified on secondary | |
-| `geo_dependency_proxy_blob_verification_failed`  | Gauge   | 15.6  | Number of dependency proxy blobs verifications failed on secondary | |
+| `geo_dependency_proxy_blob_verification_total`   | Gauge   | 15.6  | Number of dependency proxy blobs to attempt to verify on secondary | |
+| `geo_dependency_proxy_blob_verified`             | Gauge   | 15.6  | Number of dependency proxy blobs successfully verified on secondary | |
+| `geo_dependency_proxy_blob_verification_failed`  | Gauge   | 15.6  | Number of dependency proxy blobs that failed verification on secondary | |
 | `geo_dependency_proxy_manifests`                     | Gauge   | 15.6  | Number of dependency proxy manifests on primary | `url` |
-| `geo_dependency_proxy_manifests_checksum_total`      | Gauge   | 15.6  | Number of dependency proxy manifests tried to checksum on primary | `url` |
-| `geo_dependency_proxy_manifests_checksummed`         | Gauge   | 15.6  | Number of dependency proxy manifests successfully checksummed on primary | `url` |
+| `geo_dependency_proxy_manifests_checksum_total`      | Gauge   | 15.6  | Number of dependency proxy manifests to checksum on primary | `url` |
+| `geo_dependency_proxy_manifests_checksummed`         | Gauge   | 15.6  | Number of dependency proxy manifests that successfully calculated the checksum on primary | `url` |
 | `geo_dependency_proxy_manifests_checksum_failed`     | Gauge   | 15.6  | Number of dependency proxy manifests failed to calculate the checksum on primary | `url` |
 | `geo_dependency_proxy_manifests_synced`              | Gauge   | 15.6  | Number of syncable dependency proxy manifests synced on secondary | `url` |
 | `geo_dependency_proxy_manifests_failed`              | Gauge   | 15.6  | Number of syncable dependency proxy manifests failed to sync on secondary | `url` |
 | `geo_dependency_proxy_manifests_registry`            | Gauge   | 15.6  | Number of dependency proxy manifests in the registry | `url` |
-| `geo_dependency_proxy_manifests_verification_total`  | Gauge   | 15.6  | Number of dependency proxy manifests verifications tried on secondary | `url` |
-| `geo_dependency_proxy_manifests_verified`            | Gauge   | 15.6  | Number of dependency proxy manifests verified on secondary | `url` |
-| `geo_dependency_proxy_manifests_verification_failed` | Gauge   | 15.6  | Number of dependency proxy manifests verifications failed on secondary | `url` |
+| `geo_dependency_proxy_manifests_verification_total`  | Gauge   | 15.6  | Number of dependency proxy manifests to attempt to verify on secondary | `url` |
+| `geo_dependency_proxy_manifests_verified`            | Gauge   | 15.6  | Number of dependency proxy manifests successfully verified on secondary | `url` |
+| `geo_dependency_proxy_manifests_verification_failed` | Gauge   | 15.6  | Number of dependency proxy manifests that failed verification on secondary | `url` |
+| `geo_project_wiki_repositories` | Gauge | 15.10 | Number of Project Wiki Repositories on primary | `url` |
+| `geo_project_wiki_repositories_checksum_total` | Gauge | 15.10 | Number of Project Wiki Repositories to checksum on primary | `url` |
+| `geo_project_wiki_repositories_checksummed` | Gauge | 15.10 | Number of Project Wiki Repositories that successfully calculated the checksum on primary | `url` |
+| `geo_project_wiki_repositories_checksum_failed` | Gauge | 15.10 | Number of Project Wiki Repositories that failed to calculate the checksum on primary | `url` |
+| `geo_project_wiki_repositories_synced` | Gauge | 15.10 | Number of syncable Project Wiki Repositories synced on secondary | `url` |
+| `geo_project_wiki_repositories_failed` | Gauge | 15.10 | Number of syncable Project Wiki Repositories failed to sync on secondary | `url` |
+| `geo_project_wiki_repositories_registry` | Gauge | 15.10 |  Number of Project Wiki Repositories in the registry | `url` |
+| `geo_project_wiki_repositories_verification_total` | Gauge | 15.10 | Number of Project Wiki Repositories to attempt to verify on secondary | `url` |
+| `geo_project_wiki_repositories_verified` | Gauge | 15.10 | Number of Project Wiki Repositories successfully verified on secondary | `url` |
+| `geo_project_wiki_repositories_verification_failed` | Gauge | 15.10 | Number of Project Wiki Repositories that failed verification on secondary | `url` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9    | Total number of times a Sidekiq process violated a memory threshold                                                                                        | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9    | Total number of times Sidekiq process memory violations were handled                                                                                       | |
 | `sidekiq_watchdog_running_jobs_total`                | Counter | 15.9    | Current running jobs when RSS limit was reached                                                                                                            | `worker_class`                                                                                          |
+| `gitlab_maintenance_mode`                            | Gauge   | 15.11   | Is GitLab Maintenance Mode enabled? | |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 
@@ -445,6 +465,7 @@ instance. For example, `cache` or `shared_state`.
 | `gitlab_redis_client_exceptions_total`                    | Counter   | 13.2  | Number of Redis client exceptions, broken down by exception class |
 | `gitlab_redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
 | `gitlab_redis_client_requests_duration_seconds`                    | Histogram   | 13.2  | Redis request latency, excluding blocking commands |
+| `gitlab_redis_client_redirections_total` | Counter | 15.10 | Number of Redis Cluster MOVED/ASK redirections, broken down by redirection type |
 
 ## Metrics shared directory
 

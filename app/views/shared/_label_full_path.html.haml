@@ -1,4 +1,8 @@
 - full_path = label.subject_full_name
 
-.label-badge.gl-bg-gray-50.gl-max-w-full.gl-text-truncate{ title: full_path }
+.gl-font-sm.gl-font-weight-semibold.gl-text-secondary
+  - if label.project_label?
+    = sprite_icon('project', size: 12, css_class: 'gl-text-gray-600')
+  - else
+    = sprite_icon('group', size: 12, css_class: 'gl-text-gray-600')
   = full_path

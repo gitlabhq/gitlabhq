@@ -81,6 +81,16 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
         .to include("class=\"gfm gfm-merge_request\">!#{mr.iid}</a></p>")
         .and include(project.full_path.to_s)
     end
+
+    context 'when object body is nil' do
+      let(:issue) { create(:issue, project: project, description: nil) }
+
+      it 'returns ExtractedData not containing the object' do
+        extracted_data = subject.extract(context)
+
+        expect(extracted_data.data).to contain_exactly(issue_note, mr, mr_note)
+      end
+    end
   end
 
   describe '#transform' do

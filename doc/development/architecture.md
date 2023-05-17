@@ -413,7 +413,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](https://github.com/certbot/certbot/blob/master/README.rst)
   - [Charts](https://github.com/jetstack/cert-manager/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl.html)
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/https.md)
@@ -448,7 +448,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Source](../integration/advanced_search/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Get Advanced Search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
+- GitLab.com: [Get advanced search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
 
 Elasticsearch is a distributed RESTful search engine built for the cloud.
 
@@ -558,7 +558,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 
 #### GitLab Workhorse
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse/index.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
@@ -567,7 +567,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - Process: `gitlab-workhorse`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
-[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
 #### Grafana
 
@@ -636,7 +636,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
-  - [Source](../install/installation.md#9-nginx)
+  - [Source](../install/installation.md#10-nginx)
 - Layer: Core Service (Processor)
 - Process: `nginx`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
@@ -692,10 +692,10 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
-  - [Source](../install/installation.md#6-database)
+  - [Source](../install/installation.md#7-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
-- GitLab.com: [PostgreSQL](../user/gitlab_com/index.md#postgresql)
+- GitLab.com: [PostgreSQL](https://about.gitlab.com/handbook/engineering/infrastructure/database/)
 
 GitLab packages the popular Database to provide storage for Application meta data and user information.
 
@@ -729,7 +729,7 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
-  - [Source](../install/installation.md#7-redis)
+  - [Source](../install/installation.md#8-redis)
 - Layer: Core Service (Data)
 - Process: `redis`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
@@ -1101,11 +1101,28 @@ PostgreSQL:
 GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced
 configuration files include:
 
-- `gitlab.yml`: GitLab configuration
+- `gitlab.yml`: GitLab Rails configuration
 - `puma.rb`: Puma web server settings
 - `database.yml`: Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
+
+#### Adding a new setting in GitLab Rails
+
+Settings which belong in `gitlab.yml` include those related to:
+
+- How the application is wired together across multiple services. For example, Gitaly addresses, Redis addresses, Postgres addresses, and Consul addresses.
+- Distributed Tracing configuration, and some observability configurations. For example, histogram bucket boundaries.
+- Anything that needs to be configured during Rails initialization, possibly before the Postgres connection has been established.
+
+Many other settings are better placed in the app itself, in `ApplicationSetting`. Managing settings in UI is usually a better user experience compared to managing configuration files. With respect to development cost, modifying `gitlab.yml` often seems like a faster iteration, but when you consider all the deployment methods below, it may be a poor tradeoff.
+
+When adding a setting to `gitlab.yml`:
+
+1. Ensure that it is also
+  [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
+1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
+1. Ensure that it is also [added to GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb).
 
 ### Maintenance tasks
 
@@ -1128,3 +1145,7 @@ they don't always work in RHEL.
 The [GitLab.com architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
 is detailed for your reference, but this architecture is only useful if you have
 millions of users.
+
+### AI architecture
+
+A [SaaS model gateway](ai_architecture.md) is available to enable AI-powered features.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildFinishedWorker do
+RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integration do
   include AfterNextHelpers
 
   subject { described_class.new.perform(build.id) }

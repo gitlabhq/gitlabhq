@@ -26,15 +26,22 @@ module Files
     def file_has_changed?(path, commit_id)
       return false unless commit_id
 
-      last_commit = Gitlab::Git::Commit
-        .last_for_path(@start_project.repository, @start_branch, path, literal_pathspec: true)
+      last_commit_from_branch = get_last_commit_for_path(ref: @start_branch, path: path)
 
-      return false unless last_commit
+      return false unless last_commit_from_branch
 
-      last_commit.sha != commit_id
+      last_commit_from_commit_id = get_last_commit_for_path(ref: commit_id, path: path)
+
+      return false unless last_commit_from_commit_id
+
+      last_commit_from_branch.sha != last_commit_from_commit_id.sha
     end
 
     private
+
+    def get_last_commit_for_path(ref:, path:)
+      Gitlab::Git::Commit.last_for_path(@start_project.repository, ref, path, literal_pathspec: true)
+    end
 
     def commit_email(git_user)
       return params[:author_email] if params[:author_email].present?

@@ -9,10 +9,6 @@ describe('Pages Yaml Editor wrapper', () => {
     propsData: { doc: new Document({ foo: 'bar' }), filename: 'foo.yml' },
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('mount hook', () => {
     beforeEach(() => {
       wrapper = mount(YamlEditor, defaultOptions);

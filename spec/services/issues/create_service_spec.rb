@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::CreateService do
+RSpec.describe Issues::CreateService, feature_category: :team_planning do
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group, :crm_enabled) }
@@ -124,6 +124,15 @@ RSpec.describe Issues::CreateService do
         expect(issue.issue_customer_relations_contacts).to be_empty
       end
 
+      context 'with milestone' do
+        it 'deletes milestone issues count cache' do
+          expect_next(Milestones::IssuesCountService, milestone)
+            .to receive(:delete_cache).and_call_original
+
+          expect(result).to be_success
+        end
+      end
+
       context 'when the work item type is not allowed to create' do
         before do
           allow_next_instance_of(::Issues::BuildService) do |instance|
@@ -136,7 +145,6 @@ RSpec.describe Issues::CreateService do
           expect(issue).to be_persisted
           expect(issue).to be_a(::Issue)
           expect(issue.work_item_type.base_type).to eq('issue')
-          expect(issue.issue_type).to eq('issue')
         end
       end
 
@@ -149,7 +157,7 @@ RSpec.describe Issues::CreateService do
       context 'when a build_service is provided' do
         let(:result) { described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params, build_service: build_service).execute }
 
-        let(:issue_from_builder) { WorkItem.new(project: project, title: 'Issue from builder') }
+        let(:issue_from_builder) { build(:work_item, project: project, title: 'Issue from builder') }
         let(:build_service) { double(:build_service, execute: issue_from_builder) }
 
         it 'uses the provided service to build the issue' do
@@ -372,6 +380,13 @@ RSpec.describe Issues::CreateService do
 
           expect(assignee.assigned_open_issues_count).to eq 1
         end
+
+        it 'records the assignee assignment event' do
+          result = described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
+
+          issue = result.payload[:issue]
+          expect(issue.assignment_events).to match([have_attributes(user_id: assignee.id, action: 'add')])
+        end
       end
 
       context 'when duplicate label titles are given' do
@@ -436,8 +451,8 @@ RSpec.describe Issues::CreateService do
         end
 
         it 'executes issue hooks' do
-          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
           described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
         end
@@ -459,8 +474,8 @@ RSpec.describe Issues::CreateService do
           end
 
           it 'executes confidential issue hooks' do
-            expect(project).to receive(:execute_hooks).with(expected_payload, :confidential_issue_hooks)
-            expect(project).to receive(:execute_integrations).with(expected_payload, :confidential_issue_hooks)
+            expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :confidential_issue_hooks)
+            expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :confidential_issue_hooks)
 
             described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
           end
@@ -493,7 +508,7 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'schedules a namespace onboarding create action worker' do
-        expect(Onboarding::IssueCreatedWorker).to receive(:perform_async).with(project.namespace.id)
+        expect(Onboarding::IssueCreatedWorker).to receive(:perform_async).with(project.project_namespace_id)
 
         issue
       end
@@ -565,36 +580,6 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'Quick actions' do
-      context 'as work item' do
-        let(:opts) do
-          {
-            title: "My work item",
-            work_item_type: work_item_type,
-            description: "/shrug"
-          }
-        end
-
-        context 'when work item type is not the default Issue' do
-          let(:work_item_type) { create(:work_item_type, namespace: project.namespace) }
-
-          it 'saves the work item without applying the quick action' do
-            expect(result).to be_success
-            expect(issue).to be_persisted
-            expect(issue.description).to eq("/shrug")
-          end
-        end
-
-        context 'when work item type is the default Issue' do
-          let(:work_item_type) { WorkItems::Type.default_by_type(:issue) }
-
-          it 'saves the work item and applies the quick action' do
-            expect(result).to be_success
-            expect(issue).to be_persisted
-            expect(issue.description).to eq(" ¯\\＿(ツ)＿/¯")
-          end
-        end
-      end
-
       context 'with assignee, milestone, and contact in params and command' do
         let_it_be(:contact) { create(:contact, group: group) }
 
@@ -685,6 +670,22 @@ RSpec.describe Issues::CreateService do
           expect(result).to be_success
           expect(issue).to be_persisted
           expect(issue.labels).to eq([label])
+        end
+      end
+
+      context 'when using promote_to_incident' do
+        let(:opts) { { title: 'Title', description: '/promote_to_incident' } }
+
+        before do
+          project.add_developer(user)
+        end
+
+        it 'creates an issue with the correct issue type' do
+          expect { result }.to change(Issue, :count).by(1)
+
+          created_issue = Issue.last
+
+          expect(created_issue.work_item_type).to eq(WorkItems::Type.default_by_type('incident'))
         end
       end
     end

@@ -20,7 +20,7 @@ install:
     - "npm config set @<%= registry_scope %>:registry <%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
     - "npm install <%= package.name %>"
   cache:
-    key: ${CI_BUILD_REF_NAME}
+    key: ${CI_COMMIT_REF_NAME}
     paths:
       - node_modules/
   artifacts:

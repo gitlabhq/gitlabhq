@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MergeToRefService do
+RSpec.describe MergeRequests::MergeToRefService, feature_category: :code_review_workflow do
   shared_examples_for 'MergeService for target ref' do
     it 'target_ref has the same state of target branch' do
       repo = merge_request.target_project.repository
@@ -210,11 +210,14 @@ RSpec.describe MergeRequests::MergeToRefService do
       let(:merge_request) { create(:merge_request, assignees: [user], author: user) }
       let(:project) { merge_request.project }
       let!(:todo) do
-        create(:todo, :assigned,
-               project: project,
-               author: user,
-               user: user,
-               target: merge_request)
+        create(
+          :todo,
+          :assigned,
+          project: project,
+          author: user,
+          user: user,
+          target: merge_request
+        )
       end
 
       before do
@@ -258,8 +261,10 @@ RSpec.describe MergeRequests::MergeToRefService do
 
       context 'when first merge happens' do
         let(:merge_request) do
-          create(:merge_request, source_project: project, source_branch: 'feature',
-                                 target_project: project, target_branch: 'master')
+          create(
+            :merge_request, source_project: project, source_branch: 'feature',
+            target_project: project, target_branch: 'master'
+          )
         end
 
         it_behaves_like 'successfully merges to ref with merge method' do
@@ -269,8 +274,11 @@ RSpec.describe MergeRequests::MergeToRefService do
 
         context 'when second merge happens' do
           let(:merge_request) do
-            create(:merge_request, source_project: project, source_branch: 'improve/awesome',
-                                   target_project: project, target_branch: 'master')
+            create(
+              :merge_request,
+              source_project: project, source_branch: 'improve/awesome',
+              target_project: project, target_branch: 'master'
+            )
           end
 
           it_behaves_like 'successfully merges to ref with merge method' do

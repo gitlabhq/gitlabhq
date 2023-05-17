@@ -7,14 +7,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillGroupFeatures, :migration, s
   let(:namespaces) { table(:namespaces) }
 
   subject do
-    described_class.new(start_id: 1,
-                        end_id: 4,
-                        batch_table: :namespaces,
-                        batch_column: :id,
-                        sub_batch_size: 10,
-                        pause_ms: 0,
-                        job_arguments: [4],
-                        connection: ActiveRecord::Base.connection)
+    described_class.new(
+      start_id: 1,
+      end_id: 4,
+      batch_table: :namespaces,
+      batch_column: :id,
+      sub_batch_size: 10,
+      pause_ms: 0,
+      job_arguments: [4],
+      connection: ActiveRecord::Base.connection
+    )
   end
 
   describe '#perform' do

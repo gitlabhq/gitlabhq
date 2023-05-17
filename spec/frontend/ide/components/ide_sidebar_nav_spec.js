@@ -25,10 +25,6 @@ describe('ide/components/ide_sidebar_nav', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    if (wrapper) {
-      throw new Error('wrapper already exists');
-    }
-
     wrapper = shallowMount(IdeSidebarNav, {
       propsData: {
         tabs: TEST_TABS,
@@ -37,15 +33,10 @@ describe('ide/components/ide_sidebar_nav', () => {
         ...props,
       },
       directives: {
-        tooltip: createMockDirective(),
+        tooltip: createMockDirective('tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   const findButtons = () => wrapper.findAll('li button');
   const findButtonsData = () =>

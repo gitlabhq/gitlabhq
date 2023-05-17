@@ -38,11 +38,7 @@ RSpec.describe JiraConnect::OauthApplicationIdsController, feature_category: :in
       end
     end
 
-    context 'on GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
-
+    context 'on SaaS', :saas do
       it 'renders not found' do
         get '/-/jira_connect/oauth_application_id'
 

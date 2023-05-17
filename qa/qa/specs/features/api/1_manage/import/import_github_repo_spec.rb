@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  # https://github.com/gitlab-qa-github/import-test <- project under test
-  #
-  RSpec.describe 'Manage', product_group: :import, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391228',
-    type: :waiting_on
-  } do
+  RSpec.describe 'Manage', product_group: :import_and_integrate do
     describe 'GitHub import' do
       include_context 'with github import'
+
+      before do
+        QA::Support::Helpers::ImportSource.enable('github')
+      end
 
       context 'when imported via api' do
         it 'imports project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -24,6 +24,7 @@ export default {
   },
   components: {
     GlAlert,
+    GlBadge,
     GlKeysetPagination,
     GlSkeletonLoader,
     IssuableTabs,
@@ -316,6 +317,7 @@ export default {
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
+      terms-as-tokens
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
       data-qa-selector="issuable_search_container"
       @checked-input="handleAllIssuablesCheckedInput"
@@ -371,7 +373,9 @@ export default {
             <slot name="timeframe" :issuable="issuable"></slot>
           </template>
           <template #status>
-            <slot name="status" :issuable="issuable"></slot>
+            <gl-badge size="sm" variant="info">
+              <slot name="status" :issuable="issuable"></slot>
+            </gl-badge>
           </template>
           <template #statistics>
             <slot name="statistics" :issuable="issuable"></slot>

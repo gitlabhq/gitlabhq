@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 import MilestoneDropdown from '~/sidebar/components/milestone/milestone_dropdown.vue';
 import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
@@ -12,7 +12,7 @@ describe('MilestoneDropdown component', () => {
   const propsData = {
     attrWorkspacePath: 'full/path',
     issuableType: TYPE_ISSUE,
-    workspaceType: WorkspaceType.project,
+    workspaceType: WORKSPACE_PROJECT,
   };
 
   const findHiddenInput = () => wrapper.find('input');

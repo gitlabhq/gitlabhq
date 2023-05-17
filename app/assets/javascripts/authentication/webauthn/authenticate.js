@@ -1,3 +1,4 @@
+import { WEBAUTHN_AUTHENTICATE } from './constants';
 import WebAuthnError from './error';
 import WebAuthnFlow from './flow';
 import { supported, convertGetParams, convertGetResponse } from './util';
@@ -44,7 +45,7 @@ export default class WebAuthnAuthenticate {
         this.renderAuthenticated(JSON.stringify(convertedResponse));
       })
       .catch((err) => {
-        this.flow.renderError(new WebAuthnError(err, 'authenticate'));
+        this.flow.renderError(new WebAuthnError(err, WEBAUTHN_AUTHENTICATE));
       });
   }
 

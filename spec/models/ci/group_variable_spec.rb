@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariable, feature_category: :pipeline_authoring do
+RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
   let_it_be_with_refind(:group) { create(:group) }
 
   subject { build(:ci_group_variable, group: group) }
@@ -63,6 +63,18 @@ RSpec.describe Ci::GroupVariable, feature_category: :pipeline_authoring do
   describe '#audit_details' do
     it "equals to the group variable's key" do
       expect(subject.audit_details).to eq(subject.key)
+    end
+  end
+
+  describe '#group_name' do
+    it "equals to the name of the group the variable belongs to" do
+      expect(subject.group_name).to eq(subject.group.name)
+    end
+  end
+
+  describe '#group_ci_cd_settings_path' do
+    it "equals to the path of the CI/CD settings of the group the variable belongs to" do
+      expect(subject.group_ci_cd_settings_path).to eq(Gitlab::Routing.url_helpers.group_settings_ci_cd_path(subject.group))
     end
   end
 end

@@ -69,12 +69,6 @@ module FilteredSearchHelpers
     filtered_search.send_keys(:enter)
   end
 
-  def init_label_search
-    filtered_search.set('label:=')
-    # This ensures the dropdown is shown
-    expect(find('#js-dropdown-label')).not_to have_css('.filter-dropdown-loading')
-  end
-
   def expect_filtered_search_input_empty
     expect(find('.filtered-search').value).to eq('')
   end
@@ -190,9 +184,9 @@ module FilteredSearchHelpers
 
   ##
   # For use with gl-filtered-search
-  def select_tokens(*args, submit: false)
+  def select_tokens(*args, submit: false, input_text: 'Search')
     within '[data-testid="filtered-search-input"]' do
-      find_field('Search').click
+      find_field(input_text).click
 
       args.each do |token|
         # Move mouse away to prevent invoking tooltips on usernames, which blocks the search input
@@ -219,7 +213,7 @@ module FilteredSearchHelpers
 
   def submit_search_term(value)
     click_filtered_search_bar
-    send_keys(value, :enter)
+    send_keys(value, :enter, :enter)
   end
 
   def click_filtered_search_bar
@@ -228,6 +222,13 @@ module FilteredSearchHelpers
 
   def click_token_segment(value)
     find('.gl-filtered-search-token-segment', text: value).click
+  end
+
+  def toggle_sort_direction
+    page.within('.vue-filtered-search-bar-container .sort-dropdown-container') do
+      page.find("button[title^='Sort direction']").click
+      wait_for_requests
+    end
   end
 
   def expect_visible_suggestions_list

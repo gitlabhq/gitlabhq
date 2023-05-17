@@ -11,7 +11,7 @@ module Analytics
 
       validates :name, uniqueness: { scope: [:group_id, :group_value_stream_id] }
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ValueStream',
-foreign_key: :group_value_stream_id, inverse_of: :stages
+        foreign_key: :group_value_stream_id, inverse_of: :stages
 
       alias_attribute :parent, :namespace
       alias_attribute :parent_id, :group_id

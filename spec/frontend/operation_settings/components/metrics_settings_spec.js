@@ -2,7 +2,7 @@ import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitla
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { timezones } from '~/monitoring/format_date';
@@ -13,7 +13,7 @@ import MetricsSettings from '~/operation_settings/components/metrics_settings.vu
 import store from '~/operation_settings/store';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('operation settings external dashboard component', () => {
   let wrapper;
@@ -47,9 +47,6 @@ describe('operation settings external dashboard component', () => {
   });
 
   afterEach(() => {
-    if (wrapper.destroy) {
-      wrapper.destroy();
-    }
     axios.patch.mockReset();
     refreshCurrentPage.mockReset();
     createAlert.mockReset();
@@ -198,7 +195,7 @@ describe('operation settings external dashboard component', () => {
         expect(refreshCurrentPage).toHaveBeenCalled();
       });
 
-      it('creates flash banner on error', async () => {
+      it('creates an alert on error', async () => {
         mountComponent(false);
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });

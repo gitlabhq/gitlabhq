@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
+RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category: :subgroups do
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create(:project, namespace: create(:namespace, :with_namespace_settings)) }
@@ -69,11 +69,11 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
             .and_call_original
         )
         expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-          receive(:bulk_perform_in)
-            .with(1.hour,
-                  array_including([user.id], [other_user.id]),
-                  batch_delay: 30.seconds, batch_size: 100)
-            .and_call_original
+          receive(:bulk_perform_in).with(
+            1.hour,
+            array_including([user.id], [other_user.id]),
+            batch_delay: 30.seconds, batch_size: 100
+          ).and_call_original
         )
 
         subject.execute
@@ -82,8 +82,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
 
     context 'when sharing outside the hierarchy is disabled' do
       let_it_be(:shared_group_parent) do
-        create(:group,
-               namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true))
+        create(:group, namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true))
       end
 
       let_it_be(:project, reload: true) { create(:project, group: shared_group_parent) }

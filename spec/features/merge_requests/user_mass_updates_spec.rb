@@ -44,7 +44,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
       merge_request.close
       visit project_merge_requests_path(project, state: 'merged')
 
-      click_button 'Edit merge requests'
+      click_button 'Bulk edit'
 
       expect(page).not_to have_button 'Select status'
     end
@@ -108,7 +108,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   end
 
   def change_status(text)
-    click_button 'Edit merge requests'
+    click_button 'Bulk edit'
     check 'Select all'
     click_button 'Select status'
     click_button text
@@ -116,7 +116,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   end
 
   def change_assignee(text)
-    click_button 'Edit merge requests'
+    click_button 'Bulk edit'
     check 'Select all'
     within 'aside[aria-label="Bulk update"]' do
       click_button 'Select assignee'
@@ -127,7 +127,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   end
 
   def change_milestone(text)
-    click_button 'Edit merge requests'
+    click_button 'Bulk edit'
     check 'Select all'
     click_button 'Select milestone'
     click_button text

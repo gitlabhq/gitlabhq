@@ -1,0 +1,69 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query timeTrackingReport(
+  $startDate: Time
+  $endDate: Time
+  $projectId: ProjectID
+  $groupId: GroupID
+  $username: String
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  timelogs(
+    startDate: $startDate
+    endDate: $endDate
+    projectId: $projectId
+    groupId: $groupId
+    username: $username
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    sort: SPENT_AT_DESC
+  ) {
+    count
+    totalSpentTime
+    nodes {
+      id
+      project {
+        id
+        webUrl
+        fullPath
+        nameWithNamespace
+      }
+      timeSpent
+      user {
+        id
+        name
+        username
+        avatarUrl
+        webPath
+      }
+      spentAt
+      note {
+        id
+        body
+      }
+      summary
+      issue {
+        id
+        title
+        webUrl
+        state
+        reference
+      }
+      mergeRequest {
+        id
+        title
+        webUrl
+        state
+        reference
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

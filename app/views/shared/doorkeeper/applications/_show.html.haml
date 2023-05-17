@@ -8,21 +8,15 @@
       %td
         .clipboard-group
           .input-group
-            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true }
+            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true, data: { qa_selector: 'application_id_field' } }
             .input-group-append
               = clipboard_button(target: '#application_id', title: _("Copy ID"), class: "gl-button btn btn-default")
     %tr
       %td
         = _('Secret')
       %td
-        - if Feature.enabled?('hash_oauth_secrets')
-          - if @application.plaintext_secret
-            = clipboard_button(clipboard_text: @application.plaintext_secret, button_text: _('Copy'), title: _("Copy secret"), class: "btn btn-default btn-md gl-button")
-            %span= _('This is the only time the secret is accessible. Copy the secret and store it securely.')
-          - else
-            = _('The secret is only available when you first create the application.')
-        - else
-          = clipboard_button(clipboard_text: @application.secret, button_text: _('Copy'), title: _("Copy secret"), class: "btn btn-default btn-md gl-button")
+        #js-oauth-application-secret{ data: { initial_secret: @application.plaintext_secret, renew_path: renew_path } }
+
     %tr
       %td
         = _('Callback URL')
@@ -52,3 +46,6 @@
       = link_to _('Continue'), index_path, class: 'btn btn-confirm btn-md gl-button gl-mr-3'
     = link_to _('Edit'), edit_path, class: 'btn btn-default btn-md gl-button'
   = render 'shared/doorkeeper/applications/delete_form', path: delete_path
+
+-# Create a hidden field to save the ID of application created
+= hidden_field_tag(:id_of_application, @application.id, data: { qa_selector: 'id_of_application_field' })

@@ -99,7 +99,7 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
         context 'for Golang server' do
           let(:log_enabled) { false }
           let(:settings) do
-            Settingslogic.new(
+            GitlabSettings::Options.build(
               {
                 'web_exporter' => {
                   'enabled' => true,
@@ -304,7 +304,7 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
   end
 
   context 'for sidekiq' do
-    let(:settings) { Settingslogic.new({ "sidekiq_exporter" => { "enabled" => true } }) }
+    let(:settings) { GitlabSettings::Options.build({ "sidekiq_exporter" => { "enabled" => true } }) }
 
     before do
       allow(::Settings).to receive(:monitoring).and_return(settings)

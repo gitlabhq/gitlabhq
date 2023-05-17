@@ -76,6 +76,13 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :forbidden)
   end
 
+  rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
+    log_exception(exception)
+
+    response.headers.merge!(exception.headers)
+    render_error(exception.message, status: :too_many_requests)
+  end
+
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|
     render_error(exception.message, status: :unprocessable_entity)
   end
@@ -102,6 +109,10 @@ class GraphqlController < ApplicationController
 
   private
 
+  def permitted_multiplex_params
+    params.permit(_json: [:query, :operationName, { variables: {} }])
+  end
+
   def disallow_mutations_for_get
     return unless request.get? || request.head?
     return unless any_mutating_query?
@@ -111,7 +122,7 @@ class GraphqlController < ApplicationController
 
   def limit_query_size
     total_size = if multiplex?
-                   params[:_json].sum { _1[:query].size }
+                   multiplex_param.sum { _1[:query].size }
                  else
                    query.size
                  end
@@ -178,8 +189,12 @@ class GraphqlController < ApplicationController
     params.fetch(:query, '')
   end
 
+  def multiplex_param
+    permitted_multiplex_params[:_json]
+  end
+
   def multiplex_queries
-    params[:_json].map do |single_query_info|
+    multiplex_param.map do |single_query_info|
       {
         query: single_query_info[:query],
         variables: build_variables(single_query_info[:variables]),
@@ -206,8 +221,10 @@ class GraphqlController < ApplicationController
     Gitlab::Graphql::Variables.new(variable_info).to_h
   end
 
+  # We support Apollo-style query batching where an array of queries will be in the `_json:` key.
+  # https://graphql-ruby.org/queries/multiplex.html#apollo-query-batching
   def multiplex?
-    params[:_json].present?
+    params[:_json].is_a?(Array)
   end
 
   def authorize_access_api!

@@ -22,7 +22,13 @@ module Resolvers
     def only_count_is_selected_with_merged_at_filter?(args)
       return unless lookahead
 
-      argument_names = args.compact.except(:lookahead, :sort, :merged_before, :merged_after).keys
+      # Filter out all elements with blank values.  If any of the values are not
+      # scalars, e.g. hashes or array, filter blank values from them and remove
+      # them if the resulting collection is empty.
+      argument_names = args.except(:lookahead, :sort, :merged_before, :merged_after).filter_map do |key, value|
+        value = value.to_hash.compact if value.respond_to?(:to_hash)
+        key if value.present?
+      end
 
       # no extra filtering arguments are provided
       return unless argument_names.empty?

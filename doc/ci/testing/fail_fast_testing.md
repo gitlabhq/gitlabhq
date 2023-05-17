@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -34,7 +34,7 @@ Fail fast testing gives you a faster feedback loop from the pipeline. It lets yo
 know quickly that the new tests are passing and the new functionality did not break
 other tests.
 
-## Requirements
+## Prerequisites
 
 This template requires:
 

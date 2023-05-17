@@ -9,7 +9,7 @@
   }
 
   table.code tr:last-of-type td:last-of-type {
-    @include gl-rounded-bottom-right-base();
+    border-bottom-right-radius: $border-radius-default - 1px;
   }
 
   .file-title,
@@ -32,30 +32,12 @@
     }
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      // The `+11` is to ensure the file header border shows when scrolled -
-      // the bottom of the compare-versions header and the top of the file header
-      --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
-      --top: var(--initial-top);
-
-      position: -webkit-sticky;
       position: sticky;
-      top: var(--top);
+      top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
       z-index: 120;
 
       &.is-sidebar-moved {
-        --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 24px});
-      }
-
-      .with-system-header & {
-        --top: calc(var(--initial-top) + #{$system-header-height});
-      }
-
-      .with-system-header.with-performance-bar & {
-        --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
-      }
-
-      .with-performance-bar & {
-        top: calc(var(--initial-top) + #{$performance-bar-height});
+        top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       }
 
       &::before {
@@ -69,20 +51,11 @@
         pointer-events: none;
       }
 
-      &.is-commit {
-        top: calc(#{$header-height} + #{$commit-stat-summary-height});
-
-        .with-performance-bar & {
-          top: calc(#{$header-height} + #{$commit-stat-summary-height} + #{$performance-bar-height});
-        }
-      }
-
-      &.is-compare {
-        top: calc(#{$header-height} + #{$compare-branches-sticky-header-height});
-
-        .with-performance-bar & {
-          top: calc(#{$performance-bar-height} + #{$header-height} + #{$compare-branches-sticky-header-height});
-        }
+      &.is-commit,
+      &.is-compare,
+      &.is-wiki {
+        top: calc(#{$calc-application-header-height});
+        border-top: 0;
       }
     }
 
@@ -99,22 +72,7 @@
   @media (min-width: map-get($grid-breakpoints, md)) {
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
-      top: $header-height;
-    }
-
-    .with-performance-bar &.conflict .file-title,
-    .with-performance-bar &.conflict .file-title-flex-parent {
-      top: calc(#{$header-height} + #{$performance-bar-height});
-    }
-
-    .with-system-header &.conflict .file-title,
-    .with-system-header &.conflict .file-title-flex-parent {
-      top: calc(#{$header-height} + #{$system-header-height});
-    }
-
-    .with-system-header.with-performance-bar &.conflict .file-title,
-    .with-system-header.with-performance-bar &.conflict .file-title-flex-parent {
-      top: calc(#{$header-height} + #{$performance-bar-height} + #{$system-header-height});
+      top: $calc-application-header-height;
     }
   }
 
@@ -587,7 +545,7 @@ table.code {
   .line_holder:last-of-type {
     .diff-td:first-child,
     td:first-child {
-      border-bottom-left-radius: $border-radius-default;
+      border-bottom-left-radius: $border-radius-default - 1px;
     }
   }
 
@@ -720,44 +678,6 @@ table.code {
 
   &:focus {
     outline: 0;
-  }
-}
-
-.diff-files-changed {
-  background-color: $body-bg;
-
-  .inline-parallel-buttons {
-    @include gl-relative;
-    z-index: 1;
-  }
-
-  @include media-breakpoint-up(sm) {
-    @include gl-sticky;
-    top: $header-height;
-    z-index: 200;
-
-    .with-performance-bar & {
-      top: calc(#{$header-height} + #{$performance-bar-height});
-    }
-
-    &.is-stuck {
-      @include gl-py-0;
-      border-top: 1px solid $white-dark;
-      border-bottom: 1px solid $white-dark;
-
-      .diff-stats-additions-deletions-expanded,
-      .inline-parallel-buttons {
-        @include gl-display-none;
-      }
-    }
-  }
-
-  @include media-breakpoint-up(lg) {
-    &.is-stuck {
-      .diff-stats-additions-deletions-collapsed {
-        @include gl-display-block;
-      }
-    }
   }
 }
 
@@ -944,6 +864,19 @@ table.code {
   }
 }
 
+// Remove border from collapsed replies widget only on diffs
+.diff-grid-comments {
+  .replies-widget-collapsed {
+    border-bottom: 0;
+  }
+  // Rounded border radius only on diff comments with no replies
+  .discussion-collapsible {
+    .discussion-reply-holder:first-of-type {
+      border-radius: $gl-border-radius-base;
+    }
+  }
+}
+
 .discussion-body .image .frame {
   position: relative;
 }
@@ -978,7 +911,7 @@ table.code {
   &.popover {
     width: 250px;
     min-width: 250px;
-    z-index: 210;
+    z-index: 610;
   }
 
   .popover-header {
@@ -999,7 +932,7 @@ table.code {
 }
 
 // Note: Prevents tall files from appearing above sticky tabs
-.diffs .vue-recycle-scroller__item-view > div:not(.active) {
+.diff-files-holder .vue-recycle-scroller__item-view > div:not(.active) {
   position: absolute;
   bottom: 100vh;
 }

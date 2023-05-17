@@ -9,6 +9,7 @@ module BulkImports
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30
       PAT_ENDPOINT_MIN_VERSION = '15.5.0'
+      SIDEKIQ_REQUEST_TIMEOUT = 60
 
       def initialize(url:, token:, page: DEFAULT_PAGE, per_page: DEFAULT_PER_PAGE, api_version: API_VERSION)
         @url = url
@@ -84,6 +85,8 @@ module BulkImports
       end
 
       def validate_instance_version!
+        raise ::BulkImports::Error.invalid_url unless instance_version.valid?
+
         return true unless instance_version.major < BulkImport::MIN_MAJOR_VERSION
 
         raise ::BulkImports::Error.unsupported_gitlab_version
@@ -140,7 +143,7 @@ module BulkImports
           follow_redirects: true,
           resend_on_redirect: false,
           limit: 2
-        }
+        }.merge(request_timeout.to_h)
       end
 
       def request_query
@@ -151,6 +154,10 @@ module BulkImports
         }
       end
 
+      def request_timeout
+        { timeout: SIDEKIQ_REQUEST_TIMEOUT } if Gitlab::Runtime.sidekiq?
+      end
+
       def with_error_handling
         response = yield
 
@@ -158,6 +165,8 @@ module BulkImports
 
         raise ::BulkImports::NetworkError.new("Unsuccessful response #{response.code} from #{response.request.path.path}. Body: #{response.parsed_response}", response: response)
 
+      rescue Gitlab::HTTP::BlockedUrlError => e
+        raise e
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         raise ::BulkImports::NetworkError, e
       end

@@ -2,15 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::FfMergeService do
+RSpec.describe MergeRequests::FfMergeService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) do
-    create(:merge_request,
-           source_branch: 'flatten-dir',
-           target_branch: 'improve/awesome',
-           assignees: [user2],
-           author: create(:user))
+    create(
+      :merge_request,
+      source_branch: 'flatten-dir',
+      target_branch: 'improve/awesome',
+      assignees: [user2],
+      author: create(:user)
+    )
   end
 
   let(:project) { merge_request.project }

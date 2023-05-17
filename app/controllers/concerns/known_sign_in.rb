@@ -26,8 +26,13 @@ module KnownSignIn
   end
 
   def update_cookie
-    set_secure_cookie(KNOWN_SIGN_IN_COOKIE, current_user.id,
-                      type: COOKIE_TYPE_ENCRYPTED, httponly: true, expires: KNOWN_SIGN_IN_COOKIE_EXPIRY)
+    set_secure_cookie(
+      KNOWN_SIGN_IN_COOKIE,
+      current_user.id,
+      type: COOKIE_TYPE_ENCRYPTED,
+      httponly: true,
+      expires: KNOWN_SIGN_IN_COOKIE_EXPIRY
+    )
   end
 
   def sessions

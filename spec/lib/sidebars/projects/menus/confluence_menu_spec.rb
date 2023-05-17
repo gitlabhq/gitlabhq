@@ -41,4 +41,13 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu do
       end
     end
   end
+
+  describe 'serialize_as_menu_item_args' do
+    it 'renders as part of the Plan section' do
+      expect(subject.serialize_as_menu_item_args).to include({
+        item_id: :confluence,
+        super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu
+      })
+    end
+  end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MergeOrchestrationService do
+RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code_review_workflow do
   let_it_be(:maintainer) { create(:user) }
 
   let(:merge_params) { { sha: merge_request.diff_head_sha } }
@@ -10,8 +10,11 @@ RSpec.describe MergeRequests::MergeOrchestrationService do
   let(:service) { described_class.new(project, user, merge_params) }
 
   let!(:merge_request) do
-    create(:merge_request, source_project: project, source_branch: 'feature',
-                           target_project: project, target_branch: 'master')
+    create(
+      :merge_request,
+      source_project: project, source_branch: 'feature',
+      target_project: project, target_branch: 'master'
+    )
   end
 
   shared_context 'fresh repository' do

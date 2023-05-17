@@ -241,6 +241,13 @@ describe('Header Search Store Getters', () => {
         MOCK_DEFAULT_SEARCH_OPTIONS,
       );
     });
+
+    it('returns the correct array if issues path is false', () => {
+      mockGetters.scopedIssuesPath = undefined;
+      expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
+        MOCK_DEFAULT_SEARCH_OPTIONS.slice(2, MOCK_DEFAULT_SEARCH_OPTIONS.length),
+      );
+    });
   });
 
   describe('scopedSearchOptions', () => {

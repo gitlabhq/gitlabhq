@@ -33,11 +33,6 @@ describe('Description field component', () => {
     jest.spyOn(eventHub, '$emit');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders markdown field with description', () => {
     wrapper = mountComponent();
 
@@ -80,17 +75,15 @@ describe('Description field component', () => {
     });
 
     it('uses the MarkdownEditor component to edit markdown', () => {
-      expect(findMarkdownEditor().props()).toEqual(
-        expect.objectContaining({
-          value: 'test',
-          renderMarkdownPath: '/',
-          markdownDocsPath: '/',
-          quickActionsDocsPath: expect.any(String),
-          autofocus: true,
-          supportsQuickActions: true,
-          enableAutocomplete: true,
-        }),
-      );
+      expect(findMarkdownEditor().props()).toMatchObject({
+        value: 'test',
+        renderMarkdownPath: '/',
+        autofocus: true,
+        supportsQuickActions: true,
+        quickActionsDocsPath: expect.any(String),
+        markdownDocsPath: '/',
+        enableAutocomplete: true,
+      });
     });
 
     it('triggers update with meta+enter', () => {

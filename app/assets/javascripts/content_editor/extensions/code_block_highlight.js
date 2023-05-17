@@ -1,6 +1,6 @@
 import { lowlight } from 'lowlight/lib/core';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import { textblockTypeInputRule } from '@tiptap/core';
+import { mergeAttributes, textblockTypeInputRule } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import languageLoader from '../services/code_block_language_loader';
 import CodeBlockWrapper from '../components/wrappers/code_block.vue';
@@ -13,6 +13,16 @@ export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/;
 export default CodeBlockLowlight.extend({
   isolating: true,
   exitOnArrowDown: false,
+
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   addAttributes() {
     return {
       language: {
@@ -61,7 +71,7 @@ export default CodeBlockLowlight.extend({
     return [
       'pre',
       {
-        ...HTMLAttributes,
+        ...mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
         class: `content-editor-code-block ${gon.user_color_scheme} ${HTMLAttributes.class}`,
       },
       ['code', {}, 0],

@@ -32,17 +32,4 @@ RSpec.describe Keys::RevokeService, feature_category: :source_code_management do
     expect { service.execute(key) }.not_to change { signature.reload.verification_status }
     expect(key).to be_persisted
   end
-
-  context 'when revoke_ssh_signatures disabled' do
-    before do
-      stub_feature_flags(revoke_ssh_signatures: false)
-    end
-
-    it 'does not unverifies signatures' do
-      key = create(:key)
-      signature = create(:ssh_signature, key: key)
-
-      expect { service.execute(key) }.not_to change { signature.reload.verification_status }
-    end
-  end
 end

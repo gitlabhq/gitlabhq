@@ -6,11 +6,15 @@ module Integrations
   class AppleAppStore < Integration
     ISSUER_ID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
     KEY_ID_REGEX = /\A(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+\z/.freeze
+    IS_KEY_CONTENT_BASE64 = "true"
+
+    SECTION_TYPE_APPLE_APP_STORE = 'apple_app_store'
 
     with_options if: :activated? do
       validates :app_store_issuer_id, presence: true, format: { with: ISSUER_ID_REGEX }
       validates :app_store_key_id, presence: true, format: { with: KEY_ID_REGEX }
       validates :app_store_private_key, presence: true, certificate_key: true
+      validates :app_store_private_key_file_name, presence: true
     end
 
     field :app_store_issuer_id,
@@ -21,15 +25,12 @@ module Integrations
     field :app_store_key_id,
           section: SECTION_TYPE_CONNECTION,
           required: true,
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') },
-          is_secret: false
+          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
 
-    field :app_store_private_key,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          type: 'textarea',
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Private Key.') },
-          is_secret: false
+    field :app_store_private_key_file_name,
+          section: SECTION_TYPE_CONNECTION
+
+    field :app_store_private_key, api_only: true
 
     def title
       'Apple App Store Connect'
@@ -43,7 +44,8 @@ module Integrations
       variable_list = [
         '<code>APP_STORE_CONNECT_API_KEY_ISSUER_ID</code>',
         '<code>APP_STORE_CONNECT_API_KEY_KEY_ID</code>',
-        '<code>APP_STORE_CONNECT_API_KEY_KEY</code>'
+        '<code>APP_STORE_CONNECT_API_KEY_KEY</code>',
+        '<code>APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64</code>'
       ]
 
       # rubocop:disable Layout/LineLength
@@ -51,7 +53,7 @@ module Integrations
         s_("Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."),
         s_("After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."),
         variable_list.join('<br>'),
-        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: "https://docs.gitlab.com/ee/integration/apple_app_store.html")).html_safe
+        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
       ]
       # rubocop:enable Layout/LineLength
 
@@ -69,7 +71,7 @@ module Integrations
     def sections
       [
         {
-          type: SECTION_TYPE_CONNECTION,
+          type: SECTION_TYPE_APPLE_APP_STORE,
           title: s_('Integrations|Integration details'),
           description: help
         }
@@ -92,20 +94,20 @@ module Integrations
         { key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID', value: app_store_issuer_id, masked: true, public: false },
         { key: 'APP_STORE_CONNECT_API_KEY_KEY', value: Base64.encode64(app_store_private_key), masked: true,
           public: false },
-        { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: app_store_key_id, masked: true, public: false }
+        { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: app_store_key_id, masked: true, public: false },
+        { key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64', value: IS_KEY_CONTENT_BASE64, masked: false,
+          public: false }
       ]
     end
 
     private
 
     def client
-      config = {
+      AppStoreConnect::Client.new(
         issuer_id: app_store_issuer_id,
         key_id: app_store_key_id,
         private_key: app_store_private_key
-      }
-
-      AppStoreConnect::Client.new(config)
+      )
     end
   end
 end

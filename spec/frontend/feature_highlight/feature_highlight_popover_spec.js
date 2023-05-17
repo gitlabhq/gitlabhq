@@ -29,11 +29,6 @@ describe('feature_highlight/feature_highlight_popover', () => {
     buildWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders popover target', () => {
     expect(findPopoverTarget().exists()).toBe(true);
   });

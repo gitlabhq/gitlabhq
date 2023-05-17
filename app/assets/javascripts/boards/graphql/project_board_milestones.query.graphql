@@ -1,5 +1,5 @@
 query ProjectBoardMilestones($fullPath: ID!, $searchTerm: String, $state: MilestoneStateEnum) {
-  project(fullPath: $fullPath) {
+  workspace: project(fullPath: $fullPath) {
     id
     milestones(
       searchTitle: $searchTerm

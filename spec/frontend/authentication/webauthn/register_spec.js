@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlWebauthnRegister from 'test_fixtures/webauthn/register.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { trimText } from 'helpers/text_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -25,7 +26,7 @@ describe('WebAuthnRegister', () => {
   let component;
 
   beforeEach(() => {
-    loadHTMLFixture('webauthn/register.html');
+    setHTMLFixture(htmlWebauthnRegister);
     webAuthnDevice = new MockWebAuthnDevice();
     container = $('#js-register-token-2fa');
     component = new WebAuthnRegister(container, {

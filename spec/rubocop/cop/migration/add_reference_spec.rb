@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_reference'
 
 RSpec.describe RuboCop::Cop::Migration::AddReference do
-  let(:cop) { described_class.new }
-
   context 'when outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

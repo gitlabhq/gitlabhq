@@ -48,10 +48,10 @@ brakeman-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
       when: never
@@ -80,10 +80,10 @@ flawfinder-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
       when: never
@@ -120,10 +120,10 @@ kubesec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
       when: never
@@ -141,13 +141,13 @@ kubesec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
 
 mobsf-android-sast:
   extends: .mobsf-sast
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
@@ -169,7 +169,7 @@ mobsf-android-sast:
 mobsf-ios-sast:
   extends: .mobsf-sast
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
@@ -193,10 +193,10 @@ nodejs-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
       when: never
@@ -214,10 +214,10 @@ phpcs-security-audit-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
       when: never
@@ -235,10 +235,10 @@ pmd-apex-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
       when: never
@@ -253,26 +253,12 @@ pmd-apex-sast:
 
 security-code-scan-sast:
   extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
+  script:
+    - echo "This job was deprecated in GitLab 15.9 and removed in GitLab 16.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/390416"
+    - exit 1
   rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
+    - when: never
 
 semgrep-sast:
   extends: .sast-analyzer
@@ -280,10 +266,10 @@ semgrep-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
@@ -323,10 +309,10 @@ sobelow-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
       when: never
@@ -344,7 +330,7 @@ spotbugs-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
@@ -353,7 +339,7 @@ spotbugs-sast:
       exists:
         - '**/AndroidManifest.xml'
       when: never
-    - if: $SAST_DISABLED
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:

@@ -44,7 +44,6 @@ describe('confirmAction', () => {
     resetHTMLFixture();
     Vue.prototype.$mount.mockRestore();
     modalWrapper?.destroy();
-    modalWrapper = null;
     modal?.destroy();
     modal = null;
   });
@@ -67,6 +66,7 @@ describe('confirmAction', () => {
       modalHtmlMessage: '<strong>Hello</strong>',
       title: 'title',
       hideCancel: true,
+      size: 'md',
     };
     await renderRootComponent('', options);
     expect(modal.props()).toEqual(
@@ -80,6 +80,7 @@ describe('confirmAction', () => {
         modalHtmlMessage: options.modalHtmlMessage,
         title: options.title,
         hideCancel: options.hideCancel,
+        size: 'md',
       }),
     );
   });

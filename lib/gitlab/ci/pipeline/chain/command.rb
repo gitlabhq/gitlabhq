@@ -13,7 +13,8 @@ module Gitlab
           :seeds_block, :variables_attributes, :push_options,
           :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :logger,
           # These attributes are set by Chains during processing:
-          :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed
+          :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
+          :pipeline_config
         ) do
           include Gitlab::Utils::StrongMemoize
 

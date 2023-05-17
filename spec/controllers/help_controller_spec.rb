@@ -181,6 +181,7 @@ RSpec.describe HelpController do
       context 'when requested file exists' do
         before do
           stub_doc_file_read(file_name: 'user/ssh.md', content: fixture_file('blockquote_fence_after.md'))
+          stub_application_setting(help_page_documentation_base_url: '')
 
           subject
         end
@@ -223,13 +224,13 @@ RSpec.describe HelpController do
         context 'when gitlab_docs is disabled' do
           let(:docs_enabled) { false }
 
-          it_behaves_like 'documentation pages local render'
+          it_behaves_like 'documentation pages redirect', 'https://docs.gitlab.com'
         end
 
         context 'when host is missing' do
           let(:host) { nil }
 
-          it_behaves_like 'documentation pages local render'
+          it_behaves_like 'documentation pages redirect', 'https://docs.gitlab.com'
         end
       end
 
@@ -251,6 +252,10 @@ RSpec.describe HelpController do
       end
 
       context 'when requested file is missing' do
+        before do
+          stub_application_setting(help_page_documentation_base_url: '')
+        end
+
         it 'renders not found' do
           get :show, params: { path: 'foo/bar' }, format: :md
           expect(response).to be_not_found
@@ -261,11 +266,7 @@ RSpec.describe HelpController do
     context 'for image formats' do
       context 'when requested file exists' do
         it 'renders the raw file' do
-          get :show,
-              params: {
-                path: 'user/img/markdown_logo'
-              },
-              format: :png
+          get :show, params: { path: 'user/img/markdown_logo' }, format: :png
 
           aggregate_failures do
             expect(response).to be_successful
@@ -277,11 +278,7 @@ RSpec.describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show,
-              params: {
-                path: 'foo/bar'
-              },
-              format: :png
+          get :show, params: { path: 'foo/bar' }, format: :png
           expect(response).to be_not_found
         end
       end
@@ -289,11 +286,7 @@ RSpec.describe HelpController do
 
     context 'for other formats' do
       it 'always renders not found' do
-        get :show,
-            params: {
-              path: 'user/ssh'
-            },
-            format: :foo
+        get :show, params: { path: 'user/ssh' }, format: :foo
         expect(response).to be_not_found
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::IrkerWorker, '#perform' do
+RSpec.describe Integrations::IrkerWorker, '#perform', feature_category: :integrations do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:push_data) { HashWithIndifferentAccess.new(Gitlab::DataBuilder::Push.build_sample(project, user)) }
@@ -88,10 +88,11 @@ RSpec.describe Integrations::IrkerWorker, '#perform' do
 
     context 'with new commits to existing branch' do
       it 'sends a correct message with a compare url' do
-        compare_url = Gitlab::Routing.url_helpers
-          .project_compare_url(project,
-                               from: Commit.truncate_sha(push_data[:before]),
-                               to: Commit.truncate_sha(push_data[:after]))
+        compare_url = Gitlab::Routing.url_helpers.project_compare_url(
+          project,
+          from: Commit.truncate_sha(push_data[:before]),
+          to: Commit.truncate_sha(push_data[:after])
+        )
 
         message = "pushed #{push_data['total_commits_count']} " \
           "new commits to master: #{compare_url}"
@@ -104,7 +105,7 @@ RSpec.describe Integrations::IrkerWorker, '#perform' do
   end
 
   def wrap_message(text)
-    message = "[#{project.path}] #{push_data['user_name']} #{text}"
+    message = "[#{project.name}] #{push_data['user_name']} #{text}"
     to_send = { to: channels, privmsg: message }
 
     Gitlab::Json.dump(to_send)

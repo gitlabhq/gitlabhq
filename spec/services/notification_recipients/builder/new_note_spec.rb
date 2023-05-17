@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotificationRecipients::Builder::NewNote do
+RSpec.describe NotificationRecipients::Builder::NewNote, feature_category: :team_planning do
   describe '#notification_recipients' do
     let_it_be(:group)   { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, group: group) }

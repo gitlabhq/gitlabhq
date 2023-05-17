@@ -1,11 +1,12 @@
 <script>
-import { GlAlert, GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlAlert,
     GlButton,
+    GlLink,
   },
   props: {
     error: {
@@ -42,15 +43,26 @@ export default {
 </script>
 
 <template>
-  <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4">
+  <div
+    id="tasks"
+    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-5"
+  >
     <div
-      class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
-      :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
+      class="gl-pl-5 gl-pr-4 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base"
+      :class="{
+        'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!': isOpen,
+      }"
     >
       <div class="gl-display-flex gl-flex-grow-1">
-        <h5 class="gl-m-0 gl-line-height-24">
+        <h3 class="card-title h5 gl-m-0 gl-relative gl-line-height-24">
+          <gl-link
+            id="user-content-tasks-links"
+            class="anchor position-absolute gl-text-decoration-none"
+            href="#tasks"
+            aria-hidden="true"
+          />
           <slot name="header"></slot>
-        </h5>
+        </h3>
         <slot name="header-suffix"></slot>
       </div>
       <slot name="header-right"></slot>
@@ -71,7 +83,7 @@ export default {
     <div
       v-if="isOpen"
       class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-      :class="{ 'gl-p-5 gl-pb-3': !error }"
+      :class="{ 'gl-p-3': !error }"
       data-testid="widget-body"
     >
       <slot name="body"></slot>

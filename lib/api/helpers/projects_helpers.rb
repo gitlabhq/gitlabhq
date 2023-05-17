@@ -32,7 +32,6 @@ module API
         optional :builds_access_level, type: String, values: %w(disabled private enabled), desc: 'Builds access level. One of `disabled`, `private` or `enabled`'
         optional :snippets_access_level, type: String, values: %w(disabled private enabled), desc: 'Snippets access level. One of `disabled`, `private` or `enabled`'
         optional :pages_access_level, type: String, values: %w(disabled private enabled public), desc: 'Pages access level. One of `disabled`, `private`, `enabled` or `public`'
-        optional :operations_access_level, type: String, values: %w(disabled private enabled), desc: 'Operations access level. One of `disabled`, `private` or `enabled`. Deprecated in GitLab 15.8, see https://gitlab.com/gitlab-org/gitlab/-/issues/385798.'
         optional :analytics_access_level, type: String, values: %w(disabled private enabled), desc: 'Analytics access level. One of `disabled`, `private` or `enabled`'
         optional :container_registry_access_level, type: String, values: %w(disabled private enabled), desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
         optional :security_and_compliance_access_level, type: String, values: %w(disabled private enabled), desc: 'Security and compliance access level. One of `disabled`, `private` or `enabled`'
@@ -157,7 +156,6 @@ module API
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,
-          :operations_access_level,
           :pages_access_level,
           :path,
           :printing_merge_request_link_enabled,

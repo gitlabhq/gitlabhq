@@ -18,9 +18,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
   end
 
   def environment_params(opts = {})
-    opts.reverse_merge(namespace_id: project.namespace,
-                       project_id: project,
-                       id: environment.id)
+    opts.reverse_merge(namespace_id: project.namespace, project_id: project, id: environment.id)
   end
 
   def create_deployment_with_associations(commit_depth:)

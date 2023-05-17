@@ -746,10 +746,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'assigns to users with escaped underscores' do
         user = create(:user)
         base = user.username
-        user.update!(username: "#{base}_")
+        user.update!(username: "#{base}_new")
         issuable.project.add_developer(user)
 
-        cmd = "/assign @#{base}\\_"
+        cmd = "/assign @#{base}\\_new"
 
         _, updates, _ = service.execute(cmd, issuable)
 
@@ -1399,34 +1399,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { issue }
     end
 
-    # /draft is a toggle (ff disabled)
-    it_behaves_like 'draft command' do
-      let(:content) { '/draft' }
-      let(:issuable) { merge_request }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-      end
-    end
-
-    # /draft is a toggle (ff disabled)
-    it_behaves_like 'ready command' do
-      let(:content) { '/draft' }
-      let(:issuable) { merge_request }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-        issuable.update!(title: issuable.draft_title)
-      end
-    end
-
-    # /draft is one way (ff enabled)
     it_behaves_like 'draft command' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
     end
 
-    # /draft is one way (ff enabled)
     it_behaves_like 'draft/ready command no action' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
@@ -2150,116 +2127,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    context 'relate command' do
-      let_it_be_with_refind(:group) { create(:group) }
-
-      shared_examples 'relate command' do
-        it 'relates issues' do
-          service.execute(content, issue)
-
-          expect(IssueLink.where(source: issue).map(&:target)).to match_array(issues_related)
-        end
-      end
-
-      context 'user is member of group' do
-        before do
-          group.add_developer(developer)
-        end
-
-        context 'relate a single issue' do
-          let(:other_issue) { create(:issue, project: project) }
-          let(:issues_related) { [other_issue] }
-          let(:content) { "/relate #{other_issue.to_reference}" }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'relate multiple issues at once' do
-          let(:second_issue) { create(:issue, project: project) }
-          let(:third_issue) { create(:issue, project: project) }
-          let(:issues_related) { [second_issue, third_issue] }
-          let(:content) { "/relate #{second_issue.to_reference} #{third_issue.to_reference}" }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'when quick action target is unpersisted' do
-          let(:issue) { build(:issue, project: project) }
-          let(:other_issue) { create(:issue, project: project) }
-          let(:issues_related) { [other_issue] }
-          let(:content) { "/relate #{other_issue.to_reference}" }
-
-          it 'relates the issues after the issue is persisted' do
-            service.execute(content, issue)
-
-            issue.save!
-
-            expect(IssueLink.where(source: issue).map(&:target)).to match_array(issues_related)
-          end
-        end
-
-        context 'empty relate command' do
-          let(:issues_related) { [] }
-          let(:content) { '/relate' }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'already having related issues' do
-          let(:second_issue) { create(:issue, project: project) }
-          let(:third_issue) { create(:issue, project: project) }
-          let(:issues_related) { [second_issue, third_issue] }
-          let(:content) { "/relate #{third_issue.to_reference(project)}" }
-
-          before do
-            create(:issue_link, source: issue, target: second_issue)
-          end
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'cross project' do
-          let(:another_group) { create(:group, :public) }
-          let(:other_project) { create(:project, group: another_group) }
-
-          before do
-            another_group.add_developer(developer)
-          end
-
-          context 'relate a cross project issue' do
-            let(:other_issue) { create(:issue, project: other_project) }
-            let(:issues_related) { [other_issue] }
-            let(:content) { "/relate #{other_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate multiple cross projects issues at once' do
-            let(:second_issue) { create(:issue, project: other_project) }
-            let(:third_issue) { create(:issue, project: other_project) }
-            let(:issues_related) { [second_issue, third_issue] }
-            let(:content) { "/relate #{second_issue.to_reference(project)} #{third_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate a non-existing issue' do
-            let(:issues_related) { [] }
-            let(:content) { "/relate imaginary##{non_existing_record_iid}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate a private issue' do
-            let(:private_project) { create(:project, :private) }
-            let(:other_issue) { create(:issue, project: private_project) }
-            let(:issues_related) { [] }
-            let(:content) { "/relate #{other_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-        end
-      end
+    it_behaves_like 'issues link quick action', :relate do
+      let(:user) { developer }
     end
 
     context 'invite_email command' do
@@ -2507,6 +2376,55 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(message).to eq("Added ~\"Bug\" label.")
       end
     end
+
+    describe 'type command' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:work_item) { create(:work_item, project: project) }
+
+      let(:command) { '/type Task' }
+
+      context 'when user has sufficient permissions to create new type' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(true)
+        end
+
+        it 'populates :issue_type: and :work_item_type' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_('Type changed successfully.'))
+          expect(updates).to eq({ issue_type: 'task', work_item_type: WorkItems::Type.default_by_type(:task) })
+        end
+
+        it 'returns error with an invalid type' do
+          _, updates, message = service.execute('/type foo', work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: Provided type is not supported."))
+          expect(updates).to eq({})
+        end
+
+        it 'returns error with same type' do
+          _, updates, message = service.execute('/type Issue', work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: Types are the same."))
+          expect(updates).to eq({})
+        end
+      end
+
+      context 'when user has insufficient permissions to create new type' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(false)
+        end
+
+        it 'returns error' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: You have insufficient permissions."))
+          expect(updates).to eq({})
+        end
+      end
+    end
   end
 
   describe '#explain' do
@@ -2517,8 +2435,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:content) { '/close' }
 
       it 'includes issuable name' do
-        _, explanations = service.explain(content, issue)
+        content_result, explanations = service.explain(content, issue)
 
+        expect(content_result).to eq('')
         expect(explanations).to eq(['Closes this issue.'])
       end
     end
@@ -2701,27 +2620,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, explanations = service.explain(content, issue)
 
         expect(explanations).to eq(['Sets the due date to Apr 1, 2016.'])
-      end
-    end
-
-    describe 'draft command toggle (deprecated)' do
-      let(:content) { '/draft' }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-      end
-
-      it 'includes the new status' do
-        _, explanations = service.explain(content, merge_request)
-
-        expect(explanations).to match_array(['Marks this merge request as a draft.'])
-      end
-
-      it 'sets the ready status on a draft' do
-        merge_request.update!(title: merge_request.draft_title)
-        _, explanations = service.explain(content, merge_request)
-
-        expect(explanations).to match_array(["Marks this merge request as ready."])
       end
     end
 
@@ -2944,6 +2842,61 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             expect(explanations).to contain_exactly("Remove customer relation contact(s).")
           end
         end
+      end
+    end
+
+    context 'with keep_actions' do
+      let(:content) { '/close' }
+
+      it 'keeps quick actions' do
+        content_result, explanations = service.explain(content, issue, keep_actions: true)
+
+        expect(content_result).to eq("\n/close")
+        expect(explanations).to eq(['Closes this issue.'])
+      end
+
+      it 'removes the quick action' do
+        content_result, explanations = service.explain(content, issue, keep_actions: false)
+
+        expect(content_result).to eq('')
+        expect(explanations).to eq(['Closes this issue.'])
+      end
+    end
+
+    describe 'type command' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+
+      let(:command) { '/type Issue' }
+
+      it 'has command available' do
+        _, explanations = service.explain(command, work_item)
+
+        expect(explanations)
+          .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
+      end
+
+      context 'when feature flag work_items_mvc_2 is disabled' do
+        before do
+          stub_feature_flags(work_items_mvc_2: false)
+        end
+
+        it 'does not have the command available' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to be_empty
+        end
+      end
+    end
+
+    describe 'relate command' do
+      let_it_be(:other_issue) { create(:issue, project: project) }
+      let(:content) { "/relate #{other_issue.to_reference}" }
+
+      it 'includes explain message' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Marks this issue as related to #{other_issue.to_reference}."])
       end
     end
   end

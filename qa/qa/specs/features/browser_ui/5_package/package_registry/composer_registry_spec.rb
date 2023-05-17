@@ -72,7 +72,7 @@ module QA
       end
 
       it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016' do
-        Page::Project::Menu.perform(&:click_packages_link)
+        Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_package(package.name)

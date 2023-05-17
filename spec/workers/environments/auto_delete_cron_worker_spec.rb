@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::AutoDeleteCronWorker do
+RSpec.describe Environments::AutoDeleteCronWorker, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let(:worker) { described_class.new }

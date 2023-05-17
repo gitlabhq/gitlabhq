@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
+  include CookieHelper
+
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -18,6 +20,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       project.add_developer(user)
       project_with_milestones.add_developer(user)
       sign_in(user)
+      set_cookie('new-actions-popover-viewed', 'true')
     end
 
     context "from edit page" do
@@ -25,6 +28,8 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         stub_licensed_features(multiple_issue_assignees: false)
         visit edit_project_issue_path(project, issue)
       end
+
+      it_behaves_like 'edits content using the content editor'
 
       it "previews content", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391757' do
         form = first(".gfm-form")
@@ -34,9 +39,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           click_button("Preview")
         end
 
-        expect(form).to have_button("Write")
-
-        click_button("Write")
+        click_button("Continue editing")
         fill_in("Description", with: "/confidential")
         click_button("Preview")
 
@@ -51,7 +54,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         first('.js-user-search').click
         click_link 'Unassigned'
 
-        click_button 'Save changes'
+        click_button _('Save changes')
 
         page.within('.assignee') do
           expect(page).to have_content 'None - assign yourself'
@@ -76,7 +79,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
 
           expect(find('#issuable-due-date').value).to eq date.to_s
 
-          click_button 'Save changes'
+          click_button _('Save changes')
 
           page.within '.issuable-sidebar' do
             expect(page).to have_content date.to_s(:medium)
@@ -89,9 +92,15 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           fill_in 'issue_title', with: 'bug 345'
           fill_in 'issue_description', with: 'bug description'
 
-          click_button 'Save changes'
+          click_button _('Save changes')
 
-          expect(page).to have_content 'Someone edited the issue the same time you did'
+          expect(page).to have_content(
+            format(
+              _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."), # rubocop:disable Layout/LineLength
+              model_name: _('issue'),
+              link_to_model: _('issue')
+            )
+          )
         end
       end
     end
@@ -111,23 +120,27 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           markdown_field_focused_selector = 'textarea:focus'
           click_edit_issue_description
 
-          expect(page).to have_selector(markdown_field_focused_selector)
+          issuable_form = find('[data-testid="issuable-form"]')
 
-          click_on _('View rich text')
-          click_on _('Rich text')
+          expect(issuable_form).to have_selector(markdown_field_focused_selector)
 
-          expect(page).not_to have_selector(content_editor_focused_selector)
+          page.within issuable_form do
+            click_button("Switch to rich text")
+          end
+
+          expect(issuable_form).not_to have_selector(content_editor_focused_selector)
 
           refresh
 
           click_edit_issue_description
 
-          expect(page).to have_selector(content_editor_focused_selector)
+          expect(issuable_form).to have_selector(content_editor_focused_selector)
 
-          click_on _('View markdown')
-          click_on _('Markdown')
+          page.within issuable_form do
+            click_button("Switch to Markdown")
+          end
 
-          expect(page).not_to have_selector(markdown_field_focused_selector)
+          expect(issuable_form).not_to have_selector(markdown_field_focused_selector)
         end
       end
 

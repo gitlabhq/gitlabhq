@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { insertText } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
 const INDENT_CHAR = ' ';
@@ -370,7 +371,7 @@ export function insertMarkdownText({
   });
 }
 
-function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
+export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
   const $textArea = $(textArea);
   textArea = $textArea.get(0);
   const text = $textArea.val();
@@ -625,10 +626,9 @@ export function addMarkdownListeners(form) {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
 
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  const $allToolbarBtns = $('.js-md', form)
-    .off('click')
-    .on('click', function () {
+  const $allToolbarBtns = $(form)
+    .off('click', '.js-md')
+    .on('click', '.js-md', function () {
       const $toolbarBtn = $(this);
 
       return updateTextForToolbarBtn($toolbarBtn);
@@ -669,3 +669,50 @@ export function removeMarkdownListeners(form) {
   // eslint-disable-next-line @gitlab/no-global-event-off
   return $('.js-md', form).off('click');
 }
+
+/**
+ * If the textarea cursor is positioned in a Markdown image declaration,
+ * it uses the Markdown API to resolve the image’s absolute URL.
+ * @param {Object} textarea Textarea DOM element
+ * @param {String} markdownPreviewPath Markdown API path
+ * @returns {Object} an object containing the image’s absolute URL, filename,
+ * and the markdown declaration. If the textarea cursor is not positioned
+ * in an image, it returns null.
+ */
+export const resolveSelectedImage = async (textArea, markdownPreviewPath = '') => {
+  const { lines, startPos } = linesFromSelection(textArea);
+
+  // image declarations can’t span more than one line in Markdown
+  if (lines > 0) {
+    return null;
+  }
+
+  const selectedLine = lines[0];
+
+  if (!/!\[.+?\]\(.+?\)/.test(selectedLine)) return null;
+
+  const lineSelectionStart = textArea.selectionStart - startPos;
+  const preExlm = selectedLine.substring(0, lineSelectionStart).lastIndexOf('!');
+  const postClose = selectedLine.substring(lineSelectionStart).indexOf(')');
+
+  if (preExlm >= 0 && postClose >= 0) {
+    const imageMarkdown = selectedLine.substring(preExlm, lineSelectionStart + postClose + 1);
+    const { data } = await axios.post(markdownPreviewPath, { text: imageMarkdown });
+    const parser = new DOMParser();
+
+    const dom = parser.parseFromString(data.body, 'text/html');
+    const imageURL = dom.body.querySelector('a').getAttribute('href');
+
+    if (imageURL) {
+      const filename = imageURL.substring(imageURL.lastIndexOf('/') + 1);
+
+      return {
+        imageMarkdown,
+        imageURL,
+        filename,
+      };
+    }
+  }
+
+  return null;
+};

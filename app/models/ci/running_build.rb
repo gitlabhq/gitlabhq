@@ -24,10 +24,12 @@ module Ci
         raise ArgumentError, 'build has not been picked by a shared runner'
       end
 
-      entry = self.new(build: build,
-                       project: build.project,
-                       runner: build.runner,
-                       runner_type: build.runner.runner_type)
+      entry = self.new(
+        build: build,
+        project: build.project,
+        runner: build.runner,
+        runner_type: build.runner.runner_type
+      )
 
       entry.validate!
 

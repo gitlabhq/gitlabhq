@@ -20,9 +20,9 @@ describe('performance bar wrapper', () => {
     peekWrapper.setAttribute('id', 'js-peek');
     peekWrapper.dataset.env = 'development';
     peekWrapper.dataset.requestId = '123';
+    peekWrapper.dataset.requestMethod = 'GET';
     peekWrapper.dataset.peekUrl = '/-/peek/results';
     peekWrapper.dataset.statsUrl = 'https://log.gprd.gitlab.net/app/dashboards#/view/';
-    peekWrapper.dataset.profileUrl = '?lineprofiler=true';
 
     mock = new MockAdapter(axios);
 
@@ -70,7 +70,13 @@ describe('performance bar wrapper', () => {
     it('adds the request immediately', () => {
       vm.addRequest('123', 'https://gitlab.com/');
 
-      expect(vm.store.addRequest).toHaveBeenCalledWith('123', 'https://gitlab.com/', undefined);
+      expect(vm.store.addRequest).toHaveBeenCalledWith(
+        '123',
+        'https://gitlab.com/',
+        undefined,
+        undefined,
+        undefined,
+      );
     });
   });
 

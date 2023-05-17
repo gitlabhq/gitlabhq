@@ -5,7 +5,6 @@ description: Unique visitors to any analytics feature by week
 product_section: dev
 product_stage: manage
 product_group: optimize
-product_category:
 value_type: number
 status: active
 time_frame: 7d
@@ -36,6 +35,7 @@ options:
   - p_analytics_ci_cd_pipelines
   - p_analytics_ci_cd_deployment_frequency
   - p_analytics_ci_cd_lead_time
+  - g_metrics_comparison_page
 distribution:
 - ce
 - ee

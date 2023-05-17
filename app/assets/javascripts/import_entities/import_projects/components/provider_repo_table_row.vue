@@ -70,7 +70,7 @@ export default {
     ...mapGetters(['getImportTarget']),
 
     displayFullPath() {
-      return this.repo.importedProject.fullPath.replace(/^\//, '');
+      return this.repo.importedProject?.fullPath.replace(/^\//, '');
     },
 
     isFinished() {
@@ -103,6 +103,10 @@ export default {
 
     importTarget() {
       return this.getImportTarget(this.repo.importSource.id);
+    },
+
+    importedProjectId() {
+      return this.repo.importedProject?.id;
     },
 
     importButtonText() {
@@ -155,16 +159,16 @@ export default {
 
 <template>
   <tr
-    class="gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11 gl-vertical-align-top"
+    class="gl-h-11"
     data-qa-selector="project_import_row"
     :data-qa-source-project="repo.importSource.fullName"
   >
-    <td class="gl-p-4 gl-vertical-align-top">
+    <td>
       <gl-link :href="repo.importSource.providerLink" target="_blank" data-testid="providerLink"
         >{{ repo.importSource.fullName }}
         <gl-icon v-if="repo.importSource.providerLink" name="external-link" />
       </gl-link>
-      <div v-if="isFinished" class="gl-font-sm">
+      <div v-if="isFinished" class="gl-font-sm gl-mt-2">
         <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">
           <template #link>
             <gl-link
@@ -179,52 +183,50 @@ export default {
         </gl-sprintf>
       </div>
     </td>
-    <td
-      class="gl-display-flex gl-sm-flex-wrap gl-p-4 gl-pt-5 gl-vertical-align-top"
-      data-testid="fullPath"
-      data-qa-selector="project_path_content"
-    >
-      <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
-      <template v-else-if="isImportNotStarted || isSelectedForReimport">
-        <div class="gl-display-flex gl-align-items-stretch gl-w-full">
-          <import-group-dropdown #default="{ namespaces }" :text="importTarget.targetNamespace">
-            <template v-if="namespaces.length">
-              <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
-              <gl-dropdown-item
-                v-for="ns in namespaces"
-                :key="ns.fullPath"
-                data-qa-selector="target_group_dropdown_item"
-                :data-qa-group-name="ns.fullPath"
-                @click="updateImportTarget({ targetNamespace: ns.fullPath })"
-              >
-                {{ ns.fullPath }}
-              </gl-dropdown-item>
-              <gl-dropdown-divider />
-            </template>
-            <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
-            <gl-dropdown-item @click="updateImportTarget({ targetNamespace: userNamespace })">{{
-              userNamespace
-            }}</gl-dropdown-item>
-          </import-group-dropdown>
-          <div
-            class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
-          >
-            /
+    <td data-testid="fullPath" data-qa-selector="project_path_content">
+      <div class="gl-display-flex gl-sm-flex-wrap">
+        <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
+        <template v-else-if="isImportNotStarted || isSelectedForReimport">
+          <div class="gl-display-flex gl-align-items-stretch gl-w-full">
+            <import-group-dropdown #default="{ namespaces }" :text="importTarget.targetNamespace">
+              <template v-if="namespaces.length">
+                <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
+                <gl-dropdown-item
+                  v-for="ns in namespaces"
+                  :key="ns.fullPath"
+                  data-qa-selector="target_group_dropdown_item"
+                  :data-qa-group-name="ns.fullPath"
+                  @click="updateImportTarget({ targetNamespace: ns.fullPath })"
+                >
+                  {{ ns.fullPath }}
+                </gl-dropdown-item>
+                <gl-dropdown-divider />
+              </template>
+              <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
+              <gl-dropdown-item @click="updateImportTarget({ targetNamespace: userNamespace })">{{
+                userNamespace
+              }}</gl-dropdown-item>
+            </import-group-dropdown>
+            <div
+              class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
+            >
+              /
+            </div>
+            <gl-form-input
+              ref="newNameInput"
+              v-model="newNameInput"
+              class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+              data-qa-selector="project_path_field"
+            />
           </div>
-          <gl-form-input
-            ref="newNameInput"
-            v-model="newNameInput"
-            class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
-            data-qa-selector="project_path_field"
-          />
-        </div>
-      </template>
-      <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
+        </template>
+        <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
+      </div>
     </td>
-    <td class="gl-p-4 gl-vertical-align-top" data-qa-selector="import_status_indicator">
-      <import-status :status="importStatus" :stats="stats" />
+    <td data-qa-selector="import_status_indicator">
+      <import-status :project-id="importedProjectId" :status="importStatus" :stats="stats" />
     </td>
-    <td data-testid="actions" class="gl-vertical-align-top gl-pt-4 gl-white-space-nowrap">
+    <td data-testid="actions" class="gl-white-space-nowrap">
       <gl-tooltip :target="() => $refs.cancelButton.$el">
         <div class="gl-text-left">
           <p class="gl-mb-5 gl-font-weight-bold">{{ s__('ImportProjects|Cancel import') }}</p>

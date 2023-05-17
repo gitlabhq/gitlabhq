@@ -71,4 +71,26 @@ RSpec.describe ::API::Entities::Project do
       end
     end
   end
+
+  describe '.ci/cd settings' do
+    context 'when the user is not an admin' do
+      before do
+        project.add_reporter(current_user)
+      end
+
+      it 'does not return ci settings' do
+        expect(json[:ci_default_git_depth]).to be_nil
+      end
+    end
+
+    context 'when the user has admin privileges' do
+      before do
+        project.add_maintainer(current_user)
+      end
+
+      it 'returns ci settings' do
+        expect(json[:ci_default_git_depth]).to be_present
+      end
+    end
+  end
 end

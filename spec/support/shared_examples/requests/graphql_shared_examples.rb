@@ -58,5 +58,5 @@ end
 
 RSpec.shared_examples 'a mutation on an unauthorized resource' do
   it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+    errors: [::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 end

@@ -1,5 +1,5 @@
+import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { hexToRgb } from '~/lib/utils/color_utils';
 import ColorItem from '~/vue_shared/components/color_select_dropdown/color_item.vue';
 import { color } from './mock_data';
 
@@ -20,16 +20,14 @@ describe('ColorItem', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the correct title', () => {
     expect(wrapper.text()).toBe(propsData.title);
   });
 
   it('renders the correct background color for the color item', () => {
-    const convertedColor = hexToRgb(propsData.color).join(', ');
-    expect(findColorItem().attributes('style')).toBe(`background-color: rgb(${convertedColor});`);
+    const colorAsRGB = rgbFromHex(propsData.color);
+    expect(findColorItem().attributes('style')).toBe(
+      `background-color: rgb(${colorAsRGB.join(', ')});`,
+    );
   });
 });

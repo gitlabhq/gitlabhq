@@ -5,6 +5,7 @@ module Gitlab
     module Project
       class RelationFactory < Base::RelationFactory
         OVERRIDES = { snippets: :project_snippets,
+                      commit_notes: 'Note',
                       ci_pipelines: 'Ci::Pipeline',
                       pipelines: 'Ci::Pipeline',
                       stages: 'Ci::Stage',
@@ -12,6 +13,7 @@ module Gitlab
                       triggers: 'Ci::Trigger',
                       pipeline_schedules: 'Ci::PipelineSchedule',
                       builds: 'Ci::Build',
+                      bridges: 'Ci::Bridge',
                       runners: 'Ci::Runner',
                       pipeline_metadata: 'Ci::PipelineMetadata',
                       hooks: 'ProjectHook',
@@ -20,6 +22,7 @@ module Gitlab
                       create_access_levels: 'ProtectedTag::CreateAccessLevel',
                       design: 'DesignManagement::Design',
                       designs: 'DesignManagement::Design',
+                      design_management_repository: 'DesignManagement::Repository',
                       design_versions: 'DesignManagement::Version',
                       actions: 'DesignManagement::Action',
                       labels: :project_labels,
@@ -37,7 +40,7 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit' }.freeze
 
-        BUILD_MODELS = %i[Ci::Build commit_status].freeze
+        BUILD_MODELS = %i[Ci::Build Ci::Bridge commit_status generic_commit_status].freeze
 
         GROUP_REFERENCES = %w[group_id].freeze
 
@@ -83,13 +86,14 @@ module Gitlab
         def setup_models
           case @relation_name
           when :merge_request_diff_files then setup_diff
-          when :notes then setup_note
+          when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_issue
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
+          when :ApprovalProjectRulesProtectedBranch then setup_merge_approval_protected_branch
           when :releases then setup_release
           end
 
@@ -142,7 +146,20 @@ module Gitlab
 
         def setup_pipeline
           @relation_hash.fetch('stages', []).each do |stage|
+            # old export files have statuses
             stage.statuses.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.builds.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.bridges.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.generic_commit_statuses.each do |status|
               status.pipeline = imported_object
             end
           end
@@ -178,6 +195,13 @@ module Gitlab
           return false unless root_ancestor.is_a?(::Group)
 
           root_ancestor.max_member_access_for_user(@user) == Gitlab::Access::OWNER
+        end
+
+        def setup_merge_approval_protected_branch
+          source_branch_name = @relation_hash.delete('branch_name')
+          target_branch = @importable.protected_branches.find_by(name: source_branch_name)
+
+          @relation_hash['protected_branch'] = target_branch
         end
 
         def compute_relative_position

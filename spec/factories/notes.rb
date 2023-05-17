@@ -12,6 +12,7 @@ FactoryBot.define do
 
     factory :note_on_commit,             traits: [:on_commit]
     factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
+    factory :note_on_work_item,          traits: [:on_work_item]
     factory :note_on_merge_request,      traits: [:on_merge_request]
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
@@ -54,28 +55,34 @@ FactoryBot.define do
       end
 
       position do
-        association(:text_diff_position,
-              file: "files/ruby/popen.rb",
-              old_line: nil,
-              new_line: line_number,
-              diff_refs: diff_refs)
+        association(
+          :text_diff_position,
+          file: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: line_number,
+          diff_refs: diff_refs
+        )
       end
 
       trait :folded_position do
         position do
-          association(:text_diff_position,
-                file: "files/ruby/popen.rb",
-                old_line: 1,
-                new_line: 1,
-                diff_refs: diff_refs)
+          association(
+            :text_diff_position,
+            file: "files/ruby/popen.rb",
+            old_line: 1,
+            new_line: 1,
+            diff_refs: diff_refs
+          )
         end
       end
 
       factory :image_diff_note_on_merge_request do
         position do
-          association(:image_diff_position,
-                file: "files/images/any_image.png",
-                diff_refs: diff_refs)
+          association(
+            :image_diff_position,
+            file: "files/images/any_image.png",
+            diff_refs: diff_refs
+          )
         end
       end
     end
@@ -100,9 +107,11 @@ FactoryBot.define do
 
     factory :diff_note_on_design, parent: :note, traits: [:on_design], class: 'DiffNote' do
       position do
-        association(:image_diff_position,
-              file: noteable.full_path,
-              diff_refs: noteable.diff_refs)
+        association(
+          :image_diff_position,
+          file: noteable.full_path,
+          diff_refs: noteable.diff_refs
+        )
       end
     end
 
@@ -120,6 +129,10 @@ FactoryBot.define do
 
     trait :on_issue do
       noteable { association(:issue, project: project) }
+    end
+
+    trait :on_work_item do
+      noteable { association(:work_item, project: project) }
     end
 
     trait :on_merge_request do
@@ -189,6 +202,10 @@ FactoryBot.define do
 
     trait :confidential do
       confidential { true }
+    end
+
+    trait :internal do
+      internal { true }
     end
 
     trait :with_review do

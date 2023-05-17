@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClusterAgentQueue do
+RSpec.describe ClusterAgentQueue, feature_category: :deployment_management do
   let(:worker) do
     Class.new do
       def self.name
@@ -14,6 +14,5 @@ RSpec.describe ClusterAgentQueue do
     end
   end
 
-  it { expect(worker.queue).to eq('cluster_agent:example') }
-  it { expect(worker.get_feature_category).to eq(:kubernetes_management) }
+  it { expect(worker.get_feature_category).to eq(:deployment_management) }
 end

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -69,9 +69,14 @@ export default {
 
     <div v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</div>
 
-    <gl-button v-gl-modal="$options.modalId" class="gl-mt-5" category="secondary" variant="info">{{
-      $options.i18n.addBranchRule
-    }}</gl-button>
+    <gl-button
+      v-gl-modal="$options.modalId"
+      class="gl-mt-5"
+      data-qa-selector="add_branch_rule_button"
+      category="secondary"
+      variant="info"
+      >{{ $options.i18n.addBranchRule }}</gl-button
+    >
 
     <gl-modal
       :ref="$options.modalId"

@@ -27,9 +27,11 @@ module Namespaces
         def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
-          self_and_ancestors_from_inner_join(include_self: include_self,
-                                             upto: upto, hierarchy_order:
-                                             hierarchy_order)
+          self_and_ancestors_from_inner_join(
+            include_self: include_self,
+            upto: upto, hierarchy_order:
+            hierarchy_order
+          )
         end
 
         def self_and_ancestor_ids(include_self: true)

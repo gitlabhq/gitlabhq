@@ -68,6 +68,9 @@ module API
           @results = search_service.search_objects(preload_method)
         end
 
+        search_results = search_service.search_results
+        bad_request!(search_results.error) if search_results.respond_to?(:failed?) && search_results.failed?
+
         set_global_search_log_information(additional_params)
 
         Gitlab::Metrics::GlobalSearchSlis.record_apdex(

@@ -1,0 +1,12 @@
+---
+table_name: airflow_dags
+classes:
+  - Airflow::Dags
+feature_categories:
+  - dataops
+description: An Airflow DAG is a record of the current status of a DAG from an Airflow instance
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108900
+milestone: '15.9'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112192
+removed_in_milestone: '15.10'

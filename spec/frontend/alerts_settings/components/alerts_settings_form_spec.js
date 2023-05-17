@@ -63,12 +63,6 @@ describe('AlertsSettingsForm', () => {
   const findActionBtn = () => wrapper.findByTestId('payload-action-btn');
   const findTabs = () => wrapper.findAllComponents(GlTab);
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const selectOptionAtIndex = async (index) => {
     const options = findSelect().findAll('option');
     await options.at(index).setSelected();
@@ -97,9 +91,9 @@ describe('AlertsSettingsForm', () => {
       expect(findFormFields().at(0).isVisible()).toBe(true);
     });
 
-    it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
+    it('disables the dropdown and shows help text when multi integrations are not supported', () => {
       createComponent({ props: { canAddIntegration: false } });
-      expect(findSelect().attributes('disabled')).toBe('disabled');
+      expect(findSelect().attributes('disabled')).toBeDefined();
       expect(findMultiSupportText().exists()).toBe(true);
     });
 
@@ -433,13 +427,13 @@ describe('AlertsSettingsForm', () => {
     it('should not be able to submit when no integration type is selected', async () => {
       await selectOptionAtIndex(0);
 
-      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should not be able to submit when HTTP integration form is invalid', async () => {
       await selectOptionAtIndex(1);
       await findFormFields().at(0).vm.$emit('input', '');
-      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
@@ -452,7 +446,7 @@ describe('AlertsSettingsForm', () => {
       await selectOptionAtIndex(2);
       await findFormFields().at(0).vm.$emit('input', '');
 
-      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should be able to submit when Prometheus integration  form is valid', async () => {
@@ -482,7 +476,7 @@ describe('AlertsSettingsForm', () => {
       });
       await nextTick();
 
-      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should disable submit button after click on validation failure', async () => {
@@ -490,7 +484,7 @@ describe('AlertsSettingsForm', () => {
       findSubmitButton().trigger('click');
       await nextTick();
 
-      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should scroll to invalid field on validation failure', async () => {

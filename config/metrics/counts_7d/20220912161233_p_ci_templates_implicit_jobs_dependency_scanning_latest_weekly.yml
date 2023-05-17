@@ -5,7 +5,6 @@ description: Weekly counts for implicit Dependency Scanning CI Latest template (
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
-product_category: dependency_scanning
 value_type: number
 status: removed
 milestone: '15.4'

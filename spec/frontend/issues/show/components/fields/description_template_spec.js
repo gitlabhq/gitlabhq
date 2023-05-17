@@ -22,10 +22,6 @@ describe('Issue description template component with templates as hash', () => {
     wrapper = shallowMount(descriptionTemplate, options);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders templates as JSON hash in data attribute', () => {
     createComponent();
     expect(findIssuableSelector().attributes('data-data')).toBe(

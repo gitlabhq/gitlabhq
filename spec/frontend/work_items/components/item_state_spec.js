@@ -21,10 +21,6 @@ describe('ItemState', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders label and dropdown', () => {
     createComponent();
 

@@ -39,7 +39,7 @@ module Resolvers
     def batch_load(username)
       BatchLoader::GraphQL.for(username).batch do |usernames, loader|
         User.by_username(usernames).each do |user|
-          loader.call(user.username, user)
+          loader.call(username, user)
         end
       end
     end

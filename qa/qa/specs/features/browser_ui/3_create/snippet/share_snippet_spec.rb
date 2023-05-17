@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Sharing snippets', :reliable, product_group: :editor do
+    describe 'Sharing snippets', :reliable, product_group: :source_code do
       let(:snippet) do
         Resource::Snippet.fabricate! do |snippet|
           snippet.title = 'Shared snippet'

@@ -54,6 +54,7 @@ export default {
     GlIntersectionObserver,
   },
   mixins: [Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -80,10 +81,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    fullPath: {
-      type: String,
-      required: true,
     },
   },
   data() {
@@ -298,7 +295,7 @@ export default {
   <div class="form-row gl-mb-5 work-item-assignees gl-relative gl-flex-nowrap">
     <span
       :id="assigneesTitleId"
-      class="gl-font-weight-bold col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
+      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="assignees-title"
       >{{ assigneeText }}</span
     >

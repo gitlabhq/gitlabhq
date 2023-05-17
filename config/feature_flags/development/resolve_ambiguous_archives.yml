@@ -1,0 +1,8 @@
+---
+name: resolve_ambiguous_archives
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116411
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403650
+milestone: '15.11'
+type: development
+group: group::source code
+default_enabled: true

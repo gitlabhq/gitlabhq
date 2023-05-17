@@ -36,6 +36,7 @@ class MergeRequestsFinder < IssuableFinder
 
   def self.scalar_params
     @scalar_params ||= super + [
+      :approved,
       :approved_by_ids,
       :deployed_after,
       :deployed_before,
@@ -71,8 +72,9 @@ class MergeRequestsFinder < IssuableFinder
     items = by_approvals(items)
     items = by_deployments(items)
     items = by_reviewer(items)
+    items = by_source_project_id(items)
 
-    by_source_project_id(items)
+    by_approved(items)
   end
 
   def filter_negated_items(items)
@@ -182,6 +184,17 @@ class MergeRequestsFinder < IssuableFinder
       .execute(items)
   end
   # rubocop: enable CodeReuse/Finder
+
+  def by_approved(items)
+    approved_param = Gitlab::Utils.to_boolean(params.fetch(:approved, nil))
+    return items if approved_param.nil? || Feature.disabled?(:mr_approved_filter, type: :ops)
+
+    if approved_param
+      items.with_approvals
+    else
+      items.without_approvals
+    end
+  end
 
   def by_deployments(items)
     env = params[:environment]

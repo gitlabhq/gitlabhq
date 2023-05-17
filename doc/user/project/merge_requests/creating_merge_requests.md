@@ -3,15 +3,17 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to create merge requests in GitLab."
-disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
 ---
 
 # Creating merge requests **(FREE)**
 
-There are many different ways to create a merge request.
+GitLab provides many different ways to create a merge request.
 
 NOTE:
-Use [branch naming patterns](../repository/branches/index.md#naming) to streamline merge request creation.
+GitLab enforces [branch naming rules](../repository/branches/index.md#name-your-branch)
+to prevent problems, and provides
+[branch naming patterns](../repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+to streamline merge request creation.
 
 ## From the merge request list
 
@@ -19,7 +21,7 @@ You can create a merge request from the list of merge requests.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left menu, select **Merge requests**.
-1. In the upper right, select **New merge request**.
+1. In the upper-right corner, select **New merge request**.
 1. Select a source and target branch and then **Compare branches and continue**.
 1. Fill out the fields and select **Create merge request**.
 
@@ -34,7 +36,8 @@ be associated with a given target branch at a time.
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
-After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+After merging the merge request, the issue is closed automatically, unless
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
 You can see a **Create merge request** dropdown list below the issue description.
 
 NOTE:
@@ -50,7 +53,7 @@ instead of immediately creating the merge request.
 - Your project is private and the issue is confidential.
 
 To make this button appear, one possible workaround is to
-[remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
+[remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 
@@ -58,8 +61,8 @@ The dropdown list contains the options **Create merge request and branch** and *
 
 After selecting one of these options, a new branch or branch and merge request
 is created based on your project's [default branch](../repository/branches/default.md).
-The branch name is based on your project's branch name template. The default template
-is `%{id}-%{title}`. Supported variables for branch name templates are `%{id}` and `%{title}`.
+The branch name is based on your project's [branch name template](../repository/branches/index.md),
+but this value can be changed.
 
 When you select **Create branch** in an empty
 repository project, GitLab performs these actions:
@@ -83,7 +86,7 @@ You can create a merge request when you add, edit, or upload a file to a reposit
 
 1. [Add, edit, or upload](../repository/web_editor.md) a file to the repository.
 1. In the **Commit message**, enter a reason for the commit.
-1. Select the **Target branch** or create a new branch by typing the name (without spaces, capital letters, or special chars).
+1. Select the **Target branch** or create a new branch by typing the name (without spaces).
 1. Select the **Start a new merge request with these changes** checkbox or toggle. This checkbox or toggle is visible only
    if the target is not the same as the source branch, or if the source branch is protected.
 1. Select **Commit changes**.
@@ -151,9 +154,8 @@ You can create a merge request from your fork to contribute back to the main pro
 1. Select **Create merge request**.
 
 After your work is merged, if you don't intend to
-make any other contributions to the upstream project, you can unlink your
-fork from its upstream project. Go to **Settings > Advanced Settings** and
-[remove the forking relationship](../settings/index.md#remove-a-fork-relationship).
+make any other contributions to the upstream project, you can
+[unlink your fork](../repository/forking_workflow.md#unlink-a-fork) from its upstream project.
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
 
@@ -171,7 +173,7 @@ To create a merge request by sending an email:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left menu, select **Merge requests**.
-1. In the upper right, select **Email a new merge request to this project**.
+1. In the upper-right corner, select **Email a new merge request to this project**.
    An email address is displayed. Copy this address.
    Ensure you keep this address private.
 1. Open an email and compose a message with the following information:

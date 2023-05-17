@@ -15,6 +15,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(user) if user
   end
 
@@ -23,7 +24,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
     let(:params) do
       {
         namespace_id: project.namespace.full_path,
-        project_id: project.name,
+        project_id: project.path,
         proxy_path: 'api/v1/query_range',
         datasource_id: '1',
         query: 'rate(relevant_metric)',
@@ -87,13 +88,15 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
       it 'returns a grafana datasource response' do
         get :proxy, params: params
 
-        expect(Grafana::ProxyService)
-          .to have_received(:new)
-          .with(project, '1', 'api/v1/query_range',
-                 { 'query' => params[:query],
-                   'start' => params[:start_time],
-                   'end' => params[:end_time],
-                   'step' => params[:step] })
+        expect(Grafana::ProxyService).to have_received(:new).with(
+          project, '1', 'api/v1/query_range',
+          {
+            'query' => params[:query],
+            'start' => params[:start_time],
+            'end' => params[:end_time],
+            'step' => params[:step]
+          }
+        )
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({})
@@ -168,6 +171,14 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
         it_behaves_like 'accessible'
       end
     end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it_behaves_like 'not accessible'
+    end
   end
 
   describe 'GET #metrics_dashboard' do
@@ -178,7 +189,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
         embedded: true,
         grafana_url: 'https://grafana.example.com',
         namespace_id: project.namespace.full_path,
-        project_id: project.name
+        project_id: project.path
       }
     end
 

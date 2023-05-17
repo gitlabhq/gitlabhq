@@ -19,7 +19,7 @@ class Ci::CommitWithPipeline < SimpleDelegator
   end
 
   def lazy_latest_pipeline
-    BatchLoader.for(sha).batch do |shas, loader|
+    BatchLoader.for(sha).batch(key: project.id) do |shas, loader|
       preload_pipelines = project.ci_pipelines.latest_pipeline_per_commit(shas.compact)
 
       shas.each do |sha|

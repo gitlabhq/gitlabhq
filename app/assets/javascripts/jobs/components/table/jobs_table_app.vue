@@ -1,11 +1,13 @@
 <script>
-import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
+import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import { validateQueryString } from '../filtered_search/utils';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
+import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
 import JobsTableTabs from './jobs_table_tabs.vue';
@@ -13,20 +15,21 @@ import { RAW_TEXT_WARNING } from './constants';
 
 export default {
   i18n: {
-    errorMsg: __('There was an error fetching the jobs for your project.'),
+    jobsFetchErrorMsg: __('There was an error fetching the jobs for your project.'),
+    jobsCountErrorMsg: __('There was an error fetching the number of jobs for your project.'),
     loadingAriaLabel: __('Loading'),
   },
   filterSearchBoxStyles:
-    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-gray-100 gl-border-b',
+    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
   components: {
     GlAlert,
-    GlSkeletonLoader,
     JobsFilteredSearch,
     JobsTable,
     JobsTableEmptyState,
     JobsTableTabs,
     GlIntersectionObserver,
     GlLoadingIcon,
+    JobsSkeletonLoader,
   },
   inject: {
     fullPath: {
@@ -43,15 +46,32 @@ export default {
         };
       },
       update(data) {
-        const { jobs: { nodes: list = [], pageInfo = {}, count } = {} } = data.project || {};
+        const { jobs: { nodes: list = [], pageInfo = {} } = {} } = data.project || {};
         return {
           list,
           pageInfo,
-          count,
         };
       },
       error() {
-        this.hasError = true;
+        this.error = this.$options.i18n.jobsFetchErrorMsg;
+      },
+    },
+    jobsCount: {
+      query: GetJobsCount,
+      context: {
+        isSingleRequest: true,
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          ...this.validatedQueryString,
+        };
+      },
+      update({ project }) {
+        return project?.jobs?.count || 0;
+      },
+      error() {
+        this.error = this.$options.i18n.jobsCountErrorMsg;
       },
     },
   },
@@ -60,20 +80,17 @@ export default {
       jobs: {
         list: [],
       },
-      hasError: false,
-      isAlertDismissed: false,
+      error: '',
       scope: null,
       infiniteScrollingTriggered: false,
       filterSearchTriggered: false,
+      jobsCount: null,
       count: 0,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.jobs.loading;
-    },
-    shouldShowAlert() {
-      return this.hasError && !this.isAlertDismissed;
     },
     // Show when on All tab with no jobs
     // Show only when not loading and filtered search has not been triggered
@@ -95,9 +112,6 @@ export default {
     showFilteredSearch() {
       return !this.scope;
     },
-    jobsCount() {
-      return this.jobs.count;
-    },
     validatedQueryString() {
       const queryStringObject = queryToObject(window.location.search);
 
@@ -116,16 +130,36 @@ export default {
     },
   },
   methods: {
+    updateHistoryAndFetchCount(status = null) {
+      this.$apollo.queries.jobsCount.refetch({ statuses: status });
+
+      updateHistory({
+        url: setUrlParams({ statuses: status }, window.location.href, true),
+      });
+    },
     fetchJobsByStatus(scope) {
       this.infiniteScrollingTriggered = false;
 
+      if (this.scope === scope) return;
+
       this.scope = scope;
+
+      if (!this.scope) this.updateHistoryAndFetchCount();
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
     filterJobsBySearch(filters) {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
+
+      // all filters have been cleared reset query param
+      // and refetch jobs/count with defaults
+      if (!filters.length) {
+        this.updateHistoryAndFetchCount();
+        this.$apollo.queries.jobs.refetch({ statuses: null });
+
+        return;
+      }
 
       // Eventually there will be more tokens available
       // this code is written to scale for those tokens
@@ -141,10 +175,7 @@ export default {
         }
 
         if (filter.type === 'status') {
-          updateHistory({
-            url: setUrlParams({ statuses: filter.value.data }, window.location.href, true),
-          });
-
+          this.updateHistoryAndFetchCount(filter.value.data);
           this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
         }
       });
@@ -168,14 +199,14 @@ export default {
 <template>
   <div>
     <gl-alert
-      v-if="shouldShowAlert"
+      v-if="error"
       class="gl-mt-2"
       variant="danger"
       data-testid="jobs-table-error-alert"
       dismissible
-      @dismiss="isAlertDismissed = true"
+      @dismiss="error = ''"
     >
-      {{ $options.i18n.errorMsg }}
+      {{ error }}
     </gl-alert>
 
     <jobs-table-tabs
@@ -190,26 +221,11 @@ export default {
       />
     </div>
 
-    <div v-if="showSkeletonLoader" class="gl-mt-5">
-      <gl-skeleton-loader :width="1248" :height="73">
-        <circle cx="748.031" cy="37.7193" r="15.0307" />
-        <circle cx="787.241" cy="37.7193" r="15.0307" />
-        <circle cx="827.759" cy="37.7193" r="15.0307" />
-        <circle cx="866.969" cy="37.7193" r="15.0307" />
-        <circle cx="380" cy="37" r="18" />
-        <rect x="432" y="19" width="126.587" height="15" />
-        <rect x="432" y="41" width="247" height="15" />
-        <rect x="158" y="19" width="86.1" height="15" />
-        <rect x="158" y="41" width="168" height="15" />
-        <rect x="22" y="19" width="96" height="36" />
-        <rect x="924" y="30" width="96" height="15" />
-        <rect x="1057" y="20" width="166" height="35" />
-      </gl-skeleton-loader>
-    </div>
+    <jobs-skeleton-loader v-if="showSkeletonLoader" class="gl-mt-5" />
 
     <jobs-table-empty-state v-else-if="showEmptyState" />
 
-    <jobs-table v-else :jobs="jobs.list" />
+    <jobs-table v-else :jobs="jobs.list" class="gl-table-no-top-border" />
 
     <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
       <gl-loading-icon

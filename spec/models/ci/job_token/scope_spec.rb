@@ -63,12 +63,14 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     subject { scope.add!(new_project, direction: direction, user: user) }
 
     [:inbound, :outbound].each do |d|
-      let(:direction) { d }
+      context "with #{d}" do
+        let(:direction) { d }
 
-      it 'adds the project' do
-        subject
+        it 'adds the project' do
+          subject
 
-        expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+          expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+        end
       end
     end
 
@@ -156,14 +158,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       before do
         accessed_project.update!(ci_inbound_job_token_scope_enabled: false)
         current_project.update!(ci_outbound_job_token_scope_enabled: true)
-      end
-
-      include_examples 'enforces outbound scope only'
-    end
-
-    context 'when inbound scope flag disabled' do
-      before do
-        stub_feature_flags(ci_inbound_job_token_scope: false)
       end
 
       include_examples 'enforces outbound scope only'

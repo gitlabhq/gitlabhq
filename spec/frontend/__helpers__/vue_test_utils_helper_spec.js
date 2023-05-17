@@ -128,6 +128,55 @@ describe('Vue test utils helpers', () => {
       });
     });
 
+    describe('findComponentByTestId', () => {
+      const testId = 'a-component';
+      let mockChild;
+      let mockComponent;
+
+      beforeEach(() => {
+        mockChild = {
+          template: '<div></div>',
+        };
+        mockComponent = extendedWrapper(
+          shallowMount({
+            render(h) {
+              return h('div', {}, [h(mockChild, { attrs: { 'data-testid': testId } })]);
+            },
+          }),
+        );
+      });
+
+      it('should find the element by test id', () => {
+        expect(mockComponent.findComponentByTestId(testId).exists()).toBe(true);
+      });
+    });
+
+    describe('findAllComponentsByTestId', () => {
+      const testId = 'a-component';
+      let mockComponent;
+      let mockChild;
+
+      beforeEach(() => {
+        mockChild = {
+          template: `<div></div>`,
+        };
+        mockComponent = extendedWrapper(
+          shallowMount({
+            render(h) {
+              return h('div', [
+                h(mockChild, { attrs: { 'data-testid': testId } }),
+                h(mockChild, { attrs: { 'data-testid': testId } }),
+              ]);
+            },
+          }),
+        );
+      });
+
+      it('should find all components by test id', () => {
+        expect(mockComponent.findAllComponentsByTestId(testId)).toHaveLength(2);
+      });
+    });
+
     describe.each`
       findMethod                 | expectedQuery
       ${'findByRole'}            | ${'queryAllByRole'}

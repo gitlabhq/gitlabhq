@@ -331,9 +331,9 @@ In earlier GitLab versions, jobs are sorted by ID in ascending order (oldest fir
 In GitLab 13.9 and later, this endpoint can include retried jobs in the response
 with `include_retried` set to `true`.
 
-## List pipeline bridges
+## List pipeline trigger jobs
 
-Get a list of bridge jobs for a pipeline.
+Get a list of trigger jobs for a pipeline.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/bridges
@@ -867,8 +867,9 @@ POST /projects/:id/jobs/:job_id/play
 Example request:
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play
-     --header "PRIVATE-TOKEN: <your_access_token>"
+curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play" \
+     --header "Content-Type: application/json" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --data @variables.json
 ```
 

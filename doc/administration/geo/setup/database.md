@@ -21,7 +21,7 @@ NOTE:
 The stages of the setup process must be completed in the documented order.
 If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
 
-Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added the [premium or higher licenses](https://about.gitlab.com/pricing/) to your **primary** site.
+Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.
@@ -29,10 +29,10 @@ testing or production environments.
 ## Single instance database replication
 
 A single instance database replication is easier to set up and still provides the same Geo capabilities
-as a clusterized alternative. It's useful for setups running on a single machine
-or trying to evaluate Geo for a future clusterized installation.
+as a clustered alternative. It's useful for setups running on a single machine
+or trying to evaluate Geo for a future clustered installation.
 
-A single instance can be expanded to a clusterized version using Patroni, which is recommended for a
+A single instance can be expanded to a clustered version using Patroni, which is recommended for a
 highly available architecture.
 
 Follow the instructions below on how to set up PostgreSQL replication as a single instance database.
@@ -151,6 +151,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD '<replication_password>';
    ```
 
+1. Edit `/etc/gitlab/gitlab.rb` and set the role to `geo_primary_role` (for more information, see [Geo roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)):
+
+   ```ruby
+   ## Geo Primary role
+   roles(['geo_primary_role'])
+   ```
+
 1. Configure PostgreSQL to listen on network interfaces:
 
    For security reasons, PostgreSQL does not listen on any network interfaces
@@ -211,17 +218,6 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    ```ruby
    ##
-   ## Geo Primary role
-   ## - Configures Postgres settings for replication
-   ## - Prevents automatic upgrade of Postgres since it requires downtime of
-   ##   streaming replication to Geo secondary sites
-   ## - Enables standard single-node GitLab services like NGINX, Puma, Redis,
-   ##   or Sidekiq. If you are segregating services, then you will need to
-   ##   explicitly disable unwanted services.
-   ##
-   roles(['geo_primary_role'])
-
-   ##
    ## Primary address
    ## - replace '<primary_node_ip>' with the public or VPC address of your Geo primary node
    ##
@@ -239,11 +235,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    # postgresql['max_replication_slots'] = 1 # Set this to be the number of Geo secondary nodes if you have more than one
    # postgresql['max_wal_senders'] = 10
    # postgresql['wal_keep_segments'] = 10
+   ```
 
-   ##
-   ## Disable automatic database migrations temporarily
-   ## (until PostgreSQL is restarted and listening on the private address).
-   ##
+1. Disable automatic database migrations temporarily until PostgreSQL is restarted and listening on the private address.
+   Edit `/etc/gitlab/gitlab.rb` and change the configuration to false:
+
+   ```ruby
+   ## Disable automatic database migrations
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -402,6 +400,16 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    Ensure that the contents of `~gitlab-psql/data/server.crt` on the **primary** site
    match the contents of `~gitlab-psql/.postgresql/root.crt` on the **secondary** site.
 
+1. Edit `/etc/gitlab/gitlab.rb` and set the role to `geo_secondary_role` (for more information, see [Geo roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)):
+
+   ```ruby
+   ##
+   ## Geo Secondary role
+   ## - configure dependent flags automatically to enable Geo
+   ##
+   roles(['geo_secondary_role'])
+   ```
+
 1. Configure PostgreSQL:
 
    This step is similar to how you configured the **primary** instance.
@@ -411,12 +419,6 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    addresses with addresses appropriate to your network configuration:
 
    ```ruby
-   ##
-   ## Geo Secondary role
-   ## - configure dependent flags automatically to enable Geo
-   ##
-   roles(['geo_secondary_role'])
-
    ##
    ## Secondary address
    ## - replace '<secondary_site_ip>' with the public or VPC address of your Geo secondary site
@@ -863,6 +865,7 @@ For each node running a Patroni instance on the secondary site:
    consul['configuration'] = {
      retry_join: %w[CONSUL_SECONDARY1_IP CONSUL_SECONDARY2_IP CONSUL_SECONDARY3_IP]
    }
+   consul['services'] = %w(postgresql)
 
    postgresql['md5_auth_cidr_addresses'] = [
      'PATRONI_SECONDARY1_IP/32', 'PATRONI_SECONDARY2_IP/32', 'PATRONI_SECONDARY3_IP/32', 'PATRONI_SECONDARY_PGBOUNCER/32',
@@ -892,7 +895,7 @@ For each node running a Patroni instance on the secondary site:
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    postgresql['listen_address'] = '0.0.0.0' # You can use a public or VPC address here instead
 
-   gitlab_rails['dbpassword'] = 'POSTGRESQL_PASSWORD'
+   gitlab_rails['db_password'] = 'POSTGRESQL_PASSWORD'
    gitlab_rails['enable'] = true
    gitlab_rails['auto_migrate'] = false
    ```
@@ -936,6 +939,8 @@ Omnibus automatically configures a tracking database when `roles(['geo_secondary
 
 If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above.
 Instead, follow the instructions below.
+
+If you want to run the Geo tracking database on a single node, see [Configure the Geo tracking database on the Geo secondary site](../replication/multiple_servers.md#step-3-configure-the-geo-tracking-database-on-the-geo-secondary-site).
 
 A production-ready and secure setup for the tracking PostgreSQL DB requires at least three Consul nodes: two
 Patroni nodes, and one PgBouncer node on the secondary site.

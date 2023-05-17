@@ -8,7 +8,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
   it 'shows a token placeholder' do
     token_placeholder = find_field('service_token')['placeholder']
 
-    expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
+    expect(token_placeholder).to eq('')
   end
 
   it 'redirects to the integrations page after saving but not activating' do

@@ -62,6 +62,8 @@ To create an iteration cadence:
    - From the **Upcoming iterations** dropdown list, select how many upcoming iterations should be
      created and maintained by GitLab.
    - Optional. To move incomplete issues to the next iteration, select **Roll over issues**.
+     At the end of the current iteration, all open issues are added to the next iteration.
+     Issues are moved at midnight in the instance time zone (UTC by default). Administrators can change the instance time zone.
 1. Select **Create cadence**. The cadence list page opens.
 
 If you want to manually manage the created cadence, read [Manual Iteration Management](#manual-iteration-management).

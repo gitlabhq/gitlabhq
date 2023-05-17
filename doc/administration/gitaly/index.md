@@ -69,7 +69,7 @@ the current status of these issues, refer to the referenced issues and epics.
 
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
-| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later). In GitLab 15.3, the feature flag is enabled by default. |
+| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default. |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
 | Rebuilding or replacing an existing Gitaly Cluster node | There is no way to replace existing nodes in place because the Praefect database is relied on to determine the current state of each Gitaly node. Changing how Gitaly Cluster stores repositories is proposed in issue [4218](https://gitlab.com/gitlab-org/gitaly/-/issues/4218). Turning on [repository verification](praefect.md#repository-verification) is proposed in issue [4429](https://gitlab.com/gitlab-org/gitaly/-/issues/4429) so Praefect can detect that data is missing and needs to replicated to a new Gitaly node. | No known solution at this time. |
@@ -78,7 +78,7 @@ the current status of these issues, refer to the referenced issues and epics.
 
 Gitaly Cluster does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
-during a restore, we recommend using the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
+during a restore, you should use the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
 
 The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
 can be used to speed up Gitaly Cluster backups.
@@ -100,7 +100,7 @@ These SSDs should have a throughput of at least:
 - 2,000 IOPS for write operations.
 
 These IOPS values are initial recommendations, and may be adjusted to greater or lesser values
-depending on the scale of your environment's workload. If you’re running the environment on a
+depending on the scale of your environment's workload. If you're running the environment on a
 cloud provider, refer to their documentation about how to configure IOPS correctly.
 
 For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons.
@@ -363,10 +363,10 @@ For example, `@cluster/repositories/6f/96/54771`.
 
 The last component of the replica path, `54771`, is the repository ID. This can be used to identify the repository on the disk.
 
-`<xx>/<xx>` are the first four hex digits of the SHA256 hash of the string representation of the repository ID. This is used to balance
-the repositories evenly into subdirectories to avoid overly large directories that might cause problems on some file
-systems. In this case, `54771` hashes to `6f960ab01689464e768366d3315b3d3b2c28f38761a58a70110554eb04d582f7` so the
-first four digits are `6f` and `96`.
+`<xx>/<xx>` are the first four hex digits of the SHA256 hash of the string representation of the repository ID. These
+digits are used to balance the repositories evenly into subdirectories to avoid overly large directories that might
+cause problems on some file systems. In this case, `54771` hashes to
+`6f960ab01689464e768366d3315b3d3b2c28f38761a58a70110554eb04d582f7` so the first four digits are `6f` and `96`.
 
 #### Identify repositories on disk
 
@@ -387,8 +387,9 @@ Follow the [instructions in hashed storage's documentation](../repository_storag
 Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ensure atomicity of repository creation,
 deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
 the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
-the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
-does not interfere with future operations but may use up disk space unnecessarily until a clean up is performed.
+the metadata consistent. The disks may contain stale state even after successful operations. This situation is expected and
+the leftover state does not interfere with future operations but may use up disk space unnecessarily until a clean up is
+performed.
 
 There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
 repositories from the storages.
@@ -397,7 +398,7 @@ repositories from the storages.
 
 When creating repositories, Praefect:
 
-1. Reserves a repository ID from PostgreSQL. This is atomic and no two creations receive the same ID.
+1. Reserves a repository ID from PostgreSQL, which is atomic and no two creations receive the same ID.
 1. Creates replicas on the Gitaly storages in the replica path derived from the repository ID.
 1. Creates metadata records after the repository is successfully created on disk.
 
@@ -470,8 +471,11 @@ _Up to date_ in this context means that:
 
 The primary node is chosen to serve the request if:
 
-- There are no up to date nodes.
+- No up-to-date nodes exist.
 - Any other error occurs during node selection.
+
+If you have a large, heavily modified repository (like a multi-gigabyte monorepo), the primary node can service most or all requests if changes come in faster than Praefect
+can replicate to the secondaries. When this occurs, CI/CD jobs and other repository traffic are bottlenecked by the capacity of the primary node.
 
 You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) using Prometheus.
 
@@ -677,7 +681,7 @@ Direct Git access is:
 For the sake of removing complexity, we must remove direct Git access in GitLab. However, we can't
 remove it as long some GitLab installations require Git repositories on NFS.
 
-There are two facets to our efforts to remove direct Git access in GitLab:
+Two facets of our efforts to remove direct Git access in GitLab are:
 
 - Reduce the number of inefficient Gitaly queries made by GitLab.
 - Persuade administrators of fault-tolerant or horizontally-scaled GitLab instances to migrate off

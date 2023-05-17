@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::ResolveService do
+RSpec.describe Notes::ResolveService, feature_category: :team_planning do
   let(:merge_request) { create(:merge_request) }
   let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project) }
   let(:user) { merge_request.author }

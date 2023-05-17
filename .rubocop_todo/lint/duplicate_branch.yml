@@ -33,4 +33,3 @@ Lint/DuplicateBranch:
     - 'lib/sidebars/groups/menus/settings_menu.rb'
     - 'qa/qa/resource/pipeline.rb'
     - 'scripts/rubocop-parse'
-    - 'spec/support/shared_contexts/features/integrations/integrations_shared_context.rb'

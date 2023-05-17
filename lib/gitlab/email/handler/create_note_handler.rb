@@ -50,7 +50,9 @@ module Gitlab
         end
 
         def create_note
-          sent_notification.create_reply(note_message)
+          external_author = from_address if author == User.support_bot
+
+          sent_notification.create_reply(note_message, external_author)
         end
 
         def note_message

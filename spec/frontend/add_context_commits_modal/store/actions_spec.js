@@ -31,10 +31,10 @@ describe('AddContextCommitsModalStoreActions', () => {
     short_id: 'abcdef',
     committed_date: '2020-06-12',
   };
-  gon.api_version = 'v4';
   let mock;
 
   beforeEach(() => {
+    gon.api_version = 'v4';
     mock = new MockAdapter(axios);
   });
 

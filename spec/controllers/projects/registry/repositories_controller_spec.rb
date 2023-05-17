@@ -59,8 +59,7 @@ RSpec.describe Projects::Registry::RepositoriesController do
       context 'when root container repository is not created' do
         context 'when there are tags for this repository' do
           before do
-            stub_container_registry_tags(repository: :any,
-                                         tags: %w[rc1 latest])
+            stub_container_registry_tags(repository: :any, tags: %w[rc1 latest])
           end
 
           it 'creates a root container repository' do
@@ -139,19 +138,12 @@ RSpec.describe Projects::Registry::RepositoriesController do
   end
 
   def go_to_index(format: :html, params: {})
-    get :index, params: params.merge({
-                  namespace_id: project.namespace,
-                  project_id: project
-                }),
-                format: format
+    get :index, params: params.merge({ namespace_id: project.namespace, project_id: project }), format: format
   end
 
   def delete_repository(repository)
     delete :destroy, params: {
-                       namespace_id: project.namespace,
-                       project_id: project,
-                       id: repository
-                     },
-                     format: :json
+      namespace_id: project.namespace, project_id: project, id: repository
+    }, format: :json
   end
 end

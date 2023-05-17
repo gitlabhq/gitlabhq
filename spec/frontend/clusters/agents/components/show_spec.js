@@ -12,7 +12,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { MAX_LIST_COUNT, TOKEN_STATUS_ACTIVE } from '~/clusters/agents/constants';
+import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -79,10 +79,6 @@ describe('ClusterAgentShow', () => {
   const findActivity = () => wrapper.findComponent(ActivityEvents);
   const findIntegrationStatus = () => wrapper.findComponent(IntegrationStatus);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default behaviour', () => {
     beforeEach(async () => {
       createWrapper({ clusterAgent: defaultClusterAgent });
@@ -93,7 +89,6 @@ describe('ClusterAgentShow', () => {
       const variables = {
         agentName: provide.agentName,
         projectPath: provide.projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         first: MAX_LIST_COUNT,
         last: null,
       };

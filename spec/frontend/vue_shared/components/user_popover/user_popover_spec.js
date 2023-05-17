@@ -1,5 +1,6 @@
 import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import mrDiffCommentFixture from 'test_fixtures/merge_requests/diff_comment.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
@@ -13,11 +14,11 @@ import {
   I18N_ERROR_UNFOLLOW,
 } from '~/vue_shared/components/user_popover/constants';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/api/user_api';
 import { mockTracking } from 'helpers/tracking_helper';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/api/user_api', () => ({
   followUser: jest.fn(),
   unfollowUser: jest.fn(),
@@ -41,17 +42,14 @@ const DEFAULT_PROPS = {
 };
 
 describe('User Popover Component', () => {
-  const fixtureTemplate = 'merge_requests/diff_comment.html';
-
   let wrapper;
 
   beforeEach(() => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(mrDiffCommentFixture);
     gon.features = {};
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 
@@ -277,7 +275,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findByText('(Busy)').exists()).toBe(true);
+      expect(wrapper.findByText('Busy').exists()).toBe(true);
     });
 
     it('should hide the busy status for any other status', () => {
@@ -288,7 +286,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findByText('(Busy)').exists()).toBe(false);
+      expect(wrapper.findByText('Busy').exists()).toBe(false);
     });
 
     it('shows pronouns when user has them set', () => {

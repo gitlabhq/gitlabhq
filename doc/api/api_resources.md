@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -26,7 +26,6 @@ The following API resources are available in the project context:
 | [Access requests](access_requests.md)                                   | `/projects/:id/access_requests` (also available for groups)                                                                                                                                           |
 | [Access tokens](project_access_tokens.md)                               | `/projects/:id/access_tokens` (also available for groups)                                                                                                                                             |
 | [Agents](cluster_agents.md)                                             | `/projects/:id/cluster_agents`                                                                                                                                                                        |
-| [Award emoji](award_emoji.md)                                           | `/projects/:id/issues/.../award_emoji`, `/projects/:id/merge_requests/.../award_emoji`, `/projects/:id/snippets/.../award_emoji`                                                                      |
 | [Branches](branches.md)                                                 | `/projects/:id/repository/branches/`, `/projects/:id/repository/merged_branches`                                                                                                                      |
 | [Commits](commits.md)                                                   | `/projects/:id/repository/commits`, `/projects/:id/statuses`                                                                                                                                          |
 | [Container Registry](container_registry.md)                             | `/projects/:id/registry/repositories`                                                                                                                                                                 |
@@ -41,11 +40,12 @@ The following API resources are available in the project context:
 | [Deployments](deployments.md)                                           | `/projects/:id/deployments`                                                                                                                                                                           |
 | [Discussions](discussions.md) (threaded comments)                       | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
 | [Draft Notes](draft_notes.md) (comments)                                            | `/projects/:id/merge_requests/.../draft_notes`
+| [Emoji reactions](award_emoji.md)                                       | `/projects/:id/issues/.../award_emoji`, `/projects/:id/merge_requests/.../award_emoji`, `/projects/:id/snippets/.../award_emoji`                                                                      |
 | [Environments](environments.md)                                         | `/projects/:id/environments`                                                                                                                                                                          |
 | [Error Tracking](error_tracking.md)                                     | `/projects/:id/error_tracking/settings`                                                                                                                                                               |
 | [Events](events.md)                                                     | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
-| [Feature Flag User Lists](feature_flag_user_lists.md)                   | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
-| [Feature Flags](feature_flags.md)                                       | `/projects/:id/feature_flags`                                                                                                                                                                         |
+| [Feature flag User Lists](feature_flag_user_lists.md)                   | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
+| [Feature flags](feature_flags.md)                                       | `/projects/:id/feature_flags`                                                                                                                                                                         |
 | [Freeze Periods](freeze_periods.md)                                     | `/projects/:id/freeze_periods`                                                                                                                                                                        |
 | [Go Proxy](packages/go_proxy.md)                                        | `/projects/:id/packages/go`                                                                                                                                                                           |
 | [Helm repository](packages/helm.md)                                     | `/projects/:id/packages/helm_repository`                                                                                                                                                              |
@@ -163,7 +163,8 @@ The following API resources are available outside of project and group contexts 
 | [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**                                            | `/geo_nodes` |
 | [Group Activity Analytics](group_activity_analytics.md)                                 | `/analytics/group_activity/{issues_count}` |
 | [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)**  | `/group_repository_storage_moves` |
-| [Import repository from GitHub](import.md)                                              | `/import/github` |
+| [Import repository from GitHub](import.md#import-repository-from-github)                                              | `/import/github` |
+| [Import repository from Bitbucket Server](import.md#import-repository-from-bitbucket-server)                                              | `/import/bitbucket_server` |
 | [Instance clusters](instance_clusters.md) **(FREE SELF)**                               | `/admin/clusters` |
 | [Instance-level CI/CD variables](instance_level_ci_variables.md) **(FREE SELF)**        | `/admin/ci/variables` |
 | [Issues Statistics](issues_statistics.md)                                               | `/issues_statistics` (also available for groups and projects) |

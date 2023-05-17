@@ -2,14 +2,19 @@
  * Layout
  */
 $grid-size: 8px;
-$gutter-collapsed-width: 62px;
-$gutter-width: 290px;
-$gutter-inner-width: 250px;
+$right-sidebar-collapsed-width: 62px;
+$right-sidebar-width: 290px;
+$right-sidebar-inner-width: 250px;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 256px;
 $contextual-sidebar-collapsed-width: 56px;
 $toggle-sidebar-height: 48px;
+$super-sidebar-width: 256px;
+$super-sidebar-z-index: 600;
+$super-sidebar-skip-to-z-index: 601;
+$super-sidebar-overlay-z-index: 599;
+$top-bar-z-index: 210;
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
@@ -386,7 +391,6 @@ $nav-active-bg: $t-gray-a-08;
  * Text
  */
 $gl-font-size: 14px;
-$gl-font-size-xs: 11px;
 $gl-font-size-small: 12px;
 $gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
@@ -477,10 +481,11 @@ $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
+$mr-sticky-header-height: 72px;
+$mr-review-bar-height: calc(2rem + 13px);
 $flash-height: 52px;
-$flash-container-top: 48px;
 $context-header-height: 60px;
-$breadcrumb-min-height: 48px;
+$top-bar-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
 $issuable-title-max-width: 350px;
@@ -492,6 +497,14 @@ $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
 
 $pages-group-name-color: #4c4e54;
+
+/*
+ * Calculated heights
+ */
+$calc-application-bars-height: calc(var(--system-header-height) + var(--performance-bar-height));
+$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height} + var(--top-bar-height));
+$calc-application-footer-height: var(--system-footer-height);
+$calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
 
 /*
 * Common component specific colors
@@ -665,8 +678,6 @@ $note-targe3-inside: #ffffd3;
 /*
 * Calendar
 */
-$calendar-hover-bg: #ecf3fe;
-$calendar-border-color: rgba(#000, 0.1);
 $calendar-user-contrib-text: #959494;
 
 /*
@@ -679,12 +690,11 @@ $ci-skipped-color: #888;
 */
 $issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
-$issue-boards-filter-height: 68px;
 /*
  The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
 */
 $environment-logs-breadcrumbs-height: 63px;
-$environment-logs-breadcrumbs-height-md: $breadcrumb-min-height;
+$environment-logs-breadcrumbs-height-md: $top-bar-height;
 
 $environment-logs-difference-xs-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height});
 $environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height-md});
@@ -730,7 +740,6 @@ $calendar-activity-colors: (
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);
 $commit-message-text-area-bg: rgba(0, 0, 0, 0);
-$commit-stat-summary-height: 36px;
 
 /*
 * Files
@@ -741,7 +750,7 @@ $logs-p-color: #333;
 /*
 * Forms
 */
-$input-height: 34px;
+$input-height: 32px;
 $input-danger-bg: #f2dede;
 $input-group-addon-bg: $gray-10;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
@@ -877,6 +886,11 @@ Multi file editor
 $border-color-settings: #e1e1e1;
 
 /*
+Drawers
+*/
+$wide-drawer: 500px;
+
+/*
 Modals
 */
 $modal-body-height: 80px;
@@ -902,9 +916,15 @@ Merge requests
 $mr-tabs-height: 48px;
 
 /*
-Compare Branches
+Board Swimlanes
 */
-$compare-branches-sticky-header-height: 68px;
+$board-swimlanes-headers-height: 64px;
+
+/*
+Source Editor theme overrides
+*/
+$source-editor-hover-light-text-color: #ececef;
+$source-editor-hover-dark-text-color: #333238;
 
 /**
  Bootstrap 4.2.0 introduced new icons for validating forms.

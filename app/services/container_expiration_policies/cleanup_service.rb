@@ -19,7 +19,6 @@ module ContainerExpirationPolicies
         return ServiceResponse.error(message: 'invalid policy')
       end
 
-      repository.start_expiration_policy!
       schedule_next_run_if_needed
 
       begin

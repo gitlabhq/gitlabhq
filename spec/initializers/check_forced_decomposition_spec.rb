@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'check_forced_decomposition initializer', feature_category: :pods do
+RSpec.describe 'check_forced_decomposition initializer', feature_category: :cell do
   subject(:check_forced_decomposition) do
     load Rails.root.join('config/initializers/check_forced_decomposition.rb')
   end
@@ -95,11 +95,7 @@ RSpec.describe 'check_forced_decomposition initializer', feature_category: :pods
 
         it { expect { check_forced_decomposition }.to raise_error(/Separate CI database is not ready/) }
 
-        context 'for GitLab.com' do
-          before do
-            allow(::Gitlab).to receive(:com?).and_return(true)
-          end
-
+        context 'for SaaS', :saas do
           it { expect { check_forced_decomposition }.not_to raise_error }
         end
 

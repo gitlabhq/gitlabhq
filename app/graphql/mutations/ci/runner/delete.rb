@@ -15,15 +15,11 @@ module Mutations
                  description: 'ID of the runner to delete.'
 
         def resolve(id:, **runner_attrs)
-          runner = authorized_find!(id)
+          runner = authorized_find!(id: id)
 
           ::Ci::Runners::UnregisterRunnerService.new(runner, current_user).execute
 
           { errors: runner.errors.full_messages }
-        end
-
-        def find_object(id)
-          GitlabSchema.find_by_gid(id)
         end
       end
     end

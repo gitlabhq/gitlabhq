@@ -36,9 +36,15 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   end
 
   context 'when the user can read the work item' do
+    let(:incoming_email_token) { current_user.incoming_email_token }
+    let(:work_item_email) do
+      "p+#{project.full_path_slug}-#{project.project_id}-#{incoming_email_token}-issue-#{work_item.iid}@gl.ab"
+    end
+
     before do
       project.add_developer(developer)
       project.add_guest(guest)
+      stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
       post_graphql(query, current_user: current_user)
     end
@@ -55,11 +61,15 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'title' => work_item.title,
         'confidential' => work_item.confidential,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
+        'reference' => work_item.to_reference,
+        'createNoteEmail' => work_item_email,
         'userPermissions' => {
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
-          'adminWorkItem' => true
+          'adminWorkItem' => true,
+          'adminParentLink' => true,
+          'setWorkItemMetadata' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -373,6 +383,161 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      describe 'notifications widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetNotifications {
+                subscribed
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'NOTIFICATIONS',
+                'subscribed' => work_item.subscribed?(current_user, project)
+              )
+            )
+          )
+        end
+      end
+
+      describe 'currentUserTodos widget' do
+        let_it_be(:current_user) { developer }
+        let_it_be(:other_todo) { create(:todo, state: :pending, user: current_user) }
+
+        let_it_be(:done_todo) do
+          create(:todo, state: :done, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:pending_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:other_user_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: create(:user))
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetCurrentUserTodos {
+                currentUserTodos {
+                  nodes {
+                    id
+                    state
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        context 'with access' do
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo, pending_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+
+        context 'with filter' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets {
+                type
+                ... on WorkItemWidgetCurrentUserTodos {
+                  currentUserTodos(state: done) {
+                    nodes {
+                      id
+                      state
+                    }
+                  }
+                }
+              }
+            GRAPHQL
+          end
+
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
+
+      describe 'award emoji widget' do
+        let_it_be(:emoji) { create(:award_emoji, name: 'star', awardable: work_item) }
+        let_it_be(:upvote) { create(:award_emoji, :upvote, awardable: work_item) }
+        let_it_be(:downvote) { create(:award_emoji, :downvote, awardable: work_item) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                upvotes
+                downvotes
+                awardEmoji {
+                  nodes {
+                    name
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'AWARD_EMOJI',
+                'upvotes' => work_item.upvotes,
+                'downvotes' => work_item.downvotes,
+                'awardEmoji' => {
+                  'nodes' => match_array(
+                    [emoji, upvote, downvote].map { |e| { 'name' => e.name } }
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
     end
 
     context 'when an Issue Global ID is provided' do
@@ -395,6 +560,25 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       expect(work_item_data).to be_nil
       expect(graphql_errors).to contain_exactly(
         hash_including('message' => ::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+      )
+    end
+  end
+
+  context 'when the user cannot set work item metadata' do
+    let(:current_user) { guest }
+
+    before do
+      project.add_guest(guest)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns correct user permission' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'userPermissions' =>
+          hash_including(
+            'setWorkItemMetadata' => false
+          )
       )
     end
   end

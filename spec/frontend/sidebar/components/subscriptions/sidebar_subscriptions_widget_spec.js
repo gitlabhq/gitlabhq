@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import SidebarSubscriptionWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
@@ -15,7 +15,7 @@ import {
   mergeRequestSubscriptionMutationResponse,
 } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/vue_shared/plugins/global_toast');
 
 Vue.use(VueApollo);
@@ -62,7 +62,6 @@ describe('Sidebar Subscriptions Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 
@@ -138,7 +137,7 @@ describe('Sidebar Subscriptions Widget', () => {
     });
   });
 
-  it('displays a flash message when query is rejected', async () => {
+  it('displays an alert message when query is rejected', async () => {
     createComponent({
       subscriptionsQueryHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
     });

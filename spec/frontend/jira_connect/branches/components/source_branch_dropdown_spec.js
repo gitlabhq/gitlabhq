@@ -54,10 +54,6 @@ describe('SourceBranchDropdown', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when `selectedProject` prop is not specified', () => {
     beforeEach(() => {
       createComponent();
@@ -151,7 +147,7 @@ describe('SourceBranchDropdown', () => {
         });
 
         describe('when selecting a listbox item', () => {
-          it('emits `change` event with the selected branch name', async () => {
+          it('emits `change` event with the selected branch name', () => {
             const mockBranchName = mockProject.repository.branchNames[1];
             findListbox().vm.$emit('select', mockBranchName);
             expect(wrapper.emitted('change')[1]).toEqual([mockBranchName]);
@@ -161,7 +157,7 @@ describe('SourceBranchDropdown', () => {
         describe('when `selectedBranchName` prop is specified', () => {
           const mockBranchName = mockProject.repository.branchNames[2];
 
-          beforeEach(async () => {
+          beforeEach(() => {
             wrapper.setProps({
               selectedBranchName: mockBranchName,
             });

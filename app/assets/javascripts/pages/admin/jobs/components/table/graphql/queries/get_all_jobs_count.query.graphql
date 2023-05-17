@@ -1,0 +1,5 @@
+query getAllJobsCount($statuses: [CiJobStatus!]) {
+  jobs(statuses: $statuses) {
+    count
+  }
+}

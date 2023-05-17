@@ -28,6 +28,8 @@ export const getMarkdownSource = (element) => {
   const range = getRangeFromSourcePos(element.dataset.sourcepos);
   let elSource = '';
 
+  if (!source.length) return undefined;
+
   for (let i = range.start.row; i <= range.end.row; i += 1) {
     if (i === range.start.row) {
       elSource += source[i].substring(range.start.col);

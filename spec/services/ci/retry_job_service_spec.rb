@@ -51,11 +51,13 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let_it_be(:job_to_clone) do
-      create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
-            :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
-            description: 'my-job', ci_stage: stage,
-            pipeline: pipeline, auto_canceled_by: another_pipeline,
-            scheduled_at: 10.seconds.since)
+      create(
+        :ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
+        :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
+        description: 'my-job', ci_stage: stage,
+        pipeline: pipeline, auto_canceled_by: another_pipeline,
+        scheduled_at: 10.seconds.since
+      )
     end
 
     before do
@@ -236,8 +238,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
 
       context 'when a build with a deployment is retried' do
         let!(:job) do
-          create(:ci_build, :with_deployment, :deploy_to_production,
-                  pipeline: pipeline, ci_stage: stage)
+          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, ci_stage: stage)
         end
 
         it 'creates a new deployment' do

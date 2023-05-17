@@ -39,7 +39,6 @@ describe('Accessibility extension', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 
@@ -102,7 +101,7 @@ describe('Accessibility extension', () => {
       await waitForPromises();
     });
 
-    it('displays all report list items in viewport', async () => {
+    it('displays all report list items in viewport', () => {
       expect(findAllExtensionListItems()).toHaveLength(7);
     });
 

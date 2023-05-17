@@ -37,12 +37,13 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
   end
 
   it 'user sees their key' do
-    create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
+    gpg_key = create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit profile_gpg_keys_path
 
     expect(page).to have_content('bette.cartwright@example.com Verified')
     expect(page).to have_content('bette.cartwright@example.net Unverified')
     expect(page).to have_content(GpgHelpers::User2.fingerprint)
+    expect(page).to have_selector('time.js-timeago', text: gpg_key.created_at.strftime('%b %d, %Y'))
   end
 
   it 'user removes a key via the key index' do

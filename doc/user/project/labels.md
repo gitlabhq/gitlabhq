@@ -136,7 +136,7 @@ To do so:
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
 1. Select a color by selecting from the available colors, or enter a hex color value for a specific color.
-1. Select **Create**.
+1. Select **Create**. Your label is created and selected.
 
 ### Create a group label
 
@@ -381,7 +381,7 @@ issue is now under review, they assign the `workflow::review`, and the `workflow
 is removed.
 
 The same happens when you move issues across label lists in an
-[issue board](issue_board.md#create-workflows). With scoped labels, team members not working in an
+[issue board](issue_board.md). With scoped labels, team members not working in an
 issue board can also advance workflow states consistently in issues themselves.
 
 For a video explanation, see:

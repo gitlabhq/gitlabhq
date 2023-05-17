@@ -111,6 +111,8 @@ I, [2018-07-27T12:08:33.755624 #89817]  INFO -- : Did fix /opt/gitlab/embedded/s
 I, [2018-07-27T12:08:33.760257 #89817]  INFO -- : Did move to lost and found /opt/gitlab/embedded/service/gitlab-rails/public/uploads/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png -> /opt/gitlab/embedded/service/gitlab-rails/public/uploads/-/project-lost-found/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png
 ```
 
+If using object storage, run the [All-in-one Rake task](../administration/raketasks/uploads/migrate.md#all-in-one-rake-task) to ensure all uploads are migrated to object storage and there are no files on disk in the uploads folder.
+
 ### Clean up project upload files from object storage
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20918) in GitLab 11.2.
@@ -154,7 +156,7 @@ These commands don't work for artifacts stored on
 [object storage](../administration/object_storage.md).
 
 WARNING:
-Prior to GitLab 14.9, this task incorrectly deletes [pipeline artifacts](../ci/pipelines/pipeline_artifacts.md)
+Prior to GitLab 14.9, this task incorrectly deletes [pipeline artifacts](../ci/pipelines/pipeline_artifacts.md).
 [The bug fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81022) was
 also back-ported to 14.6.6, 14.7.5, and 14.8.3. Upgrade to a release with the bug
 fix to avoid data loss.

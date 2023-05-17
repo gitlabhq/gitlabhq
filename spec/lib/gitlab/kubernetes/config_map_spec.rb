@@ -4,20 +4,23 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::ConfigMap do
   let(:kubeclient) { double('kubernetes client') }
-  let(:application) { create(:clusters_applications_prometheus) }
-  let(:config_map) { described_class.new(application.name, application.files) }
+  let(:name) { 'my-name' }
+  let(:files) { [] }
+  let(:config_map) { described_class.new(name, files) }
   let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
 
   let(:metadata) do
     {
-      name: "values-content-configuration-#{application.name}",
+      name: "values-content-configuration-#{name}",
       namespace: namespace,
-      labels: { name: "values-content-configuration-#{application.name}" }
+      labels: { name: "values-content-configuration-#{name}" }
     }
   end
 
   describe '#generate' do
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: application.files) }
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: metadata, data: files)
+    end
 
     subject { config_map.generate }
 
@@ -28,7 +31,8 @@ RSpec.describe Gitlab::Kubernetes::ConfigMap do
 
   describe '#config_map_name' do
     it 'returns the config_map name' do
-      expect(config_map.config_map_name).to eq("values-content-configuration-#{application.name}")
+      expect(config_map.config_map_name)
+        .to eq("values-content-configuration-#{name}")
     end
   end
 end

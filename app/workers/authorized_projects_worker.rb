@@ -6,9 +6,8 @@ class AuthorizedProjectsWorker
   data_consistency :always
 
   sidekiq_options retry: 3
-  prepend WaitableWorker
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
   urgency :high
   weight 2
   idempotent!

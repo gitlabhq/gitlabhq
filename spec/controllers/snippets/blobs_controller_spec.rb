@@ -17,13 +17,7 @@ RSpec.describe Snippets::BlobsController do
     let(:inline)           { nil }
 
     subject do
-      get(:raw,
-          params: {
-            snippet_id: snippet,
-            path: filepath,
-            ref: ref,
-            inline: inline
-          })
+      get :raw, params: { snippet_id: snippet, path: filepath, ref: ref, inline: inline }
     end
 
     where(:snippet_visibility_level, :user, :status) do

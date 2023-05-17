@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UpdateContainerRegistryInfoWorker do
+RSpec.describe UpdateContainerRegistryInfoWorker, feature_category: :container_registry do
   describe '#perform' do
     it 'calls UpdateContainerRegistryInfoService' do
       expect_next_instance_of(UpdateContainerRegistryInfoService) do |service|

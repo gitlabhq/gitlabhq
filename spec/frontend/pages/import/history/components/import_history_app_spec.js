@@ -59,23 +59,13 @@ describe('ImportHistoryApp', () => {
     });
   }
 
-  const originalApiVersion = gon.api_version;
-  beforeAll(() => {
-    gon.api_version = 'v4';
-    gon.features = { fullPathProjectSearch: true };
-  });
-
-  afterAll(() => {
-    gon.api_version = originalApiVersion;
-  });
-
   beforeEach(() => {
+    gon.api_version = 'v4';
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('general behavior', () => {
@@ -176,7 +166,7 @@ describe('ImportHistoryApp', () => {
       return axios.waitForAll();
     });
 
-    it('renders details button if relevant item has failed', async () => {
+    it('renders details button if relevant item has failed', () => {
       expect(
         extendedWrapper(wrapper.find('tbody').findAll('tr').at(1)).findByText('Details').exists(),
       ).toBe(true);

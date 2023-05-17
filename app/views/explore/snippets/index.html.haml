@@ -1,10 +1,12 @@
-- @hide_top_links = true
-- page_title    _("Snippets")
+- breadcrumb_title _("Snippets")
+- page_title    _("Explore snippets")
 - header_title  _("Snippets"), snippets_path
 
-- if current_user
-  = render 'dashboard/snippets_head'
-- else
-  = render 'explore/head'
+.page-title-holder.gl-display-flex.gl-align-items-center
+  %h1.page-title.gl-font-size-h-display= page_title
+  .page-title-controls
+    - if can?(current_user, :create_snippet)
+      = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm) do
+        = _("New snippet")
 
 = render partial: 'shared/snippets/list', locals: { link_project: true }

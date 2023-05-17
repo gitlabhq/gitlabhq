@@ -13,9 +13,11 @@ RSpec.describe 'projects/edit' do
     assign(:project, project)
 
     allow(controller).to receive(:current_user).and_return(user)
-    allow(view).to receive_messages(current_user: user,
-                                    can?: true,
-                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive_messages(
+      current_user: user,
+      can?: true,
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings
+    )
   end
 
   context 'project export disabled' do
@@ -99,6 +101,30 @@ RSpec.describe 'projects/edit' do
       end
 
       it_behaves_like 'renders registration features prompt', :project_disabled_repository_size_limit
+    end
+  end
+
+  describe 'pages menu entry callout' do
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(show_pages_in_deployments_menu: false)
+      end
+
+      it 'does not show a callout' do
+        render
+        expect(rendered).not_to have_content('GitLab Pages has moved')
+      end
+    end
+
+    context 'with feature flag enabled' do
+      before do
+        stub_feature_flags(show_pages_in_deployments_menu: true)
+      end
+
+      it 'does show a callout' do
+        render
+        expect(rendered).to have_content('GitLab Pages has moved')
+      end
     end
   end
 end

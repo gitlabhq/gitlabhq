@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe Gitlab::BackgroundMigration::MyBatchedMigration, schema: [0-9]+, feature_category: :database do # rubocop:disable Layout/LineLength
+  # Tests go here
+end

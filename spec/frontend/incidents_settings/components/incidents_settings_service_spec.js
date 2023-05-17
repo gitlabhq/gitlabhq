@@ -1,12 +1,12 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { ERROR_MSG } from '~/incidents_settings/constants';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 describe('IncidentsSettingsService', () => {
@@ -33,7 +33,7 @@ describe('IncidentsSettingsService', () => {
       });
     });
 
-    it('should display a flash message on update error', () => {
+    it('should display an alert on update error', () => {
       mock.onPatch().reply(HTTP_STATUS_BAD_REQUEST);
 
       return service.updateSettings({}).then(() => {

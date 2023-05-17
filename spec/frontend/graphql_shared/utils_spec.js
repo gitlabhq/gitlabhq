@@ -1,11 +1,16 @@
+import Visibility from 'visibilityjs';
+
 import {
   isGid,
   getIdFromGraphQLId,
+  getTypeFromGraphQLId,
   convertToGraphQLId,
   convertToGraphQLIds,
   convertFromGraphQLIds,
   convertNodeIdsFromGraphQLIds,
   getNodesOrDefault,
+  toggleQueryPollingByVisibility,
+  etagQueryHeaders,
 } from '~/graphql_shared/utils';
 
 const mockType = 'Group';
@@ -22,52 +27,30 @@ describe('isGid', () => {
   });
 });
 
-describe('getIdFromGraphQLId', () => {
-  [
-    {
-      input: '',
-      output: null,
-    },
-    {
-      input: null,
-      output: null,
-    },
-    {
-      input: 2,
-      output: 2,
-    },
-    {
-      input: 'gid://',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/0',
-      output: 0,
-    },
-    {
-      input: 'gid://gitlab/Environments/123',
-      output: 123,
-    },
-    {
-      input: 'gid://gitlab/DesignManagement::Version/2',
-      output: 2,
-    },
-  ].forEach(({ input, output }) => {
-    it(`getIdFromGraphQLId returns ${output} when passed ${input}`, () => {
-      expect(getIdFromGraphQLId(input)).toBe(output);
-    });
+describe.each`
+  input                                           | id      | type
+  ${''}                                           | ${null} | ${null}
+  ${null}                                         | ${null} | ${null}
+  ${0}                                            | ${0}    | ${null}
+  ${'0'}                                          | ${0}    | ${null}
+  ${2}                                            | ${2}    | ${null}
+  ${'2'}                                          | ${2}    | ${null}
+  ${'gid://'}                                     | ${null} | ${null}
+  ${'gid://gitlab'}                               | ${null} | ${null}
+  ${'gid://gitlab/'}                              | ${null} | ${null}
+  ${'gid://gitlab/Environments'}                  | ${null} | ${'Environments'}
+  ${'gid://gitlab/Environments/'}                 | ${null} | ${'Environments'}
+  ${'gid://gitlab/Environments/0'}                | ${0}    | ${'Environments'}
+  ${'gid://gitlab/Environments/123'}              | ${123}  | ${'Environments'}
+  ${'gid://gitlab/Environments/123/test'}         | ${123}  | ${'Environments'}
+  ${'gid://gitlab/DesignManagement::Version/123'} | ${123}  | ${'DesignManagement::Version'}
+`('parses GraphQL ID `$input`', ({ input, id, type }) => {
+  it(`getIdFromGraphQLId returns ${id}`, () => {
+    expect(getIdFromGraphQLId(input)).toBe(id);
+  });
+
+  it(`getTypeFromGraphQLId returns ${type}`, () => {
+    expect(getTypeFromGraphQLId(input)).toBe(type);
   });
 });
 
@@ -158,5 +141,54 @@ describe('getNodesOrDefault', () => {
     const result = getNodesOrDefault(...input);
 
     expect(result).toEqual(expected);
+  });
+});
+
+describe('toggleQueryPollingByVisibility', () => {
+  let query;
+  let changeFn;
+  let interval;
+  let hidden;
+
+  beforeEach(() => {
+    hidden = jest.spyOn(Visibility, 'hidden').mockReturnValue(true);
+    jest.spyOn(Visibility, 'change').mockImplementation((fn) => {
+      changeFn = fn;
+    });
+
+    query = { startPolling: jest.fn(), stopPolling: jest.fn() };
+    interval = 5000;
+
+    toggleQueryPollingByVisibility(query, 5000);
+  });
+
+  it('starts polling not hidden', () => {
+    hidden.mockReturnValue(false);
+
+    changeFn();
+    expect(query.startPolling).toHaveBeenCalledWith(interval);
+  });
+
+  it('stops polling when hidden', () => {
+    query.stopPolling.mockReset();
+    hidden.mockReturnValue(true);
+
+    changeFn();
+    expect(query.stopPolling).toHaveBeenCalled();
+  });
+});
+
+describe('etagQueryHeaders', () => {
+  it('returns headers necessary for etag caching', () => {
+    expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({
+      fetchOptions: {
+        method: 'GET',
+      },
+      headers: {
+        'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'myFeature',
+        'X-GITLAB-GRAPHQL-RESOURCE-ETAG': 'myResource',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
   });
 });

@@ -29,7 +29,7 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
     end
 
     it "creates a link to the referenced issue on the preview" do
-      find(".js-md-preview-button").click
+      click_button("Preview")
 
       wait_for_requests
 

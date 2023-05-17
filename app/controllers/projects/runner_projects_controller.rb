@@ -16,7 +16,8 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     path = project_runners_path(project)
 
     if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute.success?
-      redirect_to path, notice: s_('Runners|Runner assigned to project.')
+      flash[:success] = s_('Runners|Runner assigned to project.')
+      redirect_to path
     else
       assign_to_messages = @runner.errors.messages[:assign_to]
       alert = assign_to_messages&.join(',') || 'Failed adding runner to project'
@@ -30,6 +31,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
     ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
 
-    redirect_to project_runners_path(project), status: :found, notice: s_('Runners|Runner unassigned from project.')
+    flash[:success] = s_('Runners|Runner unassigned from project.')
+    redirect_to project_runners_path(project), status: :found
   end
 end

@@ -1,0 +1,10 @@
+---
+table_name: merge_request_assignment_events
+classes:
+- ResourceEvents::MergeRequestAssignmentEvent
+feature_categories:
+- value_stream_management
+description: Tracks the assignment and unassignment events for merge requests
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117379
+milestone: '15.11'
+gitlab_schema: gitlab_main

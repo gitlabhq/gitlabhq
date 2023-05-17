@@ -8,8 +8,16 @@ require 'mime/types'
 RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:experiment) { create(:ml_experiments, user_id: project.creator, project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
   let_it_be(:candidate0) do
-    create(:ml_candidates, :with_artifact, experiment: experiment, user: project.creator).tap do |c|
+    create(:ml_candidates,
+      :with_artifact,
+      experiment: experiment,
+      user: project.creator,
+      project: project,
+      ci_build: build
+    ).tap do |c|
       c.params.build([{ name: 'param1', value: 'p1' }, { name: 'param2', value: 'p2' }])
       c.metrics.create!(
         [{ name: 'metric1', value: 0.1 }, { name: 'metric2', value: 0.2 }, { name: 'metric3', value: 0.3 }]
@@ -18,7 +26,8 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   end
 
   let_it_be(:candidate1) do
-    create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1').tap do |c|
+    create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1',
+      project: project).tap do |c|
       c.params.build([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
       c.metrics.create!(name: 'metric3', value: 0.4)
     end
@@ -34,11 +43,13 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
         { 'param1' => 'p1', 'param2' => 'p2', 'metric1' => '0.1000', 'metric2' => '0.2000', 'metric3' => '0.3000',
           'artifact' => "/#{project.full_path}/-/packages/#{candidate0.artifact.id}",
           'details' => "/#{project.full_path}/-/ml/candidates/#{candidate0.iid}",
+          'ci_job' => { 'path' => "/#{project.full_path}/-/jobs/#{build.id}", 'name' => 'test' },
           'name' => candidate0.name,
           'created_at' => candidate0.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
           'user' => { 'username' => candidate0.user.username, 'path' => "/#{candidate0.user.username}" } },
         { 'param2' => 'p3', 'param3' => 'p4', 'metric3' => '0.4000',
           'artifact' => nil, 'details' => "/#{project.full_path}/-/ml/candidates/#{candidate1.iid}",
+          'ci_job' => nil,
           'name' => candidate1.name,
           'created_at' => candidate1.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
           'user' => { 'username' => candidate1.user.username, 'path' => "/#{candidate1.user.username}" } }
@@ -77,36 +88,13 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#show_candidate_view_model' do
-    let(:candidate) { candidate0 }
+  describe '#experiment_as_data' do
+    subject { Gitlab::Json.parse(helper.experiment_as_data(experiment)) }
 
-    subject { Gitlab::Json.parse(helper.show_candidate_view_model(candidate))['candidate'] }
-
-    it 'generates the correct params' do
-      expect(subject['params']).to include(
-        hash_including('name' => 'param1', 'value' => 'p1'),
-        hash_including('name' => 'param2', 'value' => 'p2')
+    it do
+      is_expected.to eq(
+        { 'name' => experiment.name, 'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}" }
       )
-    end
-
-    it 'generates the correct metrics' do
-      expect(subject['metrics']).to include(
-        hash_including('name' => 'metric1', 'value' => 0.1),
-        hash_including('name' => 'metric2', 'value' => 0.2),
-        hash_including('name' => 'metric3', 'value' => 0.3)
-      )
-    end
-
-    it 'generates the correct info' do
-      expected_info = {
-        'iid' => candidate.iid,
-        'path_to_artifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
-        'experiment_name' => candidate.experiment.name,
-        'path_to_experiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
-        'status' => 'running'
-      }
-
-      expect(subject['info']).to include(expected_info)
     end
   end
 

@@ -3,8 +3,8 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownSectionHeader,
-  GlSearchBoxByType,
   GlTruncate,
+  GlSearchBoxByType,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -12,6 +12,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '~/projects/new/event_hub';
 import NewProjectUrlSelect from '~/projects/new/components/new_project_url_select.vue';
@@ -68,6 +69,7 @@ describe('NewProjectUrlSelect component', () => {
   };
 
   let mockQueryResponse;
+  let focusInputSpy;
 
   const mountComponent = ({
     search = '',
@@ -78,6 +80,7 @@ describe('NewProjectUrlSelect component', () => {
     mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
     const requestHandlers = [[searchQuery, mockQueryResponse]];
     const apolloProvider = createMockApollo(requestHandlers);
+    focusInputSpy = jest.fn();
 
     return mountFn(NewProjectUrlSelect, {
       apolloProvider,
@@ -87,13 +90,17 @@ describe('NewProjectUrlSelect component', () => {
           search,
         };
       },
+      stubs: {
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: { focusInput: focusInputSpy },
+        }),
+      },
     });
   };
 
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findSelectedPath = () => wrapper.findComponent(GlTruncate);
-  const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findHiddenNamespaceInput = () => wrapper.find(`[name="${defaultProvide.inputName}`);
 
   const findHiddenSelectedNamespaceInput = () =>
@@ -110,10 +117,6 @@ describe('NewProjectUrlSelect component', () => {
     jest.runOnlyPendingTimers();
     await waitForPromises();
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders the root url as a label', () => {
     wrapper = mountComponent();
@@ -177,13 +180,11 @@ describe('NewProjectUrlSelect component', () => {
   });
 
   it('focuses on the input when the dropdown is opened', async () => {
-    wrapper = mountComponent({ mountFn: mount });
-
-    const spy = jest.spyOn(findInput().vm, 'focusInput');
+    wrapper = mountComponent();
 
     await showDropdown();
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(focusInputSpy).toHaveBeenCalledTimes(1);
   });
 
   it('renders expected dropdown items', async () => {
@@ -246,7 +247,7 @@ describe('NewProjectUrlSelect component', () => {
       eventHub.$emit('select-template', getIdFromGraphQLId(id), fullPath);
     });
 
-    it('filters the dropdown items to the selected group and children', async () => {
+    it('filters the dropdown items to the selected group and children', () => {
       const listItems = wrapper.findAll('li');
 
       expect(listItems).toHaveLength(3);

@@ -1,6 +1,7 @@
 ---
 table_name: verification_codes
-classes: []
+classes:
+-
 feature_categories:
 - jihu
 description: Used by the JiHu edition for user verification

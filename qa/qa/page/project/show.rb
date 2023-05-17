@@ -7,9 +7,11 @@ module QA
         include Layout::Flash
         include Page::Component::ClonePanel
         include Page::Component::Breadcrumbs
-        include Page::Project::SubMenus::Settings
         include Page::File::Shared::CommitMessage
-        prepend Mobile::Page::Project::Show if Runtime::Env.mobile_layout?
+        include Page::Component::Dropdown
+        # We need to check phone_layout? instead of mobile_layout? here
+        # since tablets have the regular top navigation bar
+        prepend Mobile::Page::Project::Show if Runtime::Env.phone_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
           element :blob_viewer_content
@@ -25,10 +27,6 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
           element :new_menu_toggle
-        end
-
-        view 'app/helpers/nav/new_dropdown_helper.rb' do
-          element :new_issue_link
         end
 
         view 'app/views/projects/_last_push.html.haml' do
@@ -68,17 +66,16 @@ module QA
           element :web_ide_button
         end
 
-        view 'app/views/shared/_ref_switcher.html.haml' do
-          element :branches_dropdown
-          element :branches_dropdown_content
-        end
-
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
           element :spinner_placeholder
         end
 
         view 'app/views/projects/buttons/_download.html.haml' do
           element :download_source_code_button
+        end
+
+        view 'app/views/projects/tree/_tree_header.html.haml' do
+          element :ref_dropdown_container
         end
 
         def wait_for_viewers_to_load
@@ -122,11 +119,6 @@ module QA
           end
         end
 
-        def go_to_new_issue
-          click_element(:new_menu_toggle)
-          click_element(:new_issue_link)
-        end
-
         def has_create_merge_request_button?
           has_css?(element_selector_css(:create_merge_request_button))
         end
@@ -163,10 +155,12 @@ module QA
 
         def open_web_ide!
           click_element(:web_ide_button)
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def open_web_ide_via_shortcut
           page.driver.send_keys('.')
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def has_edit_fork_button?
@@ -182,10 +176,9 @@ module QA
         end
 
         def switch_to_branch(branch_name)
-          find_element(:branches_dropdown).click
-
-          within_element(:branches_dropdown_content) do
-            click_on branch_name
+          within_element(:ref_dropdown_container) do
+            expand_select_list
+            select_item(branch_name)
           end
         end
 

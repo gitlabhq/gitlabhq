@@ -21,7 +21,7 @@ class AuditEvent < ApplicationRecord
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
-  belongs_to :user, foreign_key: :author_id
+  belongs_to :user, foreign_key: :author_id, inverse_of: :audit_events
 
   validates :author_id, presence: true
   validates :entity_id, presence: true

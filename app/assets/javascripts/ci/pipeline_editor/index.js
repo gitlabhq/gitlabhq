@@ -29,12 +29,12 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     ciExamplesHelpPagePath,
     ciHelpPagePath,
     ciLintPath,
+    ciTroubleshootingPath,
     defaultBranch,
     emptyStateIllustrationPath,
     helpPaths,
     includesHelpPagePath,
     lintHelpPagePath,
-    lintUnavailableHelpPagePath,
     needsHelpPagePath,
     newMergeRequestPath,
     pipelinePagePath,
@@ -46,6 +46,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     usesExternalConfig,
     validateTabIllustrationPath,
     ymlHelpPagePath,
+    aiChatAvailable,
   } = el.dataset;
 
   const configurationPaths = Object.fromEntries(
@@ -115,10 +116,12 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     el,
     apolloProvider,
     provide: {
+      aiChatAvailable: parseBoolean(aiChatAvailable),
       ciConfigPath,
       ciExamplesHelpPagePath,
       ciHelpPagePath,
       ciLintPath,
+      ciTroubleshootingPath,
       configurationPaths,
       dataMethod: 'graphql',
       defaultBranch,
@@ -126,7 +129,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       helpPaths,
       includesHelpPagePath,
       lintHelpPagePath,
-      lintUnavailableHelpPagePath,
       needsHelpPagePath,
       newMergeRequestPath,
       pipelinePagePath,

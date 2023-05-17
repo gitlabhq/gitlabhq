@@ -17,13 +17,6 @@ describe('Alert Details System Note', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   describe('System notes', () => {
     beforeEach(() => {
       mountComponent({});

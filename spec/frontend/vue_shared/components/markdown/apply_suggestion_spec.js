@@ -17,11 +17,6 @@ describe('Apply Suggestion component', () => {
 
   beforeEach(() => createWrapper());
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('initial template', () => {
     it('renders a dropdown with the correct props', () => {
       const dropdown = findDropdown();

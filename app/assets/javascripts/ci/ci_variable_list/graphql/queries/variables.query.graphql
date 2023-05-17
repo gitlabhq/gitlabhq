@@ -1,8 +1,14 @@
 #import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-query getVariables($after: String, $first: Int = 100) {
-  ciVariables(after: $after, first: $first) {
+query getVariables(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $sort: CiVariableSort = KEY_ASC
+) {
+  ciVariables(after: $after, before: $before, first: $first, last: $last, sort: $sort) {
     pageInfo {
       ...PageInfo
     }

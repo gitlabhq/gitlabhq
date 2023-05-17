@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe InjectEnterpriseEditionModule, feature_category: :not_owned do
+RSpec.describe InjectEnterpriseEditionModule, feature_category: :shared do
   let(:extension_name) { 'FF' }
   let(:extension_namespace) { Module.new }
   let(:fish_name) { 'Fish' }

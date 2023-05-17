@@ -53,7 +53,7 @@ describe('FileTemplateSelector', () => {
       expect(subject.wrapper.classList.contains('hidden')).toBe(false);
     });
 
-    it('sets the focus on the dropdown', async () => {
+    it('sets the focus on the dropdown', () => {
       subject.show();
       jest.spyOn(subject.dropdown, 'focus');
       jest.runAllTimers();

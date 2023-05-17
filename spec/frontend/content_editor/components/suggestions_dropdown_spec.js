@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlAvatarLabeled, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SuggestionsDropdown from '~/content_editor/components/suggestions_dropdown.vue';
@@ -74,6 +74,26 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     moji: '😃',
     unicodeVersion: '6.0',
   };
+
+  it.each`
+    loading  | description
+    ${false} | ${'does not show a loading indicator'}
+    ${true}  | ${'shows a loading indicator'}
+  `('$description if loading=$loading', ({ loading }) => {
+    buildWrapper({
+      propsData: {
+        loading,
+        char: '@',
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'member',
+        },
+        items: [exampleUser],
+      },
+    });
+
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(loading);
+  });
 
   describe('on item select', () => {
     it.each`

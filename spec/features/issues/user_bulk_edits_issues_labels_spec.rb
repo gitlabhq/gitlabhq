@@ -406,7 +406,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
     context 'cannot bulk assign labels' do
       it do
-        expect(page).not_to have_button 'Edit issues'
+        expect(page).not_to have_button 'Bulk edit'
         expect(page).not_to have_unchecked_field 'Select all'
         expect(page).not_to have_unchecked_field issue1.title
       end
@@ -462,7 +462,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
   def enable_bulk_update
     visit project_issues_path(project)
     wait_for_requests
-    click_button 'Edit issues'
+    click_button 'Bulk edit'
   end
 
   def disable_bulk_update

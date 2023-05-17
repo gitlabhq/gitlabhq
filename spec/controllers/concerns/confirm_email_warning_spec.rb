@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ConfirmEmailWarning, feature_category: :system_access do
   before do
-    stub_feature_flags(soft_email_confirmation: true)
+    stub_application_setting_enum('email_confirmation_setting', 'soft')
   end
 
   controller(ApplicationController) do

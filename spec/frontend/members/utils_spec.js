@@ -213,7 +213,7 @@ describe('Members Utils', () => {
       ${'recent_sign_in'}    | ${{ sortByKey: 'lastSignIn', sortDesc: false }}
       ${'oldest_sign_in'}    | ${{ sortByKey: 'lastSignIn', sortDesc: true }}
     `('when `sort` query string param is `$sortParam`', ({ sortParam, expected }) => {
-      it(`returns ${JSON.stringify(expected)}`, async () => {
+      it(`returns ${JSON.stringify(expected)}`, () => {
         setWindowLocation(`?sort=${sortParam}`);
 
         expect(parseSortParam(['account', 'granted', 'expires', 'maxRole', 'lastSignIn'])).toEqual(

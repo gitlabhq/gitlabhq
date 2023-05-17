@@ -30,12 +30,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
       end
     end
 
-    context 'when the path is for the self-monitoring dashboard' do
-      let(:arguments) { { dashboard_path: self_monitoring_dashboard_path } }
-
-      it { is_expected.to be Metrics::Dashboard::SelfMonitoringDashboardService }
-    end
-
     context 'when the embedded flag is provided' do
       let(:arguments) { { embedded: true } }
 

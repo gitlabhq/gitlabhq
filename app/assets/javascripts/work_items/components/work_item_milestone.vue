@@ -46,6 +46,7 @@ export default {
     GlDropdownText,
   },
   mixins: [Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -65,19 +66,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    fullPath: {
-      type: String,
-      required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    queryVariables: {
-      type: Object,
-      required: true,
     },
   },
   data() {
@@ -234,6 +222,7 @@ export default {
     <gl-dropdown
       v-else
       id="milestone-value"
+      data-testid="work-item-milestone-dropdown"
       class="gl-pl-0 gl-max-w-full"
       :toggle-class="dropdownClasses"
       :text="dropdownText"

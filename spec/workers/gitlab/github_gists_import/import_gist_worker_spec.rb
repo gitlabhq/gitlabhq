@@ -74,20 +74,68 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
           .with(log_attributes.merge('message' => 'importer finished'))
 
         subject.perform(user.id, gist_hash, 'some_key')
+
+        expect_snowplow_event(
+          category: 'Gitlab::GithubGistsImport::ImportGistWorker',
+          label: 'github_gist_import',
+          action: 'create',
+          user: user,
+          status: 'success'
+        )
       end
     end
 
-    context 'when importer raised an error' do
-      it 'raises an error' do
-        exception = StandardError.new('_some_error_')
+    context 'when failure' do
+      context 'when importer raised an error' do
+        it 'raises an error' do
+          exception = StandardError.new('_some_error_')
 
-        expect(importer).to receive(:execute).and_raise(exception)
-        expect(Gitlab::GithubImport::Logger)
-          .to receive(:error)
-          .with(log_attributes.merge('message' => 'importer failed', 'error.message' => '_some_error_'))
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          expect(importer).to receive(:execute).and_raise(exception)
+          expect(Gitlab::GithubImport::Logger)
+            .to receive(:error)
+            .with(log_attributes.merge('message' => 'importer failed', 'error.message' => '_some_error_'))
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
-        expect { subject.perform(user.id, gist_hash, 'some_key') }.to raise_error(StandardError)
+          expect { subject.perform(user.id, gist_hash, 'some_key') }.to raise_error(StandardError)
+        end
+      end
+
+      context 'when importer returns error' do
+        let(:importer_result) { instance_double('ServiceResponse', errors: 'error_message', success?: false) }
+
+        it 'tracks and logs error' do
+          expect(importer).to receive(:execute).and_return(importer_result)
+          expect(Gitlab::GithubImport::Logger)
+            .to receive(:error)
+            .with(log_attributes.merge('message' => 'importer failed', 'error.message' => 'error_message'))
+          expect(Gitlab::JobWaiter).to receive(:notify).with('some_key', subject.jid)
+
+          subject.perform(user.id, gist_hash, 'some_key')
+
+          expect_snowplow_event(
+            category: 'Gitlab::GithubGistsImport::ImportGistWorker',
+            label: 'github_gist_import',
+            action: 'create',
+            user: user,
+            status: 'failed'
+          )
+        end
+      end
+    end
+
+    describe '.sidekiq_retries_exhausted' do
+      it 'sends snowplow event' do
+        job = { 'args' => [user.id, 'some_key', '1'], 'jid' => '123' }
+
+        described_class.sidekiq_retries_exhausted_block.call(job)
+
+        expect_snowplow_event(
+          category: 'Gitlab::GithubGistsImport::ImportGistWorker',
+          label: 'github_gist_import',
+          action: 'create',
+          user: user,
+          status: 'failed'
+        )
       end
     end
   end

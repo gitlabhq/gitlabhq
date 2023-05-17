@@ -74,7 +74,7 @@ describe('InstallAgentModal', () => {
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
-      expect(element.attributes('disabled')).toBe('true');
+      expect(element.attributes('disabled')).toBeDefined();
     } else {
       expect(element.attributes('disabled')).toBeUndefined();
     }
@@ -139,7 +139,6 @@ describe('InstallAgentModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
   });
 
@@ -257,7 +256,7 @@ describe('InstallAgentModal', () => {
           return mockSelectedAgentResponse();
         });
 
-        it('displays the error message', async () => {
+        it('displays the error message', () => {
           expect(findAlert().text()).toBe(
             createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
           );

@@ -25,6 +25,10 @@ RSpec.describe EnsureTaskNoteRenamingBackgroundMigrationFinished, :migration, fe
     end
 
     context 'when migration is missing' do
+      before do
+        batched_migrations.where(job_class_name: migration).delete_all
+      end
+
       it 'warns migration not found' do
         expect(Gitlab::AppLogger)
           .to receive(:warn).with(/Could not find batched background migration for the given configuration:/)
@@ -36,7 +40,7 @@ RSpec.describe EnsureTaskNoteRenamingBackgroundMigrationFinished, :migration, fe
     context 'with migration present' do
       let!(:task_renaming_migration) do
         batched_migrations.create!(
-          job_class_name: 'RenameTaskSystemNoteToChecklistItem',
+          job_class_name: migration,
           table_name: :system_note_metadata,
           column_name: :id,
           job_arguments: [],

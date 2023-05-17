@@ -6,9 +6,9 @@
 .row
   .col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
-      - c.header do
+      - c.with_header do
         = @user.name
-      - c.body do
+      - c.with_body do
         %ul.content-list
           %li
             = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
@@ -22,9 +22,9 @@
       = render 'admin/users/profile', user: @user
       = render 'admin/users/user_detail_note'
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
-      - c.header do
+      - c.with_header do
         = _('Account:')
-      - c.body do
+      - c.with_body do
         %ul.content-list
           %li
             %span.light= _('Name:')

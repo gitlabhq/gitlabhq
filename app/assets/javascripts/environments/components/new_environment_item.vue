@@ -11,6 +11,7 @@ import {
 import { __, s__ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
@@ -22,6 +23,7 @@ import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
 import Deployment from './deployment.vue';
 import DeployBoardWrapper from './deploy_board_wrapper.vue';
+import KubernetesOverview from './kubernetes_overview.vue';
 
 export default {
   components: {
@@ -42,6 +44,7 @@ export default {
     Terminal,
     TimeAgoTooltip,
     Delete,
+    KubernetesOverview,
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
     EnvironmentApproval: () =>
       import('ee_component/environments/components/environment_approval.vue'),
@@ -49,6 +52,7 @@ export default {
   directives: {
     GlTooltip,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['helpPagePath'],
   props: {
     environment: {
@@ -129,7 +133,7 @@ export default {
       return Boolean(
         this.retryPath ||
           this.canShowAutoStopDate ||
-          this.metricsPath ||
+          this.canShowMetricsLink ||
           this.terminalPath ||
           this.canDeleteEnvironment,
       );
@@ -144,11 +148,17 @@ export default {
 
       return now < autoStopDate;
     },
+    upcomingDeploymentIid() {
+      return this.environment.upcomingDeployment?.iid.toString() || '';
+    },
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
     },
     metricsPath() {
       return this.environment?.metricsPath ?? '';
+    },
+    canShowMetricsLink() {
+      return Boolean(!this.glFeatures.removeMonitorMetrics && this.metricsPath);
     },
     terminalPath() {
       return this.environment?.terminalPath ?? '';
@@ -161,6 +171,19 @@ export default {
     },
     rolloutStatus() {
       return this.environment?.rolloutStatus;
+    },
+    agent() {
+      return this.environment?.agent || {};
+    },
+    isKubernetesOverviewAvailable() {
+      return this.glFeatures?.kasUserAccessProject;
+    },
+    hasRequiredAgentData() {
+      const { project, id, name } = this.agent || {};
+      return project && id && name;
+    },
+    showKubernetesOverview() {
+      return this.isKubernetesOverviewAvailable && this.hasRequiredAgentData;
     },
   },
   methods: {
@@ -184,6 +207,13 @@ export default {
     'gl-md-pl-7',
     'gl-bg-gray-10',
   ],
+  kubernetesOverviewClasses: [
+    'gl-border-gray-100',
+    'gl-border-t-solid',
+    'gl-border-1',
+    'gl-py-4',
+    'gl-bg-gray-10',
+  ],
 };
 </script>
 <template>
@@ -200,7 +230,7 @@ export default {
           :icon="icon"
           :aria-label="label"
           size="small"
-          category="tertiary"
+          category="secondary"
           @click="toggleCollapse"
         />
         <gl-link
@@ -247,7 +277,6 @@ export default {
           <stop-component
             v-if="canStop"
             :environment="environment"
-            class="gl-z-index-2"
             data-track-action="click_button"
             data-track-label="environment_stop"
             graphql
@@ -281,10 +310,11 @@ export default {
             />
 
             <monitoring
-              v-if="metricsPath"
+              v-if="canShowMetricsLink"
               :monitoring-url="metricsPath"
               data-track-action="click_button"
               data-track-label="environment_monitoring"
+              data-testid="environment-monitoring"
             />
 
             <terminal
@@ -328,7 +358,11 @@ export default {
             class="gl-pl-4"
           >
             <template #approval>
-              <environment-approval :environment="environment" @change="$emit('change')" />
+              <environment-approval
+                :deployment-iid="upcomingDeploymentIid"
+                :environment="environment"
+                @change="$emit('change')"
+              />
             </template>
           </deployment>
         </div>
@@ -339,6 +373,14 @@ export default {
             <gl-link :href="helpPagePath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
+      </div>
+      <div v-if="showKubernetesOverview" :class="$options.kubernetesOverviewClasses">
+        <kubernetes-overview
+          :agent-project-path="agent.project"
+          :agent-name="agent.name"
+          :agent-id="agent.id"
+          :namespace="agent.kubernetesNamespace"
+        />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
         <deploy-board-wrapper

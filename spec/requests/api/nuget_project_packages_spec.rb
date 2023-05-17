@@ -13,7 +13,15 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
   let(:target) { project }
   let(:target_type) { 'projects' }
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_nuget_user' } }
+  let(:snowplow_gitlab_standard_context) { snowplow_context }
+
+  def snowplow_context(user_role: :developer)
+    if user_role == :anonymous
+      { project: target, namespace: target.namespace, property: 'i_package_nuget_user' }
+    else
+      { project: target, namespace: target.namespace, property: 'i_package_nuget_user', user: user }
+    end
+  end
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
     subject { get api(url) }
@@ -149,6 +157,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
         subject { get api(url), headers: headers }
 

@@ -95,12 +95,25 @@ export default {
 };
 </script>
 <template>
-  <state-container v-if="isRefreshing" :mr="mr" status="loading">
+  <state-container
+    v-if="isRefreshing"
+    status="loading"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span class="gl-font-weight-bold">
       {{ s__('mrWidget|Refreshing now') }}
     </span>
   </state-container>
-  <state-container v-else :mr="mr" status="failed" :actions="actions">
+  <state-container
+    v-else
+    status="failed"
+    :actions="actions"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span
       v-if="mr.mergeError"
       class="has-error-message gl-font-weight-bold"

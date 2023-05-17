@@ -2,56 +2,33 @@
 
 module WorkItems
   module ParentLinks
-    class CreateService < IssuableLinks::CreateService
+    class CreateService < WorkItems::ParentLinks::BaseService
       private
 
-      # rubocop: disable CodeReuse/ActiveRecord
+      override :relate_issuables
       def relate_issuables(work_item)
-        link = WorkItems::ParentLink.find_or_initialize_by(work_item: work_item)
-        link.work_item_parent = issuable
+        link = set_parent(issuable, work_item)
+
+        link.move_to_end
 
         if link.changed? && link.save
-          create_notes(work_item)
+          relate_child_note = create_notes(work_item)
+
+          ResourceLinkEvent.create(
+            user: current_user,
+            work_item: link.work_item_parent,
+            child_work_item: link.work_item,
+            action: ResourceLinkEvent.actions[:add],
+            system_note_metadata_id: relate_child_note&.system_note_metadata&.id
+          )
         end
 
         link
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      def linkable_issuables(work_items)
-        @linkable_issuables ||= begin
-          return [] unless can?(current_user, :admin_parent_link, issuable)
-
-          work_items.select do |work_item|
-            linkable?(work_item)
-          end
-        end
-      end
-
-      def linkable?(work_item)
-        can?(current_user, :admin_parent_link, work_item) &&
-          !previous_related_issuables.include?(work_item)
-      end
-
-      def previous_related_issuables
-        @related_issues ||= issuable.work_item_children.to_a
-      end
-
+      override :extract_references
       def extract_references
         params[:issuable_references]
-      end
-
-      def create_notes(work_item)
-        SystemNoteService.relate_work_item(issuable, work_item, current_user)
-      end
-
-      def target_issuable_type
-        'work item'
-      end
-
-      def issuables_not_found_message
-        _('No matching %{issuable} found. Make sure that you are adding a valid %{issuable} ID.' %
-          { issuable: target_issuable_type })
       end
     end
   end

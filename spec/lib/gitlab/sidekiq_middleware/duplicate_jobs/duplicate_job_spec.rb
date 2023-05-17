@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state,
+  feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   subject(:duplicate_job) do
@@ -79,10 +80,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
   context 'with Redis cookies' do
     def with_redis(&block)
-      Sidekiq.redis(&block)
+      Gitlab::Redis::Queues.with(&block)
     end
 
-    let(:cookie_key) { "#{idempotency_key}:cookie:v2" }
+    let(:cookie_key) { "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:#{idempotency_key}:cookie:v2" }
     let(:cookie) { get_redis_msgpack(cookie_key) }
 
     describe '#check!' do

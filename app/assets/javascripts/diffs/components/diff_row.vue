@@ -6,6 +6,7 @@ https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57842
 * */
 import { memoize } from 'lodash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { compatFunctionalMixin } from '~/lib/utils/vue3compat/compat_functional_mixin';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   CONFLICT_MARKER_THEIR,
@@ -24,6 +25,10 @@ import * as utils from './diff_row_utils';
 export default {
   DiffGutterAvatars,
   CodeQualityGutterIcon: () => import('ee_component/diffs/components/code_quality_gutter_icon.vue'),
+
+  // Temporary mixin for migration from Vue.js 2 to @vue/compat
+  mixins: [compatFunctionalMixin],
+
   props: {
     fileHash: {
       type: String,

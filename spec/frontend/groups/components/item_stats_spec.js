@@ -17,13 +17,6 @@ describe('ItemStats', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findItemStatsValue = () => wrapper.findComponent(ItemStatsValue);
 
   describe('template', () => {

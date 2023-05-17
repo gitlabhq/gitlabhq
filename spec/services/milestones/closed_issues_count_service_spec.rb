@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::ClosedIssuesCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Milestones::ClosedIssuesCountService, :use_clean_rails_memory_store_caching,
+  feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:milestone) { create(:milestone, project: project) }
 

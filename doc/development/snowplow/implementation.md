@@ -1,6 +1,6 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -10,6 +10,11 @@ This page describes how to:
 
 - Implement Snowplow frontend and backend tracking
 - Test Snowplow events
+
+## Event definitions
+
+Every Snowplow event, regardless of frontend or backend, requires a corresponding event definition. These definitions document the event and its properties to make it easier to maintain and analyze.
+These defintions can be browsed in the [event dictionary](https://metrics.gitlab.com/snowplow). The [event dictionary guide](event_dictionary_guide.md) provides instructions for setting up an event definition.
 
 ## Snowplow JavaScript frontend tracking
 
@@ -150,89 +155,89 @@ To implement Vue component tracking:
 
 1. Import the `Tracking` library and call the `mixin` method:
 
-    ```javascript
-    import Tracking from '~/tracking';
+   ```javascript
+   import Tracking from '~/tracking';
 
-    const trackingMixin = Tracking.mixin();
+   const trackingMixin = Tracking.mixin();
 
-    // Optionally provide default properties
-    // const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
-    ```
+   // Optionally provide default properties
+   // const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
+   ```
 
 1. Use the mixin in the component:
 
-    ```javascript
-    export default {
-      mixins: [trackingMixin],
-      // Or
-      // mixins: [Tracking.mixin()],
-      // mixins: [Tracking.mixin({ label: 'right_sidebar' })],
+   ```javascript
+   export default {
+     mixins: [trackingMixin],
+     // Or
+     // mixins: [Tracking.mixin()],
+     // mixins: [Tracking.mixin({ label: 'right_sidebar' })],
 
-      data() {
-        return {
-          expanded: false,
-        };
-      },
-    };
-    ```
+     data() {
+       return {
+         expanded: false,
+       };
+     },
+   };
+   ```
 
 1. You can specify tracking options in by creating a `tracking` data object
 or computed property:
 
-      ```javascript
-      export default {
-        name: 'RightSidebar',
+   ```javascript
+   export default {
+     name: 'RightSidebar',
 
-        mixins: [Tracking.mixin()],
+     mixins: [Tracking.mixin()],
 
-        data() {
-          return {
-            expanded: false,
-            variant: '',
-            tracking: {
-              label: 'right_sidebar',
-              // property: '',
-              // value: '',
-              // experiment: '',
-              // extra: {},
-            },
-          };
-        },
+     data() {
+       return {
+         expanded: false,
+         variant: '',
+         tracking: {
+           label: 'right_sidebar',
+           // property: '',
+           // value: '',
+           // experiment: '',
+           // extra: {},
+         },
+       };
+     },
 
-        // Or
-        // computed: {
-        //   tracking() {
-        //     return {
-        //       property: this.variant,
-        //       extra: { expanded: this.expanded },
-        //     };
-        //   },
-        // },
-      };
-      ```
+     // Or
+     // computed: {
+     //   tracking() {
+     //     return {
+     //       property: this.variant,
+     //       extra: { expanded: this.expanded },
+     //     };
+     //   },
+     // },
+   };
+   ```
 
 1. Call the `track` method. Tracking options can be passed as the second parameter:
 
-    ```javascript
-    this.track('click_button', {
-      label: 'right_sidebar',
-    });
-    ```
+   ```javascript
+   this.track('click_button', {
+     label: 'right_sidebar',
+   });
+   ```
 
-    Or use the `track` method in the template:
+   Or use the `track` method in the template:
 
-    ```html
-    <template>
-      <div>
-        <button data-testid="toggle" @click="toggle">Toggle</button>
+   ```html
+   <template>
+     <div>
+       <button data-testid="toggle" @click="toggle">Toggle</button>
 
-        <div v-if="expanded">
-          <p>Hello world!</p>
-          <button @click="track('click_button')">Track another event</button>
-        </div>
-      </div>
-    </template>
-    ```
+       <div v-if="expanded">
+         <p>Hello world!</p>
+         <button @click="track('click_button')">Track another event</button>
+       </div>
+     </div>
+   </template>
+   ```
 
 #### Testing example
 
@@ -473,9 +478,7 @@ For a video tutorial, see the [Snowplow plugin walk through](https://www.youtube
 1. To open the extension, select the Snowplow Inspector icon beside the address bar.
 1. Click around on a webpage with Snowplow to see JavaScript events firing in the inspector window.
 
-### Test backend events
-
-#### Snowplow Micro
+### Test backend events with Snowplow Micro
 
 [Snowplow Micro](https://snowplow.io/blog/introducing-snowplow-micro/) is a
 Docker-based solution for testing backend and frontend in a local development environment. Snowplow Micro
@@ -484,50 +487,10 @@ records the same events as the full Snowplow pipeline. To query events, use the 
 It can be set up automatically using [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 See the [how-to docs](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md) for more details.
 
-Optionally, you can set it up manually, using the following instructions.
-
-#### Set up Snowplow Micro manually
-
-To install and run Snowplow Micro, complete these steps to modify the
-[GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit):
-
-1. Ensure [Docker is installed](https://docs.docker.com/get-docker/) and running.
-
-1. To install Snowplow Micro, clone the settings in
-[this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration).
-
-1. Navigate to the directory with the cloned project,
-   and start the appropriate Docker container:
-
-   ```shell
-   ./snowplow-micro.sh
-   ```
-
 1. Set the environment variable to tell the GDK to use Snowplow Micro in development. This overrides two `application_settings` options:
    - `snowplow_enabled` setting will instead return `true` from `Gitlab::Tracking.enabled?`
    - `snowplow_collector_hostname` setting will instead always return `localhost:9090` (or whatever port is set for `snowplow_micro.port` GDK setting) from `Gitlab::Tracking.collector_hostname`.
-
-   ```shell
-   gdk config set snowplow_micro.enabled true
-   ```
-
-   Optionally, you can set the port for you Snowplow Micro instance as well (the default value is `9090`):
-
-   ```shell
-   gdk config set snowplow_micro.port 8080
-   ```
-
-1. Regenerate the project YAML config:
-
-   ```shell
-   gdk reconfigure
-   ```
-
-1. Restart GDK:
-
-   ```shell
-   gdk restart
-   ```
+With Snowplow Micro set up you can now manually test backend Snowplow events:
 
 1. Send a test Snowplow event from the Rails console:
 

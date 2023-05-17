@@ -35,8 +35,9 @@ body {
   }
 }
 
-.content-wrapper-margin {
-  margin-top: $header-height;
+.layout-page {
+  padding-top: $calc-application-header-height;
+  padding-bottom: $calc-application-footer-height;
 }
 
 .content-wrapper {
@@ -140,11 +141,6 @@ body {
   @include gl-display-flex;
   @include gl-align-items-stretch;
   @include gl-overflow-hidden;
-}
-
-
-.with-performance-bar .layout-page {
-  margin-top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 .fullscreen-layout {

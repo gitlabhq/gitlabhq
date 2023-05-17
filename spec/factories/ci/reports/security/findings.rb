@@ -27,6 +27,7 @@ FactoryBot.define do
             url: "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
           }
         ],
+        raw_source_code_extract: 'AES/ECB/NoPadding',
         evidence: {
           summary: 'Credit card detected',
           request: {

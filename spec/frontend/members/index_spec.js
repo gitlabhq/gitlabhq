@@ -31,9 +31,6 @@ describe('initMembersApp', () => {
 
   afterEach(() => {
     el = null;
-
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders `MembersTabs`', () => {

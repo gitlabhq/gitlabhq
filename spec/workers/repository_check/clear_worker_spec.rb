@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryCheck::ClearWorker do
+RSpec.describe RepositoryCheck::ClearWorker, feature_category: :source_code_management do
   it 'clears repository check columns' do
     project = create(:project)
     project.update_columns(

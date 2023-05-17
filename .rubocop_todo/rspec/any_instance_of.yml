@@ -55,7 +55,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/services/projects/destroy_service_spec.rb'
     - 'ee/spec/services/projects/group_links/destroy_service_spec.rb'
     - 'ee/spec/services/projects/update_service_spec.rb'
-    - 'ee/spec/services/slash_commands/global_slack_handler_spec.rb'
     - 'ee/spec/support/helpers/ee/stub_configuration.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/ultimate_trial_callout_shared_examples.rb'

@@ -49,8 +49,6 @@ describe('dashboard invalid url parameters', () => {
     jest.spyOn(store, 'dispatch').mockResolvedValue();
   });
 
-  afterEach(() => {});
-
   it('is mounted', () => {
     expect(wrapper.exists()).toBe(true);
   });

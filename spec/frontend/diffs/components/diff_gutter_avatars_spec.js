@@ -21,10 +21,6 @@ describe('DiffGutterAvatars', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when expanded', () => {
     beforeEach(() => {
       createComponent({

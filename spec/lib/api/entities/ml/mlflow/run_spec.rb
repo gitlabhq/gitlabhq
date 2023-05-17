@@ -12,7 +12,7 @@ RSpec.describe API::Entities::Ml::Mlflow::Run do
   end
 
   it 'has the id' do
-    expect(subject.dig(:run, :info, :run_id)).to eq(candidate.iid.to_s)
+    expect(subject.dig(:run, :info, :run_id)).to eq(candidate.eid.to_s)
   end
 
   it 'presents the metrics' do

@@ -226,7 +226,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
     # Emulate Marginalia pre-pending comments
     def sql(query, comments: true)
-      if comments && !%w[BEGIN COMMIT].include?(query)
+      if comments
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
       else
         query
@@ -244,8 +244,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         'SQL' | 'UPDATE users SET admin = true WHERE id = 10' | true | true | false
         'CACHE' | 'SELECT * FROM users WHERE id = 10' | true | false | true
         'SCHEMA' | "SELECT attr.attname FROM pg_attribute attr INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = any(cons.conkey) WHERE cons.contype = 'p' AND cons.conrelid = '\"projects\"'::regclass" | false | false | false
-        nil | 'BEGIN' | false | false | false
-        nil | 'COMMIT' | false | false | false
+        'TRANSACTION' | 'BEGIN' | false | false | false
+        'TRANSACTION' | 'COMMIT' | false | false | false
+        'TRANSACTION' | 'ROLLBACK' | false | false | false
       end
 
       with_them do
@@ -291,7 +292,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
     # Emulate Marginalia pre-pending comments
     def sql(query, comments: true)
-      if comments && !%w[BEGIN COMMIT].include?(query)
+      if comments
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
       else
         query
@@ -313,8 +314,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         'CACHE' | 'SELECT pg_last_wal_replay_lsn()::text AS location' | true | false | true | true
         'CACHE' | 'SELECT * FROM users WHERE id = 10' | true | false | true | false
         'SCHEMA' | "SELECT attr.attname FROM pg_attribute attr INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = any(cons.conkey) WHERE cons.contype = 'p' AND cons.conrelid = '\"projects\"'::regclass" | false | false | false | false
-        nil | 'BEGIN' | false | false | false | false
-        nil | 'COMMIT' | false | false | false | false
+        'TRANSACTION' | 'BEGIN' | false | false | false | false
+        'TRANSACTION' | 'COMMIT' | false | false | false | false
+        'TRANSACTION' | 'ROLLBACK' | false | false | false | false
       end
 
       with_them do

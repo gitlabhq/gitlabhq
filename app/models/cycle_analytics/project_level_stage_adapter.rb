@@ -16,12 +16,12 @@ module CycleAnalytics
       presenter = Analytics::CycleAnalytics::StagePresenter.new(stage)
 
       serializer.new.represent(ProjectLevelStage.new(
-                                 title: presenter.title,
-                                 description: presenter.description,
-                                 legend: presenter.legend,
-                                 name: stage.name,
-                                 project_median: median
-                               ))
+        title: presenter.title,
+        description: presenter.description,
+        legend: presenter.legend,
+        name: stage.name,
+        project_median: median
+      ))
     end
     # rubocop: enable CodeReuse/Presenter
 

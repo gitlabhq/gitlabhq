@@ -1,14 +1,5 @@
-- @hide_top_links = true
-- page_title    _("Projects")
-- header_title  _("Projects"), dashboard_projects_path
 - page_canonical_link explore_projects_url
 
-= render_dashboard_ultimate_trial(current_user)
-
-- if current_user
-  = render 'dashboard/projects_head', project_tab_filter: :explore
-- else
-  = render 'explore/head'
-
+= render 'explore/projects/head'
 = render 'explore/projects/nav'
 = render 'projects', projects: @projects

@@ -18,14 +18,8 @@ module ImportExport
       allow(Gitlab::ImportExport).to receive(:export_path) { export_path }
     end
 
-    def setup_reader(reader)
-      if reader == :ndjson_reader && Feature.enabled?(:project_import_ndjson)
-        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:exist?).and_return(false)
-        allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(true)
-      else
-        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:exist?).and_return(true)
-        allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(false)
-      end
+    def setup_reader
+      allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(true)
     end
 
     def fixtures_path
@@ -36,19 +30,12 @@ module ImportExport
       "tmp/tests/gitlab-test/import_export"
     end
 
-    def get_json(path, exportable_path, key, ndjson_enabled)
-      if ndjson_enabled
-        json = if key == :projects
-                 consume_attributes(path, exportable_path)
-               else
-                 consume_relations(path, exportable_path, key)
-               end
+    def get_json(path, exportable_path, key)
+      if key == :projects
+        consume_attributes(path, exportable_path)
       else
-        json = project_json(path)
-        json = json[key.to_s] unless key == :projects
+        consume_relations(path, exportable_path, key)
       end
-
-      json
     end
 
     def restore_then_save_project(project, user, import_path:, export_path:)

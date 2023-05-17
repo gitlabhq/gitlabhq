@@ -65,7 +65,7 @@ Your branch, merge requests, and commits remain in your private fork. This preve
 prematurely revealing confidential information.
 
 Open a merge request
-[from your fork to the upstream repository](../repository/forking_workflow.md#merging-upstream) when:
+[from your fork to the upstream repository](../repository/forking_workflow.md#merge-changes-back-upstream) when:
 
 - You are satisfied the problem is resolved in your private fork.
 - You are ready to make the confidential commits public.

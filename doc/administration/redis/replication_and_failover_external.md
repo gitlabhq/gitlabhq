@@ -32,15 +32,15 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 1. Configure the GitLab application servers with the appropriate connection details
    for your external Redis service in your `/etc/gitlab/gitlab.rb` file:
 
-    ```ruby
-    redis['enable'] = false
+   ```ruby
+   redis['enable'] = false
 
-    gitlab_rails['redis_host'] = 'redis.example.com'
-    gitlab_rails['redis_port'] = 6379
+   gitlab_rails['redis_host'] = 'redis.example.com'
+   gitlab_rails['redis_port'] = 6379
 
-    # Required if Redis authentication is configured on the Redis node
-    gitlab_rails['redis_password'] = 'Redis Password'
-    ```
+   # Required if Redis authentication is configured on the Redis node
+   gitlab_rails['redis_password'] = 'Redis Password'
+   ```
 
 1. Reconfigure for the changes to take effect:
 
@@ -87,7 +87,7 @@ valuable information for the general setup.
 
 Assuming that the Redis primary instance IP is `10.0.0.1`:
 
-1. [Install Redis](../../install/installation.md#7-redis).
+1. [Install Redis](../../install/installation.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf
@@ -113,7 +113,7 @@ Assuming that the Redis primary instance IP is `10.0.0.1`:
 
 Assuming that the Redis replica instance IP is `10.0.0.2`:
 
-1. [Install Redis](../../install/installation.md#7-redis).
+1. [Install Redis](../../install/installation.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf
@@ -250,8 +250,8 @@ unauthorized access from other machines, and block traffic from the
 outside ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)).
 
 For this example, **Sentinel 1** is configured in the same machine as the
-**Redis Primary**, **Sentinel 2** and **Sentinel 3** in the same machines as the
-**Replica 1** and **Replica 2** respectively.
+**Redis Primary**, **Sentinel 2** in the same machine as **Replica 1**, and
+**Sentinel 3** in the same machine as **Replica 2**.
 
 Here is a list and description of each **machine** and the assigned **IP**:
 

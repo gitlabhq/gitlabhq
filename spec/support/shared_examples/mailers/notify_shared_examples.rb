@@ -59,7 +59,7 @@ end
 RSpec.shared_examples 'an email with X-GitLab headers containing project details' do
   it 'has X-GitLab-Project headers' do
     aggregate_failures do
-      full_path_as_domain = "#{project.name}.#{project.namespace.path}"
+      full_path_as_domain = "#{project.path}.#{project.namespace.path}"
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
       is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)
@@ -292,5 +292,19 @@ RSpec.shared_examples 'does not render a manage notifications link' do
       expect(subject).not_to have_body_text("Manage all notifications")
       expect(subject).not_to have_body_text(profile_notifications_url)
     end
+  end
+end
+
+RSpec.shared_examples 'email with default notification reason' do
+  it do
+    is_expected.to have_body_text("You're receiving this email because of your account")
+    is_expected.to have_plain_text_content("You're receiving this email because of your account")
+  end
+end
+
+RSpec.shared_examples 'email with link to issue' do
+  it do
+    is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
+    is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
   end
 end

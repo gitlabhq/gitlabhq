@@ -1,7 +1,8 @@
 - layout_path = 'shared/empty_states/wikis_layout'
 - messages = wiki_empty_state_messages(@wiki)
+- hide_create = local_assigns[:hide_create]
 
-- if can?(current_user, :create_wiki, @wiki.container)
+- if !hide_create && can?(current_user, :create_wiki, @wiki.container)
   - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
   - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn gl-button btn-confirm', title: s_('WikiEmpty|Create your first page'), data: { qa_selector: 'create_first_page_link' }
 

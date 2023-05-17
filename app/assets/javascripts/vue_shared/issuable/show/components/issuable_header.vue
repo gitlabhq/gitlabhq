@@ -9,11 +9,11 @@ import {
 } from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_OPEN } from '~/issues/constants';
 import { isExternal } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export default {
   components: {
@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     badgeVariant() {
-      return this.issuableState === IssuableStates.Opened ? 'success' : 'info';
+      return this.issuableState === STATUS_OPEN ? 'success' : 'info';
     },
     authorId() {
       return getIdFromGraphQLId(`${this.author.id}`);

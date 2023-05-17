@@ -250,7 +250,7 @@ export default {
           variant="default"
           category="tertiary"
           size="medium"
-          :class="{ active: showPreview }"
+          :class="{ 'gl-bg-gray-100!': showPreview }"
           data-testid="preview-diagram"
           :aria-label="__('Preview diagram')"
           :title="__('Preview diagram')"

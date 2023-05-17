@@ -1,5 +1,4 @@
 ---
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/todos.html'
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
@@ -21,7 +20,7 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the top bar, in the upper right, select To-Do List (**{task-done}**).
+On the top bar, in the upper-right corner, select the To-Do List (**{task-done}**).
 
 ## Search the To-Do List
 
@@ -34,12 +33,13 @@ Also, you can sort them by [**Label priority**](project/labels.md#set-label-prio
 ## Actions that create to-do items
 
 Many to-do items are created automatically.
-A to-do item is added to your To-Do List when:
+Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
+- A [merge request review](project/merge_requests/reviews/index.md) is requested.
 - You're [mentioned](discussions/index.md#mentions) in the description or
   comment of an issue, merge request, or epic.
-- You are mentioned in a comment on a commit or design.
+- You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
 - An open merge request cannot be merged due to conflict, and one of the
   following is true:
@@ -81,6 +81,8 @@ When you enable this feature:
 
 ## Create a to-do item
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results and, tasks in GitLab 16.0.
+
 You can manually add an item to your To-Do List.
 
 1. Go to your:
@@ -90,10 +92,14 @@ You can manually add an item to your To-Do List.
    - [Epic](group/epics/index.md)
    - [Design](project/issues/design_management.md)
    - [Incident](../operations/incident_management/incidents.md)
+   - [Objective or key result](../user/okrs.md)
+   - [Task](tasks.md)
 
-1. On the right sidebar, at the top, select **Add a to do**.
+1. In the upper-right corner, select  **Add a to do** (**{todo-add}**).
 
    ![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar_v14_1.png)
+
+   ![Adding a to-do item from the Objective and Key results](img/todos_add_okrs_v16_0.png)
 
 ## Create a to-do item by mentioning someone
 
@@ -122,7 +128,7 @@ corresponding to-do item as done.
 
 To-do items are marked as done if you:
 
-- Add an award emoji to the description or comment.
+- Add an emoji reaction to the description or comment.
 - Add or remove a label.
 - Change the assignee.
 - Change the milestone.
@@ -150,15 +156,17 @@ You can manually mark a to-do item as done.
 There are two ways to do this:
 
 - In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
-- In the sidebar of an issue, merge request, or epic, select **Mark as done**.
+- In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** (**{todo-done}**).
 
   ![Mark as done from the sidebar](img/todos_mark_done_sidebar_v14_1.png)
+
+  ![Mark as done from the Objectives and Key results](img/todos_mark_done_okrs_v16_0.png)
 
 ## Mark all to-do items as done
 
 You can mark all your to-do items as done at the same time.
 
-In the To-Do List, in the upper right, select **Mark all as done**.
+In the To-Do List, in the upper-right corner, select **Mark all as done**.
 
 ## How a user's To-Do List is affected when their access changes
 

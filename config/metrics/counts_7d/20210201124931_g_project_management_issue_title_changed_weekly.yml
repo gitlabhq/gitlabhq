@@ -4,7 +4,6 @@ key_path: redis_hll_counters.issues_edit.g_project_management_issue_title_change
 description: Count of WAU editing an issue title
 product_stage: plan
 product_group: project_management
-product_category: issue_tracking
 product_section: 'TBD'
 value_type: number
 status: active

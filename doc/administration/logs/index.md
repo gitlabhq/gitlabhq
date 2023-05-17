@@ -96,6 +96,7 @@ except those captured by `runit`.
 | [LogRotate logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | [NGINX](#nginx-logs)                            | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [PgBouncer logs](#pgbouncer-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [PostgreSQL logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Praefect logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
 | [Prometheus logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
@@ -180,7 +181,7 @@ In addition, the log contains the originating IP address,
 (`remote_ip`), the user's ID (`user_id`), and username (`username`).
 
 Some endpoints (such as `/search`) may make requests to Elasticsearch if using
-[Advanced Search](../../user/search/advanced_search.md). These
+[advanced search](../../user/search/advanced_search.md). These
 additionally log `elasticsearch_calls` and `elasticsearch_call_duration_s`,
 which correspond to:
 
@@ -349,15 +350,17 @@ the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://gi
 Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
 process on Redis or external HTTP, not only the serialization process.
 
-## `application.log`
+## `application.log` (deprecated)
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
 
 Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application.log`
 - Installations from source: `/home/git/gitlab/log/application.log`
 
-It helps you discover events happening in your instance such as user creation
-and project deletion. For example:
+It contains a less structured version of the logs in
+[`application_json.log`](#application_jsonlog), like this example:
 
 ```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created
@@ -376,7 +379,8 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application_json.log`
 - Installations from source: `/home/git/gitlab/log/application_json.log`
 
-It contains the JSON version of the logs in `application.log`, like this example:
+It helps you discover events happening in your instance such as user creation
+and project deletion. For example:
 
 ```json
 {
@@ -426,7 +430,7 @@ like this example:
 }
 ```
 
-## `kubernetes.log` (DEPRECATED)
+## `kubernetes.log` (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -686,14 +690,6 @@ Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab
 packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
-### `gitaly_ruby_json.log`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2678) in GitLab 13.6.
-
-This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
-produced by [`gitaly-ruby`](../gitaly/reference.md#gitaly-ruby). It contains an
-access log of gRPC calls made by Gitaly to `gitaly-ruby`.
-
 ### `gitaly_hooks.log`
 
 This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
@@ -733,7 +729,7 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
 - Installations from source: `/home/git/gitlab/log/importer.log`
 
-It logs the progress of the import process.
+This file logs the progress of [project imports and migrations](../../user/project/import/index.md).
 
 ## `exporter.log`
 
@@ -771,6 +767,24 @@ are recorded in this file. For example:
 {"severity":"INFO","time":"2020-11-24T02:31:29.329Z","correlation_id":null,"key":"cd_auto_rollback","action":"remove"}
 ```
 
+## `ci_resource_groups_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log`
+- Installations from source: `/home/git/gitlab/log/ci_resource_group_json.log`
+
+It contains information about [resource group](../../ci/resource_groups/index.md) acquisition. For example:
+
+```json
+{"severity":"INFO","time":"2023-02-10T23:02:06.095Z","correlation_id":"01GRYS10C2DZQ9J1G12ZVAD4YD","resource_group_id":1,"processable_id":288,"message":"attempted to assign resource to processable","success":true}
+{"severity":"INFO","time":"2023-02-10T23:02:08.945Z","correlation_id":"01GRYS138MYEG32C0QEWMC4BDM","resource_group_id":1,"processable_id":288,"message":"attempted to release resource from processable","success":true}
+```
+
+The examples show the `resource_group_id`, `processable_id`, `message`, and `success` fields for each entry.
+
 ## `auth.log`
 
 > Introduced in GitLab 12.0.
@@ -786,6 +800,28 @@ This log records:
 - [Protected paths](../../user/admin_area/settings/protected_paths.md) abusive requests.
 - In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
   user ID and username, if available.
+
+## `auth_json.log`
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/auth_json.log`
+- Installations from source: `/home/git/gitlab/log/auth_json.log`
+
+This file contains the JSON version of the logs in `auth.log`, for example:
+
+```json
+{
+    "severity":"ERROR",
+    "time":"2023-04-19T22:14:25.893Z",
+    "correlation_id":"01GYDSAKAN2SPZPAMJNRWW5H8S",
+    "message":"Rack_Attack",
+    "env":"blocklist",
+    "remote_ip":"x.x.x.x",
+    "request_method":"GET",
+    "path":"/group/project.git/info/refs?service=git-upload-pack"
+}
+```
 
 ## `graphql_json.log`
 
@@ -810,6 +846,8 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/migrations.log`
 - Installations from source: `/home/git/gitlab/log/migrations.log`
+
+This file logs the progress of [database migrations](../raketasks/maintenance.md#display-status-of-database-migrations).
 
 ## `mail_room_json.log` (default)
 
@@ -1016,8 +1054,12 @@ For Omnibus GitLab installations, NGINX logs are in:
 Below is the default GitLab NGINX access log format:
 
 ```plaintext
-$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+'$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
 ```
+
+The `$request` and `$http_referer` are
+[filtered](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/nginx/gitlab)
+for sensitive query string parameters such as secret tokens.
 
 ## Pages logs
 
@@ -1058,6 +1100,10 @@ For Omnibus GitLab installations, Mattermost logs are in these locations:
 ## Workhorse logs
 
 For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
+
+## PgBouncer logs
+
+For Omnibus GitLab installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
 
 ## PostgreSQL logs
 

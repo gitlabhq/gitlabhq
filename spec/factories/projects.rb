@@ -8,8 +8,8 @@ FactoryBot.define do
   # Project does not have bare repository.
   # Use this factory if you don't need repository in tests
   factory :project, class: 'Project' do
-    sequence(:name) { |n| "project#{n}" }
-    path { name.downcase.gsub(/\s/, '_') }
+    sequence(:path) { |n| "project-#{n}" }
+    name { "#{path.humanize} Name" }
 
     # Behaves differently to nil due to cache_has_external_* methods.
     has_external_issue_tracker { false }
@@ -222,7 +222,7 @@ FactoryBot.define do
     # the transient `files` attribute. Each file will be created in its own
     # commit, operating against the master branch. So, the following call:
     #
-    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => bar' })
+    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => 'bar' })
     #
     # will create a repository containing two files, and two commits, in master
     trait :custom_repo do
@@ -241,6 +241,19 @@ FactoryBot.define do
             message: "Automatically created file #{filename}",
             branch_name: project.default_branch || 'master'
           )
+        end
+      end
+    end
+
+    # A basic repository with a single file 'test.txt'. It also has the HEAD as the default branch.
+    trait :small_repo do
+      custom_repo
+
+      files { { 'test.txt' => 'test' } }
+
+      after(:create) do |project|
+        Sidekiq::Worker.skipping_transaction_check do
+          raise "Failed to assign the repository head!" unless project.change_head(project.default_branch_or_main)
         end
       end
     end
@@ -351,6 +364,18 @@ FactoryBot.define do
       after(:build) do |project|
         stub_method(project, :empty_repo?) { false }
         stub_method(project.repository, :empty?) { false }
+      end
+    end
+
+    trait :stubbed_commit_count do
+      after(:build) do |project|
+        stub_method(project.repository, :commit_count) { 2 }
+      end
+    end
+
+    trait :stubbed_branch_count do
+      after(:build) do |project|
+        stub_method(project.repository, :branch_count) { 2 }
       end
     end
 
@@ -509,5 +534,12 @@ FactoryBot.define do
 
   trait :in_subgroup do
     namespace factory: [:group, :nested]
+  end
+
+  trait :readme do
+    custom_repo
+
+    path { 'gitlab-profile' }
+    files { { 'README.md' => 'Hello World' } }
   end
 end

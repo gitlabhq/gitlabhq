@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Lists::DestroyService do
+RSpec.describe Boards::Lists::DestroyService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   let(:list_type) { :list }

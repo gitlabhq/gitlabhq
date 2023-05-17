@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
@@ -28,7 +27,7 @@ Welcome to the GitLab documentation!
 | [**New to Git and GitLab?**](tutorials/index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contributing-to-gitlab)<br/>Create new GitLab functionality and documentation. |
 | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Learn how to move to GitLab. | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Integrate with Jira and other common applications. |
 | [**Choose a subscription**](subscriptions/index.md)<br/>Determine which subscription tier makes sense for you. | [**Install GitLab**](https://about.gitlab.com/install/)<br/>Install GitLab on different platforms. |
-| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Update GitLab**](update/index.md)<br/>Update your GitLab self-managed instance to the latest version. |
+| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Upgrade GitLab**](update/index.md)<br/>Upgrade your GitLab self-managed instance to the latest version. |
 | [**GitLab releases**](https://about.gitlab.com/releases/)<br/>See what's new in GitLab. |  |
 
 ## Popular topics
@@ -43,10 +42,10 @@ Have a look at some of our most popular topics:
 | [Activate GitLab EE with a license](user/admin_area/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
 | [Back up and restore GitLab](raketasks/backup_restore.md)                                  | Rake tasks for backing up and restoring GitLab self-managed instances. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
-| [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                                  | Integrate Elasticsearch with GitLab to enable advanced searching. |
+| [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |
 | [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for Omnibus GitLab self-managed instances. |
 | [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html)       | NGINX settings for Omnibus GitLab self-managed instances. |
-| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html)      | SSL settings for Omnibus GitLab self-managed instances. |
+| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html)      | SSL settings for Omnibus GitLab self-managed instances. |
 | [GitLab.com settings](user/gitlab_com/index.md)                                            | Settings used for GitLab.com. |
 
 ## The entire DevOps lifecycle
@@ -75,7 +74,7 @@ If you are coming to GitLab from another platform, the following information is 
 | Topic                                               | Description |
 |:----------------------------------------------------|:------------|
 | [Importing to GitLab](user/project/import/index.md) | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](user/project/import/svn.md)    | Convert a SVN repository to Git and GitLab. |
+| [Migrating from SVN](user/project/import/index.md#import-from-subversion)    | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 

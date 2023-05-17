@@ -30,10 +30,6 @@ describe('NewTopLevelGroupAlert', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the component is created', () => {
     beforeEach(() => {
       createComponent({

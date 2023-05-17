@@ -12,6 +12,7 @@ const TEST_FIELDS = [
     label: 'Second',
     sortable: true,
     other: 'foo',
+    class: 'someClass',
   },
   {
     key: 'C',
@@ -58,10 +59,6 @@ describe('behaviors/components/json_table', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findTable = () => wrapper.findComponent(GlTable);
   const findTableCaption = () => wrapper.findByTestId('slot-table-caption');
@@ -131,11 +128,13 @@ describe('behaviors/components/json_table', () => {
             key: 'B',
             label: 'Second',
             sortable: true,
+            class: 'someClass',
           },
           {
             key: 'C',
             label: 'Third',
             sortable: false,
+            class: [],
           },
           'D',
         ],

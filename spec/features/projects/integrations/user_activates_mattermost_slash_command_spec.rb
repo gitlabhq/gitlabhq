@@ -79,7 +79,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
 
         select_element = find('#mattermost_team_id')
 
-        expect(select_element['disabled']).to be_falsey
+        expect(select_element['disabled']).to eq('false')
         expect(select_element.all('option').count).to eq(3)
       end
 
@@ -99,7 +99,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
 
         click_link 'Add to Mattermost'
 
-        expect(find('input[type="submit"]')['disabled']).not_to eq("true")
+        expect(find('button[type="submit"]')['disabled']).not_to eq("true")
       end
 
       it 'disables the submit button if the required fields are not provided', :js do
@@ -109,7 +109,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
 
         fill_in('mattermost_trigger', with: '')
 
-        expect(find('input[type="submit"]')['disabled']).to eq("true")
+        expect(find('button[type="submit"]')['disabled']).to eq("true")
       end
 
       def stub_teams(count: 0)
@@ -145,7 +145,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
       it 'shows a token placeholder' do
         token_placeholder = find_field('service_token')['placeholder']
 
-        expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
+        expect(token_placeholder).to eq('')
       end
     end
   end

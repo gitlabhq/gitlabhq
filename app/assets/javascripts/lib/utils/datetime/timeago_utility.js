@@ -1,6 +1,7 @@
 import * as timeago from 'timeago.js';
 import { languageCode, s__, createDateTimeFormat } from '~/locale';
 import { formatDate } from './date_format_utility';
+import { DATE_WITH_TIME_FORMAT, DATE_ONLY_FORMAT, DEFAULT_DATE_TIME_FORMAT } from './constants';
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -106,26 +107,39 @@ timeago.register(timeagoLanguageCode, memoizedLocale());
 timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
 timeago.register(`${timeagoLanguageCode}-duration`, memoizedLocaleDuration());
 
-let memoizedFormatter = null;
+const setupAbsoluteFormatters = () => {
+  const cache = {};
 
-function setupAbsoluteFormatter() {
-  if (memoizedFormatter === null) {
-    const formatter = createDateTimeFormat({
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    });
+  // Intl.DateTimeFormat options (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat#using_options)
+  const formats = {
+    [DATE_WITH_TIME_FORMAT]: () => ({ dateStyle: 'medium', timeStyle: 'short' }),
+    [DATE_ONLY_FORMAT]: () => ({ dateStyle: 'medium' }),
+  };
 
-    memoizedFormatter = {
+  return (formatName = DEFAULT_DATE_TIME_FORMAT) => {
+    if (cache[formatName]) {
+      return cache[formatName];
+    }
+
+    let format = formats[formatName] && formats[formatName]();
+    if (!format) {
+      format = formats[DEFAULT_DATE_TIME_FORMAT]();
+    }
+
+    const formatter = createDateTimeFormat(format);
+
+    cache[formatName] = {
       format(date) {
         return formatter.format(date instanceof Date ? date : new Date(date));
       },
     };
-  }
-  return memoizedFormatter;
-}
+    return cache[formatName];
+  };
+};
+const memoizedFormatters = setupAbsoluteFormatters();
 
-export const getTimeago = () =>
-  window.gon?.time_display_relative === false ? setupAbsoluteFormatter() : timeago;
+export const getTimeago = (formatName) =>
+  window.gon?.time_display_relative === false ? memoizedFormatters(formatName) : timeago;
 
 /**
  * For the given elements, sets a tooltip with a formatted date.

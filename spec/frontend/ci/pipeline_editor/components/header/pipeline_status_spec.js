@@ -48,7 +48,6 @@ describe('Pipeline Status', () => {
 
   afterEach(() => {
     mockPipelineQuery.mockReset();
-    wrapper.destroy();
   });
 
   describe('loading icon', () => {
@@ -78,7 +77,7 @@ describe('Pipeline Status', () => {
         await waitForPromises();
       });
 
-      it('query is called with correct variables', async () => {
+      it('query is called with correct variables', () => {
         expect(mockPipelineQuery).toHaveBeenCalledTimes(1);
         expect(mockPipelineQuery).toHaveBeenCalledWith({
           fullPath: mockProjectFullPath,

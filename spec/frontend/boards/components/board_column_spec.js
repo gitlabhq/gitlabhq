@@ -10,11 +10,6 @@ describe('Board Column Component', () => {
   let wrapper;
   let store;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const initStore = () => {
     store = createStore();
   };
@@ -36,6 +31,7 @@ describe('Board Column Component', () => {
       propsData: {
         list: listMock,
         boardId: 'gid://gitlab/Board/1',
+        filters: {},
       },
       provide: {
         isApolloBoard: false,
@@ -85,7 +81,7 @@ describe('Board Column Component', () => {
   });
 
   describe('on mount', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       initStore();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });

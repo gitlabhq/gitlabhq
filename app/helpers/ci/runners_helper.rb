@@ -35,6 +35,10 @@ module Ci
       end
     end
 
+    def runner_short_name(runner)
+      "##{runner.id} (#{runner.short_sha})"
+    end
+
     def runner_link(runner)
       display_name = truncate(runner.display_name, length: 15)
       id = "\##{runner.id}"
@@ -66,15 +70,15 @@ module Ci
         new_runner_path: new_admin_runner_path,
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
-        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
-        empty_state_filtered_svg_path: image_path('illustrations/magnifying-glass.svg')
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 
     def group_shared_runners_settings_data(group)
       {
         group_id: group.id,
+        group_name: group.name,
+        group_is_empty: (group.projects.empty? && group.children.empty?).to_s,
         shared_runners_setting: group.shared_runners_setting,
         parent_shared_runners_setting: group.parent&.shared_runners_setting,
         runner_enabled_value: Namespace::SR_ENABLED,
@@ -89,9 +93,7 @@ module Ci
         group_full_path: group.full_path,
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
-        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
-        empty_state_filtered_svg_path: image_path('illustrations/magnifying-glass.svg')
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 

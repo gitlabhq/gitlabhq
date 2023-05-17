@@ -1,21 +1,17 @@
 - return unless Gitlab::Tracking.enabled?
 
 - namespace = @group || @project&.namespace || @namespace
-
+= webpack_bundle_tag 'tracker'
 = javascript_tag do
   :plain
-    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
-    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
-    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-    n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","#{escaped_url(asset_url('snowplow/sp.js'))}","snowplow"));
-
     window.snowplowOptions = #{Gitlab::Tracking.options(@group).to_json}
 
     gl = window.gl || {};
     gl.snowplowStandardContext = #{Gitlab::Tracking::StandardContext.new(
-      namespace: namespace,
-      project: @project,
-      user: current_user,
+      namespace_id: namespace&.id,
+      plan_name: namespace&.actual_plan_name,
+      project_id: @project&.id,
+      user_id: current_user&.id,
       new_nav: show_super_sidebar?
     ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};

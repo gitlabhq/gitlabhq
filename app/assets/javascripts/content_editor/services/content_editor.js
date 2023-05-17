@@ -1,12 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub }) {
+  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub, drawioEnabled }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
     this._deserializer = deserializer;
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
     this._pristineDoc = null;
+
+    this.drawioEnabled = drawioEnabled;
   }
 
   get tiptapEditor() {

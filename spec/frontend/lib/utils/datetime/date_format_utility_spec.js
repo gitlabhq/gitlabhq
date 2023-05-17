@@ -134,18 +134,6 @@ describe('formatTimeAsSummary', () => {
   });
 });
 
-describe('durationTimeFormatted', () => {
-  it.each`
-    duration | expectedOutput
-    ${87}    | ${'00:01:27'}
-    ${141}   | ${'00:02:21'}
-    ${12}    | ${'00:00:12'}
-    ${60}    | ${'00:01:00'}
-  `('returns $expectedOutput when provided $duration', ({ duration, expectedOutput }) => {
-    expect(utils.durationTimeFormatted(duration)).toBe(expectedOutput);
-  });
-});
-
 describe('formatUtcOffset', () => {
   it.each`
     offset       | expected

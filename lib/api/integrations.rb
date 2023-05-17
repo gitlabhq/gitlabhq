@@ -37,7 +37,7 @@ module API
       end
     end
 
-    TRIGGER_INTEGRATIONS = {
+    SLASH_COMMAND_INTEGRATIONS = {
       'mattermost-slash-commands' => [
         {
           name: :token,
@@ -139,8 +139,14 @@ module API
 
           destroy_conditionally!(integration) do
             attrs = integration_attributes(integration).index_with do |attr|
-              column = integration.column_for_attribute(attr)
-              if column.is_a?(ActiveRecord::ConnectionAdapters::NullColumn)
+              column = if integration.attribute_present?(attr)
+                         integration.column_for_attribute(attr)
+                       elsif integration.data_fields_present?
+                         integration.data_fields.column_for_attribute(attr)
+                       end
+
+              case column
+              when nil, ActiveRecord::ConnectionAdapters::NullColumn
                 nil
               else
                 column.default
@@ -173,7 +179,7 @@ module API
         end
       end
 
-      TRIGGER_INTEGRATIONS.each do |integration_slug, settings|
+      SLASH_COMMAND_INTEGRATIONS.each do |integration_slug, settings|
         helpers do
           def slash_command_integration(project, integration_slug, params)
             project.integrations.active.find do |integration|
@@ -218,7 +224,27 @@ module API
         end
       end
     end
+
+    desc "Trigger a global slack command" do
+      detail 'Added in GitLab 9.4'
+      failure [
+        { code: 401, message: 'Unauthorized' }
+      ]
+    end
+    params do
+      requires :text, type: String, desc: 'Text of the slack command'
+    end
+    post 'slack/trigger' do
+      if result = Gitlab::SlashCommands::GlobalSlackHandler.new(params).trigger
+        status result[:status] || 200
+        present result
+      else
+        not_found!
+      end
+    end
   end
 end
 
-API::Integrations.prepend_mod_with('API::Integrations')
+# Added for JiHu
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118289#note_1379334692
+API::Integrations.prepend_mod

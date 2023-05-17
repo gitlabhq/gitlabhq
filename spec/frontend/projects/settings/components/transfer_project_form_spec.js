@@ -31,10 +31,6 @@ describe('Transfer project form', () => {
   const findTransferLocations = () => wrapper.findComponent(TransferLocations);
   const findConfirmDanger = () => wrapper.findComponent(ConfirmDanger);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the namespace selector and passes `groupTransferLocationsApiMethod` prop', () => {
     createComponent();
 
@@ -53,7 +49,7 @@ describe('Transfer project form', () => {
   it('disables the confirm button by default', () => {
     createComponent();
 
-    expect(findConfirmDanger().attributes('disabled')).toBe('true');
+    expect(findConfirmDanger().attributes('disabled')).toBeDefined();
   });
 
   describe('with a selected namespace', () => {
@@ -68,17 +64,17 @@ describe('Transfer project form', () => {
       expect(findTransferLocations().props('value')).toEqual(selectedItem);
     });
 
-    it('emits the `selectTransferLocation` event when a namespace is selected', async () => {
+    it('emits the `selectTransferLocation` event when a namespace is selected', () => {
       const args = [selectedItem.id];
 
       expect(wrapper.emitted('selectTransferLocation')).toEqual([args]);
     });
 
-    it('enables the confirm button', async () => {
+    it('enables the confirm button', () => {
       expect(findConfirmDanger().attributes('disabled')).toBeUndefined();
     });
 
-    it('clicking the confirm button emits the `confirm` event', async () => {
+    it('clicking the confirm button emits the `confirm` event', () => {
       findConfirmDanger().vm.$emit('confirm');
 
       expect(wrapper.emitted('confirm')).toBeDefined();

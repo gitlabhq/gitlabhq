@@ -1,0 +1,11 @@
+---
+table_name: analytics_cycle_analytics_project_stages
+classes:
+feature_categories:
+- value_stream_management
+description: Persists project level value stream analytics stages. Scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/390194
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15061
+milestone: '12.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118980
+removed_in_milestone: '16.0'

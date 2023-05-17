@@ -1,7 +1,7 @@
 ---
 type: reference, how-to
 stage: Create
-group: Editor
+group: IDE
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -69,6 +69,6 @@ You can launch Gitpod directly from GitLab in one of these ways:
   1. Select **Open in Gitpod**.
 - *From a merge request:*
   1. Go to your merge request.
-  1. In the upper right corner, select **Code**, then select **Open in Gitpod**.
+  1. In the upper-right corner, select **Code**, then select **Open in Gitpod**.
 
 Gitpod builds your development environment for your branch.

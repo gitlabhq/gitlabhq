@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::SavedReplies::DestroyService do
+RSpec.describe Users::SavedReplies::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let!(:saved_reply) { create(:saved_reply) }
 

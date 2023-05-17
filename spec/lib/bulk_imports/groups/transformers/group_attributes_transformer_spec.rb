@@ -85,6 +85,22 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
       end
     end
 
+    context 'when the destination_slug has invalid characters' do
+      let(:entity) do
+        build_stubbed(
+          :bulk_import_entity,
+          bulk_import: bulk_import,
+          source_full_path: 'source/full/path',
+          destination_slug: '____destination-_slug-path----__',
+          destination_namespace: destination_namespace
+        )
+      end
+
+      it 'normalizes the path' do
+        expect(transformed_data[:path]).to eq('destination-slug-path')
+      end
+    end
+
     describe 'parent group transformation' do
       it 'sets parent id' do
         expect(transformed_data['parent_id']).to eq(destination_group.id)
@@ -101,45 +117,62 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
       end
     end
 
-    describe 'group name transformation' do
-      context 'when destination namespace is empty' do
-        before do
-          entity.destination_namespace = ''
-        end
+    context 'when destination namespace is empty' do
+      before do
+        entity.destination_namespace = ''
+      end
 
+      it 'does not transform name' do
+        expect(transformed_data['name']).to eq('Source Group Name')
+      end
+    end
+
+    context 'when destination namespace is present' do
+      context 'when destination namespace does not have a group or project with same path' do
         it 'does not transform name' do
           expect(transformed_data['name']).to eq('Source Group Name')
         end
       end
 
-      context 'when destination namespace is present' do
-        context 'when destination namespace does not have a group with same name' do
-          it 'does not transform name' do
-            expect(transformed_data['name']).to eq('Source Group Name')
-          end
+      context 'when destination namespace already has a group or project with the same name' do
+        before do
+          create(:project, group: destination_group, name: 'Source Project Name', path: 'project')
+          create(:group, parent: destination_group, name: 'Source Group Name', path: 'group')
+          create(:group, parent: destination_group, name: 'Source Group Name_1', path: 'group_1')
+          create(:group, parent: destination_group, name: 'Source Group Name_2', path: 'group_2')
         end
 
-        context 'when destination namespace already have a group with the same name' do
-          before do
-            create(:group, parent: destination_group, name: 'Source Group Name', path: 'group_1')
-            create(:group, parent: destination_group, name: 'Source Group Name(1)', path: 'group_2')
-            create(:group, parent: destination_group, name: 'Source Group Name(2)', path: 'group_3')
-            create(:group, parent: destination_group, name: 'Source Group Name(1)(1)', path: 'group_4')
-          end
+        it 'makes the name unique by appending a counter', :aggregate_failures do
+          transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name'))
+          expect(transformed_data['name']).to eq('Source Group Name_3')
 
-          it 'makes the name unique by appeding a counter', :aggregate_failures do
-            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name'))
-            expect(transformed_data['name']).to eq('Source Group Name(3)')
+          transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name_1'))
+          expect(transformed_data['name']).to eq('Source Group Name_1_1')
 
-            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(2)'))
-            expect(transformed_data['name']).to eq('Source Group Name(2)(1)')
+          transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name_2'))
+          expect(transformed_data['name']).to eq('Source Group Name_2_1')
 
-            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(1)'))
-            expect(transformed_data['name']).to eq('Source Group Name(1)(2)')
+          transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Project Name'))
+          expect(transformed_data['name']).to eq('Source Project Name_1')
+        end
+      end
 
-            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(1)(1)'))
-            expect(transformed_data['name']).to eq('Source Group Name(1)(1)(1)')
-          end
+      context 'when destination namespace already has a group or project with the same path' do
+        before do
+          create(:project, group: destination_group, name: 'Source Project Name', path: 'destination-slug-path')
+          create(:group, parent: destination_group, name: 'Source Group Name_4', path: 'destination-slug-path_4')
+          create(:group, parent: destination_group, name: 'Source Group Name_2', path: 'destination-slug-path_2')
+          create(:group, parent: destination_group, name: 'Source Group Name_3', path: 'destination-slug-path_3')
+        end
+
+        it 'makes the path unique by appending a counter', :aggregate_failures do
+          transformed_data = described_class.new.transform(context, data)
+          expect(transformed_data['path']).to eq('destination-slug-path_1')
+
+          create(:group, parent: destination_group, name: 'Source Group Name_1', path: 'destination-slug-path_1')
+
+          transformed_data = described_class.new.transform(context, data)
+          expect(transformed_data['path']).to eq('destination-slug-path_5')
         end
       end
     end
@@ -148,6 +181,49 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
       subject(:transformed_data) { described_class.new.transform(context, data) }
 
       include_examples 'visibility level settings'
+
+      context 'when destination is blank' do
+        let(:destination_namespace) { '' }
+
+        context 'when visibility level is public' do
+          let(:data) { { 'visibility' => 'public' } }
+
+          it 'sets visibility level to public' do
+            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PUBLIC)
+          end
+        end
+
+        context 'when when visibility level is internal' do
+          let(:data) { { 'visibility' => 'internal' } }
+
+          it 'sets visibility level to internal' do
+            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          end
+        end
+
+        context 'when private' do
+          let(:data) { { 'visibility' => 'private' } }
+
+          it 'sets visibility level to private' do
+            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+
+        context 'when visibility level is restricted' do
+          let(:data) { { 'visibility' => 'internal' } }
+
+          it 'sets visibility level to private' do
+            stub_application_setting(
+              restricted_visibility_levels: [
+                Gitlab::VisibilityLevel::INTERNAL,
+                Gitlab::VisibilityLevel::PUBLIC
+              ]
+            )
+
+            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+      end
     end
   end
 end

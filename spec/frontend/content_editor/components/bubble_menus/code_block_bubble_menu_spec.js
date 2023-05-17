@@ -59,13 +59,9 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
       checked: x.props('isChecked'),
     }));
 
-  beforeEach(async () => {
+  beforeEach(() => {
     buildEditor();
     buildWrapper();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders bubble menu component', async () => {
@@ -137,7 +133,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
   });
 
   describe('preview button', () => {
-    it('does not appear for a regular code block', async () => {
+    it('does not appear for a regular code block', () => {
       tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
 
       expect(wrapper.findByTestId('preview-diagram').exists()).toBe(false);
@@ -273,7 +269,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
           await emitEditorEvent({ event: 'transaction', tiptapEditor });
         });
 
-        it('hides the custom language input form and shows dropdown items', async () => {
+        it('hides the custom language input form and shows dropdown items', () => {
           expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
           expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
           expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);

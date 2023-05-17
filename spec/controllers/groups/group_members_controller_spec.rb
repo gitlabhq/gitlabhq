@@ -55,6 +55,20 @@ RSpec.describe Groups::GroupMembersController do
 
         expect(assigns(:invited_members).count).to eq(1)
       end
+
+      context 'when filtering by user type' do
+        let_it_be(:service_account) { create(:user, :service_account) }
+
+        before do
+          group.add_developer(service_account)
+        end
+
+        it 'returns only service accounts' do
+          get :index, params: { group_id: group, user_type: 'service_account' }
+
+          expect(assigns(:members).map(&:user_id)).to match_array([service_account.id])
+        end
+      end
     end
 
     context 'when user cannot manage members' do
@@ -66,6 +80,21 @@ RSpec.describe Groups::GroupMembersController do
         get :index, params: { group_id: group }
 
         expect(assigns(:invited_members)).to be_nil
+      end
+
+      context 'when filtering by user type' do
+        let_it_be(:service_account) { create(:user, :service_account) }
+
+        before do
+          group.add_developer(user)
+          group.add_developer(service_account)
+        end
+
+        it 'returns only service accounts' do
+          get :index, params: { group_id: group, user_type: 'service_account' }
+
+          expect(assigns(:members).map(&:user_id)).to match_array([user.id, service_account.id])
+        end
       end
     end
 
@@ -489,13 +518,11 @@ RSpec.describe Groups::GroupMembersController do
 
     describe 'PUT #update' do
       it 'is successful' do
-        put :update,
-            params: {
-              group_member: { access_level: Gitlab::Access::GUEST },
-              group_id: group,
-              id: membership
-            },
-            format: :json
+        put :update, params: {
+          group_member: { access_level: Gitlab::Access::GUEST },
+          group_id: group,
+          id: membership
+        }, format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -505,7 +532,7 @@ RSpec.describe Groups::GroupMembersController do
       it 'is successful' do
         delete :destroy, params: { group_id: group, id: membership }
 
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:see_other)
       end
     end
 

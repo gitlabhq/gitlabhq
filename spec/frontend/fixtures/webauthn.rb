@@ -32,6 +32,7 @@ RSpec.context 'WebAuthn' do
       allow_next_instance_of(Profiles::TwoFactorAuthsController) do |instance|
         allow(instance).to receive(:build_qr_code).and_return('qrcode:blackandwhitesquares')
       end
+      stub_feature_flags(webauthn_without_totp: false)
     end
 
     it 'webauthn/register.html' do

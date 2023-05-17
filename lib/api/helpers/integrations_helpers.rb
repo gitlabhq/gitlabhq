@@ -191,6 +191,12 @@ module API
               name: :app_store_private_key,
               type: String,
               desc: 'The Apple App Store Connect Private Key'
+            },
+            {
+              required: true,
+              name: :app_store_private_key_file_name,
+              type: String,
+              desc: 'The Apple App Store Connect Private Key File Name'
             }
           ],
           'asana' => [
@@ -447,6 +453,26 @@ module API
               desc: 'The URL of the external wiki'
             }
           ],
+          'google-play' => [
+            {
+              required: true,
+              name: :package_name,
+              type: String,
+              desc: 'The package name of the app in Google Play'
+            },
+            {
+              required: true,
+              name: :service_account_key,
+              type: String,
+              desc: 'The Google Play service account key'
+            },
+            {
+              required: true,
+              name: :service_account_key_file_name,
+              type: String,
+              desc: 'The filename of the Google Play service account key'
+            }
+          ],
           'hangouts-chat' => [
             {
               required: true,
@@ -566,16 +592,22 @@ module API
               desc: 'The base URL to the Jira instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
             },
             {
-              required: true,
+              required: false,
+              name: :jira_auth_type,
+              type: Integer,
+              desc: 'The authentication method to be used with Jira. `0` means Basic Authentication. `1` means Jira personal access token. Defaults to `0`'
+            },
+            {
+              required: false,
               name: :username,
               type: String,
-              desc: 'The username of the user created to be used with GitLab/Jira'
+              desc: 'The email or username to be used with Jira. For Jira Cloud use an email, for Jira Data Center and Jira Server use a username. Required when using Basic authentication (`jira_auth_type` is `0`)'
             },
             {
               required: true,
               name: :password,
               type: String,
-              desc: 'The password of the user created to be used with GitLab/Jira'
+              desc: 'The Jira API token, password, or personal access token to be used with Jira. When your authentication method is Basic (`jira_auth_type` is `0`) use an API token for Jira Cloud, or a password for Jira Data Center or Jira Server. When your authentication method is Jira personal access token (`jira_auth_type` is `1`) use a personal access token'
             },
             {
               required: false,
@@ -588,6 +620,18 @@ module API
               name: :jira_issue_transition_id,
               type: String,
               desc: 'The ID of one or more transitions for custom issue transitions'
+            },
+            {
+              required: false,
+              name: :jira_issue_prefix,
+              type: String,
+              desc: 'Prefix to match Jira issue keys'
+            },
+            {
+              required: false,
+              name: :jira_issue_regex,
+              type: String,
+              desc: 'Regular expression to match Jira issue keys'
             },
             {
               required: false,
@@ -897,6 +941,20 @@ module API
               type: String,
               desc: 'The product ID of ZenTao project'
             }
+          ],
+          'squash-tm' => [
+            {
+              required: true,
+              name: :url,
+              type: String,
+              desc: 'The Squash TM webhook URL'
+            },
+            {
+              required: false,
+              name: :token,
+              type: String,
+              desc: 'The secret token'
+            }
           ]
         }
       end
@@ -918,6 +976,7 @@ module API
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
+          ::Integrations::GooglePlay,
           ::Integrations::HangoutsChat,
           ::Integrations::Harbor,
           ::Integrations::Irker,
@@ -934,6 +993,7 @@ module API
           ::Integrations::Redmine,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
+          ::Integrations::SquashTm,
           ::Integrations::Teamcity,
           ::Integrations::Youtrack,
           ::Integrations::Zentao

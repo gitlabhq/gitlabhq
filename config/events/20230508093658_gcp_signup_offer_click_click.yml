@@ -1,0 +1,21 @@
+---
+description: GCP offer banner Apply for credit is clicked
+category: gcp_signup_offer_click
+action: click
+label_description: 'gcp_signup_offer_banner'
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: deploy
+product_group: group::environments
+milestone: '16.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119940
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

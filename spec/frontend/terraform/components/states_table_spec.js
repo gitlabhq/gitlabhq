@@ -127,7 +127,7 @@ describe('StatesTable', () => {
         propsData,
         provide: { projectPath: 'path/to/project' },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );
@@ -138,11 +138,6 @@ describe('StatesTable', () => {
 
   beforeEach(() => {
     return createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it.each`

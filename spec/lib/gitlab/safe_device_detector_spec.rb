@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'device_detector'
 require_relative '../../../lib/gitlab/safe_device_detector'
 
-RSpec.describe Gitlab::SafeDeviceDetector, feature_category: :authentication_and_authorization do
+RSpec.describe Gitlab::SafeDeviceDetector, feature_category: :system_access do
   it 'retains the behavior for normal user agents' do
     chrome_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
     (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"

@@ -32,7 +32,7 @@ module Banzai
 
       def lang_tag
         @lang_tag ||= Gitlab::Utils::Nokogiri
-          .css_to_xpath('pre[lang="plantuml"] > code, pre > code[lang="plantuml"]').freeze
+          .css_to_xpath('pre[data-canonical-lang="plantuml"] > code, pre > code[data-canonical-lang="plantuml"]').freeze
       end
 
       def settings

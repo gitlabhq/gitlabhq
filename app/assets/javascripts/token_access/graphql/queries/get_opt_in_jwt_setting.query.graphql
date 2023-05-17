@@ -1,8 +1,0 @@
-query getOptInJwtSetting($fullPath: ID!) {
-  project(fullPath: $fullPath) {
-    id
-    ciCdSettings {
-      optInJwt
-    }
-  }
-}

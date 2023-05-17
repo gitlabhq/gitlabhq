@@ -4,18 +4,28 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Award emojis **(FREE)**
+# Emoji reactions **(FREE)**
+
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emojis" to "emoji reactions" in GitLab 16.0.
+> - Reacting with emojis on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
 
 When you're collaborating online, you get fewer opportunities for high-fives
-and thumbs-ups. Emojis can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
-[snippets](snippets.md), and anywhere you can have a thread.
+and thumbs-ups. React with emojis on:
 
-![Award emoji](img/award_emoji_select_v14_6.png)
+- [Issues](project/issues/index.md).
+- [Tasks](tasks.md).
+- [Merge requests](project/merge_requests/index.md),
+[snippets](snippets.md).
+- [Epics](../user/group/epics/index.md).
+- [Objectives and key results](okrs.md).
+- Anywhere else you can have a comment thread.
 
-Award emojis make it much easier to give and receive feedback without a long
+![Emoji reactions](img/award_emoji_select_v14_6.png)
+
+Emoji reactions make it much easier to give and receive feedback without a long
 comment thread.
 
-For information on the relevant API, see [Award Emoji API](../api/award_emoji.md).
+For information on the relevant API, see [Emoji reactions API](../api/award_emoji.md).
 
 ## Sort issues and merge requests on vote count
 
@@ -29,17 +39,17 @@ The total number of votes is not summed up. An issue with 18 upvotes and 5
 downvotes is considered more popular than an issue with 17 upvotes and no
 downvotes.
 
-## Award emojis for comments
+## Emoji reactions for comments
 
-Award emojis can also be applied to individual comments when you want to
+Emoji reactions can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.
 
-To add an award emoji:
+To add an emoji reaction:
 
-1. In the upper right of the comment, select the smile (**{slight-smile}**).
-1. Select an emoji from the dropdown list.
+1. In the upper-right corner of the comment, select the smile (**{slight-smile}**).
+1. Select an emoji from the emoji picker.
 
-To remove an award emoji, select the emoji again.
+To remove an emoji reaction, select the emoji again.
 
 ## Custom emojis
 

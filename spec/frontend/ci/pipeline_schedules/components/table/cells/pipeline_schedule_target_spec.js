@@ -25,10 +25,6 @@ describe('Pipeline schedule target', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays icon', () => {
     expect(findIcon().exists()).toBe(true);
     expect(findIcon().props('name')).toBe('fork');

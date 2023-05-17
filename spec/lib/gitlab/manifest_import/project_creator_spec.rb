@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ManifestImport::ProjectCreator do
+RSpec.describe Gitlab::ManifestImport::ProjectCreator, feature_category: :importers do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
   let(:repository) do
@@ -14,6 +14,8 @@ RSpec.describe Gitlab::ManifestImport::ProjectCreator do
 
   before do
     group.add_owner(user)
+
+    stub_application_setting(import_sources: ['manifest'])
   end
 
   subject { described_class.new(repository, group, user) }

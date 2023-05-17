@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEventTags::CreateService do
+RSpec.describe IncidentManagement::TimelineEventTags::CreateService, feature_category: :incident_management do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
   let_it_be_with_reload(:project) { create(:project) }

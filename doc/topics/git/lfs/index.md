@@ -3,7 +3,6 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, howto
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs/index.html'
 ---
 
 # Git Large File Storage (LFS) **(FREE)**
@@ -27,10 +26,10 @@ instructions from where to fetch or where to push the large file.
 
 Documentation for GitLab instance administrators is under [LFS administration doc](../../../administration/lfs/index.md).
 
-## Requirements
+## Prerequisites
 
 - Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
-- [Git LFS client](https://git-lfs.com/) version 1.0.1 or higher must be installed.
+- [Git LFS client](https://git-lfs.com/) version 1.0.1 or later must be installed.
 
 ## Known limitations
 

@@ -7,7 +7,6 @@ query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
     location
     canDelete
     createdAt
-    updatedAt
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
     project {

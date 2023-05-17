@@ -21,11 +21,6 @@ describe('CI lint warnings', () => {
   const findWarnings = () => wrapper.findAll('[data-testid="ci-lint-warning"]');
   const findWarningMessage = () => trimText(wrapper.findComponent(GlSprintf).text());
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('displays the warning alert', () => {
     createComponent();
 

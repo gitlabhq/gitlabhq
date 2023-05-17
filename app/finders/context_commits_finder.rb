@@ -21,11 +21,15 @@ class ContextCommitsFinder
   attr_reader :project, :merge_request, :search, :author, :committed_before, :committed_after, :limit
 
   def init_collection
-    if search.present?
+    if search_params_present?
       search_commits
     else
       project.repository.commits(merge_request.target_branch, { limit: limit })
     end
+  end
+
+  def search_params_present?
+    [search, author, committed_before, committed_after].map(&:present?).any?
   end
 
   def filter_existing_commits(commits)
@@ -34,7 +38,7 @@ class ContextCommitsFinder
   end
 
   def search_commits
-    key = search.strip
+    key = search&.strip
     commits = []
     if Commit.valid_hash?(key)
       mr_existing_commits_ids = merge_request.commits.map(&:id)

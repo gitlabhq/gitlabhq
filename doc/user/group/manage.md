@@ -1,12 +1,22 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Manage groups
 
 Use groups to manage one or more related projects at the same time.
+
+NOTE:
+Self-managed customers should create a top-level group so you can see an overview of
+your organization. For more information about efforts to create an
+organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A top-level group can also have one complete
+[Security Dashboard and Center](../application_security/security_dashboard/index.md),
+[Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
+[Compliance Report](../compliance/compliance_report/index.md), and
+[Value stream analytics](../group/value_stream_analytics/index.md).
 
 ## View groups
 
@@ -65,10 +75,10 @@ This action removes the group. It also adds a background job to delete all proje
 
 Specifically:
 
-- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium or Ultimate tiers](https://about.gitlab.com/pricing/premium/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
-deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+  deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
 ## Remove a group immediately **(PREMIUM)**
 
@@ -155,7 +165,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
-1. Above the list of members, in the upper right, from the **Account** list, select
+1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
    arrow (**{sort-lowest}** or **{sort-highest}**).
@@ -237,6 +247,23 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 
+## Add Group README
+
+As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
+The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
+
+Prerequisite:
+
+- To create the README from the group settings, you must have the Owner role for the group.
+
+To add a group README:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
+1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
+1. In the Web IDE, edit and commit the `README.md` file.
+
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
@@ -297,7 +324,7 @@ To change this setting for a specific group, see [group level default branch pro
 To change this setting globally, see [initial default branch protection](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 NOTE:
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
+In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
 
 ## Use a custom name for the initial branch
 
@@ -348,11 +375,14 @@ If you need to copy a group to a different GitLab instance,
 When transferring groups, note:
 
 - Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
-- You can only transfer groups to groups you manage.
+- You must have the Owner role in the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
-- Transfers fail if [packages](../packages/index.md) exist in any of the projects in the group, or in any of its subgroups.
+- Transfers fail if [npm packages](../packages/npm_registry/index.md) exist in any of the projects in the group, or in any of its subgroups.
+- Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group level endpoint.
+- Existing package names need to be updated if the package uses an instance level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another root level namespace.
+- [Maven packages](../packages/maven_repository/index.md#naming-convention) follow a naming convention that prevent installing or publishing the respective package from a group level endpoint after group transfer.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 To transfer a group:
@@ -371,6 +401,9 @@ To transfer a group:
 > - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 > - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) on May 08, 2023.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
 [deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
@@ -398,8 +431,10 @@ To enable delayed deletion of projects in a group:
    - (GitLab 15.0 and earlier), **Enforce for all subgroups**.
 1. Select **Save changes**.
 
-NOTE:
-In GitLab 13.11 and above the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
+In GitLab 13.11 and later, the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md), inheritance can be overridden unless enforced by an ancestor.
+
+In GitLab 15.11 with the `always_perform_delayed_deletion` feature flag enabled, this setting is removed
+and all projects are deleted after the [retention period defined by the admin](../admin_area/settings/visibility_and_access_controls.md#retention-period). This will be the default behavior in GitLab 16.0 and later.
 
 ## Disable email notifications
 
@@ -447,6 +482,10 @@ You can export a list of members in a group or subgroup as a CSV.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
+The output lists direct members and members inherited from the ancestor groups.
+For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
+[Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
+
 ## User cap for groups
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
@@ -465,7 +504,7 @@ disabled for the group and its subgroups.
 
 Prerequisite:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To specify a user cap:
 
@@ -640,9 +679,78 @@ To view the merge request approval settings for a group:
 
 Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
+## Group Code Suggestions **(FREE SAAS)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
+
+WARNING:
+This feature is in [Beta](../../policy/alpha-beta-support.md#beta).
+Code Suggestions use generative AI to suggest code while you're developing.
+Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed.
+Code Suggestions may produce
+[low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
+Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
+We look forward to hearing your feedback.
+
+This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable Code Suggestions for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Code Suggestions** settings.
+1. Select **Save changes**.
+
+## Group Experiment features setting **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+
+You can give all users in the group access to Experiment features.
+
+WARNING:
+[Experiment features](../../policy/alpha-beta-support.md#experiment) may produce unexpected results
+(for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
+and might include insecure code or failed pipelines).
+
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable Experiment features for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Experiment features** settings.
+1. Select **Save changes**.
+
+## Group third-party AI features setting **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+
+WARNING:
+These Artifical Intelligence (AI) features use [third-party services](../ai_features.md#data-usage)
+and require transmission of data, including personal data.
+
+You can give all users in the group access to third-party AI features.
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable third-party AI features for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Third-party Artificial Intelligence (AI) features** settings.
+1. Select **Save changes**.
+
 ## Group activity analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta-features).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 
@@ -745,3 +853,16 @@ Administrators can find a user's maximum permissions for a group or project.
    group = Group.find_by_full_path 'group'
    user.max_member_access_for_group group.id
    ```
+
+### Unable to remove billable members with badge `Project Invite/Group Invite`
+
+```plaintext
+Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member.
+```
+
+This error typically occurs when the user you're trying to remove is part of an external group that has been [shared with one or more of your projects](../project/members/share_project_with_groups.md) or [groups](#share-a-group-with-another-group). To remove the user as a billable member, follow one of the options:
+
+- Remove the invited group membership from your project or group members page.
+- Recommended. Remove the user directly from the invited group, if you have access to the group.
+
+The feature request to **Update billable_members endpoint to include invited group** is currently being worked on. For more information, see [issue 386583](https://gitlab.com/gitlab-org/gitlab/-/issues/386583)

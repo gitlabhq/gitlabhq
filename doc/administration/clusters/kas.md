@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -43,6 +43,33 @@ To enable the agent server on a single node:
 For additional configuration options, see the **Enable GitLab KAS** section of the
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-config-template/gitlab.rb.template).
 
+##### Configure KAS to listen on a UNIX socket
+
+If you use GitLab behind a proxy, KAS might not work correctly. You can resolve this issue on a single-node installation, you can configure KAS to listen on a UNIX socket.
+
+To configure KAS to listen on a UNIX socket:
+
+1. Create a directory for the KAS sockets:
+
+   ```shell
+   sudo mkdir -p /var/opt/gitlab/gitlab-kas/sockets/
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_kas['internal_api_listen_network'] = 'unix'
+   gitlab_kas['internal_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/internal-api.socket'
+   gitlab_kas['private_api_listen_network'] = 'unix'
+   gitlab_kas['private_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
+   gitlab_kas['env'] = {
+     'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
+     'OWN_PRIVATE_API_URL' => 'unix:///var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
+   }
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 #### Enable on multiple nodes
 
 To enable the agent server on multiple nodes:
@@ -50,6 +77,8 @@ To enable the agent server on multiple nodes:
 1. For each agent server node, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
+   gitlab_kas_external_url 'wss://kas.gitlab.example.com/'
+
    gitlab_kas['enable'] = true
    gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
    gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
@@ -65,17 +94,23 @@ To enable the agent server on multiple nodes:
    gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
    ```
 
-   In this configuration:
-
-   - `gitlab_kas['private_api_listen_address']` is the address the agent server listens on. You can set it to `0.0.0.0` or an IP address reachable by other nodes in the cluster.
-   - `OWN_PRIVATE_API_URL` is the environment variable used by the KAS process for service discovery. You can set it to a hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster.
-   - `gitlab_kas['api_secret_key']` is the shared secret used for authentication between KAS and GitLab. This value must be Base64-encoded and exactly 32 bytes long.
-   - `gitlab_kas['private_api_secret_key']` is the shared secret used for authentication between different KAS instances. This value must be Base64-encoded and exactly 32 bytes long.
-   - `gitlab_rails['gitlab_kas_external_url']` is the user-facing URL for the in-cluster `agentk`.
-   - `gitlab_rails['gitlab_kas_internal_url']` is the internal URL the GitLab backend uses to communicate with KAS.
-   - `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` is the user-facing URL for Kubernetes API proxying.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+##### Agent server node settings
+
+| Setting | Description |
+|---------|-------------|
+| `gitlab_kas['private_api_listen_address']` | The address the agent server listens on. Set to `0.0.0.0` or to an IP address reachable by other nodes in the cluster. |
+| `gitlab_kas['api_secret_key']` | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
+| `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
+| `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
+| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>**1**</sup> or a GitLab external URL. <sup>**2**</sup> If blank, defaults to a GitLab external URL. |
+| `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS. |
+
+1. For example, `wss://kas.gitlab.example.com/`.
+1. For example, `wss://gitlab.example.com/-/kubernetes-agent/`.
 
 ### For GitLab Helm Chart
 
@@ -104,6 +139,24 @@ For GitLab [Helm Chart](https://docs.gitlab.com/charts/) installations:
    ```
 
 For details, see [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitlab/kas/).
+
+## Kubernetes API proxy cookie
+
+> Introduced in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`.
+
+KAS proxies Kubernetes API requests to the GitLab agent with either:
+
+- A [CI/CD job](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md).
+- [GitLab user credentials](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md).
+
+To authenticate with user credentials, Rails sets a cookie for the GitLab frontend.
+This cookie is called `_gitlab_kas` and it contains an encrypted
+session ID, like the [`_gitlab_session` cookie](../../user/profile/index.md#cookies-used-for-sign-in).
+The `_gitlab_kas` cookie must be sent to the KAS proxy endpoint with every request
+to authenticate and authorize the user.
 
 ## Troubleshooting
 

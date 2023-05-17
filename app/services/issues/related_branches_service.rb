@@ -4,11 +4,6 @@
 # those with a merge request open referencing the current issue.
 module Issues
   class RelatedBranchesService < Issues::BaseService
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def execute(issue)
       branch_names_with_mrs = branches_with_merge_request_for(issue)
       branches = branches_with_iid_of(issue).reject { |b| branch_names_with_mrs.include?(b[:name]) }

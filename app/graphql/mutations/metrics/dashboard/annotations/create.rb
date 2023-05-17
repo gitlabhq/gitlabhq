@@ -10,7 +10,7 @@ module Mutations
           ANNOTATION_SOURCE_ARGUMENT_ERROR = 'Either a cluster or environment global id is required'
           INVALID_ANNOTATION_SOURCE_ERROR = 'Invalid cluster or environment id'
 
-          authorize :create_metrics_dashboard_annotation
+          authorize :admin_metrics_dashboard_annotation
 
           field :annotation,
             Types::Metrics::Dashboards::AnnotationType,
@@ -75,16 +75,14 @@ module Mutations
           private
 
           def ready?(**args)
+            raise_resource_not_available_error! if Feature.enabled?(:remove_monitor_metrics)
+
             # Raise error if both cluster_id and environment_id are present or neither is present
             unless args[:cluster_id].present? ^ args[:environment_id].present?
               raise Gitlab::Graphql::Errors::ArgumentError, ANNOTATION_SOURCE_ARGUMENT_ERROR
             end
 
             super(**args)
-          end
-
-          def find_object(id:)
-            GitlabSchema.find_by_gid(id)
           end
 
           def annotation_create_params(args)

@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { visitUrl } from '~/lib/utils/url_utility';

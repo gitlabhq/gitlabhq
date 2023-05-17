@@ -15,6 +15,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   let_it_be(:project_b) { create(:project, :repository, :private, group: group1) }
   let_it_be(:project_c) { create(:project, :repository, :public, group: group2) }
   let_it_be(:project_d) { create(:project, :repository, :private, group: group2) }
+  let_it_be(:archived_project) { create(:project, :repository, :archived, group: group2) }
   let_it_be(:milestone1) { create(:milestone, project: project_c, due_date: 10.days.from_now) }
   let_it_be(:milestone2) { create(:milestone, project: project_d, due_date: 20.days.from_now) }
   let_it_be(:milestone3) { create(:milestone, project: project_d, due_date: 30.days.from_now) }
@@ -83,6 +84,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 
+  let_it_be(:archived_issue) { create(:issue, project: archived_project) }
   let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
   # we need to always provide at least one filter to the query so it doesn't fail
   let_it_be(:base_params) { { iids: issues.map { |issue| issue.iid.to_s } } }
@@ -107,6 +109,38 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
         hash_including('message' => _('You must provide at least one filter argument for this query'))
       )
     end
+  end
+
+  describe 'includeArchived filter' do
+    let(:base_params) { { iids: [archived_issue.iid.to_s] } }
+
+    it 'excludes issues from archived projects' do
+      post_query
+
+      issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+      expect(issue_ids).not_to include(archived_issue.to_gid.to_s)
+    end
+
+    context 'when includeArchived is true' do
+      let(:issue_filter_params) { { include_archived: true } }
+
+      it 'includes issues from archived projects' do
+        post_query
+
+        issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+        expect(issue_ids).to include(archived_issue.to_gid.to_s)
+      end
+    end
+  end
+
+  it 'excludes issues from archived projects' do
+    post_query
+
+    issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+    expect(issue_ids).not_to include(archived_issue.to_gid.to_s)
   end
 
   context 'when no filters are provided' do

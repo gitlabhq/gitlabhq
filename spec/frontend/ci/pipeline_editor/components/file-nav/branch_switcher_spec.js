@@ -133,10 +133,6 @@ describe('Pipeline editor branch switcher', () => {
     mockAvailableBranchQuery = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const testErrorHandling = () => {
     expect(wrapper.emitted('showError')).toBeDefined();
     expect(wrapper.emitted('showError')[0]).toEqual([
@@ -292,7 +288,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     describe('with a search term', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
       });
 

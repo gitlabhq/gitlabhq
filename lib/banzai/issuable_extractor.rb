@@ -12,6 +12,7 @@ module Banzai
     attr_reader :context
 
     ISSUE_REFERENCE_TYPE = '@data-reference-type="issue"'
+    WORK_ITEM_REFERENCE_TYPE = '@data-reference-type="work_item"'
     MERGE_REQUEST_REFERENCE_TYPE = '@data-reference-type="merge_request"'
 
     # context - An instance of Banzai::RenderContext.
@@ -41,6 +42,7 @@ module Banzai
     def parsers
       [
         Banzai::ReferenceParser::IssueParser.new(context),
+        Banzai::ReferenceParser::WorkItemParser.new(context),
         Banzai::ReferenceParser::MergeRequestParser.new(context)
       ]
     end
@@ -53,7 +55,7 @@ module Banzai
     end
 
     def reference_types
-      [ISSUE_REFERENCE_TYPE, MERGE_REQUEST_REFERENCE_TYPE]
+      [ISSUE_REFERENCE_TYPE, WORK_ITEM_REFERENCE_TYPE, MERGE_REQUEST_REFERENCE_TYPE]
     end
   end
 end

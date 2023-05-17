@@ -60,13 +60,11 @@ export default {
     actionPrimary() {
       return {
         text: this.confirmButtonText,
-        attributes: [
-          {
-            variant: 'danger',
-            disabled: !this.isValid,
-            'data-qa-selector': 'confirm_danger_modal_button',
-          },
-        ],
+        attributes: {
+          variant: 'danger',
+          disabled: !this.isValid,
+          'data-qa-selector': 'confirm_danger_modal_button',
+        },
       };
     },
     actionCancel() {

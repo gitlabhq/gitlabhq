@@ -134,6 +134,10 @@ module API
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end
 
+    rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
+      rack_response({ 'message' => exception.message }.to_json, 429, exception.headers)
+    end
+
     rescue_from :all do |exception|
       handle_api_exception(exception)
     end
@@ -234,6 +238,9 @@ module API
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Integrations
+        mount ::API::Integrations::Slack::Events
+        mount ::API::Integrations::Slack::Interactions
+        mount ::API::Integrations::Slack::Options
         mount ::API::Integrations::JiraConnect::Subscriptions
         mount ::API::Invitations
         mount ::API::IssueLinks
@@ -265,6 +272,7 @@ module API
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectImport
+        mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnippets
@@ -335,7 +343,7 @@ module API
       mount ::API::Todos
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
-      mount ::API::Ml::Mlflow
+      mount ::API::Ml::Mlflow::Entrypoint
     end
 
     mount ::API::Internal::Base

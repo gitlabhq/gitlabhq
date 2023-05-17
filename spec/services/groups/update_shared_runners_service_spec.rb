@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UpdateSharedRunnersService do
+RSpec.describe Groups::UpdateSharedRunnersService, feature_category: :subgroups do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:params) { {} }

@@ -1,0 +1,22 @@
+---
+key_path: counts_monthly.ci_internal_pipelines
+description: Total monthly (28D) pipelines in Gitlab repositories for all project and project types
+product_section: ops
+product_stage: verify
+product_group: pipeline_execution
+value_type: number
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112370
+time_frame: 28d
+data_source: database
+data_category: operational
+instrumentation_class: CountCiInternalPipelinesMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

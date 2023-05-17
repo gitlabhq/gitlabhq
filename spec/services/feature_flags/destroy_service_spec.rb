@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlags::DestroyService do
+RSpec.describe FeatureFlags::DestroyService, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let_it_be(:project) { create(:project) }
@@ -20,7 +20,8 @@ RSpec.describe FeatureFlags::DestroyService do
   describe '#execute' do
     subject { described_class.new(project, user, params).execute(feature_flag) }
 
-    let(:audit_event_message) { AuditEvent.last.details[:custom_message] }
+    let(:audit_event_details) { AuditEvent.last.details }
+    let(:audit_event_message) { audit_event_details[:custom_message] }
     let(:params) { {} }
 
     it 'returns status success' do

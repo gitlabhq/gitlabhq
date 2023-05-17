@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin browse spam logs', feature_category: :not_owned do
+RSpec.describe 'Admin browse spam logs', feature_category: :shared do
   let!(:spam_log) { create(:spam_log, description: 'abcde ' * 20) }
 
   before do

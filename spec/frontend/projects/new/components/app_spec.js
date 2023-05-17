@@ -6,12 +6,12 @@ describe('Experimental new project creation app', () => {
   let wrapper;
 
   const createComponent = (propsData) => {
-    wrapper = shallowMount(App, { propsData });
+    wrapper = shallowMount(App, {
+      propsData: { rootPath: '/', projectsUrl: '/dashboard/projects', ...propsData },
+    });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findNewNamespacePage = () => wrapper.findComponent(NewNamespacePage);
 
   it('passes custom new project guideline text to underlying component', () => {
     const DEMO_GUIDELINES = 'Demo guidelines';
@@ -34,11 +34,45 @@ describe('Experimental new project creation app', () => {
 
     expect(
       Boolean(
-        wrapper
-          .findComponent(NewNamespacePage)
+        findNewNamespacePage()
           .props()
           .panels.find((p) => p.name === 'cicd_for_external_repo'),
       ),
     ).toBe(isCiCdAvailable);
+  });
+
+  it.each`
+    canImportProjects | outcome
+    ${false}          | ${'do not show Import panel'}
+    ${true}           | ${'show Import panel'}
+  `('$outcome when canImportProjects is $canImportProjects', ({ canImportProjects }) => {
+    createComponent({
+      canImportProjects,
+    });
+
+    expect(
+      findNewNamespacePage()
+        .props()
+        .panels.some((p) => p.name === 'import_project'),
+    ).toBe(canImportProjects);
+  });
+
+  it('creates correct breadcrumbs for top-level projects', () => {
+    createComponent();
+
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/', text: 'Your work' },
+      { href: '/dashboard/projects', text: 'Projects' },
+      { href: '#', text: 'New project' },
+    ]);
+  });
+
+  it('creates correct breadcrumbs for projects within groups', () => {
+    createComponent({ parentGroupUrl: '/parent-group', parentGroupName: 'Parent Group' });
+
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/parent-group', text: 'Parent Group' },
+      { href: '#', text: 'New project' },
+    ]);
   });
 });

@@ -5,7 +5,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import autosave from '../mixins/autosave';
 import NoteAttachment from './note_attachment.vue';
 import NoteAwardsList from './note_awards_list.vue';
 import NoteEditedText from './note_edited_text.vue';
@@ -22,7 +21,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [autosave],
   props: {
     note: {
       type: Object,
@@ -96,21 +94,9 @@ export default {
   },
   mounted() {
     this.renderGFM();
-
-    if (this.isEditing) {
-      this.initAutoSave(this.note);
-    }
   },
   updated() {
     this.renderGFM();
-
-    if (this.isEditing) {
-      if (!this.autosave) {
-        this.initAutoSave(this.note);
-      } else {
-        this.setAutoSave();
-      }
-    }
   },
   methods: {
     ...mapActions([
@@ -208,7 +194,7 @@ export default {
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
-      action-text="Edited"
+      :action-text="__('Edited')"
       class="note_edited_ago"
     />
     <note-awards-list

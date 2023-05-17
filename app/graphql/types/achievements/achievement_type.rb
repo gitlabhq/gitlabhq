@@ -14,7 +14,6 @@ module Types
 
       field :namespace,
             ::Types::NamespaceType,
-            null: false,
             description: 'Namespace of the achievement.'
 
       field :name,
@@ -41,6 +40,14 @@ module Types
             Types::TimeType,
             null: false,
             description: 'Timestamp the achievement was last updated.'
+
+      field :user_achievements,
+            Types::Achievements::UserAchievementType.connection_type,
+            null: true,
+            alpha: { milestone: '15.10' },
+            description: "Recipients for the achievement.",
+            extras: [:lookahead],
+            resolver: ::Resolvers::Achievements::UserAchievementsResolver
 
       def avatar_url
         object.avatar_url(only_path: false)

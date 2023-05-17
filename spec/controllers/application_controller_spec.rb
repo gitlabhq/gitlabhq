@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ApplicationController do
+RSpec.describe ApplicationController, feature_category: :shared do
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -736,23 +736,11 @@ RSpec.describe ApplicationController do
       end
     end
 
-    context 'user not logged in' do
-      it 'sets the default headers' do
-        get :index
+    it 'sets the default headers' do
+      get :index
 
-        expect(response.headers['Cache-Control']).to be_nil
-        expect(response.headers['Pragma']).to be_nil
-      end
-    end
-
-    context 'user logged in' do
-      it 'sets the default headers' do
-        sign_in(user)
-
-        get :index
-
-        expect(response.headers['Pragma']).to eq 'no-cache'
-      end
+      expect(response.headers['Cache-Control']).to be_nil
+      expect(response.headers['Pragma']).to be_nil
     end
   end
 
@@ -779,7 +767,6 @@ RSpec.describe ApplicationController do
       subject
 
       expect(response.headers['Cache-Control']).to eq 'private, no-store'
-      expect(response.headers['Pragma']).to eq 'no-cache'
       expect(response.headers['Expires']).to eq 'Fri, 01 Jan 1990 00:00:00 GMT'
     end
 
@@ -905,12 +892,12 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe 'rescue_from Gitlab::Auth::IpBlacklisted' do
+  describe 'rescue_from Gitlab::Auth::IpBlocked' do
     controller(described_class) do
       skip_before_action :authenticate_user!
 
       def index
-        raise Gitlab::Auth::IpBlacklisted
+        raise Gitlab::Auth::IpBlocked
       end
     end
 
@@ -1128,6 +1115,30 @@ RSpec.describe ApplicationController do
         expect(response).to have_gitlab_http_status(:redirect)
         expect(response.headers['Permissions-Policy']).to eq('interest-cohort=()')
       end
+    end
+  end
+
+  context 'when Gitlab::Git::ResourceExhaustedError exception is raised' do
+    before do
+      sign_in user
+    end
+
+    controller(described_class) do
+      def index
+        raise Gitlab::Git::ResourceExhaustedError.new(
+          "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later", 50
+        )
+      end
+    end
+
+    it 'returns a plaintext error response with 429 status' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.body).to include(
+        "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later"
+      )
+      expect(response.headers['Retry-After']).to eq(50)
     end
   end
 end

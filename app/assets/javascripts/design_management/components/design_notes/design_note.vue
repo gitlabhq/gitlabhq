@@ -1,6 +1,13 @@
 <script>
-import { GlAvatar, GlAvatarLink, GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { ApolloMutation } from 'vue-apollo';
+import {
+  GlAvatar,
+  GlAvatarLink,
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlLink,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
@@ -14,13 +21,16 @@ import DesignReplyForm from './design_reply_form.vue';
 export default {
   i18n: {
     editCommentLabel: __('Edit comment'),
+    moreActionsLabel: __('More actions'),
+    deleteCommentText: __('Delete comment'),
   },
   components: {
-    ApolloMutation,
     DesignReplyForm,
     GlAvatar,
     GlAvatarLink,
     GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlLink,
     TimeAgoTooltip,
     TimelineEntryItem,
@@ -39,6 +49,11 @@ export default {
       required: false,
       default: '',
     },
+    isDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     noteableId: {
       type: String,
       required: true,
@@ -46,8 +61,8 @@ export default {
   },
   data() {
     return {
-      noteText: this.note.body,
       isEditing: false,
+      isError: true,
     };
   },
   computed: {
@@ -63,20 +78,24 @@ export default {
     isNoteLinked() {
       return extractDesignNoteId(this.$route.hash) === this.noteAnchorId;
     },
-    mutationPayload() {
+    mutationVariables() {
       return {
         id: this.note.id,
-        body: this.noteText,
       };
     },
     isEditButtonVisible() {
-      return !this.isEditing && this.note.userPermissions.adminNote;
+      return !this.isEditing && this.adminPermissions;
+    },
+    isMoreActionsButtonVisible() {
+      return !this.isEditing && this.adminPermissions;
+    },
+    adminPermissions() {
+      return this.note.userPermissions.adminNote;
     },
   },
   methods: {
     hideForm() {
       this.isEditing = false;
-      this.noteText = this.note.body;
     },
     onDone({ data }) {
       this.hideForm();
@@ -132,6 +151,30 @@ export default {
           size="small"
           @click="isEditing = true"
         />
+        <gl-dropdown
+          v-if="isMoreActionsButtonVisible"
+          v-gl-tooltip.hover
+          class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
+          icon="ellipsis_v"
+          category="tertiary"
+          data-qa-selector="design_discussion_actions_ellipsis_dropdown"
+          data-testid="more-actions-dropdown"
+          :text="$options.i18n.moreActionsLabel"
+          text-sr-only
+          :title="$options.i18n.moreActionsLabel"
+          :aria-label="$options.i18n.moreActionsLabel"
+          no-caret
+          left
+        >
+          <gl-dropdown-item
+            variant="danger"
+            data-qa-selector="delete_design_note_button"
+            data-testid="delete-note-button"
+            @click="$emit('delete-note', note)"
+          >
+            {{ $options.i18n.deleteCommentText }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
     </div>
     <template v-if="!isEditing">
@@ -143,26 +186,18 @@ export default {
       ></div>
       <slot name="resolved-status"></slot>
     </template>
-    <apollo-mutation
+    <design-reply-form
       v-else
-      #default="{ mutate, loading }"
-      :mutation="$options.updateNoteMutation"
-      :variables="{
-        input: mutationPayload,
-      }"
-      @error="$emit('error', $event)"
-      @done="onDone"
-    >
-      <design-reply-form
-        v-model="noteText"
-        :is-saving="loading"
-        :markdown-preview-path="markdownPreviewPath"
-        :is-new-comment="false"
-        :noteable-id="noteableId"
-        class="gl-mt-5"
-        @submit-form="mutate"
-        @cancel-form="hideForm"
-      />
-    </apollo-mutation>
+      :markdown-preview-path="markdownPreviewPath"
+      :design-note-mutation="$options.updateNoteMutation"
+      :mutation-variables="mutationVariables"
+      :value="note.body"
+      :is-new-comment="false"
+      :is-discussion="isDiscussion"
+      :noteable-id="noteableId"
+      class="gl-mt-5"
+      @note-submit-complete="onDone"
+      @cancel-form="hideForm"
+    />
   </timeline-entry-item>
 </template>

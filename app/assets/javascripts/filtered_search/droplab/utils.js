@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { template as _template } from 'lodash';
 import { DATA_TRIGGER, DATA_DROPDOWN, TEMPLATE_REGEX } from './constants';
 
@@ -26,7 +24,7 @@ const utils = {
 
   closest(thisTag, stopTag) {
     while (thisTag && thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML') {
-      thisTag = thisTag.parentNode;
+      thisTag = thisTag.parentNode; // eslint-disable-line no-param-reassign
     }
     return thisTag;
   },

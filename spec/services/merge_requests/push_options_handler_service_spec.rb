@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::PushOptionsHandlerService do
+RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:parent_group) { create(:group, :public) }

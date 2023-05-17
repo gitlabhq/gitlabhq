@@ -60,6 +60,12 @@ export const mockIssuable = {
   type: 'issue',
 };
 
+export const mockIssuableItems = (n) =>
+  [...Array(n).keys()].map((i) => ({
+    id: i,
+    ...mockIssuable,
+  }));
+
 export const mockIssuables = [
   mockIssuable,
   {

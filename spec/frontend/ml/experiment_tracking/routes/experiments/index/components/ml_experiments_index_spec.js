@@ -1,8 +1,9 @@
 import { GlEmptyState, GlLink, GlTableLite } from '@gitlab/ui';
 import MlExperimentsIndexApp from '~/ml/experiment_tracking/routes/experiments/index';
-import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
+import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { TITLE_LABEL } from '~/ml/experiment_tracking/routes/experiments/index/translations';
 import {
   startCursor,
   firstExperiment,
@@ -14,11 +15,10 @@ import {
 let wrapper;
 const createWrapper = (defaultExperiments = [], pageInfo = defaultPageInfo) => {
   wrapper = mountExtended(MlExperimentsIndexApp, {
-    propsData: { experiments: defaultExperiments, pageInfo },
+    propsData: { experiments: defaultExperiments, pageInfo, emptyStateSvgPath: 'path' },
   });
 };
 
-const findAlert = () => wrapper.findComponent(IncubationAlert);
 const findPagination = () => wrapper.findComponent(Pagination);
 const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 const findTable = () => wrapper.findComponent(GlTableLite);
@@ -28,6 +28,7 @@ const findNthTableRow = (idx) => findTableRows().at(idx);
 const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col);
 const hrefInRowAndColumn = (row, col) =>
   findColumnInRow(row, col).findComponent(GlLink).attributes().href;
+const findTitleHeader = () => wrapper.findComponent(ModelExperimentsHeader);
 
 describe('MlExperimentsIndex', () => {
   describe('empty state', () => {
@@ -44,12 +45,18 @@ describe('MlExperimentsIndex', () => {
     it('does not show pagination', () => {
       expect(findPagination().exists()).toBe(false);
     });
+
+    it('does not render header', () => {
+      expect(findTitleHeader().exists()).toBe(false);
+    });
   });
 
-  it('displays IncubationAlert', () => {
-    createWrapper(experiments);
+  describe('Title header', () => {
+    beforeEach(() => createWrapper(experiments));
 
-    expect(findAlert().exists()).toBe(true);
+    it('has the right title', () => {
+      expect(findTitleHeader().props('pageTitle')).toBe(TITLE_LABEL);
+    });
   });
 
   describe('experiments table', () => {

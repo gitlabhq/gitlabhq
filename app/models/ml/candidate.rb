@@ -3,25 +3,35 @@
 module Ml
   class Candidate < ApplicationRecord
     include Sortable
+    include AtomicInternalId
+    include IgnorableColumns
 
-    PACKAGE_PREFIX = 'ml_candidate_'
+    ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
-    validates :iid, :experiment, presence: true
+    validates :eid, :experiment, presence: true
     validates :status, inclusion: { in: statuses.keys }
 
     belongs_to :experiment, class_name: 'Ml::Experiment'
     belongs_to :user
+    belongs_to :package, class_name: 'Packages::Package'
+    belongs_to :project
+    belongs_to :ci_build, class_name: 'Ci::Build', optional: true
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :metadata, class_name: 'Ml::CandidateMetadata'
     has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
-    attribute :iid, default: -> { SecureRandom.uuid }
+    attribute :eid, default: -> { SecureRandom.uuid }
 
-    scope :including_relationships, -> { includes(:latest_metrics, :params, :user) }
+    has_internal_id :internal_id,
+      scope: :project,
+      init: AtomicInternalId.project_init(self, :internal_id)
+
+    scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package, :project, :ci_build) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
+
     scope :order_by_metric, ->(metric, direction) do
       subquery = Ml::CandidateMetric.latest.where(name: metric)
       column_expression = Arel::Table.new('latest')[:value]
@@ -46,40 +56,34 @@ module Ml
         )
     end
 
-    delegate :project_id, :project, to: :experiment
+    alias_attribute :artifact, :package
+    alias_attribute :iid, :internal_id
+
+    delegate :package_name, to: :experiment
 
     def artifact_root
       "/#{package_name}/#{package_version}/"
     end
 
-    def artifact
-      artifact_lazy&.itself
-    end
-
-    def artifact_lazy
-      BatchLoader.for(id).batch do |candidate_ids, loader|
-        Packages::Package
-          .joins("INNER JOIN ml_candidates ON packages_packages.name=(concat('#{PACKAGE_PREFIX}', ml_candidates.id))")
-          .where(ml_candidates: { id: candidate_ids })
-          .find_each do |package|
-            loader.call(package.name.delete_prefix(PACKAGE_PREFIX).to_i, package)
-          end
-      end
-    end
-
-    def package_name
-      "#{PACKAGE_PREFIX}#{id}"
-    end
-
     def package_version
-      '-'
+      iid
+    end
+
+    def from_ci?
+      ci_build_id.present?
     end
 
     class << self
+      def with_project_id_and_eid(project_id, eid)
+        return unless project_id.present? && eid.present?
+
+        find_by(project_id: project_id, eid: eid)
+      end
+
       def with_project_id_and_iid(project_id, iid)
         return unless project_id.present? && iid.present?
 
-        joins(:experiment).find_by(experiment: { project_id: project_id }, iid: iid)
+        find_by(project_id: project_id, internal_id: iid)
       end
     end
   end

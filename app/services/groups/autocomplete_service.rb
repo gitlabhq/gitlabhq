@@ -13,7 +13,7 @@ module Groups
       IssuesFinder.new(current_user, finder_params)
         .execute
         .preload(project: :namespace)
-        .select(:iid, :title, :project_id)
+        .select(:iid, :title, :project_id, :namespace_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

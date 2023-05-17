@@ -1,4 +1,5 @@
-import { __ } from '~/locale';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
+import { __, s__ } from '~/locale';
 
 export const DISCUSSION_NOTE = 'DiscussionNote';
 export const DIFF_NOTE = 'DiffNote';
@@ -6,10 +7,6 @@ export const DISCUSSION = 'discussion';
 export const NOTE = 'note';
 export const SYSTEM_NOTE = 'systemNote';
 export const COMMENT = 'comment';
-export const OPENED = 'opened';
-export const REOPENED = 'reopened';
-export const CLOSED = 'closed';
-export const MERGED = 'merged';
 export const ISSUE_NOTEABLE_TYPE = 'Issue';
 export const EPIC_NOTEABLE_TYPE = 'Epic';
 export const MERGE_REQUEST_NOTEABLE_TYPE = 'MergeRequest';
@@ -43,13 +40,80 @@ export const DISCUSSION_FILTER_TYPES = {
 
 export const toggleStateErrorMessage = {
   Epic: {
-    [CLOSED]: __('Something went wrong while reopening the epic. Please try again later.'),
-    [OPENED]: __('Something went wrong while closing the epic. Please try again later.'),
-    [REOPENED]: __('Something went wrong while closing the epic. Please try again later.'),
+    [STATUS_CLOSED]: __('Something went wrong while reopening the epic. Please try again later.'),
+    [STATUS_OPEN]: __('Something went wrong while closing the epic. Please try again later.'),
+    [STATUS_REOPENED]: __('Something went wrong while closing the epic. Please try again later.'),
   },
   MergeRequest: {
-    [CLOSED]: __('Something went wrong while reopening the merge request. Please try again later.'),
-    [OPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
-    [REOPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
+    [STATUS_CLOSED]: __(
+      'Something went wrong while reopening the merge request. Please try again later.',
+    ),
+    [STATUS_OPEN]: __(
+      'Something went wrong while closing the merge request. Please try again later.',
+    ),
+    [STATUS_REOPENED]: __(
+      'Something went wrong while closing the merge request. Please try again later.',
+    ),
   },
 };
+
+export const MR_FILTER_OPTIONS = [
+  {
+    text: __('Approvals'),
+    value: 'approval',
+    systemNoteIcons: ['approval', 'unapproval', 'check'],
+  },
+  {
+    text: __('Assignees & reviewers'),
+    value: 'assignees_reviewers',
+    noteText: [
+      s__('IssuableEvents|requested review from'),
+      s__('IssuableEvents|removed review request for'),
+      s__('IssuableEvents|assigned to'),
+      s__('IssuableEvents|unassigned'),
+    ],
+  },
+  {
+    text: __('Comments'),
+    value: 'comments',
+    noteType: ['DiscussionNote', 'DiffNote'],
+    individualNote: true,
+    noteText: [s__('IssuableEvents|resolved all threads')],
+  },
+  {
+    text: __('Commits & branches'),
+    value: 'commit_branches',
+    systemNoteIcons: ['commit', 'fork'],
+  },
+  {
+    text: __('Edits'),
+    value: 'edits',
+    systemNoteIcons: ['pencil', 'task-done'],
+  },
+  {
+    text: __('Labels'),
+    value: 'labels',
+    systemNoteIcons: ['label'],
+  },
+  {
+    text: __('Lock status'),
+    value: 'lock_status',
+    systemNoteIcons: ['lock', 'lock-open'],
+  },
+  {
+    text: __('Mentions'),
+    value: 'mentions',
+    systemNoteIcons: ['comment-dots'],
+  },
+  {
+    text: __('Merge request status'),
+    value: 'status',
+    systemNoteIcons: ['git-merge', 'issue-close', 'issues', 'merge-request-close'],
+  },
+  {
+    text: __('Tracking'),
+    value: 'tracking',
+    noteType: ['MilestoneNote'],
+    systemNoteIcons: ['timer'],
+  },
+];

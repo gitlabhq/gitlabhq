@@ -25,10 +25,6 @@ describe('MergeConflictWarning', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     present  | resolutionPath
     ${false} | ${''}

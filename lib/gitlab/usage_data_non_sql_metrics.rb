@@ -40,13 +40,6 @@ module Gitlab
 
       def minimum_id(model, column = nil)
       end
-
-      def jira_integration_data
-        {
-          projects_jira_server_active: 0,
-          projects_jira_cloud_active: 0
-        }
-      end
     end
   end
 end

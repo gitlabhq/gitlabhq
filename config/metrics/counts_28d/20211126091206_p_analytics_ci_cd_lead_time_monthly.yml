@@ -4,7 +4,6 @@ description: Count of unique visits to the project level CI CD Analytics lead ti
 product_section: dev
 product_stage: manage
 product_group: optimize
-product_category:
 value_type: number
 status: active
 milestone: '14.6'

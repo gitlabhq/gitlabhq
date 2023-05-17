@@ -45,12 +45,6 @@ describe('Alert Details Sidebar Status', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('sidebar expanded', () => {
     beforeEach(() => {
       mountComponent({

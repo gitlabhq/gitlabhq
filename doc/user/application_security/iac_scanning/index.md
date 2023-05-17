@@ -119,7 +119,7 @@ that you can download and analyze.
 To enable IaC Scanning in a project, you can create a merge request:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable IaC Scanning.
 
@@ -152,6 +152,8 @@ To disable analyzer rules:
    - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings. To find the rule identifier, you can:
      - Find it in the [JSON report artifact](#reports-json-format).
      - Search for the rule name in the [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/) and copy the alphanumeric identifier that's shown. The rule name is shown on the [Vulnerability Page](../vulnerabilities/index.md) when a rule violation is detected.
+
+After you merge the `sast-ruleset.toml` file to the default branch, existing findings for disabled rules are [automatically resolved](#automatic-vulnerability-resolution).
 
 In the following example `sast-ruleset.toml` file, the disabled rules are assigned to
 the `kics` analyzer by matching the `type` and `value` of identifiers:
@@ -243,7 +245,8 @@ kics-iac-sast:
 
 ## Automatic vulnerability resolution
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Enabled by default on GitLab.com; disabled by default in self-managed. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
+> - Enabled by default in 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
 
 To help you focus on the vulnerabilities that are still relevant, GitLab IaC Scanning automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
 
@@ -260,7 +263,7 @@ The IaC tool emits a JSON report file in the existing SAST report format. For mo
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
 
 The JSON report file can be downloaded from the CI pipelines page, or the
-pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
+pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/jobs/job_artifacts.md).
 
 ## Troubleshooting
 

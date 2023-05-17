@@ -1,12 +1,13 @@
 import { GlTab } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IncidentsSettingTabs from '~/incidents_settings/components/incidents_settings_tabs.vue';
+import { INTEGRATION_TABS_CONFIG } from '~/incidents_settings/constants';
 
 describe('IncidentsSettingTabs', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(IncidentsSettingTabs, {
+    wrapper = shallowMountExtended(IncidentsSettingTabs, {
       provide: {
         service: {},
         serviceLevelAgreementSettings: {},
@@ -14,16 +15,12 @@ describe('IncidentsSettingTabs', () => {
     });
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const findToggleButton = () => wrapper.findComponent({ ref: 'toggleBtn' });
   const findSectionHeader = () => wrapper.findComponent({ ref: 'sectionHeader' });
-
   const findIntegrationTabs = () => wrapper.findAllComponents(GlTab);
+  const findIntegrationTabAt = (index) => findIntegrationTabs().at(index);
+  const findTabComponent = (tab) => wrapper.findByTestId(`${tab.component}-tab`);
+
   it('renders header text', () => {
     expect(findSectionHeader().text()).toBe('Incidents');
   });
@@ -34,18 +31,13 @@ describe('IncidentsSettingTabs', () => {
     });
   });
 
-  it('should render the component', () => {
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
   it('should render the tab for each active integration', () => {
-    const activeTabs = wrapper.vm.$options.tabs.filter((tab) => tab.active);
-    expect(findIntegrationTabs().length).toBe(activeTabs.length);
+    const activeTabs = INTEGRATION_TABS_CONFIG.filter((tab) => tab.active);
+    expect(findIntegrationTabs()).toHaveLength(activeTabs.length);
+
     activeTabs.forEach((tab, index) => {
-      expect(findIntegrationTabs().at(index).attributes('title')).toBe(tab.title);
-      expect(
-        findIntegrationTabs().at(index).find(`[data-testid="${tab.component}-tab"]`).exists(),
-      ).toBe(true);
+      expect(findIntegrationTabAt(index).attributes('title')).toBe(tab.title);
+      expect(findTabComponent(tab).exists()).toBe(true);
     });
   });
 });

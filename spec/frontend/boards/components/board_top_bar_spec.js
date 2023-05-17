@@ -11,7 +11,7 @@ import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
 import NewBoardButton from '~/boards/components/new_board_button.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
-import { BoardType } from '~/boards/constants';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
 import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
 import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
@@ -43,8 +43,9 @@ describe('BoardTopBar', () => {
     wrapper = shallowMount(BoardTopBar, {
       store,
       apolloProvider: mockApollo,
-      props: {
+      propsData: {
         boardId: 'gid://gitlab/Board/1',
+        isSwimlanesOn: false,
       },
       provide: {
         swimlanesFeatureAvailable: false,
@@ -64,7 +65,6 @@ describe('BoardTopBar', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     mockApollo = null;
   });
 
@@ -96,6 +96,11 @@ describe('BoardTopBar', () => {
     it('does not render BoardAddNewColumnTrigger component', () => {
       expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(false);
     });
+
+    it('emits setFilters when setFilters is emitted by filtered search', () => {
+      wrapper.findComponent(IssueBoardFilteredSearch).vm.$emit('setFilters');
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    });
   });
 
   describe('when user can admin list', () => {
@@ -111,14 +116,14 @@ describe('BoardTopBar', () => {
   describe('Apollo boards', () => {
     it.each`
       boardType            | queryHandler                       | notCalledHandler
-      ${BoardType.group}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-      ${BoardType.project} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+      ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+      ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
       createComponent({
         provide: {
           boardType,
-          isProjectBoard: boardType === BoardType.project,
-          isGroupBoard: boardType === BoardType.group,
+          isProjectBoard: boardType === WORKSPACE_PROJECT,
+          isGroupBoard: boardType === WORKSPACE_GROUP,
           isApolloBoard: true,
         },
       });

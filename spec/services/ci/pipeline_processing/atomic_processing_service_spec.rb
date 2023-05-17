@@ -59,17 +59,17 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
 
       def event_on_jobs(event, job_names)
-        statuses = pipeline.latest_statuses.by_name(job_names).to_a
-        expect(statuses.count).to eq(job_names.count) # ensure that we have the same counts
+        jobs = pipeline.latest_statuses.by_name(job_names).to_a
+        expect(jobs.count).to eq(job_names.count) # ensure that we have the same counts
 
-        statuses.each do |status|
+        jobs.each do |job|
           case event
           when 'play'
-            status.play(user)
+            job.play(user)
           when 'retry'
-            ::Ci::RetryJobService.new(project, user).execute(status)
+            ::Ci::RetryJobService.new(project, user).execute(job)
           else
-            status.public_send("#{event}!")
+            job.public_send("#{event}!")
           end
         end
       end
@@ -646,8 +646,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           # Users need ability to merge into a branch in order to trigger
           # protected manual actions.
           #
-          create(:protected_branch, :developers_can_merge,
-                  name: 'master', project: project)
+          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
         end
 
         it 'properly processes entire pipeline' do
@@ -983,8 +982,8 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         bridge1 = all_builds.find_by(name: 'deploy: [ovh, monitoring]')
         bridge2 = all_builds.find_by(name: 'deploy: [ovh, app]')
 
-        downstream_job1 = bridge1.downstream_pipeline.processables.first
-        downstream_job2 = bridge2.downstream_pipeline.processables.first
+        downstream_job1 = bridge1.downstream_pipeline.all_jobs.first
+        downstream_job2 = bridge2.downstream_pipeline.all_jobs.first
 
         expect(downstream_job1.scoped_variables.to_hash).to include('PROVIDER' => 'ovh', 'STACK' => 'monitoring')
         expect(downstream_job2.scoped_variables.to_hash).to include('PROVIDER' => 'ovh', 'STACK' => 'app')
@@ -1068,7 +1067,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     private
 
     def all_builds
-      pipeline.processables.order(:stage_idx, :id)
+      pipeline.all_jobs.order(:stage_idx, :id)
     end
 
     def builds

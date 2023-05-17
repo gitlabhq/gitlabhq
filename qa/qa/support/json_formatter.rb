@@ -26,6 +26,10 @@ module QA
                   class: exception.class.name,
                   message: exception.message,
                   message_lines: strip_ansi_codes(notification.message_lines),
+                  correlation_id: exception.message[match_data_after(Loglinking::CORRELATION_ID_TITLE)],
+                  sentry_url: exception.message[match_data_after(Loglinking::SENTRY_URL_TITLE)],
+                  kibana_discover_url: exception.message[match_data_after(Loglinking::KIBANA_DISCOVER_URL_TITLE)],
+                  kibana_dashboard_url: exception.message[match_data_after(Loglinking::KIBANA_DASHBOARD_URL_TITLE)],
                   backtrace: notification.formatted_backtrace
                 }
               end
@@ -69,6 +73,10 @@ module QA
         # The code below is from https://github.com/piotrmurach/pastel/blob/master/lib/pastel/color.rb
         modified = Array(strings).map { |string| string.dup.gsub(/\x1b\[{1,2}[0-9;:?]*m/m, '') }
         modified.size == 1 ? modified[0] : modified
+      end
+
+      def match_data_after(title)
+        /(?<=#{title} ).*/
       end
     end
   end

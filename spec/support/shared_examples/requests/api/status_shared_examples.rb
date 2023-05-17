@@ -21,6 +21,23 @@ RSpec.shared_examples '400 response' do
   end
 end
 
+RSpec.shared_examples '401 response' do
+  let(:message) { nil }
+
+  before do
+    # Fires the request
+    request
+  end
+
+  it 'returns 401' do
+    expect(response).to have_gitlab_http_status(:unauthorized)
+
+    if message.present?
+      expect(json_response['message']).to eq(message)
+    end
+  end
+end
+
 RSpec.shared_examples '403 response' do
   before do
     # Fires the request
@@ -54,7 +71,7 @@ RSpec.shared_examples '412 response' do
   let(:params) { nil }
   let(:success_status) { 204 }
 
-  context 'for a modified ressource' do
+  context 'for a modified resource' do
     before do
       delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => '1990-01-12T00:00:48-0600' }
     end
@@ -65,7 +82,7 @@ RSpec.shared_examples '412 response' do
     end
   end
 
-  context 'for an unmodified ressource' do
+  context 'for an unmodified resource' do
     before do
       delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => Time.now }
     end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state,
-feature_category: :build_artifacts do
+  feature_category: :build_artifacts do
   include ExclusiveLeaseHelpers
 
   let(:service) { described_class.new }
@@ -39,32 +39,12 @@ feature_category: :build_artifacts do
           second_artifact
         end
 
-        context 'with ci_destroy_unlocked_job_artifacts feature flag disabled' do
-          before do
-            stub_feature_flags(ci_destroy_unlocked_job_artifacts: false)
-          end
+        it 'performs a consistent number of queries' do
+          control = ActiveRecord::QueryRecorder.new { service.execute }
 
-          it 'performs a consistent number of queries' do
-            control = ActiveRecord::QueryRecorder.new { service.execute }
+          more_artifacts
 
-            more_artifacts
-
-            expect { subject }.not_to exceed_query_limit(control.count)
-          end
-        end
-
-        context 'with ci_destroy_unlocked_job_artifacts feature flag enabled' do
-          before do
-            stub_feature_flags(ci_destroy_unlocked_job_artifacts: true)
-          end
-
-          it 'performs a consistent number of queries' do
-            control = ActiveRecord::QueryRecorder.new { service.execute }
-
-            more_artifacts
-
-            expect { subject }.not_to exceed_query_limit(control.count)
-          end
+          expect { subject }.not_to exceed_query_limit(control.count)
         end
       end
 
@@ -248,6 +228,16 @@ feature_category: :build_artifacts do
       it 'destroys only unlocked artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
         expect(locked_artifact).to be_persisted
+      end
+    end
+
+    context 'when some artifacts are trace' do
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
+      let!(:trace_artifact) { create(:ci_job_artifact, :trace, :expired, job: job, locked: job.pipeline.locked) }
+
+      it 'destroys only non trace artifacts' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+        expect(trace_artifact).to be_persisted
       end
     end
 

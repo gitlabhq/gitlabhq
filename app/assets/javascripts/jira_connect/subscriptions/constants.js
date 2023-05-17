@@ -54,6 +54,8 @@ export const OAUTH_WINDOW_OPTIONS = [
   `top=${window.screen.height / 2 - OAUTH_WINDOW_SIZE / 2}`,
 ].join(',');
 
+export const OAUTH_CALLBACK_MESSAGE_TYPE = 'jiraConnectOauthCallback';
+
 export const PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM = {
   long: 'SHA-256',
   short: 'S256',

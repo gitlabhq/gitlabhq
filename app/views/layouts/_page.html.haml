@@ -2,15 +2,21 @@
   - @left_sidebar = true
 .layout-page.hide-when-top-nav-responsive-open{ class: page_with_sidebar_class }
   - if show_super_sidebar?
-    - sidebar_data = super_sidebar_context(current_user, group: @group, project: @project).to_json
-    %aside.js-super-sidebar.nav-sidebar{ data: { root_path: root_path, sidebar: sidebar_data, toggle_new_nav_endpoint: profile_preferences_url } }
+    -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
+    - group = @parent_group || @group
+
+    - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user)
+    - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
+    %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, toggle_new_nav_endpoint: profile_preferences_url, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s } }
 
     - if display_whats_new?
       #whats-new-app{ data: { version_digest: whats_new_version_digest } }
 
+    = render_if_exists "layouts/tanuki_bot_chat"
+
   - elsif defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
-  .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }
+  .content-wrapper{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
@@ -30,10 +36,9 @@
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = yield :page_level_alert
-      = yield :free_user_cap_alert
       = yield :group_invite_members_banner
-      - unless @hide_breadcrumbs
-        = render "layouts/nav/breadcrumbs"
+      - unless @hide_top_bar
+        = render "layouts/nav/top_bar"
     %div{ class: "#{container_class unless @no_container} #{@content_class}" }
       %main.content{ id: "content-body", **page_itemtype }
         = render "layouts/flash", extra_flash_class: 'limit-container-width'
@@ -44,4 +49,4 @@
     -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
     = render_if_exists "shared/footer/global_footer"
 
-= render "layouts/nav/top_nav_responsive", class: 'layout-page content-wrapper-margin'
+= render "layouts/nav/top_nav_responsive", class: 'layout-page' unless show_super_sidebar?

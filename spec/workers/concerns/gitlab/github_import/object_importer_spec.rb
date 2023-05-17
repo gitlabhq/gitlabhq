@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
+RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, feature_category: :importers do
   let(:worker) do
     Class.new do
       def self.name
@@ -30,7 +30,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
   let(:github_identifiers) do
     {
       some_id: 1,
-      some_type: '_some_type_'
+      some_type: '_some_type_',
+      object_type: 'dummy'
     }
   end
 
@@ -52,7 +53,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
       def github_identifiers
         {
           some_id: 1,
-          some_type: '_some_type_'
+          some_type: '_some_type_',
+          object_type: 'dummy'
         }
       end
     end
@@ -196,6 +198,19 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
     end
 
     context 'when the record is invalid' do
+      let(:exception) { ActiveRecord::RecordInvalid.new }
+
+      before do
+        expect(importer_class)
+          .to receive(:new)
+          .with(instance_of(MockRepresantation), project, client)
+          .and_return(importer_instance)
+
+        expect(importer_instance)
+          .to receive(:execute)
+          .and_raise(exception)
+      end
+
       it 'logs an error' do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
@@ -207,16 +222,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
               importer: 'klass_name'
             }
           )
-
-        expect(importer_class)
-          .to receive(:new)
-          .with(instance_of(MockRepresantation), project, client)
-          .and_return(importer_instance)
-
-        exception = ActiveRecord::RecordInvalid.new
-        expect(importer_instance)
-          .to receive(:execute)
-          .and_raise(exception)
 
         expect(Gitlab::Import::ImportFailureService)
           .to receive(:track)
@@ -230,6 +235,15 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
 
         worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
       end
+
+      it 'updates external_identifiers of the correct failure' do
+        worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+
+        import_failures = project.import_failures
+
+        expect(import_failures.count).to eq(1)
+        expect(import_failures.first.external_identifiers).to eq(github_identifiers.with_indifferent_access)
+      end
     end
   end
 
@@ -238,6 +252,58 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
 
     it 'returns true' do
       expect(worker).to be_increment_object_counter(issue)
+    end
+  end
+
+  describe '.sidekiq_retries_exhausted' do
+    let(:correlation_id) { 'abc' }
+    let(:job) do
+      {
+        'args' => [project.id, { number: 123, state: 'open' }, '123abc'],
+        'jid' => '123',
+        'correlation_id' => correlation_id
+      }
+    end
+
+    subject(:sidekiq_retries_exhausted) { worker.class.sidekiq_retries_exhausted_block.call(job, StandardError.new) }
+
+    context 'when all arguments are given' do
+      it 'notifies the JobWaiter' do
+        expect(Gitlab::JobWaiter)
+        .to receive(:notify)
+        .with(
+          job['args'].last,
+          job['jid']
+        )
+
+        sidekiq_retries_exhausted
+      end
+    end
+
+    context 'when not all arguments are given' do
+      let(:job) do
+        {
+          'args' => [project.id, { number: 123, state: 'open' }],
+          'jid' => '123',
+          'correlation_id' => correlation_id
+        }
+      end
+
+      it 'does not notify the JobWaiter' do
+        expect(Gitlab::JobWaiter).not_to receive(:notify)
+
+        sidekiq_retries_exhausted
+      end
+    end
+
+    it 'updates external_identifiers of the correct failure' do
+      failure_1, failure_2 = create_list(:import_failure, 2, project: project)
+      failure_2.update_column(:correlation_id_value, correlation_id)
+
+      sidekiq_retries_exhausted
+
+      expect(failure_1.reload.external_identifiers).to be_empty
+      expect(failure_2.reload.external_identifiers).to eq(github_identifiers.with_indifferent_access)
     end
   end
 end

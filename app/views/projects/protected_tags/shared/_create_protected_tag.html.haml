@@ -1,9 +1,9 @@
 = gitlab_ui_form_for [@project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-tags-settings' }
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
-    - c.header do
+    - c.with_header do
       = _('Protect a tag')
-    - c.body do
+    - c.with_body do
       = form_errors(@protected_tag)
       .form-group.row
         = f.label :name, _('Tag:'), class: 'col-md-2 text-left text-md-right'
@@ -19,5 +19,5 @@
           .create_access_levels-container
             = yield :create_access_levels
 
-    - c.footer do
+    - c.with_footer do
       = f.submit _('Protect'), pajamas_button: true, disabled: true, data: { qa_selector: 'protect_tag_button' }

@@ -158,7 +158,7 @@ CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
 ```
 
-### Print top API user agents
+#### Print top API user agents
 
 ```shell
 jq --raw-output '[.route, .ua] | @tsv' api_json.log | sort | uniq -c | sort -n
@@ -180,9 +180,20 @@ if the output contains many:
 
 You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics.
 
+### Parsing `gitlab-rails/importer.log`
+
+To troubleshoot [project imports](../../administration/raketasks/project_import_export.md) or
+[migrations](../../user/project/import/index.md), run this command:
+
+```shell
+jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log
+```
+
+For common issues, see [troubleshooting](../../administration/raketasks/project_import_export.md#troubleshooting).
+
 ### Parsing `gitlab-workhorse/current`
 
-### Print top Workhorse user agents
+#### Print top Workhorse user agents
 
 ```shell
 jq --raw-output '[.uri, .user_agent] | @tsv' current | sort | uniq -c | sort -n
@@ -212,8 +223,11 @@ repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 
 ```shell
-jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv' geo.log | sort | uniq -c | sort | tail
+jq --raw-output 'select(.severity == "ERROR") | [.project_path, .class, .message, .error] | @tsv' geo.log | sort | uniq -c | sort | tail
 ```
+
+Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting.md)
+for advice about specific error messages.
 
 ### Parsing `gitaly/current`
 

@@ -7,7 +7,7 @@ class Admin::SessionsController < ApplicationController
 
   before_action :user_is_admin!
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def new
     if current_user_mode.admin_mode?

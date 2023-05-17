@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -21,6 +22,9 @@ type entry struct{ senddata.Prefix }
 type entryParams struct {
 	URL            string
 	AllowRedirects bool
+	Body           string
+	Header         http.Header
+	Method         string
 }
 
 var SendURL = &entry{"send-url:"}
@@ -86,6 +90,9 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		fail.Request(w, r, fmt.Errorf("SendURL: unpack sendData: %v", err))
 		return
 	}
+	if params.Method == "" {
+		params.Method = http.MethodGet
+	}
 
 	log.WithContextFields(r.Context(), log.Fields{
 		"url":  mask.URL(params.URL),
@@ -99,7 +106,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 
 	// create new request and copy range headers
-	newReq, err := http.NewRequest("GET", params.URL, nil)
+	newReq, err := http.NewRequest(params.Method, params.URL, strings.NewReader(params.Body))
 	if err != nil {
 		sendURLRequestsInvalidData.Inc()
 		fail.Request(w, r, fmt.Errorf("SendURL: NewRequest: %v", err))
@@ -109,6 +116,12 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 
 	for _, header := range rangeHeaderKeys {
 		newReq.Header[header] = r.Header[header]
+	}
+
+	for key, values := range params.Header {
+		for _, value := range values {
+			newReq.Header.Add(key, value)
+		}
 	}
 
 	// execute new request

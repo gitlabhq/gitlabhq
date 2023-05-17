@@ -10,7 +10,6 @@ query getProjectStorageStatistics($fullPath: ID!) {
       repositorySize
       snippetsSize
       storageSize
-      uploadsSize
       wikiSize
     }
   }

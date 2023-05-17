@@ -10,7 +10,8 @@ module Projects
           databasesUrl: project_google_cloud_databases_path(project),
           serviceAccounts: ::GoogleCloud::ServiceAccountsService.new(project).find_for_project,
           createServiceAccountUrl: project_google_cloud_service_accounts_path(project),
-          emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg'),
+          emptyIllustrationUrl:
+            ActionController::Base.helpers.image_path('illustrations/empty-state/empty-pipeline-md.svg'),
           configureGcpRegionsUrl: project_google_cloud_gcp_regions_path(project),
           gcpRegions: gcp_regions,
           revokeOauthUrl: revoke_oauth_url

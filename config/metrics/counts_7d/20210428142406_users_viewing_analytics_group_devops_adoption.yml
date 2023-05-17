@@ -6,7 +6,6 @@ description: Unique users viewing analytics group devops adoption
 product_section: dev
 product_stage: manage
 product_group: optimize
-product_category:
 value_type: number
 status: active
 milestone: "13.12"

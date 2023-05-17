@@ -9,15 +9,15 @@ module QA
           element :role_dropdown
         end
 
-        def has_get_started_button?
-          has_element?(:get_started_button)
+        def has_get_started_button?(wait: Capybara.default_max_wait_time)
+          has_element?(:get_started_button, wait: wait)
         end
 
         def select_role(role)
           select_element(:role_dropdown, role)
         end
 
-        def choose_setup_for_company_if_available
+        def choose_setup_for_just_me_if_available
           # Only implemented in EE
         end
 

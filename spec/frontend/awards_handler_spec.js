@@ -1,15 +1,14 @@
 import $ from 'jquery';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import Cookies from '~/lib/utils/cookies';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import loadAwardsHandler from '~/awards_handler';
 
 window.gl = window.gl || {};
-window.gon = window.gon || {};
 
 let awardsHandler = null;
-const urlRoot = gon.relative_url_root;
 
 describe('AwardsHandler', () => {
   useFakeRequestAnimationFrame();
@@ -88,16 +87,13 @@ describe('AwardsHandler', () => {
   beforeEach(async () => {
     await initEmojiMock(emojiData);
 
-    loadHTMLFixture('snippets/show.html');
+    setHTMLFixture(htmlSnippetsShow);
 
     awardsHandler = await loadAwardsHandler(true);
     jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
   });
 
   afterEach(() => {
-    // restore original url root value
-    gon.relative_url_root = urlRoot;
-
     clearEmojiMock();
 
     // Undo what we did to the shared <body>

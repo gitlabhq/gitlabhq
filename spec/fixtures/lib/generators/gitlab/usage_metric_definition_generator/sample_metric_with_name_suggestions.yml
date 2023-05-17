@@ -6,7 +6,6 @@ description:
 product_section:
 product_stage:
 product_group:
-product_category:
 value_type: number
 status: active
 milestone: "13.9"

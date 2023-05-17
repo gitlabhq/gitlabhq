@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::Projects::CreatorService do
+RSpec.describe Members::Projects::CreatorService, feature_category: :projects do
   let_it_be(:source, reload: true) { create(:project, :public) }
+  let_it_be(:source2, reload: true) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
 
   describe '.access_levels' do
@@ -16,6 +17,7 @@ RSpec.describe Members::Projects::CreatorService do
 
   describe '.add_members' do
     it_behaves_like 'bulk member creation' do
+      let_it_be(:source_type) { Project }
       let_it_be(:member_type) { ProjectMember }
     end
   end

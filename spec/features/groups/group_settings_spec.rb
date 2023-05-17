@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Edit group settings', feature_category: :subgroups do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user)  { create(:user) }
   let(:group) { create(:group, path: 'foo') }
 
@@ -72,7 +74,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         visit new_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
 
       it 'the old project path redirects to the new path' do
@@ -80,7 +82,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         visit old_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
     end
   end
@@ -147,14 +149,16 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         selected_group.add_owner(user)
       end
 
-      it 'can successfully transfer the group', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384966' do
+      it 'can successfully transfer the group' do
+        selected_group_path = selected_group.path
+
         visit edit_group_path(selected_group)
 
         page.within('[data-testid="transfer-locations-dropdown"]') do
           click_button _('Select parent group')
-          fill_in _('Search'), with: target_group_name
+          fill_in _('Search'), with: target_group&.name || ''
           wait_for_requests
-          click_button target_group_name
+          click_button(target_group&.name || 'No parent group')
         end
 
         click_button s_('GroupSettings|Transfer group')
@@ -166,8 +170,16 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
           click_button 'Confirm'
         end
 
-        expect(page).to have_text "Group '#{selected_group.name}' was successfully transferred."
-        expect(current_url).to include(selected_group.reload.full_path)
+        within('[data-testid="breadcrumb-links"]') do
+          expect(page).to have_content(target_group.name) if target_group
+          expect(page).to have_content(selected_group.name)
+        end
+
+        if target_group
+          expect(current_url).to include("#{target_group.path}/#{selected_group_path}")
+        else
+          expect(current_url).to include(selected_group_path)
+        end
       end
     end
 
@@ -175,14 +187,13 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
       let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
 
       context 'when transfering to no parent group' do
-        let(:target_group_name) { 'No parent group' }
+        let(:target_group) { nil }
 
         it_behaves_like 'can transfer the group'
       end
 
       context 'when transfering to a parent group' do
         let(:target_group) { create(:group, path: 'foo-parentgroup') }
-        let(:target_group_name) { target_group.name }
 
         before do
           target_group.add_owner(user)
@@ -194,7 +205,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
 
     context 'when transfering from a root group to a parent group' do
       let(:selected_group) { create(:group, path: 'foo-rootgroup') }
-      let(:target_group_name) { group.name }
+      let(:target_group) { group }
 
       it_behaves_like 'can transfer the group'
     end
@@ -232,6 +243,67 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
 
       expect(page).to have_text "Permissions"
       expect(page).not_to have_selector('#group_prevent_sharing_groups_outside_hierarchy')
+    end
+  end
+
+  describe 'group README', :js do
+    let_it_be(:group) { create(:group) }
+
+    context 'with gitlab-profile project and README.md' do
+      let_it_be(:project) { create(:project, :readme, namespace: group) }
+
+      it 'renders link to Group README and navigates to it on click' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        click_link('README')
+        wait_for_requests
+
+        expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/README.md"))
+        expect(page).to have_text('README.md')
+      end
+    end
+
+    context 'with gitlab-profile project and no README.md' do
+      let_it_be(:project) { create(:project, path: 'gitlab-profile', namespace: group) }
+
+      it 'renders Add README button and allows user to create a README via the IDE' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        expect(page).not_to have_selector('.ide')
+
+        click_button('Add README')
+
+        accept_gl_confirm("This will create a README.md for project #{group.readme_project.present.path_with_namespace}.", button_text: 'Add README')
+        wait_for_requests
+
+        expect(page).to have_current_path("/-/ide/project/#{group.readme_project.present.path_with_namespace}/edit/main/-/README.md/")
+
+        page.within('.ide') do
+          expect(page).to have_text('README.md')
+        end
+      end
+    end
+
+    context 'with no gitlab-profile project and no README.md' do
+      it 'renders Add README button and allows user to create both the gitlab-profile project and README via the IDE' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        expect(page).not_to have_selector('.ide')
+
+        click_button('Add README')
+
+        accept_gl_confirm("This will create a project #{group.full_path}/gitlab-profile and add a README.md.", button_text: 'Create and add README')
+        wait_for_requests
+
+        expect(page).to have_current_path("/-/ide/project/#{group.full_path}/gitlab-profile/edit/main/-/README.md/")
+
+        page.within('.ide') do
+          expect(page).to have_text('README.md')
+        end
+      end
     end
   end
 

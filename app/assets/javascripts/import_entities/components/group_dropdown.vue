@@ -3,8 +3,8 @@ import { GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
 import { s__ } from '~/locale';
-import { createAlert } from '~/flash';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import { createAlert } from '~/alert';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -28,7 +28,7 @@ export default {
   },
   apollo: {
     namespaces: {
-      query: searchNamespacesWhereUserCanCreateProjectsQuery,
+      query: searchNamespacesWhereUserCanImportProjectsQuery,
       variables() {
         return {
           search: this.searchTerm,

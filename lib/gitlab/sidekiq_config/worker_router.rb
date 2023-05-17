@@ -77,6 +77,11 @@ module Gitlab
       def parse_routing_rules(routing_rules)
         raise InvalidRoutingRuleError, 'The set of routing rule must be an array' unless routing_rules.is_a?(Array)
 
+        unless routing_rules.last&.first == WorkerMatcher::WILDCARD_MATCH
+          Gitlab::AppLogger.warn "sidekiq.routing_rules config is missing a catch-all `*` entry as the last rule. " \
+                                 "Consider adding `[['*', 'default']]` at the end of routing_rules."
+        end
+
         routing_rules.map do |rule_tuple|
           raise InvalidRoutingRuleError, "Routing rule `#{rule_tuple.inspect}` is invalid" unless valid_routing_rule?(rule_tuple)
 

@@ -56,17 +56,17 @@ describe('MergeRequestExperienceSurveyApp', () => {
       createWrapper();
     });
 
-    it('shows survey', async () => {
+    it('shows survey', () => {
       expect(wrapper.html()).toContain('Overall, how satisfied are you with merge requests?');
       expect(wrapper.findComponent(SatisfactionRate).exists()).toBe(true);
       expect(wrapper.emitted().close).toBe(undefined);
     });
 
-    it('tracks render once', async () => {
+    it('tracks render once', () => {
       expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
     });
 
-    it("doesn't track subsequent renders", async () => {
+    it("doesn't track subsequent renders", () => {
       createWrapper();
       expect(trackingSpy).toHaveBeenCalledWith(...createRenderTrackedArguments());
       expect(trackingSpy).toHaveBeenCalledTimes(1);
@@ -77,15 +77,15 @@ describe('MergeRequestExperienceSurveyApp', () => {
         findCloseButton().vm.$emit('click');
       });
 
-      it('triggers user callout on close', async () => {
+      it('triggers user callout on close', () => {
         expect(dismiss).toHaveBeenCalledTimes(1);
       });
 
-      it('emits close event on close button click', async () => {
+      it('emits close event on close button click', () => {
         expect(wrapper.emitted()).toMatchObject({ close: [[]] });
       });
 
-      it('tracks dismissal', async () => {
+      it('tracks dismissal', () => {
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
           label: 'dismiss',
           extra: {
@@ -94,7 +94,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
         });
       });
 
-      it('tracks subsequent renders', async () => {
+      it('tracks subsequent renders', () => {
         createWrapper();
         expect(trackingSpy.mock.calls).toEqual([
           createRenderTrackedArguments(),
@@ -110,7 +110,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
       );
     });
 
-    it('dismisses user callout on survey rate', async () => {
+    it('dismisses user callout on survey rate', () => {
       const rate = wrapper.findComponent(SatisfactionRate);
       expect(dismiss).not.toHaveBeenCalled();
       rate.vm.$emit('rate', 5);
@@ -126,7 +126,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
       );
     });
 
-    it('tracks survey rates', async () => {
+    it('tracks survey rates', () => {
       const rate = wrapper.findComponent(SatisfactionRate);
       rate.vm.$emit('rate', 5);
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
@@ -146,7 +146,7 @@ describe('MergeRequestExperienceSurveyApp', () => {
       });
     });
 
-    it('shows legal note', async () => {
+    it('shows legal note', () => {
       expect(wrapper.text()).toContain(
         'By continuing, you acknowledge that responses will be used to improve GitLab and in accordance with the GitLab Privacy Policy.',
       );
@@ -179,11 +179,11 @@ describe('MergeRequestExperienceSurveyApp', () => {
       createWrapper({ shouldShowCallout: false });
     });
 
-    it('emits close event', async () => {
+    it('emits close event', () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
     });
 
-    it("doesn't track anything", async () => {
+    it("doesn't track anything", () => {
       expect(trackingSpy).toHaveBeenCalledTimes(0);
     });
   });
@@ -195,12 +195,12 @@ describe('MergeRequestExperienceSurveyApp', () => {
       document.dispatchEvent(event);
     });
 
-    it('emits close event', async () => {
+    it('emits close event', () => {
       expect(wrapper.emitted()).toMatchObject({ close: [[]] });
       expect(dismiss).toHaveBeenCalledTimes(1);
     });
 
-    it('tracks dismissal', async () => {
+    it('tracks dismissal', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
         label: 'dismiss',
         extra: {

@@ -22,7 +22,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
    
   <clipboard-button-stub
     category="tertiary"
-    cssclass="btn-clipboard btn-transparent lh-100 position-static"
+    cssclass="gl-mr-2"
     gfm="\`foo/bar/dummy.md\`"
     size="medium"
     text="foo/bar/dummy.md"

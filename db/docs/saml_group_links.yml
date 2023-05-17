@@ -3,7 +3,7 @@ table_name: saml_group_links
 classes:
 - SamlGroupLink
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45061
 milestone: '13.5'

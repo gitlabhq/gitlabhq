@@ -11,7 +11,7 @@ across the GitLab frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org).
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, please read  [this explanation](vue.md#when-to-add-vue-application).
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -24,7 +24,7 @@ modern ECMAScript standards supported through [Babel](https://babeljs.io/) and E
 
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
-[installation guide](../../install/installation.md#4-node).
+[installation guide](../../install/installation.md#5-node).
 
 ### Browser Support
 

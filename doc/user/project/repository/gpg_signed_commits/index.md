@@ -43,7 +43,7 @@ To view a user's public GPG key, you can either:
 
 - Go to `https://gitlab.example.com/<USERNAME>.gpg`. GitLab displays the GPG key,
   if the user has configured one, or a blank page for users without a configured GPG key.
-- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper right
+- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper-right corner
   of the user's profile, select **View public GPG keys** (**{key}**).
 
 ## Configure commit signing

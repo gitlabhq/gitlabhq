@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: ongoing
 creation-date: "2022-11-25"
 authors: [ "@theoretick" ]
 coach: "@DylanGriffith"
@@ -7,6 +7,8 @@ approvers: [ "@connorgilbert", "@amarpatel" ]
 owning-stage: "~devops::secure"
 participating-stages: []
 ---
+
+<!-- vale gitlab.FutureTense = NO -->
 
 # Secret Detection as a platform-wide experience
 
@@ -24,7 +26,7 @@ job logs, and project management features such as issues, epics, and MRs.
 
 ### Goals
 
-- Support asynchronous secret detection for:
+- Support asynchronous secret detection for the following scan targets:
   - push events
   - issuable creation
   - issuable updates
@@ -47,6 +49,24 @@ Scanned object types beyond the scope of this MVC include:
 - Snippets
 - Wikis
 
+#### Management UI
+
+Development of an independent interface for managing secrets is out of scope
+for this blueprint. Any detections will be managed using the existing
+Vulnerability Management UI.
+
+Management of detected secrets will remain distinct from the
+[Secret Management feature capability](../../../ci/secrets/index.md) as
+"detected" secrets are categorically distinct from actively "managed" secrets.
+When a detected secret is identified, it has already been compromised due to
+their presence in the target object (that is a repository). Alternatively, managed
+secrets should be stored with stricter standards for secure storage, including
+encryption and masking when visible (such as job logs or in the UI).
+
+As a long-term priority we should consider unifying the management of the two
+secret types however that work is out of scope for the current blueprints goals,
+which remain focused on active detection.
+
 ## Proposal
 
 To achieve scalable secret detection for a variety of domain objects a dedicated
@@ -67,6 +87,7 @@ as self-managed instances.
 - Secure authentication to GitLab.com infrastructure
 - Performance of scanning against large blobs
 - Performance of scanning against volume of domain objects (such as push frequency)
+- Queueing of scan requests
 
 ## Design and implementation details
 
@@ -74,13 +95,13 @@ The critical paths as outlined under [goals above](#goals) cover two major objec
 types: Git blobs (corresponding to push events) and arbitrary text blobs.
 
 The detection flow for push events relies on subscribing to the PostReceive hook
-and enqueueing Sidekiq requests to the `SecretScanningService`. The `SecretScanningService`
+to enqueue Sidekiq requests to the `SecretScanningService`. The `SecretScanningService`
 service fetches enqueued refs, queries Gitaly for the ref blob contents, scans
 the commit contents, and notifies the Rails application when a secret is detected.
 See [Push event detection flow](#push-event-detection-flow) for sequence.
 
 The detection flow for arbitrary text blobs, such as issue comments, relies on
-subscribing to `Notes::PostProcessService` (or equivalent service) and enqueueing
+subscribing to `Notes::PostProcessService` (or equivalent service) to enqueue
 Sidekiq requests to the `SecretScanningService` to process the text blob by object type
 and primary key of domain object. The `SecretScanningService` service fetches the
 relevant text blob, scans the contents, and notifies the Rails application when a secret
@@ -92,7 +113,7 @@ around scanning during streaming and the added complexity in buffering lookbacks
 for arbitrary trace chunks.
 
 In any case of detection, the Rails application manually creates a vulnerability
-using the `Vulnerabilities::ManuallyCreateService` to surface the finding within the
+using the `Vulnerabilities::ManuallyCreateService` to surface the finding in the
 existing Vulnerability Management UI.
 
 See [technical discovery](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
@@ -115,13 +136,30 @@ Token types to identify in order of importance:
 ### Detection engine
 
 Our current secret detection offering utilizes [Gitleaks](https://github.com/zricethezav/gitleaks/)
-for all secret scanning within pipeline contexts. By using its `--no-git` configuration
+for all secret scanning in pipeline contexts. By using its `--no-git` configuration
 we can scan arbitrary text blobs outside of a repository context and continue to
 utilize it for non-pipeline scanning.
 
 Given our existing familiarity with the tool and its extensibility, it should
 remain our engine of choice. Changes to the detection engine are out of scope
 unless benchmarking unveils performance concerns.
+
+Notable alternatives include high-performance regex engines such as [hyperscan](https://github.com/intel/hyperscan) or it's portable fork [vectorscan](https://github.com/VectorCamp/vectorscan).
+
+### High-level architecture
+
+The implementation of the secret scanning service is highly dependent on the outcomes of our benchmarking
+and capacity planning against both GitLab.com and our
+[Reference Architectures](../../../administration/reference_architectures/index.md).
+As the scanning capability must be an on-by-default component of both our SaaS and self-managed
+instances [the PoC](#iterations), the deployment characteristics must be considered to determine whether
+this is a standalone component or executed as a subprocess of the existing Sidekiq worker fleet
+(similar to the implementation of our Elasticsearch indexing service).
+
+Similarly, the scan target volume will require a robust and scalable enqueueing system to limit resource consumption.
+
+See [this thread](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105142#note_1194863310)
+for past discussion around scaling approaches.
 
 ### Push event detection flow
 
@@ -151,17 +189,20 @@ sequenceDiagram
 
 ## Iterations
 
-1. Requirements definition for detection coverage and actions
-1. PoC of secret scanning service
-    1. gRPC commit retrieval from Gitaly
-    1. blob scanning
-    1. benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
-1. Implementation of secret scanning service MVC (targeting individual commits)
-1. Security and readiness review
-1. Deployment and monitoring
-1. Implementation of secret scanning service MVC (targeting arbitrary text blobs)
-1. Deployment and monitoring
-1. High priority domain object rollout (priority `TBD`)
-    1. Issuable comments
-    1. Issuable bodies
-    1. Job logs
+- ✓ Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
+- ✓ Implement [Clientside detection of GitLab tokens in comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
+- PoC of secret scanning service
+  - Benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
+  - Capacity planning for addition of service component to Reference Architectures headroom
+  - Service capabilities
+    - gRPC commit retrieval from Gitaly
+    - blob scanning
+- Implementation of secret scanning service MVC (targeting individual commits)
+- Security and readiness review
+- Deployment and monitoring
+- Implementation of secret scanning service MVC (targeting arbitrary text blobs)
+- Deployment and monitoring
+- High priority domain object rollout (priority `TBD`)
+  - Issuable comments
+  - Issuable bodies
+  - Job logs

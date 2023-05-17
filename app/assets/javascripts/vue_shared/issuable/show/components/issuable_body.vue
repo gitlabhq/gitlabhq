@@ -3,6 +3,7 @@ import { GlLink } from '@gitlab/ui';
 
 import TaskList from '~/task_list';
 
+import { TYPE_ISSUE } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import IssuableDescription from './issuable_description.vue';
@@ -112,7 +113,7 @@ export default {
          * task lists in Issue, Test Cases and Incidents
          * as all of those are derived from `issue`.
          */
-        dataType: 'issue',
+        dataType: TYPE_ISSUE,
         fieldName: 'description',
         lockVersion: this.taskListLockVersion,
         selector: '.js-detail-page-description',
@@ -138,7 +139,7 @@ export default {
 
 <template>
   <div class="issue-details issuable-details">
-    <div class="detail-page-description js-detail-page-description content-block">
+    <div class="detail-page-description js-detail-page-description content-block gl-pt-4">
       <issuable-edit-form
         v-if="editFormVisible"
         :issuable="issuable"

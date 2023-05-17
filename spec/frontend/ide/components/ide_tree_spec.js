@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { keepAlive } from 'helpers/keep_alive_component_helper';
+import { viewerTypes } from '~/ide/constants';
 import IdeTree from '~/ide/components/ide_tree.vue';
-import { createStore } from '~/ide/stores';
+import { createStoreOptions } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
@@ -13,46 +13,72 @@ describe('IdeTree', () => {
   let store;
   let wrapper;
 
-  beforeEach(() => {
-    store = createStore();
+  const actionSpies = {
+    updateViewer: jest.fn(),
+  };
 
-    store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'main';
-    store.state.projects.abcproject = { ...projectData };
-    Vue.set(store.state.trees, 'abcproject/main', {
-      tree: [file('fileName')],
-      loading: false,
+  const testState = {
+    currentProjectId: 'abcproject',
+    currentBranchId: 'main',
+    projects: {
+      abcproject: { ...projectData },
+    },
+    trees: {
+      'abcproject/main': {
+        tree: [file('fileName')],
+        loading: false,
+      },
+    },
+  };
+
+  const createComponent = (replaceState) => {
+    const defaultStore = createStoreOptions();
+
+    store = new Vuex.Store({
+      ...defaultStore,
+      state: {
+        ...defaultStore.state,
+        ...testState,
+        replaceState,
+      },
+      actions: {
+        ...defaultStore.actions,
+        ...actionSpies,
+      },
     });
 
-    wrapper = mount(keepAlive(IdeTree), {
+    wrapper = mount(IdeTree, {
       store,
     });
+  };
+
+  beforeEach(() => {
+    createComponent();
   });
 
   afterEach(() => {
-    wrapper.destroy();
+    actionSpies.updateViewer.mockClear();
   });
 
-  it('renders list of files', () => {
-    expect(wrapper.text()).toContain('fileName');
+  describe('renders properly', () => {
+    it('renders list of files', () => {
+      expect(wrapper.text()).toContain('fileName');
+    });
   });
 
   describe('activated', () => {
-    let inititializeSpy;
-
-    beforeEach(async () => {
-      inititializeSpy = jest.spyOn(wrapper.findComponent(IdeTree).vm, 'initialize');
-      store.state.viewer = 'diff';
-
-      await wrapper.vm.reactivate();
+    beforeEach(() => {
+      createComponent({
+        viewer: viewerTypes.diff,
+      });
     });
 
     it('re initializes the component', () => {
-      expect(inititializeSpy).toHaveBeenCalled();
+      expect(actionSpies.updateViewer).toHaveBeenCalled();
     });
 
     it('updates viewer to "editor" by default', () => {
-      expect(store.state.viewer).toBe('editor');
+      expect(actionSpies.updateViewer).toHaveBeenCalledWith(expect.any(Object), viewerTypes.edit);
     });
   });
 });

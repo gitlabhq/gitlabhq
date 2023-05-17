@@ -9,15 +9,15 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
 import { mockConfig, workspaceLabelsQueryResponse } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -48,7 +48,7 @@ describe('DropdownContentsLabelsView', () => {
     wrapper = shallowMount(DropdownContentsLabelsView, {
       apolloProvider: mockApollo,
       provide: {
-        variant: DropdownVariant.Sidebar,
+        variant: VARIANT_SIDEBAR,
         ...injected,
       },
       propsData: {
@@ -63,10 +63,6 @@ describe('DropdownContentsLabelsView', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findLabels = () => wrapper.findAllComponents(LabelItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -100,11 +96,11 @@ describe('DropdownContentsLabelsView', () => {
       await waitForPromises();
     });
 
-    it('does not render loading icon', async () => {
+    it('does not render loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('renders labels list', async () => {
+    it('renders labels list', () => {
       expect(findLabelsList().exists()).toBe(true);
       expect(findLabels()).toHaveLength(2);
     });

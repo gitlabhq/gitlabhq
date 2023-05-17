@@ -16,7 +16,7 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
 - add_page_startup_api_call @endpoint_metadata_url
-- if mr_action == 'diffs'
+- if mr_action == 'diffs' && (!@file_by_file_default || !single_file_file_by_file?)
   - add_page_startup_api_call @endpoint_diff_batch_url
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
@@ -36,7 +36,7 @@
             = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
-                = gl_badge_tag @commits_count, { size: :sm }
+                = gl_badge_tag tab_count_display(@merge_request, @commits_count), { size: :sm }, { class: 'js-commits-count' }
           - if @project.builds_enabled?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
@@ -45,7 +45,7 @@
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              = gl_badge_tag @diffs_count, { size: :sm }
+              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if moved_mr_sidebar_enabled?
@@ -81,7 +81,8 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
-                report_abuse_path: add_category_abuse_reports_path } }
+                report_abuse_path: add_category_abuse_reports_path,
+                new_comment_template_path: profile_comment_templates_path } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -90,7 +91,7 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - params = request.query_parameters.merge(diff_head: true)
+      - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status
@@ -105,10 +106,9 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
-#js-review-bar
+#js-review-bar{ data: { new_comment_template_path: profile_comment_templates_path } }
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 
-= render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

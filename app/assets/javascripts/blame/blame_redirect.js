@@ -1,5 +1,5 @@
 import { setUrlParams } from '~/lib/utils/url_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
 export default function redirectToCorrectBlamePage() {

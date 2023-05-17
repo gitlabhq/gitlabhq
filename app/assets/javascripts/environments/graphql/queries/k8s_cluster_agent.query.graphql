@@ -1,0 +1,15 @@
+query getK8sClusterAgentQuery($projectPath: ID!, $agentName: String!) {
+  project(fullPath: $projectPath) {
+    id
+    clusterAgent(name: $agentName) {
+      id
+      webPath
+      tokens {
+        nodes {
+          id
+          lastUsedAt
+        }
+      }
+    }
+  }
+}

@@ -1,16 +1,14 @@
 <script>
-import { GlLabel, GlAvatar, GlAvatarLink, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
 
 import { s__, sprintf } from '~/locale';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 
-import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
+import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_ASSIGNEES } from '../../constants';
 
 export default {
   components: {
-    GlLabel,
     GlAvatar,
     GlAvatarLink,
     GlAvatarsInline,
@@ -33,12 +31,6 @@ export default {
     assignees() {
       return this.metadataWidgets[WIDGET_TYPE_ASSIGNEES]?.assignees?.nodes || [];
     },
-    labels() {
-      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes || [];
-    },
-    allowsScopedLabels() {
-      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.allowsScopedLabels;
-    },
     assigneesCollapsedTooltip() {
       if (this.assignees.length > 2) {
         return sprintf(s__('WorkItem|%{count} more assignees'), {
@@ -56,21 +48,16 @@ export default {
       return '';
     },
   },
-  methods: {
-    showScopedLabel(label) {
-      return isScopedLabel(label) && this.allowsScopedLabels;
-    },
-  },
 };
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-align-items-center">
+  <div class="gl-display-flex gl-md-justify-content-end gl-gap-3">
     <slot></slot>
     <item-milestone
       v-if="milestone"
       :milestone="milestone"
-      class="gl-display-flex gl-align-items-center gl-mr-5 gl-max-w-15 gl-text-secondary! gl-cursor-help! gl-text-decoration-none!"
+      class="gl-display-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-line-height-normal gl-text-secondary! gl-cursor-help! gl-text-decoration-none!"
     />
     <gl-avatars-inline
       v-if="assignees.length"
@@ -81,7 +68,6 @@ export default {
       badge-tooltip-prop="name"
       :badge-sr-only-text="assigneesCollapsedTooltip"
       :class="assigneesContainerClass"
-      class="gl-mr-5"
     >
       <template #avatar="{ avatar }">
         <gl-avatar-link v-gl-tooltip target="blank" :href="avatar.webUrl" :title="avatar.name">
@@ -89,18 +75,6 @@ export default {
         </gl-avatar-link>
       </template>
     </gl-avatars-inline>
-    <div v-if="labels.length" class="gl-display-flex gl-flex-wrap">
-      <gl-label
-        v-for="label in labels"
-        :key="label.id"
-        :title="label.title"
-        :background-color="label.color"
-        :description="label.description"
-        :scoped="showScopedLabel(label)"
-        class="gl-mt-3 gl-sm-mt-0 gl-mr-2 gl-mb-auto gl-label-sm"
-        tooltip-placement="top"
-      />
-    </div>
   </div>
 </template>
 

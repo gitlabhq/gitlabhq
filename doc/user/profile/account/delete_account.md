@@ -48,9 +48,10 @@ When deleting users, you can either:
 - Delete just the user. Not all associated records are deleted with the user. Instead of being deleted, these records
   are moved to a system-wide user with the username Ghost User. The Ghost User's purpose is to act as a container for
   such records. Any commits made by a deleted user still display the username of the original user.
+  The user's personal projects are deleted, not moved to the Ghost User.
 - Delete the user and their contributions, including:
   - Abuse reports.
-  - Award emojis.
+  - Emoji reactions.
   - Epics.
   - Groups of which the user is the only user with the Owner role.
   - Issues.

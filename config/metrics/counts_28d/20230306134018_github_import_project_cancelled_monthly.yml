@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.importer.github_import_project_cancelled_monthly
+description: The number of github projects that were cancelled monthly
+product_section: dev
+product_stage: manage
+product_group: import
+value_type: number
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113724
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - github_import_project_cancelled
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

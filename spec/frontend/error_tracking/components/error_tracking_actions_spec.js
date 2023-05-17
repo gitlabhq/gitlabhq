@@ -29,12 +29,6 @@ describe('Error Tracking Actions', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const findButtons = () => wrapper.findAllComponents(GlButton);
 
   describe('when error status is unresolved', () => {

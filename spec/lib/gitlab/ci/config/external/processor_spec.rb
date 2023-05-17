@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipeline_composition do
   include StubRequests
   include RepoHelpers
 
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Included file `lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
+          '`lib/gitlab/ci/templates/template.yml`: content does not have a valid YAML syntax'
         )
       end
     end

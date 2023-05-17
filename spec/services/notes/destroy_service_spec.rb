@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::DestroyService do
+RSpec.describe Notes::DestroyService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
 
@@ -38,7 +38,9 @@ RSpec.describe Notes::DestroyService do
                                                                            .and_call_original
         expect do
           service_action
-        end.to change { counter.unique_events(event_names: property, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+        end.to change {
+                 counter.unique_events(event_names: property, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
+               }.by(1)
       end
 
       it_behaves_like 'issue_edit snowplow tracking' do
@@ -94,8 +96,12 @@ RSpec.describe Notes::DestroyService do
 
     it 'tracks design comment removal' do
       note = create(:note_on_design, project: project)
-      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_design_comment_removed_action).with(author: note.author,
-                                                                                                                                project: project)
+      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(
+        :track_issue_design_comment_removed_action
+      ).with(
+        author: note.author,
+        project: project
+      )
 
       described_class.new(project, user).execute(note)
     end

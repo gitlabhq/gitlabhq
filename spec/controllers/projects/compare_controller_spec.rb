@@ -284,13 +284,17 @@ RSpec.describe Projects::CompareController do
       let(:to_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
       let(:page) { 1 }
 
-      it 'shows the diff' do
-        show_request
+      shared_examples 'valid compare page' do
+        it 'shows the diff' do
+          show_request
 
-        expect(response).to be_successful
-        expect(assigns(:diffs).diff_files.first).to be_present
-        expect(assigns(:commits).length).to be >= 1
+          expect(response).to be_successful
+          expect(assigns(:diffs).diff_files.first).to be_present
+          expect(assigns(:commits).length).to be >= 1
+        end
       end
+
+      it_behaves_like 'valid compare page'
 
       it 'only loads blobs in the current page' do
         stub_const('Projects::CompareController::COMMIT_DIFFS_PER_PAGE', 1)
@@ -305,6 +309,19 @@ RSpec.describe Projects::CompareController do
         show_request
 
         expect(response).to be_successful
+      end
+
+      context 'when from_ref is HEAD ref' do
+        let(:from_ref) { 'HEAD' }
+        let(:to_ref) { 'feature' } # Need to change to_ref too so there's something to compare with HEAD
+
+        it_behaves_like 'valid compare page'
+      end
+
+      context 'when to_ref is HEAD ref' do
+        let(:to_ref) { 'HEAD' }
+
+        it_behaves_like 'valid compare page'
       end
     end
 

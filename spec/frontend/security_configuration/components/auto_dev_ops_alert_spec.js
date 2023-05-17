@@ -23,10 +23,6 @@ describe('AutoDevopsAlert component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains correct body text', () => {
     expect(wrapper.text()).toContain('Quickly enable all');
   });

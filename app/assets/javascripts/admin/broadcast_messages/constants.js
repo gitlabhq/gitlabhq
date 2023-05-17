@@ -1,7 +1,5 @@
 import { s__ } from '~/locale';
 
-export const BROADCAST_MESSAGES_PATH = '/admin/broadcast_messages';
-
 export const TYPE_BANNER = 'banner';
 export const TYPE_NOTIFICATION = 'notification';
 

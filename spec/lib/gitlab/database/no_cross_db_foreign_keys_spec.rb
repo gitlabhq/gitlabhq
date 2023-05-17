@@ -16,7 +16,7 @@ RSpec.describe 'cross-database foreign keys' do
   end
 
   def is_cross_db?(fk_record)
-    Gitlab::Database::GitlabSchema.table_schemas([fk_record.from_table, fk_record.to_table]).many?
+    Gitlab::Database::GitlabSchema.table_schemas!([fk_record.from_table, fk_record.to_table]).many?
   end
 
   it 'onlies have allowed list of cross-database foreign keys', :aggregate_failures do

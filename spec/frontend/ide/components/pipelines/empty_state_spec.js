@@ -22,10 +22,6 @@ describe('~/ide/components/pipelines/empty_state.vue', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

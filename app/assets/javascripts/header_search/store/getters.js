@@ -7,14 +7,16 @@ import {
   MSG_MR_ASSIGNED_TO_ME,
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
-  ICON_GROUP,
-  ICON_SUBGROUP,
-  ICON_PROJECT,
   MSG_IN_ALL_GITLAB,
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
-  SEARCH_SHORTCUTS_MIN_CHARACTERS,
   DROPDOWN_ORDER,
+} from '~/vue_shared/global_search/constants';
+import {
+  ICON_GROUP,
+  ICON_SUBGROUP,
+  ICON_PROJECT,
+  SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '../constants';
 
 export const searchQuery = (state) => {
@@ -36,6 +38,10 @@ export const searchQuery = (state) => {
 };
 
 export const scopedIssuesPath = (state) => {
+  if (state.searchContext?.project?.id && !state.searchContext?.project_metadata?.issues_path) {
+    return false;
+  }
+
   return (
     state.searchContext?.project_metadata?.issues_path ||
     state.searchContext?.group_metadata?.issues_path ||
@@ -54,7 +60,7 @@ export const scopedMRPath = (state) => {
 export const defaultSearchOptions = (state, getters) => {
   const userName = gon.current_username;
 
-  return [
+  const issues = [
     {
       html_id: 'default-issues-assigned',
       title: MSG_ISSUES_ASSIGNED_TO_ME,
@@ -65,6 +71,9 @@ export const defaultSearchOptions = (state, getters) => {
       title: MSG_ISSUES_IVE_CREATED,
       url: `${getters.scopedIssuesPath}/?author_username=${userName}`,
     },
+  ];
+
+  const mergeRequests = [
     {
       html_id: 'default-mrs-assigned',
       title: MSG_MR_ASSIGNED_TO_ME,
@@ -81,6 +90,7 @@ export const defaultSearchOptions = (state, getters) => {
       url: `${getters.scopedMRPath}/?author_username=${userName}`,
     },
   ];
+  return [...(getters.scopedIssuesPath ? issues : []), ...mergeRequests];
 };
 
 export const projectUrl = (state) => {

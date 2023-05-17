@@ -91,7 +91,7 @@ module Ci
         artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
         artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
         pipeline_schedule_url: pipeline_schedules_path(project),
-        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
+        empty_state_svg_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         error_state_svg_path: image_path('illustrations/pipelines_failed.svg'),
         no_pipelines_svg_path: image_path('illustrations/pipelines_pending.svg'),
         can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,
@@ -101,12 +101,8 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        ci_runner_settings_path: project_settings_ci_cd_path(project, anchor: 'js-runners-settings')
+        full_path: project.full_path
       }
-
-      experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
-        e.candidate { data[:any_runners_available] = project.active_runners.exists?.to_s }
-      end
 
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
         e.candidate do

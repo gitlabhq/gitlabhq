@@ -17,10 +17,6 @@ describe('EscalationStatus', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownComponent = () => wrapper.findComponent(GlDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findDropdownMenu = () => findDropdownComponent().find('.dropdown-menu');

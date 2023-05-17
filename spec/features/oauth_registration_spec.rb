@@ -21,7 +21,6 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
     :gitlab         | {}
     :google_oauth2  | {}
     :facebook       | {}
-    :cas3           | {}
     :auth0          | {}
     :salesforce     | { extra: { email_verified: true } }
     :dingtalk       | {}

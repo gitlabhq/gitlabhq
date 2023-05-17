@@ -16,7 +16,7 @@ module QA
       it 'focuses on issue board', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347996' do
         project.visit!
 
-        Page::Project::Menu.perform(&:go_to_boards)
+        Page::Project::Menu.perform(&:go_to_issue_boards)
         Page::Component::IssueBoard::Show.perform do |show|
           show.click_focus_mode_button
 

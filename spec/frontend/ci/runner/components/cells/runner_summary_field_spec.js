@@ -17,15 +17,11 @@ describe('RunnerSummaryField', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       ...options,
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('shows content in slot', () => {
     createComponent({

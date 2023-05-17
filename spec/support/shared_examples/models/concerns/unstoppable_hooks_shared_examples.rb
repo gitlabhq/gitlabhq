@@ -18,8 +18,12 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
         [3, nil],
         [3, 1.day.ago]
       ].map do |(recent_failures, disabled_until)|
-        create(hook_factory, **default_factory_arguments, recent_failures: recent_failures,
-disabled_until: disabled_until)
+        create(
+          hook_factory,
+          **default_factory_arguments,
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
       end
     end
 
@@ -110,7 +114,7 @@ disabled_until: disabled_until)
 
     context 'when we have exhausted the grace period' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
       end
 
       it 'does not disable the hook' do
@@ -131,7 +135,7 @@ disabled_until: disabled_until)
       expect(hook).not_to be_temporarily_disabled
 
       # Backing off
-      WebHook::FAILURE_THRESHOLD.times do
+      WebHooks::AutoDisabling::FAILURE_THRESHOLD.times do
         hook.backoff!
         expect(hook).not_to be_temporarily_disabled
       end
@@ -167,7 +171,7 @@ disabled_until: disabled_until)
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD + 1)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
         hook.disabled_until = 1.hour.from_now
       end
 

@@ -2,11 +2,6 @@
 
 module Issues
   class CloseService < Issues::BaseService
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     # Closes the supplied issue if the current user is able to do so.
     def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
       return issue unless can_close?(issue, skip_authorization: skip_authorization)
@@ -48,18 +43,13 @@ module Issues
           Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
         end
 
-        delete_milestone_closed_issue_counter_cache(issue.milestone)
+        Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
       end
 
       issue
     end
 
     private
-
-    # TODO: remove once MergeRequests::CloseService or IssuableBaseService method is changed.
-    def self.constructor_container_arg(value)
-      { container: value }
-    end
 
     def can_close?(issue, skip_authorization: false)
       skip_authorization || can?(current_user, :update_issue, issue) || issue.is_a?(ExternalIssue)
@@ -103,7 +93,7 @@ module Issues
     end
 
     def resolve_incident(issue)
-      return unless issue.incident?
+      return unless issue.work_item_type&.incident?
 
       status = issue.incident_management_issuable_escalation_status || issue.build_incident_management_issuable_escalation_status
 

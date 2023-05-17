@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness do
-  let_it_be(:group) { create(:group, name: 'my-organization') }
+RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness,
+  feature_category: :continuous_integration do
+  let_it_be(:group) { create(:group) }
 
-  let(:upstream_project) { create(:project, :repository, name: 'upstream', group: group) }
-  let(:downstream_project) { create(:project, :repository, name: 'downstream', group: group) }
+  let(:upstream_project) { create(:project, :repository, group: group) }
+  let(:downstream_project) { create(:project, :repository, group: group) }
   let(:user) { create(:user) }
 
   let(:service) do
@@ -27,7 +28,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
         stage: test
         resource_group: iOS
         trigger:
-          project: my-organization/downstream
+          project: #{downstream_project.full_path}
           strategy: depend
       YAML
     end

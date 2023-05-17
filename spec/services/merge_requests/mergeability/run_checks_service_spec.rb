@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redis_cache do
+RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
   subject(:run_checks) { described_class.new(merge_request: merge_request, params: {}) }
 
   describe '#execute' do

@@ -10,7 +10,7 @@ Go to the `spec/fixtures/packages/debian` directory and clean up old files:
 
 ```shell
 cd spec/fixtures/packages/debian
-rm -v *.tar.* *.dsc *.deb *.udeb *.buildinfo *.changes
+rm -v *.tar.* *.dsc *.deb *.udeb *.ddeb *.buildinfo *.changes
 ```
 
 Go to the package source directory and build:

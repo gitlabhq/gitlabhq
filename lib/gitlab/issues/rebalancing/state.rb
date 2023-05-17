@@ -38,10 +38,10 @@ module Gitlab
         def rebalance_in_progress?
           is_running = case rebalanced_container_type
                        when NAMESPACE
-                         namespace_ids = self.class.current_rebalancing_containers.map { |string| string.split("#{NAMESPACE}/").second.to_i }.compact
+                         namespace_ids = self.class.current_rebalancing_containers.filter_map { |string| string.split("#{NAMESPACE}/").second.to_i }
                          namespace_ids.include?(root_namespace.id)
                        when PROJECT
-                         project_ids = self.class.current_rebalancing_containers.map { |string| string.split("#{PROJECT}/").second.to_i }.compact
+                         project_ids = self.class.current_rebalancing_containers.filter_map { |string| string.split("#{PROJECT}/").second.to_i }
                          project_ids.include?(projects.take.id) # rubocop:disable CodeReuse/ActiveRecord
                        else
                          false

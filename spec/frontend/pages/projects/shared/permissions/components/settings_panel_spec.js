@@ -140,11 +140,6 @@ describe('Settings Panel', () => {
   const findMonitorVisibilityInput = () =>
     findMonitorSettings().findComponent(ProjectFeatureSetting);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
       wrapper = mountComponent();
@@ -163,7 +158,7 @@ describe('Settings Panel', () => {
     it('should disable the visibility level dropdown', () => {
       wrapper = mountComponent({ canChangeVisibilityLevel: false });
 
-      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBe('disabled');
+      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBeDefined();
     });
 
     it.each`
@@ -765,7 +760,7 @@ describe('Settings Panel', () => {
       expect(findEnvironmentsSettings().exists()).toBe(true);
     });
   });
-  describe('Feature Flags', () => {
+  describe('Feature flags', () => {
     it('should show the feature flags toggle', () => {
       wrapper = mountComponent({});
 

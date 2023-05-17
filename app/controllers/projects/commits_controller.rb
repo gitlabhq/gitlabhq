@@ -7,7 +7,6 @@ class Projects::CommitsController < Projects::ApplicationController
   include RendersCommits
 
   COMMITS_DEFAULT_LIMIT = 40
-
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   around_action :allow_gitaly_ref_name_caching
   before_action :require_non_empty_project
@@ -77,15 +76,22 @@ class Projects::CommitsController < Projects::ApplicationController
 
     # fully_qualified_ref is available in some situations from ExtractsRef
     ref = @fully_qualified_ref || @ref
+
     @commits =
       if search.present?
         @repository.find_commits_by_message(search, ref, @path, @limit, @offset)
-      elsif author.present?
-        @repository.commits(ref, author: author, path: @path, limit: @limit, offset: @offset)
       else
-        @repository.commits(ref, path: @path, limit: @limit, offset: @offset)
+        options = {
+          path: @path,
+          limit: @limit,
+          offset: @offset
+        }
+        options[:author] = author if author.present?
+
+        @repository.commits(ref, **options)
       end
 
+    @commits.load_tags
     @commits.each(&:lazy_author) # preload authors
 
     @commits = @commits.with_markdown_cache.with_latest_pipeline(ref)

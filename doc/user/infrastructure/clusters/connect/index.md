@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -10,7 +10,7 @@ The [certificate-based Kubernetes integration with GitLab](../index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../clusters/agent/index.md).
 
-## Cluster levels (DEPRECATED)
+## Cluster levels (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 

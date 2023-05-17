@@ -48,8 +48,6 @@ module IssuableCollectionsAction
       Issue::SORTING_PREFERENCE_FIELD
     when 'merge_requests'
       MergeRequest::SORTING_PREFERENCE_FIELD
-    else
-      nil
     end
   end
 
@@ -59,8 +57,6 @@ module IssuableCollectionsAction
       IssuesFinder
     when 'merge_requests'
       MergeRequestsFinder
-    else
-      nil
     end
   end
 

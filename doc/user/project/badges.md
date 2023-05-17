@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -62,7 +62,7 @@ You can access a test coverage report badge image by using the following link:
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
-You can define the regular expression for the [coverage report](../../ci/pipelines/settings.md#merge-request-test-coverage-results)
+You can define the regular expression for the [coverage report](../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr)
 that each job log is matched against.
 This means that each job in the pipeline can have the test coverage percentage value defined.
 
@@ -107,7 +107,7 @@ If there is no release, it shows `none`.
 You can access a latest release badge image by using the following link:
 
 ```plaintext
-https://gitlab.example.com/<namespace>/<project>/badges/<branch>/release.svg
+https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg
 ```
 
 By default, the badge fetches the release sorted using the [`released_at`](../../api/releases/index.md#create-a-release)
@@ -116,6 +116,10 @@ time with the `?order_by` query parameter.
 ```plaintext
 https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg?order_by=release_at
 ```
+
+You can change the width of the release name field by using the `value_width` parameter ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113615) in GitLab 15.10).
+The value must be between 1 and 200, and the default value is 54.
+If you set an out of range value, GitLab automatically adjusts it to the default value.
 
 ## Project badges
 
@@ -275,7 +279,7 @@ To add a new badge with a custom image to a group or project:
 1. Select **Add badge**.
 
 To learn how to use custom images generated through a pipeline, see the documentation on
-[accessing the latest job artifacts by URL](../../ci/pipelines/job_artifacts.md#access-the-latest-job-artifacts).
+[accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
 
 ## Placeholders
 

@@ -10,8 +10,6 @@ module Projects
         before_action :validate_size!
         before_action :validate_sha!
 
-        skip_before_action :default_cache_headers, only: :show
-
         def show
           relation = design.actions
           relation = relation.up_to_version(version) if version

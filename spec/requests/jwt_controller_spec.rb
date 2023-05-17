@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JwtController, feature_category: :authentication_and_authorization do
+RSpec.describe JwtController, feature_category: :system_access do
   include_context 'parsed logs'
 
   let(:service) { double(execute: {} ) }
@@ -50,6 +50,14 @@ RSpec.describe JwtController, feature_category: :authentication_and_authorizatio
           }]
         }
       )
+    end
+  end
+
+  context 'POST /jwt/auth' do
+    it 'returns 404' do
+      post '/jwt/auth'
+
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 

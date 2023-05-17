@@ -16,15 +16,10 @@ module Mutations
 
         def resolve(id:)
           token = authorized_find!(id: id)
-          token.update(status: token.class.statuses[:revoked])
+
+          ::Clusters::AgentTokens::RevokeService.new(token: token, current_user: current_user).execute
 
           { errors: errors_on_object(token) }
-        end
-
-        private
-
-        def find_object(id:)
-          GitlabSchema.find_by_gid(id)
         end
       end
     end

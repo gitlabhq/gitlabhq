@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PlayBuildService, '#execute' do
+RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_integration do
   let(:user) { create(:user, developer_projects: [project]) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -16,8 +16,7 @@ RSpec.describe Ci::PlayBuildService, '#execute' do
     let(:project) { create(:project) }
 
     it 'allows user to play build if protected branch rules are met' do
-      create(:protected_branch, :developers_can_merge,
-             name: build.ref, project: project)
+      create(:protected_branch, :developers_can_merge, name: build.ref, project: project)
 
       service.execute(build)
 

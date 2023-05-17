@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';

@@ -44,9 +44,13 @@ all of the arguments that `in_batches` supports. You should always use
 
 ## Iterating over non-unique columns
 
-One should proceed with extra caution. When you iterate over an attribute that is not unique,
-even with the applied max batch size, there is no guarantee that the resulting batches do not
-surpass it. The following snippet demonstrates this situation when one attempt to select
+You should not use the `each_batch` method with a non-unique column (in the context of the relation) as it
+[may result in an infinite loop](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
+Additionally, the inconsistent batch sizes cause performance issues when you
+iterate over non-unique columns. Even when you apply a max batch size
+when iterating over an attribute, there's no guarantee that the resulting
+batches don't surpass it. The following snippet demonstrates this situation
+when you attempt to select
 `Ci::Build` entries for users with `id` between `1` and `10,000`, the database returns
 `1 215 178` matching rows.
 
@@ -462,6 +466,58 @@ Issue.each_batch(of: 1000) do |relation|
     .where(confidential: true)
 
   puts scope.to_a
+end
+```
+
+### Counting records
+
+For tables with a large amount of data, counting records through queries can result
+in timeouts. The `EachBatch` module provides an alternative way to iteratively count
+records. The downside of using `each_batch` is the extra count query which is executed
+on the yielded relation object.
+
+The `each_batch_count` method is a more efficient approach that eliminates the need
+for the extra count query. By invoking this method, the iteration process can be
+paused and resumed as needed. This feature is particularly useful in situations
+where error budget violations are triggered after five minutes, such as when performing
+counting operations within Sidekiq workers.
+
+To illustrate, counting records using `EachBatch` involves invoking an additional
+count query as follows:
+
+```ruby
+count = 0
+
+Issue.each_batch do |relation|
+  count += relation.count
+end
+
+puts count
+```
+
+On the other hand, the `each_batch_count` method enables the counting process to be
+performed more efficiently (counting is part of the iteration query) without invoking
+an extra count query:
+
+```ruby
+count, _last_value = Issue.each_batch_count # last value can be ignored here
+```
+
+Furthermore, the `each_batch_count` method allows the counting process to be paused
+and resumed at any point. This capability is demonstrated in the following code snippet:
+
+```ruby
+stop_at = Time.current + 3.minutes
+
+count, last_value = Issue.each_batch_count do
+  Time.current > stop_at # condition for stopping the counting
+end
+
+# Continue the counting later
+stop_at = Time.current + 3.minutes
+
+count, last_value = Issue.each_batch_count(last_count: count, last_value: last_value) do
+  Time.current > stop_at
 end
 ```
 

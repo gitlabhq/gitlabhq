@@ -194,7 +194,11 @@ export default {
           <div v-if="hasNoSearchResults" class="gl-text-center gl-p-3">
             {{ __('No matching results') }}
           </div>
-          <div v-if="failedToLoadResults" class="gl-text-center gl-p-3">
+          <div
+            v-if="failedToLoadResults"
+            data-testid="failed-load-results"
+            class="gl-text-center gl-p-3"
+          >
             {{ __('Failed to load projects') }}
           </div>
         </div>

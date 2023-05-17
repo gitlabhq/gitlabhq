@@ -1,22 +1,27 @@
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { createWrapper } from '@vue/test-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import stubChildren from 'helpers/stub_children';
 import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SetStatusModalWrapper', () => {
   let wrapper;
+  const mockToastShow = jest.fn();
+
   const $toast = {
-    show: jest.fn(),
+    show: mockToastShow,
   };
 
   const defaultEmoji = 'speech_balloon';
@@ -58,21 +63,9 @@ describe('SetStatusModalWrapper', () => {
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
   const findAvailabilityCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const getEmojiPicker = () => wrapper.findComponent(EmojiPickerStub);
-
-  const initModal = async ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
-    const modal = findModal();
-    // mock internal emoji methods
-    wrapper.vm.showEmojiMenu = jest.fn();
-    wrapper.vm.hideEmojiMenu = jest.fn();
-    if (mockOnUpdateSuccess) wrapper.vm.onUpdateSuccess = jest.fn();
-    if (mockOnUpdateFailure) wrapper.vm.onUpdateFail = jest.fn();
-
-    modal.vm.$emit('shown');
-    await nextTick();
-  };
+  const initModal = () => findModal().vm.$emit('shown');
 
   afterEach(() => {
-    wrapper.destroy();
     clearEmojiMock();
   });
 
@@ -149,6 +142,8 @@ describe('SetStatusModalWrapper', () => {
 
   describe('update status', () => {
     describe('succeeds', () => {
+      useMockLocationHelper();
+
       beforeEach(async () => {
         await initEmojiMock();
         wrapper = createComponent();
@@ -195,11 +190,21 @@ describe('SetStatusModalWrapper', () => {
         });
       });
 
-      it('calls the "onUpdateSuccess" handler', async () => {
+      it('displays a toast message and reloads window', async () => {
         findModal().vm.$emit('primary');
         await nextTick();
 
-        expect(wrapper.vm.onUpdateSuccess).toHaveBeenCalled();
+        expect(mockToastShow).toHaveBeenCalledWith('Status updated');
+        expect(window.location.reload).toHaveBeenCalled();
+      });
+
+      it('closes modal', async () => {
+        const rootWrapper = createWrapper(wrapper.vm.$root);
+
+        findModal().vm.$emit('primary');
+        await nextTick();
+
+        expect(rootWrapper.emitted(BV_HIDE_MODAL)).toEqual([['set-user-status-modal']]);
       });
     });
 
@@ -228,11 +233,22 @@ describe('SetStatusModalWrapper', () => {
         jest.spyOn(UserApi, 'updateUserStatus').mockRejectedValue();
       });
 
-      it('calls the "onUpdateFail" handler', async () => {
+      it('displays an error alert', async () => {
         findModal().vm.$emit('primary');
         await nextTick();
 
-        expect(wrapper.vm.onUpdateFail).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalledWith({
+          message: "Sorry, we weren't able to set your status. Please try again later.",
+        });
+      });
+
+      it('closes modal', async () => {
+        const rootWrapper = createWrapper(wrapper.vm.$root);
+
+        findModal().vm.$emit('primary');
+        await nextTick();
+
+        expect(rootWrapper.emitted(BV_HIDE_MODAL)).toEqual([['set-user-status-modal']]);
       });
     });
 
@@ -244,7 +260,7 @@ describe('SetStatusModalWrapper', () => {
         return initModal({ mockOnUpdateFailure: false });
       });
 
-      it('flashes an error message', async () => {
+      it('alerts an error message', async () => {
         findModal().vm.$emit('primary');
         await nextTick();
 

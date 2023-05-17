@@ -31,10 +31,6 @@ describe('SidebarInheritDate', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays formatted fixed and inherited dates with radio buttons', () => {
     expect(wrapper.findAllComponents(SidebarFormattedDate)).toHaveLength(2);
     expect(wrapper.findAllComponents(GlFormRadio)).toHaveLength(2);

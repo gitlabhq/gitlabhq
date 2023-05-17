@@ -1,13 +1,11 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 
 export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     number: {
       type: Number,
@@ -28,7 +26,6 @@ export default {
   },
   computed: {
     pageSearchString() {
-      if (!this.glFeatures.fileLineBlame) return '';
       const page = getPageParamValue(this.number);
       return getPageSearchString(this.blamePath, page);
     },
@@ -41,8 +38,7 @@ export default {
       class="gl-p-0! gl-absolute gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
     >
       <a
-        v-if="glFeatures.fileLineBlame"
-        class="gl-user-select-none gl-shadow-none! file-line-blame"
+        class="gl-user-select-none gl-shadow-none! file-line-blame gl-mx-n2 gl-flex-grow-1"
         :href="`${blamePath}${pageSearchString}#L${number}`"
       ></a>
       <a

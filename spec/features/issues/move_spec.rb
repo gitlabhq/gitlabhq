@@ -97,7 +97,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     end
   end
 
-  context 'service desk issue moved to a project with service desk disabled', :js do
+  context 'service desk issue moved to a project with service desk disabled', :saas, :js do
     let(:project_title) { 'service desk disabled project' }
     let(:warning_selector) { '.js-alert-moved-from-service-desk-warning' }
     let(:namespace) { create(:namespace) }
@@ -106,9 +106,8 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     let(:service_desk_issue) { create(:issue, project: service_desk_project, author: ::User.support_bot) }
 
     before do
-      allow(Gitlab).to receive(:com?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
 
       regular_project.add_reporter(user)
       service_desk_project.add_reporter(user)

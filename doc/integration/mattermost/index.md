@@ -10,7 +10,7 @@ NOTE:
 This document applies to GitLab 11.0 and later.
 
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
-service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between with GitLab, and our Omnibus installer allows you to easily install it. But it is a separate application from a separate company.
+service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Omnibus installer allows you to easily install it. But it is a separate application from a separate company.
 
 ## Prerequisites
 
@@ -245,7 +245,7 @@ For local connections, the `mmctl` binary and Mattermost must be run from the sa
            "LocalModeSocketLocation": "/var/tmp/mattermost_local.socket",
            ...
        }
-   } 
+   }
    ```
 
 1. Restart Mattermost:
@@ -280,7 +280,7 @@ $ /opt/gitlab/embedded/bin/mmctl auth login http://mattermost.example.com
 
 Connection name: test
 Username: local-user
-Password: 
+Password:
  credentials for "test": "local-user@http://mattermost.example.com" stored
 ```
 
@@ -377,6 +377,10 @@ If this is not the case, there are two options:
    from Omnibus GitLab.
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
+
+## Upgrading GitLab Mattermost to 15.10
+
+GitLab 15.10 ships with Mattermost 7.8. Before upgrading, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database) to perform the PostgreSQL maintenance described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) provided by Mattermost.
 
 ## Upgrading GitLab Mattermost to 14.6
 

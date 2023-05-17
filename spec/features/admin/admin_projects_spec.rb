@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "Admin::Projects", feature_category: :projects do
-  include Spec::Support::Helpers::Features::MembersHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::MembersHelpers
+  include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
 
@@ -159,6 +159,46 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
       end
 
       expect(page).to have_current_path(dashboard_projects_path, ignore_query: true, url: false)
+    end
+  end
+
+  describe 'project edit' do
+    it 'updates project details' do
+      project = create(:project, :private, name: 'Garfield', description: 'Funny Cat')
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      aggregate_failures do
+        expect(page).to have_content(project.name)
+        expect(page).to have_content(project.description)
+      end
+
+      fill_in 'Project name', with: 'Scooby-Doo'
+      fill_in 'Project description (optional)', with: 'Funny Dog'
+
+      click_button 'Save changes'
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      aggregate_failures do
+        expect(page).to have_content('Scooby-Doo')
+        expect(page).to have_content('Funny Dog')
+      end
+    end
+  end
+
+  describe 'project runner registration edit' do
+    it 'updates runner registration' do
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      expect(find_field('New project runners can be registered')).to be_checked
+
+      uncheck 'New project runners can be registered'
+      click_button 'Save changes'
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      expect(find_field('New project runners can be registered')).not_to be_checked
     end
   end
 end

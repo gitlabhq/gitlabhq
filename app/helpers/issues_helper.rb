@@ -44,14 +44,6 @@ module IssuesHelper
     end
   end
 
-  def work_item_type_icon(issue_type)
-    if WorkItems::Type.base_types.include?(issue_type)
-      "issue-type-#{issue_type.to_s.dasherize}"
-    else
-      'issue-type-issue'
-    end
-  end
-
   def confidential_icon(issue)
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
@@ -161,9 +153,9 @@ module IssuesHelper
     issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
   end
 
-  def issue_header_actions_data(project, issuable, current_user)
+  def issue_header_actions_data(project, issuable, current_user, issuable_sidebar)
     new_issuable_params = { issue: {}, add_related_issue: issuable.iid }
-    if issuable.incident?
+    if issuable.work_item_type&.incident?
       new_issuable_params[:issuable_template] = 'incident'
       new_issuable_params[:issue][:issue_type] = 'incident'
     end
@@ -176,6 +168,7 @@ module IssuesHelper
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,
       iid: issuable.iid,
+      issuable_id: issuable.id,
       is_issue_author: (issuable.author == current_user).to_s,
       issue_path: issuable_path(issuable),
       issue_type: issuable_display_type(issuable),
@@ -184,7 +177,8 @@ module IssuesHelper
       report_abuse_path: add_category_abuse_reports_path,
       reported_user_id: issuable.author.id,
       reported_from_url: issue_url(issuable),
-      submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable)
+      submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable),
+      issuable_email_address: issuable_sidebar.nil? ? '' : issuable_sidebar[:create_note_email]
     }
   end
 

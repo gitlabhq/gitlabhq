@@ -71,11 +71,6 @@ describe('ProjectSelect component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('displays a header title', () => {
     createWrapper();
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::DeleteService do
+RSpec.describe Pages::DeleteService, feature_category: :pages do
   let_it_be(:admin) { create(:admin) }
 
   let(:project) { create(:project, path: "my.project") }

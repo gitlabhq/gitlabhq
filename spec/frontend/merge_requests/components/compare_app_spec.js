@@ -30,10 +30,6 @@ function factory(provideData = {}) {
 }
 
 describe('Merge requests compare app component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows commit box when selected branch is empty', () => {
     factory({
       currentBranch: {

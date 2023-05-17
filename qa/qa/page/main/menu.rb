@@ -4,23 +4,56 @@ module QA
   module Page
     module Main
       class Menu < Page::Base
-        prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
+        # We need to check phone_layout? instead of mobile_layout? here
+        # since tablets have the regular top navigation bar
+        prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
 
-        view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :sign_out_link
-          element :edit_profile_link
-          element :user_profile_link
+        if Runtime::Env.super_sidebar_enabled?
+          prepend SubMenus::CreateNewMenu
+          include SubMenus::SuperSidebar::ContextSwitcher
         end
 
-        view 'app/views/layouts/header/_default.html.haml' do
-          element :navbar, required: true
-          element :canary_badge_link
-          element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
-          element :user_menu, required: !QA::Runtime::Env.mobile_layout?
-          element :stop_impersonation_link
-          element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+        if QA::Runtime::Env.super_sidebar_enabled?
+          # Define alternative navbar (super sidebar) which does not yet implement all the same elements
+          view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
+            element :navbar, required: true # TODO: rename to sidebar once it's default implementation
+            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
+          end
+
+          view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
+            element :sign_out_link
+            element :edit_profile_link
+          end
+
+          view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
+            element :user_profile_link
+          end
+
+          view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+            element :global_search_button
+          end
+
+          view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
+            element :global_search_input
+          end
+        else
+          view 'app/views/layouts/header/_default.html.haml' do
+            element :navbar, required: true
+            element :canary_badge_link
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
+            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :stop_impersonation_link
+            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
+          end
+
+          view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
+            element :sign_out_link
+            element :edit_profile_link
+            element :user_profile_link
+          end
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
@@ -39,12 +72,7 @@ module QA
           element :admin_area_link
           element :projects_dropdown
           element :groups_dropdown
-          element :snippets_link
           element :menu_item_link
-        end
-
-        view 'app/views/layouts/_search.html.haml' do
-          element :search_term_field
         end
 
         view 'app/views/layouts/_header_search.html.haml' do
@@ -52,7 +80,7 @@ module QA
         end
 
         view 'app/assets/javascripts/header_search/components/app.vue' do
-          element :search_term_field
+          element :global_search_input
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
@@ -62,23 +90,49 @@ module QA
         view 'app/helpers/nav/new_dropdown_helper.rb' do
           element :global_new_group_link
           element :global_new_project_link
+          element :global_new_snippet_link
         end
 
-        def go_to_groups
-          within_groups_menu do
-            click_element(:menu_item_link, title: 'View all groups')
-          end
-        end
-
-        def go_to_create_group
-          click_element(:new_menu_toggle)
-          click_element(:global_new_group_link)
+        view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
+          element :new_navigation_toggle
         end
 
         def go_to_projects
-          within_projects_menu do
-            click_element(:menu_item_link, title: 'View all projects')
+          return click_element(:nav_item_link, submenu_item: 'Projects') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Projects')
+        end
+
+        def go_to_groups
+          # This needs to be fixed in the tests themselves. Fullfillment tests try to go to groups view from the
+          # group. Instead of having a global hack, explicit test should navigate to correct view first.
+          # see: https://gitlab.com/gitlab-org/gitlab/-/issues/403589#note_1383040061
+          if Runtime::Env.super_sidebar_enabled?
+            go_to_your_work unless has_element?(:nav_item_link, submenu_item: 'Groups', wait: 0)
+            click_element(:nav_item_link, submenu_item: 'Groups')
+          elsif has_element?(:sidebar_menu_link, menu_item: 'Groups')
+            # Use new functionality to visit Groups where possible
+            click_element(:sidebar_menu_link, menu_item: 'Groups')
+          else
+            # Otherwise fallback to previous functionality
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/403589
+            # and related issues
+            within_groups_menu do
+              click_element(:menu_item_link, title: 'View all groups')
+            end
           end
+        end
+
+        def go_to_snippets
+          return click_element(:nav_item_link, submenu_item: 'Snippets') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Snippets')
+        end
+
+        def go_to_workspaces
+          return click_element(:nav_item_link, submenu_item: 'Workspaces') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Workspaces')
         end
 
         def go_to_create_project
@@ -86,7 +140,19 @@ module QA
           click_element(:global_new_project_link)
         end
 
+        def go_to_create_group
+          click_element(:new_menu_toggle)
+          click_element(:global_new_group_link)
+        end
+
+        def go_to_create_snippet
+          click_element(:new_menu_toggle)
+          click_element(:global_new_snippet_link)
+        end
+
         def go_to_menu_dropdown_option(option_name)
+          return click_element(option_name) if QA::Runtime::Env.super_sidebar_enabled?
+
           within_top_menu do
             click_element(:navbar_dropdown, title: 'Menu')
             click_element(option_name)
@@ -106,9 +172,9 @@ module QA
         end
 
         def go_to_admin_area
-          click_admin_area
+          Runtime::Env.super_sidebar_enabled? ? super : click_admin_area
 
-          return unless has_text?('Enter Admin Mode', wait: 1.0)
+          return unless has_text?('Enter admin mode', wait: 1.0)
 
           Admin::NewSession.perform do |new_session|
             new_session.set_password(Runtime::User.admin_password)
@@ -123,11 +189,13 @@ module QA
         end
 
         def signed_in_as_user?(user)
-          return false if has_no_personal_area?
+          return false unless has_personal_area?
 
           within_user_menu do
             has_element?(:user_profile_link, text: /#{user.username}/)
           end
+          # we need to close user menu because plain user link check will leave it open
+          click_element :user_avatar_content if has_element?(:user_profile_link, wait: 0)
         end
 
         def not_signed_in?
@@ -171,8 +239,8 @@ module QA
         end
 
         def search_for(term)
-          click_element(:search_box)
-          fill_element :search_term_field, "#{term}\n"
+          click_element(Runtime::Env.super_sidebar_enabled? ? :global_search_button : :search_box)
+          fill_element(:global_search_input, "#{term}\n")
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
@@ -209,6 +277,14 @@ module QA
         #   end
         def canary?
           has_element?(:canary_badge_link)
+        end
+
+        def enable_new_navigation
+          Runtime::Logger.info("Enabling super sidebar!")
+          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
+          return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
+
+          within_user_menu { click_element(:new_navigation_toggle) }
         end
 
         private

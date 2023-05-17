@@ -5,7 +5,6 @@ description: "Unique visitors to /-/instance_statistics/cohorts"
 product_section: fulfillment
 product_stage: fulfillment
 product_group: utilization
-product_category:
 value_type: number
 status: active
 time_frame: 28d

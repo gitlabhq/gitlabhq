@@ -14,7 +14,7 @@ Existing registries:
 
 - Package Registry
 - Container Registry
-- Infrastructure Registry
+- Terraform Module Registry
 - Dependency Proxy
 
 ## Frontend architecture

@@ -1,19 +1,18 @@
-.form-group.row.commit_message-group
+.form-group.commit_message-group.gl-mt-5
   - nonce = SecureRandom.hex
   - descriptions = local_assigns.slice(:message_with_description, :message_without_description)
-  = label_tag "commit_message-#{nonce}", class: 'col-form-label col-sm-2' do
+  = label_tag "commit_message-#{nonce}" do
     #{ _('Commit message') }
-  .col-sm-10
-    .commit-message-container
-      .max-width-marker
-      = text_area_tag 'commit_message',
-        (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder]),
-        class: 'form-control gl-form-input js-commit-message',
-        placeholder: local_assigns[:placeholder],
-        data: descriptions,
-        'data-qa-selector': 'commit_message_field',
-        required: true, rows: (local_assigns[:rows] || 3),
-        id: "commit_message-#{nonce}"
+  .commit-message-container
+    .max-width-marker
+    = text_area_tag 'commit_message',
+      (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder]),
+      class: 'form-control gl-form-input js-commit-message',
+      placeholder: local_assigns[:placeholder],
+      data: descriptions,
+      'data-qa-selector': 'commit_message_field',
+      required: true, rows: (local_assigns[:rows] || 3),
+      id: "commit_message-#{nonce}"
     - if local_assigns[:hint]
       %p.hint
         = _('Try to keep the first line under 52 characters and the others under 72.')

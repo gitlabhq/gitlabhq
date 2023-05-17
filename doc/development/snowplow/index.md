@@ -1,10 +1,10 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Snowplow
+# Snowplow development guidelines
 
 Snowplow is an enterprise-grade marketing and Product Intelligence platform that tracks how users engage with our website and application.
 

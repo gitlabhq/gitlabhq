@@ -51,7 +51,7 @@ module LoginHelpers
   def gitlab_enable_admin_mode_sign_in(user)
     visit new_admin_session_path
     fill_in 'user_password', with: user.password
-    click_button 'Enter Admin Mode'
+    click_button 'Enter admin mode'
 
     wait_for_requests
   end
@@ -82,7 +82,7 @@ module LoginHelpers
     open_top_nav
 
     within_top_nav do
-      click_on 'Leave Admin Mode'
+      click_on 'Leave admin mode'
     end
   end
 
@@ -94,8 +94,8 @@ module LoginHelpers
   # remember - Whether or not to check "Remember me" (default: false)
   # two_factor_auth - If two-factor authentication is enabled (default: false)
   # password - password to attempt to login with (default: user.password)
-  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil)
-    visit new_user_session_path
+  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil, visit: true)
+    visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email
     fill_in "user_password", with: (password || user.password)
@@ -114,9 +114,9 @@ module LoginHelpers
   def login_via(provider, user, uid, remember_me: false, additional_info: {})
     mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
     visit new_user_session_path
-    expect(page).to have_content('Sign in with')
+    expect(page).to have_css('.omniauth-container')
 
-    check 'remember_me' if remember_me
+    check 'remember_me_omniauth' if remember_me
 
     click_button "oauth-login-#{provider}"
   end
@@ -137,11 +137,6 @@ module LoginHelpers
     expect(page).to have_content('Create an account using').or(have_content('Register with'))
 
     click_link_or_button "oauth-login-#{provider}"
-  end
-
-  def fake_successful_u2f_authentication
-    allow(U2fRegistration).to receive(:authenticate).and_return(true)
-    FakeU2fDevice.new(page, nil).fake_u2f_authentication
   end
 
   def fake_successful_webauthn_authentication
@@ -216,6 +211,15 @@ module LoginHelpers
                                                           urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
                                                           urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN)
     config
+  end
+
+  def prepare_provider_route(provider_name)
+    routes = Rails.application.routes
+    routes.disable_clear_and_finalize = true
+    routes.formatter.clear
+    routes.draw do
+      post "/users/auth/#{provider_name}" => "omniauth_callbacks##{provider_name}"
+    end
   end
 
   def stub_omniauth_provider(provider, context: Rails.application)

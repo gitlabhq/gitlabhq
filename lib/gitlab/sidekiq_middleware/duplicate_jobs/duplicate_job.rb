@@ -147,7 +147,10 @@ module Gitlab
           end
           local cookie = cmsgpack.unpack(cookie_msgpack)
           cookie.deduplicated = "1"
-          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", redis.call("ttl", KEYS[1]))
+          local ttl = redis.call("ttl", KEYS[1])
+          if ttl > 0 then
+            redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", ttl)
+          end
         LUA
 
         def should_reschedule?
@@ -220,7 +223,12 @@ module Gitlab
         end
 
         def cookie_key
-          "#{idempotency_key}:cookie:v2"
+          # This duplicates `Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE` both here and in `#idempotency_key`
+          # This is because `Sidekiq.redis` used to add this prefix automatically through `redis-namespace`
+          # and we did not notice this in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25447
+          # Now we're keeping this as-is to avoid a key-migration when redis-namespace gets
+          # removed from Sidekiq: https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/944
+          "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:#{idempotency_key}:cookie:v2"
         end
 
         def get_cookie
@@ -252,7 +260,7 @@ module Gitlab
         end
 
         def with_redis(&block)
-          Sidekiq.redis(&block) # rubocop:disable Cop/SidekiqRedisCall
+          Gitlab::Redis::Queues.with(&block) # rubocop:disable Cop/RedisQueueUsage, CodeReuse/ActiveRecord
         end
       end
     end

@@ -2,42 +2,39 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespacesHelper do
+RSpec.describe NamespacesHelper, feature_category: :subgroups do
   let!(:admin) { create(:admin) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do
-    create(:group,
-           :private,
-           project_creation_level: admin_project_creation_level)
+    create(:group, :private, project_creation_level: admin_project_creation_level)
   end
 
   let!(:user) { create(:user) }
   let!(:user_project_creation_level) { nil }
   let!(:user_group) do
-    create(:group,
-           :private,
-           project_creation_level: user_project_creation_level)
+    create(:group, :private, project_creation_level: user_project_creation_level)
   end
 
   let!(:subgroup1) do
-    create(:group,
-           :private,
-           parent: admin_group,
-           project_creation_level: nil)
+    create(:group, :private, parent: admin_group, project_creation_level: nil)
   end
 
   let!(:subgroup2) do
-    create(:group,
-           :private,
-           parent: admin_group,
-           project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+    create(
+      :group,
+      :private,
+      parent: admin_group,
+      project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+    )
   end
 
   let!(:subgroup3) do
-    create(:group,
-           :private,
-           parent: admin_group,
-           project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+    create(
+      :group,
+      :private,
+      parent: admin_group,
+      project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+    )
   end
 
   before do
@@ -124,7 +121,7 @@ RSpec.describe NamespacesHelper do
     end
   end
 
-  describe '#pipeline_usage_app_data' do
+  describe '#pipeline_usage_app_data', unless: Gitlab.ee?, feature_category: :consumables_cost_management do
     it 'returns a hash with necessary data for the frontend' do
       expect(helper.pipeline_usage_app_data(user_group)).to eql({
         namespace_actual_plan_name: user_group.actual_plan_name,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomainVerificationWorker do
+RSpec.describe PagesDomainVerificationWorker, feature_category: :pages do
   subject(:worker) { described_class.new }
 
   let(:domain) { create(:pages_domain) }

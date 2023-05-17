@@ -13,6 +13,8 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
         :object_type
       end
 
+      private
+
       def model
         Label
       end
@@ -26,85 +28,153 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
   end
 
   describe '#build_database_rows' do
-    it 'returns an Array containing the rows to insert and validation errors if object invalid' do
-      object = double(:object, title: 'Foo')
+    context 'without validation errors' do
+      let(:object) { double(:object, title: 'Foo') }
 
-      expect(importer)
-        .to receive(:build_attributes)
-        .with(object)
-        .and_return({ title: 'Foo' })
+      it 'returns an array containing the rows to insert' do
+        expect(importer)
+          .to receive(:build_attributes)
+          .with(object)
+          .and_return({ title: 'Foo' })
 
-      expect(Label)
-        .to receive(:new)
-        .with({ title: 'Foo' })
-        .and_return(label)
+        expect(Label)
+          .to receive(:new)
+          .with({ title: 'Foo' })
+          .and_return(label)
 
-      expect(importer)
-        .to receive(:already_imported?)
-        .with(object)
-        .and_return(false)
+        expect(importer)
+          .to receive(:already_imported?)
+          .with(object)
+          .and_return(false)
 
-      expect(Gitlab::Import::Logger)
-        .to receive(:info)
-        .with(
-          import_type: :github,
-          project_id: 1,
-          importer: 'MyImporter',
-          message: '1 object_types fetched'
-        )
+        expect(Gitlab::Import::Logger)
+          .to receive(:info)
+          .with(
+            import_type: :github,
+            project_id: 1,
+            importer: 'MyImporter',
+            message: '1 object_types fetched'
+          )
 
-      expect(Gitlab::GithubImport::ObjectCounter)
-        .to receive(:increment)
-        .with(
-          project,
-          :object_type,
-          :fetched,
-          value: 1
-        )
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment)
+          .with(
+            project,
+            :object_type,
+            :fetched,
+            value: 1
+          )
 
-      enum = [[object, 1]].to_enum
+        enum = [[object, 1]].to_enum
 
-      rows, errors = importer.build_database_rows(enum)
+        rows, errors = importer.build_database_rows(enum)
 
-      expect(rows).to match_array([{ title: 'Foo' }])
-      expect(errors).to be_empty
+        expect(rows).to match_array([{ title: 'Foo' }])
+        expect(errors).to be_empty
+      end
+
+      it 'does not import objects that have already been imported' do
+        expect(importer)
+          .not_to receive(:build_attributes)
+
+        expect(importer)
+          .to receive(:already_imported?)
+          .with(object)
+          .and_return(true)
+
+        expect(Gitlab::Import::Logger)
+          .to receive(:info)
+          .with(
+            import_type: :github,
+            project_id: 1,
+            importer: 'MyImporter',
+            message: '0 object_types fetched'
+          )
+
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment)
+          .with(
+            project,
+            :object_type,
+            :fetched,
+            value: 0
+          )
+
+        enum = [[object, 1]].to_enum
+
+        rows, errors = importer.build_database_rows(enum)
+
+        expect(rows).to be_empty
+        expect(errors).to be_empty
+      end
     end
 
-    it 'does not import objects that have already been imported' do
-      object = double(:object, title: 'Foo')
+    context 'with validation errors' do
+      let(:object) { double(:object, id: 12345, title: 'bug,bug') }
 
-      expect(importer)
-        .not_to receive(:build_attributes)
+      before do
+        allow(importer)
+          .to receive(:already_imported?)
+          .with(object)
+          .and_return(false)
 
-      expect(importer)
-        .to receive(:already_imported?)
-        .with(object)
-        .and_return(true)
+        allow(importer)
+          .to receive(:build_attributes)
+          .with(object)
+          .and_return({ title: 'bug,bug' })
+      end
 
-      expect(Gitlab::Import::Logger)
-        .to receive(:info)
-        .with(
-          import_type: :github,
-          project_id: 1,
-          importer: 'MyImporter',
-          message: '0 object_types fetched'
-        )
+      context 'without implemented github_identifiers method' do
+        it 'raises NotImplementedError' do
+          enum = [[object, 1]].to_enum
 
-      expect(Gitlab::GithubImport::ObjectCounter)
-        .to receive(:increment)
-        .with(
-          project,
-          :object_type,
-          :fetched,
-          value: 0
-        )
+          expect { importer.build_database_rows(enum) }.to raise_error(NotImplementedError)
+        end
+      end
 
-      enum = [[object, 1]].to_enum
+      context 'with implemented github_identifiers method' do
+        it 'returns an array containing the validation errors and logs them' do
+          expect(importer)
+            .to receive(:github_identifiers)
+            .with(object)
+            .and_return(
+              {
+                id: object.id,
+                title: object.title,
+                object_type: importer.object_type
+              }
+            )
 
-      rows, errors = importer.build_database_rows(enum)
+          expect(Gitlab::Import::Logger)
+            .to receive(:error)
+            .with(
+              import_type: :github,
+              project_id: 1,
+              importer: 'MyImporter',
+              message: ['Title is invalid'],
+              github_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
+            )
 
-      expect(rows).to be_empty
-      expect(errors).to be_empty
+          expect(Gitlab::GithubImport::ObjectCounter)
+            .to receive(:increment)
+            .with(
+              project,
+              :object_type,
+              :fetched,
+              value: 0
+            )
+
+          enum = [[object, 1]].to_enum
+
+          rows, errors = importer.build_database_rows(enum)
+
+          expect(rows).to be_empty
+          expect(errors).not_to be_empty
+
+          expect(errors[0][:validation_errors].full_messages).to match_array(['Title is invalid'])
+          expect(errors[0][:github_identifiers]).to eq({ id: 12345, title: 'bug,bug', object_type: :object_type })
+        end
+      end
     end
   end
 
@@ -157,7 +227,8 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
         exception_message: 'Title invalid',
         correlation_id_value: 'cid',
         retry_count: nil,
-        created_at: Time.zone.now
+        created_at: Time.zone.now,
+        external_identifiers: { id: 123456 }
       }]
     end
 
@@ -170,8 +241,23 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
         expect(import_failures).to receive(:insert_all).with(formatted_errors)
         expect(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('cid')
 
-        importer.bulk_insert_failures([error])
+        importer.bulk_insert_failures([{
+          validation_errors: error,
+          github_identifiers: { id: 123456 }
+        }])
       end
+    end
+  end
+
+  describe '#object_type' do
+    let(:importer_class) do
+      Class.new do
+        include Gitlab::GithubImport::BulkImporting
+      end
+    end
+
+    it 'raises NotImplementedError' do
+      expect { importer.object_type }.to raise_error(NotImplementedError)
     end
   end
 end

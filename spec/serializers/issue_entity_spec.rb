@@ -17,19 +17,9 @@ RSpec.describe IssueEntity do
     context 'when issue is of type task' do
       let(:resource) { create(:issue, :task, project: project) }
 
-      context 'when use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        # This was already a path and not a url when the work items change was introduced
-        it 'has a work item path' do
-          expect(subject[:web_url]).to eq(project_work_items_path(project, resource.id))
-        end
-      end
-
+      # This was already a path and not a url when the work items change was introduced
       it 'has a work item path with iid' do
-        expect(subject[:web_url]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
+        expect(subject[:web_url]).to eq(project_work_items_path(project, resource.iid))
       end
     end
   end
@@ -41,8 +31,10 @@ RSpec.describe IssueEntity do
   end
 
   it 'has Issuable attributes' do
-    expect(subject).to include(:id, :iid, :author_id, :description, :lock_version, :milestone_id,
-                               :title, :updated_by_id, :created_at, :updated_at, :milestone, :labels)
+    expect(subject).to include(
+      :id, :iid, :author_id, :description, :lock_version, :milestone_id,
+      :title, :updated_by_id, :created_at, :updated_at, :milestone, :labels
+    )
   end
 
   it 'has time estimation attributes' do
@@ -51,8 +43,9 @@ RSpec.describe IssueEntity do
 
   describe 'current_user' do
     it 'has the exprected permissions' do
-      expect(subject[:current_user]).to include(:can_create_note, :can_update, :can_set_issue_metadata,
-                                                :can_award_emoji)
+      expect(subject[:current_user]).to include(
+        :can_create_note, :can_update, :can_set_issue_metadata, :can_award_emoji
+      )
     end
   end
 

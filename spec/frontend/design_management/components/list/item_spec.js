@@ -54,10 +54,6 @@ describe('Design management list item component', () => {
     );
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when item is not in view', () => {
     it('image is not rendered', () => {
       createComponent();

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CleanupRefsService do
+RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review_workflow do
   describe '.schedule' do
     let(:merge_request) { create(:merge_request) }
 

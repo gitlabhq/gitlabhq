@@ -24,10 +24,6 @@ describe('IssuableDescription', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('mounted', () => {
     it('calls `renderGFM`', () => {
       expect(renderGFM).toHaveBeenCalledTimes(1);

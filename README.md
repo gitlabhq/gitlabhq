@@ -43,7 +43,7 @@ We are hiring developers, support people, and production engineers all the time,
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
 
 - [Subscriptions](https://about.gitlab.com/pricing/)
-- [Consultancy](https://about.gitlab.com/consultancy/)
+- [Professional Services](https://about.gitlab.com/services/)
 - [Community](https://about.gitlab.com/community/)
 - [Hosted GitLab.com](https://about.gitlab.com/gitlab-com/) use GitLab as a free service
 - [GitLab Enterprise Edition](https://about.gitlab.com/features/#enterprise) with additional features aimed at larger organizations.
@@ -82,9 +82,9 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL/OpenSUSE
-- Ruby (MRI) 2.7.7
+- Ruby (MRI) 3.0.5
 - Git 2.33+
-- Redis 5.0+
+- Redis 6.0+
 - PostgreSQL 12+
 
 For more information please see the [architecture](https://docs.gitlab.com/ee/development/architecture.html) and [requirements](https://docs.gitlab.com/ee/install/requirements.html) documentation.

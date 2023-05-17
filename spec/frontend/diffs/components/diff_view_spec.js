@@ -14,7 +14,7 @@ describe('DiffView', () => {
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
-  const createWrapper = (props, provide = {}) => {
+  const createWrapper = (props) => {
     Vue.use(Vuex);
 
     const batchComments = {
@@ -48,7 +48,7 @@ describe('DiffView', () => {
       ...props,
     };
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
-    return shallowMount(DiffView, { propsData, store, stubs, provide });
+    return shallowMount(DiffView, { propsData, store, stubs });
   };
 
   it('does not render a diff-line component when there is no finding', () => {
@@ -56,22 +56,11 @@ describe('DiffView', () => {
     expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
   });
 
-  it('does render a diff-line component with the correct props when there is a finding & refactorCodeQualityInlineFindings flag is true', async () => {
-    const wrapper = createWrapper(diffCodeQuality, {
-      glFeatures: { refactorCodeQualityInlineFindings: true },
-    });
+  it('does render a diff-line component with the correct props when there is a finding', async () => {
+    const wrapper = createWrapper(diffCodeQuality);
     wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
     await nextTick();
     expect(wrapper.findComponent(DiffLine).props('line')).toBe(diffCodeQuality.diffLines[2]);
-  });
-
-  it('does not render a diff-line component when there is a finding & refactorCodeQualityInlineFindings flag is false', async () => {
-    const wrapper = createWrapper(diffCodeQuality, {
-      glFeatures: { refactorCodeQualityInlineFindings: false },
-    });
-    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
-    await nextTick();
-    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
   });
 
   it.each`

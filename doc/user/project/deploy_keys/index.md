@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -15,8 +15,7 @@ Depending on your needs, you might want to use a [deploy token](../deploy_tokens
 |------------------|-------------|--------------|
 | Sharing          | Shareable between multiple projects, even those in different groups. | Belong to a project or group. |
 | Source           | Public SSH key generated on an external host. | Generated on your GitLab instance, and is provided to users only at creation time. |
-| Validity         | Valid as long as it's registered and enabled, and the user that created it exists. | Can be given an expiration date. |
-| Registry access  | Cannot access a package registry. | Can read from and write to a package registry. |
+| Accessible resources  | Git repository over SSH | Git repository over HTTP, package registry, and container registry. |
 
 Deploy keys can't be used for Git operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
 
@@ -41,16 +40,23 @@ A deploy key is given a permission level when it is created:
 You can change a deploy key's permission level after creating it. Changing a project deploy key's
 permissions only applies for the current project.
 
-When a read-write deploy key is used to push a commit, GitLab checks if the creator of the
-deploy key has permission to access the resource.
-
-For example:
+Although a deploy key is a secret that isn't associated with a specific user,
+GitLab authorizes the creator of the deploy key if the Git-command triggers additional processes. For example:
 
 - When a deploy key is used to push a commit to a [protected branch](../protected_branches.md),
   the _creator_ of the deploy key must have access to the branch.
 - When a deploy key is used to push a commit that triggers a CI/CD pipeline, the _creator_ of the
   deploy key must have access to the CI/CD resources, including protected environments and secret
   variables.
+
+## Security implications
+
+The intended use case for deploy keys is for non-human interaction with GitLab, for example: an automated script running on a server in your organization.
+As with all sensitive information, you should ensure only those who need access to the secret can read it.
+For human interactions, use credentials tied to users such as Personal Access Tokens.
+
+To help detect a potential secret leak, you can use the
+[Audit Event](../../../administration/audit_event_streaming.md#example-payloads-for-ssh-events-with-deploy-key) feature.
 
 ## View deploy keys
 
@@ -80,6 +86,7 @@ Prerequisites:
 1. Complete the fields.
 1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
    checkbox.
+1. Optional. Update the **Expiration date**.
 
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions.
@@ -88,9 +95,9 @@ name and permissions.
 
 Prerequisites:
 
-- You must have administrator access.
-- [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
-  key on the host that requires access to the repository.
+- You must have administrator access to the instance.
+- You must [generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair).
+- You must put the private SSH key on the host that requires access to the repository.
 
 To create a public deploy key:
 
@@ -153,7 +160,7 @@ There are a few scenarios where a deploy key fails to push to a
 
 - The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
-- **No one** is selected in [the **Allowed to push** section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
+- **No one** is selected in [the **Allowed to push and merge** section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
 
 All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 

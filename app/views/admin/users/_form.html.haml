@@ -28,7 +28,7 @@
         .col-lg-8
           - if @user.new_record?
             = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-              = c.body do
+              - c.with_body do
                 = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
           - else
             .form-group.gl-form-group{ role: 'group' }
@@ -70,6 +70,8 @@
           .form-group.gl-form-group{ role: 'group' }
             = f.label :website_url, s_('AdminUsers|Website URL'), class: 'gl-display-block col-form-label'
             = f.text_field :website_url, class: 'form-control gl-form-input'
+
+    = render_if_exists 'admin/users/custom_attributes', f: f
 
     = render 'admin/users/admin_notes', f: f
 

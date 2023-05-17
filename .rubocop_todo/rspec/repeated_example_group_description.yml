@@ -1,7 +1,6 @@
 ---
 RSpec/RepeatedExampleGroupDescription:
   Exclude:
-    - 'ee/spec/finders/merge_trains_finder_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerabilities_grade_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerability_severities_count_resolver_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/person_spec.rb'
@@ -90,7 +89,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'spec/services/merge_requests/refresh_service_spec.rb'
     - 'spec/services/metrics/dashboard/gitlab_alert_embed_service_spec.rb'
     - 'spec/services/verify_pages_domain_service_spec.rb'
-    - 'spec/support/cycle_analytics_helpers/test_generation.rb'
     - 'spec/support/shared_examples/models/application_setting_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/limitable_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'

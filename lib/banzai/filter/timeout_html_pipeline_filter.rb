@@ -16,7 +16,6 @@ module Banzai
         Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { call_with_timeout }
       rescue Timeout::Error => e
         class_name = self.class.name.demodulize
-        timeout_counter.increment(source: class_name)
         Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
 
         # we've timed out, but some work may have already been completed,
@@ -26,12 +25,6 @@ module Banzai
 
       def call_with_timeout
         raise NotImplementedError
-      end
-
-      private
-
-      def timeout_counter
-        Gitlab::Metrics.counter(:banzai_filter_timeouts_total, 'Count of the Banzai filters that time out')
       end
     end
   end

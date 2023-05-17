@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportBaseDataWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportBaseDataWorker, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:import_state) { create(:import_state, project: project) }
 

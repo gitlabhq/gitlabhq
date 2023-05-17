@@ -9,7 +9,7 @@ module Gitlab
     end
 
     module Constants
-      DARK = Color.new('#333333')
+      DARK = Color.new('#1F1E24')
       LIGHT = Color.new('#FFFFFF')
 
       COLOR_NAME_TO_HEX = {
@@ -194,8 +194,43 @@ module Gitlab
       PATTERN.match?(@value)
     end
 
+    # Implementation should match
+    # https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6245128c7256e3d8db164b92e9580c79d47e9183/src/utils/utils.js#L52-55
+    def to_srgb(value)
+      normalized = value / 255.0
+      normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055)**2.4
+    end
+
+    # Implementation should match
+    # https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6245128c7256e3d8db164b92e9580c79d47e9183/src/utils/utils.js#L57-64
+    def relative_luminance(rgb)
+      # WCAG 2.1 formula: https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+      # -
+      # WCAG 3.0 will use APAC
+      # Using APAC would be the ultimate goal, but was dismissed by engineering as of now
+      # See https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3418#note_1370107090
+      (0.2126 * to_srgb(rgb[0])) + (0.7152 * to_srgb(rgb[1])) + (0.0722 * to_srgb(rgb[2]))
+    end
+
+    # Implementation should match
+    # https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6245128c7256e3d8db164b92e9580c79d47e9183/src/utils/utils.js#L66-91
     def light?
-      valid? && rgb.sum > 500
+      return false unless valid?
+
+      luminance = relative_luminance(rgb)
+      light_luminance = relative_luminance([255, 255, 255])
+      dark_luminance = relative_luminance([31, 30, 36])
+
+      contrast_light = (light_luminance + 0.05) / (luminance + 0.05)
+      contrast_dark = (luminance + 0.05) / (dark_luminance + 0.05)
+
+      # Using a threshold contrast of 2.4 instead of 3
+      # as this will solve weird color combinations in the mid tones
+      #
+      # Note that this is the negated condition from GitLab UI,
+      # because the GitLab UI implementation returns the text color,
+      # while this defines whether a background color is light
+      !(contrast_light >= 2.4 || contrast_light > contrast_dark)
     end
 
     def luminosity

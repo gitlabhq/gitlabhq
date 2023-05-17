@@ -13,13 +13,15 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   let(:maintainer_access_level) { access_levels.for_role.first }
   let(:maintainer_access_level_data) { access_levels_data.first }
   let(:access_levels_data) do
-    graphql_data_at('project',
-                    'branchRules',
-                    'nodes',
-                    0,
-                    'branchProtection',
-                    "#{access_level_kind.to_s.camelize(:lower)}AccessLevels",
-                    'nodes')
+    graphql_data_at(
+      'project',
+      'branchRules',
+      'nodes',
+      0,
+      'branchProtection',
+      "#{access_level_kind.to_s.camelize(:lower)}AccessLevels",
+      'nodes'
+    )
   end
 
   let(:query) do

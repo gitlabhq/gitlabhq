@@ -17,6 +17,7 @@ module Resolvers
         alias_method :dashboard, :object
 
         def resolve(**args)
+          return if Feature.enabled?(:remove_monitor_metrics)
           return [] unless dashboard
 
           ::Metrics::Dashboards::AnnotationsFinder.new(dashboard: dashboard, params: args).execute

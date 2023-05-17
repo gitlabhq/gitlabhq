@@ -65,15 +65,14 @@ describe('Tracking', () => {
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event(TEST_CATEGORY, TEST_ACTION, { label: TEST_LABEL });
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'trackStructEvent',
-        TEST_CATEGORY,
-        TEST_ACTION,
-        TEST_LABEL,
-        undefined,
-        undefined,
-        [standardContext],
-      );
+      expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', {
+        category: TEST_CATEGORY,
+        action: TEST_ACTION,
+        label: TEST_LABEL,
+        property: undefined,
+        value: undefined,
+        context: [standardContext],
+      });
     });
 
     it('returns `true` if the Snowplow library was called without issues', () => {
@@ -93,14 +92,13 @@ describe('Tracking', () => {
 
       Tracking.event(TEST_CATEGORY, TEST_ACTION, { extra });
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'trackStructEvent',
-        TEST_CATEGORY,
-        TEST_ACTION,
-        undefined,
-        undefined,
-        undefined,
-        [
+      expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', {
+        category: TEST_CATEGORY,
+        action: TEST_ACTION,
+        label: undefined,
+        property: undefined,
+        value: undefined,
+        context: [
           {
             ...standardContext,
             data: {
@@ -109,7 +107,7 @@ describe('Tracking', () => {
             },
           },
         ],
-      );
+      });
     });
 
     it('skips tracking if snowplow is unavailable', () => {
@@ -209,14 +207,16 @@ describe('Tracking', () => {
 
   describe('.enableFormTracking', () => {
     it('tells snowplow to enable form tracking, with only explicit contexts', () => {
-      const config = { forms: { allow: ['form-class1'] }, fields: { allow: ['input-class1'] } };
+      const config = {
+        forms: { allow: ['form-class1'] },
+        fields: { allow: ['input-class1'] },
+      };
       Tracking.enableFormTracking(config, ['_passed_context_', standardContext]);
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'enableFormTracking',
-        { forms: { whitelist: ['form-class1'] }, fields: { whitelist: ['input-class1'] } },
-        ['_passed_context_'],
-      );
+      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking', {
+        options: { forms: { allowlist: ['form-class1'] }, fields: { allowlist: ['input-class1'] } },
+        context: ['_passed_context_'],
+      });
     });
 
     it('throws an error if no allow rules are provided', () => {
@@ -232,11 +232,10 @@ describe('Tracking', () => {
     it('does not add empty form allow rules', () => {
       Tracking.enableFormTracking({ fields: { allow: ['input-class1'] } });
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'enableFormTracking',
-        { fields: { whitelist: ['input-class1'] } },
-        [],
-      );
+      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking', {
+        options: { fields: { allowlist: ['input-class1'] } },
+        context: [],
+      });
     });
 
     describe('when `document.readyState` does not equal `complete`', () => {
@@ -285,15 +284,14 @@ describe('Tracking', () => {
 
       Tracking.flushPendingEvents();
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'trackStructEvent',
-        TEST_CATEGORY,
-        TEST_ACTION,
-        TEST_LABEL,
-        undefined,
-        undefined,
-        [standardContext],
-      );
+      expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', {
+        category: TEST_CATEGORY,
+        action: TEST_ACTION,
+        label: TEST_LABEL,
+        property: undefined,
+        value: undefined,
+        context: [standardContext],
+      });
     });
   });
 
@@ -457,15 +455,14 @@ describe('Tracking', () => {
         value: '0',
       });
 
-      expect(snowplowSpy).toHaveBeenCalledWith(
-        'trackStructEvent',
-        TEST_CATEGORY,
-        'click_input2',
-        undefined,
-        undefined,
-        0,
-        [standardContext],
-      );
+      expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', {
+        category: TEST_CATEGORY,
+        action: 'click_input2',
+        label: undefined,
+        property: undefined,
+        value: 0,
+        context: [standardContext],
+      });
     });
 
     it('handles checkbox values correctly', () => {

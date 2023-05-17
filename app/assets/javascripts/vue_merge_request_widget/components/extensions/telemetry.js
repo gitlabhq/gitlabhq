@@ -6,86 +6,6 @@ import {
   TELEMETRY_WIDGET_FULL_REPORT_CLICKED,
 } from '../../constants';
 
-/*
- * Additional events to send beyond the defaults for certain widget extensions
- */
-const nonStandardEvents = {
-  codeQuality: {
-    uniqueUser: {
-      expand: ['i_testing_code_quality_widget_total'],
-    },
-    counter: {},
-  },
-  terraform: {
-    uniqueUser: {
-      expand: ['i_testing_terraform_widget_total'],
-    },
-    counter: {},
-  },
-  issues: {
-    uniqueUser: {
-      expand: ['i_testing_issues_widget_total'],
-    },
-    counter: {},
-  },
-  testSummary: {
-    uniqueUser: {
-      expand: ['i_testing_summary_widget_total'],
-    },
-    counter: {},
-  },
-  metrics: {
-    uniqueUser: {
-      expand: ['i_testing_metrics_report_widget_total'],
-    },
-    counter: {},
-  },
-  browserPerformance: {
-    uniqueUser: {
-      expand: ['i_testing_web_performance_widget_total'],
-    },
-    counter: {},
-  },
-  licenseCompliance: {
-    uniqueUser: {
-      expand: ['i_testing_license_compliance_widget_total'],
-    },
-    counter: {},
-  },
-  loadPerformance: {
-    uniqueUser: {
-      expand: ['i_testing_load_performance_widget_total'],
-    },
-    counter: {},
-  },
-  statusChecks: {
-    uniqueUser: {
-      expand: ['i_testing_status_checks_widget'],
-    },
-    counter: {},
-  },
-};
-
-function combineDeepArray(path, ...objects) {
-  const parts = path.split('.');
-  const allEntries = objects.reduce((entries, currentObject) => {
-    let expandedEntries = entries;
-    let traversed = currentObject;
-
-    parts.forEach((part) => {
-      traversed = traversed?.[part];
-    });
-
-    if (traversed) {
-      expandedEntries = [...entries, ...traversed];
-    }
-
-    return expandedEntries;
-  }, []);
-
-  return Array.from(new Set(allEntries));
-}
-
 function simplifyWidgetName(componentName) {
   const noWidget = componentName.replace(/^Widget/, '');
 
@@ -166,7 +86,6 @@ function defaultBehaviorEvents({ bus, config }) {
 
 function baseTelemetry(componentName) {
   const simpleExtensionName = simplifyWidgetName(componentName);
-  const additionalNonStandard = nonStandardEvents[simpleExtensionName] || {};
   /*
    * Telemetry config format is:
    *    {
@@ -179,7 +98,7 @@ function baseTelemetry(componentName) {
    *     - uniqueUser is sent to RedisHLL
    *     - counter is sent to a regular Redis counter
    */
-  const defaultTelemetry = {
+  return {
     uniqueUser: {
       view: [`${baseRedisEventName(simpleExtensionName)}_view`],
       expand: [`${baseRedisEventName(simpleExtensionName)}_expand`],
@@ -189,27 +108,6 @@ function baseTelemetry(componentName) {
       view: [`${baseRedisEventName(simpleExtensionName)}_count_view`],
       expand: [`${baseRedisEventName(simpleExtensionName)}_count_expand`],
       clickFullReport: [`${baseRedisEventName(simpleExtensionName)}_count_click_full_report`],
-    },
-  };
-
-  return {
-    uniqueUser: {
-      view: combineDeepArray('uniqueUser.view', defaultTelemetry, additionalNonStandard),
-      expand: combineDeepArray('uniqueUser.expand', defaultTelemetry, additionalNonStandard),
-      clickFullReport: combineDeepArray(
-        'uniqueUser.clickFullReport',
-        defaultTelemetry,
-        additionalNonStandard,
-      ),
-    },
-    counter: {
-      view: combineDeepArray('counter.view', defaultTelemetry, additionalNonStandard),
-      expand: combineDeepArray('counter.expand', defaultTelemetry, additionalNonStandard),
-      clickFullReport: combineDeepArray(
-        'counter.clickFullReport',
-        defaultTelemetry,
-        additionalNonStandard,
-      ),
     },
   };
 }

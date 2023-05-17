@@ -1,0 +1,11 @@
+---
+table_name: value_stream_dashboard_counts
+classes:
+- Analytics::ValueStreamDashboard::Count
+feature_categories:
+- value_stream_management
+description: Collects counts for various objects in GitLab for the Value Stream Dashboard
+  feature.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118220
+milestone: '16.0'
+gitlab_schema: gitlab_main

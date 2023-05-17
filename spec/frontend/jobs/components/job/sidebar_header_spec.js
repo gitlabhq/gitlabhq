@@ -31,7 +31,7 @@ describe('Sidebar Header', () => {
     });
   };
 
-  const createComponentWithApollo = async ({ props = {}, restJob = {} } = {}) => {
+  const createComponentWithApollo = ({ props = {}, restJob = {} } = {}) => {
     const getJobQueryResponse = jest.fn().mockResolvedValue(mockJobResponse);
 
     const requestHandlers = [[getJobQuery, getJobQueryResponse]];

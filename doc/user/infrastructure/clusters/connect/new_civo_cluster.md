@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -117,18 +117,18 @@ To remove all resources:
 
 1. Add the following to your `.gitlab-ci.yml` file:
 
-    ```yaml
-    stages:
-      - init
-      - validate
-      - build
-      - deploy
-      - cleanup
+   ```yaml
+   stages:
+     - init
+     - validate
+     - build
+     - deploy
+     - cleanup
 
-    destroy:
-      extends: .destroy
-      needs: []
-    ```
+   destroy:
+     extends: .destroy
+     needs: []
+   ```
 
 1. On the left sidebar, select **CI/CD > Pipelines** and select the most recent pipeline.
 1. For the `destroy` job, select **Play** (**{play}**).

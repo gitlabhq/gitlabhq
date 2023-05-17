@@ -78,6 +78,7 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 377,
     "noteable_type": "Issue",
+    "project_id": 5,
     "noteable_iid": 377,
     "resolvable": false,
     "confidential": false,
@@ -100,6 +101,7 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 121,
     "noteable_type": "Issue",
+    "project_id": 5,
     "noteable_iid": 121,
     "resolvable": false,
     "confidential": true,
@@ -147,7 +149,7 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                           |
 | `issue_iid`    | integer        | yes      | The IID of an issue.                                                                                                         |
 | `body`         | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
-| `confidential` | boolean        | no       | **Deprecated:** will be removed in GitLab 16.0 and renamed to `internal`. The confidential flag of a note. Default is false.                                                                           |
+| `confidential` | boolean        | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0 and renamed to `internal`. The confidential flag of a note. Default is false.                                                                           |
 | `internal`     | boolean        | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is false.                                                                               |
 | `created_at`   | string         | no       | Date time string, ISO 8601 formatted. It must be after 1970-01-01. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
@@ -171,7 +173,7 @@ Parameters:
 | `issue_iid`    | integer           | yes      | The IID of an issue.                                                                               |
 | `note_id`      | integer           | yes      | The ID of a note.                                                                                  |
 | `body`         | string            | no       | The content of a note. Limited to 1,000,000 characters.                                            |
-| `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes/636?body=note"
@@ -239,9 +241,9 @@ Parameters:
 
 ```json
 {
-  "id": 52,
-  "title": "Snippet",
-  "file_name": "snippet.rb",
+  "id": 302,
+  "body": "closed",
+  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -250,9 +252,16 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
-  "expires_at": null,
-  "updated_at": "2013-10-02T07:34:20Z",
-  "created_at": "2013-10-02T07:34:20Z"
+  "created_at": "2013-10-02T09:22:45Z",
+  "updated_at": "2013-10-02T10:22:45Z",
+  "system": true,
+  "noteable_id": 377,
+  "noteable_type": "Issue",
+  "project_id": 5,
+  "noteable_iid": 377,
+  "resolvable": false,
+  "confidential": false,
+  "internal": false
 }
 ```
 
@@ -263,7 +272,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new snippet note
 
 Creates a new note for a single snippet. Snippet notes are user comments on snippets.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/snippets/:snippet_id/notes
@@ -379,6 +388,7 @@ Parameters:
   "system": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest",
+  "project_id": 5,
   "noteable_iid": 2,
   "resolvable": false,
   "confidential": false,
@@ -392,8 +402,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Create new merge request note
 
-Creates a new note for a single merge request.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+Creates a new note for a single merge request. Notes are not attached to specific
+lines in a merge request. For other approaches with more granular control, see
+[Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
+and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the Discussions API.
+
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/notes
@@ -407,7 +422,7 @@ Parameters:
 | `merge_request_iid`     | integer        | yes      | The IID of a project merge request                                                                                           |
 | `body`                  | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 | `created_at`            | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
-| `merge_request_diff_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
+| `merge_request_diff_head_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ### Modify existing merge request note
 
@@ -425,7 +440,7 @@ Parameters:
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request                                                                 |
 | `note_id`           | integer           | no       | The ID of a note                                                                                   |
 | `body`              | string            | yes      | The content of a note. Limited to 1,000,000 characters.                                            |
-| `confidential`      | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential`      | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes/1?body=note"
@@ -496,9 +511,9 @@ Parameters:
 
 ```json
 {
-  "id": 52,
-  "title": "Epic",
-  "file_name": "epic.rb",
+  "id": 302,
+  "body": "Epic note",
+  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -507,9 +522,14 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
-  "expires_at": null,
-  "updated_at": "2013-10-02T07:34:20Z",
-  "created_at": "2013-10-02T07:34:20Z",
+  "created_at": "2013-10-02T09:22:45Z",
+  "updated_at": "2013-10-02T10:22:45Z",
+  "system": true,
+  "noteable_id": 11,
+  "noteable_type": "Epic",
+  "project_id": 5,
+  "noteable_iid": 11,
+  "resolvable": false,
   "confidential": false,
   "internal": false
 }
@@ -522,7 +542,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new epic note
 
 Creates a new note for a single epic. Epic notes are comments users can post to an epic.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/notes
@@ -535,7 +555,7 @@ Parameters:
 | `body`         | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 | `epic_id`      | integer | yes  | The ID of an epic |
 | `id`           | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `confidential` | boolean        | no       | **Deprecated:** will be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
+| `confidential` | boolean        | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
 | `internal`     | boolean        | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is `false`. |
 
 ```shell
@@ -558,7 +578,7 @@ Parameters:
 | `epic_id`      | integer           | yes      | The ID of an epic                                                                                  |
 | `note_id`      | integer           | yes      | The ID of a note                                                                                   |
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters.                                            |
-| `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes/1?body=note"

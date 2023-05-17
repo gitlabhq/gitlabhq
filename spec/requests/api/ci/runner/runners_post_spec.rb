@@ -15,14 +15,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-            allow(service).to receive(:execute)
-              .and_return(ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden))
-          end
-
           post api('/runners'), params: { token: 'invalid' }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - invalid token supplied')
         end
       end
 
@@ -44,21 +40,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let_it_be(:new_runner) { create(:ci_runner) }
 
         before do
-          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-            expected_params = {
-              description: 'server.hostname',
-              maintenance_note: 'Some maintainer notes',
-              run_untagged: false,
-              tag_list: %w(tag1 tag2),
-              locked: true,
-              active: true,
-              access_level: 'ref_protected',
-              maximum_timeout: 9000
-            }.stringify_keys
+          expected_params = {
+            description: 'server.hostname',
+            maintenance_note: 'Some maintainer notes',
+            run_untagged: false,
+            tag_list: %w(tag1 tag2),
+            locked: true,
+            active: true,
+            access_level: 'ref_protected',
+            maximum_timeout: 9000
+          }.stringify_keys
 
+          allow_next_instance_of(
+            ::Ci::Runners::RegisterRunnerService,
+            'valid token',
+            a_hash_including(expected_params)
+          ) do |service|
             expect(service).to receive(:execute)
               .once
-              .with('valid token', a_hash_including(expected_params))
               .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
         end
@@ -109,11 +108,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:new_runner) { create(:ci_runner) }
 
         it 'converts to maintenance_note param' do
-          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
+          allow_next_instance_of(
+            ::Ci::Runners::RegisterRunnerService,
+            'valid token',
+            a_hash_including('maintenance_note' => 'Some maintainer notes')
+              .and(excluding('maintainter_note' => anything))
+          ) do |service|
             expect(service).to receive(:execute)
               .once
-              .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
-                .and(excluding('maintainter_note' => anything)))
               .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
@@ -134,12 +136,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let_it_be(:new_runner) { build(:ci_runner) }
 
         it 'uses active value in registration' do
-          expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-            expected_params = { active: false }.stringify_keys
-
+          expect_next_instance_of(
+            ::Ci::Runners::RegisterRunnerService,
+            'valid token',
+            a_hash_including({ active: false }.stringify_keys)
+          ) do |service|
             expect(service).to receive(:execute)
               .once
-              .with('valid token', a_hash_including(expected_params))
               .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
@@ -197,12 +200,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             let(:tag_list) { (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } }
 
             it 'uses tag_list value in registration and returns error' do
-              expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-                expected_params = { tag_list: tag_list }.stringify_keys
-
+              expect_next_instance_of(
+                ::Ci::Runners::RegisterRunnerService,
+                registration_token,
+                a_hash_including({ tag_list: tag_list }.stringify_keys)
+              ) do |service|
                 expect(service).to receive(:execute)
                   .once
-                  .with(registration_token, a_hash_including(expected_params))
                   .and_call_original
               end
 
@@ -217,12 +221,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             let(:tag_list) { (1..20).map { |i| "tag#{i}" } }
 
             it 'uses tag_list value in registration and successfully creates runner' do
-              expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-                expected_params = { tag_list: tag_list }.stringify_keys
-
+              expect_next_instance_of(
+                ::Ci::Runners::RegisterRunnerService,
+                registration_token,
+                a_hash_including({ tag_list: tag_list }.stringify_keys)
+              ) do |service|
                 expect(service).to receive(:execute)
                   .once
-                  .with(registration_token, a_hash_including(expected_params))
                   .and_call_original
               end
 
@@ -230,6 +235,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
               expect(response).to have_gitlab_http_status(:created)
             end
+          end
+        end
+
+        context 'when runner registration is disallowed' do
+          before do
+            stub_application_setting(allow_runner_registration_token: false)
+          end
+
+          it 'returns 410 Gone status' do
+            post api('/runners'), params: { token: registration_token }
+
+            expect(response).to have_gitlab_http_status(:gone)
           end
         end
       end

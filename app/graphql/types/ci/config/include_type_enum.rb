@@ -11,6 +11,7 @@ module Types
         value 'local', description: 'Local include.', value: :local
         value 'file', description: 'Project file include.', value: :file
         value 'template', description: 'Template include.', value: :template
+        value 'component', description: 'Component include.', value: :component
       end
     end
   end

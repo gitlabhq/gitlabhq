@@ -63,10 +63,6 @@ describe('Harbor artifact list row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('list item', () => {
     beforeEach(() => {
       mountComponent({

@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlButton } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import { modalTypes } from '../../constants';
 import { trimPathComponents, getPathParent } from '../../utils';
@@ -50,13 +50,13 @@ export default {
     actionPrimary() {
       return {
         text: this.buttonLabel,
-        attributes: [{ variant: 'confirm' }],
+        attributes: { variant: 'confirm' },
       };
     },
     actionCancel() {
       return {
         text: i18n.cancelButtonText,
-        attributes: [{ variant: 'default' }],
+        attributes: { variant: 'default' },
       };
     },
     isCreatingNewFile() {

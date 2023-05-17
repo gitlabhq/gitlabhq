@@ -5,17 +5,13 @@ import DetailsWrapper from '~/content_editor/components/wrappers/details.vue';
 describe('content/components/wrappers/details', () => {
   let wrapper;
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     wrapper = shallowMountExtended(DetailsWrapper, {
       propsData: {
         node: {},
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders a node-view-content as a ul element', () => {
     createWrapper();

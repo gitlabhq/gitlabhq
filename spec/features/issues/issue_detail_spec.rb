@@ -48,6 +48,30 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
   end
 
+  context 'when issue description has task list items' do
+    before do
+      description = '- [ ] I am a task
+
+| Table |
+|-------|
+| <ul><li>[ ] I am inside a table</li><ul> |'
+      issue.update!(description: description)
+
+      sign_in(user)
+      visit project_issue_path(project, issue)
+    end
+
+    it 'shows task actions ellipsis button when hovering over the task list item, but not within a table', :aggregate_failures do
+      find('li', text: 'I am a task').hover
+
+      expect(page).to have_button 'Task actions'
+
+      find('li', text: 'I am inside a table').hover
+
+      expect(page).not_to have_button 'Task actions'
+    end
+  end
+
   context 'when issue description has xss snippet' do
     before do
       issue.update!(description: '![xss" onload=alert(1);//](a)')
@@ -74,6 +98,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
       project.add_developer(user_to_be_deleted)
 
       sign_in(user_to_be_deleted)
+      stub_feature_flags(moved_mr_sidebar: false)
       visit project_issue_path(project, issue)
       wait_for_requests
 
@@ -105,7 +130,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     describe 'when an issue `issue_type` is edited' do
       before do
         sign_in(user)
-
+        set_cookie('new-actions-popover-viewed', 'true')
         visit project_issue_path(project, issue)
         wait_for_requests
       end
@@ -139,7 +164,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     describe 'when an incident `issue_type` is edited' do
       before do
         sign_in(user)
-
+        set_cookie('new-actions-popover-viewed', 'true')
         visit project_issue_path(project, incident)
         wait_for_requests
       end

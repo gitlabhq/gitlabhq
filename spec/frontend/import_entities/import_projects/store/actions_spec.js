@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { STATUSES, PROVIDERS } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
@@ -27,7 +27,7 @@ import {
   HTTP_STATUS_TOO_MANY_REQUESTS,
 } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const MOCK_ENDPOINT = `${TEST_HOST}/endpoint.json`;
 const endpoints = {
@@ -220,12 +220,14 @@ describe('import_projects store actions', () => {
 
     describe('when rate limited', () => {
       it('commits RECEIVE_REPOS_ERROR and shows rate limited error message', async () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json?filtered_field=filter`)
+          .reply(HTTP_STATUS_TOO_MANY_REQUESTS);
 
         await testAction(
           fetchRepos,
           null,
-          { ...localState, filter: 'filter' },
+          { ...localState, filter: { filtered_field: 'filter' } },
           [{ type: REQUEST_REPOS }, { type: RECEIVE_REPOS_ERROR }],
           [],
         );
@@ -238,12 +240,12 @@ describe('import_projects store actions', () => {
 
     describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_OK, payload);
+        mock.onGet(`${TEST_HOST}/endpoint.json?some_filter=filter`).reply(HTTP_STATUS_OK, payload);
 
         return testAction(
           fetchRepos,
           null,
-          { ...localState, filter: 'filter' },
+          { ...localState, filter: { some_filter: 'filter' } },
           [
             { type: REQUEST_REPOS },
             { type: SET_PAGE, payload: 1 },
@@ -374,12 +376,12 @@ describe('import_projects store actions', () => {
 
     describe('when filtered', () => {
       beforeEach(() => {
-        localState.filter = 'filter';
+        localState.filter = { some_filter: 'filter' };
       });
 
       it('fetches realtime changes with filter applied', () => {
         mock
-          .onGet(`${TEST_HOST}/endpoint.json?filter=filter`)
+          .onGet(`${TEST_HOST}/endpoint.json?some_filter=filter`)
           .reply(HTTP_STATUS_OK, updatedProjects);
 
         return testAction(

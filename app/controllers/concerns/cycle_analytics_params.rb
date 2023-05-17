@@ -19,7 +19,6 @@ module CycleAnalyticsParams
     @options ||= {}.tap do |opts|
       opts[:current_user] = current_user
       opts[:projects] = params[:project_ids] if params[:project_ids]
-      opts[:group] = params[:group_id] if params[:group_id]
       opts[:from] = params[:from] || start_date(params)
       opts[:to] = params[:to] if params[:to]
       opts[:end_event_filter] = params[:end_event_filter] if params[:end_event_filter]
@@ -62,7 +61,7 @@ module CycleAnalyticsParams
   end
 
   def all_cycle_analytics_params
-    permitted_cycle_analytics_params.merge(current_user: current_user)
+    permitted_cycle_analytics_params.merge(current_user: current_user, namespace: namespace)
   end
 
   def request_params
@@ -78,5 +77,3 @@ module CycleAnalyticsParams
     end
   end
 end
-
-CycleAnalyticsParams.prepend_mod_with('CycleAnalyticsParams')

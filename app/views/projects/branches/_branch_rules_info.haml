@@ -1,0 +1,12 @@
+- return unless show_branch_rules_info?
+= render Pajamas::AlertComponent.new(variant: :info,
+  title: s_("Branches|See all branch-related settings together with branch rules"),
+  alert_options: { class: 'js-branch-rules-info-callout gl-mb-6 gl-mt-4', data: { feature_id: Users::CalloutsHelper::BRANCH_RULES_INFO_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
+  - c.with_body do
+    = s_("Branches|You can now find an overview of settings for protected branches, merge request approvals, status checks, and security approvals conveniently in one spot.")
+
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: project_settings_repository_path(@project, anchor: 'js-branch-rules'), button_options: { class: 'deferred-link gl-alert-action' }) do
+      = s_("Branches|View branch rules")
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close'}) do
+      = _('Dismiss')

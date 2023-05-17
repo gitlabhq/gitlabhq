@@ -9,11 +9,13 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
   let_it_be(:project) { create(:project, :repository, :public) }
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_pipeline,
-            project: project,
-            sha: project.commit.sha,
-            ref: project.default_branch,
-            status: 'success')
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.sha,
+      ref: project.default_branch,
+      status: 'success'
+    )
   end
 
   let!(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
@@ -25,31 +27,13 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
   describe 'GET index' do
     subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
 
-    context 'when feature flag is on' do
-      render_views
+    render_views
 
-      before do
-        stub_feature_flags(artifacts_management_page: true)
-      end
+    it 'renders the page with data for the artifacts app' do
+      subject
 
-      it 'renders the page with data for the artifacts app' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('projects/artifacts/index')
-      end
-    end
-
-    context 'when feature flag is off' do
-      before do
-        stub_feature_flags(artifacts_management_page: false)
-      end
-
-      it 'renders no content' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template('projects/artifacts/index')
     end
   end
 
@@ -177,9 +161,10 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
           end
 
           it 'sends the codequality report' do
-            expect(controller).to receive(:send_file)
-                              .with(job.job_artifacts_codequality.file.path,
-                                    hash_including(disposition: 'attachment', filename: filename)).and_call_original
+            expect(controller).to receive(:send_file).with(
+              job.job_artifacts_codequality.file.path,
+              hash_including(disposition: 'attachment', filename: filename)
+            ).and_call_original
 
             download_artifact(file_type: file_type)
 
@@ -557,8 +542,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
       context 'with regular branch' do
         before do
-          pipeline.update!(ref: 'master',
-                           sha: project.commit('master').sha)
+          pipeline.update!(ref: 'master', sha: project.commit('master').sha)
 
           get :latest_succeeded, params: params_from_ref('master')
         end
@@ -568,8 +552,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
       context 'with branch name containing slash' do
         before do
-          pipeline.update!(ref: 'improve/awesome',
-                           sha: project.commit('improve/awesome').sha)
+          pipeline.update!(ref: 'improve/awesome', sha: project.commit('improve/awesome').sha)
 
           get :latest_succeeded, params: params_from_ref('improve/awesome')
         end
@@ -579,8 +562,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
       context 'with branch name and path containing slashes' do
         before do
-          pipeline.update!(ref: 'improve/awesome',
-                           sha: project.commit('improve/awesome').sha)
+          pipeline.update!(ref: 'improve/awesome', sha: project.commit('improve/awesome').sha)
 
           get :latest_succeeded, params: params_from_ref('improve/awesome', job.name, 'file/README.md')
         end
@@ -596,11 +578,13 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
         before do
           create_file_in_repo(project, 'master', 'master', 'test.txt', 'This is test')
 
-          create(:ci_pipeline,
+          create(
+            :ci_pipeline,
             project: project,
             sha: project.commit.sha,
             ref: project.default_branch,
-            status: 'failed')
+            status: 'failed'
+          )
 
           get :latest_succeeded, params: params_from_ref(project.default_branch)
         end

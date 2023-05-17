@@ -239,9 +239,14 @@ RSpec.describe Explore::ProjectsController, feature_category: :projects do
 
   context 'when user is signed in' do
     let(:user) { create(:user) }
+    let_it_be(:project) { create(:project, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, name: 'Project 2') }
 
     before do
       sign_in(user)
+      project.add_developer(user)
+      project2.add_developer(user)
+      user.toggle_star(project2)
     end
 
     include_examples 'explore projects'
@@ -259,6 +264,21 @@ RSpec.describe Explore::ProjectsController, feature_category: :projects do
     describe 'GET #index' do
       let(:controller_action) { :index }
       let(:params_with_name) { { name: 'some project' } }
+
+      it 'assigns the correct all_user_projects' do
+        get :index
+        all_user_projects = assigns(:all_user_projects)
+
+        expect(all_user_projects.count).to eq(2)
+      end
+
+      it 'assigns the correct all_starred_projects' do
+        get :index
+        all_starred_projects = assigns(:all_starred_projects)
+
+        expect(all_starred_projects.count).to eq(1)
+        expect(all_starred_projects).to include(project2)
+      end
 
       context 'when disable_anonymous_project_search is enabled' do
         before do

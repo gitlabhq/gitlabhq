@@ -1,9 +1,10 @@
-- page_title s_('TagsPage|New Tag')
+- add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
+- page_title s_('TagsPage|New')
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true) do |c|
-    = c.body do
+    - c.with_body do
       = @error
 
 %h1.page-title.gl-font-size-h-display
@@ -37,4 +38,3 @@
       = s_('TagsPage|Create tag')
     = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do
       = s_('TagsPage|Cancel')
-

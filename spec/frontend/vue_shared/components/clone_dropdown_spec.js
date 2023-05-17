@@ -21,11 +21,6 @@ describe('Clone Dropdown Button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('rendering', () => {
     it('matches the snapshot', () => {
       createComponent();

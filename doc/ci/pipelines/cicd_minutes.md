@@ -7,6 +7,9 @@ type: reference
 
 # CI/CD minutes quota **(PREMIUM)**
 
+NOTE:
+The term `CI/CD minutes` is being renamed to `units of compute`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `units of compute`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
+
 Administrators can limit the amount of time that projects can use to run jobs on
 [shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
 is tracked with a quota of CI/CD minutes.
@@ -19,7 +22,7 @@ end-to-end duration of a pipeline.
 
 On GitLab.com:
 
-- CI/CD minutes quotas are enabled for both public and private projects, but public
+- CI/CD minutes quotas are enabled for all projects, but certain
   projects [consume CI/CD minutes at a slower rate](#cost-factor).
 - The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/namespace/index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
@@ -83,11 +86,16 @@ NOTE:
 You can set a quota of CI/CD minutes for only top-level groups or user namespaces.
 If you set a quota for a subgroup, it is not used.
 
-## View CI/CD minutes used by a group
+## View CI/CD minutes
+
+Prerequisite:
+
+- You must have access to the build to view the total usage and quota summary for a namespace associated with a build.
+- Access to **Usage Quotas** page is based on your role in the associated namespace or group.
+
+### View Usage Quota Reports for a group
 
 > Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
-
-You can view the number of CI/CD minutes being used by a group.
 
 Prerequisite:
 
@@ -105,9 +113,13 @@ The projects list shows projects with CI/CD minute usage or shared runners usage
 in the current month only. The list includes all projects in the namespace and its
 subgroups, sorted in descending order of CI/CD minute usage.
 
-## View CI/CD minutes used by a personal namespace
+### View Usage Quota reports for a personal namespace
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+
+Prerequisite:
+
+- The namespace must be your personal namespace.
 
 You can view the number of CI/CD minutes being used by a personal namespace:
 
@@ -144,6 +156,10 @@ You can find pricing for additional CI/CD minutes on the
 
 ### Purchase CI/CD minutes for a group **(FREE SAAS)**
 
+Prerequisite:
+
+- You must have the Owner role for the group.
+
 You can purchase additional CI/CD minutes for your group.
 You cannot transfer purchased CI/CD minutes from one group to another,
 so be sure to select the correct group.
@@ -158,6 +174,10 @@ After your payment is processed, the additional CI/CD minutes are added to your 
 namespace.
 
 ### Purchase CI/CD minutes for a personal namespace **(FREE SAAS)**
+
+Prerequisite:
+
+- The namespace must be your personal namespace.
 
 To purchase additional minutes for your personal namespace:
 
@@ -201,13 +221,12 @@ can be higher than the end-to-end duration of a pipeline.
 
 The cost factors for jobs running on shared runners on GitLab.com are:
 
-- `1` for internal and private projects.
-- `0.5` for public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-- `0.008` for public forks of public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
+- `1` for internal, public, and private projects.
+- Exceptions for public projects:
+  - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
+  - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
   you use 1 CI/CD minute.
-- `1` for other public projects, after October 1, 2022 (previously `0.04`).
-  For every 1 minute of job execution time, you use 1 CI/CD minute.
-- Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
+- Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
 
@@ -244,9 +263,10 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 
 | GitLab SaaS runner type  | Machine Type   | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
-| Linux OS + Docker executor| Small  |1|
-| Linux OS + Docker executor| Medium  |2|
-| Linux OS + Docker executor| Large |3|
+| Linux OS | Small  |1|
+| Linux OS | Medium  |2|
+| Linux OS | Large |3|
+| Linux OS + GPU-enabled | Medium, GPU Standard |7|
 
 ### Monthly reset of CI/CD minutes
 
@@ -298,6 +318,13 @@ On GitLab SaaS an email notification is sent to the namespace owners when:
 - The available CI/CD minutes are below 5% of the quota.
 - All CI/CD minutes have been used.
 
+### Special quota limits
+
+In some cases, the quota limit is replaced by one of the following labels:
+
+- **Unlimited minutes**: For namespaces with unlimited CI/CD minutes
+- **Not supported minutes**: For namespaces where active shared runners are not enabled
+
 ## Reduce consumption of CI/CD minutes
 
 If your project consumes too many CI/CD minutes, there are some strategies you can
@@ -319,3 +346,19 @@ If you manage an open source project, these improvements can also reduce CI/CD m
 consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
+
+## Reset CI/CD minutes used **(PREMIUM SELF)**
+
+An administrator can reset the number of minutes used by a namespace for the current month.
+
+### Reset minutes for a personal namespace
+
+1. Find the [user in the admin area](../../user/admin_area/index.md#administering-users).
+1. Select **Edit**.
+1. In **Limits**, select **Reset pipeline minutes**.
+
+### Reset minutes for a group namespace
+
+1. Find the [group in the admin area](../../user/admin_area/index.md#administering-groups).
+1. Select **Edit**.
+1. In **Permissions and group features**, select **Reset pipeline minutes**.

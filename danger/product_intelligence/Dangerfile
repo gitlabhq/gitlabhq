@@ -1,7 +1,0 @@
-# frozen_string_literal: true
-
-product_intelligence.check!
-
-product_intelligence.check_affected_scopes!
-
-product_intelligence.check_usage_data_insertions!

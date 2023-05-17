@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ImportPullRequestReviewWorker do
+RSpec.describe Gitlab::GithubImport::ImportPullRequestReviewWorker, feature_category: :importers do
   it { is_expected.to include_module(Gitlab::GithubImport::ObjectImporter) }
 
   describe '#representation_class' do
@@ -10,6 +10,6 @@ RSpec.describe Gitlab::GithubImport::ImportPullRequestReviewWorker do
   end
 
   describe '#importer_class' do
-    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequestReviewImporter) }
+    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequests::ReviewImporter) }
   end
 end

@@ -1,21 +1,16 @@
 import { mount } from '@vue/test-utils';
 import { GlBroadcastMessage, GlForm } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import MessageForm from '~/admin/broadcast_messages/components/message_form.vue';
-import {
-  BROADCAST_MESSAGES_PATH,
-  TYPE_BANNER,
-  TYPE_NOTIFICATION,
-  THEMES,
-} from '~/admin/broadcast_messages/constants';
+import { TYPE_BANNER, TYPE_NOTIFICATION, THEMES } from '~/admin/broadcast_messages/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_TARGET_ACCESS_LEVELS } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('MessageForm', () => {
   let wrapper;
@@ -32,6 +27,8 @@ describe('MessageForm', () => {
     endsAt: new Date(),
   };
 
+  const messagesPath = '_messages_path_';
+
   const findPreview = () => extendedWrapper(wrapper.findComponent(GlBroadcastMessage));
   const findThemeSelect = () => wrapper.findComponent('[data-testid=theme-select]');
   const findDismissable = () => wrapper.findComponent('[data-testid=dismissable-checkbox]');
@@ -39,11 +36,12 @@ describe('MessageForm', () => {
   const findSubmitButton = () => wrapper.findComponent('[data-testid=submit-button]');
   const findForm = () => wrapper.findComponent(GlForm);
 
-  function createComponent({ broadcastMessage = {}, glFeatures = {} }) {
+  function createComponent({ broadcastMessage = {} } = {}) {
     wrapper = mount(MessageForm, {
       provide: {
-        glFeatures,
         targetAccessLevelOptions: MOCK_TARGET_ACCESS_LEVELS,
+        messagesPath,
+        previewPath: '_preview_path_',
       },
       propsData: {
         broadcastMessage: {
@@ -101,14 +99,9 @@ describe('MessageForm', () => {
   });
 
   describe('target roles checkboxes', () => {
-    it('renders when roleTargetedBroadcastMessages feature is enabled', () => {
-      createComponent({ glFeatures: { roleTargetedBroadcastMessages: true } });
+    it('renders target roles', () => {
+      createComponent();
       expect(findTargetRoles().exists()).toBe(true);
-    });
-
-    it('does not render when roleTargetedBroadcastMessages feature is disabled', () => {
-      createComponent({ glFeatures: { roleTargetedBroadcastMessages: false } });
-      expect(findTargetRoles().exists()).toBe(false);
     });
   });
 
@@ -151,16 +144,16 @@ describe('MessageForm', () => {
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 
-      expect(axiosMock.history.post).toHaveLength(1);
-      expect(axiosMock.history.post[0]).toMatchObject({
-        url: BROADCAST_MESSAGES_PATH,
+      expect(axiosMock.history.post).toHaveLength(2);
+      expect(axiosMock.history.post[1]).toMatchObject({
+        url: messagesPath,
         data: JSON.stringify(defaultPayload),
       });
     });
 
     it('shows an error alert if the create request fails', async () => {
       createComponent({ broadcastMessage: { id: undefined } });
-      axiosMock.onPost(BROADCAST_MESSAGES_PATH).replyOnce(HTTP_STATUS_BAD_REQUEST);
+      axiosMock.onPost(messagesPath).replyOnce(HTTP_STATUS_BAD_REQUEST);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 
@@ -179,7 +172,7 @@ describe('MessageForm', () => {
 
       expect(axiosMock.history.patch).toHaveLength(1);
       expect(axiosMock.history.patch[0]).toMatchObject({
-        url: `${BROADCAST_MESSAGES_PATH}/${id}`,
+        url: `${messagesPath}/${id}`,
         data: JSON.stringify(defaultPayload),
       });
     });
@@ -187,7 +180,7 @@ describe('MessageForm', () => {
     it('shows an error alert if the update request fails', async () => {
       const id = 1337;
       createComponent({ broadcastMessage: { id } });
-      axiosMock.onPost(`${BROADCAST_MESSAGES_PATH}/${id}`).replyOnce(HTTP_STATUS_BAD_REQUEST);
+      axiosMock.onPost(`${messagesPath}/${id}`).replyOnce(HTTP_STATUS_BAD_REQUEST);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 

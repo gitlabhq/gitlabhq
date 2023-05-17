@@ -39,6 +39,8 @@ Some features such as [publishing](#publish-a-nuget-package) a package are only 
 
 When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 most recent versions.
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 WARNING:
 Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
@@ -472,4 +474,4 @@ nuget locals all -clear
 
 ### `Error publishing` or `Invalid Package: Failed metadata extraction error` messages when trying to publish NuGet packages in a Docker-based GitLab installation
 
-Webhook requests to local network addresses are blocked to prevent the exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and service requests to the local network](../../../security/webhooks.md#allow-webhook-and-service-requests-to-local-network).
+Webhook requests to local network addresses are blocked to prevent exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and integration requests to the local network](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).

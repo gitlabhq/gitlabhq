@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DesignManagement::CopyDesignCollection::QueueService, :clean_gitlab_redis_shared_state do
+RSpec.describe DesignManagement::CopyDesignCollection::QueueService, :clean_gitlab_redis_shared_state,
+  feature_category: :design_management do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }

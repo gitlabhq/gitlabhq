@@ -4,9 +4,10 @@ module Ci
   class DailyBuildGroupReportResult < Ci::ApplicationRecord
     PARAM_TYPES = %w[coverage].freeze
 
-    belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id
+    belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id,
+      inverse_of: :daily_build_group_report_results
     belongs_to :project
-    belongs_to :group
+    belongs_to :group, class_name: '::Group'
 
     validates :data, json_schema: { filename: "daily_build_group_report_result_data" }
 

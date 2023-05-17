@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UpdatePendingBuildService do
+RSpec.describe Ci::UpdatePendingBuildService, feature_category: :continuous_integration do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:pending_build_1) { create(:ci_pending_build, project: project, instance_runners_enabled: false) }

@@ -356,7 +356,7 @@ module Gitlab
             ports_size = value.count
             return if ports_size <= 1
 
-            named_ports = value.select { |e| e.is_a?(Hash) }.map { |e| e[:name] }.compact.map(&:downcase)
+            named_ports = value.select { |e| e.is_a?(Hash) }.filter_map { |e| e[:name] }.map(&:downcase)
 
             if ports_size != named_ports.size
               record.errors.add(attribute, 'when there is more than one port, a unique name should be added')

@@ -94,44 +94,6 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
     end
 
     context 'by timeframe' do
-      context 'when start_date and end_date are present' do
-        it 'calls MilestonesFinder with correct parameters' do
-          start_date = now
-          end_date = now + 5.days
-
-          expect(MilestonesFinder).to receive(:new)
-            .with(args(project_ids: project.id, state: 'all',
-                       start_date: start_date, end_date: end_date, sort: :due_date_asc))
-            .and_call_original
-
-          resolve_project_milestones(start_date: start_date, end_date: end_date)
-        end
-
-        context 'when start date is after end_date' do
-          it 'generates an error' do
-            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'startDate is after endDate') do
-              resolve_project_milestones(start_date: now, end_date: now - 2.days)
-            end
-          end
-        end
-      end
-
-      context 'when only start_date is present' do
-        it 'generates an error' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_project_milestones(start_date: now)
-          end
-        end
-      end
-
-      context 'when only end_date is present' do
-        it 'generates an error' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_project_milestones(end_date: now)
-          end
-        end
-      end
-
       context 'when passing a timeframe' do
         it 'calls MilestonesFinder with correct parameters' do
           start_date = now_date

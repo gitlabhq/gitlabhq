@@ -2,12 +2,13 @@ import Vue from 'vue';
 import { makeVar } from '@apollo/client/core';
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__ } from '~/locale';
 import RunnerBulkDelete from '~/ci/runner/components/runner_bulk_delete.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import BulkRunnerDeleteMutation from '~/ci/runner/graphql/list/bulk_runner_delete.mutation.graphql';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -15,7 +16,7 @@ import { allRunnersData } from '../mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('RunnerBulkDelete', () => {
   let wrapper;
@@ -34,7 +35,7 @@ describe('RunnerBulkDelete', () => {
 
   const bulkRunnerDeleteHandler = jest.fn();
 
-  const createComponent = () => {
+  const createComponent = ({ stubs } = {}) => {
     const { cacheConfig, localMutations } = mockState;
     const apolloProvider = createMockApollo(
       [[BulkRunnerDeleteMutation, bulkRunnerDeleteHandler]],
@@ -51,11 +52,12 @@ describe('RunnerBulkDelete', () => {
         runners: mockRunners,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         GlSprintf,
         GlModal,
+        ...stubs,
       },
     });
 
@@ -135,11 +137,15 @@ describe('RunnerBulkDelete', () => {
 
     beforeEach(() => {
       mockCheckedRunnerIds([mockId1, mockId2]);
+      mockHideModal = jest.fn();
 
-      createComponent();
+      createComponent({
+        stubs: {
+          GlModal: stubComponent(GlModal, { methods: { hide: mockHideModal } }),
+        },
+      });
 
       jest.spyOn(mockState.localMutations, 'clearChecked').mockImplementation(() => {});
-      mockHideModal = jest.spyOn(findModal().vm, 'hide').mockImplementation(() => {});
     });
 
     describe('when deletion is confirmed', () => {

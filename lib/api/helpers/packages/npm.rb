@@ -33,6 +33,15 @@ module API
           end
         end
 
+        def finder_for_endpoint_scope(package_name)
+          case endpoint_scope
+          when :project
+            ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
+          when :instance
+            ::Packages::Npm::PackageFinder.new(package_name, namespace: top_namespace_from(package_name))
+          end
+        end
+
         def project_or_nil
           # mainly used by the metadata endpoint where we need to get a project
           # and return nil if not found (no errors should be raised)
@@ -50,11 +59,17 @@ module API
               params[:id]
             when :instance
               package_name = params[:package_name]
-              namespace_path = ::Packages::Npm.scope_of(package_name)
-              next unless namespace_path
 
-              namespace = Namespace.top_most
-                                   .by_path(namespace_path)
+              namespace =
+                if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+                  top_namespace_from(package_name)
+                else
+                  namespace_path = ::Packages::Npm.scope_of(package_name)
+                  next unless namespace_path
+
+                  Namespace.top_most.by_path(namespace_path)
+                end
+
               next unless namespace
 
               finder = ::Packages::Npm::PackageFinder.new(
@@ -66,6 +81,15 @@ module API
               finder.last&.project_id
             end
           end
+        end
+
+        private
+
+        def top_namespace_from(package_name)
+          namespace_path = ::Packages::Npm.scope_of(package_name)
+          return unless namespace_path
+
+          Namespace.top_most.by_path(namespace_path)
         end
       end
     end

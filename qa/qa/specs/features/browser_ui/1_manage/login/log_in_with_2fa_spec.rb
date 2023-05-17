@@ -43,7 +43,12 @@ module QA
 
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
+        quarantine: {
+          type: :bug,
+          only: { condition: -> { QA::Runtime::Env.super_sidebar_enabled? } },
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409336'
+        }
       ) do
         enforce_two_factor_authentication_on_group(group)
 

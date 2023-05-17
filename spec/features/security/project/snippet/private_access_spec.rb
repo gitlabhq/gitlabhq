@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Private Project Snippets Access", feature_category: :permissions do
+RSpec.describe "Private Project Snippets Access", feature_category: :system_access do
   include AccessMatchers
 
   let_it_be(:project) { create(:project, :private) }

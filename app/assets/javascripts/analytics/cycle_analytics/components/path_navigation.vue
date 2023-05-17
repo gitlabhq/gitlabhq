@@ -66,20 +66,25 @@ export default {
         <template #title>{{ pathItem.title }}</template>
         <div class="gl-px-4">
           <div class="gl-display-flex gl-justify-content-space-between">
-            <div class="gl-pr-4 gl-pb-4">
+            <div class="gl-pr-4 gl-pb-3">
               {{ s__('ValueStreamEvent|Stage time (median)') }}
             </div>
-            <div class="gl-pb-4 gl-font-weight-bold">{{ pathItem.metric }}</div>
+            <div class="gl-pb-3 gl-font-weight-bold">{{ pathItem.metric }}</div>
           </div>
         </div>
         <div class="gl-px-4">
           <div class="gl-display-flex gl-justify-content-space-between">
-            <div class="gl-pr-4 gl-pb-4">
+            <div class="gl-pr-4 gl-pb-3">
               {{ s__('ValueStreamEvent|Items in stage') }}
             </div>
-            <div class="gl-pb-4 gl-font-weight-bold">
+            <div class="gl-pb-3 gl-font-weight-bold">
               <formatted-stage-count :stage-count="pathItem.stageCount" />
             </div>
+          </div>
+        </div>
+        <div class="gl-px-4">
+          <div class="gl-pb-3 gl-font-style-italic">
+            {{ s__('ValueStreamEvent|Only items that reached their stop event.') }}
           </div>
         </div>
         <div class="gl-px-4 gl-pt-4 gl-border-t-1 gl-border-t-solid gl-border-gray-50">
@@ -87,12 +92,12 @@ export default {
             v-if="pathItem.startEventHtmlDescription"
             class="gl-display-flex gl-flex-direction-row"
           >
-            <div class="gl-display-flex gl-flex-direction-column gl-pr-4 gl-pb-4 metric-label">
+            <div class="gl-display-flex gl-flex-direction-column gl-pr-4 gl-pb-3 metric-label">
               {{ s__('ValueStreamEvent|Start') }}
             </div>
             <div
               v-safe-html="pathItem.startEventHtmlDescription"
-              class="gl-display-flex gl-flex-direction-column gl-pb-4 stage-event-description"
+              class="gl-display-flex gl-flex-direction-column gl-pb-3 stage-event-description"
             ></div>
           </div>
           <div

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildHooksWorker do
+RSpec.describe BuildHooksWorker, feature_category: :continuous_integration do
   describe '#perform' do
     context 'when build exists' do
       let!(:build) { create(:ci_build) }
@@ -42,7 +42,5 @@ RSpec.describe BuildHooksWorker do
     end
   end
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 end

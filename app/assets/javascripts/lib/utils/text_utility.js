@@ -1,4 +1,5 @@
 import { isString, memoize } from 'lodash';
+import { sprintf, __ } from '~/locale';
 import { base64ToBuffer, bufferToBase64 } from '~/authentication/webauthn/util';
 import {
   TRUNCATE_WIDTH_DEFAULT_WIDTH,
@@ -482,7 +483,7 @@ export const markdownConfig = {
     'ul',
     'var',
   ],
-  ALLOWED_ATTR: ['class', 'style', 'href', 'src'],
+  ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'dir'],
   ALLOW_DATA_ATTR: false,
 };
 
@@ -525,3 +526,45 @@ export function base64DecodeUnicode(str) {
   const decoder = new TextDecoder('utf8');
   return decoder.decode(base64ToBuffer(str));
 }
+
+// returns an array of errors (if there are any)
+const INVALID_BRANCH_NAME_CHARS = [' ', '~', '^', ':', '?', '*', '[', '..', '@{', '\\', '//'];
+
+/**
+ * Returns an array of invalid characters found in a branch name
+ *
+ * @param {String} name branch name to check
+ * @return {Array} Array of invalid characters found
+ */
+export const findInvalidBranchNameCharacters = (name) => {
+  const invalidChars = [];
+
+  INVALID_BRANCH_NAME_CHARS.forEach((pattern) => {
+    if (name.indexOf(pattern) > -1) {
+      invalidChars.push(pattern);
+    }
+  });
+
+  return invalidChars;
+};
+
+/**
+ * Returns a string describing validation errors for a branch name
+ *
+ * @param {Array} invalidChars Array of invalid characters that were found
+ * @return {String} Error message describing on the invalid characters found
+ */
+export const humanizeBranchValidationErrors = (invalidChars = []) => {
+  const chars = invalidChars.filter((c) => INVALID_BRANCH_NAME_CHARS.includes(c));
+
+  if (chars.length && !chars.includes(' ')) {
+    return sprintf(__("Can't contain %{chars}"), { chars: chars.join(', ') });
+  } else if (chars.includes(' ') && chars.length <= 1) {
+    return __("Can't contain spaces");
+  } else if (chars.includes(' ') && chars.length > 1) {
+    return sprintf(__("Can't contain spaces, %{chars}"), {
+      chars: chars.filter((c) => c !== ' ').join(', '),
+    });
+  }
+  return '';
+};

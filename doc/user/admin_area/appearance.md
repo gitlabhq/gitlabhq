@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.html'
 ---
 
 # GitLab Appearance **(FREE SELF)**
@@ -70,6 +69,27 @@ to review the saved appearance settings:
 
 NOTE:
 You can add also add a [customized help message](settings/help_page.md) below the sign in message or add [a Sign in text message](settings/sign_in_restrictions.md#sign-in-information).
+
+## Progressive Web App
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
+
+GitLab can be installed as a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA).
+Use the Progressive Web App settings to customize its appearance, including its name,
+description, and icon.
+
+### Configure the PWA settings
+
+To configure the PWA settings:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > Appearance**.
+1. Scroll to the **Progressive Web App (PWA)** section.
+1. Complete the fields.
+   - **Icon**: If you use the standard GitLab icon, it is available in sizes 192x192 pixels,
+     512x512 pixels, also as a maskable icon. If you use a custom icon, it must be in either size
+     192x192 pixels, or 512x512 pixels.
+1. Select **Update appearance settings**.
 
 ## New project pages
 

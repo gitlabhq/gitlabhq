@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 require "fast_spec_helper"
-require "support/graphql/fake_tracer"
-require "support/graphql/fake_query_type"
 
 RSpec.describe Gitlab::Graphql::Tracers::TimerTracer do
   let(:expected_duration) { 5 }

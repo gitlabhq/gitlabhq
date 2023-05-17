@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'notify/import_issues_csv_email.html.haml' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:correct_results) { { success: 3, valid_file: true } }
-  let(:errored_results) { { success: 3, error_lines: [5, 6, 7], valid_file: true } }
+  let(:correct_results) { { success: 3, parse_error: false } }
+  let(:errored_results) { { success: 3, error_lines: [5, 6, 7], parse_error: false } }
   let(:parse_error_results) { { success: 0, parse_error: true } }
 
   before do

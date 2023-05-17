@@ -8,6 +8,8 @@ owning-stage: "~devops::release"
 participating-stages: [Configure, Release]
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # View and manage resources deployed by GitLab Agent For Kuberenetes
 
 ## Summary
@@ -374,6 +376,8 @@ Here is an example of GraphQL query:
       lastDeployment(status: SUCCESS) {
         agent {
           id
+          name
+          project
           kubernetesNamespace
         }
       }

@@ -8,13 +8,35 @@ module Gitlab
       end
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
-        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
-
         action = action.to_s
 
-        tracker.event(category, action, label: label, property: property, value: value, context: contexts)
-      rescue StandardError => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
+        project_id = project.is_a?(Integer) ? project : project&.id
+
+        contexts = [
+          Tracking::StandardContext.new(
+            namespace_id: namespace&.id,
+            plan_name: namespace&.actual_plan_name,
+            project_id: project_id,
+            user_id: user&.id,
+            **extra).to_context, *context
+        ]
+
+        track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
+      end
+
+      def database_event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
+        action = action.to_s
+        destination = Gitlab::Tracking::Destinations::DatabaseEventsSnowplow.new
+        contexts = [
+          Tracking::StandardContext.new(
+            namespace_id: namespace&.id,
+            plan_name: namespace&.actual_plan_name,
+            project_id: project&.id,
+            user_id: user&.id,
+            **extra).to_context, *context
+        ]
+
+        track_struct_event(destination, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
       def definition(basename, category: nil, action: nil, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
@@ -42,11 +64,18 @@ module Gitlab
 
       def snowplow_micro_enabled?
         Rails.env.development? && Gitlab.config.snowplow_micro.enabled
-      rescue Settingslogic::MissingSetting
+      rescue GitlabSettings::MissingSetting
         false
       end
 
       private
+
+      def track_struct_event(destination, category, action, label:, property:, value:, contexts:) # rubocop:disable Metrics/ParameterLists
+        destination
+          .event(category, action, label: label, property: property, value: value, context: contexts)
+      rescue StandardError => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
+      end
 
       def tracker
         @tracker ||= if snowplow_micro_enabled?

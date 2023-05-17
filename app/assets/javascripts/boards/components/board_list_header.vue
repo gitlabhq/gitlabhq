@@ -1,38 +1,48 @@
 <script>
 import {
   GlButton,
-  GlButtonGroup,
   GlLabel,
   GlTooltip,
   GlIcon,
   GlSprintf,
   GlTooltipDirective,
+  GlDisclosureDropdown,
 } from '@gitlab/ui';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { n__, s__, __ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
+import {
+  inactiveId,
+  LIST,
+  ListType,
+  toggleFormEventPrefix,
+  updateListQueries,
+  toggleCollapsedMutations,
+} from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
 import ItemCount from './item_count.vue';
 
 export default {
   i18n: {
-    newIssue: __('New issue'),
-    newEpic: s__('Boards|New epic'),
-    listSettings: __('List settings'),
+    newIssue: s__('Boards|Create new issue'),
+    listActions: s__('Boards|List actions'),
+    newEpic: s__('Boards|Create new epic'),
+    listSettings: s__('Boards|Edit list settings'),
     expand: s__('Boards|Expand'),
     collapse: s__('Boards|Collapse'),
   },
   components: {
-    GlButtonGroup,
+    GlDisclosureDropdown,
     GlButton,
     GlLabel,
     GlTooltip,
@@ -63,6 +73,12 @@ export default {
     disabled: {
       default: true,
     },
+    issuableType: {
+      default: TYPE_ISSUE,
+    },
+    isApolloBoard: {
+      default: false,
+    },
   },
   props: {
     list: {
@@ -75,15 +91,25 @@ export default {
       required: false,
       default: false,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
+    boardId: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
-    ...mapState(['activeId', 'filterParams', 'boardId']),
-    ...mapGetters(['isSwimlanesOn']),
+    ...mapState(['activeId']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
     listType() {
       return this.list.listType;
+    },
+    itemsCount() {
+      return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
     listAssignee() {
       return this.list?.assignee?.username || '';
@@ -111,7 +137,10 @@ export default {
     },
     showListHeaderActions() {
       if (this.isLoggedIn) {
-        return this.isNewIssueShown || this.isNewEpicShown || this.isSettingsShown;
+        return (
+          (this.isNewIssueShown || this.isNewEpicShown || this.isSettingsShown) &&
+          !this.list.collapsed
+        );
       }
       return false;
     },
@@ -162,6 +191,50 @@ export default {
     canShowTotalWeight() {
       return this.weightFeatureAvailable && !this.isLoading;
     },
+    actionListItems() {
+      const items = [];
+
+      if (this.isNewIssueShown) {
+        const newIssueText = this.$options.i18n.newIssue;
+        items.push({
+          text: newIssueText,
+          action: this.showNewIssueForm,
+          extraAttrs: {
+            'data-testid': 'newIssueBtn',
+            title: newIssueText,
+            'aria-label': newIssueText,
+          },
+        });
+      }
+
+      if (this.isNewEpicShown) {
+        const newEpicText = this.$options.i18n.newEpic;
+        items.push({
+          text: newEpicText,
+          action: this.showNewEpicForm,
+          extraAttrs: {
+            'data-testid': 'newEpicBtn',
+            title: newEpicText,
+            'aria-label': newEpicText,
+          },
+        });
+      }
+
+      if (this.isSettingsShown) {
+        const listSettingsText = this.$options.i18n.listSettings;
+        items.push({
+          text: listSettingsText,
+          action: this.openSidebarSettings,
+          extraAttrs: {
+            'data-testid': 'settingsBtn',
+            title: listSettingsText,
+            'aria-label': listSettingsText,
+          },
+        });
+      }
+
+      return items;
+    },
   },
   apollo: {
     boardList: {
@@ -175,34 +248,43 @@ export default {
       context: {
         isSingleRequest: true,
       },
-      skip() {
-        return this.isEpicBoard;
-      },
     },
   },
   created() {
     const localCollapsed = parseBoolean(localStorage.getItem(`${this.uniqueKey}.collapsed`));
     if ((!this.isLoggedIn || this.isEpicBoard) && localCollapsed) {
-      this.toggleListCollapsed({ listId: this.list.id, collapsed: true });
+      this.updateLocalCollapsedStatus(true);
     }
   },
   methods: {
     ...mapActions(['updateList', 'setActiveId', 'toggleListCollapsed']),
+    closeListActions() {
+      this.$refs.headerListActions?.close();
+    },
     openSidebarSettings() {
       if (this.activeId === inactiveId) {
         sidebarEventHub.$emit('sidebar.closeAll');
       }
 
-      this.setActiveId({ id: this.list.id, sidebarType: LIST });
+      if (this.isApolloBoard) {
+        this.$apollo.mutate({
+          mutation: setActiveBoardItemMutation,
+          variables: { boardItem: null },
+        });
+        this.$emit('setActiveList', this.list.id);
+      } else {
+        this.setActiveId({ id: this.list.id, sidebarType: LIST });
+      }
 
       this.track('click_button', { label: 'list_settings' });
+
+      this.closeListActions();
     },
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
-
     showNewIssueForm() {
-      if (this.isSwimlanesOn) {
+      if (this.isSwimlanesHeader) {
         eventHub.$emit('open-unassigned-lane');
         this.$nextTick(() => {
           eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
@@ -210,18 +292,22 @@ export default {
       } else {
         eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
       }
+
+      this.closeListActions();
     },
     showNewEpicForm() {
       eventHub.$emit(`${toggleFormEventPrefix.epic}${this.list.id}`);
+
+      this.closeListActions();
     },
     toggleExpanded() {
       const collapsed = !this.list.collapsed;
-      this.toggleListCollapsed({ listId: this.list.id, collapsed });
+      this.updateLocalCollapsedStatus(collapsed);
 
       if (!this.isLoggedIn) {
-        this.addToLocalStorage();
+        this.addToLocalStorage(collapsed);
       } else {
-        this.updateListFunction();
+        this.updateListFunction(collapsed);
       }
 
       // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
@@ -233,13 +319,37 @@ export default {
         property: collapsed ? 'closed' : 'open',
       });
     },
-    addToLocalStorage() {
+    addToLocalStorage(collapsed) {
       if (AccessorUtilities.canUseLocalStorage()) {
-        localStorage.setItem(`${this.uniqueKey}.collapsed`, this.list.collapsed);
+        localStorage.setItem(`${this.uniqueKey}.collapsed`, collapsed);
       }
     },
-    updateListFunction() {
-      this.updateList({ listId: this.list.id, collapsed: this.list.collapsed });
+    async updateListFunction(collapsed) {
+      if (this.isApolloBoard) {
+        try {
+          await this.$apollo.mutate({
+            mutation: updateListQueries[this.issuableType].mutation,
+            variables: {
+              listId: this.list.id,
+              collapsed,
+            },
+            optimisticResponse: {
+              updateBoardList: {
+                __typename: 'UpdateBoardListPayload',
+                errors: [],
+                list: {
+                  ...this.list,
+                  collapsed,
+                },
+              },
+            },
+          });
+        } catch {
+          this.$emit('error');
+        }
+      } else {
+        this.updateList({ listId: this.list.id, collapsed });
+      }
     },
     /**
      * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
@@ -250,6 +360,19 @@ export default {
       const start = formatDate(startDate, 'mmm d, yyyy', true);
       const due = formatDate(dueDate, 'mmm d, yyyy', true);
       return `${start} - ${due}`;
+    },
+    updateLocalCollapsedStatus(collapsed) {
+      if (this.isApolloBoard) {
+        this.$apollo.mutate({
+          mutation: toggleCollapsedMutations[this.issuableType].mutation,
+          variables: {
+            list: this.list,
+            collapsed,
+          },
+        });
+      } else {
+        this.toggleListCollapsed({ listId: this.list.id, collapsed });
+      }
     },
   },
 };
@@ -364,7 +487,7 @@ export default {
         <div v-if="list.maxIssueCount !== 0">
           •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">
-            <template #issuesSize>{{ itemsTooltipLabel }}</template>
+            <template #issuesSize>{{ itemsCount }}</template>
             <template #maxIssueCount>{{ list.maxIssueCount }}</template>
           </gl-sprintf>
         </div>
@@ -392,7 +515,7 @@ export default {
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
-              :items-size="isEpicBoard ? list.epicsCount : boardList.issuesCount"
+              :items-size="itemsCount"
               :max-issue-count="list.maxIssueCount"
             />
           </span>
@@ -407,44 +530,24 @@ export default {
           <!-- EE end -->
         </span>
       </div>
-      <gl-button-group v-if="showListHeaderActions" class="board-list-button-group gl-pl-2">
-        <gl-button
-          v-if="isNewIssueShown"
-          v-show="!list.collapsed"
-          ref="newIssueBtn"
-          v-gl-tooltip.hover
-          :aria-label="$options.i18n.newIssue"
-          :title="$options.i18n.newIssue"
-          class="no-drag"
-          size="small"
-          icon="plus"
-          @click="showNewIssueForm"
-        />
-
-        <gl-button
-          v-if="isNewEpicShown"
-          v-show="!list.collapsed"
-          v-gl-tooltip.hover
-          :aria-label="$options.i18n.newEpic"
-          :title="$options.i18n.newEpic"
-          class="no-drag"
-          size="small"
-          icon="plus"
-          @click="showNewEpicForm"
-        />
-
-        <gl-button
-          v-if="isSettingsShown"
-          ref="settingsBtn"
-          v-gl-tooltip.hover
-          :aria-label="$options.i18n.listSettings"
-          class="no-drag"
-          size="small"
-          :title="$options.i18n.listSettings"
-          icon="settings"
-          @click="openSidebarSettings"
-        />
-      </gl-button-group>
+      <gl-disclosure-dropdown
+        v-if="showListHeaderActions"
+        ref="headerListActions"
+        v-gl-tooltip.hover.top="{
+          title: $options.i18n.listActions,
+          boundary: 'viewport',
+        }"
+        data-testid="header-list-actions"
+        class="gl-py-2 gl-ml-3"
+        :aria-label="$options.i18n.listActions"
+        :title="$options.i18n.listActions"
+        category="tertiary"
+        icon="ellipsis_v"
+        :text-sr-only="true"
+        :items="actionListItems"
+        no-caret
+        placement="right"
+      />
     </h3>
   </header>
 </template>

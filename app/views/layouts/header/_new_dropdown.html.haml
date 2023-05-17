@@ -26,8 +26,13 @@
             = section.fetch(:title)
         - section.fetch(:menu_items).each do |menu_item|
           %li<
-            = link_to menu_item.fetch(:href), class: menu_item.fetch(:css_class), data: menu_item.fetch(:data) do
-              = menu_item.fetch(:title)
-              - if menu_item.fetch(:emoji)
-                -# We need to insert a space between the title and emoji
-                = " #{emoji_icon(menu_item.fetch(:emoji), 'aria-hidden': true, class: 'gl-font-base gl-vertical-align-baseline')}".html_safe
+            - if menu_item.fetch(:partial).present?
+              = render partial: menu_item.fetch(:partial),
+                locals: { display_text: menu_item.fetch(:title),
+                          icon: menu_item.fetch(:icon),
+                          data: menu_item.fetch(:data) }
+            - else
+              = link_to menu_item.fetch(:title),
+                menu_item.fetch(:href),
+                class: menu_item.fetch(:css_class),
+                data: menu_item.fetch(:data)

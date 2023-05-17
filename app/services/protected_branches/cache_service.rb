@@ -73,11 +73,17 @@ module ProtectedBranches
     end
 
     def redis_key
-      @redis_key ||= if Feature.enabled?(:group_protected_branches)
+      group = project_or_group.is_a?(Group) ? project_or_group : project_or_group.group
+      @redis_key ||= if allow_protected_branches_for_group?(group)
                        [CACHE_ROOT_KEY, project_or_group.class.name, project_or_group.id].join(':')
                      else
                        [CACHE_ROOT_KEY, project_or_group.id].join(':')
                      end
+    end
+
+    def allow_protected_branches_for_group?(group)
+      Feature.enabled?(:group_protected_branches, group) ||
+        Feature.enabled?(:allow_protected_branches_for_group, group)
     end
 
     def metrics
@@ -86,7 +92,6 @@ module ProtectedBranches
 
     def cache_metadata
       Gitlab::Cache::Metadata.new(
-        caller_id: Gitlab::ApplicationContext.current_context_attribute(:caller_id),
         cache_identifier: "#{self.class}#fetch",
         feature_category: :source_code_management,
         backing_resource: :cpu

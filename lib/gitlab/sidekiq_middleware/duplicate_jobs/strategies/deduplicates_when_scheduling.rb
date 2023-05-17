@@ -23,7 +23,7 @@ module Gitlab
                 duplicate_job.set_deduplicated_flag!(expiry)
 
                 Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
-                  job, "dropped #{strategy_name}", duplicate_job.options)
+                  job, strategy_name, duplicate_job.options)
                 return false
               end
             end

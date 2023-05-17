@@ -4,7 +4,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   before_action :user
   before_action :verify_impersonation_enabled!
 
-  feature_category :authentication_and_authorization
+  feature_category :user_management
 
   def index
     set_index_vars

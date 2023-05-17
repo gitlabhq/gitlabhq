@@ -12,10 +12,6 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
-        # technical debt: https://gitlab.com/gitlab-org/gitlab/issues/33991
-        sidekiq_options memory_killer_memory_growth_kb: ENV.fetch('MEMORY_KILLER_FINISH_IMPORT_WORKER_MEMORY_GROWTH_KB', 50).to_i
-        sidekiq_options memory_killer_max_memory_growth_kb: ENV.fetch('MEMORY_KILLER_FINISH_IMPORT_WORKER_MAX_MEMORY_GROWTH_KB', 200_000).to_i
-
         # project - An instance of Project.
         def import(_, project)
           @project = project

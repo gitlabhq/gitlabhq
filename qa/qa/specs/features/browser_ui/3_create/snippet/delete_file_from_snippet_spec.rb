@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Multiple file snippet', :reliable, product_group: :editor do
+    describe 'Multiple file snippet', :reliable, product_group: :source_code do
       let(:personal_snippet) do
         Resource::Snippet.fabricate_via_api! do |snippet|
           snippet.title = 'Personal snippet to delete file from'

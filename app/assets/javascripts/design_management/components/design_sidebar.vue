@@ -57,7 +57,6 @@ export default {
   },
   data() {
     return {
-      isResolvedDiscussionsExpanded: this.resolvedDiscussionsExpanded,
       discussionWithOpenForm: '',
       isLoggedIn: isLoggedIn(),
     };
@@ -87,13 +86,13 @@ export default {
     unresolvedDiscussions() {
       return this.discussions.filter((discussion) => !discussion.resolved);
     },
-  },
-  watch: {
-    resolvedDiscussionsExpanded(resolvedDiscussionsExpanded) {
-      this.isResolvedDiscussionsExpanded = resolvedDiscussionsExpanded;
-    },
-    isResolvedDiscussionsExpanded() {
-      this.$emit('toggleResolvedComments');
+    isResolvedDiscussionsExpanded: {
+      get() {
+        return this.resolvedDiscussionsExpanded;
+      },
+      set(isExpanded) {
+        this.$emit('toggleResolvedComments', isExpanded);
+      },
     },
   },
   mounted() {
@@ -129,7 +128,7 @@ export default {
 </script>
 
 <template>
-  <div class="image-notes gl-pt-0" @click="handleSidebarClick">
+  <div class="image-notes gl-pt-0" @click.self="handleSidebarClick">
     <div
       class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
     >
@@ -179,8 +178,9 @@ export default {
         data-testid="unresolved-discussion"
         @create-note-error="$emit('onDesignDiscussionError', $event)"
         @update-note-error="$emit('updateNoteError', $event)"
+        @delete-note-error="$emit('deleteNoteError', $event)"
         @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
-        @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
+        @update-active-discussion="updateActiveDiscussion(discussion.notes[0].id)"
         @open-form="updateDiscussionWithOpenForm"
       />
       <gl-accordion v-if="hasResolvedDiscussions" :header-level="3" class="gl-mb-5">
@@ -202,9 +202,10 @@ export default {
             :discussion-with-open-form="discussionWithOpenForm"
             data-testid="resolved-discussion"
             @error="$emit('onDesignDiscussionError', $event)"
-            @updateNoteError="$emit('updateNoteError', $event)"
+            @update-note-error="$emit('updateNoteError', $event)"
+            @delete-note-error="$emit('deleteNoteError', $event)"
             @open-form="updateDiscussionWithOpenForm"
-            @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
+            @update-active-discussion="updateActiveDiscussion(discussion.notes[0].id)"
           />
         </gl-accordion-item>
       </gl-accordion>

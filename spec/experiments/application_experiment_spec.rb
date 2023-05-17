@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationExperiment, :experiment do
+RSpec.describe ApplicationExperiment, :experiment, feature_category: :experimentation_conversion do
   subject(:application_experiment) { described_class.new('namespaced/stub', **context) }
 
   let(:context) { {} }
@@ -187,13 +187,11 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     with_them do
-      it "returns the url or nil if invalid" do
-        allow(Gitlab).to receive(:com?).and_return(true)
+      it "returns the url or nil if invalid on SaaS", :saas do
         expect(application_experiment.process_redirect_url(url)).to eq(processed_url)
       end
 
-      it "considers all urls invalid when not on dev or com" do
-        allow(Gitlab).to receive(:com?).and_return(false)
+      it "considers all urls invalid when not on SaaS" do
         expect(application_experiment.process_redirect_url(url)).to be_nil
       end
     end

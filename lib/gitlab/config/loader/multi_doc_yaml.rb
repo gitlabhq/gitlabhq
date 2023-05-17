@@ -4,59 +4,50 @@ module Gitlab
   module Config
     module Loader
       class MultiDocYaml
-        TooManyDocumentsError = Class.new(Loader::FormatError)
-        DataTooLargeError = Class.new(Loader::FormatError)
-        NotHashError = Class.new(Loader::FormatError)
+        include Gitlab::Utils::StrongMemoize
 
-        MULTI_DOC_DIVIDER = /^---$/.freeze
+        MULTI_DOC_DIVIDER = /^---\s+/.freeze
 
-        def initialize(config, max_documents:, additional_permitted_classes: [])
+        def initialize(config, max_documents:, additional_permitted_classes: [], reject_empty: false)
+          @config = config
           @max_documents = max_documents
-          @safe_config = load_config(config, additional_permitted_classes)
+          @additional_permitted_classes = additional_permitted_classes
+          @reject_empty = reject_empty
+        end
+
+        def valid?
+          documents.all?(&:valid?)
+        end
+
+        def load_raw!
+          documents.map(&:load_raw!)
         end
 
         def load!
-          raise TooManyDocumentsError, 'The parsed YAML has too many documents' if too_many_documents?
-          raise DataTooLargeError, 'The parsed YAML is too big' if too_big?
-          raise NotHashError, 'Invalid configuration format' unless all_hashes?
-
-          safe_config.map(&:deep_symbolize_keys)
+          documents.map(&:load!)
         end
 
         private
 
-        attr_reader :safe_config, :max_documents
+        attr_reader :config, :max_documents, :additional_permitted_classes, :reject_empty
 
-        def load_config(config, additional_permitted_classes)
-          config.split(MULTI_DOC_DIVIDER).filter_map do |document|
-            YAML.safe_load(document,
-              permitted_classes: [Symbol, *additional_permitted_classes],
-              permitted_symbols: [],
-              aliases: true
-            )
-          end
-        rescue Psych::Exception => e
-          raise Loader::FormatError, e.message
+        # Valid YAML files can start with either a leading delimiter or no delimiter.
+        # To avoid counting a leading delimiter towards the document limit,
+        # this method splits the file by one more than the maximum number of permitted documents.
+        # It then discards the first document if it is blank.
+        def documents
+          docs = config
+                  .split(MULTI_DOC_DIVIDER, max_documents_including_leading_delimiter)
+                  .map { |d| Yaml.new(d, additional_permitted_classes: additional_permitted_classes) }
+
+          docs.shift if docs.first.blank?
+          docs.reject!(&:blank?) if reject_empty
+          docs
         end
+        strong_memoize_attr :documents
 
-        def all_hashes?
-          safe_config.all?(Hash)
-        end
-
-        def too_many_documents?
-          safe_config.count > max_documents
-        end
-
-        def too_big?
-          !deep_sizes.all?(&:valid?)
-        end
-
-        def deep_sizes
-          safe_config.map do |config|
-            Gitlab::Utils::DeepSize.new(config,
-              max_size: Gitlab::CurrentSettings.current_application_settings.max_yaml_size_bytes,
-              max_depth: Gitlab::CurrentSettings.current_application_settings.max_yaml_depth)
-          end
+        def max_documents_including_leading_delimiter
+          max_documents + 1
         end
       end
     end

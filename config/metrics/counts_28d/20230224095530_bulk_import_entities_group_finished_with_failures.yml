@@ -1,0 +1,26 @@
+---
+data_category: optional
+key_path: usage_activity_by_stage_monthly.manage.group_imports.gitlab_migration_finished_with_failures
+description: Count of group entities with finished status and failures in GitLab Migration
+product_section: dev
+product_stage: manage
+product_group: import
+value_type: number
+status: active
+time_frame: 28d
+data_source: database
+instrumentation_class: CountBulkImportsEntitiesMetric
+options:
+  source_type: group_entity
+  status: 2
+  has_failures: true
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+milestone: "15.10"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112837"

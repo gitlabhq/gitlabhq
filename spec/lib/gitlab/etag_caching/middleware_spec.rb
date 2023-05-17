@@ -145,8 +145,11 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
       expect(payload[:headers].env['HTTP_IF_NONE_MATCH']).to eq('W/"123"')
     end
 
-    it 'log subscriber processes action' do
-      expect_any_instance_of(ActionController::LogSubscriber).to receive(:process_action)
+    it "publishes process_action.action_controller event to be picked up by lograge's subscriber" do
+      # Lograge unhooks the default Rails subscriber (ActionController::LogSubscriber)
+      # and replaces with its own (Lograge::LogSubscribers::ActionController).
+      # When `lograge.keep_original_rails_log = true`, ActionController::LogSubscriber is kept.
+      expect_any_instance_of(Lograge::LogSubscribers::ActionController).to receive(:process_action)
         .with(instance_of(ActiveSupport::Notifications::Event))
         .and_call_original
 

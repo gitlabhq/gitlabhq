@@ -20,7 +20,7 @@ method:
   to function, which is a significant security concern.
 - Docker-in-Docker generally incurs a performance penalty and can be quite slow.
 
-## Requirements
+## Prerequisites
 
 To use kaniko with GitLab, [a runner](https://docs.gitlab.com/runner/) with one
 of the following executors is required:
@@ -113,7 +113,7 @@ build:
 You can build [multi-arch images](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/)
 inside a container by using [`manifest-tool`](https://github.com/estesp/manifest-tool).
 
-For a detailed guide on how to build a multi-arch image, read [Building a multi-arch container image in unprivileged containers](https://ingenuity.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
+For a detailed guide on how to build a multi-arch image, read [Building a multi-arch container image in unprivileged containers](https://blog.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
 
 ## Using a registry with a custom certificate
 

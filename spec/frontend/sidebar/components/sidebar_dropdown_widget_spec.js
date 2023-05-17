@@ -1,4 +1,4 @@
-import { GlDropdown, GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
@@ -27,7 +27,7 @@ import {
   mockMilestone2,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SidebarDropdownWidget', () => {
   let wrapper;
@@ -133,43 +133,34 @@ describe('SidebarDropdownWidget', () => {
           $apollo: {
             mutate: mutationPromise(),
             queries: {
-              currentAttribute: { loading: false },
+              issuable: { loading: false },
               attributesList: { loading: false },
               ...queries,
             },
           },
         },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs: {
           SidebarEditableItem,
           GlSearchBoxByType,
-          GlDropdown,
         },
       }),
     );
 
     wrapper.vm.$refs.dropdown.show = jest.fn();
-
-    // We need to mock out `showDropdown` which
-    // invokes `show` method of BDropdown used inside GlDropdown.
-    jest.spyOn(wrapper.vm, 'showDropdown').mockImplementation();
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('when not editing', () => {
     beforeEach(() => {
       createComponent({
         data: {
-          currentAttribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          issuable: {
+            attribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          },
         },
         stubs: {
-          GlDropdown,
           SidebarEditableItem,
         },
       });
@@ -190,7 +181,7 @@ describe('SidebarDropdownWidget', () => {
     it('shows a loading spinner while fetching the current attribute', () => {
       createComponent({
         queries: {
-          currentAttribute: { loading: true },
+          issuable: { loading: true },
         },
       });
 
@@ -204,7 +195,7 @@ describe('SidebarDropdownWidget', () => {
           selectedTitle: 'Some milestone title',
         },
         queries: {
-          currentAttribute: { loading: false },
+          issuable: { loading: false },
         },
       });
 
@@ -229,10 +220,10 @@ describe('SidebarDropdownWidget', () => {
         createComponent({
           data: {
             hasCurrentAttribute: true,
-            currentAttribute: null,
+            issuable: {},
           },
           queries: {
-            currentAttribute: { loading: false },
+            issuable: { loading: false },
           },
         });
 
@@ -256,7 +247,9 @@ describe('SidebarDropdownWidget', () => {
                       { id: '123', title: '123' },
                       { id: 'id', title: 'title' },
                     ],
-                    currentAttribute: { id: '123' },
+                    issuable: {
+                      attribute: { id: '123' },
+                    },
                   },
                   mutationPromise: mutationResp,
                 });

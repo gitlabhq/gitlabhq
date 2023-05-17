@@ -13,9 +13,28 @@ In general, you might consider using a tutorial when:
   of sub-steps.
 - The steps cover a variety of GitLab features or third-party tools.
 
-Tutorials are learning aids that complement our core documentation.
-They do not introduce new features.
-Always use the primary [topic types](index.md) to document new features.
+## Tutorial guidance
+
+- Tutorials are not [tasks](task.md). A task gives instructions for one procedure.
+  A tutorial combines multiple tasks to achieve a specific goal.
+- Tutorials provide a working example. Ideally the reader can create the example the
+  tutorial describes. If they can't replicate it exactly, they should be able
+  to replicate something similar.
+- Tutorials do not introduce new features.
+- Tutorials do not need to adhere to the Single Source of Truth tenet. While it's not
+  ideal to duplicate content that is available elsewhere, it's worse to force the reader to
+  leave the page to find what they need.
+
+## Tutorial file name and location
+
+For tutorial Markdown files, you can either:
+
+- Save the file in a directory with the product documentation.
+- Create a subfolder under `doc/tutorials` and name the file `index.md`.
+
+In the left nav, add the tutorial near the relevant feature documentation.
+
+Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/index.md).
 
 ## Tutorial format
 
@@ -31,7 +50,9 @@ To create a website:
 1. [Do the first task](#do-the-first-task)
 1. [Do the second task](#do-the-second-task)
 
-Prerequisites (optional):
+## Prerequisites
+
+This topic is optional.
 
 - Thing 1
 - Thing 2
@@ -57,7 +78,7 @@ To do step 2:
 ```
 
 An example of a tutorial that follows this format is
-[Tutorial: Make your first Git commit](../../../tutorials/make_your_first_git_commit.md).
+[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/index.md).
 
 ## Tutorial page title
 

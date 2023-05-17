@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlDropdown } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -11,23 +11,26 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   getIssuesCountsQueryResponse,
   getIssuesQueryResponse,
+  getIssuesQueryEmptyResponse,
   filteredTokens,
   locationSearch,
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
@@ -70,7 +73,7 @@ import('~/issuable');
 import('~/users_select');
 
 jest.mock('@sentry/browser');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 
 describe('CE IssuesListApp component', () => {
@@ -124,12 +127,16 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
+  const findCalendarButton = () =>
+    wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.calendarLabel });
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
+  const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
-  const findGlButtonAt = (index) => findGlButtons().at(index);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+  const findRssButton = () => wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.rssLabel });
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -154,7 +161,24 @@ describe('CE IssuesListApp component', () => {
     router = new VueRouter({ mode: 'history' });
 
     return mountFn(IssuesListApp, {
-      apolloProvider: createMockApollo(requestHandlers),
+      apolloProvider: createMockApollo(
+        requestHandlers,
+        {},
+        {
+          typePolicies: {
+            Query: {
+              fields: {
+                project: {
+                  merge: true,
+                },
+                group: {
+                  merge: true,
+                },
+              },
+            },
+          },
+        },
+      ),
       router,
       provide: {
         ...defaultProvide,
@@ -174,17 +198,15 @@ describe('CE IssuesListApp component', () => {
 
   afterEach(() => {
     axiosMock.reset();
-    wrapper.destroy();
   });
 
   describe('IssuableList', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-      jest.runOnlyPendingTimers();
       return waitForPromises();
     });
 
-    it('renders', async () => {
+    it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
@@ -196,8 +218,8 @@ describe('CE IssuesListApp component', () => {
         }),
         initialSortBy: CREATED_DESC,
         issuables: getIssuesQueryResponse.data.project.issues.nodes,
-        tabs: IssuableListTabs,
-        currentTab: IssuableStates.Opened,
+        tabs: issuableListTabs,
+        currentTab: STATUS_OPEN,
         tabCounts: {
           opened: 1,
           closed: 1,
@@ -215,64 +237,66 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('header action buttons', () => {
-    it('renders rss button', async () => {
-      wrapper = mountComponent({ mountFn: mount });
-      await waitForPromises();
+    describe('actions dropdown', () => {
+      it('renders', () => {
+        wrapper = mountComponent({ mountFn: mount });
 
-      expect(findGlButtonAt(0).props('icon')).toBe('rss');
-      expect(findGlButtonAt(0).attributes()).toMatchObject({
-        href: defaultProvide.rssPath,
-        'aria-label': IssuesListApp.i18n.rssLabel,
+        expect(findDropdown().props()).toMatchObject({
+          category: 'tertiary',
+          icon: 'ellipsis_v',
+          text: 'Actions',
+          textSrOnly: true,
+        });
       });
-    });
 
-    it('renders calendar button', async () => {
-      wrapper = mountComponent({ mountFn: mount });
-      await waitForPromises();
+      describe('csv import/export buttons', () => {
+        describe('when user is signed in', () => {
+          beforeEach(() => {
+            setWindowLocation('?search=refactor&state=opened');
 
-      expect(findGlButtonAt(1).props('icon')).toBe('calendar');
-      expect(findGlButtonAt(1).attributes()).toMatchObject({
-        href: defaultProvide.calendarPath,
-        'aria-label': IssuesListApp.i18n.calendarLabel,
-      });
-    });
+            wrapper = mountComponent({
+              provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
+              mountFn: mount,
+            });
 
-    describe('csv import/export component', () => {
-      describe('when user is signed in', () => {
-        beforeEach(() => {
-          setWindowLocation('?search=refactor&state=opened');
-
-          wrapper = mountComponent({
-            provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
-            mountFn: mount,
+            return waitForPromises();
           });
 
-          jest.runOnlyPendingTimers();
-          return waitForPromises();
+          it('renders', () => {
+            expect(findCsvImportExportButtons().props()).toMatchObject({
+              exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&state=opened`,
+              issuableCount: 1,
+            });
+          });
         });
 
-        it('renders', () => {
-          expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&state=opened`,
-            issuableCount: 1,
+        describe('when user is not signed in', () => {
+          it('does not render', () => {
+            wrapper = mountComponent({ provide: { isSignedIn: false }, mountFn: mount });
+
+            expect(findCsvImportExportButtons().exists()).toBe(false);
+          });
+        });
+
+        describe('when in a group context', () => {
+          it('does not render', () => {
+            wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
+
+            expect(findCsvImportExportButtons().exists()).toBe(false);
           });
         });
       });
 
-      describe('when user is not signed in', () => {
-        it('does not render', () => {
-          wrapper = mountComponent({ provide: { isSignedIn: false }, mountFn: mount });
+      it('renders RSS button link', () => {
+        wrapper = mountComponent({ mountFn: mountExtended });
 
-          expect(findCsvImportExportButtons().exists()).toBe(false);
-        });
+        expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
       });
 
-      describe('when in a group context', () => {
-        it('does not render', () => {
-          wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
+      it('renders calendar button link', () => {
+        wrapper = mountComponent({ mountFn: mountExtended });
 
-          expect(findCsvImportExportButtons().exists()).toBe(false);
-        });
+        expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
       });
     });
 
@@ -280,20 +304,20 @@ describe('CE IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe('Edit issues');
+        expect(findGlButton().text()).toBe('Bulk edit');
       });
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: false }, mountFn: mount });
 
-        expect(findGlButtons().filter((button) => button.text() === 'Edit issues')).toHaveLength(0);
+        expect(findGlButtons().filter((button) => button.text() === 'Bulk edit')).toHaveLength(0);
       });
 
       it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
         jest.spyOn(eventHub, '$emit');
 
-        findGlButtonAt(2).vm.$emit('click');
+        findGlButton().vm.$emit('click');
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
@@ -304,8 +328,8 @@ describe('CE IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe('New issue');
-        expect(findGlButtonAt(2).attributes('href')).toBe(defaultProvide.newIssuePath);
+        expect(findGlButton().text()).toBe('New issue');
+        expect(findGlButton().attributes('href')).toBe(defaultProvide.newIssuePath);
       });
 
       it('does not render when user does not have permissions', () => {
@@ -416,7 +440,7 @@ describe('CE IssuesListApp component', () => {
 
     describe('state', () => {
       it('is set from the url params', () => {
-        const initialState = IssuableStates.All;
+        const initialState = STATUS_ALL;
         setWindowLocation(`?state=${initialState}`);
         wrapper = mountComponent();
 
@@ -477,7 +501,12 @@ describe('CE IssuesListApp component', () => {
   describe('empty states', () => {
     describe('when there are issues', () => {
       beforeEach(() => {
-        wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
+        wrapper = mountComponent({
+          provide: { hasAnyIssues: true },
+          mountFn: mount,
+          issuesQueryResponse: getIssuesQueryEmptyResponse,
+        });
+        return waitForPromises();
       });
 
       it('shows EmptyStateWithAnyIssues empty state', () => {
@@ -543,11 +572,8 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('when all tokens are available', () => {
-      const originalGon = window.gon;
-
       beforeEach(() => {
         window.gon = {
-          ...originalGon,
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
           current_username: mockCurrentUser.username,
@@ -561,10 +587,6 @@ describe('CE IssuesListApp component', () => {
             isSignedIn: true,
           },
         });
-      });
-
-      afterEach(() => {
-        window.gon = originalGon;
       });
 
       it('renders all tokens alphabetically', () => {
@@ -599,7 +621,6 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({
           [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
-        jest.runOnlyPendingTimers();
         return waitForPromises();
       });
 
@@ -620,40 +641,31 @@ describe('CE IssuesListApp component', () => {
 
   describe('events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent();
+        await waitForPromises();
         router.push = jest.fn();
 
-        findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
+        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
       });
 
       it('updates ui to the new tab', () => {
-        expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
+        expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
       });
 
       it('updates url to the new tab', () => {
         expect(router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ state: IssuableStates.Closed }),
+          query: expect.objectContaining({ state: STATUS_CLOSED }),
         });
       });
     });
 
     describe.each`
-      event | params
-      ${'next-page'} | ${{
-  page_after: 'endCursor',
-  page_before: undefined,
-  first_page_size: 20,
-  last_page_size: undefined,
-}}
-      ${'previous-page'} | ${{
-  page_after: undefined,
-  page_before: 'startCursor',
-  first_page_size: undefined,
-  last_page_size: 20,
-}}
+      event              | params
+      ${'next-page'}     | ${{ page_after: 'endcursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
+      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startcursor', first_page_size: undefined, last_page_size: 20 }}
     `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent({
           data: {
             pageInfo: {
@@ -662,6 +674,7 @@ describe('CE IssuesListApp component', () => {
             },
           },
         });
+        await waitForPromises();
         router.push = jest.fn();
 
         findIssuableList().vm.$emit(event);
@@ -735,7 +748,6 @@ describe('CE IssuesListApp component', () => {
                   provide: { isProject },
                   issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
                 });
-                jest.runOnlyPendingTimers();
                 return waitForPromises();
               });
 
@@ -761,7 +773,6 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             issuesQueryResponse: jest.fn().mockResolvedValue(response()),
           });
-          jest.runOnlyPendingTimers();
           return waitForPromises();
         });
 
@@ -784,7 +795,7 @@ describe('CE IssuesListApp component', () => {
     describe('when "sort" event is emitted by IssuableList', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
-        async (sortKey) => {
+        (sortKey) => {
           // Ensure initial sort key is different so we can trigger an update when emitting a sort key
           wrapper =
             sortKey === CREATED_DESC
@@ -793,8 +804,6 @@ describe('CE IssuesListApp component', () => {
           router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', sortKey);
-          jest.runOnlyPendingTimers();
-          await nextTick();
 
           expect(router.push).toHaveBeenCalledWith({
             query: expect.objectContaining({ sort: urlSortParams[sortKey] }),
@@ -914,13 +923,13 @@ describe('CE IssuesListApp component', () => {
       ${'shows users when public visibility is not restricted and is signed in'}     | ${false}                     | ${true}    | ${false}
       ${'hides users when public visibility is restricted and is not signed in'}     | ${true}                      | ${false}   | ${true}
       ${'shows users when public visibility is restricted and is signed in'}         | ${true}                      | ${true}    | ${false}
-    `('$description', ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
+    `('$description', async ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
       const mockQuery = jest.fn().mockResolvedValue(defaultQueryResponse);
       wrapper = mountComponent({
         provide: { isPublicVisibilityRestricted, isSignedIn },
         issuesQueryResponse: mockQuery,
       });
-      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
       expect(mockQuery).toHaveBeenCalledWith(expect.objectContaining({ hideUsers }));
     });
@@ -929,7 +938,6 @@ describe('CE IssuesListApp component', () => {
   describe('fetching issues', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-      jest.runOnlyPendingTimers();
     });
 
     it('fetches issue, incident, test case, and task types', () => {

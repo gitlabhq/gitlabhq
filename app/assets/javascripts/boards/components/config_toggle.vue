@@ -16,6 +16,13 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['canAdminList'],
+  props: {
+    boardHasScope: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     ...mapGetters(['hasScope']),
     buttonText() {
@@ -40,7 +47,7 @@ export default {
       v-gl-modal-directive="'board-config-modal'"
       v-gl-tooltip
       :title="tooltipTitle"
-      :class="{ 'dot-highlight': hasScope }"
+      :class="{ 'dot-highlight': hasScope || boardHasScope }"
       data-qa-selector="boards_config_button"
       @click.prevent="showPage"
     >

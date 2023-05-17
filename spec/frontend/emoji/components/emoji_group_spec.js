@@ -15,10 +15,6 @@ function factory(propsData = {}) {
 }
 
 describe('Emoji group component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not render any buttons', () => {
     factory({
       emojis: [],

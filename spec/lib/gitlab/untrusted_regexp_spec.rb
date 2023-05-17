@@ -3,7 +3,11 @@
 require 'fast_spec_helper'
 require 'support/shared_examples/lib/gitlab/malicious_regexp_shared_examples'
 
-RSpec.describe Gitlab::UntrustedRegexp do
+RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
+  def create_regex(regex_str, multiline: false)
+    described_class.new(regex_str, multiline: multiline).freeze
+  end
+
   describe '#initialize' do
     subject { described_class.new(pattern) }
 
@@ -16,15 +20,48 @@ RSpec.describe Gitlab::UntrustedRegexp do
 
   describe '#replace_all' do
     it 'replaces all instances of the match in a string' do
-      result = described_class.new('foo').replace_all('foo bar foo', 'oof')
+      result = create_regex('foo').replace_all('foo bar foo', 'oof')
 
       expect(result).to eq('oof bar oof')
     end
   end
 
+  describe '#replace_gsub' do
+    let(:regex_str) { '(?P<scheme>(ftp))' }
+    let(:regex) { create_regex(regex_str, multiline: true) }
+
+    def result(regex, text)
+      regex.replace_gsub(text) do |match|
+        if match[:scheme]
+          "http|#{match[:scheme]}|rss"
+        else
+          match.to_s
+        end
+      end
+    end
+
+    it 'replaces all instances of the match in a string' do
+      text = 'Use only https instead of ftp'
+
+      expect(result(regex, text)).to eq('Use only https instead of http|ftp|rss')
+    end
+
+    it 'replaces nothing when no match' do
+      text = 'Use only https instead of gopher'
+
+      expect(result(regex, text)).to eq(text)
+    end
+
+    it 'handles empty text' do
+      text = ''
+
+      expect(result(regex, text)).to eq('')
+    end
+  end
+
   describe '#replace' do
     it 'replaces the first instance of the match in a string' do
-      result = described_class.new('foo').replace('foo bar foo', 'oof')
+      result = create_regex('foo').replace('foo bar foo', 'oof')
 
       expect(result).to eq('oof bar foo')
     end
@@ -32,19 +69,19 @@ RSpec.describe Gitlab::UntrustedRegexp do
 
   describe '#===' do
     it 'returns true for a match' do
-      result = described_class.new('foo') === 'a foo here'
+      result = create_regex('foo') === 'a foo here'
 
       expect(result).to be_truthy
     end
 
     it 'returns false for no match' do
-      result = described_class.new('foo') === 'a bar here'
+      result = create_regex('foo') === 'a bar here'
 
       expect(result).to be_falsy
     end
 
     it 'can handle regular expressions in multiline mode' do
-      regexp = described_class.new('^\d', multiline: true)
+      regexp = create_regex('^\d', multiline: true)
 
       result = regexp === "Header\n\n1. Content"
 
@@ -53,7 +90,7 @@ RSpec.describe Gitlab::UntrustedRegexp do
   end
 
   describe '#match?' do
-    subject { described_class.new(regexp).match?(text) }
+    subject { create_regex(regexp).match?(text) }
 
     context 'malicious regexp' do
       let(:text) { malicious_text }
@@ -82,7 +119,7 @@ RSpec.describe Gitlab::UntrustedRegexp do
   end
 
   describe '#scan' do
-    subject { described_class.new(regexp).scan(text) }
+    subject { create_regex(regexp).scan(text) }
 
     context 'malicious regexp' do
       let(:text) { malicious_text }
@@ -138,7 +175,7 @@ RSpec.describe Gitlab::UntrustedRegexp do
   end
 
   describe '#extract_named_group' do
-    let(:re) { described_class.new('(?P<name>\w+) (?P<age>\d+)|(?P<name_only>\w+)') }
+    let(:re) { create_regex('(?P<name>\w+) (?P<age>\d+)|(?P<name_only>\w+)') }
     let(:text) { 'Bob 40' }
 
     it 'returns values for both named groups' do
@@ -172,7 +209,7 @@ RSpec.describe Gitlab::UntrustedRegexp do
   describe '#match' do
     context 'when there are matches' do
       it 'returns a match object' do
-        result = described_class.new('(?P<number>\d+)').match('hello 10')
+        result = create_regex('(?P<number>\d+)').match('hello 10')
 
         expect(result[:number]).to eq('10')
       end
@@ -180,7 +217,7 @@ RSpec.describe Gitlab::UntrustedRegexp do
 
     context 'when there are no matches' do
       it 'returns nil' do
-        result = described_class.new('(?P<number>\d+)').match('hello')
+        result = create_regex('(?P<number>\d+)').match('hello')
 
         expect(result).to be_nil
       end

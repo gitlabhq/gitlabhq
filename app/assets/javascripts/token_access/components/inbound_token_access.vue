@@ -9,7 +9,7 @@ import {
   GlSprintf,
   GlToggle,
 } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import inboundAddProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_add_project_ci_job_token_scope.mutation.graphql';
@@ -124,7 +124,7 @@ export default {
       try {
         const {
           data: {
-            ciCdSettingsUpdate: { errors },
+            projectCiCdSettingsUpdate: { errors },
           },
         } = await this.$apollo.mutate({
           mutation: inboundUpdateCIJobTokenScopeMutation,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Alerting::NotifyService do
+RSpec.describe Projects::Alerting::NotifyService, feature_category: :projects do
   let_it_be_with_reload(:project) { create(:project) }
 
   let(:payload) { ActionController::Parameters.new(payload_raw).permit! }

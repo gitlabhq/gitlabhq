@@ -16,7 +16,6 @@
 
     .row
       .form-group.col-md-9
-        = f.label :topics, _('Topics'), class: 'label-bold'
         .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id } }
         = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 
@@ -31,8 +30,7 @@
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
   .form-group.gl-mt-3.gl-mb-3
-    .avatar-container.rect-avatar.s90
-      = project_icon(@project, alt: _('Project avatar'), class: 'avatar project-avatar s90')
+    = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
     = f.label :avatar, _('Project avatar'), class: 'label-bold d-block'
     = render 'shared/choose_avatar_button', f: f
     - if @project.avatar?

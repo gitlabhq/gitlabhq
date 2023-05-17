@@ -342,13 +342,21 @@ Authenticating with credentials from job payload (GitLab Registry)
 
 Make sure you are using the expected authentication mechanism.
 
-### "Not Found" error when pulling image
+### `Not Found` or `404` error when pulling image
 
-Docker errors similar to the following may indicate that the user running the build job doesn't have
-a minimum of the Guest role in the specified Dependency Proxy group:
+Errors like these might indicate that the user running the job doesn't have
+a minimum of the Guest role in the Dependency Proxy group:
 
-```plaintext
-ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
+- ```plaintext
+  ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
 
-failed to solve with frontend dockerfile.v0: failed to create LLB definition: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
-```
+  failed to solve with frontend dockerfile.v0: failed to create LLB definition: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
+  ```
+
+- ```plaintext
+  ERROR: Job failed: failed to pull image "gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest" with specified policies [always]:
+  Error response from daemon: error parsing HTTP 404 response body: unexpected end of JSON input: "" (manager.go:237:1s)
+  ```
+
+For more information about the work to improve the error messages in similar cases to `Access denied`,
+see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).

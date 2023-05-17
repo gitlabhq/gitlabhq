@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitlab_redis_shared_state do
+RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitlab_redis_shared_state, feature_category: :portfolio_management do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }
@@ -117,6 +117,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
             new_designs.zip(old_designs).each do |new_design, old_design|
               expect(new_design).to have_attributes(
                 filename: old_design.filename,
+                description: old_design.description,
                 relative_position: old_design.relative_position,
                 issue: target_issue,
                 project: target_issue.project

@@ -46,17 +46,29 @@ RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
   end
 
   describe '#clear_cache!', :use_clean_rails_redis_caching do
-    it 'deletes the cached items' do
-      # Cached key and value
-      Rails.cache.write('test_item', 'test_value')
-      # Add key to set
-      cache.write(cache_prefix, 'test_item')
+    shared_examples 'clears cache' do
+      it 'deletes the cached items' do
+        # Cached key and value
+        Rails.cache.write('test_item', 'test_value')
+        # Add key to set
+        cache.write(cache_prefix, 'test_item')
 
-      expect(cache.read(cache_prefix)).to contain_exactly('test_item')
-      cache.clear_cache!(cache_prefix)
+        expect(cache.read(cache_prefix)).to contain_exactly('test_item')
+        cache.clear_cache!(cache_prefix)
 
-      expect(cache.read(cache_prefix)).to be_empty
+        expect(cache.read(cache_prefix)).to be_empty
+      end
     end
+
+    context 'when featuer flag disabled' do
+      before do
+        stub_feature_flags(use_pipeline_over_multikey: false)
+      end
+
+      it_behaves_like 'clears cache'
+    end
+
+    it_behaves_like 'clears cache'
   end
 
   describe '#include?' do

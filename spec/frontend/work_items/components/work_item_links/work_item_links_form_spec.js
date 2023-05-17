@@ -61,7 +61,7 @@ describe('WorkItemLinksForm', () => {
         formType,
       },
       provide: {
-        projectPath: 'project/path',
+        fullPath: 'project/path',
         hasIterationsFeature,
       },
     });
@@ -74,10 +74,6 @@ describe('WorkItemLinksForm', () => {
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('creating a new work item', () => {
     beforeEach(async () => {
@@ -154,7 +150,7 @@ describe('WorkItemLinksForm', () => {
         const confidentialCheckbox = findConfidentialCheckbox();
         const confidentialTooltip = wrapper.findComponent(GlTooltip);
 
-        expect(confidentialCheckbox.attributes('disabled')).toBe('true');
+        expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
         expect(confidentialTooltip.exists()).toBe(true);
         expect(confidentialTooltip.text()).toBe(

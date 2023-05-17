@@ -1,15 +1,13 @@
 ---
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "GitLab's development guidelines for Wikis"
 ---
 
-# Wikis development guide
+# Wikis development guidelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227027) in GitLab 13.5.
-
-## Overview
 
 The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/).
 It's used in the [Gitaly](gitaly.md) Ruby service, and accessed from the Rails app through Gitaly RPC calls.
@@ -30,7 +28,7 @@ Some notable gems that are used for wikis are:
 | Component     | Description                                    | Gem name                       | GitLab project                                                                                          | Upstream project                                                    |
 |:--------------|:-----------------------------------------------|:-------------------------------|:--------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
 | `gitlab`      | Markup renderer, depends on various other gems | `gitlab-markup`                | [`gitlab-org/gitlab-markup`](https://gitlab.com/gitlab-org/gitlab-markup)                               | [`github/markup`](https://github.com/github/markup)                 |
-| `gitaly-ruby` | Main Gollum library                            | `gitlab-gollum-lib`            | [`gitlab-org/gollum-lib`](https://gitlab.com/gitlab-org/gollum-lib)                                     | [`gollum/gollum-lib`](https://github.com/gollum/gollum-lib)         |
+| `gollum-lib`  | Main Gollum library                            | `gitlab-gollum-lib`            | [`gitlab-org/gollum-lib`](https://gitlab.com/gitlab-org/gollum-lib)                                     | [`gollum/gollum-lib`](https://github.com/gollum/gollum-lib)         |
 |               | Gollum Git adapter for Rugged                  | `gitlab-gollum-rugged_adapter` | [`gitlab-org/gitlab-gollum-rugged_adapter`](https://gitlab.com/gitlab-org/gitlab-gollum-rugged_adapter) | [`gollum/rugged_adapter`](https://github.com/gollum/rugged_adapter) |
 |               | Rugged (also used in Gitaly itself)            | `rugged`                       | -                                                                                                       | [`libgit2/rugged`](https://github.com/libgit2/rugged)               |
 

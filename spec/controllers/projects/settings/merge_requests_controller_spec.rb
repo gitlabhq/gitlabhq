@@ -36,12 +36,11 @@ RSpec.describe Projects::Settings::MergeRequestsController do
         merge_method: :ff
       }
 
-      put :update,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project.id,
-            project: params
-          }
+      put :update, params: {
+        namespace_id: project.namespace,
+        project_id: project.id,
+        project: params
+      }
 
       expect(response).to redirect_to project_settings_merge_requests_path(project)
       params.each do |param, value|

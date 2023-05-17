@@ -1,19 +1,10 @@
 <script>
-import {
-  GlDropdown,
-  GlButton,
-  GlIcon,
-  GlForm,
-  GlFormGroup,
-  GlLink,
-  GlFormCheckbox,
-} from '@gitlab/ui';
-import { mapGetters, mapActions } from 'vuex';
-import { createAlert } from '~/flash';
+import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import { createAlert } from '~/alert';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Autosave from '~/autosave';
-import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -22,7 +13,6 @@ export default {
     GlIcon,
     GlForm,
     GlFormGroup,
-    GlLink,
     GlFormCheckbox,
     MarkdownField,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
@@ -41,6 +31,7 @@ export default {
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
+    ...mapState('batchComments', ['shouldAnimateReviewButton']),
   },
   watch: {
     'noteData.approve': function noteDataApproveWatch() {
@@ -102,9 +93,6 @@ export default {
     },
   },
   restrictedToolbarItems: ['full-screen'],
-  helpPagePath: helpPagePath('user/project/merge_requests/reviews/index.html', {
-    anchor: 'submit-a-review',
-  }),
 };
 </script>
 
@@ -114,6 +102,7 @@ export default {
     right
     dropup
     class="submit-review-dropdown"
+    :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
     data-qa-selector="submit_review_dropdown"
     variant="info"
     category="primary"
@@ -126,19 +115,9 @@ export default {
       <gl-form-group label-for="review-note-body" label-class="gl-mb-2">
         <template #label>
           {{ __('Summary comment (optional)') }}
-          <gl-link
-            :href="$options.helpPagePath"
-            :aria-label="__('More information')"
-            target="_blank"
-            class="gl-ml-2"
-          >
-            <gl-icon name="question-o" />
-          </gl-link>
         </template>
         <div class="common-note-form gfm-form">
-          <div
-            class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"
-          >
+          <div class="comment-warning-wrapper-large gl-border-0 gl-bg-white gl-overflow-hidden">
             <markdown-field
               :is-submitting="isSubmitting"
               :add-spacing-classes="false"

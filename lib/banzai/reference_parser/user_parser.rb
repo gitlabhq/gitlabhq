@@ -81,7 +81,7 @@ module Banzai
             project = projects[node]
             user = users[node]
 
-            project && user ? project.team.member?(user) : false
+            project&.member?(user)
           else
             true
           end

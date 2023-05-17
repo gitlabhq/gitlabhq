@@ -59,7 +59,7 @@ have a start or due date, a visual
 - Link [related epics](linked_epics.md) based on a type of relationship.
 - Create workflows with [epic boards](epic_boards.md).
 - [Turn on notifications](../../profile/notifications.md) for about epic events.
-- [Award an emoji](../../award_emojis.md) to an epic or its comments.
+- [Add an emoji reaction](../../award_emojis.md) to an epic or its comments.
 - Collaborate on an epic by posting comments in a [thread](../../discussions/index.md).
 - Use [health status](../../project/issues/managing_issues.md#health-status) to track your progress.
 

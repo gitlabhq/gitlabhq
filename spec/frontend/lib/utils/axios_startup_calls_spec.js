@@ -113,15 +113,8 @@ describe('setupAxiosStartupCalls', () => {
   });
 
   describe('startup call', () => {
-    let oldGon;
-
     beforeEach(() => {
-      oldGon = window.gon;
       window.gon = { gitlab_url: 'https://example.org/gitlab' };
-    });
-
-    afterEach(() => {
-      window.gon = oldGon;
     });
 
     it('removes GitLab Base URL from startup call', async () => {

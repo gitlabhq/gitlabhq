@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication_and_authorization do
+RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :system_access do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -12,10 +12,12 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
 
   context 'when the key partial is used' do
     let_it_be(:key) do
-      create(:personal_key,
-             user: user,
-             last_used_at: 7.days.ago,
-             expires_at: 2.days.from_now)
+      create(
+        :personal_key,
+        user: user,
+        last_used_at: 7.days.ago,
+        expires_at: 2.days.from_now
+      )
     end
 
     it 'displays the correct values', :aggregate_failures do
@@ -54,9 +56,7 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
 
       context 'when the key has not been used' do
         let_it_be(:key) do
-          create(:personal_key,
-                 user: user,
-                 last_used_at: nil)
+          create(:personal_key, user: user, last_used_at: nil)
         end
 
         it 'renders "Never" for last used' do
@@ -68,30 +68,21 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
     end
 
     context 'displays the usage type' do
-      where(:usage_type, :usage_type_text, :displayed_buttons, :hidden_buttons, :revoke_ssh_signatures_ff) do
+      where(:usage_type, :usage_type_text, :displayed_buttons, :hidden_buttons) do
         [
-          [:auth, 'Authentication', ['Remove'], ['Revoke'], true],
-          [:auth_and_signing, 'Authentication & Signing', %w[Remove Revoke], [], true],
-          [:signing, 'Signing', %w[Remove Revoke], [], true],
-          [:auth, 'Authentication', ['Remove'], ['Revoke'], false],
-          [:auth_and_signing, 'Authentication & Signing', %w[Remove], ['Revoke'], false],
-          [:signing, 'Signing', %w[Remove], ['Revoke'], false]
+          [:auth, 'Authentication', ['Remove'], ['Revoke']],
+          [:auth_and_signing, 'Authentication & Signing', %w[Remove Revoke], []],
+          [:signing, 'Signing', %w[Remove Revoke], []]
         ]
       end
 
       with_them do
         let(:key) { create(:key, user: user, usage_type: usage_type) }
 
-        it 'renders usage type text' do
+        it 'renders usage type text and remove/revoke buttons', :aggregate_failures do
           render
 
           expect(rendered).to have_text(usage_type_text)
-        end
-
-        it 'renders remove/revoke buttons', :aggregate_failures do
-          stub_feature_flags(revoke_ssh_signatures: revoke_ssh_signatures_ff)
-
-          render
 
           displayed_buttons.each do |button|
             expect(rendered).to have_text(button)
@@ -106,9 +97,7 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
 
     context 'when the key does not have an expiration date' do
       let_it_be(:key) do
-        create(:personal_key,
-               user: user,
-               expires_at: nil)
+        create(:personal_key, user: user, expires_at: nil)
       end
 
       it 'renders "Never" for expires' do

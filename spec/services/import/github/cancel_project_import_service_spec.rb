@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::Github::CancelProjectImportService do
+RSpec.describe Import::Github::CancelProjectImportService, feature_category: :importers do
   subject(:import_cancel) { described_class.new(project, project.owner) }
 
   let_it_be(:user) { create(:user) }
@@ -13,6 +13,18 @@ RSpec.describe Import::Github::CancelProjectImportService do
       context 'when import is in progress' do
         it 'update import state to be canceled' do
           expect(import_cancel.execute).to eq({ status: :success, project: project })
+        end
+
+        it 'tracks canceled imports' do
+          metrics_double = instance_double('Gitlab::Import::Metrics')
+
+          expect(Gitlab::Import::Metrics)
+            .to receive(:new)
+            .with(:github_importer, project)
+            .and_return(metrics_double)
+          expect(metrics_double).to receive(:track_canceled_import)
+
+          import_cancel.execute
         end
       end
 

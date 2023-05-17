@@ -15,13 +15,17 @@ operating systems supported by GitLab are listed in the
 
 The following lists the currently supported OSs and their possible EOL dates.
 
+NOTE:
+`amd64` and `x86_64` refer to the same 64-bit architecture.
+The names `arm64` and `aarch64` are also interchangeable and refer to the same
+architecture.
+
 | OS Version                                                   | First supported GitLab version | Arch            |                         Install Documentation                | OS EOL     | Details                                                      |
 | ------------------------------------------------------------ | ------------------------------ | --------------- | :----------------------------------------------------------: | ---------- | ------------------------------------------------------------ |
 | AlmaLinux 8                                                  | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | [AlmaLinux Install Documentation](https://about.gitlab.com/install/#almalinux-8) | 2029       | <https://almalinux.org/>                                     |
 | CentOS 7                                                     | GitLab CE / GitLab EE 7.10.0   | x86_64          | [CentOS Install Documentation](https://about.gitlab.com/install/#centos-7) | June 2024  | <https://wiki.centos.org/About/Product>                      |
 | Debian 10                                                    | GitLab CE / GitLab EE 12.2.0   | amd64, arm64    | [Debian Install Documentation](https://about.gitlab.com/install/#debian) | 2024       | <https://wiki.debian.org/LTS>                                |
 | Debian 11                                                    | GitLab CE / GitLab EE 14.6.0   | amd64, arm64    | [Debian Install Documentation](https://about.gitlab.com/install/#debian) | 2026       | <https://wiki.debian.org/LTS>                                |
-| OpenSUSE 15.3                                                | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | [OpenSUSE Install Documentation](https://about.gitlab.com/install/#opensuse-leap) | Dec 2022   | <https://en.opensuse.org/Lifetime>                           |
 | OpenSUSE 15.4                                                | GitLab CE / GitLab EE 15.7.0   | x86_64, aarch64 | [OpenSUSE Install Documentation](https://about.gitlab.com/install/#opensuse-leap) | Nov 2023   | <https://en.opensuse.org/Lifetime>                           |
 | RHEL 8                                                       | GitLab CE / GitLab EE 12.8.1   | x86_64, arm64   | [Use CentOS Install Documentation](https://about.gitlab.com/install/#centos-7) | May 2029   | [RHEL Details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 | SLES 12                                                      | GitLab EE 9.0.0                | x86_64          | [Use OpenSUSE Install Documentation](https://about.gitlab.com/install/#opensuse-leap) | Oct 2027   | <https://www.suse.com/lifecycle/>                            |
@@ -31,7 +35,8 @@ The following lists the currently supported OSs and their possible EOL dates.
 | Ubuntu 18.04                                                 | GitLab CE / GitLab EE 10.7.0   | amd64           | [Ubuntu Install Documentation](https://about.gitlab.com/install/#ubuntu) | April 2023 | <https://wiki.ubuntu.com/Releases>                           |
 | Ubuntu 20.04                                                 | GitLab CE / GitLab EE 13.2.0   | amd64, arm64    | [Ubuntu Install Documentation](https://about.gitlab.com/install/#ubuntu) | April 2025 | <https://wiki.ubuntu.com/Releases>                           |
 | Ubuntu 22.04                                                 | GitLab CE / GitLab EE 15.5.0   | amd64, arm64    | [Ubuntu Install Documentation](https://about.gitlab.com/install/#ubuntu) | April 2027 | <https://wiki.ubuntu.com/Releases>                           |
-| Amazon Linux 2                                               | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | [Amazon Linux 2 Install Documentation](https://about.gitlab.com/install/#amazonlinux-2) | June 2023  | <https://aws.amazon.com/amazon-linux-2/faqs/>                |
+| Amazon Linux 2                                               | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | [Amazon Linux 2 Install Documentation](https://about.gitlab.com/install/#amazonlinux-2) | June 2025  | <https://aws.amazon.com/amazon-linux-2/faqs/>                |
+| Amazon Linux 2022                                            | GitLab CE / GitLab EE 15.9.0   | amd64, arm64    | [Amazon Linux 2022 Install Documentation](https://about.gitlab.com/install/#amazonlinux-2022) | October 2027  | <https://aws.amazon.com/linux/amazon-linux-2022/faqs/>                |
 | Raspberry Pi OS (Buster) (formerly known as Raspbian Buster) | GitLab CE 12.2.0               | armhf           | [Raspberry Pi Install Documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2024       | [Raspberry Pi Details](https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/) |
 | Raspberry Pi OS (Bullseye) | GitLab CE 15.5.0               | armhf           | [Raspberry Pi Install Documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2026       | [Raspberry Pi Details](https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/) |
 
@@ -54,6 +59,14 @@ although [new versions have been released](https://about.gitlab.com/releases/cat
 "Add the GitLab package repository" instructions
 of the [Linux package install guide](https://about.gitlab.com/install/#content).
 Future GitLab upgrades are fetched according to your upgraded OS.
+
+## Update both GitLab and the operating system
+
+To upgrade both the operating system (OS) and GitLab:
+
+1. Upgrade the OS.
+1. Check if it's necessary to [update the GitLab package sources](#update-gitlab-package-sources-after-upgrading-the-os).
+1. [Upgrade GitLab](../../update/index.md).
 
 ## Packages for ARM64
 
@@ -94,6 +107,7 @@ release for them can be found below:
 | Ubuntu 16.04    | [April 2021](https://ubuntu.com/info/release-end-of-life)                          | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12    |
 | OpenSUSE 15.2   | [December 2021](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-14.7&dist=opensuse%2F15.2) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-14.7&dist=opensuse%2F15.2) 14.7       |
 | Debian 9 "Stretch" | [June 2022](https://lists.debian.org/debian-lts-announce/2022/07/msg00002.html) | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_15.2&dist=debian%2Fstretch) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_15.2&dist=debian%2Fstretch) 15.2     |
+| OpenSUSE 15.3   | [December 2022](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-15.10&dist=opensuse%2F15.3) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-15.10&dist=opensuse%2F15.3) 15.10       |
 
 NOTE:
 An exception to this deprecation policy is when we are unable to provide

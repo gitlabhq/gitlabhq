@@ -76,7 +76,7 @@ RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
             value: value
           )
         ) do |c|
-          c.label { label }
+          c.with_label { label }
         end
       end
     end
@@ -95,7 +95,7 @@ RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
             label: label
           )
         ) do |c|
-          c.help_text { help_text }
+          c.with_help_text { help_text }
         end
       end
     end
@@ -114,8 +114,8 @@ RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
             value: value
           )
         ) do |c|
-          c.label { label }
-          c.help_text { help_text }
+          c.with_label { label }
+          c.with_help_text { help_text }
         end
       end
     end

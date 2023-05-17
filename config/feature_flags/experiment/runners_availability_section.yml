@@ -1,8 +1,0 @@
----
-name: runners_availability_section
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80717
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352850
-milestone: '14.9'
-type: experiment
-group: group::activation
-default_enabled: false

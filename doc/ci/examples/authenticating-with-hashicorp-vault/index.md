@@ -1,21 +1,21 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: tutorial
 ---
 
-# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM)**
+# Authenticating and reading secrets with HashiCorp Vault (Deprecated) **(PREMIUM)**
+
+WARNING:
+Authenticating with HashiCorp Vault by using `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and the token is scheduled to be removed in GitLab 16.5. This change is a breaking change.
+Use [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+instead.
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
-NOTE:
-[GitLab Premium](https://about.gitlab.com/pricing/) supports read access to a
-HashiCorp Vault, and enables you to
-[use Vault secrets in a CI job](../../secrets/index.md#use-vault-secrets-in-a-ci-job).
-For more information, see [Using external secrets in CI](../../secrets/index.md).
-
-## Requirements
+## Prerequisites
 
 This tutorial assumes you are familiar with GitLab CI/CD and Vault.
 
@@ -29,7 +29,7 @@ You must replace the `vault.example.com` URL below with the URL of your Vault se
 
 ## How it works
 
-Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication) method.
+ID tokens are JSON Web Tokens (JWTs) used for OIDC authentication with third-party services. If a job has at least one ID token defined, the `secrets` keyword automatically uses that token to authenticate with Vault.
 
 The following fields are included in the JWT:
 
@@ -53,6 +53,7 @@ The following fields are included in the JWT:
 | `job_id`                | Always                       | ID of this job                                                                                                                                                                                       |
 | `ref`                   | Always                       | Git ref for this job                                                                                                                                                                                 |
 | `ref_type`              | Always                       | Git ref type, either `branch` or `tag`                                                                                                                                                               |
+| `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
 | `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise                                                                                                                                               |
 | `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                                                   |
 | `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                  |
@@ -80,6 +81,7 @@ Example JWT payload:
   "job_id": "1212",
   "ref": "auto-deploy-2020-04-01",
   "ref_type": "branch",
+  "ref_path": "refs/heads/auto-deploy-2020-04-01",
   "ref_protected": "true",
   "environment": "production",
   "environment_protected": "true"
@@ -254,61 +256,36 @@ $ vault write auth/jwt/config \
 
 For the full list of available configuration options, see Vault's [API documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#configure).
 
-The following job, when run for the default branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
+In GitLab, create the following [CI/CD variables](../../variables/index.md#for-a-project) to provide details about your Vault server:
+
+- `VAULT_SERVER_URL` - The URL of your Vault server, for example `https://vault.example.com:8200`.
+- `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate. If no role is specified, Vault uses the [default role](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role) specified when the authentication method was configured.
+- `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted. Default is `jwt`.
+- `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://developer.hashicorp.com/vault/docs/enterprise/namespaces) to use for reading secrets and authentication. If no namespace is specified, Vault uses the root (`/`) namespace. The setting is ignored by Vault Open Source.
+
+The following job, when run for the default branch, can read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
 
 ```yaml
-read_secrets:
-  image: vault:latest
+job_with_secrets:
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: https://example.vault.com
+  secrets:
+    STAGING_DB_PASSWORD:
+      vault: secret/myproject/staging/db/password@secrets # authenticates using $VAULT_ID_TOKEN
   script:
-    # Check job's ref name
-    - echo $CI_COMMIT_REF_NAME
-    # and is this ref protected
-    - echo $CI_COMMIT_REF_PROTECTED
-    # Vault's address can be provided here or as CI/CD variable
-    - export VAULT_ADDR=http://vault.example.com:8200
-    # Authenticate and get token. Token expiry time and other properties can be configured
-    # when configuring JWT Auth - https://developer.hashicorp.com/vault/api-docs/auth/jwt#parameters-1
-    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-staging jwt=$CI_JOB_JWT)"
-    # Now use the VAULT_TOKEN to read the secret and store it in an environment variable
-    - export PASSWORD="$(vault kv get -field=password secret/myproject/staging/db)"
-    # Use the secret
-    - echo $PASSWORD
-    # This will fail because the role myproject-staging can not read secrets from secret/myproject/production/*
-    - export PASSWORD="$(vault kv get -field=password secret/myproject/production/db)"
+    - access-staging-db.sh --token $STAGING_DB_PASSWORD
 ```
 
-NOTE:
-If you're using a Vault instance provided by HashiCorp Cloud Platform,
-you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
+In this example:
 
-![read secrets staging example](img/vault-read-secrets-staging.png)
-
-The following job is able to authenticate using the `myproject-production` role and read secrets under `/secret/myproject/production/`:
-
-```yaml
-read_secrets:
-  image: vault:latest
-  script:
-    # Check job's ref name
-    - echo $CI_COMMIT_REF_NAME
-    # and is this ref protected
-    - echo $CI_COMMIT_REF_PROTECTED
-    # Vault's address can be provided here or as CI/CD variable
-    - export VAULT_ADDR=http://vault.example.com:8200
-    # Authenticate and get token. Token expiry time and other properties can be configured
-    # when configuring JWT Auth - https://developer.hashicorp.com/vault/api-docs/auth/jwt#parameters-1
-    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-production jwt=$CI_JOB_JWT)"
-    # Now use the VAULT_TOKEN to read the secret and store it in environment variable
-    - export PASSWORD="$(vault kv get -field=password secret/myproject/production/db)"
-    # Use the secret
-    - echo $PASSWORD
-```
-
-![read secrets production example](img/vault-read-secrets-production.png)
+- `@secrets` - The vault name, where your Secrets Engines are enabled.
+- `secret/myproject/staging/db` - The path location of the secret in Vault.
+- `password` The field to be fetched within the referenced secret.
 
 ### Limit token access to Vault secrets
 
-You can control `CI_JOB_JWT` access to Vault secrets by using Vault protections
+You can control ID token access to Vault secrets by using Vault protections
 and GitLab features. For example, restrict the token by:
 
 - Using Vault [bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims)

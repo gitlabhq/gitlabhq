@@ -32,13 +32,9 @@ describe('GroupsComponent', () => {
 
   const findPaginationLinks = () => wrapper.findComponent(PaginationLinks);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     Vue.component('GroupFolder', GroupFolderComponent);
     Vue.component('GroupItem', GroupItemComponent);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('methods', () => {

@@ -12,10 +12,10 @@ import {
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__, __ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import {
@@ -261,7 +261,7 @@ export default {
 
       try {
         const { data } = await axios.post(url, postParams);
-        redirectTo(data.web_url);
+        redirectTo(data.web_url); // eslint-disable-line import/no-deprecated
         return;
       } catch (error) {
         createAlert({
@@ -332,7 +332,7 @@ export default {
       </div>
     </div>
 
-    <p class="gl-mt-n5 gl-text-gray-500">
+    <p class="gl-mt-n3 gl-text-gray-500">
       {{ s__('ForkProject|Want to organize several dependent projects under the same namespace?') }}
       <gl-link :href="newGroupPath" target="_blank">
         {{ s__('ForkProject|Create a group') }}

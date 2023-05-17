@@ -3,7 +3,7 @@ table_name: resource_state_events
 classes:
 - ResourceStateEvent
 feature_categories:
-- planning_analytics
+- team_planning
 description: Records the change of state of issues between opened and closed
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28926
 milestone: '13.0'

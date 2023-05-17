@@ -7,7 +7,7 @@ import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import { getCookie, setCookie, scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from './lib/utils/axios_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';

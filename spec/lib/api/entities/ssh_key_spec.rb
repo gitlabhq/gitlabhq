@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::SSHKey, feature_category: :authentication_and_authorization do
+RSpec.describe API::Entities::SSHKey, feature_category: :system_access do
   describe '#as_json' do
     subject { entity.as_json }
 

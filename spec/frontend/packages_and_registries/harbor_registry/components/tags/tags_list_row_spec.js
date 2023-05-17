@@ -37,10 +37,6 @@ describe('Harbor tag list row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('list item', () => {
     beforeEach(() => {
       mountComponent({

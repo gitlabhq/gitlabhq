@@ -21,7 +21,7 @@ module Gitlab
             db_config_name = ::Gitlab::Database.db_config_name(parsed.connection)
             return unless db_config_name
 
-            gitlab_schemas = ::Gitlab::Database::GitlabSchema.table_schemas(parsed.pg.tables)
+            gitlab_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(parsed.pg.tables)
             return if gitlab_schemas.empty?
 
             # to reduce amount of labels sort schemas used

@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import data from 'test_fixtures/deploy_keys/keys.json';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import key from '~/deploy_keys/components/key.vue';
 import DeployKeysStore from '~/deploy_keys/store';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import { getTimeago, formatDate } from '~/lib/utils/datetime_utility';
 
 describe('Deploy keys key', () => {
   let wrapper;
@@ -18,17 +19,15 @@ describe('Deploy keys key', () => {
         endpoint: 'https://test.host/dummy/endpoint',
         ...propsData,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
   beforeEach(() => {
     store = new DeployKeysStore();
     store.keys = data;
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('enabled key', () => {
@@ -46,6 +45,33 @@ describe('Deploy keys key', () => {
       expect(findTextAndTrim('.key-created-at')).toBe(
         `${getTimeago().format(deployKey.created_at)}`,
       );
+    });
+
+    it('renders human friendly expiration date', () => {
+      const expiresAt = new Date();
+      createComponent({
+        deployKey: { ...deployKey, expires_at: expiresAt },
+      });
+
+      expect(findTextAndTrim('.key-expires-at')).toBe(`${getTimeago().format(expiresAt)}`);
+    });
+    it('shows tooltip for expiration date', () => {
+      const expiresAt = new Date();
+      createComponent({
+        deployKey: { ...deployKey, expires_at: expiresAt },
+      });
+
+      const expiryComponent = wrapper.find('[data-testid="expires-at-tooltip"]');
+      const tooltip = getBinding(expiryComponent.element, 'gl-tooltip');
+      expect(tooltip).toBeDefined();
+      expect(expiryComponent.attributes('title')).toBe(`${formatDate(expiresAt)}`);
+    });
+    it('renders never when no expiration date', () => {
+      createComponent({
+        deployKey: { ...deployKey, expires_at: null },
+      });
+
+      expect(wrapper.find('[data-testid="expires-never"]').exists()).toBe(true);
     });
 
     it('shows pencil button for editing', () => {

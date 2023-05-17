@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'Version control for project snippets' do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }

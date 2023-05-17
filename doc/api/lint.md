@@ -6,7 +6,113 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI Lint API **(FREE)**
 
-## Validate the CI YAML configuration
+## Validate a CI YAML configuration with a namespace
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.6.
+
+Checks if CI/CD YAML configuration is valid. This endpoint has namespace
+specific context.
+
+```plaintext
+POST /projects/:id/ci/lint
+```
+
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `content`  | string  | yes      | The CI/CD configuration content. |
+| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
+| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+
+Example request:
+
+```shell
+curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
+```
+
+Example responses:
+
+- Valid configuration:
+
+  ```json
+  {
+    "valid": true,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [],
+    "warnings": []
+  }
+  ```
+
+- Invalid configuration:
+
+  ```json
+  {
+    "valid": false,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [
+      "jobs config should contain at least one visible job"
+    ],
+    "warnings": []
+  }
+  ```
+
+## Validate a project's CI configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.5.
+
+Checks if a project's latest (`HEAD` of the project's default branch)
+`.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
+specific data available, including variables and local includes.
+
+```plaintext
+GET /projects/:id/ci/lint
+```
+
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
+| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+```
+
+Example responses:
+
+- Valid configuration:
+
+```json
+{
+  "valid": true,
+  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "errors": [],
+  "warnings": []
+}
+```
+
+- Invalid configuration:
+
+```json
+{
+  "valid": false,
+  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "errors": [
+    "jobs config should contain at least one visible job"
+  ],
+  "warnings": []
+}
+```
+
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+
+## Validate the CI YAML configuration (deprecated)
+
+WARNING:
+This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/381669) in GitLab 15.7
+and was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/403256) in 16.0. Use [`POST /projects/:id/ci/lint`](#validate-a-ci-yaml-configuration-with-a-namespace) instead.
 
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
 configuration syntax. It doesn't have any namespace-specific context.
@@ -154,105 +260,7 @@ Example response:
 }
 ```
 
-## Validate a CI YAML configuration with a namespace
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.6.
-
-Checks if CI/CD YAML configuration is valid. This endpoint has namespace
-specific context.
-
-```plaintext
-POST /projects/:id/ci/lint
-```
-
-| Attribute  | Type    | Required | Description |
-| ---------- | ------- | -------- | -------- |
-| `content`  | string  | yes      | The CI/CD configuration content. |
-| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
-| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
-| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
-
-Example request:
-
-```shell
-curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
-```
-
-Example responses:
-
-- Valid configuration:
-
-  ```json
-  {
-    "valid": true,
-    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
-    "errors": [],
-    "warnings": []
-  }
-  ```
-
-- Invalid configuration:
-
-  ```json
-  {
-    "valid": false,
-    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
-    "errors": [
-      "jobs config should contain at least one visible job"
-    ],
-    "warnings": []
-  }
-  ```
-
-## Validate a project's CI configuration
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.5.
-
-Checks if a project's latest (`HEAD` of the project's default branch)
-`.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
-specific data available, including variables and local includes.
-
-```plaintext
-GET /projects/:id/ci/lint
-```
-
-| Attribute  | Type    | Required | Description |
-| ---------- | ------- | -------- | -------- |
-| `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
-| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
-| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
-
-Example request:
-
-```shell
-curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
-```
-
-Example responses:
-
-- Valid configuration:
-
-```json
-{
-  "valid": true,
-  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
-  "errors": [],
-  "warnings": []
-}
-```
-
-- Invalid configuration:
-
-```json
-{
-  "valid": false,
-  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
-  "errors": [
-    "jobs config should contain at least one visible job"
-  ],
-  "warnings": []
-}
-```
+<!--- end_remove -->
 
 ## Use jq to create and process YAML & JSON payloads
 

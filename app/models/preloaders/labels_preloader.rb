@@ -19,16 +19,31 @@ module Preloaders
     end
 
     def preload_all
-      preloader = ActiveRecord::Associations::Preloader.new
+      ActiveRecord::Associations::Preloader.new(
+        records: project_labels,
+        associations: { project: [:project_feature, namespace: :route] }
+      ).call
 
-      preloader.preload(labels, parent_container: :route)
-      preloader.preload(labels.select { |l| l.is_a? ProjectLabel }, { project: [:project_feature, namespace: :route] })
-      preloader.preload(labels.select { |l| l.is_a? GroupLabel }, { group: :route })
+      ActiveRecord::Associations::Preloader.new(
+        records: group_labels,
+        associations: { group: :route }
+      ).call
 
+      Preloaders::UserMaxAccessLevelInProjectsPreloader.new(project_labels.map(&:project), user).execute
       labels.each do |label|
         label.lazy_subscription(user)
         label.lazy_subscription(user, project) if project.present?
       end
+    end
+
+    private
+
+    def group_labels
+      @group_labels ||= labels.select { |l| l.is_a? GroupLabel }
+    end
+
+    def project_labels
+      @project_labels ||= labels.select { |l| l.is_a? ProjectLabel }
     end
   end
 end

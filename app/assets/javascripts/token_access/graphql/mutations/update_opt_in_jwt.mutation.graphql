@@ -1,8 +1,0 @@
-mutation updateOptInJwt($input: CiCdSettingsUpdateInput!) {
-  ciCdSettingsUpdate(input: $input) {
-    ciCdSettings {
-      optInJwt
-    }
-    errors
-  }
-}

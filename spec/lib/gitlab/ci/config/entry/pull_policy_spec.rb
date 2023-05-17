@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::PullPolicy do
+RSpec.describe Gitlab::Ci::Config::Entry::PullPolicy, feature_category: :continuous_integration do
   let(:entry) { described_class.new(config) }
 
   describe '#value' do

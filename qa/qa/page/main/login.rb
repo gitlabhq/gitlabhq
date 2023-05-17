@@ -40,6 +40,8 @@ module QA
 
         view 'app/helpers/auth_helper.rb' do
           element :saml_login_button
+          element :github_login_button
+          element :oidc_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -106,7 +108,7 @@ module QA
         # Happens on clean GDK installations when seeded root admin password is expired
         #
         def set_up_new_password_if_required(user:, skip_page_validation:)
-          return unless has_content?('Set up new password')
+          return unless has_content?('Set up new password', wait: 1)
 
           Profile::Password.perform do |new_password_page|
             password = user&.password || Runtime::User.password
@@ -177,9 +179,19 @@ module QA
           click_element :standard_tab
         end
 
+        def sign_in_with_github
+          set_initial_password_if_present
+          click_element :github_login_button
+        end
+
         def sign_in_with_saml
           set_initial_password_if_present
           click_element :saml_login_button
+        end
+
+        def sign_in_with_oidc
+          set_initial_password_if_present
+          click_element :oidc_login_button
         end
 
         def sign_out_and_sign_in_as(user:)
@@ -226,6 +238,10 @@ module QA
 
           Support::WaitForRequests.wait_for_requests
 
+          wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
+            has_no_text?('GitLab is taking too much time to respond')
+          end
+
           # For debugging invalid login attempts
           has_notice?('Invalid login or password')
 
@@ -233,6 +249,7 @@ module QA
             terms.accept_terms if terms.visible?
           end
 
+          Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled?
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
         end
 

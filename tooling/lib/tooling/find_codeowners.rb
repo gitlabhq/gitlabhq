@@ -48,11 +48,7 @@ module Tooling
     def load_config
       config_path = "#{__dir__}/../../config/CODEOWNERS.yml"
 
-      if YAML.respond_to?(:safe_load_file) # Ruby 3.0+
-        YAML.safe_load_file(config_path, symbolize_names: true)
-      else
-        YAML.safe_load(File.read(config_path), symbolize_names: true)
-      end
+      YAML.safe_load_file(config_path, symbolize_names: true)
     end
 
     # Copied and modified from ee/lib/gitlab/code_owners/file.rb

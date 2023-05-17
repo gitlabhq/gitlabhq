@@ -8,6 +8,9 @@ module Mutations
       argument :issues_sort, Types::IssueSortEnum,
                required: false,
                description: 'Sort order for issue lists.'
+      argument :visibility_pipeline_id_type, Types::VisibilityPipelineIdTypeEnum,
+               required: false,
+               description: 'Determines whether the pipeline list shows ID or IID.'
 
       field :user_preferences,
             Types::UserPreferencesType,

@@ -1,10 +1,10 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using Helm charts to update a Kubernetes cluster (Alpha) **(FREE)**
+# Using Helm charts to update a Kubernetes cluster (Experiment) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371019) in GitLab 15.4.
 > - Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
@@ -13,11 +13,11 @@ You can deploy Helm charts to your Kubernetes cluster and keep the resources in 
 with your charts and values. To do this, you use the pull-based GitOps features of the agent for
 Kubernetes.
 
-This feature is in Alpha and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/7938)
+This feature is an Experiment and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/7938)
 to track future work. Tell us about your use cases by leaving comments in the epic.
 
 NOTE:
-This feature is Alpha. In future releases, to accommodate new features, the configuration format might change without notice.
+This feature is an Experiment. In future releases, to accommodate new features, the configuration format might change without notice.
 
 ## GitOps workflow steps
 

@@ -22,14 +22,10 @@ describe('DropdownContentsColorView', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findColors = () => wrapper.findAllComponents(ColorItem);
   const findColorList = () => wrapper.findComponent(GlDropdownForm);
 
-  it('renders color list', async () => {
+  it('renders color list', () => {
     expect(findColorList().exists()).toBe(true);
     expect(findColors()).toHaveLength(ISSUABLE_COLORS.length);
   });

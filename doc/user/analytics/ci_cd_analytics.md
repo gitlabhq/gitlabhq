@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -39,7 +39,7 @@ To view CI/CD analytics:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
 
-The deployment frequency charts show information about the deployment
+The [deployment frequency](dora_metrics.md#deployment-frequency) charts show information about the deployment
 frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
 for its deployment information to appear on the graphs.
@@ -60,7 +60,7 @@ To view the deployment frequency chart:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250329) in GitLab 13.11.
 
-The lead time for changes chart shows information about how long it takes for
+The [lead time for changes](dora_metrics.md#lead-time-for-changes) chart shows information about how long it takes for
 merge requests to be deployed to a production environment. This chart is available for groups and projects.
 
 - Small lead times indicate fast, efficient deployment
@@ -82,7 +82,7 @@ To view the lead time for changes chart:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1
 
-The time to restore service chart shows information about the median time an incident was open in a production environment. This chart is available for groups and projects.
+The [time to restore service](dora_metrics.md#time-to-restore-service) chart shows information about the median time an incident was open in a production environment. This chart is available for groups and projects.
 
 Time to restore service is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
 
@@ -98,7 +98,7 @@ To view the time to restore service chart:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357072) in GitLab 15.2
 
-The change failure rate chart shows information about the percentage of deployments that cause an incident in a production environment. This chart is available for groups and projects.
+The [change failure rate](dora_metrics.md#change-failure-rate) chart shows information about the percentage of deployments that cause an incident in a production environment. This chart is available for groups and projects.
 
 Change failure rate is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
 

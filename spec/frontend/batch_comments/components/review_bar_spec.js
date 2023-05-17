@@ -20,11 +20,7 @@ describe('Batch comments review bar component', () => {
     document.body.className = '';
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  it('adds review-bar-visible class to body when review bar is mounted', async () => {
+  it('adds review-bar-visible class to body when review bar is mounted', () => {
     expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
 
     createComponent();
@@ -32,7 +28,7 @@ describe('Batch comments review bar component', () => {
     expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(true);
   });
 
-  it('removes review-bar-visible class to body when review bar is destroyed', async () => {
+  it('removes review-bar-visible class to body when review bar is destroyed', () => {
     createComponent();
 
     wrapper.destroy();

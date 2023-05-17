@@ -19,27 +19,31 @@ export function createResizeObserver() {
  * @param {Object} options
  * @param {string} options.targetId - id of element to scroll to
  * @param {string} options.container - Selector of element containing target
+ * @param {Element} options.component - Element containing target
  *
  * @return {ResizeObserver|null} - ResizeObserver instance if target looks like a note DOM ID
  */
 export function scrollToTargetOnResize({
   targetId = window.location.hash.slice(1),
   container = '#content-body',
+  containerId,
 } = {}) {
   if (!targetId) return null;
 
   const ro = createResizeObserver();
-  const containerEl = document.querySelector(container);
+  const containerEl =
+    document.querySelector(`#${containerId}`) || document.querySelector(container);
   let interactionListenersAdded = false;
 
-  function keepTargetAtTop() {
+  function keepTargetAtTop(evt) {
     const anchorEl = document.getElementById(targetId);
+    const scrollContainer = containerId ? evt.target : document.documentElement;
 
     if (!anchorEl) return;
 
     const anchorTop = anchorEl.getBoundingClientRect().top + window.scrollY;
     const top = anchorTop - contentTop();
-    document.documentElement.scrollTo({
+    scrollContainer.scrollTo({
       top,
     });
 

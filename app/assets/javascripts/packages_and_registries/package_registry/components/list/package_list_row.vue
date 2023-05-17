@@ -8,9 +8,10 @@ import {
   GlTooltipDirective,
   GlTruncate,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
+  DELETE_PACKAGE_TEXT,
   ERRORED_PACKAGE_TEXT,
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
@@ -21,7 +22,6 @@ import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/
 import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
-import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -38,7 +38,6 @@ export default {
     PackagePath,
     PublishMethod,
     ListItem,
-    PackageIconAndName,
     TimeagoTooltip,
   },
   directives: {
@@ -91,7 +90,7 @@ export default {
   i18n: {
     erroredPackageText: ERRORED_PACKAGE_TEXT,
     createdAt: __('Created %{timestamp}'),
-    deletePackage: s__('PackageRegistry|Delete package'),
+    deletePackage: DELETE_PACKAGE_TEXT,
     errorPublishing: ERROR_PUBLISHING,
     warning: WARNING_TEXT,
     moreActions: __('More actions'),
@@ -150,9 +149,7 @@ export default {
           </gl-sprintf>
         </div>
 
-        <package-icon-and-name>
-          {{ packageType }}
-        </package-icon-and-name>
+        <span class="gl-ml-2" data-testid="package-type">&middot; {{ packageType }}</span>
 
         <package-path
           v-if="isGroupPage"

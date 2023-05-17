@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -139,9 +139,8 @@ Prerequisites:
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
   1. On the top bar, select **Main menu > Groups** and find your group.
-  1. Confirm that **New project** is visible in the upper right
-     corner. Contact your GitLab
-     administrator if you require permission.
+  1. In the upper-right corner, confirm that **New project** is visible.
+     Contact your GitLab administrator if you require permission.
 
 To push your repository and create a project:
 
@@ -180,8 +179,6 @@ Your project's visibility is set to **Private** by default. To change project vi
 
 ## Related topics
 
-- For a list of words that you cannot use as project names, see
-  [reserved project and group names](../../user/reserved_names.md).
-- For a list of characters that you cannot use in project and group names, see
-  [limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
-- [Manage projects](working_with_projects.md).
+- [Reserved project and group names](../../user/reserved_names.md)
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
+- [Manage projects](working_with_projects.md)

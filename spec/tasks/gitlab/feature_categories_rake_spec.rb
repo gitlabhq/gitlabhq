@@ -21,7 +21,7 @@ RSpec.describe 'gitlab:feature_categories:index', :silence_stdout, feature_categ
         )
       ),
       'api_endpoints' => a_hash_including(
-        'authentication_and_authorization' => a_collection_including(
+        'system_access' => a_collection_including(
           klass: 'API::AccessRequests',
           action: '/groups/:id/access_requests',
           source_location: [

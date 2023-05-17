@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, product_group: :package_registry do
+  RSpec.describe 'Package', :requires_admin, :orchestrated, :packages, product_group: :package_registry do
     describe 'Terraform Module Registry' do
       include Runtime::Fixtures
 
@@ -25,6 +25,8 @@ module QA
       end
 
       before do
+        QA::Support::Helpers::ImportSource.enable('git')
+
         Flow::Login.sign_in
 
         imported_project

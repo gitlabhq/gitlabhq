@@ -10,10 +10,12 @@ RSpec.shared_examples 'a valid diff note with after commit callback' do
       it 'raises an error' do
         allow(diff_file_from_repository).to receive(:line_for_position).with(position).and_return(nil)
 
-        expect { subject.save! }.to raise_error(::DiffNote::NoteDiffFileCreationError,
-                                               "Failed to find diff line for: #{diff_file_from_repository.file_path}, "\
-                                               "old_line: #{position.old_line}"\
-                                               ", new_line: #{position.new_line}")
+        expect { subject.save! }.to raise_error(
+          ::DiffNote::NoteDiffFileCreationError,
+          "Failed to find diff line for: #{diff_file_from_repository.file_path}, "\
+          "old_line: #{position.old_line}"\
+          ", new_line: #{position.new_line}"
+        )
       end
     end
 

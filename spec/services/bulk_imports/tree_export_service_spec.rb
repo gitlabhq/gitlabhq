@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::TreeExportService do
+RSpec.describe BulkImports::TreeExportService, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:export_path) { Dir.mktmpdir }
 
@@ -51,6 +51,16 @@ RSpec.describe BulkImports::TreeExportService do
       it 'returns filename of the exported file' do
         expect(subject.exported_filename).to eq('self.json')
       end
+    end
+  end
+
+  describe '#export_batch' do
+    it 'serializes relation with specified ids' do
+      expect_next_instance_of(Gitlab::ImportExport::Json::StreamingSerializer) do |serializer|
+        expect(serializer).to receive(:serialize_relation).with(anything, batch_ids: [1, 2, 3])
+      end
+
+      subject.export_batch([1, 2, 3])
     end
   end
 end

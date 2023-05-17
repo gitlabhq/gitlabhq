@@ -1,5 +1,5 @@
 .suggest-colors {
-  margin-top: 5px;
+  padding-top: 3px;
 
   a {
     border-radius: 4px;
@@ -9,20 +9,47 @@
     margin-right: 10px;
     margin-bottom: 10px;
     text-decoration: none;
+
+    &:focus,
+    &:focus:active {
+      position: relative;
+      z-index: 1;
+      @include gl-focus;
+    }
   }
 
   &.suggest-colors-dropdown {
     margin-top: 10px;
     margin-bottom: 10px;
-    border-radius: $border-radius-base;
-    overflow: hidden;
 
     a {
       border-radius: 0;
       width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
+
+      &:first-of-type {
+        border-top-left-radius: $border-radius-base;
+      }
+
+      &:nth-of-type(7) {
+        border-top-right-radius: $border-radius-base;
+      }
+
+      &:nth-last-child(7) {
+        border-bottom-left-radius: $border-radius-base;
+      }
+
+      &:last-of-type {
+        border-bottom-right-radius: $border-radius-base;
+      }
     }
+  }
+}
+
+.labels-select-contents-create {
+  .dropdown-input {
+    margin-bottom: 4px;
   }
 }
 
@@ -44,21 +71,7 @@
 
 .dropdown-label-color-input {
   position: relative;
-  margin-bottom: 10px;
-
-  &.is-active {
-    padding-left: 32px;
-  }
-}
-
-.dropdown-label-color-preview {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 32px;
-  height: 32px;
-  border-top-left-radius: $border-radius-base;
-  border-bottom-left-radius: $border-radius-base;
+  margin-bottom: 8px;
 }
 
 .color-label {
@@ -72,13 +85,19 @@
   padding: 0;
   margin-bottom: 0;
 
-  > li:not(.empty-message):not(.no-border) {
-    background-color: $white;
+  > li:not(.empty-message):not(.no-border) .label-content {
     display: flex;
     justify-content: space-between;
 
     .prioritized-labels:not(.is-not-draggable) & {
       cursor: grab;
+      border: 1px solid transparent;
+
+      &:hover,
+      &:focus-within {
+        background-color: $white;
+        border-color: $gray-50;
+      }
 
       &:active {
         cursor: grabbing;
@@ -92,6 +111,10 @@
   }
 }
 
+.label-list-item:not(:last-of-type) {
+  border-bottom: 1px solid $border-color;
+}
+
 .prioritized-labels .add-priority,
 .other-labels .remove-priority {
   display: none;
@@ -102,6 +125,7 @@
 }
 
 .label-actions-list {
+  font-size: 0;
   list-style: none;
   flex-shrink: 0;
   text-align: right;
@@ -119,7 +143,7 @@
   font-size: $label-font-size;
 }
 
-.label-list-item {
+.label-content {
   .label-name {
     width: 200px;
 
@@ -144,7 +168,7 @@
 
 @media (max-width: map-get($grid-breakpoints, md)-1) {
   .manage-labels-list {
-    > li:not(.empty-message):not(.no-border) {
+    > li:not(.empty-message):not(.no-border) .label-content {
       flex-wrap: wrap;
     }
 

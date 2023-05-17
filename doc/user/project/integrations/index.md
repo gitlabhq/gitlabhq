@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -72,13 +72,14 @@ You can configure the following integrations.
 | [Pipelines emails](pipeline_status_emails.md)                               | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                                                 | Monitor application metrics.                                          | **{dotted-circle}** No |
-| [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                           | **{dotted-circle}** No |
+| [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                         | **{dotted-circle}** No |
 | Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                                       | Use Redmine as the issue tracker.                                     | **{dotted-circle}** No |
-| [Shimo Workspace](shimo.md)                                                 | Use Shimo instead of the GitLab Wiki.                    | **{dotted-circle}** No |
+| [Shimo Workspace](shimo.md)                                                 | Use Shimo instead of the GitLab Wiki.                                 | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use Slack's official GitLab application.                              | **{dotted-circle}** No |
 | [Slack notifications](slack.md)                                             | Send notifications about project events to Slack.                     | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)                             | Enable slash commands in a workspace.                                 | **{dotted-circle}** No |
+| [Squash TM](squash_tm.md)                                                   | Update Squash TM requirements when GitLab issues are modified.        | **{check-circle}** Yes |
 | [Unify Circuit](unify_circuit.md)                                           | Send notifications about project events to Unify Circuit.             | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                                               | Receive events notifications.                                         | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                                     | Use YouTrack as the issue tracker.                                    | **{dotted-circle}** No |
@@ -102,9 +103,16 @@ supported by `push_hooks` and `tag_push_hooks` events aren't executed.
 You can change the number of supported branches or tags by changing the
 [`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Troubleshooting integrations
+## Contribute to integrations
 
-Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [Troubleshooting webhooks](webhooks.md#troubleshoot-webhooks).
+If you're interested in developing a new native integration for GitLab, see:
+
+- [Integrations development guidelines](../../../development/integrations/index.md)
+- [GitLab Developer Portal](https://developer.gitlab.com)
+
+## Troubleshooting
+
+Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [webhook troubleshooting](webhooks.md#troubleshooting).
 
 ### `Test Failed. Save Anyway` error
 
@@ -114,7 +122,3 @@ push data to build the test payload, and there are no push events in the project
 
 To resolve this error, initialize the repository by pushing a test file to the project
 and set up the integration again.
-
-## Contribute to integrations
-
-To add a new integration, see the [Integrations development guide](../../../development/integrations/index.md).

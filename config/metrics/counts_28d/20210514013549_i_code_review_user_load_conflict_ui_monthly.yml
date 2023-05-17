@@ -5,7 +5,6 @@ name: load_conflict_ui
 description: Count of unique users per week who load the conflict resolution page
 product_stage: create
 product_group: code_review
-product_category: code_review
 product_section: 'TBD'
 value_type: number
 status: active

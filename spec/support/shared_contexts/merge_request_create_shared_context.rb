@@ -15,12 +15,13 @@ RSpec.shared_context 'merge request create context' do
     target_project.add_maintainer(user2)
 
     sign_in(user)
-    visit project_new_merge_request_path(target_project,
-                                         merge_request: {
-                                           source_project_id: source_project.id,
-                                           target_project_id: target_project.id,
-                                           source_branch: 'fix',
-                                           target_branch: 'master'
-                                         })
+    visit project_new_merge_request_path(
+      target_project,
+      merge_request: {
+        source_project_id: source_project.id,
+        target_project_id: target_project.id,
+        source_branch: 'fix',
+        target_branch: 'master'
+      })
   end
 end

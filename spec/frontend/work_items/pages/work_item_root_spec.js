@@ -44,10 +44,6 @@ describe('Work items root component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders WorkItemDetail', () => {
     createComponent();
 
@@ -79,7 +75,7 @@ describe('Work items root component', () => {
     expect(visitUrl).toHaveBeenCalledWith(issuesListPath);
   });
 
-  it('shows alert if delete fails', async () => {
+  it('shows an alert if delete fails', async () => {
     const deleteWorkItemHandler = jest.fn().mockRejectedValue(deleteWorkItemFailureResponse);
 
     createComponent({

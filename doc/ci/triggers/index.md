@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: tutorial
 ---
@@ -187,7 +187,12 @@ In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
 
 ## Troubleshooting
 
-### `404 not found` when triggering a pipeline
+### `403 Forbidden` when you trigger a pipeline with a webhook
+
+When you trigger a pipeline with a webhook, the API might return a `{"message":"403 Forbidden"}` response.
+To avoid trigger loops, do not use [pipeline events](../../user/project/integrations/webhook_events.md#pipeline-events) to trigger pipelines.
+
+### `404 Not Found` when triggering a pipeline
 
 A response of `{"message":"404 Not Found"}` when triggering a pipeline might be caused
 by using a [personal access token](../../user/profile/personal_access_tokens.md)
@@ -201,3 +206,13 @@ doesn't exist, GitLab returns `The requested URL returned error: 400`.
 
 For example, you might accidentally use `main` for the branch name in a project that
 uses a different branch name for its default branch.
+
+Another possible cause for this error is a rule that prevents creation of the pipelines when `CI_PIPELINE_SOURCE` value is `trigger`, such as:
+
+```yaml
+rules:
+  - if: $CI_PIPELINE_SOURCE == "trigger"
+    when: never
+```
+
+Review your [`workflow:rules`](../yaml/index.md#workflowrules) to ensure a pipeline can be created when `CI_PIPELINE_SOURCE` value is `trigger`.

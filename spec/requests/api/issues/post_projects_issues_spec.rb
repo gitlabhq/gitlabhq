@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Issues, feature_category: :team_planning do
+RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
@@ -123,7 +123,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     context 'an internal ID is provided' do
       context 'by an admin' do
         it 'sets the internal ID on the new issue' do
-          post api("/projects/#{project.id}/issues", admin),
+          post api("/projects/#{project.id}/issues", admin, admin_mode: true),
             params: { title: 'new issue', iid: 9001 }
 
           expect(response).to have_gitlab_http_status(:created)
@@ -167,7 +167,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       context 'when an issue with the same IID exists on database' do
         it 'returns 409' do
-          post api("/projects/#{project.id}/issues", admin),
+          post api("/projects/#{project.id}/issues", admin, admin_mode: true),
             params: { title: 'new issue', iid: issue.iid }
 
           expect(response).to have_gitlab_http_status(:conflict)
@@ -337,7 +337,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       context 'by an admin' do
         it 'sets the creation time on the new issue' do
-          post api("/projects/#{project.id}/issues", admin), params: params
+          post api("/projects/#{project.id}/issues", admin, admin_mode: true), params: params
 
           expect(response).to have_gitlab_http_status(:created)
           expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -475,9 +475,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   describe '/projects/:id/issues/:issue_iid/move' do
     let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace) }
     let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace) }
+    let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/move" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { to_project_id: target_project2.id } }
+      let(:failed_status_code) { 400 }
+    end
 
     it 'moves an issue' do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+      post api(path, user),
         params: { to_project_id: target_project.id }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -486,7 +492,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when source and target projects are the same' do
       it 'returns 400 when trying to move an issue' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+        post api(path, user),
           params: { to_project_id: project.id }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -496,7 +502,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when the user does not have the permission to move issues' do
       it 'returns 400 when trying to move an issue' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+        post api(path, user),
           params: { to_project_id: target_project2.id }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -505,7 +511,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'moves the issue to another namespace if I am admin' do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/move", admin),
+      post api(path, admin, admin_mode: true),
         params: { to_project_id: target_project2.id }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -544,7 +550,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+        post api(path, user),
           params: { to_project_id: 0 }
 
         expect(response).to have_gitlab_http_status(:not_found)

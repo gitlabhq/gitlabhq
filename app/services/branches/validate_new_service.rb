@@ -29,3 +29,5 @@ module Branches
     end
   end
 end
+
+Branches::ValidateNewService.prepend_mod

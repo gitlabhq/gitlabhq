@@ -99,7 +99,7 @@ To change the worker timeout to 600 seconds:
 ## Disable Puma clustered mode in memory-constrained environments
 
 WARNING:
-This is an experimental [Alpha feature](../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice. The feature
+This feature is an [Experiment](../../policy/alpha-beta-support.md#experiment) and subject to change without notice. The feature
 is not ready for production use. If you want to use this feature, you should test
 outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
@@ -182,7 +182,7 @@ steps below:
 
    NOTE:
    If using a self-signed certificate from a custom Certificate Authority (CA),
-   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates)
    to make them trusted by other GitLab components.
 
 1. Edit `/etc/gitlab/gitlab.rb`:

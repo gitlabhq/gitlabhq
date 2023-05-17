@@ -13,7 +13,11 @@ module Projects
       before_action :define_variables
 
       before_action do
-        push_frontend_feature_flag(:ci_inbound_job_token_scope, @project)
+        push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:ci_limit_environment_scope, @project)
+        push_frontend_feature_flag(:create_runner_workflow_for_namespace, @project.namespace)
+        push_frontend_feature_flag(:frozen_outbound_job_token_scopes, @project)
+        push_frontend_feature_flag(:frozen_outbound_job_token_scopes_override, @project)
       end
 
       helper_method :highlight_badge
@@ -131,7 +135,7 @@ module Projects
         @shared_runners_count = active_shared_runners.count
         @shared_runners = active_shared_runners.page(params[:shared_runners_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
 
-        parent_group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
+        parent_group_runners = ::Ci::Runner.belonging_to_parent_groups_of_project(@project.id)
         @group_runners_count = parent_group_runners.count
         @group_runners = parent_group_runners.page(params[:group_runners_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
       end

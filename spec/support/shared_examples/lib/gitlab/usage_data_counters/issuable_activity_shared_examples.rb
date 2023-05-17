@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events for given event params' do
   before do
     stub_application_setting(usage_ping_enabled: true)
   end
 
-  def count_unique(date_from: 1.minute.ago, date_to: 1.minute.from_now)
+  def count_unique(date_from: Date.today.beginning_of_week, date_to: 1.week.from_now)
     Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: action, start_date: date_from, end_date: date_to)
   end
 
@@ -27,35 +27,23 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
 
     expect_snowplow_event(**{ category: category, action: event_action, user: user1 }.merge(event_params))
   end
-
-  context 'with route_hll_to_snowplow_phase2 disabled' do
-    before do
-      stub_feature_flags(route_hll_to_snowplow_phase2: false)
-    end
-
-    it 'does not emit snowplow event' do
-      track_action({ author: user1 }.merge(track_params))
-
-      expect_no_snowplow_event
-    end
-  end
 end
 
-RSpec.shared_examples 'daily tracked issuable snowplow and service ping events with project' do
-  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events with project' do
+  it_behaves_like 'tracked issuable snowplow and service ping events for given event params' do
     let(:context) do
       Gitlab::Tracking::ServicePingContext
         .new(data_source: :redis_hll, event: event_property)
         .to_h
     end
 
-    let(:track_params) { { project: project } }
-    let(:event_params) { track_params.merge(label: event_label, property: event_property, namespace: project.namespace, context: [context]) }
+    let(:track_params) { original_params || { project: project } }
+    let(:event_params) { { project: project }.merge(label: event_label, property: event_property, namespace: project.namespace, context: [context]) }
   end
 end
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events with namespace' do
-  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events with namespace' do
+  it_behaves_like 'tracked issuable snowplow and service ping events for given event params' do
     let(:context) do
       Gitlab::Tracking::ServicePingContext
         .new(data_source: :redis_hll, event: event_property)

@@ -33,8 +33,10 @@ export default {
 </script>
 
 <template>
-  <div class="disabled-comment text-center">
-    <span class="issuable-note-warning inline">
+  <div class="disabled-comments gl-mt-3">
+    <span
+      class="issuable-note-warning gl-display-inline-block gl-w-full gl-px-5 gl-py-4 gl-rounded-base"
+    >
       <gl-icon :size="16" name="lock" class="icon" />
       <span v-if="isProjectArchived">
         {{ projectArchivedWarning }}

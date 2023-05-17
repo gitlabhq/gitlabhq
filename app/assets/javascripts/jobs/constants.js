@@ -19,7 +19,7 @@ export const JOB_SIDEBAR_COPY = {
 };
 
 export const JOB_GRAPHQL_ERRORS = {
-  retryMutationErrorText: __('There was an error running the job. Please try again.'),
+  jobMutationErrorText: __('There was an error running the job. Please try again.'),
   jobQueryErrorText: __('There was an error fetching the job.'),
 };
 

@@ -45,7 +45,9 @@ export default {
       data-testid="artifacts-remove-timeline"
     >
       <span v-if="isExpired">{{ s__('Job|The artifacts were removed') }}</span>
-      <span v-if="willExpire">{{ s__('Job|The artifacts will be removed') }}</span>
+      <span v-if="willExpire" data-qa-selector="artifacts_unlocked_message_content">{{
+        s__('Job|The artifacts will be removed')
+      }}</span>
       <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
       <gl-link
         :href="helpUrl"
@@ -53,11 +55,11 @@ export default {
         rel="noopener noreferrer nofollow"
         data-testid="artifact-expired-help-link"
       >
-        <gl-icon name="question" />
+        <gl-icon name="question-o" />
       </gl-link>
     </p>
     <p v-else-if="isLocked" class="build-detail-row">
-      <span data-testid="job-locked-message">{{
+      <span data-testid="job-locked-message" data-qa-selector="artifacts_locked_message_content">{{
         s__(
           'Job|These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available.',
         )

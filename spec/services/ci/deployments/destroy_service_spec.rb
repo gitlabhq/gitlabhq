@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Deployments::DestroyService do
+RSpec.describe ::Ci::Deployments::DestroyService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:environment) { create(:environment, project: project) }

@@ -4,7 +4,6 @@ module Sidebars
   class Panel
     extend ::Gitlab::Utils::Override
     include ::Sidebars::Concerns::PositionableList
-    include Gitlab::Experiment::Dsl
 
     attr_reader :context, :scope_menu, :hidden_menu
 
@@ -59,6 +58,16 @@ module Sidebars
 
     def renderable_menus
       @renderable_menus ||= @menus.select(&:render?)
+    end
+
+    # Serializes every renderable menu and returns a flattened result
+    def super_sidebar_menu_items
+      @super_sidebar_menu_items ||= renderable_menus
+        .flat_map(&:serialize_for_super_sidebar)
+    end
+
+    def super_sidebar_context_header
+      raise NotImplementedError
     end
 
     def container

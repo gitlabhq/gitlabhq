@@ -46,7 +46,6 @@ describe('system note component', () => {
   });
 
   afterEach(() => {
-    vm.destroy();
     mock.restore();
   });
 
@@ -65,7 +64,7 @@ describe('system note component', () => {
   it('should render svg icon', () => {
     createComponent(props);
 
-    expect(vm.find('.timeline-icon svg').exists()).toBe(true);
+    expect(vm.find('[data-testid="timeline-icon"]').exists()).toBe(true);
   });
 
   // Redcarpet Markdown renderer wraps text in `<p>` tags

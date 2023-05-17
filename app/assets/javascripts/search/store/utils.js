@@ -1,12 +1,16 @@
+import { isEqual, orderBy } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,
   SIDEBAR_PARAMS,
   NUMBER_FORMATING_OPTIONS,
 } from './constants';
+
+const LANGUAGE_AGGREGATION_NAME = languageFilterData.filterParam;
 
 function extractKeys(object, keyList) {
   return Object.fromEntries(keyList.map((key) => [key, object[key]]));
@@ -94,6 +98,10 @@ export const isSidebarDirty = (currentQuery, urlQuery) => {
     const userAddedParam = !urlQuery[param] && currentQuery[param];
     const userChangedExistingParam = urlQuery[param] && urlQuery[param] !== currentQuery[param];
 
+    if (Array.isArray(currentQuery[param]) || Array.isArray(urlQuery[param])) {
+      return !isEqual(currentQuery[param], urlQuery[param]);
+    }
+
     return userAddedParam || userChangedExistingParam;
   });
 };
@@ -111,4 +119,32 @@ export const getAggregationsUrl = () => {
   const currentUrl = new URL(window.location.href);
   currentUrl.pathname = joinPaths('/search', 'aggregations');
   return currentUrl.toString();
+};
+
+const sortLanguages = (state, entries) => {
+  const queriedLanguages = state.query?.[LANGUAGE_AGGREGATION_NAME] || [];
+
+  if (!Array.isArray(queriedLanguages) || !queriedLanguages.length) {
+    return entries;
+  }
+
+  const queriedLanguagesSet = new Set(queriedLanguages);
+
+  return orderBy(entries, [({ key }) => queriedLanguagesSet.has(key), 'count'], ['desc', 'desc']);
+};
+
+export const prepareSearchAggregations = (state, aggregationData) =>
+  aggregationData.map((item) => {
+    if (item?.name === LANGUAGE_AGGREGATION_NAME) {
+      return {
+        ...item,
+        buckets: sortLanguages(state, item.buckets),
+      };
+    }
+
+    return item;
+  });
+
+export const addCountOverLimit = (count = '') => {
+  return count.includes('+') ? '+' : '';
 };

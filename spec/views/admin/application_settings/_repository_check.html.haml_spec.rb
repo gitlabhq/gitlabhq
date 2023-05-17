@@ -46,12 +46,13 @@ RSpec.describe 'admin/application_settings/_repository_check.html.haml', feature
 
   describe 'inactive project deletion' do
     let_it_be(:application_setting) do
-      build(:application_setting,
-            delete_inactive_projects: true,
-            inactive_projects_delete_after_months: 2,
-            inactive_projects_min_size_mb: 250,
-            inactive_projects_send_warning_email_after_months: 1
-           )
+      build(
+        :application_setting,
+        delete_inactive_projects: true,
+        inactive_projects_delete_after_months: 2,
+        inactive_projects_min_size_mb: 250,
+        inactive_projects_send_warning_email_after_months: 1
+      )
     end
 
     it 'has the setting subsection' do

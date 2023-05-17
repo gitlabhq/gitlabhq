@@ -67,7 +67,7 @@ export default {
 </script>
 <template>
   <div
-    class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"
+    class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-lg gl-border-gray-100 gl-bg-white gl-overflow-hidden"
   >
     <div
       v-if="withAlertContainer"
@@ -76,7 +76,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarning"
-      class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-base gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
+      class="gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-base gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
       :noteable-type="noteableType"

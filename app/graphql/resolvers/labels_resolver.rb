@@ -17,6 +17,10 @@ module Resolvers
              description: 'Include labels from ancestor groups.',
              default_value: false
 
+    before_connection_authorization do |nodes, current_user|
+      Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
+    end
+
     def resolve(**args)
       return Label.none if parent.nil?
 
@@ -24,6 +28,11 @@ module Resolvers
 
       # LabelsFinder uses `search` param, so we transform `search_term` into `search`
       args[:search] = args.delete(:search_term)
+
+      # Optimization:
+      # Rely on the LabelsPreloader rather than the default parent record preloading in the
+      # finder because LabelsPreloader preloads more associations which are required for the
+      # permission check.
       LabelsFinder.new(current_user, parent_param.merge(args)).execute
     end
 

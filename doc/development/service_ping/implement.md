@@ -1,6 +1,6 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -19,7 +19,7 @@ To implement a new metric in Service Ping, follow these steps:
 1. [Name and place the metric](metrics_dictionary.md#metric-key_path)
 1. [Test counters manually using your Rails console](#test-counters-manually-using-your-rails-console)
 1. [Generate the SQL query](#generate-the-sql-query)
-1. [Optimize queries with `#database-lab`](#optimize-queries-with-database-lab)
+1. [Optimize queries with Database Lab](#optimize-queries-with-database-lab)
 1. [Add the metric definition to the Metrics Dictionary](#add-the-metric-definition)
 1. [Add the metric to the Versions Application](#add-the-metric-to-the-versions-application)
 1. [Create a merge request](#create-a-merge-request)
@@ -174,7 +174,7 @@ Errors return a value of `-1`.
 
 WARNING:
 This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
-which uses the [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) algorithm.
+which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
 As the HyperLogLog algorithm is probabilistic, the **results always include error**.
 The highest encountered error rate is 4.9%.
 
@@ -330,48 +330,36 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
    ```yaml
    - name: users_creating_epics
-     category: epics_usage
-     redis_slot: users
      aggregation: weekly
-     feature_flag: track_epics_activity
    ```
 
    Keys:
 
    - `name`: unique event name.
 
-     Name format for Redis HLL events `<name>_<redis_slot>`.
+     Name format for Redis HLL events `{hll_counters}_<name>`
 
      [See Metric name](metrics_dictionary.md#metric-name) for a complete guide on metric naming suggestion.
 
-     Consider including in the event's name the Redis slot to be able to count totals for a specific category.
-
      Example names: `users_creating_epics`, `users_triggering_security_scans`.
 
-   - `category`: event category. Used for getting total counts for events in a category, for easier
-     access to a group of events.
-   - `redis_slot`: optional Redis slot. Default value: event name. Only event data that is stored in the same slot
-     can be aggregated. Ensure keys are in the same slot. For example:
-     `users_creating_epics` with `redis_slot: 'users'` builds Redis key
-     `{users}_creating_epics-2020-34`. If `redis_slot` is not defined the Redis key will
-     be `{users_creating_epics}-2020-34`.
-     Recommended slots to use are: `users`, `projects`. This is the value we count.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: if no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
 
 1. Use one of the following methods to track the event:
 
-   - In the controller using the `RedisTracking` module and the following format:
+   - In the controller using the `ProductAnalyticsTracking` module and the following format:
 
      ```ruby
-     track_event(*controller_actions, name:, conditions: nil, destinations: [:redis_hll], &block)
+     track_event(*controller_actions, name:, action:, label:, conditions: nil, destinations: [:redis_hll], &block)
      ```
 
      Arguments:
 
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
+     - `action`: required if destination is `:snowplow. Action name for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
+     - `label`: required if destination is `:snowplow. Label for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
      - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
      - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: `:redis_hll`.
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
@@ -381,10 +369,14 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
      ```ruby
      # controller
      class ProjectsController < Projects::ApplicationController
-       include RedisTracking
+       include ProductAnalyticsTracking
 
        skip_before_action :authenticate_user!, only: :show
-       track_event :index, :show, name: 'users_visiting_projects'
+       track_event :index, :show,
+         name: 'users_visiting_projects',
+         action: 'user_perform_visit',
+         label: 'redis_hll_counters.users_visiting_project_monthly',
+         destinations: %i[redis_hll snowplow]
 
        def index
          render html: 'index'
@@ -497,24 +489,12 @@ We have the following recommendations for [adding new events](#add-new-events):
 
 - Event aggregation: weekly.
 - When adding new metrics, use a [feature flag](../../operations/feature_flags.md) to control the impact.
-- For feature flags triggered by another service, set `default_enabled: false`,
-  - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
+It's recommended to disable the new feature flag by default (set `default_enabled: false`).
+- Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
 
 ##### Enable or disable Redis HLL tracking
 
-Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
-
-For a full list of events and corresponding feature flags, see the [`known_events/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
-
-To enable or disable tracking for specific event in <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
-[enable or disable the corresponding feature](../feature_flags/index.md).
-
-```shell
-/chatops run feature set <feature_name> true
-/chatops run feature set <feature_name> false
-```
-
-We can also disable tracking completely by using the global flag:
+We can disable tracking completely by using the global flag:
 
 ```shell
 /chatops run feature set redis_hll_tracking true
@@ -528,16 +508,6 @@ For each event we add metrics for the weekly and monthly time frames, and totals
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#add-new-events) events and data for the last complete week for weekly [aggregation](#add-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#add-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#add-new-events) events.
-
-Redis HLL implementation calculates total metrics when both of these conditions are met:
-
-- The category is manually included in [CATEGORIES_FOR_TOTALS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/hll_redis_counter.rb#L21).
-- There is more than one metric for the same category, aggregation, and Redis slot.
-
-We add total unique counts for the weekly and monthly time frames where applicable:
-
-- `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
-- `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
 
 Example of `redis_hll_counters` data:
 
@@ -563,6 +533,7 @@ Example of `redis_hll_counters` data:
      "ide_edit_total_unique_counts_weekly"=>0,
      "ide_edit_total_unique_counts_monthly"=>0}
  }
+}
 ```
 
 Example:
@@ -674,10 +645,9 @@ pry(main)> Gitlab::UsageData.count(User.active)
    (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
 ```
 
-## Optimize queries with `#database-lab`
+## Optimize queries with Database Lab
 
-`#database-lab` is a Slack channel that uses a production-sized environment to test your queries.
-Paste the SQL query into `#database-lab` to see how the query performs at scale.
+[Database Lab](../database/database_lab.md) is a service that uses a production clone to test queries.
 
 - GitLab.com's production database has a 15 second timeout.
 - Any single query must stay below the [1 second execution time](../database/query_performance.md#timing-guidelines-for-queries) with cold caches.
@@ -693,7 +663,7 @@ to a merge request description:
 - Query generated for the index and time.
 - Migration output for up and down execution.
 
-We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/). For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
+For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
 
 ### Optimization recommendations and examples
 
@@ -720,8 +690,8 @@ Create a merge request for the new Service Ping metric, and do the following:
 
 - Add the `feature` label to the merge request. A metric is a user-facing change and is part of expanding the Service Ping feature.
 - Add a changelog entry that complies with the [changelog entries guide](../changelog.md).
-- Ask for a Product Intelligence review.
-  On GitLab.com, we have DangerBot set up to monitor Product Intelligence related files and recommend a [Product Intelligence review](review_guidelines.md).
+- Ask for an Analytics Instrumentation review.
+  On GitLab.com, we have DangerBot set up to monitor Analytics Instrumentation related files and recommend a [Analytics Instrumentation review](review_guidelines.md).
 
 ## Verify your metric
 
@@ -751,7 +721,7 @@ To set up Service Ping locally, you must:
    Make sure you run `docker-compose up` to start a PostgreSQL and Redis instance.
 1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
    1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) locally and modify `STAGING_BASE_URL`.
-   1. Set it to the local Versions Application URL: `http://localhost:3000/usage_data`.
+   1. Set it to the local Versions Application URL: `http://localhost:3000`.
 
 ### Test local setup
 
@@ -846,7 +816,6 @@ you must fulfill the following requirements:
 
 1. All events listed at `events` attribute must come from
    [`known_events/*.yml`](#known-events-are-added-automatically-in-service-data-payload) files.
-1. All events listed at `events` attribute must have the same `redis_slot` attribute.
 1. All events listed at `events` attribute must have the same `aggregation` attribute.
 1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.
 

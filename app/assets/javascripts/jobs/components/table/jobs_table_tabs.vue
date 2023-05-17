@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 
 export default {
@@ -9,10 +10,15 @@ export default {
     GlTab,
     GlTabs,
     GlLoadingIcon,
+    CancelJobs,
   },
   inject: {
     jobStatuses: {
       default: {},
+    },
+    url: {
+      type: String,
+      default: '',
     },
   },
   props: {
@@ -23,6 +29,11 @@ export default {
     loading: {
       type: Boolean,
       required: true,
+    },
+    showCancelAllJobsButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -51,23 +62,27 @@ export default {
 </script>
 
 <template>
-  <gl-tabs content-class="gl-py-0">
-    <gl-tab
-      v-for="tab in tabs"
-      :key="tab.text"
-      :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-        'data-testid': tab.testId,
-      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-      @click="$emit('fetchJobsByStatus', tab.scope)"
-    >
-      <template #title>
-        <span>{{ tab.text }}</span>
-        <gl-loading-icon v-if="showLoadingIcon && tab.showBadge" class="gl-ml-2" />
+  <div class="gl-display-flex align-items-lg-center">
+    <gl-tabs content-class="gl-py-0">
+      <gl-tab
+        v-for="tab in tabs"
+        :key="tab.text"
+        :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          'data-testid': tab.testId,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        @click="$emit('fetchJobsByStatus', tab.scope)"
+      >
+        <template #title>
+          <span>{{ tab.text }}</span>
+          <gl-loading-icon v-if="showLoadingIcon && tab.showBadge" class="gl-ml-2" />
 
-        <gl-badge v-else-if="tab.showBadge" size="sm" class="gl-tab-counter-badge">
-          {{ tab.count }}
-        </gl-badge>
-      </template>
-    </gl-tab>
-  </gl-tabs>
+          <gl-badge v-else-if="tab.showBadge" size="sm" class="gl-tab-counter-badge">
+            {{ tab.count }}
+          </gl-badge>
+        </template>
+      </gl-tab>
+    </gl-tabs>
+    <div class="gl-flex-grow-1"></div>
+    <cancel-jobs v-if="showCancelAllJobsButton" :url="url" />
+  </div>
 </template>

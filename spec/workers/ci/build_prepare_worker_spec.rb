@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildPrepareWorker do
+RSpec.describe Ci::BuildPrepareWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform(build_id) }
 
   context 'build exists' do

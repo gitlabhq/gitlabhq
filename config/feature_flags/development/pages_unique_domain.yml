@@ -1,0 +1,8 @@
+---
+name: pages_unique_domain
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109011
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388151
+milestone: '15.9'
+type: development
+group: group::editor
+default_enabled: true

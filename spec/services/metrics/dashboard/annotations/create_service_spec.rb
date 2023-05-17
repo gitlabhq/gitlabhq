@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::Annotations::CreateService do
+RSpec.describe Metrics::Dashboard::Annotations::CreateService, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
 
   let(:description) { 'test annotation' }

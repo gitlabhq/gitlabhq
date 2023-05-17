@@ -15,6 +15,10 @@ module Backup
       repositories_paths: 'REPOSITORIES_PATHS'
     }.freeze
 
+    YAML_PERMITTED_CLASSES = [
+      ActiveSupport::TimeWithZone, ActiveSupport::TimeZone, Symbol, Time
+    ].freeze
+
     TaskDefinition = Struct.new(
       :enabled, # `true` if the task can be used. Treated as `true` when not specified.
       :human_name, # Name of the task used for logging.
@@ -247,7 +251,9 @@ module Backup
     end
 
     def read_backup_information
-      @backup_information ||= YAML.load_file(File.join(backup_path, MANIFEST_NAME))
+      @backup_information ||= YAML.safe_load_file(
+        File.join(backup_path, MANIFEST_NAME),
+        permitted_classes: YAML_PERMITTED_CLASSES)
     end
 
     def write_backup_information
@@ -416,6 +422,12 @@ module Backup
       end
     end
 
+    def puts_available_timestamps
+      available_timestamps.each do |available_timestamp|
+        puts_time " " + available_timestamp
+      end
+    end
+
     def unpack(source_backup_id)
       if source_backup_id.blank? && non_tarred_backup?
         puts_time "Non tarred backup found in #{backup_path}, using that"
@@ -431,7 +443,7 @@ module Backup
         elsif backup_file_list.many? && source_backup_id.nil?
           puts_time 'Found more than one backup:'
           # print list of available backups
-          puts_time " " + available_timestamps.join("\n ")
+          puts_available_timestamps
 
           if incremental?
             puts_time 'Please specify which one you want to create an incremental backup for:'

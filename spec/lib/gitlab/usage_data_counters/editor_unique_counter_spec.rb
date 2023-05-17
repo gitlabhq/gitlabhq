@@ -18,11 +18,25 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
       aggregate_failures do
         expect(track_action(author: user1, project: project)).to be_truthy
         expect(track_action(author: user2, project: project)).to be_truthy
-        expect(track_action(author: user3, time: time - 3.days, project: project)).to be_truthy
+        expect(track_action(author: user3, time: time.end_of_week - 3.days, project: project)).to be_truthy
 
-        expect(count_unique(date_from: time, date_to: Date.today)).to eq(2)
-        expect(count_unique(date_from: time - 5.days, date_to: Date.tomorrow)).to eq(3)
+        expect(count_unique(date_from: time.beginning_of_week, date_to: 1.week.from_now)).to eq(3)
       end
+    end
+
+    it 'track snowplow event' do
+      track_action(author: user1, project: project)
+
+      expect_snowplow_event(
+        category: described_class.name,
+        action: 'ide_edit',
+        label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit',
+        namespace: project.namespace,
+        property: event_name,
+        project: project,
+        user: user1,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_h]
+      )
     end
 
     it 'does not track edit actions if author is not present' do
@@ -31,6 +45,8 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for web IDE edit actions' do
+    let(:event_name) { described_class::EDIT_BY_WEB_IDE }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_web_ide_edit_action(**params)
@@ -43,6 +59,8 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for SFE edit actions' do
+    let(:event_name) { described_class::EDIT_BY_SFE }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_sfe_edit_action(**params)
@@ -55,6 +73,8 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for snippet editor edit actions' do
+    let(:event_name) { described_class::EDIT_BY_SNIPPET_EDITOR }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_snippet_editor_edit_action(**params)

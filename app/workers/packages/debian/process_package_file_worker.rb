@@ -26,7 +26,8 @@ module Packages
         ::Packages::Debian::ProcessPackageFileService.new(package_file, distribution_name, component_name).execute
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, package_file_id: @package_file_id,
-                                               distribution_name: @distribution_name, component_name: @component_name)
+          distribution_name: @distribution_name, component_name: @component_name)
+        package_file.update_column(:status, :error)
         package_file.package.update_column(:status, :error)
       end
 

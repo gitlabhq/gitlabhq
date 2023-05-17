@@ -98,7 +98,7 @@ class Projects::BranchesController < Projects::ApplicationController
         if success
           render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
         else
-          render json: result[:messsage], status: :unprocessable_entity
+          render json: result[:message], status: :unprocessable_entity
         end
       end
     end

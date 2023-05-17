@@ -1,0 +1,12 @@
+Description:
+    Generates files required for batched background migration.
+
+Example:
+    rails g batched_background_migration my_batched_migration --table_name=users --column_name=id --feature_category=gitaly
+
+    This will create:
+        db/post_migrate/20230213215230_queue_my_batched_migration.rb
+        spec/migrations/20230213215230_queue_my_batched_migration_spec.rb
+        lib/gitlab/background_migration/my_batched_migration.rb
+        spec/lib/gitlab/background_migration/my_batched_migration_spec.rb
+        db/docs/batched_background_migrations/my_batched_migration.yml

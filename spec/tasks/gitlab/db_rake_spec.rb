@@ -16,7 +16,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   before do
     # Stub out db tasks
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
-    allow(Rake::Task['db:structure:load']).to receive(:invoke).and_return(true)
+    allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
   end
 
@@ -25,7 +25,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:main_model) { ApplicationRecord }
 
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_database_exists(:ci)
       end
 
       it 'marks the migration complete on the given database' do
@@ -43,7 +43,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
@@ -130,7 +130,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:main_config) { double(:config, name: 'main') }
 
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_database_exists(:ci)
       end
 
       context 'when geo is not configured' do
@@ -259,7 +259,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:ci_config) { double(:config, name: 'ci') }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
@@ -352,6 +352,37 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'schema inconsistencies' do
+    let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
+    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
+
+    let(:inconsistencies) do
+      [
+        instance_double(inconsistency_class, inspect: 'index_statement_1', type: 'wrong_indexes'),
+        instance_double(inconsistency_class, inspect: 'index_statement_2', type: 'missing_indexes'),
+        instance_double(inconsistency_class, inspect: 'table_statement_1', type: 'extra_tables',
+          table_name: 'test_replication'),
+        instance_double(inconsistency_class, inspect: 'trigger_statement', type: 'missing_triggers',
+          object_name: 'gitlab_schema_write_trigger_for_users')
+      ]
+    end
+
+    let(:rake_output) do
+      <<~MSG
+        index_statement_1
+        index_statement_2
+      MSG
+    end
+
+    before do
+      allow(Gitlab::Database::SchemaValidation::Runner).to receive(:new).and_return(runner)
+    end
+
+    it 'prints the inconsistency message' do
+      expect { run_rake_task('gitlab:db:schema_checker:run') }.to output(rake_output).to_stdout
+    end
+  end
+
   describe 'dictionary generate' do
     let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
 
@@ -395,9 +426,15 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
     end
 
-    context 'when the dictionary files already exist' do
+    context 'when a new model class is added to the codebase' do
       let(:table_class) do
         Class.new(ApplicationRecord) do
+          self.table_name = 'table1'
+        end
+      end
+
+      let(:migration_table_class) do
+        Class.new(Gitlab::Database::Migration[1.0]::MigrationRecord) do
           self.table_name = 'table1'
         end
       end
@@ -410,7 +447,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       table_metadata = {
         'table_name' => 'table1',
-        'classes' => [],
+        'classes' => ['TableClass'],
         'feature_categories' => [],
         'description' => nil,
         'introduced_by_url' => nil,
@@ -418,7 +455,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       }
       view_metadata = {
         'view_name' => 'view1',
-        'classes' => [],
+        'classes' => ['ViewClass'],
         'feature_categories' => [],
         'description' => nil,
         'introduced_by_url' => nil,
@@ -426,23 +463,60 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       }
 
       before do
-        stub_const('TableClass', table_class)
-        stub_const('ViewClass', view_class)
+        stub_const('TableClass1', table_class)
+        stub_const('MIgrationTableClass1', migration_table_class)
+        stub_const('ViewClass1', view_class)
 
         File.write(table_file_path, table_metadata.to_yaml)
         File.write(view_file_path, view_metadata.to_yaml)
 
-        allow(model).to receive(:descendants).and_return([table_class, view_class])
+        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class])
       end
 
-      it 'update the dictionary content' do
+      it 'appends new classes to the dictionary' do
         run_rake_task('gitlab:db:dictionary:generate')
 
         table_metadata = YAML.safe_load(File.read(table_file_path))
-        expect(table_metadata['classes']).to match_array(['TableClass'])
+        expect(table_metadata['classes']).to match_array(%w[TableClass TableClass1])
 
         view_metadata = YAML.safe_load(File.read(view_file_path))
-        expect(view_metadata['classes']).to match_array(['ViewClass'])
+        expect(view_metadata['classes']).to match_array(%w[ViewClass ViewClass1])
+      end
+    end
+
+    context 'when a model class is removed from the codebase' do
+      table_metadata = {
+        'table_name' => 'table1',
+        'classes' => ['TableClass'],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+      view_metadata = {
+        'view_name' => 'view1',
+        'classes' => ['ViewClass'],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+
+      before do
+        File.write(table_file_path, table_metadata.to_yaml)
+        File.write(view_file_path, view_metadata.to_yaml)
+
+        allow(model).to receive(:descendants).and_return([])
+      end
+
+      it 'keeps the dictionary classes' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        table_metadata = YAML.safe_load(File.read(table_file_path))
+        expect(table_metadata['classes']).to match_array(%w[TableClass])
+
+        view_metadata = YAML.safe_load(File.read(view_file_path))
+        expect(view_metadata['classes']).to match_array(%w[ViewClass])
       end
     end
   end
@@ -489,6 +563,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
 
       if Gitlab.ee?
+        allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::EMBEDDING_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
         allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::GEO_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
       end
     end
@@ -510,8 +585,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'drop_tables' do
     let(:tables) { %w(one two schema_migrations) }
-    let(:views) { %w(three four) }
+    let(:views) { %w(three four pg_stat_statements) }
     let(:schemas) { Gitlab::Database::EXTRA_SCHEMAS }
+    let(:ignored_views) { double(ActiveRecord::Relation, pluck: ['pg_stat_statements']) }
+
+    before do
+      allow(Gitlab::Database::PgDepend).to receive(:using_connection).and_yield
+      allow(Gitlab::Database::PgDepend).to receive(:from_pg_extension).with('VIEW').and_return(ignored_views)
+    end
 
     context 'with a single database' do
       let(:connection) { ActiveRecord::Base.connection }
@@ -538,7 +619,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
 
@@ -586,6 +667,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "three" CASCADE')
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "four" CASCADE')
+      expect(Gitlab::Database::PgDepend).to receive(:from_pg_extension).with('VIEW')
+      expect(connection).not_to receive(:execute).with('DROP VIEW IF EXISTS "pg_stat_statements" CASCADE')
 
       expect(connection).to receive(:execute).with('TRUNCATE schema_migrations')
 
@@ -610,7 +693,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     context 'with multiple databases' do
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
       end
 
       context 'when running the multi-database variant' do
@@ -645,7 +728,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   describe 'reindex' do
     context 'with a single database' do
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_shared_database(:ci)
       end
 
       it 'delegates to Gitlab::Database::Reindexing' do
@@ -681,7 +764,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       context 'when the single database task is used' do
         before do
-          skip_unless_ci_uses_database_tasks
+          skip_if_shared_database(:ci)
         end
 
         it 'delegates to Gitlab::Database::Reindexing with a specific database' do
@@ -733,7 +816,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'execute_async_index_operations' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_shared_database(:ci)
     end
 
     it 'delegates ci task to Gitlab::Database::AsyncIndexes' do
@@ -805,23 +888,95 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'validate_async_constraints' do
+    before do
+      skip_if_shared_database(:ci)
+    end
+
+    it 'delegates ci task to Gitlab::Database::AsyncConstraints' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 2)
+
+      run_rake_task('gitlab:db:validate_async_constraints:ci')
+    end
+
+    it 'delegates ci task to Gitlab::Database::AsyncConstraints with specified argument' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 5)
+
+      run_rake_task('gitlab:db:validate_async_constraints:ci', '[5]')
+    end
+
+    it 'delegates main task to Gitlab::Database::AsyncConstraints' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 2)
+
+      run_rake_task('gitlab:db:validate_async_constraints:main')
+    end
+
+    it 'delegates main task to Gitlab::Database::AsyncConstraints with specified argument' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 7)
+
+      run_rake_task('gitlab:db:validate_async_constraints:main', '[7]')
+    end
+
+    it 'delegates all task to every database with higher default for dev' do
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with(1000)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with(1000)
+
+      run_rake_task('gitlab:db:validate_async_constraints:all')
+    end
+
+    it 'delegates all task to every database with lower default for prod' do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with(2)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with(2)
+
+      run_rake_task('gitlab:db:validate_async_constraints:all')
+    end
+
+    it 'delegates all task to every database with specified argument' do
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with('50')
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with('50')
+
+      run_rake_task('gitlab:db:validate_async_constraints:all', '[50]')
+    end
+
+    context 'when feature is not enabled' do
+      it 'is a no-op' do
+        stub_feature_flags(database_async_foreign_key_validation: false)
+
+        expect(Gitlab::Database::AsyncConstraints).not_to receive(:validate_pending_entries!)
+
+        expect { run_rake_task('gitlab:db:validate_async_constraints:main') }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with geo configured' do
+      before do
+        skip_unless_geo_configured
+      end
+
+      it 'does not create a task for the geo database' do
+        expect { run_rake_task('gitlab:db:validate_async_constraints:geo') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:validate_async_constraints:geo'/)
+      end
+    end
+  end
+
   describe 'active' do
     using RSpec::Parameterized::TableSyntax
 
     let(:task) { 'gitlab:db:active' }
-    let(:self_monitoring) { double('self_monitoring') }
 
-    where(:needs_migration, :self_monitoring_project, :project_count, :exit_status, :exit_code) do
-      true | nil | nil | 1 | false
-      false | :self_monitoring | 1 | 1 | false
-      false | nil | 0 | 1 | false
-      false | :self_monitoring | 2 | 0 | true
+    where(:needs_migration, :project_count, :exit_status, :exit_code) do
+      true  | nil | 1 | false
+      false | 1 | 0 | true
+      false | 0 | 1 | false
+      false | 2 | 0 | true
     end
 
     with_them do
       it 'exits 0 or 1 depending on user modifications to the database' do
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migration)
-        allow_any_instance_of(ApplicationSetting).to receive(:self_monitoring_project).and_return(self_monitoring_project)
         allow(Project).to receive(:count).and_return(project_count)
 
         expect { run_rake_task(task) }.to raise_error do |error|
@@ -972,15 +1127,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   context 'with multiple databases', :reestablished_active_record_base do
     before do
-      skip_unless_ci_uses_database_tasks
-    end
-
-    describe 'db:structure:dump against a single database' do
-      it 'invokes gitlab:db:clean_structure_sql' do
-        expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).twice.and_return(true)
-
-        expect { run_rake_task('db:structure:dump:main') }.not_to raise_error
-      end
+      skip_if_shared_database(:ci)
     end
 
     describe 'db:schema:dump against a single database' do
@@ -1060,14 +1207,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
 
     run_rake_task(test_task_name)
-  end
-
-  def skip_unless_ci_uses_database_tasks
-    skip "Skipping because database tasks won't run against the ci database" unless ci_database_tasks?
-  end
-
-  def ci_database_tasks?
-    !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'ci')&.database_tasks?
   end
 
   def skip_unless_geo_configured

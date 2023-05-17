@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -36,7 +36,7 @@ include:
   - template: Terraform.latest.gitlab-ci.yml
 
 deploy:
-  envrionment:
+  environment:
     name: $TF_STATE_NAME
     action: start
     on_stop: destroy
@@ -65,7 +65,7 @@ build:
     - when: on_success
 
 deploy:
-  envrionment:
+  environment:
     name: $TF_STATE_NAME
     action: start
     on_stop: destroy

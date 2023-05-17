@@ -9,7 +9,7 @@ module QA
       # canceled, created, failed, manual, passed
       # pending, running, skipped
       def visit_latest_pipeline(status: nil, wait: nil, skip_wait: true)
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform do |index|
           index.has_any_pipeline?(wait: wait)
           index.wait_for_latest_pipeline(status: status, wait: wait) if status || !skip_wait
@@ -18,10 +18,18 @@ module QA
       end
 
       def wait_for_latest_pipeline(status: nil, wait: nil)
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform do |index|
           index.has_any_pipeline?(wait: wait)
           index.wait_for_latest_pipeline(status: status, wait: wait)
+        end
+      end
+
+      def visit_pipeline_job_page(job_name:, pipeline: nil)
+        pipeline.visit! unless pipeline.nil?
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job(job_name)
         end
       end
     end

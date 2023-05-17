@@ -10,11 +10,7 @@ RSpec.describe Emails::InProductMarketing do
   let_it_be(:user) { create(:user) }
 
   shared_examples 'has custom headers when on gitlab.com' do
-    context 'when on gitlab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
-
+    context 'when on gitlab.com', :saas do
       it 'has custom headers' do
         aggregate_failures do
           expect(subject).to deliver_from(described_class::FROM_ADDRESS)

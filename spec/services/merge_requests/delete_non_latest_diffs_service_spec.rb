@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_shared_state do
+RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_shared_state,
+  feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
 
   let!(:subject) { described_class.new(merge_request) }

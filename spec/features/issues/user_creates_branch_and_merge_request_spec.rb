@@ -73,8 +73,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
             expect(page).to have_content('New merge request')
             expect(page).to have_content("From #{issue.to_branch_name} into #{project.default_branch}")
-            expect(page).to have_content("Closes ##{issue.iid}")
             expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
+            expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
             expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: issue.to_branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
           end
         end
@@ -98,8 +98,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
             expect(page).to have_content('New merge request')
             expect(page).to have_content("From #{branch_name} into #{project.default_branch}")
-            expect(page).to have_content("Closes ##{issue.iid}")
             expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
+            expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
             expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
           end
         end
@@ -111,6 +111,26 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
           expect(page).to have_selector('.ref-selector', text: branch_name)
           expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
+        end
+      end
+
+      context 'when branch name is invalid' do
+        shared_examples 'has error message' do |dropdown|
+          it 'has error message' do
+            select_dropdown_option(dropdown, 'custom-branch-name w~th ^bad chars?')
+
+            wait_for_requests
+
+            expect(page).to have_text("Can't contain spaces, ~, ^, ?")
+          end
+        end
+
+        context 'when creating a merge request', :sidekiq_might_not_need_inline do
+          it_behaves_like 'has error message', 'create-mr'
+        end
+
+        context 'when creating a branch', :sidekiq_might_not_need_inline do
+          it_behaves_like 'has error message', 'create-branch'
         end
       end
     end

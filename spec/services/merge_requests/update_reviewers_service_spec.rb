@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::UpdateReviewersService do
+RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_review_workflow do
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group, :public) }
@@ -12,13 +12,17 @@ RSpec.describe MergeRequests::UpdateReviewersService do
   let_it_be(:user3) { create(:user) }
 
   let_it_be_with_reload(:merge_request) do
-    create(:merge_request, :simple, :unique_branches,
-           title: 'Old title',
-           description: "FYI #{user2.to_reference}",
-           reviewer_ids: [user3.id],
-           source_project: project,
-           target_project: project,
-           author: create(:user))
+    create(
+      :merge_request,
+      :simple,
+      :unique_branches,
+      title: 'Old title',
+      description: "FYI #{user2.to_reference}",
+      reviewer_ids: [user3.id],
+      source_project: project,
+      target_project: project,
+      author: create(:user)
+    )
   end
 
   before do

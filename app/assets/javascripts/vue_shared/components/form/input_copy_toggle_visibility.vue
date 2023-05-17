@@ -137,6 +137,7 @@ export default {
           v-if="showCopyButton"
           :text="value"
           :title="copyButtonTitle"
+          data-qa-selector="clipboard_button"
           @click="handleCopyButtonClick"
         />
       </template>

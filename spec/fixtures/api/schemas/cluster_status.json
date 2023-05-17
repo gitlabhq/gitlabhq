@@ -1,8 +1,7 @@
 {
   "type": "object",
   "required": [
-    "status",
-    "applications"
+    "status"
   ],
   "properties": {
     "status": {
@@ -10,12 +9,6 @@
     },
     "status_reason": {
       "$ref": "types/nullable_string.json"
-    },
-    "applications": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/application_status"
-      }
     }
   },
   "additionalProperties": false,

@@ -4,7 +4,6 @@ description: Count of WAU using the `/ready` quick action
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: issue_tracking
 value_type: number
 data_source: redis_hll
 status: active

@@ -4,602 +4,306 @@
 # Do not edit it manually!
 ---
 - name: p_ci_templates_terraform_base_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_base
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_dotnet
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_nodejs
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_openshift
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_auto_devops
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_bash
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_rust
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_elixir
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_clojure
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_crystal
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_getting_started
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_code_quality
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_verify_load_performance_testing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_verify_accessibility
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_verify_failfast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_verify_browser_performance
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_verify_browser_performance_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_grails
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_sast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_runner_validation
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_on_demand_scan
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_secret_detection
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_license_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_coverage_fuzzing_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_on_demand_api_scan
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_coverage_fuzzing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_api_fuzzing_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_secure_binaries
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_api
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_container_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_sast_iac
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dependency_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast_api_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_container_scanning_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_api_fuzzing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_dast
-  category: ci_templates
-  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_security_api_discovery
   aggregation: weekly
 - name: p_ci_templates_security_fortify_fod_sast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_sast_iac_latest
-  category: ci_templates
-  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_security_bas_latest
   aggregation: weekly
 - name: p_ci_templates_qualys_iac_security
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_ios_fastlane
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_composer
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_c
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_python
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_android_fastlane
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_android_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_django
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_maven
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_liquibase
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_flutter
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_workflows_branch_pipelines
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_workflows_mergerequest_pipelines
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_laravel
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_kaniko
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_php
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_packer
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_themekit
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_katalon
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_mono
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_go
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_scala
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_latex
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_android
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_indeni_cloudrail
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_matlab
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_deploy_ecs
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_aws_cf_provision_and_deploy_ec2
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_aws_deploy_ecs
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_gradle
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_chef
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_dast_default_branch_deploy
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_load_performance_testing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_helm_2to3
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_sast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_secret_detection
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_license_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_code_intelligence
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_code_quality
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_deploy_ecs
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_deploy_ec2
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_license_scanning_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_deploy
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_build
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_browser_performance_testing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_container_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_container_scanning_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_dependency_scanning_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_test
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_sast_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_sast_iac
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_secret_detection_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_dependency_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_deploy_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_browser_performance_testing_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_cf_provision
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_build_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_jobs_sast_iac_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_latest
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_swift
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_jekyll
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_harp
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_octopress
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_brunch
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_doxygen
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_hyde
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_lektor
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_jbake
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_hexo
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_middleman
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_hugo
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_pelican
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_nanoc
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_swaggerui
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_jigsaw
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_metalsmith
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_gatsby
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_pages_html
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_dart
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_docker
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_julia
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_npm
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_dotnet_core
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_5_minute_production_app
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_ruby
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_auto_devops
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_browser_performance_testing
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_build
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_code_intelligence
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_code_quality
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_container_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_dast_default_branch_deploy
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_dependency_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_deploy
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_deploy_ec2
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_deploy_ecs
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_helm_2to3
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_license_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_sast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_secret_detection
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_test
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_container_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_dast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_dependency_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_license_scanning
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_sast
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_secret_detection
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_module_base
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_module
-  category: ci_templates
-  redis_slot: ci_templates
   aggregation: weekly

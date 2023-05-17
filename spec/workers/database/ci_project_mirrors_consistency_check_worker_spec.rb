@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker do
+RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker, feature_category: :cell do
   let(:worker) { described_class.new }
 
   describe '#perform' do

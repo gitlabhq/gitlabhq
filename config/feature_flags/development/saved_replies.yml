@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352956
 milestone: '14.9'
 type: development
 group: group::project management
-default_enabled: false
+default_enabled: true

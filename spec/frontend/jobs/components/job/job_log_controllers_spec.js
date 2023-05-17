@@ -16,9 +16,6 @@ describe('Job log controllers', () => {
   });
 
   afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
     commonUtils.backOff.mockReset();
   });
 
@@ -133,7 +130,7 @@ describe('Job log controllers', () => {
         });
 
         it('renders disabled scroll top button', () => {
-          expect(findScrollTop().attributes('disabled')).toBe('disabled');
+          expect(findScrollTop().attributes('disabled')).toBeDefined();
         });
 
         it('does not emit scrollJobLogTop event on click', async () => {
@@ -283,6 +280,18 @@ describe('Job log controllers', () => {
 
         it('is enabled', () => {
           expect(findScrollFailure().props('disabled')).toBe(false);
+        });
+      });
+
+      describe('on error', () => {
+        beforeEach(() => {
+          jest.spyOn(commonUtils, 'backOff').mockRejectedValueOnce();
+
+          createWrapper({}, { jobLogJumpToFailures: true });
+        });
+
+        it('stays disabled', () => {
+          expect(findScrollFailure().props('disabled')).toBe(true);
         });
       });
     });

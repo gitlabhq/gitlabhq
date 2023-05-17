@@ -10,9 +10,9 @@ RSpec.describe LfsObjectUploader do
   subject { uploader }
 
   it_behaves_like "builds correct paths",
-                  store_dir: %r[\h{2}/\h{2}],
-                  cache_dir: %r[/lfs-objects/tmp/cache],
-                  work_dir: %r[/lfs-objects/tmp/work]
+    store_dir: %r[\h{2}/\h{2}],
+    cache_dir: %r[/lfs-objects/tmp/cache],
+    work_dir: %r[/lfs-objects/tmp/work]
 
   context "object store is REMOTE" do
     before do
@@ -22,7 +22,7 @@ RSpec.describe LfsObjectUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like "builds correct paths",
-                    store_dir: %r[\h{2}/\h{2}]
+      store_dir: %r[\h{2}/\h{2}]
   end
 
   describe 'remote file' do

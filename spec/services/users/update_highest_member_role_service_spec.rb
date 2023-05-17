@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpdateHighestMemberRoleService do
+RSpec.describe Users::UpdateHighestMemberRoleService, feature_category: :user_management do
   let(:user) { create(:user) }
   let(:execute_service) { described_class.new(user).execute }
 

@@ -27,11 +27,6 @@ describe('delete_button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('tooltip', () => {
     it('the title is controlled by tooltipTitle prop', () => {
       mountComponent();

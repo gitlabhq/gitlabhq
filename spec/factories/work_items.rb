@@ -14,6 +14,19 @@ FactoryBot.define do
       confidential { true }
     end
 
+    trait :opened do
+      state_id { WorkItem.available_states[:opened] }
+    end
+
+    trait :locked do
+      discussion_locked { true }
+    end
+
+    trait :closed do
+      state_id { WorkItem.available_states[:closed] }
+      closed_at { Time.now }
+    end
+
     trait :task do
       issue_type { :task }
       association :work_item_type, :default, :task
@@ -22,6 +35,16 @@ FactoryBot.define do
     trait :incident do
       issue_type { :incident }
       association :work_item_type, :default, :incident
+    end
+
+    trait :requirement do
+      issue_type { :requirement }
+      association :work_item_type, :default, :requirement
+    end
+
+    trait :test_case do
+      issue_type { :test_case }
+      association :work_item_type, :default, :test_case
     end
 
     trait :last_edited_by_user do
@@ -36,6 +59,13 @@ FactoryBot.define do
     trait :key_result do
       issue_type { :key_result }
       association :work_item_type, :default, :key_result
+    end
+
+    before(:create, :build) do |work_item, evaluator|
+      if evaluator.namespace.present?
+        work_item.project = nil
+        work_item.namespace = evaluator.namespace
+      end
     end
   end
 end

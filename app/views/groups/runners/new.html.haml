@@ -1,0 +1,5 @@
+- add_to_breadcrumbs _('Runners'), group_runners_path(@group)
+- breadcrumb_title s_('Runners|New')
+- page_title s_('Runners|Create a group runner')
+
+#js-group-new-runner{ data: { group_id: @group.to_global_id } }

@@ -32,18 +32,23 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
     end
 
     it 'displays new issue button' do
-      expect(first('.board')).to have_button('New issue', count: 1)
+      dropdown = first("[data-testid='header-list-actions']")
+      dropdown.click
+      expect(first('.board')).to have_button('Create new issue', count: 1)
     end
 
     it 'does not display new issue button in closed list' do
       page.within('.board:nth-child(3)') do
-        expect(page).not_to have_button('New issue')
+        expect(page).not_to have_selector("[data-testid='header-list-actions']")
+        expect(page).not_to have_button('Create new issue')
       end
     end
 
     it 'shows form when clicking button' do
       page.within(first('.board')) do
-        click_button 'New issue'
+        dropdown = first("[data-testid='header-list-actions']")
+        dropdown.click
+        click_button 'Create new issue'
 
         expect(page).to have_selector('.board-new-issue-form')
       end
@@ -51,7 +56,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
     it 'hides form when clicking cancel' do
       page.within(first('.board')) do
-        click_button 'New issue'
+        dropdown = first("[data-testid='header-list-actions']")
+        dropdown.click
+        click_button 'Create new issue'
 
         expect(page).to have_selector('.board-new-issue-form')
 
@@ -63,7 +70,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
     it 'creates new issue, places it on top of the list, and opens sidebar' do
       page.within(first('.board')) do
-        click_button 'New issue'
+        dropdown = first("[data-testid='header-list-actions']")
+        dropdown.click
+        click_button 'Create new issue'
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -91,7 +100,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
     it 'successfuly loads labels to be added to newly created issue' do
       page.within(first('.board')) do
-        click_button 'New issue'
+        dropdown = first("[data-testid='header-list-actions']")
+        dropdown.click
+        click_button 'Create new issue'
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -121,7 +132,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
       wait_for_all_requests
 
       page.within('.board:nth-child(2)') do
-        click_button('New issue')
+        dropdown = first("[data-testid='header-list-actions']")
+        dropdown.click
+        click_button('Create new issue')
 
         page.within(first('.board-new-issue-form')) do
           find('.form-control').set('new issue')
@@ -144,12 +157,14 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
     end
 
     it 'does not display new issue button in open list' do
-      expect(first('.board')).not_to have_button('New issue')
+      expect(page).not_to have_selector("[data-testid='header-list-actions']")
+      expect(first('.board')).not_to have_button('Create new issue')
     end
 
     it 'does not display new issue button in label list' do
       page.within('.board:nth-child(2)') do
-        expect(page).not_to have_button('New issue')
+        expect(page).not_to have_selector("[data-testid='header-list-actions']")
+        expect(page).not_to have_button('Create new issue')
       end
     end
   end
@@ -173,7 +188,8 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
       context 'when backlog does not exist' do
         it 'does not display new issue button in label list' do
           page.within('.board.is-draggable') do
-            expect(page).not_to have_button('New issue')
+            expect(page).not_to have_selector("[data-testid='header-list-actions']")
+            expect(page).not_to have_button('Create new issue')
           end
         end
       end
@@ -182,12 +198,14 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
         let_it_be(:backlog_list) { create(:backlog_list, board: group_board) }
 
         it 'does not display new issue button in open list' do
-          expect(first('.board')).not_to have_button('New issue')
+          expect(page).not_to have_selector("[data-testid='header-list-actions']")
+          expect(first('.board')).not_to have_button('Create new issue')
         end
 
         it 'does not display new issue button in label list' do
           page.within('.board.is-draggable') do
-            expect(page).not_to have_button('New issue')
+            expect(page).not_to have_selector("[data-testid='header-list-actions']")
+            expect(page).not_to have_button('Create new issue')
           end
         end
       end
@@ -205,7 +223,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
       context 'when backlog does not exist' do
         it 'display new issue button in label list' do
-          expect(board_list_header).to have_button('New issue')
+          dropdown = first("[data-testid='header-list-actions']")
+          dropdown.click
+          expect(board_list_header).to have_button('Create new issue')
         end
       end
 
@@ -214,7 +234,9 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
         before do
           page.within(board_list_header) do
-            click_button 'New issue'
+            dropdown = first("[data-testid='header-list-actions']")
+            dropdown.click
+            click_button 'Create new issue'
           end
 
           project_select_dropdown.click

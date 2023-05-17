@@ -6,16 +6,8 @@ module Gitlab
 
     DURATION_PRECISION = 6 # microseconds
 
-    def init_instrumentation_data(request_ip: nil)
-      # Set `request_start_time` only if this is request
-      # This is done, as `request_start_time` imply `request_deadline`
-      if request_ip
-        Gitlab::RequestContext.instance.client_ip = request_ip
-        Gitlab::RequestContext.instance.request_start_time = Gitlab::Metrics::System.real_time
-      end
-
-      Gitlab::RequestContext.instance.start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
-      Gitlab::RequestContext.instance.thread_memory_allocations = Gitlab::Memory::Instrumentation.start_thread_memory_allocations
+    def init_instrumentation_data
+      Gitlab::RequestContext.start_thread_context
     end
 
     def add_instrumentation_data(payload)
@@ -23,6 +15,7 @@ module Gitlab
       instrument_rugged(payload)
       instrument_redis(payload)
       instrument_elasticsearch(payload)
+      instrument_zoekt(payload)
       instrument_throttle(payload)
       instrument_active_record(payload)
       instrument_external_http(payload)
@@ -70,6 +63,17 @@ module Gitlab
       payload[:elasticsearch_calls] = elasticsearch_calls
       payload[:elasticsearch_duration_s] = Gitlab::Instrumentation::ElasticsearchTransport.query_time
       payload[:elasticsearch_timed_out_count] = Gitlab::Instrumentation::ElasticsearchTransport.get_timed_out_count
+    end
+
+    def instrument_zoekt(payload)
+      # Zoekt integration is only available in EE but instrumentation
+      # only depends on the Gem which is also available in FOSS.
+      zoekt_calls = Gitlab::Instrumentation::Zoekt.get_request_count
+
+      return if zoekt_calls == 0
+
+      payload[:zoekt_calls] = zoekt_calls
+      payload[:zoekt_duration_s] = Gitlab::Instrumentation::Zoekt.query_time
     end
 
     def instrument_external_http(payload)

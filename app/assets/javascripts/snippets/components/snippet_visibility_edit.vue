@@ -42,7 +42,7 @@ export default {
     <label>
       {{ __('Visibility level') }}
       <gl-link v-if="helpLink" :href="helpLink" target="_blank"
-        ><gl-icon :size="12" name="question"
+        ><gl-icon :size="12" name="question-o"
       /></gl-link>
     </label>
     <gl-form-group id="visibility-level-setting" class="gl-mb-0">

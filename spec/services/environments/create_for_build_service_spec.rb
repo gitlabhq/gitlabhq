@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::CreateForBuildService do
+RSpec.describe Environments::CreateForBuildService, feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

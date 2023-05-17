@@ -19,6 +19,10 @@ module Mutations
 
       argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
+        deprecated: {
+          reason: 'Outbound job token scope is being removed. This field can now only be set to false',
+          milestone: '16.0'
+        },
         description: 'Indicates CI/CD job tokens generated in this project ' \
           'have restricted access to other projects.'
 
@@ -26,10 +30,6 @@ module Mutations
         required: false,
         description: 'Indicates CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.'
-
-      argument :opt_in_jwt, GraphQL::Types::Boolean,
-        required: false,
-        description: 'When disabled, the JSON Web Token is always available in all jobs in the pipeline.'
 
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
@@ -39,7 +39,9 @@ module Mutations
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
 
-        args.delete(:inbound_job_token_scope_enabled) unless Feature.enabled?(:ci_inbound_job_token_scope, project)
+        if args[:job_token_scope_enabled] && project.frozen_outbound_job_token_scopes?
+          raise Gitlab::Graphql::Errors::ArgumentError, 'job_token_scope_enabled can only be set to false'
+        end
 
         settings = project.ci_cd_settings
         settings.update(args)

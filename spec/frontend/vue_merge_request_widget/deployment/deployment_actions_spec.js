@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -21,7 +21,7 @@ import {
   retryDetails,
 } from './deployment_mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
@@ -30,11 +30,6 @@ describe('DeploymentAction component', () => {
   let executeActionSpy;
 
   const factory = (options = {}) => {
-    // This destroys any wrappers created before a nested call to factory reassigns it
-    if (wrapper && wrapper.destroy) {
-      wrapper.destroy();
-    }
-
     wrapper = mount(DeploymentActions, options);
   };
 
@@ -54,7 +49,6 @@ describe('DeploymentAction component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     confirmAction.mockReset();
   });
 

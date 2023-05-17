@@ -1,0 +1,12 @@
+---
+table_name: clusters_applications_elastic_stacks
+classes:
+- Clusters::Applications::ElasticStack
+feature_categories:
+- kubernetes_management
+description: (Deprecated) A GitLab managed Elastic Stack installation in a Kubernetes cluster
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18015
+milestone: '12.5'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91859
+removed_in_milestone: '15.2'

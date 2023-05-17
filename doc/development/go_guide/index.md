@@ -124,7 +124,7 @@ lint:
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
     # remove `--issues-exit-code 0` or set to non-zero to fail the job if linting issues are detected
-    - golangci-lint run --issues-exit-code 0 --out-format code-climate | tee gl-code-quality-report.json | jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
+    - golangci-lint run --issues-exit-code 0 --print-issued-lines=false --out-format code-climate:gl-code-quality-report.json,line-number
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
@@ -216,7 +216,7 @@ When comparing expected and actual values in tests, use
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
-```golang
+```go
 type TestData struct {
     // ...
 }
@@ -291,7 +291,7 @@ easier to debug.
 
 For example:
 
-```golang
+```go
 // Wrap the error
 return nil, fmt.Errorf("get cache %s: %w", f.Name, err)
 
@@ -438,7 +438,7 @@ up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every
 
 ### Naming branches
 
-Only use the characters `a-z`, `0-9` or `-` in branch names. This restriction is due to the fact that `go get` doesn't work as expected when a branch name contains certain characters, such as a slash `/`:
+In addition to the GitLab [branch name rules](../../user/project/repository/branches/index.md#name-your-branch), use only the characters `a-z`, `0-9` or `-` in branch names. This restriction is because `go get` doesn't work as expected when a branch name contains certain characters, such as a slash `/`:
 
 ```shell
 $ go get -u gitlab.com/gitlab-org/security-products/analyzers/report/v3@some-user/some-feature
@@ -462,7 +462,7 @@ allocations.
 
 **Don't:**
 
-```golang
+```go
 var s2 []string
 for _, val := range s1 {
     s2 = append(s2, val)
@@ -471,8 +471,8 @@ for _, val := range s1 {
 
 **Do:**
 
-```golang
-s2 := make([]string, 0, size)
+```go
+s2 := make([]string, 0, len(s1))
 for _, val := range s1 {
     s2 = append(s2, val)
 }
@@ -494,7 +494,7 @@ If the scanner report is small, less than 35 lines, then feel free to [inline th
 
 The [go-cmp](https://github.com/google/go-cmp) package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
 
-```golang
+```go
 package main
 
 import (

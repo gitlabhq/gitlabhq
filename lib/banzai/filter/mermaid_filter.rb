@@ -4,7 +4,7 @@
 module Banzai
   module Filter
     class MermaidFilter < HTML::Pipeline::Filter
-      CSS   = 'pre[lang="mermaid"] > code'
+      CSS   = 'pre[data-canonical-lang="mermaid"] > code'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call

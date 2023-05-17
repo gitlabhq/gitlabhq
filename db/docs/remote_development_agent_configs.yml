@@ -1,0 +1,10 @@
+---
+table_name: remote_development_agent_configs
+classes:
+- RemoteDevelopment::RemoteDevelopmentAgentConfig
+feature_categories:
+- remote_development
+description: Remote Development Cluster Agent Configuration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105783
+milestone: '16.0'
+gitlab_schema: gitlab_main

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users, feature_category: :user_profile do
+RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile do
   include WorkhorseHelpers
 
   let_it_be(:admin) { create(:admin) }
@@ -27,9 +27,15 @@ RSpec.describe API::Users, feature_category: :user_profile do
     let_it_be(:user, reload: true) { create(:user, note: '2018-11-05 | 2FA removed | user requested | www.gitlab.com') }
 
     describe 'POST /users' do
+      let(:path) { '/users' }
+
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:params) { attributes_for(:user).merge({ note: 'Awesome Note' }) }
+      end
+
       context 'when unauthenticated' do
         it 'return authentication error' do
-          post api('/users')
+          post api(path)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
@@ -41,7 +47,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             optional_attributes = { note: 'Awesome Note' }
             attributes = attributes_for(:user).merge(optional_attributes)
 
-            post api('/users', admin), params: attributes
+            post api(path, admin, admin_mode: true), params: attributes
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['note']).to eq(optional_attributes[:note])
@@ -50,7 +56,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'as a regular user' do
           it 'does not allow creating new user' do
-            post api('/users', user), params: attributes_for(:user)
+            post api(path, user), params: attributes_for(:user)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -59,12 +65,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe "PUT /users/:id" do
+      let(:path) { "/users/#{user.id}" }
+
+      it_behaves_like 'PUT request permissions for admin mode' do
+        let(:params) { { note: 'new note' } }
+      end
+
       context 'when user is an admin' do
         it "updates note of the user" do
           new_note = '2019-07-07 | Email changed | user requested | www.gitlab.com'
 
           expect do
-            put api("/users/#{user.id}", admin), params: { note: new_note }
+            put api(path, admin, admin_mode: true), params: { note: new_note }
           end.to change { user.reload.note }
                    .from('2018-11-05 | 2FA removed | user requested | www.gitlab.com')
                    .to(new_note)
@@ -77,7 +89,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       context 'when user is not an admin' do
         it "cannot update their own note" do
           expect do
-            put api("/users/#{user.id}", user), params: { note: 'new note' }
+            put api(path, user), params: { note: 'new note' }
           end.not_to change { user.reload.note }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -89,7 +101,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       context "when current user is an admin" do
         it "returns a 204 when 2FA is disabled for the target user" do
           expect do
-            patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin)
+            patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin, admin_mode: true)
           end.to change { user_with_2fa.reload.two_factor_enabled? }
                   .from(true)
                   .to(false)
@@ -103,14 +115,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
             .and_return(destroy_service)
           expect(destroy_service).to receive(:execute)
 
-          patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin)
+          patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin, admin_mode: true)
         end
 
         it "returns a 400 if 2FA is not enabled for the target user" do
           expect(TwoFactor::DestroyService).to receive(:new).and_call_original
 
           expect do
-            patch api("/users/#{user.id}/disable_two_factor", admin)
+            patch api("/users/#{user.id}/disable_two_factor", admin, admin_mode: true)
           end.not_to change { user.reload.two_factor_enabled? }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -121,7 +133,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           expect(TwoFactor::DestroyService).not_to receive(:new)
 
           expect do
-            patch api("/users/#{admin_with_2fa.id}/disable_two_factor", admin)
+            patch api("/users/#{admin_with_2fa.id}/disable_two_factor", admin, admin_mode: true)
           end.not_to change { admin_with_2fa.reload.two_factor_enabled? }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -131,7 +143,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         it "returns a 404 if the target user cannot be found" do
           expect(TwoFactor::DestroyService).not_to receive(:new)
 
-          patch api("/users/#{non_existing_record_id}/disable_two_factor", admin)
+          patch api("/users/#{non_existing_record_id}/disable_two_factor", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq("404 User Not Found")
@@ -159,9 +171,11 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'GET /users/' do
+      let(:path) { '/users' }
+
       context 'when unauthenticated' do
         it "does not contain certain fields" do
-          get api("/users"), params: { username: user.username }
+          get api(path), params: { username: user.username }
 
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
@@ -172,8 +186,9 @@ RSpec.describe API::Users, feature_category: :user_profile do
       context 'when authenticated' do
         context 'as a regular user' do
           it 'does not contain certain fields' do
-            get api("/users", user), params: { username: user.username }
+            get api(path, user), params: { username: user.username }
 
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
             expect(json_response.first).not_to have_key('created_by')
@@ -182,7 +197,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'as an admin' do
           it 'contains the note of users' do
-            get api("/users", admin), params: { username: user.username }
+            get api(path, admin, admin_mode: true), params: { username: user.username }
 
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
@@ -191,7 +206,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
           context 'with `created_by` details' do
             it 'has created_by as nil with a self-registered account' do
-              get api("/users", admin), params: { username: user.username }
+              get api(path, admin, admin_mode: true), params: { username: user.username }
 
               expect(response).to have_gitlab_http_status(:success)
               expect(json_response.first).to have_key('created_by')
@@ -201,7 +216,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             it 'is created_by a user and has those details' do
               created = create(:user, created_by_id: user.id)
 
-              get api("/users", admin), params: { username: created.username }
+              get api(path, admin, admin_mode: true), params: { username: created.username }
 
               expect(response).to have_gitlab_http_status(:success)
               expect(json_response.first['created_by'].symbolize_keys)
@@ -217,7 +232,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
           it 'avoids N+1 queries when requested by admin' do
             control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              get api("/users", admin)
+              get api(path, admin)
             end.count
 
             create_list(:user, 3)
@@ -227,19 +242,19 @@ RSpec.describe API::Users, feature_category: :user_profile do
             # Refer issue https://gitlab.com/gitlab-org/gitlab/-/issues/367080
 
             expect do
-              get api("/users", admin)
+              get api(path, admin)
             end.not_to exceed_all_query_limit(control_count + 3)
           end
 
           it 'avoids N+1 queries when requested by a regular user' do
             control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              get api("/users", user)
+              get api(path, user)
             end.count
 
             create_list(:user, 3)
 
             expect do
-              get api("/users", user)
+              get api(path, user)
             end.not_to exceed_all_query_limit(control_count)
           end
         end
@@ -247,11 +262,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'GET /user' do
+      let(:path) { '/user' }
+
       context 'when authenticated' do
         context 'as an admin' do
           context 'accesses their own profile' do
             it 'contains the note of the user' do
-              get api("/user", admin)
+              get api(path, admin, admin_mode: true)
 
               expect(json_response).to have_key('note')
               expect(json_response['note']).to eq(admin.note)
@@ -259,7 +276,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           end
 
           context 'sudo' do
-            let(:admin_personal_access_token) { create(:personal_access_token, user: admin, scopes: %w[api sudo]).token }
+            let(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin, scopes: %w[api sudo]).token }
 
             context 'accesses the profile of another regular user' do
               it 'does not contain the note of the user' do
@@ -286,7 +303,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'as a regular user' do
           it 'does not contain the note of the user' do
-            get api("/user", user)
+            get api(path, user)
 
             expect(json_response).not_to have_key('note')
             expect(json_response).not_to have_key('namespace_id')
@@ -318,15 +335,17 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /users' do
+    let(:path) { '/users' }
+
     context "when unauthenticated" do
       it "returns authorization error when the `username` parameter is not passed" do
-        get api("/users")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it "returns the user when a valid `username` parameter is passed" do
-        get api("/users"), params: { username: user.username }
+        get api(path), params: { username: user.username }
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
@@ -335,7 +354,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns the user when a valid `username` parameter is passed (case insensitive)" do
-        get api("/users"), params: { username: user.username.upcase }
+        get api(path), params: { username: user.username.upcase }
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
@@ -344,7 +363,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns an empty response when an invalid `username` parameter is passed" do
-        get api("/users"), params: { username: 'invalid' }
+        get api(path), params: { username: 'invalid' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
@@ -352,14 +371,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "does not return the highest role" do
-        get api("/users"), params: { username: user.username }
+        get api(path), params: { username: user.username }
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'highest_role'
       end
 
       it "does not return the current or last sign-in ip addresses" do
-        get api("/users"), params: { username: user.username }
+        get api(path), params: { username: user.username }
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'current_sign_in_ip'
@@ -372,13 +391,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         it "returns authorization error when the `username` parameter refers to an inaccessible user" do
-          get api("/users"), params: { username: user.username }
+          get api(path), params: { username: user.username }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
         it "returns authorization error when the `username` parameter is not passed" do
-          get api("/users")
+          get api(path)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -394,7 +413,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'when authenticate as a regular user' do
           it "renders 200" do
-            get api("/users", user)
+            get api(path, user)
 
             expect(response).to match_response_schema('public_api/v4/user/basics')
           end
@@ -402,7 +421,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'when authenticate as an admin' do
           it "renders 200" do
-            get api("/users", admin)
+            get api(path, admin)
 
             expect(response).to match_response_schema('public_api/v4/user/basics')
           end
@@ -410,7 +429,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns an array of users" do
-        get api("/users", user)
+        get api(path, user)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
@@ -466,7 +485,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'does not reveal the `is_admin` flag of the user' do
-        get api('/users', user)
+        get api(path, user)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
@@ -528,7 +547,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     context "when admin" do
       context 'when sudo is defined' do
         it 'does not return 500' do
-          admin_personal_access_token = create(:personal_access_token, user: admin, scopes: [:sudo])
+          admin_personal_access_token = create(:personal_access_token, :admin_mode, user: admin, scopes: [:sudo])
           get api("/users?sudo=#{user.id}", admin, personal_access_token: admin_personal_access_token)
 
           expect(response).to have_gitlab_http_status(:success)
@@ -536,14 +555,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns an array of users" do
-        get api("/users", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
       end
 
       it "users contain the `namespace_id` field" do
-        get api("/users", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(response).to match_response_schema('public_api/v4/user/admins')
@@ -554,7 +573,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns an array of external users" do
         create(:user, external: true)
 
-        get api("/users?external=true", admin)
+        get api("/users?external=true", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
@@ -562,7 +581,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns one user by external UID" do
-        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin)
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -570,13 +589,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns 400 error if provider with no extern_uid" do
-        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it "returns 400 error if provider with no extern_uid" do
-        get api("/users?provider=#{omniauth_user.identities.first.provider}", admin)
+        get api("/users?provider=#{omniauth_user.identities.first.provider}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -584,7 +603,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns a user created before a specific date" do
         user = create(:user, created_at: Date.new(2000, 1, 1))
 
-        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -594,7 +613,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns no users created before a specific date" do
         create(:user, created_at: Date.new(2001, 1, 1))
 
-        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(0)
@@ -603,7 +622,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns users created before and after a specific date" do
         user = create(:user, created_at: Date.new(2001, 1, 1))
 
-        get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin)
+        get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -615,7 +634,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         # - admin
         # - user
 
-        get api('/users', admin), params: { order_by: 'id', sort: 'asc' }
+        get api(path, admin, admin_mode: true), params: { order_by: 'id', sort: 'asc' }
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(2)
@@ -626,7 +645,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns users with 2fa enabled' do
         user_with_2fa = create(:user, :two_factor_via_otp)
 
-        get api('/users', admin), params: { two_factor: 'enabled' }
+        get api(path, admin, admin_mode: true), params: { two_factor: 'enabled' }
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -638,7 +657,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         create(:project, namespace: user.namespace)
         create(:project, namespace: admin.namespace)
 
-        get api('/users', admin), params: { without_projects: true }
+        get api(path, admin, admin_mode: true), params: { without_projects: true }
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -646,7 +665,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'returns 400 when provided incorrect sort params' do
-        get api('/users', admin), params: { order_by: 'magic', sort: 'asc' }
+        get api(path, admin, admin_mode: true), params: { order_by: 'magic', sort: 'asc' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -654,7 +673,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'admins param' do
       it 'returns only admins' do
-        get api("/users?admins=true", admin)
+        get api("/users?admins=true", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
@@ -666,34 +685,36 @@ RSpec.describe API::Users, feature_category: :user_profile do
   describe "GET /users/:id" do
     let_it_be(:user2, reload: true) { create(:user, username: 'another_user') }
 
+    let(:path) { "/users/#{user.id}" }
+
     before do
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
         .with(:users_get_by_id, scope: user, users_allowlist: []).and_return(false)
     end
 
     it "returns a user by id" do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response['username']).to eq(user.username)
     end
 
     it "does not return the user's `is_admin` flag" do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response.keys).not_to include 'is_admin'
     end
 
     it "does not return the user's `highest_role`" do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response.keys).not_to include 'highest_role'
     end
 
     it "does not return the user's sign in IPs" do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response.keys).not_to include 'current_sign_in_ip'
@@ -701,7 +722,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "does not contain plan or trial data" do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response.keys).not_to include 'plan'
@@ -760,7 +781,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'does not contain the note of the user' do
-      get api("/users/#{user.id}", user)
+      get api(path, user)
 
       expect(json_response).not_to have_key('note')
       expect(json_response).not_to have_key('sign_in_count')
@@ -772,7 +793,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
           .and_return(false)
 
-        get api("/users/#{user.id}", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -785,7 +806,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
             .and_return(true)
 
-          get api("/users/#{user.id}", user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:too_many_requests)
         end
@@ -794,7 +815,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           expect(Gitlab::ApplicationRateLimiter)
             .not_to receive(:throttled?)
 
-          get api("/users/#{user.id}", admin)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -812,7 +833,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: allowlist)
             .and_call_original
 
-          get api("/users/#{user.id}", user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -827,7 +848,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'returns job title of a user' do
-        get api("/users/#{user.id}", user)
+        get api(path, user)
 
         expect(response).to match_response_schema('public_api/v4/user/basic')
         expect(json_response['job_title']).to eq(job_title)
@@ -836,7 +857,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'when authenticated as admin' do
       it 'contains the note of the user' do
-        get api("/users/#{user.id}", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(json_response).to have_key('note')
         expect(json_response['note']).to eq(user.note)
@@ -844,28 +865,28 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'includes the `is_admin` field' do
-        get api("/users/#{user.id}", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['is_admin']).to be(false)
       end
 
       it "includes the `created_at` field for private users" do
-        get api("/users/#{private_user.id}", admin)
+        get api("/users/#{private_user.id}", admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response.keys).to include 'created_at'
       end
 
       it 'includes the `highest_role` field' do
-        get api("/users/#{user.id}", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
       end
 
       it 'includes the `namespace_id` field' do
-        get api("/users/#{user.id}", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(response).to match_response_schema('public_api/v4/user/admin')
@@ -874,13 +895,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       if Gitlab.ee?
         it 'does not include values for plan or trial' do
-          get api("/users/#{user.id}", admin)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to match_response_schema('public_api/v4/user/basic')
         end
       else
         it 'does not include plan or trial data' do
-          get api("/users/#{user.id}", admin)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to match_response_schema('public_api/v4/user/basic')
           expect(json_response.keys).not_to include 'plan'
@@ -890,7 +911,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'when user has not logged in' do
         it 'does not include the sign in IPs' do
-          get api("/users/#{user.id}", admin)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response).to include('current_sign_in_ip' => nil, 'last_sign_in_ip' => nil)
@@ -901,7 +922,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let_it_be(:signed_in_user) { create(:user, :with_sign_ins) }
 
         it 'includes the sign in IPs' do
-          get api("/users/#{signed_in_user.id}", admin)
+          get api("/users/#{signed_in_user.id}", admin, admin_mode: true)
 
           expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['current_sign_in_ip']).to eq('127.0.0.1')
@@ -912,14 +933,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'for an anonymous user' do
       it 'returns 403' do
-        get api("/users/#{user.id}")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     it "returns a 404 error if user id not found" do
-      get api("/users/0", user)
+      get api("/users/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -954,10 +975,11 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe 'POST /users/:id/follow' do
     let(:followee) { create(:user) }
+    let(:path) { "/users/#{followee.id}/follow" }
 
     context 'on an unfollowed user' do
       it 'follows the user' do
-        post api("/users/#{followee.id}/follow", user)
+        post api(path, user)
 
         expect(user.followees).to contain_exactly(followee)
         expect(response).to have_gitlab_http_status(:created)
@@ -967,7 +989,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
         Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
 
-        post api("/users/#{followee.id}/follow", user)
+        post api(path, user)
         expect(response).to have_gitlab_http_status(:bad_request)
         expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
         expect(json_response['message']).to eq(expected_message)
@@ -981,9 +1003,23 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'does not change following' do
-        post api("/users/#{followee.id}/follow", user)
+        post api(path, user)
 
         expect(user.followees).to contain_exactly(followee)
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
+
+    context 'on a user with disabled following' do
+      before do
+        user.enabled_following = false
+        user.save!
+      end
+
+      it 'does not change following' do
+        post api("/users/#{followee.id}/follow", user)
+
+        expect(user.followees).to be_empty
         expect(response).to have_gitlab_http_status(:not_modified)
       end
     end
@@ -991,6 +1027,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe 'POST /users/:id/unfollow' do
     let(:followee) { create(:user) }
+    let(:path) { "/users/#{followee.id}/unfollow" }
 
     context 'on a followed user' do
       before do
@@ -998,7 +1035,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'unfollow the user' do
-        post api("/users/#{followee.id}/unfollow", user)
+        post api(path, user)
 
         expect(user.followees).to be_empty
         expect(response).to have_gitlab_http_status(:created)
@@ -1007,7 +1044,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'on an unfollowed user' do
       it 'does not change following' do
-        post api("/users/#{followee.id}/unfollow", user)
+        post api(path, user)
 
         expect(user.followees).to be_empty
         expect(response).to have_gitlab_http_status(:not_modified)
@@ -1017,6 +1054,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe 'GET /users/:id/followers' do
     let(:follower) { create(:user) }
+    let(:path) { "/users/#{user.id}/followers" }
 
     context 'for an anonymous user' do
       it 'returns 403' do
@@ -1030,7 +1068,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'lists followers' do
         follower.follow(user)
 
-        get api("/users/#{user.id}/followers", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -1049,7 +1087,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'user does not have any follower' do
       it 'does list nothing' do
-        get api("/users/#{user.id}/followers", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -1060,6 +1098,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe 'GET /users/:id/following' do
     let(:followee) { create(:user) }
+    let(:path) { "/users/#{user.id}/followers" }
 
     context 'for an anonymous user' do
       it 'returns 403' do
@@ -1073,7 +1112,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'lists following user' do
         user.follow(followee)
 
-        get api("/users/#{user.id}/following", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -1092,7 +1131,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'user does not have any follower' do
       it 'does list nothing' do
-        get api("/users/#{user.id}/following", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -1102,14 +1141,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "POST /users" do
+    let(:path) { '/users' }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { attributes_for(:user, projects_limit: 3) }
+    end
+
     it "creates user" do
       expect do
-        post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
+        post api(path, admin, admin_mode: true), params: attributes_for(:user, projects_limit: 3)
       end.to change { User.count }.by(1)
     end
 
     it "creates user with correct attributes" do
-      post api('/users', admin), params: attributes_for(:user, admin: true, can_create_group: true)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, admin: true, can_create_group: true)
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -1121,13 +1166,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
       optional_attributes = { confirm: true, theme_id: 2, color_scheme_id: 4 }
       attributes = attributes_for(:user).merge(optional_attributes)
 
-      post api('/users', admin), params: attributes
+      post api(path, admin, admin_mode: true), params: attributes
 
       expect(response).to have_gitlab_http_status(:created)
     end
 
     it "creates non-admin user" do
-      post api('/users', admin), params: attributes_for(:user, admin: false, can_create_group: false)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, admin: false, can_create_group: false)
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -1136,7 +1181,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "creates non-admin users by default" do
-      post api('/users', admin), params: attributes_for(:user)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -1144,13 +1189,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "returns 201 Created on success" do
-      post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, projects_limit: 3)
       expect(response).to match_response_schema('public_api/v4/user/admin')
       expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'creates non-external users by default' do
-      post api("/users", admin), params: attributes_for(:user)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(:created)
 
       user_id = json_response['id']
@@ -1159,7 +1204,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'allows an external user to be created' do
-      post api("/users", admin), params: attributes_for(:user, external: true)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, external: true)
       expect(response).to have_gitlab_http_status(:created)
 
       user_id = json_response['id']
@@ -1168,7 +1213,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "creates user with reset password" do
-      post api('/users', admin), params: attributes_for(:user, reset_password: true).except(:password)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, reset_password: true).except(:password)
 
       expect(response).to have_gitlab_http_status(:created)
 
@@ -1181,7 +1226,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "creates user with random password" do
       params = attributes_for(:user, force_random_password: true)
       params.delete(:password)
-      post api('/users', admin), params: params
+      post api(path, admin, admin_mode: true), params: params
 
       expect(response).to have_gitlab_http_status(:created)
 
@@ -1192,7 +1237,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "creates user with private profile" do
-      post api('/users', admin), params: attributes_for(:user, private_profile: true)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, private_profile: true)
 
       expect(response).to have_gitlab_http_status(:created)
 
@@ -1204,7 +1249,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "creates user with view_diffs_file_by_file" do
-      post api('/users', admin), params: attributes_for(:user, view_diffs_file_by_file: true)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user, view_diffs_file_by_file: true)
 
       expect(response).to have_gitlab_http_status(:created)
 
@@ -1217,7 +1262,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     it "creates user with avatar" do
       workhorse_form_with_file(
-        api('/users', admin),
+        api(path, admin, admin_mode: true),
         method: :post,
         file_key: :avatar,
         params: attributes_for(:user, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
@@ -1232,7 +1277,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "does not create user with invalid email" do
-      post api('/users', admin),
+      post api(path, admin, admin_mode: true),
         params: {
           email: 'invalid email',
           password: User.random_password,
@@ -1242,22 +1287,22 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns 400 error if name not given' do
-      post api('/users', admin), params: attributes_for(:user).except(:name)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user).except(:name)
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 400 error if password not given' do
-      post api('/users', admin), params: attributes_for(:user).except(:password)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user).except(:password)
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 400 error if email not given' do
-      post api('/users', admin), params: attributes_for(:user).except(:email)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user).except(:email)
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 400 error if username not given' do
-      post api('/users', admin), params: attributes_for(:user).except(:username)
+      post api(path, admin, admin_mode: true), params: attributes_for(:user).except(:username)
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
@@ -1265,13 +1310,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
       optional_attributes = { theme_id: 50, color_scheme_id: 50 }
       attributes = attributes_for(:user).merge(optional_attributes)
 
-      post api('/users', admin), params: attributes
+      post api(path, admin, admin_mode: true), params: attributes
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 400 error if user does not validate' do
-      post api('/users', admin),
+      post api(path, admin, admin_mode: true),
         params: {
           password: 'pass',
           email: 'test@example.com',
@@ -1288,12 +1333,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
       expect(json_response['message']['projects_limit'])
         .to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username'])
-        .to eq([Gitlab::PathRegex.namespace_format_message])
+        .to match_array([Gitlab::PathRegex.namespace_format_message, Gitlab::Regex.oci_repository_path_regex_message])
     end
 
     it 'tracks weak password errors' do
       attributes = attributes_for(:user).merge({ password: "password" })
-      post api('/users', admin), params: attributes
+      post api(path, admin, admin_mode: true), params: attributes
 
       expect(json_response['message']['password'])
         .to eq(['must not contain commonly used combinations of words and letters'])
@@ -1306,13 +1351,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "is not available for non admin users" do
-      post api("/users", user), params: attributes_for(:user)
+      post api(path, user), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     context 'with existing user' do
       before do
-        post api('/users', admin),
+        post api(path, admin, admin_mode: true),
           params: {
             email: 'test@example.com',
             password: User.random_password,
@@ -1323,7 +1368,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns 409 conflict error if user with same email exists' do
         expect do
-          post api('/users', admin),
+          post api(path, admin, admin_mode: true),
             params: {
               name: 'foo',
               email: 'test@example.com',
@@ -1337,7 +1382,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns 409 conflict error if same username exists' do
         expect do
-          post api('/users', admin),
+          post api(path, admin, admin_mode: true),
             params: {
               name: 'foo',
               email: 'foo@example.com',
@@ -1351,7 +1396,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns 409 conflict error if same username exists (case insensitive)' do
         expect do
-          post api('/users', admin),
+          post api(path, admin, admin_mode: true),
             params: {
               name: 'foo',
               email: 'foo@example.com',
@@ -1364,7 +1409,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'creates user with new identity' do
-        post api("/users", admin), params: attributes_for(:user, provider: 'github', extern_uid: '67890')
+        post api(path, admin, admin_mode: true), params: attributes_for(:user, provider: 'github', extern_uid: '67890')
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['identities'].first['extern_uid']).to eq('67890')
@@ -1378,7 +1423,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         it 'returns 409 conflict error' do
           expect do
-            post api('/users', admin),
+            post api(path, admin, admin_mode: true),
               params: {
                 name: 'foo',
                 email: confirmed_user.email,
@@ -1396,7 +1441,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         it 'returns 409 conflict error' do
           expect do
-            post api('/users', admin),
+            post api(path, admin, admin_mode: true),
               params: {
                 name: 'foo',
                 email: unconfirmed_user.email,
@@ -1416,7 +1461,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         it 'returns 409 conflict error' do
           expect do
-            post api('/users', admin),
+            post api(path, admin, admin_mode: true),
               params: {
                 name: 'foo',
                 email: email.email,
@@ -1434,7 +1479,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         it 'does not create user' do
           expect do
-            post api('/users', admin),
+            post api(path, admin, admin_mode: true),
               params: {
                 name: 'foo',
                 email: email.email,
@@ -1465,7 +1510,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         shared_examples_for 'creates the user with the value of `private_profile` based on the application setting' do
           specify do
-            post api("/users", admin), params: params
+            post api(path, admin, admin_mode: true), params: params
 
             expect(response).to have_gitlab_http_status(:created)
             user = User.find_by(id: json_response['id'], private_profile: true)
@@ -1479,7 +1524,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
         context 'when the attribute is overridden in params' do
           it 'creates the user with the value of `private_profile` same as the value of the overridden param' do
-            post api("/users", admin), params: params.merge(private_profile: false)
+            post api(path, admin, admin_mode: true), params: params.merge(private_profile: false)
 
             expect(response).to have_gitlab_http_status(:created)
             user = User.find_by(id: json_response['id'], private_profile: false)
@@ -1497,8 +1542,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "PUT /users/:id" do
+    let(:path) { "/users/#{user.id}" }
+
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:params) { { bio: 'new test bio' } }
+    end
+
     it "returns 200 OK on success" do
-      put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
+      put api(path, admin, admin_mode: true), params: { bio: 'new test bio' }
 
       expect(response).to match_response_schema('public_api/v4/user/admin')
       expect(response).to have_gitlab_http_status(:ok)
@@ -1506,7 +1557,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'updating password' do
       def update_password(user, admin, password = User.random_password)
-        put api("/users/#{user.id}", admin), params: { password: password }
+        put api("/users/#{user.id}", admin, admin_mode: true), params: { password: password }
       end
 
       context 'admin updates their own password' do
@@ -1564,7 +1615,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "updates user with new bio" do
-      put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
+      put api(path, admin, admin_mode: true), params: { bio: 'new test bio' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['bio']).to eq('new test bio')
@@ -1574,7 +1625,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "updates user with empty bio" do
       user.update!(bio: 'previous bio')
 
-      put api("/users/#{user.id}", admin), params: { bio: '' }
+      put api(path, admin, admin_mode: true), params: { bio: '' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['bio']).to eq('')
@@ -1582,7 +1633,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'updates user with nil bio' do
-      put api("/users/#{user.id}", admin), params: { bio: nil }
+      put api(path, admin, admin_mode: true), params: { bio: nil }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['bio']).to eq('')
@@ -1590,7 +1641,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "updates user with organization" do
-      put api("/users/#{user.id}", admin), params: { organization: 'GitLab' }
+      put api(path, admin, admin_mode: true), params: { organization: 'GitLab' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['organization']).to eq('GitLab')
@@ -1599,7 +1650,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     it 'updates user with avatar' do
       workhorse_form_with_file(
-        api("/users/#{user.id}", admin),
+        api(path, admin, admin_mode: true),
         method: :put,
         file_key: :avatar,
         params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
@@ -1615,7 +1666,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'updates user with a new email' do
       old_email = user.email
       old_notification_email = user.notification_email_or_default
-      put api("/users/#{user.id}", admin), params: { email: 'new@email.com' }
+      put api(path, admin, admin_mode: true), params: { email: 'new@email.com' }
 
       user.reload
 
@@ -1627,7 +1678,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'skips reconfirmation when requested' do
-      put api("/users/#{user.id}", admin), params: { email: 'new@email.com', skip_reconfirmation: true }
+      put api(path, admin, admin_mode: true), params: { email: 'new@email.com', skip_reconfirmation: true }
 
       user.reload
 
@@ -1637,7 +1688,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'updates user with their own username' do
-      put api("/users/#{user.id}", admin), params: { username: user.username }
+      put api(path, admin, admin_mode: true), params: { username: user.username }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['username']).to eq(user.username)
@@ -1645,14 +1696,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "updates user's existing identity" do
-      put api("/users/#{ldap_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
+      put api("/users/#{ldap_user.id}", admin, admin_mode: true), params: { provider: 'ldapmain', extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(ldap_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do
-      put api("/users/#{user.id}", admin), params: { provider: 'github', extern_uid: 'john' }
+      put api(path, admin, admin_mode: true), params: { provider: 'github', extern_uid: 'john' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.identities.first.extern_uid).to eq('john')
@@ -1660,14 +1711,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "updates admin status" do
-      put api("/users/#{user.id}", admin), params: { admin: true }
+      put api(path, admin, admin_mode: true), params: { admin: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.admin).to eq(true)
     end
 
     it "updates external status" do
-      put api("/users/#{user.id}", admin), params: { external: true }
+      put api(path, admin, admin_mode: true), params: { external: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['external']).to eq(true)
@@ -1675,14 +1726,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "does have default values for theme and color-scheme ID" do
-      put api("/users/#{user.id}", admin), params: {}
+      put api(path, admin, admin_mode: true), params: {}
 
       expect(user.reload.theme_id).to eq(Gitlab::Themes.default.id)
       expect(user.reload.color_scheme_id).to eq(Gitlab::ColorSchemes.default.id)
     end
 
     it "updates viewing diffs file by file" do
-      put api("/users/#{user.id}", admin), params: { view_diffs_file_by_file: true }
+      put api(path, admin, admin_mode: true), params: { view_diffs_file_by_file: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.user_preference.view_diffs_file_by_file?).to eq(true)
@@ -1693,7 +1744,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         current_value = user.private_profile
         new_value = !current_value
 
-        put api("/users/#{user.id}", admin), params: { private_profile: new_value }
+        put api(path, admin, admin_mode: true), params: { private_profile: new_value }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(user.reload.private_profile).to eq(new_value)
@@ -1707,7 +1758,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         it "updates private_profile to value of the application setting" do
           user.update!(private_profile: false)
 
-          put api("/users/#{user.id}", admin), params: { private_profile: nil }
+          put api(path, admin, admin_mode: true), params: { private_profile: nil }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(user.reload.private_profile).to eq(true)
@@ -1717,7 +1768,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "does not modify private profile when field is not provided" do
         user.update!(private_profile: true)
 
-        put api("/users/#{user.id}", admin), params: {}
+        put api(path, admin, admin_mode: true), params: {}
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(user.reload.private_profile).to eq(true)
@@ -1730,7 +1781,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       user.update!(theme_id: theme.id, color_scheme_id: scheme.id)
 
-      put api("/users/#{user.id}", admin), params: {}
+      put api(path, admin, admin_mode: true), params: {}
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.theme_id).to eq(theme.id)
@@ -1740,7 +1791,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "does not update admin status" do
       admin_user = create(:admin)
 
-      put api("/users/#{admin_user.id}", admin), params: { can_create_group: false }
+      put api("/users/#{admin_user.id}", admin, admin_mode: true), params: { can_create_group: false }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(admin_user.reload.admin).to eq(true)
@@ -1748,35 +1799,35 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "does not allow invalid update" do
-      put api("/users/#{user.id}", admin), params: { email: 'invalid email' }
+      put api(path, admin, admin_mode: true), params: { email: 'invalid email' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(user.reload.email).not_to eq('invalid email')
     end
 
     it "updates theme id" do
-      put api("/users/#{user.id}", admin), params: { theme_id: 5 }
+      put api(path, admin, admin_mode: true), params: { theme_id: 5 }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.theme_id).to eq(5)
     end
 
     it "does not update invalid theme id" do
-      put api("/users/#{user.id}", admin), params: { theme_id: 50 }
+      put api(path, admin, admin_mode: true), params: { theme_id: 50 }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(user.reload.theme_id).not_to eq(50)
     end
 
     it "updates color scheme id" do
-      put api("/users/#{user.id}", admin), params: { color_scheme_id: 5 }
+      put api(path, admin, admin_mode: true), params: { color_scheme_id: 5 }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.color_scheme_id).to eq(5)
     end
 
     it "does not update invalid color scheme id" do
-      put api("/users/#{user.id}", admin), params: { color_scheme_id: 50 }
+      put api(path, admin, admin_mode: true), params: { color_scheme_id: 50 }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(user.reload.color_scheme_id).not_to eq(50)
@@ -1785,7 +1836,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     context 'when the current user is not an admin' do
       it "is not available" do
         expect do
-          put api("/users/#{user.id}", user), params: attributes_for(:user)
+          put api(path, user), params: attributes_for(:user)
         end.not_to change { user.reload.attributes }
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -1793,20 +1844,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "returns 404 for non-existing user" do
-      put api("/users/0", admin), params: { bio: 'update should fail' }
+      put api("/users/#{non_existing_record_id}", admin, admin_mode: true), params: { bio: 'update should fail' }
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 if invalid ID" do
-      put api("/users/ASDF", admin)
+      put api("/users/ASDF", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 400 error if user does not validate' do
-      put api("/users/#{user.id}", admin),
+      put api(path, admin, admin_mode: true),
         params: {
           password: 'pass',
           email: 'test@example.com',
@@ -1823,30 +1874,30 @@ RSpec.describe API::Users, feature_category: :user_profile do
       expect(json_response['message']['projects_limit'])
         .to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username'])
-        .to eq([Gitlab::PathRegex.namespace_format_message])
+        .to match_array([Gitlab::PathRegex.namespace_format_message, Gitlab::Regex.oci_repository_path_regex_message])
     end
 
     it 'returns 400 if provider is missing for identity update' do
-      put api("/users/#{omniauth_user.id}", admin), params: { extern_uid: '654321' }
+      put api("/users/#{omniauth_user.id}", admin, admin_mode: true), params: { extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 400 if external UID is missing for identity update' do
-      put api("/users/#{omniauth_user.id}", admin), params: { provider: 'ldap' }
+      put api("/users/#{omniauth_user.id}", admin, admin_mode: true), params: { provider: 'ldap' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context "with existing user" do
       before do
-        post api("/users", admin), params: { email: 'test@example.com', password: User.random_password, username: 'test', name: 'test' }
-        post api("/users", admin), params: { email: 'foo@bar.com', password: User.random_password, username: 'john', name: 'john' }
+        post api("/users", admin, admin_mode: true), params: { email: 'test@example.com', password: User.random_password, username: 'test', name: 'test' }
+        post api("/users", admin, admin_mode: true), params: { email: 'foo@bar.com', password: User.random_password, username: 'john', name: 'john' }
         @user = User.all.last
       end
 
       it 'returns 409 conflict error if email address exists' do
-        put api("/users/#{@user.id}", admin), params: { email: 'test@example.com' }
+        put api("/users/#{@user.id}", admin, admin_mode: true), params: { email: 'test@example.com' }
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(@user.reload.email).to eq(@user.email)
@@ -1854,7 +1905,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns 409 conflict error if username taken' do
         @user_id = User.all.last.id
-        put api("/users/#{@user.id}", admin), params: { username: 'test' }
+        put api("/users/#{@user.id}", admin, admin_mode: true), params: { username: 'test' }
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(@user.reload.username).to eq(@user.username)
@@ -1862,7 +1913,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns 409 conflict error if username taken (case insensitive)' do
         @user_id = User.all.last.id
-        put api("/users/#{@user.id}", admin), params: { username: 'TEST' }
+        put api("/users/#{@user.id}", admin, admin_mode: true), params: { username: 'TEST' }
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(@user.reload.username).to eq(@user.username)
@@ -1874,7 +1925,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
 
         it 'returns 409 conflict error' do
-          put api("/users/#{user.id}", admin), params: { email: confirmed_user.email }
+          put api(path, admin, admin_mode: true), params: { email: confirmed_user.email }
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(user.reload.email).not_to eq(confirmed_user.email)
@@ -1885,7 +1936,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:unconfirmed_user) { create(:user, :unconfirmed, email: 'foo@example.com') }
 
         it 'returns 409 conflict error' do
-          put api("/users/#{user.id}", admin), params: { email: unconfirmed_user.email }
+          put api(path, admin, admin_mode: true), params: { email: unconfirmed_user.email }
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(user.reload.email).not_to eq(unconfirmed_user.email)
@@ -1898,7 +1949,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
 
         it 'returns 409 conflict error' do
-          put api("/users/#{user.id}", admin), params: { email: email.email }
+          put api(path, admin, admin_mode: true), params: { email: email.email }
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(user.reload.email).not_to eq(email.email)
@@ -1909,7 +1960,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:email) { create(:email, email: 'foo@example.com') }
 
         it 'does not update email' do
-          put api("/users/#{user.id}", admin), params: { email: email.email }
+          put api(path, admin, admin_mode: true), params: { email: email.email }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(user.reload.email).not_to eq(email.email)
@@ -1921,6 +1972,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
   describe "PUT /user/:id/credit_card_validation" do
     let(:credit_card_validated_time) { Time.utc(2020, 1, 1) }
     let(:expiration_year) { Date.today.year + 10 }
+    let(:path) { "/user/#{user.id}/credit_card_validation" }
     let(:params) do
       {
         credit_card_validated_at: credit_card_validated_time,
@@ -1932,25 +1984,27 @@ RSpec.describe API::Users, feature_category: :user_profile do
       }
     end
 
+    it_behaves_like 'PUT request permissions for admin mode'
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        put api("/user/#{user.id}/credit_card_validation"), params: {}
+        put api(path), params: {}
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
     context 'when authenticated as non-admin' do
-      it "does not allow updating user's credit card validation", :aggregate_failures do
-        put api("/user/#{user.id}/credit_card_validation", user), params: params
+      it "does not allow updating user's credit card validation" do
+        put api(path, user), params: params
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     context 'when authenticated as admin' do
-      it "updates user's credit card validation", :aggregate_failures do
-        put api("/user/#{user.id}/credit_card_validation", admin), params: params
+      it "updates user's credit card validation" do
+        put api(path, admin, admin_mode: true), params: params
 
         user.reload
 
@@ -1965,13 +2019,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns 400 error if credit_card_validated_at is missing" do
-        put api("/user/#{user.id}/credit_card_validation", admin), params: {}
+        put api(path, admin, admin_mode: true), params: {}
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 404 error if user not found' do
-        put api("/user/#{non_existing_record_id}/credit_card_validation", admin), params: params
+        put api("/user/#{non_existing_record_id}/credit_card_validation", admin, admin_mode: true), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -1981,10 +2035,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe "DELETE /users/:id/identities/:provider" do
     let(:test_user) { create(:omniauth_user, provider: 'ldapmain') }
+    let(:path) { "/users/#{test_user.id}/identities/ldapmain" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/users/#{test_user.id}/identities/ldapmain")
+        delete api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1993,24 +2050,24 @@ RSpec.describe API::Users, feature_category: :user_profile do
     context 'when authenticated' do
       it 'deletes identity of given provider' do
         expect do
-          delete api("/users/#{test_user.id}/identities/ldapmain", admin)
+          delete api(path, admin, admin_mode: true)
         end.to change { test_user.identities.count }.by(-1)
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/users/#{test_user.id}/identities/ldapmain", admin) }
+        let(:request) { api(path, admin, admin_mode: true) }
       end
 
       it 'returns 404 error if user not found' do
-        delete api("/users/0/identities/ldapmain", admin)
+        delete api("/users/#{non_existing_record_id}/identities/ldapmain", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if identity not found' do
-        delete api("/users/#{test_user.id}/identities/saml", admin)
+        delete api("/users/#{test_user.id}/identities/saml", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Identity Not Found')
@@ -2019,25 +2076,31 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "POST /users/:id/keys" do
+    let(:path) { "/users/#{user.id}/keys" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { attributes_for(:key, usage_type: :signing) }
+    end
+
     it "does not create invalid ssh key" do
-      post api("/users/#{user.id}/keys", admin), params: { title: "invalid key" }
+      post api(path, admin, admin_mode: true), params: { title: "invalid key" }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('key is missing')
     end
 
     it 'does not create key without title' do
-      post api("/users/#{user.id}/keys", admin), params: { key: 'some key' }
+      post api(path, admin, admin_mode: true), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('title is missing')
     end
 
-    it "creates ssh key", :aggregate_failures do
+    it "creates ssh key" do
       key_attrs = attributes_for(:key, usage_type: :signing)
 
       expect do
-        post api("/users/#{user.id}/keys", admin), params: key_attrs
+        post api(path, admin, admin_mode: true), params: key_attrs
       end.to change { user.keys.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:created)
@@ -2052,20 +2115,21 @@ RSpec.describe API::Users, feature_category: :user_profile do
       optional_attributes = { expires_at: 3.weeks.from_now }
       attributes = attributes_for(:key).merge(optional_attributes)
 
-      post api("/users/#{user.id}/keys", admin), params: attributes
+      post api(path, admin, admin_mode: true), params: attributes
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['expires_at'].to_date).to eq(optional_attributes[:expires_at].to_date)
     end
 
     it "returns 400 for invalid ID" do
-      post api("/users/0/keys", admin)
+      post api("/users/#{non_existing_record_id}/keys", admin, admin_mode: true)
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
   describe 'GET /users/:id/project_deploy_keys' do
     let(:project) { create(:project) }
+    let(:path) { "/users/#{user.id}/project_deploy_keys" }
 
     before do
       project.add_maintainer(user)
@@ -2082,7 +2146,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns array of project deploy keys with pagination' do
-      get api("/users/#{user.id}/project_deploy_keys", user)
+      get api(path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -2094,7 +2158,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       dev_user = create(:user)
       project.add_developer(dev_user)
 
-      get api("/users/#{user.id}/project_deploy_keys", dev_user)
+      get api(path, dev_user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden - No common authorized project found')
@@ -2113,7 +2177,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'when no common projects for user and current_user' do
         it 'forbids' do
-          get api("/users/#{user.id}/project_deploy_keys", second_user)
+          get api(path, second_user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to eq('403 Forbidden - No common authorized project found')
@@ -2125,11 +2189,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
           project.add_maintainer(second_user)
         end
 
+        let(:path) { "/users/#{second_user.id}/project_deploy_keys" }
+
         it 'lists only common project keys' do
           expect(second_user.project_deploy_keys).to contain_exactly(
             project.deploy_keys.first, second_project.deploy_keys.first)
 
-          get api("/users/#{second_user.id}/project_deploy_keys", user)
+          get api(path, user)
 
           expect(json_response.count).to eq(1)
           expect(json_response.first['key']).to eq(project.deploy_keys.first.key)
@@ -2144,7 +2210,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           create(:deploy_key, user: second_user)
           create(:deploy_key, user: third_user)
 
-          get api("/users/#{second_user.id}/project_deploy_keys", third_user)
+          get api(path, third_user)
 
           expect(json_response.count).to eq(2)
           expect([json_response.first['key'], json_response.second['key']]).to contain_exactly(
@@ -2155,14 +2221,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
           second_project.add_maintainer(user)
 
           control_count = ActiveRecord::QueryRecorder.new do
-            get api("/users/#{second_user.id}/project_deploy_keys", user)
+            get api(path, user)
           end.count
 
           deploy_key = create(:deploy_key, user: second_user)
           create(:deploy_keys_project, project: second_project, deploy_key_id: deploy_key.id)
 
           expect do
-            get api("/users/#{second_user.id}/project_deploy_keys", user)
+            get api(path, user)
           end.not_to exceed_query_limit(control_count)
         end
       end
@@ -2170,6 +2236,10 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /user/:id/keys' do
+    subject(:request) { get api(path) }
+
+    let(:path) { "/users/#{user.id}/keys" }
+
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/keys")
 
@@ -2180,7 +2250,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'returns array of ssh keys' do
       user.keys << key
 
-      get api("/users/#{user.id}/keys")
+      request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -2190,7 +2260,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     it 'returns array of ssh keys with comments replaced with'\
       'a simple identifier of username + hostname' do
-      get api("/users/#{user.id}/keys")
+      request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -2202,24 +2272,26 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'N+1 queries' do
       before do
-        get api("/users/#{user.id}/keys")
+        request
       end
 
       it 'avoids N+1 queries', :request_store do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/users/#{user.id}/keys")
+          request
         end.count
 
         create_list(:key, 2, user: user)
 
         expect do
-          get api("/users/#{user.id}/keys")
+          request
         end.not_to exceed_all_query_limit(control_count)
       end
     end
   end
 
   describe 'GET /user/:user_id/keys' do
+    let(:path) { "/users/#{user.username}/keys" }
+
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/keys")
 
@@ -2230,7 +2302,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'returns array of ssh keys' do
       user.keys << key
 
-      get api("/users/#{user.username}/keys")
+      get api(path)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -2240,25 +2312,27 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /user/:id/keys/:key_id' do
-    it 'gets existing key', :aggregate_failures do
+    let(:path) { "/users/#{user.id}/keys/#{key.id}" }
+
+    it 'gets existing key' do
       user.keys << key
 
-      get api("/users/#{user.id}/keys/#{key.id}")
+      get api(path)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(key.title)
     end
 
-    it 'returns 404 error if user not found', :aggregate_failures do
+    it 'returns 404 error if user not found' do
       user.keys << key
 
-      get api("/users/0/keys/#{key.id}")
+      get api("/users/#{non_existing_record_id}/keys/#{key.id}")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it 'returns 404 error if key not found', :aggregate_failures do
+    it 'returns 404 error if key not found' do
       get api("/users/#{user.id}/keys/#{non_existing_record_id}")
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -2267,6 +2341,10 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'DELETE /user/:id/keys/:key_id' do
+    let(:path) { "/users/#{user.id}/keys/#{key.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         delete api("/users/#{user.id}/keys/#{non_existing_record_id}")
@@ -2279,26 +2357,26 @@ RSpec.describe API::Users, feature_category: :user_profile do
         user.keys << key
 
         expect do
-          delete api("/users/#{user.id}/keys/#{key.id}", admin)
+          delete api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { user.keys.count }.by(-1)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/users/#{user.id}/keys/#{key.id}", admin) }
+        let(:request) { api(path, admin, admin_mode: true) }
       end
 
       it 'returns 404 error if user not found' do
         user.keys << key
 
-        delete api("/users/0/keys/#{key.id}", admin)
+        delete api("/users/#{non_existing_record_id}/keys/#{key.id}", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/keys/#{non_existing_record_id}", admin)
+        delete api("/users/#{user.id}/keys/#{non_existing_record_id}", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Key Not Found')
       end
@@ -2306,8 +2384,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'POST /users/:id/gpg_keys' do
+    let(:path) { "/users/#{user.id}/gpg_keys" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { attributes_for :gpg_key, key: GpgHelpers::User2.public_key }
+    end
+
     it 'does not create invalid GPG key' do
-      post api("/users/#{user.id}/gpg_keys", admin)
+      post api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('key is missing')
@@ -2317,22 +2401,24 @@ RSpec.describe API::Users, feature_category: :user_profile do
       key_attrs = attributes_for :gpg_key, key: GpgHelpers::User2.public_key
 
       expect do
-        post api("/users/#{user.id}/gpg_keys", admin), params: key_attrs
+        post api(path, admin, admin_mode: true), params: key_attrs
 
         expect(response).to have_gitlab_http_status(:created)
       end.to change { user.gpg_keys.count }.by(1)
     end
 
     it 'returns 400 for invalid ID' do
-      post api('/users/0/gpg_keys', admin)
+      post api("/users/#{non_existing_record_id}/gpg_keys", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
   describe 'GET /user/:id/gpg_keys' do
+    let(:path) { "/users/#{user.id}/gpg_keys" }
+
     it 'returns 404 for non-existing user' do
-      get api('/users/0/gpg_keys')
+      get api("/users/#{non_existing_record_id}/gpg_keys")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -2341,7 +2427,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'returns array of GPG keys' do
       user.gpg_keys << gpg_key
 
-      get api("/users/#{user.id}/gpg_keys")
+      get api(path)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -2351,15 +2437,17 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /user/:id/gpg_keys/:key_id' do
+    let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}" }
+
     it 'returns 404 for non-existing user' do
-      get api('/users/0/gpg_keys/1')
+      get api("/users/#{non_existing_record_id}/gpg_keys/1")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns 404 for non-existing key' do
-      get api("/users/#{user.id}/gpg_keys/0")
+      get api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -2368,7 +2456,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'returns a single GPG key' do
       user.gpg_keys << gpg_key
 
-      get api("/users/#{user.id}/gpg_keys/#{gpg_key.id}")
+      get api(path)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['key']).to eq(gpg_key.key)
@@ -2376,6 +2464,10 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'DELETE /user/:id/gpg_keys/:key_id' do
+    let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         delete api("/users/#{user.id}/keys/#{non_existing_record_id}")
@@ -2389,7 +2481,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         user.gpg_keys << gpg_key
 
         expect do
-          delete api("/users/#{user.id}/gpg_keys/#{gpg_key.id}", admin)
+          delete api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { user.gpg_keys.count }.by(-1)
@@ -2398,14 +2490,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns 404 error if user not found' do
         user.keys << key
 
-        delete api("/users/0/gpg_keys/#{gpg_key.id}", admin)
+        delete api("/users/#{non_existing_record_id}/gpg_keys/#{gpg_key.id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin)
+        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -2414,6 +2506,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'POST /user/:id/gpg_keys/:key_id/revoke' do
+    let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { {} }
+      let(:success_status_code) { :accepted }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         post api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}/revoke")
@@ -2427,7 +2526,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         user.gpg_keys << gpg_key
 
         expect do
-          post api("/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke", admin)
+          post api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:accepted)
         end.to change { user.gpg_keys.count }.by(-1)
@@ -2436,14 +2535,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns 404 error if user not found' do
         user.gpg_keys << gpg_key
 
-        post api("/users/0/gpg_keys/#{gpg_key.id}/revoke", admin)
+        post api("/users/#{non_existing_record_id}/gpg_keys/#{gpg_key.id}/revoke", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if key not foud' do
-        post api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}/revoke", admin)
+        post api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}/revoke", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -2452,8 +2551,19 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "POST /users/:id/emails", :mailer do
+    let(:path) { "/users/#{user.id}/emails" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      before do
+        email_attrs[:skip_confirmation] = true
+      end
+
+      let(:email_attrs) { attributes_for :email }
+      let(:params) { email_attrs }
+    end
+
     it "does not create invalid email" do
-      post api("/users/#{user.id}/emails", admin), params: {}
+      post api(path, admin, admin_mode: true), params: {}
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('email is missing')
@@ -2464,7 +2574,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       perform_enqueued_jobs do
         expect do
-          post api("/users/#{user.id}/emails", admin), params: email_attrs
+          post api(path, admin, admin_mode: true), params: email_attrs
         end.to change { user.emails.count }.by(1)
       end
 
@@ -2473,7 +2583,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "returns a 400 for invalid ID" do
-      post api("/users/0/emails", admin)
+      post api("/users/#{non_existing_record_id}/emails", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
@@ -2482,7 +2592,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       email_attrs = attributes_for :email
       email_attrs[:skip_confirmation] = true
 
-      post api("/users/#{user.id}/emails", admin), params: email_attrs
+      post api(path, admin, admin_mode: true), params: email_attrs
 
       expect(response).to have_gitlab_http_status(:created)
 
@@ -2494,7 +2604,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
 
         it 'returns 400 error' do
-          post api("/users/#{user.id}/emails", admin), params: { email: confirmed_user.email }
+          post api(path, admin, admin_mode: true), params: { email: confirmed_user.email }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -2504,7 +2614,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:unconfirmed_user) { create(:user, :unconfirmed, email: 'foo@example.com') }
 
         it 'returns 400 error' do
-          post api("/users/#{user.id}/emails", admin), params: { email: unconfirmed_user.email }
+          post api(path, admin, admin_mode: true), params: { email: unconfirmed_user.email }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -2516,7 +2626,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
 
         it 'returns 400 error' do
-          post api("/users/#{user.id}/emails", admin), params: { email: email.email }
+          post api(path, admin, admin_mode: true), params: { email: email.email }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -2526,7 +2636,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         let!(:email) { create(:email, email: 'foo@example.com') }
 
         it 'returns 400 error' do
-          post api("/users/#{user.id}/emails", admin), params: { email: email.email }
+          post api(path, admin, admin_mode: true), params: { email: email.email }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -2535,16 +2645,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /user/:id/emails' do
+    let(:path) { "/users/#{user.id}/emails" }
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api("/users/#{user.id}/emails")
+        get api(path)
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
     context 'when authenticated' do
       it 'returns 404 for non-existing user' do
-        get api('/users/0/emails', admin)
+        get api("/users/#{non_existing_record_id}/emails", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
@@ -2552,7 +2664,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns array of emails' do
         user.emails << email
 
-        get api("/users/#{user.id}/emails", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2562,7 +2674,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it "returns a 404 for invalid ID" do
-        get api("/users/ASDF/emails", admin)
+        get api("/users/ASDF/emails", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -2570,6 +2682,10 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'DELETE /user/:id/emails/:email_id' do
+    let(:path) { "/users/#{user.id}/emails/#{email.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         delete api("/users/#{user.id}/emails/#{non_existing_record_id}")
@@ -2582,26 +2698,26 @@ RSpec.describe API::Users, feature_category: :user_profile do
         user.emails << email
 
         expect do
-          delete api("/users/#{user.id}/emails/#{email.id}", admin)
+          delete api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { user.emails.count }.by(-1)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/users/#{user.id}/emails/#{email.id}", admin) }
+        subject(:request) { api(path, admin, admin_mode: true) }
       end
 
       it 'returns 404 error if user not found' do
         user.emails << email
 
-        delete api("/users/0/emails/#{email.id}", admin)
+        delete api("/users/#{non_existing_record_id}/emails/#{email.id}", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if email not foud' do
-        delete api("/users/#{user.id}/emails/#{non_existing_record_id}", admin)
+        delete api("/users/#{user.id}/emails/#{non_existing_record_id}", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Email Not Found')
       end
@@ -2616,9 +2732,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
   describe "DELETE /users/:id" do
     let_it_be(:issue) { create(:issue, author: user) }
+    let(:path) { "/users/#{user.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
 
     it "deletes user", :sidekiq_inline do
-      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+      perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
 
       expect(response).to have_gitlab_http_status(:no_content)
       expect(Users::GhostUserMigration.where(user: user,
@@ -2630,14 +2749,14 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context "hard delete disabled" do
         it "does not delete user" do
-          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+          perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
           expect(response).to have_gitlab_http_status(:conflict)
         end
       end
 
       context "hard delete enabled" do
         it "delete user and group", :sidekiq_inline do
-          perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+          perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin, admin_mode: true) }
           expect(response).to have_gitlab_http_status(:no_content)
           expect(Group.exists?(group.id)).to be_falsy
         end
@@ -2652,7 +2771,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           end
 
           it "delete only user", :sidekiq_inline do
-            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin, admin_mode: true) }
             expect(response).to have_gitlab_http_status(:no_content)
             expect(Group.exists?(subgroup.id)).to be_truthy
           end
@@ -2661,34 +2780,34 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/users/#{user.id}", admin) }
+      let(:request) { api(path, admin, admin_mode: true) }
     end
 
     it "does not delete for unauthenticated user" do
-      perform_enqueued_jobs { delete api("/users/#{user.id}") }
+      perform_enqueued_jobs { delete api(path) }
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "is not available for non admin users" do
-      perform_enqueued_jobs { delete api("/users/#{user.id}", user) }
+      perform_enqueued_jobs { delete api(path, user) }
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it "returns 404 for non-existing user" do
-      perform_enqueued_jobs { delete api("/users/0", admin) }
+      perform_enqueued_jobs { delete api("/users/#{non_existing_record_id}", admin, admin_mode: true) }
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      perform_enqueued_jobs { delete api("/users/ASDF", admin) }
+      perform_enqueued_jobs { delete api("/users/ASDF", admin, admin_mode: true) }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context "hard delete disabled" do
       it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+        perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(issue.reload).to be_persisted
@@ -2700,7 +2819,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context "hard delete enabled" do
       it "removes contributions", :sidekiq_might_not_need_inline do
-        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin, admin_mode: true) }
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(Users::GhostUserMigration.where(user: user,
@@ -2711,6 +2830,8 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "GET /user" do
+    let(:path) { '/user' }
+
     shared_examples 'get user info' do |version|
       context 'with regular user' do
         context 'with personal access token' do
@@ -2724,7 +2845,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         it 'returns current user without private token when sudo not defined' do
-          get api("/user", user, version: version)
+          get api(path, user, version: version)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/user/public')
@@ -2732,7 +2853,6 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         context "scopes" do
-          let(:path) { "/user" }
           let(:api_call) { method(:api) }
 
           include_examples 'allows the "read_user" scope', version
@@ -2740,7 +2860,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       context 'with admin' do
-        let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
+        let(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin).token }
 
         context 'with personal access token' do
           it 'returns 403 without private token when sudo defined' do
@@ -2761,7 +2881,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'with unauthenticated user' do
         it "returns 401 error if user is unauthenticated" do
-          get api("/user", version: version)
+          get api(path, version: version)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
@@ -2773,9 +2893,11 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "GET /user/preferences" do
+    let(:path) { '/user/preferences' }
+
     context "when unauthenticated" do
       it "returns authentication error" do
-        get api("/user/preferences")
+        get api(path)
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
@@ -2786,7 +2908,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         user.user_preference.show_whitespace_in_diffs = true
         user.save!
 
-        get api("/user/preferences", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response["view_diffs_file_by_file"]).to eq(user.user_preference.view_diffs_file_by_file)
@@ -2796,6 +2918,10 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "GET /user/keys" do
+    subject(:request) { get api(path, user) }
+
+    let(:path) { "/user/keys" }
+
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/user/keys")
@@ -2807,7 +2933,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns array of ssh keys" do
         user.keys << key
 
-        get api("/user/keys", user)
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2817,7 +2943,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'returns array of ssh keys with comments replaced with'\
         'a simple identifier of username + hostname' do
-        get api("/user/keys", user)
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2829,24 +2955,23 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'N+1 queries' do
         before do
-          get api("/user/keys", user)
+          request
         end
 
         it 'avoids N+1 queries', :request_store do
           control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-            get api("/user/keys", user)
+            request
           end.count
 
           create_list(:key, 2, user: user)
 
           expect do
-            get api("/user/keys", user)
+            request
           end.not_to exceed_all_query_limit(control_count)
         end
       end
 
       context "scopes" do
-        let(:path) { "/user/keys" }
         let(:api_call) { method(:api) }
 
         include_examples 'allows the "read_user" scope'
@@ -2855,16 +2980,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "GET /user/keys/:key_id" do
+    let(:path) { "/user/keys/#{key.id}" }
+
     it "returns single key" do
       user.keys << key
 
-      get api("/user/keys/#{key.id}", user)
+      get api(path, user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["title"]).to eq(key.title)
     end
 
     it 'exposes SSH key comment as a simple identifier of username + hostname' do
-      get api("/user/keys/#{key.id}", user)
+      get api(path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
@@ -2881,19 +3008,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
       user.keys << key
       admin
 
-      get api("/user/keys/#{key.id}", admin)
+      get api(path, admin, admin_mode: true)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Key Not Found')
     end
 
     it "returns 404 for invalid ID" do
-      get api("/users/keys/ASDF", admin)
+      get api("/users/keys/ASDF", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context "scopes" do
-      let(:path) { "/user/keys/#{key.id}" }
       let(:api_call) { method(:api) }
 
       include_examples 'allows the "read_user" scope'
@@ -2901,11 +3027,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "POST /user/keys" do
-    it "creates ssh key", :aggregate_failures do
+    let(:path) { "/user/keys" }
+
+    it "creates ssh key" do
       key_attrs = attributes_for(:key, usage_type: :signing)
 
       expect do
-        post api("/user/keys", user), params: key_attrs
+        post api(path, user), params: key_attrs
       end.to change { user.keys.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:created)
@@ -2920,19 +3048,19 @@ RSpec.describe API::Users, feature_category: :user_profile do
       optional_attributes = { expires_at: 3.weeks.from_now }
       attributes = attributes_for(:key).merge(optional_attributes)
 
-      post api("/user/keys", user), params: attributes
+      post api(path, user), params: attributes
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['expires_at'].to_date).to eq(optional_attributes[:expires_at].to_date)
     end
 
     it "returns a 401 error if unauthorized" do
-      post api("/user/keys"), params: { title: 'some title', key: 'some key' }
+      post api(path), params: { title: 'some title', key: 'some key' }
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "does not create ssh key without key" do
-      post api("/user/keys", user), params: { title: 'title' }
+      post api(path, user), params: { title: 'title' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('key is missing')
@@ -2946,24 +3074,26 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it "does not create ssh key without title" do
-      post api("/user/keys", user), params: { key: "somekey" }
+      post api(path, user), params: { key: "somekey" }
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
   describe "DELETE /user/keys/:key_id" do
+    let(:path) { "/user/keys/#{key.id}" }
+
     it "deletes existed key" do
       user.keys << key
 
       expect do
-        delete api("/user/keys/#{key.id}", user)
+        delete api(path, user)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.keys.count }.by(-1)
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/user/keys/#{key.id}", user) }
+      let(:request) { api(path, user) }
     end
 
     it "returns 404 if key ID not found" do
@@ -2976,21 +3106,23 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "returns 401 error if unauthorized" do
       user.keys << key
 
-      delete api("/user/keys/#{key.id}")
+      delete api(path)
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "returns a 404 for invalid ID" do
-      delete api("/users/keys/ASDF", admin)
+      delete api("/users/keys/ASDF", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
   describe 'GET /user/gpg_keys' do
+    let(:path) { '/user/gpg_keys' }
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api('/user/gpg_keys')
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -3000,7 +3132,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns array of GPG keys' do
         user.gpg_keys << gpg_key
 
-        get api('/user/gpg_keys', user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -3009,7 +3141,6 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       context 'scopes' do
-        let(:path) { '/user/gpg_keys' }
         let(:api_call) { method(:api) }
 
         include_examples 'allows the "read_user" scope'
@@ -3018,10 +3149,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'GET /user/gpg_keys/:key_id' do
+    let(:path) { "/user/gpg_keys/#{gpg_key.id}" }
+
     it 'returns a single key' do
       user.gpg_keys << gpg_key
 
-      get api("/user/gpg_keys/#{gpg_key.id}", user)
+      get api(path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['key']).to eq(gpg_key.key)
@@ -3037,20 +3170,19 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "returns 404 error if admin accesses user's GPG key" do
       user.gpg_keys << gpg_key
 
-      get api("/user/gpg_keys/#{gpg_key.id}", admin)
+      get api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
     end
 
     it 'returns 404 for invalid ID' do
-      get api('/users/gpg_keys/ASDF', admin)
+      get api('/users/gpg_keys/ASDF', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context 'scopes' do
-      let(:path) { "/user/gpg_keys/#{gpg_key.id}" }
       let(:api_call) { method(:api) }
 
       include_examples 'allows the "read_user" scope'
@@ -3058,24 +3190,26 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe 'POST /user/gpg_keys' do
+    let(:path) { '/user/gpg_keys' }
+
     it 'creates a GPG key' do
       key_attrs = attributes_for :gpg_key, key: GpgHelpers::User2.public_key
 
       expect do
-        post api('/user/gpg_keys', user), params: key_attrs
+        post api(path, user), params: key_attrs
 
         expect(response).to have_gitlab_http_status(:created)
       end.to change { user.gpg_keys.count }.by(1)
     end
 
     it 'returns a 401 error if unauthorized' do
-      post api('/user/gpg_keys'), params: { key: 'some key' }
+      post api(path), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'does not create GPG key without key' do
-      post api('/user/gpg_keys', user)
+      post api(path, user)
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('key is missing')
@@ -3109,18 +3243,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns a 404 for invalid ID' do
-      post api('/users/gpg_keys/ASDF/revoke', admin)
+      post api('/users/gpg_keys/ASDF/revoke', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
   describe 'DELETE /user/gpg_keys/:key_id' do
+    let(:path) { "/user/gpg_keys/#{gpg_key.id}" }
+
     it 'deletes existing GPG key' do
       user.gpg_keys << gpg_key
 
       expect do
-        delete api("/user/gpg_keys/#{gpg_key.id}", user)
+        delete api(path, user)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.gpg_keys.count }.by(-1)
@@ -3136,22 +3272,24 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it 'returns 401 error if unauthorized' do
       user.gpg_keys << gpg_key
 
-      delete api("/user/gpg_keys/#{gpg_key.id}")
+      delete api(path)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns a 404 for invalid ID' do
-      delete api('/users/gpg_keys/ASDF', admin)
+      delete api('/users/gpg_keys/ASDF', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
   describe "GET /user/emails" do
+    let(:path) { '/user/emails' }
+
     context "when unauthenticated" do
       it "returns authentication error" do
-        get api("/user/emails")
+        get api(path)
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
@@ -3160,7 +3298,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it "returns array of emails" do
         user.emails << email
 
-        get api("/user/emails", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -3170,7 +3308,6 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       context "scopes" do
-        let(:path) { "/user/emails" }
         let(:api_call) { method(:api) }
 
         include_examples 'allows the "read_user" scope'
@@ -3179,10 +3316,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "GET /user/emails/:email_id" do
+    let(:path) { "/user/emails/#{email.id}" }
+
     it "returns single email" do
       user.emails << email
 
-      get api("/user/emails/#{email.id}", user)
+      get api(path, user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["email"]).to eq(email.email)
     end
@@ -3197,19 +3336,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
       user.emails << email
       admin
 
-      get api("/user/emails/#{email.id}", admin)
+      get api(path, admin, admin_mode: true)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Email Not Found')
     end
 
     it "returns 404 for invalid ID" do
-      get api("/users/emails/ASDF", admin)
+      get api("/users/emails/ASDF", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context "scopes" do
-      let(:path) { "/user/emails/#{email.id}" }
       let(:api_call) { method(:api) }
 
       include_examples 'allows the "read_user" scope'
@@ -3217,21 +3355,23 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "POST /user/emails" do
+    let(:path) { '/user/emails' }
+
     it "creates email" do
       email_attrs = attributes_for :email
       expect do
-        post api("/user/emails", user), params: email_attrs
+        post api(path, user), params: email_attrs
       end.to change { user.emails.count }.by(1)
       expect(response).to have_gitlab_http_status(:created)
     end
 
     it "returns a 401 error if unauthorized" do
-      post api("/user/emails"), params: { email: 'some email' }
+      post api(path), params: { email: 'some email' }
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "does not create email with invalid email" do
-      post api("/user/emails", user), params: {}
+      post api(path, user), params: {}
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('email is missing')
@@ -3239,18 +3379,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
   end
 
   describe "DELETE /user/emails/:email_id" do
+    let(:path) { "/user/emails/#{email.id}" }
+
     it "deletes existed email" do
       user.emails << email
 
       expect do
-        delete api("/user/emails/#{email.id}", user)
+        delete api(path, user)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.emails.count }.by(-1)
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/user/emails/#{email.id}", user) }
+      let(:request) { api(path, user) }
     end
 
     it "returns 404 if email ID not found" do
@@ -3263,12 +3405,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
     it "returns 401 error if unauthorized" do
       user.emails << email
 
-      delete api("/user/emails/#{email.id}")
+      delete api(path)
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "returns 400 for invalid ID" do
-      delete api("/user/emails/ASDF", admin)
+      delete api("/user/emails/ASDF", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
@@ -3283,12 +3425,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'POST /users/:id/activate' do
-      subject(:activate) { post api("/users/#{user_id}/activate", api_user) }
+      subject(:activate) { post api(path, api_user, **params) }
 
       let(:user_id) { user.id }
+      let(:path) { "/users/#{user_id}/activate" }
+
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:params) { {} }
+      end
 
       context 'performed by a non-admin user' do
         let(:api_user) { user }
+        let(:params) { { admin_mode: false } }
 
         it 'is not authorized to perform the action' do
           activate
@@ -3299,6 +3447,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'performed by an admin user' do
         let(:api_user) { admin }
+        let(:params) { { admin_mode: true } }
 
         context 'for a deactivated user' do
           let(:user_id) { deactivated_user.id }
@@ -3351,7 +3500,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         context 'for a user that does not exist' do
-          let(:user_id) { 0 }
+          let(:user_id) { non_existing_record_id }
 
           before do
             activate
@@ -3363,12 +3512,18 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'POST /users/:id/deactivate' do
-      subject(:deactivate) { post api("/users/#{user_id}/deactivate", api_user) }
+      subject(:deactivate) { post api(path, api_user, **params) }
 
       let(:user_id) { user.id }
+      let(:path) { "/users/#{user_id}/deactivate" }
+
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:params) { {} }
+      end
 
       context 'performed by a non-admin user' do
         let(:api_user) { user }
+        let(:params) { { admin_mode: false } }
 
         it 'is not authorized to perform the action' do
           deactivate
@@ -3379,6 +3534,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'performed by an admin user' do
         let(:api_user) { admin }
+        let(:params) { { admin_mode: true } }
 
         context 'for an active user' do
           let(:activity) { {} }
@@ -3402,7 +3558,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
               deactivate
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
+              expect(json_response['message']).to eq("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
               expect(user.reload.state).to eq('active')
             end
           end
@@ -3426,7 +3582,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Error occurred. A blocked user cannot be deactivated')
             expect(blocked_user.reload.state).to eq('blocked')
           end
         end
@@ -3440,7 +3596,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Error occurred. A blocked user cannot be deactivated')
             expect(user.reload.state).to eq('ldap_blocked')
           end
         end
@@ -3452,12 +3608,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - An internal user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Internal users cannot be deactivated')
           end
         end
 
         context 'for a user that does not exist' do
-          let(:user_id) { 0 }
+          let(:user_id) { non_existing_record_id }
 
           before do
             deactivate
@@ -3480,11 +3636,19 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'POST /users/:id/approve' do
-      subject(:approve) { post api("/users/#{user_id}/approve", api_user) }
+      subject(:approve) { post api(path, api_user, **params) }
+
+      let(:path) { "/users/#{user_id}/approve" }
+
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:user_id) { pending_user.id }
+        let(:params) { {} }
+      end
 
       context 'performed by a non-admin user' do
         let(:api_user) { user }
         let(:user_id) { pending_user.id }
+        let(:params) { { admin_mode: false } }
 
         it 'is not authorized to perform the action' do
           expect { approve }.not_to change { pending_user.reload.state }
@@ -3495,6 +3659,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'performed by an admin user' do
         let(:api_user) { admin }
+        let(:params) { { admin_mode: true } }
 
         context 'for a deactivated user' do
           let(:user_id) { deactivated_user.id }
@@ -3558,8 +3723,16 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
     end
 
-    describe 'POST /users/:id/reject', :aggregate_failures do
-      subject(:reject) { post api("/users/#{user_id}/reject", api_user) }
+    describe 'POST /users/:id/reject' do
+      subject(:reject) { post api(path, api_user, **params) }
+
+      let(:path) { "/users/#{user_id}/reject" }
+
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:user_id) { pending_user.id }
+        let(:params) { {} }
+        let(:success_status_code) { :success }
+      end
 
       shared_examples 'returns 409' do
         it 'returns 409' do
@@ -3573,6 +3746,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       context 'performed by a non-admin user' do
         let(:api_user) { user }
         let(:user_id) { pending_user.id }
+        let(:params) { { admin_mode: false } }
 
         it 'returns 403' do
           expect { reject }.not_to change { pending_user.reload.state }
@@ -3583,6 +3757,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'performed by an admin user' do
         let(:api_user) { admin }
+        let(:params) { { admin_mode: true } }
 
         context 'for an pending approval user' do
           let(:user_id) { pending_user.id }
@@ -3648,13 +3823,21 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
   end
 
-  describe 'POST /users/:id/block', :aggregate_failures do
+  describe 'POST /users/:id/block' do
+    subject(:block_user) { post api(path, api_user, **params) }
+
+    let(:user_id) { user.id }
+    let(:path) { "/users/#{user_id}/block" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { {} }
+    end
+
     context 'when admin' do
-      subject(:block_user) { post api("/users/#{user_id}/block", admin) }
+      let(:api_user) { admin }
+      let(:params) { { admin_mode: true } }
 
       context 'with an existing user' do
-        let(:user_id) { user.id }
-
         it 'blocks existing user' do
           block_user
 
@@ -3730,21 +3913,34 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
     end
 
-    it 'is not available for non admin users' do
-      post api("/users/#{user.id}/block", user)
+    context 'performed by a non-admin user' do
+      let(:api_user) { user }
+      let(:params) { { admin_mode: false } }
 
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(user.reload.state).to eq('active')
+      it 'returns 403' do
+        block_user
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(user.reload.state).to eq('active')
+      end
     end
   end
 
-  describe 'POST /users/:id/unblock', :aggregate_failures do
+  describe 'POST /users/:id/unblock' do
+    subject(:unblock_user) { post api(path, api_user, **params) }
+
+    let(:path) { "/users/#{user_id}/unblock" }
+    let(:user_id) { user.id }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { {} }
+    end
+
     context 'when admin' do
-      subject(:unblock_user) { post api("/users/#{user_id}/unblock", admin) }
+      let(:api_user) { admin }
+      let(:params) { { admin_mode: true } }
 
       context 'with an existing user' do
-        let(:user_id) { user.id }
-
         it 'unblocks existing user' do
           unblock_user
 
@@ -3817,20 +4013,34 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
     end
 
-    it 'is not available for non admin users' do
-      post api("/users/#{user.id}/unblock", user)
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(user.reload.state).to eq('active')
+    context 'performed by a non-admin user' do
+      let(:api_user) { user }
+      let(:params) { { admin_mode: false } }
+
+      it 'returns 403' do
+        unblock_user
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(user.reload.state).to eq('active')
+      end
     end
   end
 
-  describe 'POST /users/:id/ban', :aggregate_failures do
+  describe 'POST /users/:id/ban' do
+    subject(:ban_user) { post api(path, api_user, **params) }
+
+    let(:path) { "/users/#{user_id}/ban" }
+    let(:user_id) { user.id }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { {} }
+    end
+
     context 'when admin' do
-      subject(:ban_user) { post api("/users/#{user_id}/ban", admin) }
+      let(:api_user) { admin }
+      let(:params) { { admin_mode: true } }
 
       context 'with an active user' do
-        let(:user_id) { user.id }
-
         it 'bans an active user' do
           ban_user
 
@@ -3898,17 +4108,32 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
     end
 
-    it 'is not available for non-admin users' do
-      post api("/users/#{user.id}/ban", user)
+    context 'performed by a non-admin user' do
+      let(:api_user) { user }
+      let(:params) { { admin_mode: false } }
 
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(user.reload.state).to eq('active')
+      it 'returns 403' do
+        ban_user
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(user.reload.state).to eq('active')
+      end
     end
   end
 
-  describe 'POST /users/:id/unban', :aggregate_failures do
+  describe 'POST /users/:id/unban' do
+    subject(:unban_user) { post api(path, api_user, **params) }
+
+    let(:path) { "/users/#{user_id}/unban" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:user_id) { banned_user.id }
+      let(:params) { {} }
+    end
+
     context 'when admin' do
-      subject(:unban_user) { post api("/users/#{user_id}/unban", admin) }
+      let(:api_user) { admin }
+      let(:params) { { admin_mode: true } }
 
       context 'with a banned user' do
         let(:user_id) { banned_user.id }
@@ -3979,37 +4204,42 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
     end
 
-    it 'is not available for non admin users' do
-      post api("/users/#{banned_user.id}/unban", user)
+    context 'performed by a non-admin user' do
+      let(:api_user) { user }
+      let(:params) { { admin_mode: false } }
+      let(:user_id) { banned_user.id }
 
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(user.reload.state).to eq('active')
+      it 'returns 403' do
+        unban_user
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(user.reload.state).to eq('active')
+      end
     end
   end
 
   describe "GET /users/:id/memberships" do
+    subject(:request) { get api(path, requesting_user, admin_mode: true) }
+
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:group) { create(:group) }
 
     let(:requesting_user) { create(:user) }
+    let(:path) { "/users/#{user.id}/memberships" }
 
     before_all do
       project.add_guest(user)
       group.add_guest(user)
     end
 
-    it "responses with 403" do
-      get api("/users/#{user.id}/memberships", requesting_user)
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
+    it_behaves_like 'GET request permissions for admin mode'
 
     context 'requested by admin user' do
       let(:requesting_user) { create(:user, :admin) }
 
       it "responses successfully" do
-        get api("/users/#{user.id}/memberships", requesting_user)
+        request
 
         aggregate_failures 'expect successful response including groups and projects' do
           expect(response).to have_gitlab_http_status(:ok)
@@ -4024,22 +4254,23 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       it 'does not submit N+1 DB queries' do
         # Avoid setup queries
-        get api("/users/#{user.id}/memberships", requesting_user)
+        request
+        expect(response).to have_gitlab_http_status(:ok)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/users/#{user.id}/memberships", requesting_user)
+          request
         end
 
         create_list(:project, 5).map { |project| project.add_guest(user) }
 
         expect do
-          get api("/users/#{user.id}/memberships", requesting_user)
+          request
         end.not_to exceed_query_limit(control)
       end
 
       context 'with type filter' do
         it "only returns project memberships" do
-          get api("/users/#{user.id}/memberships?type=Project", requesting_user)
+          get api("/users/#{user.id}/memberships?type=Project", requesting_user, admin_mode: true)
 
           aggregate_failures do
             expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Project'))
@@ -4048,7 +4279,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         it "only returns group memberships" do
-          get api("/users/#{user.id}/memberships?type=Namespace", requesting_user)
+          get api("/users/#{user.id}/memberships?type=Namespace", requesting_user, admin_mode: true)
 
           aggregate_failures do
             expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Namespace'))
@@ -4057,7 +4288,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
         end
 
         it "recognizes unsupported types" do
-          get api("/users/#{user.id}/memberships?type=foo", requesting_user)
+          get api("/users/#{user.id}/memberships?type=foo", requesting_user, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -4068,10 +4299,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
   context "user activities", :clean_gitlab_redis_shared_state do
     let_it_be(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let_it_be(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+    let(:path) { '/user/activities' }
+
+    it_behaves_like 'GET request permissions for admin mode'
 
     context 'last activity as normal user' do
       it 'has no permission' do
-        get api("/user/activities", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -4079,7 +4313,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
     context 'as admin' do
       it 'returns the activities from the last 6 months' do
-        get api("/user/activities", admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to include_pagination_headers
         expect(json_response.size).to eq(1)
@@ -4093,7 +4327,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'passing a :from parameter' do
         it 'returns the activities from the given date' do
-          get api("/user/activities?from=2000-1-1", admin)
+          get api("#{path}?from=2000-1-1", admin, admin_mode: true)
 
           expect(response).to include_pagination_headers
           expect(json_response.size).to eq(2)
@@ -4113,6 +4347,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     let(:user_with_status) { user_status.user }
     let(:params) { {} }
     let(:request_user) { user }
+    let(:path) { '/user/status' }
 
     shared_examples '/user/status successful response' do
       context 'when request is successful' do
@@ -4150,7 +4385,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status).to be_nil
+          expect(user_with_status.reset.status).to be_nil
         end
       end
     end
@@ -4178,7 +4413,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status.clear_status_at).to be_nil
+          expect(user_with_status.reset.status.clear_status_at).to be_nil
         end
       end
 
@@ -4194,13 +4429,11 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     describe 'GET' do
-      let(:path) { '/user/status' }
-
       it_behaves_like 'rendering user status'
     end
 
     describe 'PUT' do
-      subject(:set_user_status) { put api('/user/status', request_user), params: params }
+      subject(:set_user_status) { put api(path, request_user), params: params }
 
       include_examples '/user/status successful response'
 
@@ -4217,7 +4450,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status).to be_nil
+          expect(user_with_status.reset.status).to be_nil
         end
       end
 
@@ -4229,13 +4462,13 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status.clear_status_at).to be_nil
+          expect(user_with_status.reset.status.clear_status_at).to be_nil
         end
       end
     end
 
     describe 'PATCH' do
-      subject(:set_user_status) { patch api('/user/status', request_user), params: params }
+      subject(:set_user_status) { patch api(path, request_user), params: params }
 
       include_examples '/user/status successful response'
 
@@ -4274,57 +4507,41 @@ RSpec.describe API::Users, feature_category: :user_profile do
     let(:name) { 'new pat' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }
     let(:scopes) { %w(api read_user) }
+    let(:path) { "/users/#{user.id}/personal_access_tokens" }
+    let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+
+    it_behaves_like 'POST request permissions for admin mode'
 
     it 'returns error if required attributes are missing' do
-      post api("/users/#{user.id}/personal_access_tokens", admin)
+      post api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing, scopes is missing, scopes does not have a valid value')
     end
 
     it 'returns a 404 error if user not found' do
-      post api("/users/#{non_existing_record_id}/personal_access_tokens", admin),
-        params: {
-          name: name,
-          scopes: scopes,
-          expires_at: expires_at
-        }
+      post api("/users/#{non_existing_record_id}/personal_access_tokens", admin, admin_mode: true), params: params
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 401 error when not authenticated' do
-      post api("/users/#{user.id}/personal_access_tokens"),
-        params: {
-          name: name,
-          scopes: scopes,
-          expires_at: expires_at
-        }
+      post api(path), params: params
 
       expect(response).to have_gitlab_http_status(:unauthorized)
       expect(json_response['message']).to eq('401 Unauthorized')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
-      post api("/users/#{user.id}/personal_access_tokens", user),
-        params: {
-          name: name,
-          scopes: scopes,
-          expires_at: expires_at
-        }
+      post api(path, user), params: params
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
     it 'creates a personal access token when authenticated as admin' do
-      post api("/users/#{user.id}/personal_access_tokens", admin),
-        params: {
-          name: name,
-          expires_at: expires_at,
-          scopes: scopes
-        }
+      post api(path, admin, admin_mode: true), params: params
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(name)
@@ -4338,7 +4555,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     context 'when an error is thrown by the model' do
-      let!(:admin_personal_access_token) { create(:personal_access_token, user: admin) }
+      let!(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin) }
       let(:error_message) { 'error message' }
 
       before do
@@ -4351,12 +4568,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
       end
 
       it 'returns the error' do
-        post api("/users/#{user.id}/personal_access_tokens", personal_access_token: admin_personal_access_token),
-          params: {
-            name: name,
-            expires_at: expires_at,
-            scopes: scopes
-          }
+        post api(path, personal_access_token: admin_personal_access_token), params: params
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq(error_message)
@@ -4370,9 +4582,12 @@ RSpec.describe API::Users, feature_category: :user_profile do
     let_it_be(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
     let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let_it_be(:revoked_impersonation_token) { create(:personal_access_token, :impersonation, :revoked, user: user) }
+    let(:path) { "/users/#{user.id}/impersonation_tokens" }
+
+    it_behaves_like 'GET request permissions for admin mode'
 
     it 'returns a 404 error if user not found' do
-      get api("/users/#{non_existing_record_id}/impersonation_tokens", admin)
+      get api("/users/#{non_existing_record_id}/impersonation_tokens", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -4386,7 +4601,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns an array of all impersonated tokens' do
-      get api("/users/#{user.id}/impersonation_tokens", admin)
+      get api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -4395,7 +4610,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns an array of active impersonation tokens if state active' do
-      get api("/users/#{user.id}/impersonation_tokens?state=active", admin)
+      get api("#{path}?state=active", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -4405,7 +4620,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns an array of inactive personal access tokens if active is set to false' do
-      get api("/users/#{user.id}/impersonation_tokens?state=inactive", admin)
+      get api("#{path}?state=inactive", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_an Array
@@ -4419,16 +4634,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
     let(:expires_at) { '2016-12-28' }
     let(:scopes) { %w(api read_user) }
     let(:impersonation) { true }
+    let(:path) { "/users/#{user.id}/impersonation_tokens" }
+    let(:params) { { name: name, expires_at: expires_at, scopes: scopes, impersonation: impersonation } }
+
+    it_behaves_like 'POST request permissions for admin mode'
 
     it 'returns validation error if impersonation token misses some attributes' do
-      post api("/users/#{user.id}/impersonation_tokens", admin)
+      post api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns a 404 error if user not found' do
-      post api("/users/#{non_existing_record_id}/impersonation_tokens", admin),
+      post api("/users/#{non_existing_record_id}/impersonation_tokens", admin, admin_mode: true),
         params: {
           name: name,
           expires_at: expires_at
@@ -4439,7 +4658,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'returns a 403 error when authenticated as normal user' do
-      post api("/users/#{user.id}/impersonation_tokens", user),
+      post api(path, user),
         params: {
           name: name,
           expires_at: expires_at
@@ -4450,13 +4669,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     end
 
     it 'creates a impersonation token' do
-      post api("/users/#{user.id}/impersonation_tokens", admin),
-        params: {
-          name: name,
-          expires_at: expires_at,
-          scopes: scopes,
-          impersonation: impersonation
-        }
+      post api(path, admin, admin_mode: true), params: params
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(name)
@@ -4474,37 +4687,40 @@ RSpec.describe API::Users, feature_category: :user_profile do
   describe 'GET /users/:user_id/impersonation_tokens/:impersonation_token_id' do
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let(:path) { "/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}" }
+
+    it_behaves_like 'GET request permissions for admin mode'
 
     it 'returns 404 error if user not found' do
-      get api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin)
+      get api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 404 error if impersonation token not found' do
-      get api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin)
+      get api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')
     end
 
     it 'returns a 404 error if token is not impersonation token' do
-      get api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin)
+      get api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
-      get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", user)
+      get api(path, user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
     it 'returns an impersonation token' do
-      get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+      get api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['token']).not_to be_present
@@ -4515,41 +4731,44 @@ RSpec.describe API::Users, feature_category: :user_profile do
   describe 'DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id' do
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let(:path) { "/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
 
     it 'returns a 404 error if user not found' do
-      delete api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin)
+      delete api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 404 error if impersonation token not found' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin)
+      delete api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')
     end
 
     it 'returns a 404 error if token is not impersonation token' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin)
+      delete api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", user)
+      delete api(path, user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin) }
+      let(:request) { api(path, admin, admin_mode: true) }
     end
 
     it 'revokes a impersonation token' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+      delete api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:no_content)
       expect(impersonation_token.revoked).to be_falsey
@@ -4560,6 +4779,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
   describe 'GET /users/:id/associations_count' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :public, group: group) }
+    let(:path) { "/users/#{user.id}/associations_count" }
     let(:associations) do
       {
         groups_count: 1,
@@ -4576,9 +4796,11 @@ RSpec.describe API::Users, feature_category: :user_profile do
       create_list(:issue, 2, project: project, author: user)
     end
 
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'as an unauthorized user' do
       it 'returns 401 unauthorized' do
-        get api("/users/#{user.id}/associations_count", nil)
+        get api(path, nil)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -4595,7 +4817,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'with the current user id' do
         it 'returns valid JSON response' do
-          get api("/users/#{user.id}/associations_count", user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_a Hash
@@ -4607,7 +4829,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
     context 'as an admin user' do
       context 'with invalid user id' do
         it 'returns 404 User Not Found' do
-          get api("/users/#{non_existing_record_id}/associations_count", admin)
+          get api("/users/#{non_existing_record_id}/associations_count", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -4615,7 +4837,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
 
       context 'with valid user id' do
         it 'returns valid JSON response' do
-          get api("/users/#{user.id}/associations_count", admin)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_a Hash
@@ -4628,5 +4850,170 @@ RSpec.describe API::Users, feature_category: :user_profile do
   it_behaves_like 'custom attributes endpoints', 'users' do
     let(:attributable) { user }
     let(:other_attributable) { admin }
+  end
+
+  describe 'POST /user/runners', feature_category: :runner_fleet do
+    subject(:request) { post api(path, current_user, **post_args), params: runner_attrs }
+
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+
+    let(:post_args) { { admin_mode: true } }
+    let(:runner_attrs) { { runner_type: 'instance_type' } }
+    let(:path) { '/user/runners' }
+
+    before do
+      group.add_owner(group_owner)
+    end
+
+    shared_context 'returns forbidden when user does not have sufficient permissions' do
+      let(:current_user) { admin }
+      let(:post_args) { { admin_mode: false } }
+
+      it 'does not create a runner' do
+        expect do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { Ci::Runner.count }
+      end
+    end
+
+    shared_examples 'creates a runner' do
+      it 'creates a runner' do
+        expect do
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end.to change { Ci::Runner.count }.by(1)
+      end
+    end
+
+    shared_examples 'fails to create runner with :bad_request' do
+      it 'does not create runner' do
+        expect do
+          request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include(expected_error)
+        end.not_to change { Ci::Runner.count }
+      end
+    end
+
+    context 'when runner_type is :instance_type' do
+      let(:runner_attrs) { { runner_type: 'instance_type' } }
+
+      context 'when user has sufficient permissions' do
+        let(:current_user) { admin }
+
+        it_behaves_like 'creates a runner'
+      end
+
+      it_behaves_like 'returns forbidden when user does not have sufficient permissions'
+
+      context 'when model validation fails' do
+        let(:runner_attrs) { { runner_type: 'instance_type', run_untagged: false, tag_list: [] } }
+        let(:current_user) { admin }
+
+        it_behaves_like 'fails to create runner with :bad_request' do
+          let(:expected_error) { 'Tags list can not be empty' }
+        end
+      end
+    end
+
+    context 'when runner_type is :group_type' do
+      let(:post_args) { {} }
+
+      context 'when group_id is specified' do
+        let(:runner_attrs) { { runner_type: 'group_type', group_id: group.id } }
+
+        context 'when user has sufficient permissions' do
+          let(:current_user) { group_owner }
+
+          it_behaves_like 'creates a runner'
+        end
+
+        it_behaves_like 'returns forbidden when user does not have sufficient permissions'
+      end
+
+      context 'when group_id is not specified' do
+        let(:runner_attrs) { { runner_type: 'group_type' } }
+        let(:current_user) { group_owner }
+
+        it 'fails to create runner with :bad_request' do
+          expect do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to include('group_id is missing')
+          end.not_to change { Ci::Runner.count }
+        end
+      end
+    end
+
+    context 'when runner_type is :project_type' do
+      let(:post_args) { {} }
+
+      context 'when project_id is specified' do
+        let(:runner_attrs) { { runner_type: 'project_type', project_id: project.id } }
+
+        context 'when user has sufficient permissions' do
+          let(:current_user) { group_owner }
+
+          it_behaves_like 'creates a runner'
+        end
+
+        it_behaves_like 'returns forbidden when user does not have sufficient permissions'
+      end
+
+      context 'when project_id is not specified' do
+        let(:runner_attrs) { { runner_type: 'project_type' } }
+        let(:current_user) { group_owner }
+
+        it 'fails to create runner with :bad_request' do
+          expect do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to include('project_id is missing')
+          end.not_to change { Ci::Runner.count }
+        end
+      end
+    end
+
+    context 'with missing runner_type' do
+      let(:runner_attrs) { {} }
+      let(:current_user) { admin }
+
+      it 'fails to create runner with :bad_request' do
+        expect do
+          request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('runner_type is missing, runner_type does not have a valid value')
+        end.not_to change { Ci::Runner.count }
+      end
+    end
+
+    context 'with unknown runner_type' do
+      let(:runner_attrs) { { runner_type: 'unknown' } }
+      let(:current_user) { admin }
+
+      it 'fails to create runner with :bad_request' do
+        expect do
+          request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('runner_type does not have a valid value')
+        end.not_to change { Ci::Runner.count }
+      end
+    end
+
+    it 'returns a 401 error if unauthorized' do
+      post api(path), params: runner_attrs
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
   end
 end

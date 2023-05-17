@@ -1,8 +1,8 @@
 <script>
 import { GlPagination } from '@gitlab/ui';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
-import { createAlert, VARIANT_DANGER } from '~/flash';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { NEW_BROADCAST_MESSAGE } from '../constants';
@@ -66,7 +66,7 @@ export default {
       // stranded on page 2 when deleting the last message.
       // Force a page reload to avoid this edge case.
       if (newVal === PER_PAGE && oldVal === PER_PAGE + 1) {
-        redirectTo(this.buildPageUrl(1));
+        redirectTo(this.buildPageUrl(1)); // eslint-disable-line import/no-deprecated
       }
     },
   },

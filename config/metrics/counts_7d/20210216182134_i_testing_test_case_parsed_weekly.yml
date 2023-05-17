@@ -5,8 +5,7 @@ description: Internal Tracking to count number of unit tests parsed for planning
   future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
 product_section: ops
 product_stage: verify
-product_group: pipeline_insights
-product_category: code_testing
+product_group: pipeline_execution
 value_type: number
 status: active
 time_frame: 7d

@@ -1,6 +1,6 @@
 export const SEVERITY_CLASSES = {
   info: 'gl-text-blue-400',
-  minor: 'gl-text-orange-200',
+  minor: 'gl-text-orange-300',
   major: 'gl-text-orange-400',
   critical: 'gl-text-red-600',
   blocker: 'gl-text-red-800',

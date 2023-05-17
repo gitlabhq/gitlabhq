@@ -10,9 +10,6 @@ export default function createState({
     subscriptionsLoading,
     subscriptionsError: false,
 
-    addSubscriptionLoading: false,
-    addSubscriptionError: false,
-
     currentUser,
     currentUserError: null,
 

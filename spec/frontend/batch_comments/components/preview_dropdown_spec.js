@@ -1,7 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { GlDisclosureDropdown } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
@@ -46,9 +45,11 @@ function factory({ viewDiffsFileByFile = false, draftsCount = 1, sortedDrafts = 
     },
   });
 
-  wrapper = shallowMount(PreviewDropdown, {
+  wrapper = mount(PreviewDropdown, {
     store,
-    stubs: { GlDisclosureDropdown },
+    stubs: {
+      PreviewItem: true,
+    },
   });
 }
 
@@ -59,12 +60,12 @@ describe('Batch comments preview dropdown', () => {
         viewDiffsFileByFile: true,
         sortedDrafts: [{ id: 1, file_hash: 'hash' }],
       });
-
-      findPreviewItem().vm.$emit('click');
-
+      findPreviewItem().trigger('click');
       await nextTick();
 
       expect(setCurrentFileHash).toHaveBeenCalledWith(expect.anything(), 'hash');
+
+      await nextTick();
       expect(scrollToDraft).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ id: 1, file_hash: 'hash' }),
@@ -77,7 +78,7 @@ describe('Batch comments preview dropdown', () => {
         sortedDrafts: [{ id: 1 }],
       });
 
-      findPreviewItem().vm.$emit('click');
+      findPreviewItem().trigger('click');
 
       await nextTick();
 
@@ -93,7 +94,7 @@ describe('Batch comments preview dropdown', () => {
         sortedDrafts: [{ id: 1, position: { head_sha: '1234' } }],
       });
 
-      findPreviewItem().vm.$emit('click');
+      findPreviewItem().trigger('click');
 
       await nextTick();
 

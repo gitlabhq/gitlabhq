@@ -26,11 +26,14 @@ RSpec.describe SortingPreference do
 
   describe '#set_sort_order' do
     let(:group) { build(:group) }
+    let(:controller_name) { 'issues' }
+    let(:action_name) { 'issues' }
     let(:issue_weights_available) { true }
 
     before do
       allow(controller).to receive(:default_sort_order).and_return('updated_desc')
-      allow(controller).to receive(:action_name).and_return('issues')
+      allow(controller).to receive(:controller_name).and_return(controller_name)
+      allow(controller).to receive(:action_name).and_return(action_name)
       allow(controller).to receive(:can_sort_by_issue_weight?).and_return(issue_weights_available)
       user.user_preference.update!(issues_sort: sorting_field)
     end
@@ -60,6 +63,42 @@ RSpec.describe SortingPreference do
         it 'sets default sort order' do
           is_expected.to eq('updated_desc')
         end
+      end
+    end
+
+    context 'when user preference contains merged date sorting' do
+      let(:sorting_field) { 'merged_at_desc' }
+      let(:can_sort_by_merged_date?) { false }
+
+      before do
+        allow(controller)
+          .to receive(:can_sort_by_merged_date?)
+          .with(can_sort_by_merged_date?)
+          .and_return(can_sort_by_merged_date?)
+      end
+
+      it 'sets default sort order' do
+        is_expected.to eq('updated_desc')
+      end
+
+      shared_examples 'user can sort by merged date' do
+        it 'sets sort order from user_preference' do
+          is_expected.to eq('merged_at_desc')
+        end
+      end
+
+      context 'when controller_name is merge_requests' do
+        let(:controller_name) { 'merge_requests' }
+        let(:can_sort_by_merged_date?) { true }
+
+        it_behaves_like 'user can sort by merged date'
+      end
+
+      context 'when action_name is merge_requests' do
+        let(:action_name) { 'merge_requests' }
+        let(:can_sort_by_merged_date?) { true }
+
+        it_behaves_like 'user can sort by merged date'
       end
     end
   end

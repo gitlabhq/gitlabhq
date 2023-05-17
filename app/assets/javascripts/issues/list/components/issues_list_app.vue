@@ -1,18 +1,31 @@
 <script>
-import { GlButton, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFilteredSearchToken,
+  GlTooltipDirective,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { isEmpty } from 'lodash';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import { STATUS_CLOSED } from '~/issues/constants';
+import {
+  STATUS_ALL,
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -46,7 +59,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -56,7 +69,6 @@ import {
   i18n,
   ISSUE_REFERENCE,
   MAX_LIST_SIZE,
-  PAGE_SIZE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
@@ -103,12 +115,15 @@ const CrmOrganizationToken = () =>
 
 export default {
   i18n,
-  IssuableListTabs,
+  issuableListTabs,
   components: {
     CsvImportExportButtons,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     GlButton,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownItem,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
@@ -177,8 +192,8 @@ export default {
       pageParams: {},
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
-      state: IssuableStates.Opened,
-      pageSize: PAGE_SIZE,
+      state: STATUS_OPEN,
+      pageSize: DEFAULT_PAGE_SIZE,
     };
   },
   apollo: {
@@ -206,9 +221,8 @@ export default {
         Sentry.captureException(error);
       },
       skip() {
-        return !this.hasAnyIssues;
+        return !this.hasAnyIssues || isEmpty(this.pageParams);
       },
-      debounce: 200,
     },
     issuesCounts: {
       query: getIssuesCountsQuery,
@@ -223,9 +237,8 @@ export default {
         Sentry.captureException(error);
       },
       skip() {
-        return !this.hasAnyIssues;
+        return !this.hasAnyIssues || isEmpty(this.pageParams);
       },
-      debounce: 200,
       context: {
         isSingleRequest: true,
       },
@@ -240,16 +253,16 @@ export default {
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
-        search: isIidSearch ? undefined : this.searchQuery,
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
+        search: isIidSearch ? undefined : this.searchQuery,
         types: this.apiFilterParams.types || this.defaultWorkItemTypes,
       };
     },
     namespace() {
-      return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
+      return this.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
     },
     defaultWorkItemTypes() {
       return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];
@@ -275,7 +288,7 @@ export default {
       return this.sortKey === RELATIVE_POSITION_ASC;
     },
     isOpenTab() {
-      return this.state === IssuableStates.Opened;
+      return this.state === STATUS_OPEN;
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
@@ -449,7 +462,7 @@ export default {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
     showPageSizeControls() {
-      return this.currentTabCount > PAGE_SIZE;
+      return this.currentTabCount > DEFAULT_PAGE_SIZE;
     },
     sortOptions() {
       return getSortOptions({
@@ -461,9 +474,9 @@ export default {
     tabCounts() {
       const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
       return {
-        [IssuableStates.Opened]: openedIssues?.count,
-        [IssuableStates.Closed]: closedIssues?.count,
-        [IssuableStates.All]: allIssues?.count,
+        [STATUS_OPEN]: openedIssues?.count,
+        [STATUS_CLOSED]: closedIssues?.count,
+        [STATUS_ALL]: allIssues?.count,
       };
     },
     currentTabCount() {
@@ -471,7 +484,6 @@ export default {
     },
     urlParams() {
       return {
-        search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
         ...this.urlFilterParams,
@@ -726,7 +738,7 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       const dashboardSortKey = getSortKey(sortValue);
       const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
 
@@ -750,7 +762,7 @@ export default {
         getParameterByName(PARAM_PAGE_BEFORE),
       );
       this.sortKey = sortKey;
-      this.state = state || IssuableStates.Opened;
+      this.state = state || STATUS_OPEN;
     },
   },
 };
@@ -771,7 +783,7 @@ export default {
       :issuables="issues"
       :error="issuesError"
       label-filter-param="label_name"
-      :tabs="$options.IssuableListTabs"
+      :tabs="$options.issuableListTabs"
       :current-tab="state"
       :tab-counts="tabCounts"
       :truncate-counts="!isProject"
@@ -799,26 +811,6 @@ export default {
     >
       <template #nav-actions>
         <gl-button
-          v-gl-tooltip
-          :href="rssPath"
-          icon="rss"
-          :title="$options.i18n.rssLabel"
-          :aria-label="$options.i18n.rssLabel"
-        />
-        <gl-button
-          v-gl-tooltip
-          :href="calendarPath"
-          icon="calendar"
-          :title="$options.i18n.calendarLabel"
-          :aria-label="$options.i18n.calendarLabel"
-        />
-        <csv-import-export-buttons
-          v-if="showCsvButtons"
-          class="gl-md-mr-3"
-          :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="currentTabCount"
-        />
-        <gl-button
           v-if="canBulkUpdate"
           :disabled="isBulkEditButtonDisabled"
           @click="handleBulkUpdateClick"
@@ -839,6 +831,30 @@ export default {
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
         />
+        <gl-dropdown
+          v-gl-tooltip.hover="$options.i18n.actionsLabel"
+          category="tertiary"
+          icon="ellipsis_v"
+          no-caret
+          :text="$options.i18n.actionsLabel"
+          text-sr-only
+          data-qa-selector="issues_list_more_actions_dropdown"
+        >
+          <csv-import-export-buttons
+            v-if="showCsvButtons"
+            :export-csv-path="exportCsvPathWithQuery"
+            :issuable-count="currentTabCount"
+          />
+
+          <gl-dropdown-divider v-if="showCsvButtons" />
+
+          <gl-dropdown-item :href="rssPath">
+            {{ $options.i18n.rssLabel }}
+          </gl-dropdown-item>
+          <gl-dropdown-item :href="calendarPath">
+            {{ $options.i18n.calendarLabel }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </template>
 
       <template #timeframe="{ issuable = {} }">

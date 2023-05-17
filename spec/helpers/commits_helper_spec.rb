@@ -325,21 +325,20 @@ RSpec.describe CommitsHelper do
       assign(:path, current_path)
     end
 
-    it { is_expected.to be_an(Array) }
-    it { is_expected.to include(commit) }
-    it { is_expected.to include(commit.author) }
-    it { is_expected.to include(ref) }
-
     specify do
-      is_expected.to include(
+      expect(subject).to eq([
+        commit,
+        commit.author,
+        ref,
         {
           merge_request: merge_request.cache_key,
           pipeline_status: pipeline.cache_key,
           xhr: true,
           controller: "commits",
-          path: current_path
+          path: current_path,
+          referenced_by: helper.tag_checksum(commit.referenced_by)
         }
-      )
+      ])
     end
 
     describe "final cache key output" do

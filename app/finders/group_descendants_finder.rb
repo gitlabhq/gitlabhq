@@ -64,9 +64,7 @@ class GroupDescendantsFinder
 
   def direct_child_groups
     # rubocop: disable CodeReuse/Finder
-    GroupsFinder.new(current_user,
-                     parent: parent_group,
-                     all_available: true).execute
+    GroupsFinder.new(current_user, parent: parent_group, all_available: true).execute
     # rubocop: enable CodeReuse/Finder
   end
 
@@ -78,12 +76,11 @@ class GroupDescendantsFinder
                       .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
 
     if current_user
-      authorized_groups = GroupsFinder.new(current_user,
-                                           all_available: false)
-                            .execute.arel.as('authorized')
+      authorized_groups = GroupsFinder.new(current_user, all_available: false)
+        .execute.arel.as('authorized')
       authorized_to_user = groups_table.project(1).from(authorized_groups)
-                             .where(authorized_groups[:id].eq(groups_table[:id]))
-                             .exists
+        .where(authorized_groups[:id].eq(groups_table[:id]))
+        .exists
       visible_to_user = visible_to_user.or(authorized_to_user)
     end
 
@@ -161,9 +158,11 @@ class GroupDescendantsFinder
     projects_nested_in_group = Project.where(namespace_id: parent_group.self_and_descendants.as_ids)
     params_with_search = params.merge(search: params[:filter])
 
-    ProjectsFinder.new(params: params_with_search,
-                       current_user: current_user,
-                       project_ids_relation: projects_nested_in_group).execute
+    ProjectsFinder.new(
+      params: params_with_search,
+      current_user: current_user,
+      project_ids_relation: projects_nested_in_group
+    ).execute
     # rubocop: enable CodeReuse/Finder
   end
   # rubocop: enable CodeReuse/ActiveRecord

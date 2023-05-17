@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::States::DestroyService do
+RSpec.describe Terraform::States::DestroyService, feature_category: :infrastructure_as_code do
   let_it_be(:state) { create(:terraform_state, :with_version, :deletion_in_progress) }
 
   let(:file) { instance_double(Terraform::StateUploader, relative_path: 'path') }

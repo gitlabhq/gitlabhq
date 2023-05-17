@@ -19,7 +19,7 @@ RSpec.shared_examples 'something that has web-hooks' do
       context 'when there is a failed hook' do
         before do
           hook = create_hook
-          hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD + 1)
+          hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
         end
 
         it { is_expected.to eq(true) }
@@ -83,7 +83,7 @@ RSpec.shared_examples 'something that has web-hooks' do
 
   describe '#fetch_web_hook_failure', :clean_gitlab_redis_shared_state do
     context 'when a value has not been stored' do
-      it 'does not call #any_hook_failed?' do
+      it 'calls #any_hook_failed?' do
         expect(object.get_web_hook_failure).to be_nil
         expect(object).to receive(:any_hook_failed?).and_return(true)
 

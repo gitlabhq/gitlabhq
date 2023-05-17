@@ -2,7 +2,7 @@ import { GlDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
 import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
 import { createStore } from '~/monitoring/stores';
@@ -53,11 +53,6 @@ describe('Actions menu', () => {
 
   beforeEach(() => {
     store = createStore();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('add metric item', () => {
@@ -297,8 +292,8 @@ describe('Actions menu', () => {
         findDuplicateDashboardModal().vm.$emit('dashboardDuplicated', newDashboard);
 
         await nextTick();
-        expect(redirectTo).toHaveBeenCalled();
-        expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl);
+        expect(redirectTo).toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+        expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl); // eslint-disable-line import/no-deprecated
       });
     });
   });
@@ -324,7 +319,7 @@ describe('Actions menu', () => {
 
       await nextTick();
       expect(findStarDashboardItem().exists()).toBe(true);
-      expect(findStarDashboardItem().attributes('disabled')).toBe('true');
+      expect(findStarDashboardItem().attributes('disabled')).toBeDefined();
     });
 
     it('on click it dispatches a toggle star action', async () => {
@@ -370,7 +365,7 @@ describe('Actions menu', () => {
     });
 
     it('is rendered by default but it is disabled', () => {
-      expect(findCreateDashboardItem().attributes('disabled')).toBe('true');
+      expect(findCreateDashboardItem().attributes('disabled')).toBeDefined();
     });
 
     describe('when project path is set', () => {
@@ -415,7 +410,7 @@ describe('Actions menu', () => {
       });
 
       it('is disabled', () => {
-        expect(findCreateDashboardItem().attributes('disabled')).toBe('true');
+        expect(findCreateDashboardItem().attributes('disabled')).toBeDefined();
       });
 
       it('does not render a modal for creating a dashboard', () => {

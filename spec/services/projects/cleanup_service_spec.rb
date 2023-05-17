@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CleanupService do
+RSpec.describe Projects::CleanupService, feature_category: :source_code_management do
   subject(:service) { described_class.new(project) }
 
   describe '.enqueue' do

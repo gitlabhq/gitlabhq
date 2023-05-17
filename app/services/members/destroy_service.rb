@@ -4,7 +4,15 @@ module Members
   class DestroyService < Members::BaseService
     include Gitlab::ExclusiveLeaseHelpers
 
-    def execute(member, skip_authorization: false, skip_subresources: false, unassign_issuables: false, destroy_bot: false)
+    def execute(
+      member,
+      skip_authorization: false,
+      skip_subresources: false,
+      unassign_issuables: false,
+      destroy_bot: false,
+      skip_saml_identity: false
+    )
+
       unless skip_authorization
         raise Gitlab::Access::AccessDeniedError unless authorized?(member, destroy_bot)
 
@@ -15,18 +23,39 @@ module Members
       @skip_auth = skip_authorization
 
       if a_group_owner?(member)
-        process_destroy_of_group_owner_member(member, skip_subresources, unassign_issuables)
+        process_destroy_of_group_owner_member(member, skip_subresources, skip_saml_identity)
       else
         destroy_member(member)
-        destroy_data_related_to_member(member, skip_subresources, unassign_issuables)
+        destroy_data_related_to_member(member, skip_subresources, skip_saml_identity)
       end
+
+      enqueue_jobs_that_needs_to_be_run_only_once_per_hierarchy(member, unassign_issuables)
 
       member
     end
 
+    # We use this to mark recursive calls made to this service from within the same service.
+    # We do this so as to help us run some tasks that needs to be run only once per hierarchy, and not recursively.
+    def mark_as_recursive_call
+      @recursive_call = true
+    end
+
     private
 
-    def process_destroy_of_group_owner_member(member, skip_subresources, unassign_issuables)
+    # These actions need to be executed only once per hierarchy because the underlying services
+    # apply these actions to the entire hierarchy anyway, so there is no need to execute them recursively.
+    def enqueue_jobs_that_needs_to_be_run_only_once_per_hierarchy(member, unassign_issuables)
+      return if recursive_call?
+
+      enqueue_delete_todos(member)
+      enqueue_unassign_issuables(member) if unassign_issuables
+    end
+
+    def recursive_call?
+      @recursive_call == true
+    end
+
+    def process_destroy_of_group_owner_member(member, skip_subresources, skip_saml_identity)
       # Deleting 2 different group owners via the API in quick succession could lead to
       # wrong results for the `last_owner?` check due to race conditions. To prevent this
       # we wrap both the last_owner? check and the deletes of owners within a lock.
@@ -40,34 +69,32 @@ module Members
       end
 
       # deletion of related data does not have to be within the lock.
-      destroy_data_related_to_member(member, skip_subresources, unassign_issuables) unless last_group_owner
+      destroy_data_related_to_member(member, skip_subresources, skip_saml_identity) unless last_group_owner
     end
 
     def destroy_member(member)
       member.destroy
     end
 
-    def destroy_data_related_to_member(member, skip_subresources, unassign_issuables)
+    def destroy_data_related_to_member(member, skip_subresources, skip_saml_identity)
       member.user&.invalidate_cache_counts
-      delete_member_associations(member, skip_subresources, unassign_issuables)
+      delete_member_associations(member, skip_subresources, skip_saml_identity)
     end
 
     def a_group_owner?(member)
       member.is_a?(GroupMember) && member.owner?
     end
 
-    def delete_member_associations(member, skip_subresources, unassign_issuables)
+    def delete_member_associations(member, skip_subresources, skip_saml_identity)
       if member.request? && member.user != current_user
         notification_service.decline_access_request(member)
       end
 
       delete_subresources(member) unless skip_subresources
       delete_project_invitations_by(member) unless skip_subresources
-      resolve_access_request_todos(current_user, member)
-      enqueue_delete_todos(member)
-      enqueue_unassign_issuables(member) if unassign_issuables
+      resolve_access_request_todos(member)
 
-      after_execute(member: member)
+      after_execute(member: member, skip_saml_identity: skip_saml_identity)
     end
 
     def authorized?(member, destroy_bot)
@@ -110,13 +137,17 @@ module Members
 
     def destroy_project_members(members)
       members.each do |project_member|
-        self.class.new(current_user).execute(project_member, skip_authorization: @skip_auth)
+        service = self.class.new(current_user)
+        service.mark_as_recursive_call
+        service.execute(project_member, skip_authorization: @skip_auth)
       end
     end
 
     def destroy_group_members(members)
       members.each do |group_member|
-        self.class.new(current_user).execute(group_member, skip_authorization: @skip_auth, skip_subresources: true)
+        service = self.class.new(current_user)
+        service.mark_as_recursive_call
+        service.execute(group_member, skip_authorization: @skip_auth, skip_subresources: true)
       end
     end
 

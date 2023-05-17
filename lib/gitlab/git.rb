@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_dependency 'gitlab/encoding_helper'
+require_relative 'encoding_helper'
 
 module Gitlab
   module Git
@@ -21,6 +21,21 @@ module Gitlab
     InvalidPageToken = Class.new(BaseError)
     InvalidRefFormatError = Class.new(BaseError)
     ReferencesLockedError = Class.new(BaseError)
+
+    class ResourceExhaustedError < BaseError
+      def initialize(msg = nil, retry_after = 0)
+        super(msg)
+        @retry_after = retry_after
+      end
+
+      def headers
+        if @retry_after.to_i > 0
+          { "Retry-After" => @retry_after }
+        else
+          {}
+        end
+      end
+    end
 
     class << self
       include Gitlab::EncodingHelper

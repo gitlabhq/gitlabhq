@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Commits::TagService do
+RSpec.describe Commits::TagService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

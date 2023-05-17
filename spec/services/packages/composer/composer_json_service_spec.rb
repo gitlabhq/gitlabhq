@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Composer::ComposerJsonService do
+RSpec.describe Packages::Composer::ComposerJsonService, feature_category: :package_registry do
   describe '#execute' do
     let(:branch) { project.repository.find_branch('master') }
     let(:target) { branch.target }

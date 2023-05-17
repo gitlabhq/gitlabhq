@@ -32,22 +32,19 @@ class GroupsController < Groups::ApplicationController
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
-  before_action :track_experiment_event, only: [:new]
-
   before_action only: :issues do
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:show_group_readme, group)
+  before_action only: :merge_requests do
+    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
   helper_method :captcha_required?
 
-  skip_cross_project_access_check :index, :new, :create, :edit, :update,
-                                  :destroy, :projects
+  skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy, :projects
   # When loading show as an atom feed, we render events that could leak cross
   # project information
   skip_cross_project_access_check :show, if: -> { request.format.html? }
@@ -76,6 +73,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
+    @parent_group = Group.find_by_id(params[:parent_id])
     @group = Group.new(params.permit(:parent_id))
     @group.build_namespace_settings
   end
@@ -201,7 +199,7 @@ class GroupsController < Groups::ApplicationController
         send_upload(@group.export_file, attachment: @group.export_file.filename)
       else
         redirect_to edit_group_path(@group),
-                    alert: _('The file containing the export is not available yet; it may still be transferring. Please try again later.')
+          alert: _('The file containing the export is not available yet; it may still be transferring. Please try again later.')
       end
     else
       redirect_to edit_group_path(@group),
@@ -400,12 +398,6 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
-  end
-
-  def track_experiment_event
-    return if params[:parent_id]
-
-    experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
   end
 
   def group_feature_attributes

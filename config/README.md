@@ -59,13 +59,9 @@ order of precedence for configuration is described below, where `$NAME` and
 `$FALLBACK_NAME` are the upper-cased instance names from the table, and `$name`
 and `$fallback_name` are the lower-cased versions:
 
-1. The configuration file pointed to by the `GITLAB_REDIS_$NAME_CONFIG_FILE`
-   environment variable.
 1. The configuration file `redis.$name.yml`.
 1. **If a fallback instance is available**, the configuration file
    `redis.$fallback_name.yml`.
-1. The configuration file pointed to by the `GITLAB_REDIS_CONFIG_FILE`
-environment variable.
 1. The configuration file `resque.yml`.
 
 An example configuration file for Redis is in this directory under the name
@@ -83,9 +79,4 @@ An example configuration file for Redis is in this directory under the name
 | `db_load_balancing` | `shared_state`    | [Database Load Balancing](https://docs.gitlab.com/ee/administration/postgresql/database_load_balancing.html) |
 
 If no configuration is found, or no URL is found in the configuration
-file, the default URL used is:
-
-1. `redis://localhost:6380` for `cache`.
-1. `redis://localhost:6381` for `queues`.
-1. `redis://localhost:6382` for `shared_state`.
-1. The URL from the fallback instance for all other instances.
+file, the default URL used is `redis://localhost:6379` for all Redis instances.

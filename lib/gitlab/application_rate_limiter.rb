@@ -30,6 +30,7 @@ module Gitlab
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
           group_testing_hook: { threshold: 5, interval: 1.minute },
+          member_delete: { threshold: 60, interval: 1.minute },
           profile_add_new_email: { threshold: 5, interval: 1.minute },
           web_hook_calls: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },
@@ -55,8 +56,13 @@ module Gitlab
           phone_verification_verify_code: { threshold: 10, interval: 10.minutes },
           namespace_exists: { threshold: 20, interval: 1.minute },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
+          project_fork_sync: { threshold: 10, interval: 30.minutes },
+          ai_action: { threshold: 160, interval: 8.hours },
           jobs_index: { threshold: 600, interval: 1.minute },
-          bulk_import: { threshold: 6, interval: 1.minute }
+          bulk_import: { threshold: 6, interval: 1.minute },
+          projects_api_rate_limit_unauthenticated: {
+            threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
+          }
         }.freeze
       end
 

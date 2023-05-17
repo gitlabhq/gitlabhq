@@ -6,13 +6,13 @@ description: Total active Specific (Project) Runners
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: continuous_integration
 value_type: number
 status: active
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58197
 time_frame: all
 data_source: database
+instrumentation_class: CountCiRunnersProjectTypeActiveMetric
 distribution:
 - ce
 - ee

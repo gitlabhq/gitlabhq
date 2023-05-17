@@ -19,7 +19,7 @@ import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
@@ -78,6 +78,7 @@ export default {
       isSubmittingSpam: false,
       errorMessage: '',
       canCreateSnippet: false,
+      isDeleteModalVisible: false,
     };
   },
   computed: {
@@ -164,10 +165,10 @@ export default {
         : `${gon.relative_url_root}dashboard/snippets`;
     },
     closeDeleteModal() {
-      this.$refs.deleteModal.hide();
+      this.isDeleteModalVisible = false;
     },
     showDeleteModal() {
-      this.$refs.deleteModal.show();
+      this.isDeleteModalVisible = true;
     },
     deleteSnippet() {
       this.isLoading = true;
@@ -291,12 +292,22 @@ export default {
       </div>
     </div>
 
-    <gl-modal ref="deleteModal" modal-id="delete-modal" title="Example title">
+    <gl-modal
+      ref="deleteModal"
+      v-model="isDeleteModalVisible"
+      modal-id="delete-modal"
+      title="Example title"
+    >
       <template #modal-title>{{ __('Delete snippet?') }}</template>
 
-      <gl-alert v-if="errorMessage" variant="danger" class="mb-2" @dismiss="errorMessage = ''">{{
-        errorMessage
-      }}</gl-alert>
+      <gl-alert
+        v-if="errorMessage"
+        variant="danger"
+        class="mb-2"
+        data-testid="delete-alert"
+        @dismiss="errorMessage = ''"
+        >{{ errorMessage }}</gl-alert
+      >
 
       <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
         <template #name>
@@ -311,6 +322,7 @@ export default {
           category="primary"
           :disabled="isLoading"
           data-qa-selector="delete_snippet_button"
+          data-testid="delete-snippet"
           @click="deleteSnippet"
         >
           <gl-loading-icon v-if="isLoading" size="sm" inline />

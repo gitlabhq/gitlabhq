@@ -35,7 +35,7 @@ class DetailedStatusEntity < Grape::Entity
   expose :favicon,
     documentation: { type: 'string',
                      example: '/assets/ci_favicons/favicon_status_success.png' } do |status|
-    Gitlab::Favicon.status_overlay(status.favicon)
+    Gitlab::Favicon.ci_status_overlay(status.favicon)
   end
 
   expose :action, if: -> (status, _) { status.has_action? } do

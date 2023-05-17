@@ -3,7 +3,7 @@
     - .default-retry
     - .rails-cache
     - .default-before_script
-    - .use-pg12
+    - .use-pg13
   stage: test
   needs: ["setup-test-env"]
   variables:
@@ -15,8 +15,8 @@
     # SEED_NESTED_GROUPS: "false" # requires network connection
 
 .run-dev-fixtures-script: &run-dev-fixtures-script
-  - run_timed_command "scripts/gitaly-test-spawn"
-  - run_timed_command "bundle exec rake db:seed_fu"
+  - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
+  - section_start "seeding-db" "Seeding DB"; bundle exec rake db:seed_fu; section_end "seeding-db";
 
 run-dev-fixtures:
   extends:
@@ -29,7 +29,7 @@ run-dev-fixtures-ee:
   extends:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-only
-    - .use-pg12-es7-ee
+    - .use-pg13-es7-ee
   script:
     - cp ee/db/fixtures/development/* $FIXTURE_PATH
     - *run-dev-fixtures-script

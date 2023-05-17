@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_cilium
+feature_categories:
+- security_policy_management
+description: Information about installed instance of Cilium in the cluster
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34601
+milestone: '13.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119332
+removed_in_milestone: '16.0'

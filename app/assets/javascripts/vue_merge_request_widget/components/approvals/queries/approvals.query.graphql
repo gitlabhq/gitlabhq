@@ -1,0 +1,18 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query approvedBy($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      approvedBy {
+        nodes {
+          ...User
+        }
+      }
+      userPermissions {
+        canApprove
+      }
+    }
+  }
+}

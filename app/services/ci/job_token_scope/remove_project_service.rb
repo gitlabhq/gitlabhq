@@ -31,3 +31,5 @@ module Ci
     end
   end
 end
+
+Ci::JobTokenScope::RemoveProjectService.prepend_mod_with('Ci::JobTokenScope::RemoveProjectService')

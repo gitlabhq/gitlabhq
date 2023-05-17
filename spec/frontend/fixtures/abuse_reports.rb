@@ -14,6 +14,8 @@ RSpec.describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :co
   render_views
 
   before do
+    stub_feature_flags(abuse_reports_list: false)
+
     sign_in(admin)
     enable_admin_mode!(admin)
   end

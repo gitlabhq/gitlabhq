@@ -44,16 +44,7 @@ module Gitlab
           # that should be skipped as they will be removed in a future migration.
           return false if Gitlab::Database::GitlabSchema.deleted_tables_to_schema[table_name]
 
-          table_schema = Gitlab::Database::GitlabSchema.table_schema(table_name.to_s, undefined: false)
-
-          if table_schema.nil?
-            error_message = <<~ERROR
-              No gitlab_schema is defined for the table #{table_name}. Please consider
-              adding it to the database dictionary.
-              More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html
-            ERROR
-            raise error_message
-          end
+          table_schema = Gitlab::Database::GitlabSchema.table_schema!(table_name.to_s)
 
           return false unless %i[gitlab_main gitlab_ci].include?(table_schema)
 

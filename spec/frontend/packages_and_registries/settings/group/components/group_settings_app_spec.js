@@ -19,7 +19,7 @@ import {
   dependencyProxyImageTtlPolicy,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Group Settings App', () => {
   let wrapper;
@@ -53,10 +53,6 @@ describe('Group Settings App', () => {
 
   beforeEach(() => {
     show = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   const findAlert = () => wrapper.findComponent(GlAlert);

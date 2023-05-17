@@ -2,7 +2,6 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/schedules.html'
 type: reference, howto
 ---
 
@@ -84,8 +83,8 @@ To take ownership of a pipeline created by a different user:
 
 ## Related topics
 
-- Pipeline schedules can be maintained by using the [Pipeline schedules API](../../api/pipeline_schedules.md).
-- You can [control which jobs are added to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines).
+- [Pipeline schedules API](../../api/pipeline_schedules.md)
+- [Adding jobs to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines)
 
 <!-- ## Troubleshooting
 

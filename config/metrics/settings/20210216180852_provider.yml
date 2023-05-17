@@ -5,7 +5,6 @@ description: What Object Storage provider has been configured for External Diffs
 product_section: enablement
 product_stage: enablement
 product_group: memory
-product_category: memory
 value_type: string
 status: active
 time_frame: none

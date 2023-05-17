@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
   # to move away from `Sidekiq.redis` for sidekiq status data. Thus, we use the
   # same store configuration as the former.
   let(:instance_specific_config_file) { "config/redis.shared_state.yml" }
-  let(:environment_config_file_name) { "GITLAB_REDIS_SHARED_STATE_CONFIG_FILE" }
 
   include_examples "redis_shared_examples"
 
@@ -47,14 +46,6 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
 
     it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sidekiq_status,
                                                  :use_primary_store_as_default_for_sidekiq_status
-  end
-
-  describe '#raw_config_hash' do
-    it 'has a legacy default URL' do
-      expect(subject).to receive(:fetch_config) { false }
-
-      expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6382')
-    end
   end
 
   describe '#store_name' do

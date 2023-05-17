@@ -1,5 +1,6 @@
 <script>
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import { STATUS_MERGED } from '~/issues/constants';
 import simplePoll from '~/lib/utils/simple_poll';
 import MergeRequest from '~/merge_request';
 import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
@@ -50,7 +51,7 @@ export default {
         .poll()
         .then((res) => res.data)
         .then((data) => {
-          if (data.state === 'merged') {
+          if (data.state === STATUS_MERGED) {
             // If state is merged we should update the widget and stop the polling
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('FetchActionsContent');

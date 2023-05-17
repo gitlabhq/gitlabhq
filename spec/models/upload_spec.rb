@@ -96,9 +96,11 @@ RSpec.describe Upload do
 
   describe '#calculate_checksum!' do
     let(:upload) do
-      described_class.new(path: __FILE__,
-                          size: described_class::CHECKSUM_THRESHOLD - 1.megabyte,
-                          store: ObjectStorage::Store::LOCAL)
+      described_class.new(
+        path: __FILE__,
+        size: described_class::CHECKSUM_THRESHOLD - 1.megabyte,
+        store: ObjectStorage::Store::LOCAL
+      )
     end
 
     it 'sets `checksum` to SHA256 sum of the file' do

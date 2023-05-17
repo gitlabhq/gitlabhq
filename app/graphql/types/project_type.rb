@@ -24,9 +24,9 @@ module Types
           authorize: :create_pipeline,
           alpha: { milestone: '15.3' },
           description: 'CI/CD config variable.' do
-            argument :sha, GraphQL::Types::String,
+            argument :ref, GraphQL::Types::String,
               required: true,
-              description: 'Sha.'
+              description: 'Ref.'
           end
 
     field :full_path, GraphQL::Types::ID,
@@ -136,6 +136,11 @@ module Types
           null: true,
           description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
 
+    field :is_catalog_resource, GraphQL::Types::Boolean,
+          alpha: { milestone: '15.11' },
+          null: true,
+          description: 'Indicates if a project is a catalog resource.'
+
     field :public_jobs, GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if there is public access to pipelines and job details of the project, ' \
@@ -208,6 +213,11 @@ module Types
     field :statistics, Types::ProjectStatisticsType,
           null: true,
           description: 'Statistics of the project.'
+
+    field :statistics_details_paths, Types::ProjectStatisticsRedirectType,
+          null: true,
+          description: 'Redirects for Statistics of the project.',
+          calls_gitaly: true
 
     field :repository, Types::RepositoryType,
           null: true,
@@ -346,6 +356,12 @@ module Types
           description: "List of the project's CI/CD variables.",
           authorize: :admin_build,
           resolver: Resolvers::Ci::VariablesResolver
+
+    field :inherited_ci_variables, Types::Ci::InheritedCiVariableType.connection_type,
+          null: true,
+          description: "List of CI/CD variables the project inherited from its parent group and ancestors.",
+          authorize: :admin_build,
+          resolver: Resolvers::Ci::InheritedVariablesResolver
 
     field :ci_cd_settings, Types::Ci::CiCdSettingType,
           null: true,
@@ -517,6 +533,18 @@ module Types
           description: 'Cluster agents associated with the project.',
           resolver: ::Resolvers::Clusters::AgentsResolver
 
+    field :ci_access_authorized_agents, ::Types::Clusters::Agents::Authorizations::CiAccessType.connection_type,
+          null: true,
+          description: 'Authorized cluster agents for the project through ci_access keyword.',
+          resolver: ::Resolvers::Clusters::Agents::Authorizations::CiAccessResolver,
+          authorize: :read_cluster_agent
+
+    field :user_access_authorized_agents, ::Types::Clusters::Agents::Authorizations::UserAccessType.connection_type,
+          null: true,
+          description: 'Authorized cluster agents for the project through user_access keyword.',
+          resolver: ::Resolvers::Clusters::Agents::Authorizations::UserAccessResolver,
+          authorize: :read_cluster_agent
+
     field :merge_commit_template, GraphQL::Types::String,
           null: true,
           description: 'Template used to create merge commit message in merge requests.'
@@ -567,8 +595,8 @@ module Types
           description: "Find runners visible to the current user."
 
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
-          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out!
-          resolver: Resolvers::DataTransferResolver.project,
+          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682
+          resolver: Resolvers::DataTransfer::ProjectDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
     field :visible_forks, Types::ProjectType.connection_type,
@@ -580,6 +608,20 @@ module Types
               required: false,
               description: 'Minimum access level.'
           end
+
+    field :flow_metrics,
+          ::Types::Analytics::CycleAnalytics::FlowMetrics[:project],
+          null: true,
+          description: 'Flow metrics for value stream analytics.',
+          method: :project_namespace,
+          authorize: :read_cycle_analytics,
+          alpha: { milestone: '15.10' }
+
+    field :commit_references, ::Types::CommitReferencesType,
+      null: true,
+      resolver: Resolvers::Projects::CommitReferencesResolver,
+      alpha: { milestone: '16.0' },
+      description: "Get tag names containing a given commit."
 
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
@@ -627,6 +669,16 @@ module Types
       BatchLoader::GraphQL.wrap(object.forks_count)
     end
 
+    def is_catalog_resource # rubocop:disable Naming/PredicateName
+      lazy_catalog_resource = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::Ci::Catalog::Resource.for_projects(project_ids).each do |catalog_resource|
+          loader.call(catalog_resource.project_id, catalog_resource)
+        end
+      end
+
+      Gitlab::Graphql::Lazy.with_value(lazy_catalog_resource, &:present?)
+    end
+
     def statistics
       Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(object.id).find
     end
@@ -635,10 +687,8 @@ module Types
       project.container_repositories.size
     end
 
-    # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
-    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
-    def ci_config_variables(sha:)
-      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
+    def ci_config_variables(ref:)
+      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref)
 
       return if result.nil?
 
@@ -657,7 +707,7 @@ module Types
 
       if project.repository.empty?
         raise Gitlab::Graphql::Errors::MutationError,
-              _(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe
+            Gitlab::Utils::ErrorMessage.to_user_facing(_(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe)
       end
 
       ::Security::CiConfiguration::SastParserService.new(object).configuration
@@ -679,6 +729,19 @@ module Types
       else
         object.forks.visible_to_user_and_access_level(current_user, minimum_access_level)
       end
+    end
+
+    def statistics_details_paths
+      root_ref = project.repository.root_ref || project.default_branch_or_main
+
+      {
+        repository: Gitlab::Routing.url_helpers.project_tree_url(project, root_ref),
+        wiki: Gitlab::Routing.url_helpers.project_wikis_pages_url(project),
+        build_artifacts: Gitlab::Routing.url_helpers.project_artifacts_url(project),
+        packages: Gitlab::Routing.url_helpers.project_packages_url(project),
+        snippets: Gitlab::Routing.url_helpers.project_snippets_url(project),
+        container_registry: Gitlab::Routing.url_helpers.project_container_registry_index_url(project)
+      }
     end
 
     private

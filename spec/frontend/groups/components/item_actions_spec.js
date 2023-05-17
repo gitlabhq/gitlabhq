@@ -18,11 +18,6 @@ describe('ItemActions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findEditGroupBtn = () => wrapper.findByTestId(`edit-group-${mockParentGroupItem.id}-btn`);
   const findLeaveGroupBtn = () => wrapper.findByTestId(`leave-group-${mockParentGroupItem.id}-btn`);
   const findRemoveGroupBtn = () =>

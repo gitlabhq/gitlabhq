@@ -65,7 +65,10 @@ Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab
 You can view all the milestones you have access to in the entire GitLab namespace.
 You might not see some milestones because they're in projects or groups you're not a member of.
 
-To do so, on the top bar select **Main menu > Milestones**.
+To do so:
+
+1. On the top bar select **Main menu > Your work**.
+1. On the left sidebar, select **Milestones**.
 
 ### View milestone details
 
@@ -139,7 +142,7 @@ To edit a milestone:
 
 1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
-1. Select **Edit**.
+1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
 1. Select **Save changes**.
 
@@ -155,7 +158,7 @@ To edit a milestone:
 
 1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
 1. Select a milestone's title.
-1. Select **Delete**.
+1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Delete**.
 1. Select **Delete milestone**.
 
 ## Promote a project milestone to a group milestone
@@ -182,7 +185,7 @@ To promote a project milestone:
 1. On the left sidebar, select **Issues > Milestones**.
 1. Either:
    - Select **Promote to Group Milestone** (**{level-up}**) next to the milestone you want to promote.
-   - Select the milestone title, and then select **Promote**.
+   - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Promote**.
 1. Select **Promote Milestone**.
 
 ## Assign a milestone to an issue or merge request

@@ -1,5 +1,7 @@
+import { extractVSAFeaturesFromGON } from '~/analytics/shared/utils';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 /**
  * Takes the stages and median data, combined with the selected stage, to build an
@@ -63,55 +65,33 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
   stages.filter(({ hidden = false }) => hidden === isHidden);
 
 /**
- * @typedef {Object} MetricData
- * @property {String} title - Title of the metric measured
- * @property {String} value - String representing the decimal point value, e.g '1.5'
- * @property {String} [unit] - String representing the decimal point value, e.g '1.5'
- *
- * @typedef {Object} TransformedMetricData
- * @property {String} label - Title of the metric measured
- * @property {String} value - String representing the decimal point value, e.g '1.5'
- * @property {String} identifier - Slugified string based on the 'title' or the provided 'identifier' attribute
- * @property {String} description - String to display for a description
- * @property {String} unit - String representing the decimal point value, e.g '1.5'
- */
-
-const extractFeatures = (gon) => ({
-  cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
-});
-
-/**
  * Builds the initial data object for Value Stream Analytics with data loaded from the backend
  *
  * @param {Object} dataset - dataset object paseed to the frontend via data-* properties
  * @returns {Object} - The initial data to load the app with
  */
 export const buildCycleAnalyticsInitialData = ({
-  fullPath,
-  requestPath,
   projectId,
-  groupId,
   groupPath,
-  labelsPath,
-  milestonesPath,
   stage,
   createdAfter,
   createdBefore,
-  gon,
+  namespaceName,
+  namespaceFullPath,
 } = {}) => {
   return {
     projectId: parseInt(projectId, 10),
-    endpoints: {
-      requestPath,
-      fullPath,
-      labelsPath,
-      milestonesPath,
-      groupId: parseInt(groupId, 10),
-      groupPath,
+    groupPath,
+    namespace: {
+      name: namespaceName,
+      fullPath: namespaceFullPath,
     },
     createdAfter: new Date(createdAfter),
     createdBefore: new Date(createdBefore),
     selectedStage: stage ? JSON.parse(stage) : null,
-    features: extractFeatures(gon),
+    features: extractVSAFeaturesFromGON(),
   };
 };
+
+export const constructPathWithNamespace = ({ fullPath }, endpoint) =>
+  joinPaths('/', fullPath, endpoint);

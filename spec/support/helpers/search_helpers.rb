@@ -2,9 +2,6 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    # Once the `new_header_search` feature flag has been removed
-    # We can remove the `.search-input-wrap` selector
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/339348
     page.within('.header-search-new') do
       find('#search').click
       fill_in 'search', with: text
@@ -14,10 +11,7 @@ module SearchHelpers
   end
 
   def submit_search(query)
-    # Once the `new_header_search` feature flag has been removed
-    # We can remove the `.search-form` selector
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/339348
-    page.within('.header-search, .search-form, .search-page-form') do
+    page.within('.header-search, .search-page-form') do
       field = find_field('search')
       field.click
       field.fill_in(with: query)

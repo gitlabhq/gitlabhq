@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::ForwardEventWorker do
+RSpec.describe JiraConnect::ForwardEventWorker, feature_category: :integrations do
   describe '#perform' do
     let!(:jira_connect_installation) { create(:jira_connect_installation, instance_url: self_managed_url, client_key: client_key, shared_secret: shared_secret) }
     let(:base_path) { '/-/jira_connect' }

@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -12,7 +12,11 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## List all Pages domains
 
-Get a list of all Pages domains. The user must have administrator access.
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+Get a list of all Pages domains.
 
 ```plaintext
 GET /pages/domains

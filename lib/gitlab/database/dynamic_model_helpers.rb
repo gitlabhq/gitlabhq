@@ -17,7 +17,7 @@ module Gitlab
         klass
       end
 
-      def each_batch(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE)
+      def each_batch(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE, **opts)
         if transaction_open?
           raise <<~MSG.squish
             each_batch should not run inside a transaction, you can disable
@@ -26,13 +26,21 @@ module Gitlab
           MSG
         end
 
-        scope.call(define_batchable_model(table_name, connection: connection))
-          .each_batch(of: of) { |batch| yield batch }
+        opts.select! { |k, _| [:column].include? k }
+
+        batchable_model = define_batchable_model(table_name, connection: connection)
+
+        scope.call(batchable_model)
+          .each_batch(of: of, **opts) { |batch| yield batch, batchable_model }
       end
 
-      def each_batch_range(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE)
-        each_batch(table_name, connection: connection, scope: scope, of: of) do |batch|
-          yield batch.pick('MIN(id), MAX(id)')
+      def each_batch_range(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE, **opts)
+        opts.select! { |k, _| [:column].include? k }
+
+        each_batch(table_name, connection: connection, scope: scope, of: of, **opts) do |batch, batchable_model|
+          column = opts.fetch(:column, batchable_model.primary_key)
+
+          yield batch.pick("MIN(#{column}), MAX(#{column})")
         end
       end
     end

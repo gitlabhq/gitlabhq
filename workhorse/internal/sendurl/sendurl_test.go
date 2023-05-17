@@ -2,7 +2,9 @@ package sendurl
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -193,4 +195,50 @@ func TestDownloadingNonExistingFileUsingSendURL(t *testing.T) {
 func TestDownloadingNonExistingRemoteFileWithSendURL(t *testing.T) {
 	response := testEntryServer(t, "/get/file-not-existing", nil, false)
 	require.Equal(t, http.StatusNotFound, response.Code)
+}
+
+func TestPostRequest(t *testing.T) {
+	body := "any string"
+	header := map[string][]string{"Authorization": []string{"Bearer token"}}
+	postRequestHandler := func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, "POST", r.Method)
+
+		url := r.URL.String() + "/external/url"
+
+		jsonParams, err := json.Marshal(entryParams{URL: url, Body: body, Header: header, Method: "POST"})
+		require.NoError(t, err)
+
+		data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
+
+		SendURL.Inject(w, r, data)
+	}
+	externalPostUrlHandler := func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, "POST", r.Method)
+
+		b, err := io.ReadAll(r.Body)
+		require.NoError(t, err)
+		require.Equal(t, body, string(b))
+
+		require.Equal(t, []string{"Bearer token"}, r.Header["Authorization"])
+
+		w.Write([]byte(testData))
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/post/request/external/url", externalPostUrlHandler)
+
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	httpRequest, err := http.NewRequest("POST", server.URL+"/post/request", nil)
+	require.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	postRequestHandler(response, httpRequest)
+
+	require.Equal(t, http.StatusOK, response.Code)
+
+	result, err := io.ReadAll(response.Body)
+	require.NoError(t, err)
+	require.Equal(t, testData, string(result))
 }

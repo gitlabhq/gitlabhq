@@ -33,7 +33,6 @@ describe('Deploy keys app component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

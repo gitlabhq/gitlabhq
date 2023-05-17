@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
@@ -281,6 +281,8 @@ Example response:
 
 ## Update an existing environment
 
+> Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+
 Updates an existing environment's name and/or `external_url`.
 
 It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned.
@@ -293,7 +295,6 @@ PUT /projects/:id/environments/:environments_id
 |------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                |
 | `environment_id` | integer        | yes      | The ID of the environment.                                                                                          |
-| `name`           | string         | no       | [Deprecated and will be removed in GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897).              |
 | `external_url`   | string         | no       | The new `external_url`.                                                                                             |
 | `tier`           | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 
@@ -339,7 +340,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296625) in GitLab 14.2.
 
 It schedules for deletion multiple environments that have already been
-[stopped](../ci/environments/index.md#stop-an-environment) and
+[stopped](../ci/environments/index.md#stopping-an-environment) and
 are [in the review app folder](../ci/review_apps/index.md).
 The actual deletion is performed after 1 week from the time of execution.
 By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
@@ -415,7 +416,7 @@ Example response:
 
 ## Stop stale environments
 
-Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/index.md#stop-an-environment).
+Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/index.md#stopping-an-environment).
 
 ```plaintext
 POST /projects/:id/environments/stop_stale

@@ -5,7 +5,6 @@ description: Count of active projects inheriting integrations for Mock Monitorin
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 value_type: number
 status: removed
 milestone_removed: '13.12'

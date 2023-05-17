@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database do
+RSpec.describe Gitlab::Database, feature_category: :database do
   before do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
@@ -62,6 +62,48 @@ RSpec.describe Gitlab::Database do
 
       it 'returns false for non-existent' do
         expect(described_class.has_config?(:nonexistent)).to eq(false)
+      end
+    end
+  end
+
+  describe '.has_database?' do
+    context 'three tier database config' do
+      it 'returns true for main' do
+        expect(described_class.has_database?(:main)).to eq(true)
+      end
+
+      it 'returns false for shared database' do
+        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_database_exists(:ci)
+
+        expect(described_class.has_database?(:ci)).to eq(false)
+      end
+
+      it 'returns false for non-existent' do
+        expect(described_class.has_database?(:nonexistent)).to eq(false)
+      end
+    end
+  end
+
+  describe '.database_mode' do
+    context 'three tier database config' do
+      it 'returns single-database if ci is not configured' do
+        skip_if_multiple_databases_are_setup(:ci)
+
+        expect(described_class.database_mode).to eq(::Gitlab::Database::MODE_SINGLE_DATABASE)
+      end
+
+      it 'returns single-database-ci-connection if ci is shared with main database' do
+        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_database_exists(:ci)
+
+        expect(described_class.database_mode).to eq(::Gitlab::Database::MODE_SINGLE_DATABASE_CI_CONNECTION)
+      end
+
+      it 'returns multiple-database if ci has its own database' do
+        skip_if_shared_database(:ci)
+
+        expect(described_class.database_mode).to eq(::Gitlab::Database::MODE_MULTIPLE_DATABASES)
       end
     end
   end

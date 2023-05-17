@@ -1,6 +1,5 @@
 LATEST_SHA=$(git rev-parse HEAD)
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-BROKER_BASE_URL="http://localhost:9292"
 
 cd "${0%/*}" || exit 1
 
@@ -18,7 +17,7 @@ function publish_contract () {
     for contract in $CONTRACTS
     do
         printf "\e[32mPublishing %s...\033[0m\n" "$contract"
-        pact-broker publish "$contract" --consumer-app-version "$LATEST_SHA" --branch "$GIT_BRANCH" --broker-base-url "$BROKER_BASE_URL" --output json
+        pact-broker publish "$contract" --consumer-app-version "$LATEST_SHA" --branch "$GIT_BRANCH" --broker-base-url "$QA_PACT_BROKER_HOST" --output json
     done
 
     if [ ${ERROR} = 1 ]; then

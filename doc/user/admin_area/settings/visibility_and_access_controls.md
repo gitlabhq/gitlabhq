@@ -54,6 +54,9 @@ By default both administrators and anyone with the **Owner** role can delete a p
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+> - [Removed option to delete immediately](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) on May 08, 2023.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 Instance-level protection against accidental deletion of groups and projects.
 
@@ -82,6 +85,7 @@ To configure delayed project deletion:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
+   - (In GitLab 15.11 and later with `always_perform_delayed_deletion` feature flag enabled, or GitLab 16.0 and later) **Deletion protection** and set the retention period to a value between `1` and `90`.
    - (GitLab 15.1 and later) **Deletion protection** and select keep deleted groups and projects, and select a retention period.
    - (GitLab 15.0 and earlier) **Default delayed project protection** and select **Enable delayed project deletion by
      default for newly-created groups.** Then set a retention period in **Default deletion delay**.
@@ -98,6 +102,10 @@ In GitLab 15.1, and later this setting is enforced on groups when disabled and i
 Groups remain restorable if the retention period is `1` or more days.
 
 In GitLab 15.1 and later, delayed group deletion can be enabled by setting **Deletion projection** to **Keep deleted**.
+In GitLab 15.11 and later with the `always_perform_delayed_deletion` feature flag enabled, or in GitLab 16.0 and later:
+
+- The **Keep deleted** option is removed.
+- Delayed group deletion is the default.
 
 ### Override defaults and delete immediately
 
@@ -155,6 +163,10 @@ For more details on group visibility, see
 
 ## Restrict visibility levels
 
+When restricting visibility levels, consider how these restrictions interact
+with permissions for subgroups and projects that inherit their visibility from
+the item you're changing.
+
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
@@ -179,7 +191,8 @@ For more details on project visibility, see
 
 ## Configure allowed import sources
 
-You can specify from which hosting sites users can [import their projects](../../project/import/index.md):
+Before you can import projects from other systems, you must enable the
+[import source](../../gitlab_com/index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Main menu > Admin**.
@@ -206,9 +219,6 @@ To enable the export of
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
 You can enable migration of groups by direct transfer using the UI.
-
-To also migrate projects with the groups, you must enable the
-[`bulk_import_projects` feature flag](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
 To enable migration of groups by direct transfer:
 

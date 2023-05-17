@@ -5,9 +5,13 @@ module Gitlab
     module Project
       class RelationTreeRestorer < ImportExport::Group::RelationTreeRestorer
         # Relations which cannot be saved at project level (and have a group assigned)
-        GROUP_MODELS = [GroupLabel, Milestone, Epic, Iteration].freeze
+        GROUP_MODELS = [GroupLabel, Milestone, Epic].freeze
 
         private
+
+        def group_models
+          GROUP_MODELS
+        end
 
         def bulk_insert_enabled
           true
@@ -19,9 +23,11 @@ module Gitlab
         end
 
         def relation_invalid_for_importable?(relation_object)
-          GROUP_MODELS.include?(relation_object.class) && relation_object.group_id
+          group_models.include?(relation_object.class) && relation_object.group_id
         end
       end
     end
   end
 end
+
+Gitlab::ImportExport::Project::RelationTreeRestorer.prepend_mod

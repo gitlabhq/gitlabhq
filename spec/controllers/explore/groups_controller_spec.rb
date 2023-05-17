@@ -41,9 +41,9 @@ RSpec.describe Explore::GroupsController do
 
   it_behaves_like 'explore groups'
 
-  context 'generic_explore_groups flag is disabled' do
+  context 'gitlab.com' do
     before do
-      stub_feature_flags(generic_explore_groups: false)
+      allow(Gitlab).to receive(:com?).and_return(true)
     end
 
     it_behaves_like 'explore groups'

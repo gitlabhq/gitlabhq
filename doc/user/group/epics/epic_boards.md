@@ -8,17 +8,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5067) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290039) in GitLab 14.1.
+> - Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
 
 Epic boards build on the existing [epic tracking functionality](index.md) and
 [labels](../../project/labels.md). Your epics appear as cards in vertical lists, organized by their assigned
 labels.
+
+On the top of each list, you can see the number of epics in the list (**{epic}**) and the total weight of all its epics (**{weight}**).
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=I1bFIAQBHB8">Epics and Issue Boards - Project Management</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/I1bFIAQBHB8" frameborder="0" allowfullscreen> </iframe>
+</figure>
 
 To view an epic board:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
 
-![GitLab epic board - Premium](img/epic_board_v14_1.png)
+![GitLab epic board - Premium](img/epic_board_v15_10.png)
 
 ## Create an epic board
 
@@ -30,7 +40,7 @@ To create a new epic board:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
-1. In the upper left corner, select the dropdown list with the current board name.
+1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's title.
 1. Optional. To hide the Open or Closed lists, clear the **Show the Open list** and
@@ -54,7 +64,7 @@ Prerequisites:
 
 To delete the active epic board:
 
-1. Select the dropdown list with the current board name in the upper left corner of the epic boards page.
+1. In the upper-left corner of the epic board page, select the dropdown list.
 1. Select **Delete board**.
 1. Select **Delete**.
 
@@ -63,7 +73,7 @@ To delete the active epic board:
 - [Create a new list](#create-a-new-list).
 - [Remove an existing list](#remove-a-list).
 - [Filter epics](#filter-epics).
-- Create workflows, like when using [issue boards](../../project/issue_board.md#create-workflows).
+- Create workflows, like when using [issue boards](../../project/issue_board.md#issue-board-workflow-between-teams).
 - [Move epics and lists](#move-epics-and-lists).
 - Change epic labels (by dragging an epic between lists).
 - Close an epic (by dragging it to the **Closed** list).
@@ -100,7 +110,7 @@ To remove a list from an epic board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-## Create an epic from an epic board
+### Create an epic from an epic board
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
 
@@ -115,7 +125,7 @@ To create an epic from a list in epic board:
 1. Enter the new epic's title.
 1. Select **Create epic**.
 
-![Create a GitLab epic from an epic board](img/epic_board_epic_create_v14_1.png)
+![Create a GitLab epic from an epic board](img/epic_board_epic_create_v15_10.png)
 
 ### Filter epics
 

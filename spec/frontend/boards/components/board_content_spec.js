@@ -1,20 +1,18 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import Vue from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
+import eventHub from '~/boards/eventhub';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
-import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
-import { mockLists, boardListsQueryResponse } from '../mock_data';
+import { mockLists, mockListsById } from '../mock_data';
 
-Vue.use(VueApollo);
 Vue.use(Vuex);
 
 const actions = {
@@ -23,8 +21,6 @@ const actions = {
 
 describe('BoardContent', () => {
   let wrapper;
-  let fakeApollo;
-  window.gon = {};
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
@@ -49,24 +45,21 @@ describe('BoardContent', () => {
     issuableType = 'issue',
     isIssueBoard = true,
     isEpicBoard = false,
-    boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse),
   } = {}) => {
-    fakeApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
-
     const store = createStore({
       ...defaultState,
       ...state,
     });
     wrapper = shallowMount(BoardContent, {
-      apolloProvider: fakeApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
+        filterParams: {},
+        isSwimlanesOn: false,
+        boardListsApollo: mockListsById,
         ...props,
       },
       provide: {
         canAdminList,
-        boardType: 'group',
-        fullPath: 'gitlab-org/gitlab',
         issuableType,
         isIssueBoard,
         isEpicBoard,
@@ -75,36 +68,13 @@ describe('BoardContent', () => {
         isApolloBoard,
       },
       store,
+      stubs: {
+        BoardContentSidebar: stubComponent(BoardContentSidebar, {
+          template: '<div></div>',
+        }),
+      },
     });
   };
-
-  beforeAll(() => {
-    global.ResizeObserver = class MockResizeObserver {
-      constructor(callback) {
-        this.callback = callback;
-
-        this.entries = [];
-      }
-
-      observe(entry) {
-        this.entries.push(entry);
-      }
-
-      disconnect() {
-        this.entries = [];
-        this.callback = null;
-      }
-
-      trigger() {
-        this.callback(this.entries);
-      }
-    };
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    fakeApollo = null;
-  });
 
   describe('default', () => {
     beforeEach(() => {
@@ -122,34 +92,6 @@ describe('BoardContent', () => {
     it('does not display EpicsSwimlanes component', () => {
       expect(wrapper.findComponent(EpicsSwimlanes).exists()).toBe(false);
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
-    });
-
-    it('on small screens, sets board container height to full height', async () => {
-      window.innerHeight = 1000;
-      window.innerWidth = 767;
-      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-
-      wrapper.vm.resizeObserver.trigger();
-
-      await nextTick();
-
-      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
-
-      expect(style).toBe('height: 1000px;');
-    });
-
-    it('on large screens, sets board container height fill area below filters', async () => {
-      window.innerHeight = 1000;
-      window.innerWidth = 768;
-      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-
-      wrapper.vm.resizeObserver.trigger();
-
-      await nextTick();
-
-      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
-
-      expect(style).toBe('height: 900px;');
     });
 
     it('sets delay and delayOnTouchOnly attributes on board list', () => {
@@ -202,6 +144,15 @@ describe('BoardContent', () => {
 
     it('renders BoardContentSidebar', () => {
       expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(true);
+    });
+
+    it('refetches lists when updateBoard event is received', async () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
+
+      createComponent({ isApolloBoard: true });
+      await waitForPromises();
+
+      expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
     });
   });
 });

@@ -20,11 +20,6 @@ describe('IssuableAssignees', () => {
   const findUncollapsedAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
   const findEmptyAssignee = () => wrapper.find('[data-testid="none"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when no assignees are present', () => {
     it.each`
       signedIn | editable | message

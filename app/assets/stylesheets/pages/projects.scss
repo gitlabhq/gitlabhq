@@ -291,9 +291,9 @@
 
   .project-cell {
     @include gl-display-table-cell;
-    @include gl-border-b;
     @include gl-vertical-align-top;
     @include gl-py-4;
+    border-bottom: 1px solid $gray-50;
   }
 
   .project-row:last-of-type {
@@ -651,6 +651,20 @@
       .label-hide {
         display: none;
       }
+    }
+  }
+}
+
+.projects-list-item {
+  .description {
+    max-height: $gl-spacing-scale-8;
+
+    p {
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      display: -webkit-box;
     }
   }
 }

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'IDE merge request', :js, feature_category: :web_ide do
+  include CookieHelper
+
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.first_owner }
@@ -11,6 +13,8 @@ RSpec.describe 'IDE merge request', :js, feature_category: :web_ide do
     stub_feature_flags(vscode_web_ide: false)
 
     sign_in(user)
+
+    set_cookie('new-actions-popover-viewed', 'true')
 
     visit(merge_request_path(merge_request))
   end

@@ -1,6 +1,5 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import BlobEditHeader from '~/blob/components/blob_edit_header.vue';
 
 describe('Blob Header Editing', () => {
@@ -15,15 +14,13 @@ describe('Blob Header Editing', () => {
       },
     });
   };
+
   const findDeleteButton = () =>
     wrapper.findAllComponents(GlButton).wrappers.find((x) => x.text() === 'Delete file');
+  const findFormInput = () => wrapper.findComponent(GlFormInput);
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('rendering', () => {
@@ -32,7 +29,7 @@ describe('Blob Header Editing', () => {
     });
 
     it('contains a form input field', () => {
-      expect(wrapper.findComponent(GlFormInput).exists()).toBe(true);
+      expect(findFormInput().exists()).toBe(true);
     });
 
     it('does not show delete button', () => {
@@ -41,19 +38,16 @@ describe('Blob Header Editing', () => {
   });
 
   describe('functionality', () => {
-    it('emits input event when the blob name is changed', async () => {
-      const inputComponent = wrapper.findComponent(GlFormInput);
+    it('emits input event when the blob name is changed', () => {
+      const inputComponent = findFormInput();
       const newValue = 'bar.txt';
 
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        name: newValue,
-      });
+      // update `name` with `newValue`
+      inputComponent.vm.$emit('input', newValue);
+      // trigger change event which emits input event on wrapper
       inputComponent.vm.$emit('change');
 
-      await nextTick();
-      expect(wrapper.emitted().input[0]).toEqual([newValue]);
+      expect(wrapper.emitted().input).toEqual([[newValue]]);
     });
   });
 

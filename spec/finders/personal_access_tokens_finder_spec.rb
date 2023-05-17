@@ -110,7 +110,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
         lazy { [user] }             | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
         lazy { [other_user] }       | [:active_other]
         lazy { [user, other_user] } | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
-        []                          | [] # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        []                          | []
       end
 
       with_them do

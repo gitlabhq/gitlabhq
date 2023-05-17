@@ -50,13 +50,13 @@ export default {
           {{ __('Failed') }}
         </div>
         <div role="rowheader" class="table-section section-10 gl-text-center">
-          {{ __('Errors'), }}
+          {{ __('Errors') }}
         </div>
         <div role="rowheader" class="table-section section-10 gl-text-center">
-          {{ __('Skipped'), }}
+          {{ __('Skipped') }}
         </div>
         <div role="rowheader" class="table-section section-10 gl-text-center">
-          {{ __('Passed'), }}
+          {{ __('Passed') }}
         </div>
         <div role="rowheader" class="table-section section-10 gl-pr-5 gl-text-right">
           {{ __('Total') }}

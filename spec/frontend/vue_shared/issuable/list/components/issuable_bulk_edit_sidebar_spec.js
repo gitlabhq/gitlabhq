@@ -28,7 +28,6 @@ describe('IssuableBulkEditSidebar', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

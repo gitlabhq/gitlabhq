@@ -3,7 +3,9 @@
 class ChatName < ApplicationRecord
   LAST_USED_AT_INTERVAL = 1.hour
 
-  belongs_to :integration
+  include IgnorableColumns
+  ignore_column :integration_id, remove_with: '16.0', remove_after: '2023-04-22'
+
   belongs_to :user
 
   validates :user, presence: true

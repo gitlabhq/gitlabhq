@@ -19,17 +19,15 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
   before_action :entry, only: [:external_file, :file]
 
+  before_action only: :index do
+    push_frontend_feature_flag(:ci_job_artifact_bulk_destroy, @project)
+  end
+
   MAX_PER_PAGE = 20
 
   feature_category :build_artifacts
 
-  def index
-    # Loading artifacts is very expensive in projects with a lot of artifacts.
-    # This feature flag prevents a DOS attack vector.
-    # It should be removed only after resolving the underlying performance
-    # issues: https://gitlab.com/gitlab-org/gitlab/issues/32281
-    return head :no_content unless Feature.enabled?(:artifacts_management_page, @project)
-  end
+  def index; end
 
   def destroy
     notice = if artifact.destroy

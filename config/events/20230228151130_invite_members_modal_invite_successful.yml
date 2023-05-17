@@ -1,0 +1,26 @@
+---
+description: Invite members modal is submitted successfully
+category: invite_members_modal
+action: invite_successful
+label_description: area/source of invite members modal being triggered
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: growth
+product_stage: growth
+product_group: activation
+product_category:
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112958
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

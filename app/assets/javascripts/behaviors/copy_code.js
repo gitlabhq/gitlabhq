@@ -5,6 +5,8 @@ import { setAttributes } from '~/lib/utils/dom_utils';
 
 class CopyCodeButton extends HTMLElement {
   connectedCallback() {
+    if (this.querySelector('.btn')) return;
+
     this.for = uniqueId('code-');
 
     const target = this.parentNode.querySelector('pre');

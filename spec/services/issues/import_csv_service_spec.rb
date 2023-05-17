@@ -6,6 +6,7 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user, username: 'csv_assignee') }
+  let(:file) { fixture_file_upload('spec/fixtures/csv_complex.csv') }
   let(:service) do
     uploader = FileUploader.new(project)
     uploader.store!(file)
@@ -19,8 +20,6 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
   end
 
   describe '#execute' do
-    let(:file) { fixture_file_upload('spec/fixtures/csv_complex.csv') }
-
     subject { service.execute }
 
     it 'sets all issueable attributes and executes quick actions' do

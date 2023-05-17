@@ -20,11 +20,7 @@ Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) an
 In both cases, you authenticate with a personal access token in place of your password.
 
 WARNING:
-The ability to create personal access tokens without expiry was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
-16.0. When this ability is removed, existing personal access tokens without an expiry are planned to have an expiry added.
-The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
-occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+The ability to create personal access tokens without expiry was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. In GitLab 16.0 and later, existing personal access tokens without an expiry date are automatically given an expiry date of 365 days later than the current date. The automatic adding of an expiry date occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry date occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
 
 Personal access tokens are:
 
@@ -45,19 +41,20 @@ For examples of how you can use a personal access token to authenticate with the
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/rest/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
-NOTE:
-Personal access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-
 ## Create a personal access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
+> - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
 You can create as many personal access tokens as you like.
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. Enter a name and optional expiry date for the token.
+1. Enter a name and expiry date for the token.
+   - The token expires on that date at midnight UTC.
+   - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
+   - By default, this date can be a maximum of 365 days later than the current date.
 1. Select the [desired scopes](#personal-access-token-scopes).
 1. Select **Create personal access token**.
 
@@ -103,6 +100,8 @@ To view the last time a token was used:
 
 ## Personal access token scopes
 
+> Personal access tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+
 A personal access token can perform actions based on the assigned scopes.
 
 | Scope              | Access |
@@ -116,6 +115,9 @@ A personal access token can perform actions based on the assigned scopes.
 | `write_registry`   | Grants read-write (push) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
 | `admin_mode`             | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
+
+WARNING:
+If you enabled [external authorization](../admin_area/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
 ## When personal access tokens expire
 
@@ -225,7 +227,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 ### Unrevoke a personal access token **(FREE SELF)**
 
-If a personal access token is revoked accidentally by any method, administrators can unrevoke that token.
+If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 
 WARNING:
 Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
@@ -247,5 +249,4 @@ Running the following commands changes data directly. This could be damaging if 
 
 ## Alternatives to personal access tokens
 
-For Git over HTTPS, an alternative to personal access tokens is [Git Credential Manager](account/two_factor_authentication.md#git-credential-manager),
-which securely authenticates using OAuth.
+For Git over HTTPS, an alternative to personal access tokens is to use an [OAuth credential helper](account/two_factor_authentication.md#oauth-credential-helpers).

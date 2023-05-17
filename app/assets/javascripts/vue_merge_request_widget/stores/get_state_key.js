@@ -32,5 +32,5 @@ export default function deviseState() {
   ) {
     return stateKey.readyToMerge;
   }
-  return null;
+  return stateKey.checking;
 }

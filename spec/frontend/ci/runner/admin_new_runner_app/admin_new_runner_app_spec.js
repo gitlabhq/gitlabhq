@@ -1,40 +1,47 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import AdminNewRunnerApp from '~/ci/runner/admin_new_runner/admin_new_runner_app.vue';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
+import RegistrationFeedbackBanner from '~/ci/runner/components/registration/registration_feedback_banner.vue';
+import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
-import { DEFAULT_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  INSTANCE_TYPE,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+} from '~/ci/runner/constants';
+import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { runnerCreateResult } from '../mock_data';
 
-const mockLegacyRegistrationToken = 'LEGACY_REGISTRATION_TOKEN';
+jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  redirectTo: jest.fn(),
+}));
 
-Vue.use(VueApollo);
+const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
 describe('AdminNewRunnerApp', () => {
   let wrapper;
 
-  const findLegacyInstructionsLink = () => wrapper.findByTestId('legacy-instructions-link');
-  const findRunnerInstructionsModal = () => wrapper.findComponent(RunnerInstructionsModal);
   const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
-  const findRunnerFormFields = () => wrapper.findComponent(RunnerFormFields);
+  const findRegistrationFeedbackBanner = () => wrapper.findComponent(RegistrationFeedbackBanner);
+  const findRegistrationCompatibilityAlert = () =>
+    wrapper.findComponent(RegistrationCompatibilityAlert);
+  const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
-    wrapper = mountFn(AdminNewRunnerApp, {
-      propsData: {
-        legacyRegistrationToken: mockLegacyRegistrationToken,
-        ...props,
-      },
-      directives: {
-        GlModal: createMockDirective(),
-      },
+  const createComponent = () => {
+    wrapper = shallowMountExtended(AdminNewRunnerApp, {
       stubs: {
         GlSprintf,
       },
-      ...options,
     });
   };
 
@@ -42,38 +49,70 @@ describe('AdminNewRunnerApp', () => {
     createComponent();
   });
 
-  describe('Shows legacy modal', () => {
-    it('passes legacy registration to modal', () => {
-      expect(findRunnerInstructionsModal().props('registrationToken')).toEqual(
-        mockLegacyRegistrationToken,
-      );
-    });
+  it('shows a registration feedback banner', () => {
+    expect(findRegistrationFeedbackBanner().exists()).toBe(true);
+  });
 
-    it('opens a modal with the legacy instructions', () => {
-      const modalId = getBinding(findLegacyInstructionsLink().element, 'gl-modal').value;
+  it('shows a registration compatibility alert', () => {
+    expect(findRegistrationCompatibilityAlert().props('alertKey')).toBe(INSTANCE_TYPE);
+  });
 
-      expect(findRunnerInstructionsModal().props('modalId')).toBe(modalId);
+  describe('Platform', () => {
+    it('shows the platforms radio group', () => {
+      expect(findRunnerPlatformsRadioGroup().props('value')).toBe(DEFAULT_PLATFORM);
     });
   });
 
-  describe('New runner form fields', () => {
-    describe('Platform', () => {
-      it('shows the platforms radio group', () => {
-        expect(findRunnerPlatformsRadioGroup().props('value')).toBe(DEFAULT_PLATFORM);
+  describe('Runner form', () => {
+    it('shows the runner create form for an instance runner', () => {
+      expect(findRunnerCreateForm().props()).toEqual({
+        runnerType: INSTANCE_TYPE,
+        groupId: null,
+        projectId: null,
       });
     });
 
-    describe('Runner', () => {
-      it('shows the runners fields', () => {
-        expect(findRunnerFormFields().props('value')).toEqual({
-          accessLevel: 'NOT_PROTECTED',
-          paused: false,
-          description: '',
-          maintenanceNote: '',
-          maximumTimeout: ' ',
-          runUntagged: false,
-          tagList: '',
+    describe('When a runner is saved', () => {
+      beforeEach(() => {
+        findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
+      });
+
+      it('pushes an alert to be shown after redirection', () => {
+        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+          message: s__('Runners|Runner created.'),
+          variant: VARIANT_SUCCESS,
         });
+      });
+
+      it('redirects to the registration page', () => {
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
+
+        expect(redirectTo).toHaveBeenCalledWith(url); // eslint-disable-line import/no-deprecated
+      });
+    });
+
+    describe('When another platform is selected and a runner is saved', () => {
+      beforeEach(() => {
+        findRunnerPlatformsRadioGroup().vm.$emit('input', WINDOWS_PLATFORM);
+        findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
+      });
+
+      it('redirects to the registration page with the platform', () => {
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
+
+        expect(redirectTo).toHaveBeenCalledWith(url); // eslint-disable-line import/no-deprecated
+      });
+    });
+
+    describe('When runner fails to save', () => {
+      const ERROR_MSG = 'Cannot save!';
+
+      beforeEach(() => {
+        findRunnerCreateForm().vm.$emit('error', new Error(ERROR_MSG));
+      });
+
+      it('shows an error message', () => {
+        expect(createAlert).toHaveBeenCalledWith({ message: ERROR_MSG });
       });
     });
   });

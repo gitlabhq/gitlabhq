@@ -9,7 +9,8 @@ export const SEVERITY_LEVELS = {
   UNKNOWN: s__('severity|Unknown'),
 };
 
-/* eslint-disable @gitlab/require-i18n-strings */
+const category = 'Alert Management'; // eslint-disable-line @gitlab/require-i18n-strings
+
 export const PAGE_CONFIG = {
   OPERATIONS: {
     TITLE: 'OPERATIONS',
@@ -20,14 +21,14 @@ export const PAGE_CONFIG = {
     },
     // Tracks snowplow event when user views alert details
     TRACK_ALERTS_DETAILS_VIEWS_OPTIONS: {
-      category: 'Alert Management',
+      category,
       action: 'view_alert_details',
     },
     // Tracks snowplow event when alert status is updated
     TRACK_ALERT_STATUS_UPDATE_OPTIONS: {
-      category: 'Alert Management',
+      category,
       action: 'update_alert_status',
-      label: 'Status',
+      label: 'Status', // eslint-disable-line @gitlab/require-i18n-strings
     },
   },
 };

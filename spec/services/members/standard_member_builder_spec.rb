@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::StandardMemberBuilder do
+RSpec.describe Members::StandardMemberBuilder, feature_category: :subgroups do
   let_it_be(:source) { create(:group) }
   let_it_be(:existing_member) { create(:group_member) }
 

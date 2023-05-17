@@ -103,6 +103,9 @@
           "noteable_type": {
             "type": "string"
           },
+          "project_id": {
+            "type": "integer"
+          },
           "resolved": {
             "type": "boolean"
           },
@@ -189,6 +192,12 @@
           "internal": {
             "type": [
               "boolean",
+              "null"
+            ]
+          },
+          "external_author": {
+            "type": [
+              "string",
               "null"
             ]
           }

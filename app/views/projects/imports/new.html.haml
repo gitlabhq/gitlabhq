@@ -9,7 +9,7 @@
     dismissible: false,
     variant: :danger,
     alert_options: { class: 'gl-mb-5' }) do |c|
-    = c.body do
+    - c.with_body do
       = @project.import_state.last_error
 
 = gitlab_ui_form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|

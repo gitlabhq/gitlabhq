@@ -65,7 +65,7 @@ export default {
     releasesHelpText: s__(
       'ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release.',
     ),
-    securityAndComplianceLabel: s__('ProjectSettings|Security & Compliance'),
+    securityAndComplianceLabel: s__('ProjectSettings|Security and Compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
     pucWarningLabel: s__('ProjectSettings|Warn about Potentially Unwanted Characters'),
@@ -825,7 +825,7 @@ export default {
       </project-setting-row>
       <project-setting-row
         :label="$options.i18n.securityAndComplianceLabel"
-        :help-text="s__('ProjectSettings|Security & Compliance for this project')"
+        :help-text="s__('ProjectSettings|Security and compliance for this project.')"
       >
         <project-feature-setting
           v-model="securityAndComplianceAccessLevel"
@@ -930,7 +930,10 @@ export default {
           name="project[project_feature_attributes][monitor_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
+      <div
+        v-if="!glFeatures.removeMonitorMetrics"
+        class="project-feature-setting-group gl-pl-7 gl-sm-pl-5"
+      >
         <project-setting-row
           ref="metrics-visibility-settings"
           :label="__('Metrics Dashboard')"

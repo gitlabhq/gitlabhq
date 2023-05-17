@@ -4,77 +4,46 @@ require "spec_helper"
 
 RSpec.describe Groups::ObservabilityHelper do
   let(:group) { build_stubbed(:group) }
-  let(:observability_url) { Gitlab::Observability.observability_url }
 
   describe '#observability_iframe_src' do
-    context 'if observability_path is missing from params' do
-      it 'returns the iframe src for action: dashboards' do
-        allow(helper).to receive(:params).and_return({ action: 'dashboards' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/")
-      end
-
-      it 'returns the iframe src for action: manage' do
-        allow(helper).to receive(:params).and_return({ action: 'manage' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/dashboards")
-      end
-
-      it 'returns the iframe src for action: explore' do
-        allow(helper).to receive(:params).and_return({ action: 'explore' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/explore")
-      end
-
-      it 'returns the iframe src for action: datasources' do
-        allow(helper).to receive(:params).and_return({ action: 'datasources' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/datasources")
-      end
+    before do
+      allow(Gitlab::Observability).to receive(:build_full_url).and_return('full-url')
     end
 
-    context 'if observability_path exists in params' do
-      context 'if observability_path is valid' do
-        it 'returns the iframe src by injecting the observability path' do
-          allow(helper).to receive(:params).and_return({ action: '/explore', observability_path: '/foo?bar=foobar' })
-          expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/foo?bar=foobar")
-        end
-      end
-
-      context 'if observability_path is not valid' do
-        it 'returns the iframe src by injecting the sanitised observability path' do
-          allow(helper).to receive(:params).and_return({
-                                                         action: '/explore',
-                                                         observability_path:
-                                                         "/test?groupId=<script>alert('attack!')</script>"
-                                                       })
-          expect(helper.observability_iframe_src(group)).to eq(
-            "#{observability_url}/-/#{group.id}/test?groupId=alert('attack!')"
-          )
-        end
-      end
+    it 'returns the iframe src for action: dashboards' do
+      allow(helper).to receive(:params).and_return({ action: 'dashboards', observability_path: '/foo?bar=foobar' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, '/foo?bar=foobar', '/')
     end
 
-    context 'when observability ui is standalone' do
-      before do
-        stub_env('STANDALONE_OBSERVABILITY_UI', 'true')
-      end
+    it 'returns the iframe src for action: manage' do
+      allow(helper).to receive(:params).and_return({ action: 'manage', observability_path: '/foo?bar=foobar' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, '/foo?bar=foobar', '/dashboards')
+    end
 
-      it 'returns the iframe src without group.id for action: dashboards' do
-        allow(helper).to receive(:params).and_return({ action: 'dashboards' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/")
-      end
+    it 'returns the iframe src for action: explore' do
+      allow(helper).to receive(:params).and_return({ action: 'explore', observability_path: '/foo?bar=foobar' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, '/foo?bar=foobar', '/explore')
+    end
 
-      it 'returns the iframe src without group.id for action: manage' do
-        allow(helper).to receive(:params).and_return({ action: 'manage' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/dashboards")
-      end
+    it 'returns the iframe src for action: datasources' do
+      allow(helper).to receive(:params).and_return({ action: 'datasources', observability_path: '/foo?bar=foobar' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, '/foo?bar=foobar', '/datasources')
+    end
 
-      it 'returns the iframe src without group.id for action: explore' do
-        allow(helper).to receive(:params).and_return({ action: 'explore' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/explore")
-      end
+    it 'returns the iframe src when action is not recognised' do
+      allow(helper).to receive(:params).and_return({ action: 'unrecognised', observability_path: '/foo?bar=foobar' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, '/foo?bar=foobar', '/')
+    end
 
-      it 'returns the iframe src without group.id for action: datasources' do
-        allow(helper).to receive(:params).and_return({ action: 'datasources' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/datasources")
-      end
+    it 'returns the iframe src when observability_path is missing' do
+      allow(helper).to receive(:params).and_return({ action: 'dashboards' })
+      expect(helper.observability_iframe_src(group)).to eq('full-url')
+      expect(Gitlab::Observability).to have_received(:build_full_url).with(group, nil, '/')
     end
   end
 

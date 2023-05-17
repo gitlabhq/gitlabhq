@@ -25,10 +25,6 @@ describe('Pagination bar', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('events', () => {
     beforeEach(() => {
       createComponent();

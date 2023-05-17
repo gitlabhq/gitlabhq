@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'yaml'
+
 module Support
   module RspecOrder
     TODO_YAML = File.join(__dir__, 'rspec_order_todo.yml')

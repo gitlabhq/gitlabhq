@@ -1,0 +1,14 @@
+- title: "Managed Licenses API"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: sam.white
+  stage: govern
+  tiers: [Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390417
+  body: |
+     The [Managed Licenses API](https://archives.docs.gitlab.com/15.8/ee/api/managed_licenses.html) has been removed. To enforce approvals in merge requests when non-compliant licenses are detected, use the [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) feature instead.
+
+     Our [GraphQL APIs](https://docs.gitlab.com/ee/api/graphql/reference/) can be used to create a Security Policy Project, [update the policy.yml](https://docs.gitlab.com/ee/api/graphql/reference/#mutationscanexecutionpolicycommit) in the Security Policy Project, and enforce those policies.
+
+     To query a list of dependencies and components, use our [Dependencies REST API](https://docs.gitlab.com/ee/api/dependencies.html) or [export from the Dependency List](https://docs.gitlab.com/ee/user/application_security/dependency_list/).

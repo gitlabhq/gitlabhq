@@ -39,6 +39,12 @@
 .border-radius-small { border-radius: $border-radius-small; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
 
+// Override Bootstrap class with offset for system-header and
+// performance bar when present
+.fixed-top {
+  top: $calc-application-bars-height;
+}
+
 .gl-children-ml-sm-3 > * {
   @include media-breakpoint-up(sm) {
     @include gl-ml-3;
@@ -59,6 +65,10 @@
   min-width: 0;
 }
 
+.gl-min-h-100vh {
+  min-height: 100vh;
+}
+
 // .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
 .gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }
@@ -71,56 +81,9 @@
 // https://gitlab.com/groups/gitlab-org/-/epics/2882
 .gl-h-200\! { height: px-to-rem($grid-size * 25) !important; }
 
-.gl-bg-purple-light { background-color: $purple-light; }
-
-// move this to GitLab UI once onboarding experiment is considered a success
-.gl-py-8 {
-  padding-top: $gl-spacing-scale-8;
-  padding-bottom: $gl-spacing-scale-8;
-}
-
-.gl-transition-property-stroke-opacity {
-  transition-property: stroke-opacity;
-}
-
-.gl-transition-property-stroke {
-  transition-property: stroke;
-}
-
-.gl-top-66vh {
-  top: 66vh;
-}
-
-.gl-shadow-x0-y0-b3-s1-blue-500 {
-  box-shadow: inset 0 0 3px $gl-border-size-1 $blue-500;
-}
-
 // This utility is used to force the z-index to match that of dropdown menu's
 .gl-z-dropdown-menu\! {
   z-index: $zindex-dropdown-menu !important;
-}
-
-.gl-flex-basis-quarter {
-  flex-basis: 25%;
-}
-
-// Will be moved to @gitlab/ui (without the !important) in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1462
-// We only need the bang (!) version until the non-bang version is added to
-// @gitlab/ui utitlities.scss. Once there, it will get loaded in the correct
-// order to properly override `.gl-mt-6` which is used for narrower screen
-// widths (currently that style gets added to the application.css stylesheet
-// after this one, so it takes precedence).
-.gl-md-mt-11\! {
-  @media (min-width: $breakpoint-md) {
-    margin-top: $gl-spacing-scale-11 !important;
-  }
-}
-
-// Same as above (also without the !important) but for overriding `.gl-pt-6`
-.gl-md-pt-11\! {
-  @media (min-width: $breakpoint-md) {
-    padding-top: $gl-spacing-scale-11 !important;
-  }
 }
 
 // This is used to help prevent issues with margin collapsing.
@@ -128,34 +91,6 @@
 .gl-force-block-formatting-context::after {
   content: '';
   display: flex;
-}
-
-.gl-sm-mr-3 {
-  @include media-breakpoint-up(sm) {
-    margin-right: $gl-spacing-scale-3;
-  }
-}
-
-.gl-xl-ml-3 {
-  @include media-breakpoint-up(lg) {
-    margin-left: $gl-spacing-scale-3;
-  }
-}
-
-.gl-mr-n2 {
-  margin-right: -$gl-spacing-scale-2;
-}
-
-.gl-w-grid-size-30 {
-  width: $grid-size * 30;
-}
-
-.gl-w-grid-size-40 {
-  width: $grid-size * 40;
-}
-
-.gl-max-w-50p {
-  max-width: 50%;
 }
 
 /**
@@ -181,59 +116,6 @@
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-/*
-All of the following (up until the "End gitlab-ui#1709" comment) will be moved
-to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
-*/
-.gl-md-grid-template-columns-3 {
-  @include media-breakpoint-up(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.gl-lg-grid-template-columns-4 {
-  @include media-breakpoint-up(lg) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.gl-max-w-48 {
-  max-width: $gl-spacing-scale-48;
-}
-
-.gl-max-w-75 {
-  max-width: $gl-spacing-scale-75;
-}
-
-.gl-md-pt-11 {
-  @include media-breakpoint-up(md) {
-    padding-top: $gl-spacing-scale-11 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-md-mb-6 {
-  @include media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-6 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-md-mb-12 {
-  @include media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-12 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-mt-n5 {
-  margin-top: -$gl-spacing-scale-5;
-}
-
-// Utils below are very specific so cannot be part of GitLab UI
-.gl-md-mt-5 {
-  @include gl-media-breakpoint-up(md) {
-    margin-top: $gl-spacing-scale-5;
-  }
-}
-
 .gl-sm-mr-0\! {
   @include gl-media-breakpoint-down(md) {
     margin-right: 0 !important;
@@ -246,37 +128,46 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
-.gl-md-mb-3\! {
+.gl-md-w-15 {
   @include gl-media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-3 !important;
+    width: $gl-spacing-scale-15;
   }
 }
 
-
-.gl-gap-2 {
-  gap: $gl-spacing-scale-2;
+.gl-md-w-20 {
+  @include gl-media-breakpoint-up(md) {
+    width: $gl-spacing-scale-20;
+  }
 }
 
-.gl-hover-bg-t-gray-a-08:hover {
-  background-color: $t-gray-a-08;
+.gl-md-w-30 {
+  @include gl-media-breakpoint-up(md) {
+    width: $gl-spacing-scale-30;
+  }
 }
 
-/* End gitlab-ui#1709 */
-
-/*
- * The below style will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1751
- */
-.gl-filter-blur-1 {
-  backdrop-filter: blur(2px);
-  /* stylelint-disable property-no-vendor-prefix */
-  -webkit-backdrop-filter: blur(2px); // still required by Safari
+.gl-fill-orange-500 {
+  fill: $orange-500;
 }
 
-.gl-flex-flow-row-wrap {
-  flex-flow: row wrap;
+.gl-fill-red-500 {
+  fill: $red-500;
 }
 
-.gl-isolate {
-  isolation: isolate;
+/**
+  Note: used by app/assets/javascripts/vue_shared/components/truncated_text/truncated_text.vue
+  Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab/-/issues/408643
+
+  Although this solution uses vendor-prefixes, it is supported by all browsers and it is
+  currently the only way to truncate text by lines. See https://caniuse.com/css-line-clamp
+**/
+.gl-truncate-text-by-line {
+  // stylelint-disable-next-line value-no-vendor-prefix
+  display: -webkit-box;
+  -webkit-line-clamp: var(--lines);
+  -webkit-box-orient: vertical;
+
+  @include gl-media-breakpoint-down(sm) {
+    -webkit-line-clamp: var(--mobile-lines);
+  }
 }

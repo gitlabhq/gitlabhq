@@ -25,7 +25,7 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :pull_requests_merged_by
+            :collaborators
           )
         rescue StandardError => e
           Gitlab::Import::ImportFailureService.track(

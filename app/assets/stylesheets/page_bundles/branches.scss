@@ -39,3 +39,7 @@
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
+.branches-list .branch-item:not(:last-of-type) {
+  border-bottom: 1px solid $border-color;
+}

@@ -28,7 +28,7 @@ module API
         end
 
         def registry_url(package_type, options)
-          base_url = REGISTRY_BASE_URLS[package_type]
+          base_url = registry_base_url(package_type)
 
           raise ArgumentError, "Can't build registry_url for package_type #{package_type}" unless base_url
 
@@ -66,7 +66,14 @@ module API
 
           Feature.enabled?(:maven_central_request_forwarding, target.root_ancestor)
         end
+
+        # Override in JiHu repo
+        def registry_base_url(package_type)
+          REGISTRY_BASE_URLS[package_type]
+        end
       end
     end
   end
 end
+
+API::Helpers::Packages::DependencyProxyHelpers.prepend_mod

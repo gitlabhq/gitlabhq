@@ -174,39 +174,95 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
 
     context 'requested in json format' do
-      let(:project) { create(:project) }
+      context 'when profile_tabs_vue feature flag is turned OFF' do
+        let(:project) { create(:project) }
 
-      before do
-        project.add_developer(user)
-        Gitlab::DataBuilder::Push.build_sample(project, user)
+        before do
+          project.add_developer(user)
+          Gitlab::DataBuilder::Push.build_sample(project, user)
+          stub_feature_flags(profile_tabs_vue: false)
+          sign_in(user)
+        end
 
-        sign_in(user)
+        it 'loads events' do
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
+        end
+
+        it 'hides events if the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        end
+
+        it 'hides events if the user has a private profile' do
+          Gitlab::DataBuilder::Push.build_sample(project, private_user)
+
+          get user_activity_url private_user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        end
       end
 
-      it 'loads events' do
-        get user_activity_url user.username, format: :json
+      context 'when profile_tabs_vue feature flag is turned ON' do
+        let(:project) { create(:project) }
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
-      end
+        before do
+          project.add_developer(user)
+          Gitlab::DataBuilder::Push.build_sample(project, user)
+          stub_feature_flags(profile_tabs_vue: true)
+          sign_in(user)
+        end
 
-      it 'hides events if the user cannot read cross project' do
-        allow(Ability).to receive(:allowed?).and_call_original
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+        it 'loads events' do
+          get user_activity_url user.username, format: :json
 
-        get user_activity_url user.username, format: :json
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(1)
+        end
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
-      end
+        it 'hides events if the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-      it 'hides events if the user has a private profile' do
-        Gitlab::DataBuilder::Push.build_sample(project, private_user)
+          get user_activity_url user.username, format: :json
 
-        get user_activity_url private_user.username, format: :json
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(0)
+        end
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        it 'hides events if the user has a private profile' do
+          Gitlab::DataBuilder::Push.build_sample(project, private_user)
+
+          get user_activity_url private_user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(0)
+        end
+
+        it 'hides events if the user has a private profile' do
+          project = create(:project, :private)
+          private_event_user = create(:user, include_private_contributions: true)
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, private_event_user)
+          EventCreateService.new.push(project, private_event_user, push_data)
+
+          get user_activity_url private_event_user.username, format: :json
+
+          response_body = Gitlab::Json.parse(response.body)
+          event = response_body.first
+          expect(response.media_type).to eq('application/json')
+          expect(response_body.count).to eq(1)
+          expect(event).to include('created_at', 'author', 'action')
+          expect(event['action']).to eq('private')
+          expect(event).not_to include('ref', 'commit', 'target', 'resource_parent')
+        end
       end
     end
   end
@@ -472,7 +528,7 @@ RSpec.describe UsersController, feature_category: :user_management do
 
           get user_calendar_activities_url public_user.username
 
-          expect(response.body).to include(project_work_items_path(project, work_item.iid, iid_path: true))
+          expect(response.body).to include(project_work_items_path(project, work_item.iid))
           expect(response.body).to include(project_issue_path(project, issue))
         end
 
@@ -714,6 +770,17 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(response.body).to eq(expected_json)
         end
       end
+
+      context 'when a project has the same name as a desired username' do
+        let_it_be(:project) { create(:project, name: 'project-name') }
+
+        it 'returns JSON indicating a user by that username does not exist' do
+          get user_exists_url 'project-name'
+
+          expected_json = { exists: false }.to_json
+          expect(response.body).to eq(expected_json)
+        end
+      end
     end
 
     context 'when the rate limit has been reached' do
@@ -854,6 +921,35 @@ RSpec.describe UsersController, feature_category: :user_management do
         expect(response).to be_redirect
 
         expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+        expect(flash[:alert]).to eq(expected_message)
+        expect(user).not_to be_following(public_user)
+      end
+    end
+
+    context 'when user or followee disabled following' do
+      before do
+        sign_in(user)
+      end
+
+      it 'alerts and not follow if user disabled following' do
+        user.enabled_following = false
+
+        post user_follow_url(username: public_user.username)
+        expect(response).to be_redirect
+
+        expected_message = format(_('Action not allowed.'))
+        expect(flash[:alert]).to eq(expected_message)
+        expect(user).not_to be_following(public_user)
+      end
+
+      it 'alerts and not follow if followee disabled following' do
+        public_user.enabled_following = false
+        public_user.save!
+
+        post user_follow_url(username: public_user.username)
+        expect(response).to be_redirect
+
+        expected_message = format(_('Action not allowed.'))
         expect(flash[:alert]).to eq(expected_message)
         expect(user).not_to be_following(public_user)
       end

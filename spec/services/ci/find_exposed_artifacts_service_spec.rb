@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::FindExposedArtifactsService do
+RSpec.describe Ci::FindExposedArtifactsService, feature_category: :build_artifacts do
   include Gitlab::Routing
 
   let(:metadata) do

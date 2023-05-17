@@ -6,7 +6,7 @@ RSpec.describe ContainerRegistry::Event do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group, name: 'group') }
-  let_it_be(:project) { create(:project, name: 'test', namespace: group) }
+  let_it_be(:project) { create(:project, path: 'test', namespace: group) }
 
   describe '#supported?' do
     let(:raw_event) { { 'action' => action } }
@@ -222,6 +222,28 @@ RSpec.describe ContainerRegistry::Event do
 
       with_them do
         it_behaves_like 'tracking event is sent to HLLRedisCounter with event and originator ID', :user
+      end
+    end
+
+    context 'when it is a manifest delete event' do
+      let(:raw_event) { { 'action' => 'delete', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
+
+      it 'calls the ContainerRegistryEventCounter' do
+        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
+          .to receive(:count).with('i_container_registry_delete_manifest')
+
+        subject
+      end
+    end
+
+    context 'when it is not a manifest delete event' do
+      let(:raw_event) { { 'action' => 'push', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
+
+      it 'does not call the ContainerRegistryEventCounter' do
+        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
+          .not_to receive(:count).with('i_container_registry_delete_manifest')
+
+        subject
       end
     end
 

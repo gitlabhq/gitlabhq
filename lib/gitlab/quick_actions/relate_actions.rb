@@ -8,19 +8,27 @@ module Gitlab
 
       included do
         desc { _('Mark this issue as related to another issue') }
-        explanation do |related_reference|
-          _('Marks this issue as related to %{issue_ref}.') % { issue_ref: related_reference }
+        explanation do |target_issues|
+          _('Marks this issue as related to %{issue_ref}.') % { issue_ref: target_issues.to_sentence }
         end
-        execution_message do |related_reference|
-          _('Marked this issue as related to %{issue_ref}.') % { issue_ref: related_reference }
+        execution_message do |target_issues|
+          _('Marked this issue as related to %{issue_ref}.') % { issue_ref: target_issues.to_sentence }
         end
-        params '#issue'
+        params '<#issue | group/project#issue | issue URL>'
         types Issue
-        condition do
-          current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target)
+        condition { can_relate_issues? }
+        parse_params { |issues| format_params(issues) }
+        command :relate do |target_issues|
+          create_links(target_issues)
         end
-        command :relate do |related_reference|
-          service = IssueLinks::CreateService.new(quick_action_target, current_user, { issuable_references: [related_reference] })
+
+        private
+
+        def create_links(references, type: 'relates_to')
+          service = IssueLinks::CreateService.new(
+            quick_action_target,
+            current_user, { issuable_references: references, link_type: type }
+          )
           create_issue_link = proc { service.execute }
 
           if quick_action_target.persisted?
@@ -28,6 +36,14 @@ module Gitlab
           else
             quick_action_target.run_after_commit(&create_issue_link)
           end
+        end
+
+        def can_relate_issues?
+          current_user.can?(:admin_issue_link, quick_action_target)
+        end
+
+        def format_params(issue_references)
+          issue_references.split(' ')
         end
       end
     end

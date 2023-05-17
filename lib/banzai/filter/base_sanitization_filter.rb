@@ -25,7 +25,8 @@ module Banzai
 
           # Allow data-math-style attribute in order to support LaTeX formatting
           allowlist[:attributes]['code'] = %w(data-math-style)
-          allowlist[:attributes]['pre'] = %w(data-math-style data-mermaid-style data-kroki-style)
+          allowlist[:attributes]['pre'] = %w(data-canonical-lang data-lang-params
+            data-math-style data-mermaid-style data-kroki-style)
 
           # Allow html5 details/summary elements
           allowlist[:elements].push('details')

@@ -11,10 +11,6 @@ function factory(propsData = {}) {
 }
 
 describe('MR widget extensions status icon', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders loading icon', () => {
     factory({ name: 'test', isLoading: true, iconName: 'failed' });
 

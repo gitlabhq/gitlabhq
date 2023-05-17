@@ -183,22 +183,10 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       let_it_be(:task) { create(:issue, :task, project: project) }
 
       shared_examples 'redirects to show work item page' do
-        context 'when use_iid_in_work_items_path feature flag is disabled' do
-          before do
-            stub_feature_flags(use_iid_in_work_items_path: false)
-          end
-
-          it 'redirects to work item page' do
-            make_request
-
-            expect(response).to redirect_to(project_work_items_path(project, task.id, query))
-          end
-        end
-
         it 'redirects to work item page using iid' do
           make_request
 
-          expect(response).to redirect_to(project_work_items_path(project, task.iid, query.merge(iid_path: true)))
+          expect(response).to redirect_to(project_work_items_path(project, task.iid, query))
         end
       end
 
@@ -255,7 +243,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         get :new, params: { namespace_id: project.namespace, project_id: project }
 
         expect(assigns(:issue)).to be_a_new(Issue)
-        expect(assigns(:issue).issue_type).to eq('issue')
+        expect(assigns(:issue).work_item_type.base_type).to eq('issue')
       end
 
       where(:conf_value, :conf_result) do
@@ -292,7 +280,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
           get :new, params: { namespace_id: project.namespace, project_id: project, issue: { issue_type: issue_type } }
         end
 
-        subject { assigns(:issue).issue_type }
+        subject { assigns(:issue).work_item_type.base_type }
 
         it { is_expected.to eq('issue') }
 
@@ -585,15 +573,13 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
 
     def reorder_issue(issue, move_after_id: nil, move_before_id: nil)
-      put :reorder,
-           params: {
-               namespace_id: project.namespace.to_param,
-               project_id: project,
-               id: issue.iid,
-               move_after_id: move_after_id,
-               move_before_id: move_before_id
-           },
-           format: :json
+      put :reorder, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: issue.iid,
+        move_after_id: move_after_id,
+        move_before_id: move_before_id
+      }, format: :json
     end
   end
 
@@ -601,14 +587,12 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     let(:issue_params) { { title: 'New title' } }
 
     subject do
-      put :update,
-        params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: issue.to_param,
-          issue: issue_params
-        },
-        format: :json
+      put :update, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.to_param,
+        issue: issue_params
+      }, format: :json
     end
 
     before do
@@ -635,7 +619,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(issue.reload.issue_type).to eql('incident')
+          expect(issue.reload.work_item_type.base_type).to eq('incident')
         end
       end
 
@@ -746,7 +730,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         go(id: issue.iid)
 
         expect(json_response).to include('title_text', 'description', 'description_text')
-        expect(json_response).to include('task_status', 'lock_version')
+        expect(json_response).to include('task_completion_status', 'lock_version')
       end
     end
   end
@@ -1091,7 +1075,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'sets the correct issue_type' do
         issue = post_new_issue(issue_type: 'incident')
 
-        expect(issue.issue_type).to eq('incident')
         expect(issue.work_item_type.base_type).to eq('incident')
       end
     end
@@ -1100,7 +1083,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'task')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1109,7 +1091,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'objective')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1118,7 +1099,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'key_result')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1168,7 +1148,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
 
       expect(issue).to be_a(Issue)
       expect(issue.persisted?).to eq(true)
-      expect(issue.issue_type).to eq('issue')
       expect(issue.work_item_type.base_type).to eq('issue')
     end
 
@@ -1419,7 +1398,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     context 'setting issue type' do
       let(:issue_type) { 'issue' }
 
-      subject { post_new_issue(issue_type: issue_type)&.issue_type }
+      subject { post_new_issue(issue_type: issue_type)&.work_item_type&.base_type }
 
       it { is_expected.to eq('issue') }
 
@@ -1484,7 +1463,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it "deletes the issue" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
 
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:see_other)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
@@ -1927,12 +1906,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       end
 
       it 'redirects from an old issue/designs correctly' do
-        get :designs,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: issue
-            }
+        get :designs, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue
+        }
 
         expect(response).to redirect_to(designs_project_issue_path(new_project, issue))
         expect(response).to have_gitlab_http_status(:moved_permanently)

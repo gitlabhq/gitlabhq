@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_authoring do
+RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :repository, create_tag: 'v1.0') }
   let_it_be(:user) { create(:user) }
   let_it_be(:current_user) { user }

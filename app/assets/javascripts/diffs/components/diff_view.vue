@@ -1,7 +1,6 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
@@ -21,11 +20,7 @@ export default {
     DiffCommentCell,
     DraftNote,
   },
-  mixins: [
-    draftCommentsMixin,
-    IdState({ idProp: (vm) => vm.diffFile.file_hash }),
-    glFeatureFlagsMixin(),
-  ],
+  mixins: [draftCommentsMixin, IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   props: {
     diffFile: {
       type: Object,
@@ -265,10 +260,7 @@ export default {
         @stopdragging="onStopDragging"
       />
       <diff-line
-        v-if="
-          glFeatures.refactorCodeQualityInlineFindings &&
-          codeQualityExpandedLines.includes(getCodeQualityLine(line))
-        "
+        v-if="codeQualityExpandedLines.includes(getCodeQualityLine(line))"
         :key="line.line_code"
         :line="line"
         @hideCodeQualityFindings="hideCodeQualityFindings"

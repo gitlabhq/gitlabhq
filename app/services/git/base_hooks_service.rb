@@ -15,6 +15,7 @@ module Git
 
       # Not a hook, but it needs access to the list of changed commits
       enqueue_invalidate_cache
+      enqueue_notify_kas
 
       success
     end
@@ -75,6 +76,13 @@ module Git
       return unless file_types.present?
 
       ProjectCacheWorker.perform_async(project.id, file_types, [], false)
+    end
+
+    def enqueue_notify_kas
+      return unless Gitlab::Kas.enabled?
+      return unless Feature.enabled?(:notify_kas_on_git_push, project)
+
+      Clusters::Agents::NotifyGitPushWorker.perform_async(project.id)
     end
 
     def pipeline_params

@@ -107,8 +107,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
-
 ### Redirection metadata
 
 The following metadata should be added when a page is moved to another location:
@@ -116,21 +114,6 @@ The following metadata should be added when a page is moved to another location:
 - `redirect_to`: The relative path and filename (with an `.md` extension) of the
   location to which visitors should be redirected for a moved page.
   [Learn more](redirects.md).
-- `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
-  comments with a page that has been moved to a new URL.
-  [Learn more](redirects.md#redirections-for-pages-with-disqus-comments).
-
-### Comments metadata
-
-The [docs website](site_architecture/index.md) has comments (provided by Disqus)
-enabled by default. In case you want to disable them (for example in index pages),
-set it to `false`:
-
-```yaml
----
-comments: false
----
-```
 
 ### Additional page metadata
 
@@ -157,20 +140,30 @@ You can use a Rake task to update the `CODEOWNERS` file.
 
 #### Update the `CODEOWNERS` file
 
-To update the `CODEOWNERS` file:
+When groups or [TW assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+change, you must update the `CODEOWNERS` file:
 
-1. Review the [TW team assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-   in the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake)
-   file. If any assignments have changed:
-   1. Update the `codeowners.rake` file with the changes.
-   1. Assign the merge request to a technical writing manager for review and merge.
-1. After the changes to `codeowners.rake` are merged, go to the root of the `gitlab` repository.
+1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.
+1. Update the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake) file with the changes.
+1. Go to the root of the `gitlab` repository.
 1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
-1. Review the command output for any pages that need attention to
-   their metadata. Handle any needed changes in a separate merge request.
-1. Add the changes to the CODEOWNERS file to Git: `git add .gitlab/CODEOWNERS`
-1. Commit your changes to your branch, and push your branch up to `origin`.
+1. Review the changes in the `CODEOWNERS` file.
+1. Add and commit all your changes and push your branch up to `origin`.
 1. Create a merge request and assign it to a technical writing manager for review.
+
+When updating the `codeowners.rake` file:
+
+- To specify multiple writers for a single group, use a space between writer names:
+
+  ```plaintext
+  CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
+  ```
+
+- For a group that does not have an assigned writer, include the group name in the file and comment out the line:
+
+  ```plaintext
+  # CodeOwnerRule.new('Group Name', ''),
+  ```
 
 ## Move, rename, or delete a page
 
@@ -194,9 +187,8 @@ Further needs for what would make the doc even better should be immediately addr
 in a follow-up merge request or issue.
 
 If the release version you want to add the documentation to has already been
-frozen or released, use the label `~"Pick into X.Y"` to get it merged into
-the correct release. Avoid picking into a past release as much as you can, as
-it increases the work of the release managers.
+released, follow the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md)
+to get it merged into the current version.
 
 ## GitLab `/help`
 
@@ -358,28 +350,6 @@ feedback: false
 
 The default is to leave it there. If you want to omit it from a document, you
 must check with a technical writer before doing so.
-
-## Disqus
-
-We have integrated the docs site with Disqus (introduced by
-[!151](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/151)),
-allowing our users to post comments.
-
-To omit only the comments from the feedback section, use the following key in
-the front matter:
-
-```yaml
----
-comments: false
----
-```
-
-We're hiding comments only in main index pages, such as [the main documentation index](../../index.md),
-since its content is too broad to comment on. Before omitting Disqus, you must
-check with a technical writer.
-
-Note that after adding `feedback: false` to the front matter, it will omit
-Disqus, therefore, don't add both keys to the same document.
 
 The click events in the feedback section are tracked with Google Tag Manager.
 The conversions can be viewed on Google Analytics by navigating to

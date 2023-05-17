@@ -28,7 +28,7 @@ module Resolvers
       def preloads
         {
           activity_events: { activity_events: [:user, agent_token: :agent] },
-          tokens: :agent_tokens
+          tokens: :active_agent_tokens
         }
       end
     end

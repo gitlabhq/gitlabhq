@@ -3,7 +3,7 @@
 Gitlab::Seeder.quiet do
   # This is only enabled if you're going to be using the customer portal in
   # development.
-  # CUSTOMER_PORTAL_URL=https://your.ngrok.io FILTER=integrations rake db:seed_fu
+  # CUSTOMER_PORTAL_URL=http://localhost:5000 FILTER=integrations rake db:seed_fu
   flag = 'CUSTOMER_PORTAL_URL'
 
   if ENV[flag]

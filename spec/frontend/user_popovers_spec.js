@@ -1,5 +1,6 @@
 import { within } from '@testing-library/dom';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlMergeRequestWithMentions from 'test_fixtures/merge_requests/merge_request_with_mentions.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import UsersCache from '~/lib/utils/users_cache';
 import initUserPopovers from '~/user_popovers';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,10 +11,6 @@ jest.mock('~/api/user_api', () => ({
 }));
 
 describe('User Popovers', () => {
-  let origGon;
-
-  const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
-
   const selector = '.js-user-link[data-user], .js-user-link[data-user-id]';
   const findFixtureLinks = () => Array.from(document.querySelectorAll(selector));
   const createUserLink = () => {
@@ -42,7 +39,7 @@ describe('User Popovers', () => {
   };
 
   const setupTestSubject = () => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(htmlMergeRequestWithMentions);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     jest.spyOn(UsersCache, 'retrieveById').mockImplementation((userId) => usersCacheSpy(userId));
@@ -59,15 +56,6 @@ describe('User Popovers', () => {
       popoverInstance.$mount(mountingRoot);
     });
   };
-
-  beforeEach(() => {
-    origGon = window.gon;
-    window.gon = {};
-  });
-
-  afterEach(() => {
-    window.gon = origGon;
-  });
 
   describe('when signed out', () => {
     beforeEach(() => {
@@ -108,7 +96,7 @@ describe('User Popovers', () => {
         expect(findPopovers().length).toBe(linksWithUsers.length);
       });
 
-      it('for elements added after initial load', async () => {
+      it('for elements added after initial load', () => {
         const addedLinks = [createUserLink(), createUserLink()];
         addedLinks.forEach((link) => {
           document.body.appendChild(link);
@@ -124,7 +112,7 @@ describe('User Popovers', () => {
       });
     });
 
-    it('does not initialize the popovers for group references', async () => {
+    it('does not initialize the popovers for group references', () => {
       const [groupLink] = Array.from(document.querySelectorAll('.js-user-link[data-group]'));
 
       triggerEvent('mouseover', groupLink);
@@ -133,7 +121,7 @@ describe('User Popovers', () => {
       expect(findPopovers().length).toBe(0);
     });
 
-    it('does not initialize the popovers for @all references', async () => {
+    it('does not initialize the popovers for @all references', () => {
       const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
 
       triggerEvent('mouseover', projectLink);
@@ -142,7 +130,7 @@ describe('User Popovers', () => {
       expect(findPopovers().length).toBe(0);
     });
 
-    it('does not initialize the user popovers twice for the same element', async () => {
+    it('does not initialize the user popovers twice for the same element', () => {
       const [firstUserLink] = findFixtureLinks();
       triggerEvent('mouseover', firstUserLink);
       jest.runOnlyPendingTimers();

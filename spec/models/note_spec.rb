@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Note do
+RSpec.describe Note, feature_category: :team_planning do
   include RepoHelpers
 
   describe 'associations' do
@@ -11,6 +11,7 @@ RSpec.describe Note do
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos) }
+    it { is_expected.to have_one(:note_metadata).inverse_of(:note).class_name('Notes::NoteMetadata') }
     it { is_expected.to belong_to(:review).inverse_of(:notes) }
   end
 
@@ -799,20 +800,22 @@ RSpec.describe Note do
 
   describe '#system_note_with_references?' do
     it 'falsey for user-generated notes' do
-      note = create(:note, system: false)
+      note = build_stubbed(:note, system: false)
 
       expect(note.system_note_with_references?).to be_falsy
     end
 
     context 'when the note might contain cross references' do
       SystemNoteMetadata.new.cross_reference_types.each do |type|
-        let(:note) { create(:note, :system) }
-        let!(:metadata) { create(:system_note_metadata, note: note, action: type) }
+        context "with #{type}" do
+          let(:note) { build_stubbed(:note, :system) }
+          let!(:metadata) { build_stubbed(:system_note_metadata, note: note, action: type) }
 
-        it 'delegates to the cross-reference regex' do
-          expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
+          it 'delegates to the cross-reference regex' do
+            expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
 
-          note.system_note_with_references?
+            note.system_note_with_references?
+          end
         end
       end
     end
@@ -1097,6 +1100,16 @@ RSpec.describe Note do
       create(:track_mr_picking_note, project: create(:project), commit_id: '456def')
 
       expect(MergeRequest.id_in(described_class.cherry_picked_merge_requests('456abc'))).to eq([note.noteable])
+    end
+  end
+
+  describe '#for_work_item?' do
+    it 'returns true for a work item' do
+      expect(build(:note_on_work_item).for_work_item?).to be true
+    end
+
+    it 'returns false for an issue' do
+      expect(build(:note_on_issue).for_work_item?).to be false
     end
   end
 
@@ -1653,6 +1666,32 @@ RSpec.describe Note do
         it 'includes additional diff associations' do
           expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
             match_query_count(1).for_model(DiffNotePosition))
+        end
+      end
+    end
+
+    describe '.without_hidden' do
+      subject { described_class.without_hidden }
+
+      context 'when a note with a banned author exists' do
+        let_it_be(:banned_user) { create(:banned_user).user }
+        let_it_be(:banned_note) { create(:note, author: banned_user) }
+
+        context 'when the :hidden_notes feature is disabled' do
+          before do
+            stub_feature_flags(hidden_notes: false)
+          end
+
+          it { is_expected.to include(banned_note, note1) }
+        end
+
+        context 'when the :hidden_notes feature is enabled' do
+          before do
+            stub_feature_flags(hidden_notes: true)
+          end
+
+          it { is_expected.not_to include(banned_note) }
+          it { is_expected.to include(note1) }
         end
       end
     end

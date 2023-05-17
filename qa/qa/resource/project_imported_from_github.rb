@@ -3,7 +3,7 @@
 module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
-      attr_accessor :issue_events_import, :full_notes_import, :attachments_import
+      attr_accessor :issue_events_import, :full_notes_import, :attachments_import, :allow_partial_import
 
       attribute :github_repo_id do
         github_client.repository(github_repository_path).id
@@ -24,7 +24,7 @@ module QA
           import_page.select_advanced_option(:attachments_import) if attachments_import
 
           import_page.import!(github_repository_path, group.full_path, name)
-          import_page.wait_for_success(github_repository_path, wait: 240)
+          import_page.wait_for_success(github_repository_path, wait: 240, allow_partial_import: allow_partial_import)
         end
 
         reload!

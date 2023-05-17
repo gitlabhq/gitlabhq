@@ -21,7 +21,7 @@ module Issuable
         headers.downcase! if headers
         return if headers && headers.include?('title') && headers.include?('description')
 
-        raise CSV::MalformedCSVError
+        raise CSV::MalformedCSVError.new('Invalid CSV format - missing required headers.', 1)
       end
     end
   end

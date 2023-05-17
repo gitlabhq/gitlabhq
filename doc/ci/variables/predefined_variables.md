@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -27,6 +27,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CHAT_USER_ID`                           | 14.4   | all    | The chat service's user ID of the user who triggered the [ChatOps](../chatops/index.md) command. |
 | `CI`                                     | all    | 0.4    | Available for all jobs executed in CI/CD. `true` when available. |
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
+| `CI_API_GRAPHQL_URL`                     | 15.11  | all    | The GitLab API GraphQL root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                       | 13.11  | all    | The author of the commit in `Name <email>` format. |
 | `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` in merge request pipelines and for the first commit in pipelines for branches or tags. |
@@ -67,9 +68,9 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_HAS_OPEN_REQUIREMENTS`               | 13.1   | all    | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/index.md). `true` when available. |
 | `CI_JOB_ID`                              | 9.0    | all    | The internal ID of the job, unique across all jobs in the GitLab instance. |
 | `CI_JOB_IMAGE`                           | 12.9   | 12.9   | The name of the Docker image running the job. |
-| `CI_JOB_JWT`                             | 12.10  | all    | A RS256 JSON web token to authenticate with third party systems that support JWT authentication, for example [HashiCorp's Vault](../secrets/index.md). |
-| `CI_JOB_JWT_V1`                          | 14.6   | all    | The same value as `CI_JOB_JWT`. |
-| `CI_JOB_JWT_V2`                          | 14.6   | all    | A newly formatted RS256 JSON web token to increase compatibility. Similar to `CI_JOB_JWT`, except the issuer (`iss`) claim is changed from `gitlab.com` to `https://gitlab.com`, `sub` has changed from `job_id` to a string that contains the project path, and an `aud` claim is added. Format is subject to change. Be aware, the `aud` field is a constant value. Trusting JWTs in multiple relying parties can lead to [one RP sending a JWT to another one and acting maliciously as a job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72555#note_769112331). **Note:** The `CI_JOB_JWT_V2` variable is available for testing, but the full feature is planned to be generally available when [issue 360657](https://gitlab.com/gitlab-org/gitlab/-/issues/360657) is complete.|
+| `CI_JOB_JWT` (Deprecated)                | 12.10  | all    | A RS256 JSON web token to authenticate with third party systems that support JWT authentication, for example [HashiCorp's Vault](../secrets/index.md). [Deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated) and scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead. |
+| `CI_JOB_JWT_V1` (Deprecated)             | 14.6   | all    | The same value as `CI_JOB_JWT`. [Deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated) and scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead. |
+| `CI_JOB_JWT_V2` (Deprecated)             | 14.6   | all    | A newly formatted RS256 JSON web token to increase compatibility. Similar to `CI_JOB_JWT`, except the issuer (`iss`) claim is changed from `gitlab.com` to `https://gitlab.com`, `sub` has changed from `job_id` to a string that contains the project path, and an `aud` claim is added. The `aud` field is a constant value. Trusting JWTs in multiple relying parties can lead to [one RP sending a JWT to another one and acting maliciously as a job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72555#note_769112331). [Deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated) and scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead. |
 | `CI_JOB_MANUAL`                          | 8.12   | all    | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_NAME_SLUG`                       | 15.4   | all    | `CI_JOB_NAME_SLUG` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
@@ -121,6 +122,8 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_SERVER_NAME`                         | all    | all    | The name of CI/CD server that coordinates jobs. |
 | `CI_SERVER_PORT`                         | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                     | 12.8   | all    | The protocol of the GitLab instance URL, without host or port. For example `https`. |
+| `CI_SERVER_SHELL_SSH_HOST`               | 15.11  | all    | The SSH host of the GitLab instance, used for access to Git repositories via SSH. For example `gitlab.com`. |
+| `CI_SERVER_SHELL_SSH_PORT`               | 15.11  | all    | The SSH port of the GitLab instance, used for access to Git repositories via SSH. For example `22`. |
 | `CI_SERVER_REVISION`                     | all    | all    | GitLab revision that schedules jobs. |
 | `CI_SERVER_TLS_CA_FILE`                  | all    | all    | File containing the TLS CA certificate to verify the GitLab server when `tls-ca-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
 | `CI_SERVER_TLS_CERT_FILE`                | all    | all    | File containing the TLS certificate to verify the GitLab server when `tls-cert-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
@@ -139,6 +142,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
 | `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
+| `KUBECONFIG`                             | 14.2   | all    | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent). |
 | `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#use-a-webhook-payload). |
 
 ## Predefined variables for merge request pipelines

@@ -1,5 +1,6 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { badgeState } from '~/issuable/components/status_box.vue';
+import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import {
@@ -121,7 +122,7 @@ export default class MergeRequestStore {
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.mergeRequestState = data.state;
-    this.isOpen = this.mergeRequestState === 'opened';
+    this.isOpen = this.mergeRequestState === STATUS_OPEN;
     this.latestSHA = data.diff_head_sha;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
@@ -139,7 +140,7 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked =
       data.only_allow_merge_if_pipeline_succeeds && pipelineStatus?.group === 'manual';
-    this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
+    this.faviconOverlayPath = data.favicon_overlay_path;
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
     this.accessibilityReportPath = data.accessibility_report_path;
@@ -236,11 +237,11 @@ export default class MergeRequestStore {
       this.state = getStateKey.call(this);
     } else {
       switch (this.mergeRequestState) {
-        case 'merged':
-          this.state = 'merged';
+        case STATUS_MERGED:
+          this.state = STATUS_MERGED;
           break;
-        case 'closed':
-          this.state = 'closed';
+        case STATUS_CLOSED:
+          this.state = STATUS_CLOSED;
           break;
         default:
           this.state = null;
@@ -269,7 +270,7 @@ export default class MergeRequestStore {
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.reviewingDocsPath = data.reviewing_and_managing_merge_requests_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
-    this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
+    this.codeCoverageCheckHelpPagePath = data.code_coverage_check_help_page_path;
     this.licenseComplianceDocsPath = data.license_compliance_docs_path;
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
     this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
@@ -294,6 +295,9 @@ export default class MergeRequestStore {
     // Security reports
     this.sastComparisonPath = data.sast_comparison_path;
     this.secretDetectionComparisonPath = data.secret_detection_comparison_path;
+
+    this.sastComparisonPathV2 = data.new_sast_comparison_path;
+    this.secretDetectionComparisonPathV2 = data.new_secret_detection_comparison_path;
   }
 
   get isNothingToMergeState() {
@@ -356,12 +360,11 @@ export default class MergeRequestStore {
 
   initApprovals() {
     this.isApproved = this.isApproved || false;
-    this.approvals = this.approvals || null;
   }
 
   setApprovals(data) {
-    this.approvals = data;
     this.isApproved = data.approved || false;
+    this.approvals = true;
 
     this.setState();
   }

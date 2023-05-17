@@ -15,19 +15,19 @@ module Taskable
   INCOMPLETE_PATTERN = /\[[[:space:]]\]/.freeze
   ITEM_PATTERN       = %r{
     ^
-    (?:(?:>\s{0,4})*)             # optional blockquote characters
-    ((?:\s*(?:[-+*]|(?:\d+\.)))+) # list prefix (one or more) required - task item has to be always in a list
-    \s+                           # whitespace prefix has to be always presented for a list item
-    (                             # checkbox
+    (?:(?:>\s{0,4})*)               # optional blockquote characters
+    ((?:\s*(?:[-+*]|(?:\d+[.)])))+) # list prefix (one or more) required - task item has to be always in a list
+    \s+                             # whitespace prefix has to be always presented for a list item
+    (                               # checkbox
       #{COMPLETE_PATTERN}|#{INCOMPLETE_PATTERN}
     )
-    (\s.+)                        # followed by whitespace and some text.
+    (\s.+)                          # followed by whitespace and some text.
   }x.freeze
 
   ITEM_PATTERN_UNTRUSTED =
     '^' \
     '(?:(?:>\s{0,4})*)' \
-    '(?P<prefix>(?:\s*(?:[-+*]|(?:\d+\.)))+)' \
+    '(?P<prefix>(?:\s*(?:[-+*]|(?:\d+[.)])))+)' \
     '\s+' \
     '(?P<checkbox>' \
     "#{COMPLETE_PATTERN.source}|#{INCOMPLETE_PATTERN.source}" \

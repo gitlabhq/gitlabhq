@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::Stages::ListService do
+RSpec.describe Analytics::CycleAnalytics::Stages::ListService, feature_category: :value_stream_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project_namespace) { project.project_namespace.reload }

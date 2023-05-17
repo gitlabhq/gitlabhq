@@ -12,6 +12,7 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
       it { is_expected.to validate_presence_of :app_store_issuer_id }
       it { is_expected.to validate_presence_of :app_store_key_id }
       it { is_expected.to validate_presence_of :app_store_private_key }
+      it { is_expected.to validate_presence_of :app_store_private_key_file_name }
       it { is_expected.to allow_value('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee').for(:app_store_issuer_id) }
       it { is_expected.not_to allow_value('abcde').for(:app_store_issuer_id) }
       it { is_expected.to allow_value(File.read('spec/fixtures/ssl_key.pem')).for(:app_store_private_key) }
@@ -28,8 +29,8 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
 
     describe '#fields' do
       it 'returns custom fields' do
-        expect(apple_app_store_integration.fields.pluck(:name)).to eq(%w[app_store_issuer_id app_store_key_id
-          app_store_private_key])
+        expect(apple_app_store_integration.fields.pluck(:name)).to match_array(%w[app_store_issuer_id app_store_key_id
+          app_store_private_key app_store_private_key_file_name])
       end
     end
 
@@ -40,8 +41,8 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
       end
 
       it 'returns false for an invalid request' do
-        allow(AppStoreConnect::Client).to receive_message_chain(:new,
-:apps).and_return({ errors: [title: "error title"] })
+        allow(AppStoreConnect::Client).to receive_message_chain(:new, :apps)
+          .and_return({ errors: [title: "error title"] })
         expect(apple_app_store_integration.test[:success]).to be false
       end
     end
@@ -79,6 +80,12 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
             key: 'APP_STORE_CONNECT_API_KEY_KEY_ID',
             value: apple_app_store_integration.app_store_key_id,
             masked: true,
+            public: false
+          },
+          {
+            key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64',
+            value: described_class::IS_KEY_CONTENT_BASE64,
+            masked: false,
             public: false
           }
         ]

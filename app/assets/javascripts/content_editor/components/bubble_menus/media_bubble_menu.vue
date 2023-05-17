@@ -1,6 +1,7 @@
 <script>
 import {
   GlLink,
+  GlSprintf,
   GlForm,
   GlFormGroup,
   GlFormInput,
@@ -11,23 +12,26 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Audio from '../../extensions/audio';
+import DrawioDiagram from '../../extensions/drawio_diagram';
 import Image from '../../extensions/image';
 import Video from '../../extensions/video';
 import EditorStateObserver from '../editor_state_observer.vue';
 import { acceptedMimes } from '../../services/upload_helpers';
 import BubbleMenu from './bubble_menu.vue';
 
-const MEDIA_TYPES = [Audio.name, Image.name, Video.name];
+const MEDIA_TYPES = [Audio.name, Image.name, Video.name, DrawioDiagram.name];
 
 export default {
   i18n: {
     copySourceLabels: {
       [Audio.name]: __('Copy audio URL'),
+      [DrawioDiagram.name]: __('Copy diagram URL'),
       [Image.name]: __('Copy image URL'),
       [Video.name]: __('Copy video URL'),
     },
     editLabels: {
       [Audio.name]: __('Edit audio description'),
+      [DrawioDiagram.name]: __('Edit diagram description'),
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
     },
@@ -38,12 +42,14 @@ export default {
     },
     deleteLabels: {
       [Audio.name]: __('Delete audio'),
+      [DrawioDiagram.name]: __('Delete diagram'),
       [Image.name]: __('Delete image'),
       [Video.name]: __('Delete video'),
     },
   },
   components: {
     BubbleMenu,
+    GlSprintf,
     GlForm,
     GlFormGroup,
     GlFormInput,
@@ -67,7 +73,10 @@ export default {
 
       isEditing: false,
       isUpdating: false,
-      isUploading: false,
+
+      uploading: false,
+
+      uploadProgress: 0,
     };
   },
   computed: {
@@ -84,7 +93,10 @@ export default {
       return this.$options.i18n.deleteLabels[this.mediaType];
     },
     showProgressIndicator() {
-      return this.isUploading || this.isUpdating;
+      return this.uploading || this.isUpdating;
+    },
+    isDrawioDiagram() {
+      return this.mediaType === DrawioDiagram.name;
     },
   },
   methods: {
@@ -150,14 +162,35 @@ export default {
       this.mediaTitle = title;
       this.mediaAlt = alt;
       this.mediaCanonicalSrc = canonicalSrc || src;
-      this.isUploading = uploading;
+      this.uploading = uploading;
+
       this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
 
       this.isUpdating = false;
     },
 
+    onTransaction({ transaction }) {
+      const { filename = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
+      if (this.uploading === filename) {
+        this.uploadProgress = Math.round(progress * 100);
+      }
+    },
+
+    resetMediaInfo() {
+      this.mediaTitle = null;
+      this.mediaAlt = null;
+      this.mediaCanonicalSrc = null;
+      this.uploading = false;
+
+      this.uploadProgress = 0;
+    },
+
     replaceMedia() {
       this.$refs.fileSelector.click();
+    },
+
+    editDiagram() {
+      this.tiptapEditor.chain().focus().createOrEditDiagram().run();
     },
 
     onFileSelect(e) {
@@ -186,15 +219,26 @@ export default {
 };
 </script>
 <template>
-  <bubble-menu
-    data-testid="media-bubble-menu"
-    class="gl-shadow gl-rounded-base gl-bg-white"
-    plugin-key="bubbleMenuMedia"
-    :should-show="shouldShow"
+  <editor-state-observer
+    :debounce="0"
+    @selectionUpdate="updateMediaInfoToState"
+    @transaction="onTransaction"
   >
-    <editor-state-observer @transaction="updateMediaInfoToState">
+    <bubble-menu
+      data-testid="media-bubble-menu"
+      class="gl-shadow gl-rounded-base gl-bg-white"
+      plugin-key="bubbleMenuMedia"
+      :should-show="shouldShow"
+      @show="updateMediaInfoToState"
+      @hidden="resetMediaInfo"
+    >
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
         <gl-loading-icon v-if="showProgressIndicator" class="gl-pl-4 gl-pr-3" />
+        <span v-if="uploading" class="gl-text-secondary gl-pr-3">
+          <gl-sprintf :message="__('Uploading: %{progress}')">
+            <template #progress>{{ uploadProgress }}&percnt;</template>
+          </gl-sprintf>
+        </span>
         <input
           ref="fileSelector"
           type="file"
@@ -240,6 +284,19 @@ export default {
           @click="startEditingMedia"
         />
         <gl-button
+          v-if="isDrawioDiagram"
+          v-gl-tooltip
+          variant="default"
+          category="tertiary"
+          size="medium"
+          data-testid="edit-diagram"
+          :aria-label="replaceLabel"
+          title="Edit diagram"
+          icon="diagram"
+          @click="editDiagram"
+        />
+        <gl-button
+          v-else
           v-gl-tooltip
           variant="default"
           category="tertiary"
@@ -247,7 +304,7 @@ export default {
           data-testid="replace-media"
           :aria-label="replaceLabel"
           :title="replaceLabel"
-          icon="upload"
+          icon="retry"
           @click="replaceMedia"
         />
         <gl-button
@@ -282,6 +339,6 @@ export default {
           <gl-button variant="confirm" type="submit">{{ __('Apply') }}</gl-button>
         </div>
       </gl-form>
-    </editor-state-observer>
-  </bubble-menu>
+    </bubble-menu>
+  </editor-state-observer>
 </template>

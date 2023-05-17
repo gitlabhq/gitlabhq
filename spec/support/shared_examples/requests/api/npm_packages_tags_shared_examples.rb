@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'rejects package tags access' do |status:|
-  before do
-    package.update!(name: package_name) unless package_name == 'non-existing-package'
-  end
-
-  it_behaves_like 'returning response status', status
-end
-
 RSpec.shared_examples 'accept package tags request' do |status:|
   using RSpec::Parameterized::TableSyntax
   include_context 'dependency proxy helpers context'
@@ -23,6 +15,7 @@ RSpec.shared_examples 'accept package tags request' do |status:|
     end
 
     it_behaves_like 'returning response status', status
+    it_behaves_like 'track event', :list_tags
 
     it 'returns a valid json response' do
       subject
@@ -63,6 +56,7 @@ RSpec.shared_examples 'accept create package tag request' do |user_type|
     end
 
     it_behaves_like 'returning response status', :no_content
+    it_behaves_like 'track event', :create_tag
 
     it 'creates the package tag' do
       expect { subject }.to change { Packages::Tag.count }.by(1)
@@ -145,6 +139,7 @@ RSpec.shared_examples 'accept delete package tag request' do |user_type|
     end
 
     it_behaves_like 'returning response status', :no_content
+    it_behaves_like 'track event', :delete_tag
 
     it 'returns a valid response' do
       subject
@@ -189,4 +184,22 @@ RSpec.shared_examples 'accept delete package tag request' do |user_type|
       it_behaves_like 'returning response status', params[:status]
     end
   end
+end
+
+RSpec.shared_examples 'track event' do |event_name|
+  let(:event_user) do
+    if auth == :deploy_token
+      deploy_token
+    elsif user_role
+      user
+    end
+  end
+
+  let(:snowplow_gitlab_standard_context) do
+    { project: project, namespace: project.namespace, property: 'i_package_npm_user' }.tap do |context|
+      context[:user] = event_user if event_user
+    end
+  end
+
+  it_behaves_like 'a package tracking event', described_class.name, event_name.to_s
 end

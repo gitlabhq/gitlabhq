@@ -21,8 +21,6 @@ describe('LFS Viewer', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   it('renders the correct text', () => {
     expect(wrapper.text()).toBe(
       'This content could not be displayed because it is stored in LFS. You can download it instead.',

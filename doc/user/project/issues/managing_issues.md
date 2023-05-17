@@ -54,7 +54,7 @@ To edit multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
 1. Select **Update all**.
@@ -87,7 +87,7 @@ To edit multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
 1. Select **Update all**.
@@ -103,7 +103,7 @@ When bulk editing issues in a group, you can edit the following attributes:
 ## Move an issue
 
 When you move an issue, it's closed and copied to the target project.
-The original issue is not deleted. A system note, which indicates
+The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
 
 Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
@@ -136,7 +136,7 @@ To move multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to move.
 1. From the right sidebar, select **Move selected**.
 1. From the dropdown list, select the destination project.
@@ -208,6 +208,10 @@ To close an issue, you can do the following:
 
 - At the top of the issue, select **Close issue**.
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
+
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action at the top of an issue, your project or instance might have
+enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
 
 ### Reopen a closed issue
 
@@ -298,7 +302,7 @@ To disable automatic issue closing:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Default branch**.
+1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
 
@@ -344,7 +348,7 @@ Prerequisites:
 
 To delete an issue:
 
-1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
+1. In an issue, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Delete issue**.
 
 Alternatively:
@@ -362,7 +366,7 @@ You can promote an issue to an [epic](../../group/epics/index.md) in the immedia
 
 To promote an issue to an epic:
 
-1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
+1. In an issue, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
@@ -400,7 +404,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
-- On the top bar, in the upper right, select **{issues}** **Issues**.
+- On the top bar, in the upper-right corner, select **Issues** (**{issues}**).
 
 ## Filter the list of issues
 
@@ -471,6 +475,10 @@ To copy the issue reference to your clipboard:
 You can now paste the reference into another description or comment.
 
 Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
+
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action on the right sidebar, your project or instance might have
+enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
 
 ## Copy issue email address
 

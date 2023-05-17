@@ -14,7 +14,7 @@ export const DEFAULT_VALUE_STREAM = {
 };
 
 export const NOT_ENOUGH_DATA_ERROR = s__(
-  "ValueStreamAnalyticsStage|We don't have enough data to show this stage.",
+  'ValueStreamAnalyticsStage|There are 0 items to show in this stage, for these filters, within this time range.',
 );
 
 export const PAGINATION_TYPE = 'keyset';
@@ -32,11 +32,6 @@ export const I18N_VSA_ERROR_SELECTED_STAGE = __(
   'There was an error fetching data for the selected stage',
 );
 
-export const OVERVIEW_METRICS = {
-  TIME_SUMMARY: 'TIME_SUMMARY',
-  RECENT_ACTIVITY: 'RECENT_ACTIVITY',
-};
-
 export const SUMMARY_METRICS_REQUEST = [
   { endpoint: METRIC_TYPE_SUMMARY, name: __('recent activity'), request: getValueStreamMetrics },
 ];
@@ -45,3 +40,6 @@ export const METRICS_REQUESTS = [
   { endpoint: METRIC_TYPE_TIME_SUMMARY, name: __('time summary'), request: getValueStreamMetrics },
   ...SUMMARY_METRICS_REQUEST,
 ];
+
+export const MILESTONES_ENDPOINT = '/-/milestones.json';
+export const LABELS_ENDPOINT = '/-/labels.json';

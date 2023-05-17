@@ -110,15 +110,12 @@ def add_definition_to_yaml(definition)
   content = YAML.load_file(Rails.root.join('config/gitlab_loose_foreign_keys.yml'))
   table_definitions = content[definition.from_table]
 
-  # insert new entry at random place to avoid conflicts
+  # insert new entry in alphabetic order
   unless table_definitions
     table_definitions = []
-    insert_idx = rand(content.count+1)
 
-    # insert at a given index in ordered hash
-    content = content.to_a
-    content.insert(insert_idx, [definition.from_table, table_definitions])
-    content = content.to_h
+    content[definition.from_table] = table_definitions
+    content = content.sort.to_h
   end
 
   on_delete =
@@ -171,9 +168,8 @@ def generate_migration(definition)
         return unless foreign_key_exists?(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
 
         with_lock_retries do
-          execute('LOCK #{definition.to_table}, #{definition.from_table} IN ACCESS EXCLUSIVE MODE') if transaction_open?
-
-          remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
+          remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table},
+            name: "#{definition.name}", reverse_lock_order: true)
         end
       end
 
@@ -217,7 +213,7 @@ def add_test_to_specs(definition)
   puts "Adding test to #{spec_path}..."
 
   spec_test = <<-EOF.strip_heredoc.indent(2)
-    context 'loose foreign key on #{definition.from_table}.#{definition.column}' do
+    context 'with loose foreign key on #{definition.from_table}.#{definition.column}' do
       it_behaves_like 'cleanup by a loose foreign key' do
         let!(:parent) { create(:#{definition.to_table.singularize}) }
         let!(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix("_id").singularize}: parent) }

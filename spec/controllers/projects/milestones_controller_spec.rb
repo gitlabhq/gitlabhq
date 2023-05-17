@@ -156,6 +156,27 @@ RSpec.describe Projects::MilestonesController do
     end
   end
 
+  describe "#update" do
+    let(:milestone_params) do
+      { title: "title changed" }
+    end
+
+    it "handles ActiveRecord::StaleObjectError" do
+      # Purposely reduce the lock_version to trigger an ActiveRecord::StaleObjectError
+      milestone_params[:lock_version] = milestone.lock_version - 1
+
+      put :update, params: {
+        id: milestone.iid,
+        milestone: milestone_params,
+        namespace_id: project.namespace.id,
+        project_id: project.id
+      }
+
+      expect(response).not_to redirect_to(project_milestone_path(project, milestone.iid))
+      expect(response).to render_template(:edit)
+    end
+  end
+
   describe "#destroy" do
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)

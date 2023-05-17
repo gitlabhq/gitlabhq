@@ -52,6 +52,8 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     find('.js-note-delete').click
 
+    wait_for_requests
+
     page.within('.modal') do
       click_button('Delete comment', match: :first)
     end
@@ -65,6 +67,8 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     write_diff_comment
 
     find('.js-note-edit').click
+
+    wait_for_requests
 
     # make sure comment form is in view
     execute_script("window.scrollBy(0, 200)")

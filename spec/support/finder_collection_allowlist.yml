@@ -24,7 +24,8 @@
 - Ci::CommitStatusesFinder
 - Ci::DailyBuildGroupReportResultsFinder
 - ClusterAncestorsFinder
-- Clusters::AgentAuthorizationsFinder
+- Clusters::Agents::Authorizations::CiAccess::Finder
+- Clusters::Agents::Authorizations::UserAccess::Finder
 - Clusters::KubernetesNamespaceFinder
 - ComplianceManagement::MergeRequests::ComplianceViolationsFinder
 - ContainerRepositoriesFinder
@@ -62,6 +63,7 @@
 - Security::TrainingUrlsFinder
 - Security::TrainingProviders::KontraUrlFinder
 - Security::TrainingProviders::SecureCodeWarriorUrlFinder
+- Security::TrainingProviders::SecureFlagUrlFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
 - TagsFinder
@@ -69,3 +71,4 @@
 - UploaderFinder
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
+- DataTransfer::MockedTransferFinder # Can be removed when https://gitlab.com/gitlab-org/gitlab/-/issues/397693 is closed

@@ -5,7 +5,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
-  feature_category :subgroups
+  feature_category :subgroups, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
 
   def index
     @groups = groups.sort_by_attribute(@sort = params[:sort])
@@ -65,8 +65,8 @@ class Admin::GroupsController < Admin::ApplicationController
     Groups::DestroyService.new(@group, current_user).async_execute
 
     redirect_to admin_groups_path,
-                status: :found,
-                alert: format(_('Group %{group_name} was scheduled for deletion.'), group_name: @group.name)
+      status: :found,
+      alert: format(_('Group %{group_name} was scheduled for deletion.'), group_name: @group.name)
   end
 
   private

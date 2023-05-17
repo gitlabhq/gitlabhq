@@ -69,12 +69,6 @@ describe('Pipelines Table', () => {
     pipeline = createMockPipeline();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-
-    wrapper = null;
-  });
-
   describe('Pipelines Table', () => {
     beforeEach(() => {
       createComponent({ pipelines: [pipeline], viewType: 'root' });

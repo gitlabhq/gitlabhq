@@ -4,28 +4,22 @@ import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
+import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
-import {
-  FORM_TYPES,
-  WIDGET_ICONS,
-  WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_STATUS_TEXT,
-} from '../../constants';
-import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
+import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
+import { findHierarchyWidgetChildren, getWorkItemQuery } from '../../utils';
 import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
 import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
-import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
-import WorkItemLinkChild from './work_item_link_child.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
+import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
   components: {
@@ -34,21 +28,16 @@ export default {
     GlIcon,
     GlLoadingIcon,
     WidgetWrapper,
-    WorkItemLinkChild,
     WorkItemLinksForm,
     WorkItemDetailModal,
+    AbuseCategorySelector,
+    WorkItemChildrenWrapper,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
-  inject: ['projectPath', 'iid'],
+  inject: ['fullPath', 'reportAbusePath'],
   props: {
-    workItemId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     issuableId: {
       type: Number,
       required: false,
@@ -57,11 +46,16 @@ export default {
   },
   apollo: {
     workItem: {
-      query: getWorkItemLinksQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
         return {
           id: this.issuableGid,
         };
+      },
+      context: {
+        isSingleRequest: true,
       },
       skip() {
         return !this.issuableId;
@@ -70,10 +64,8 @@ export default {
         this.error = e.message || this.$options.i18n.fetchError;
       },
       async result() {
-        const { id, iid } = this.childUrlParams;
-        this.activeChild = this.fetchByIid
-          ? this.children.find((child) => child.iid === iid) ?? {}
-          : this.children.find((child) => child.id === id) ?? {};
+        const iid = getParameterByName('work_item_iid');
+        this.activeChild = this.children.find((child) => child.iid === iid) ?? {};
         await this.$nextTick();
         if (!isEmpty(this.activeChild)) {
           this.$refs.modal.show();
@@ -86,13 +78,10 @@ export default {
       query: getIssueDetailsQuery,
       variables() {
         return {
-          fullPath: this.projectPath,
-          iid: String(this.iid),
+          id: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         };
       },
-      update(data) {
-        return data.workspace?.issuable;
-      },
+      update: (data) => data.issue,
     },
   },
   data() {
@@ -105,9 +94,15 @@ export default {
       parentIssue: null,
       formType: null,
       workItem: null,
+      isReportDrawerOpen: false,
+      reportedUserId: 0,
+      reportedUrl: '',
     };
   },
   computed: {
+    fetchByIid() {
+      return false;
+    },
     confidential() {
       return this.parentIssue?.confidential || this.workItem?.confidential || false;
     },
@@ -118,13 +113,13 @@ export default {
       return this.parentIssue?.milestone;
     },
     children() {
-      return (
-        this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
-          .nodes ?? []
-      );
+      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
+    },
+    canAddTask() {
+      return this.workItem?.userPermissions.adminParentLink || false;
     },
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
@@ -142,29 +137,9 @@ export default {
     childrenCountLabel() {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
-    fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
-    },
-    childUrlParams() {
-      const params = {};
-      if (this.fetchByIid) {
-        const iid = getParameterByName('work_item_iid');
-        if (iid) {
-          params.iid = iid;
-        }
-      } else {
-        const workItemId = getParameterByName('work_item_id');
-        if (workItemId) {
-          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
-        }
-      }
-      return params;
-    },
   },
   mounted() {
-    if (!isEmpty(this.childUrlParams)) {
-      this.addWorkItemQuery(this.childUrlParams);
-    }
+    this.addWorkItemQuery(getParameterByName('work_item_iid'));
   },
   methods: {
     showAddForm(formType) {
@@ -178,11 +153,11 @@ export default {
     hideAddForm() {
       this.isShownAddForm = false;
     },
-    openChild(child, e) {
-      if (isMetaKey(e)) {
+    openChild({ event, child }) {
+      if (isMetaKey(event)) {
         return;
       }
-      e.preventDefault();
+      event.preventDefault();
       this.activeChild = child;
       this.$refs.modal.show();
       this.updateWorkItemIdUrlQuery(child);
@@ -195,11 +170,8 @@ export default {
       this.removeHierarchyChild(child);
       this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
     },
-    updateWorkItemIdUrlQuery({ id, iid } = {}) {
-      const params = this.fetchByIid
-        ? { work_item_iid: iid }
-        : { work_item_id: getIdFromGraphQLId(id) };
-      updateHistory({ url: setUrlParams(params), replace: true });
+    updateWorkItemIdUrlQuery({ iid } = {}) {
+      updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
     },
     async addHierarchyChild(workItem) {
       return this.$apollo.mutate({
@@ -213,29 +185,26 @@ export default {
         variables: { id: this.issuableGid, workItem },
       });
     },
-    async updateWorkItem(workItem, childId, parentId) {
-      const response = await this.$apollo.mutate({
+    async undoChildRemoval(workItem, childId) {
+      const { data } = await this.$apollo.mutate({
         mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+        variables: { input: { id: childId, hierarchyWidget: { parentId: this.issuableGid } } },
       });
 
-      if (parentId === null) {
-        await this.removeHierarchyChild(workItem);
-      } else {
-        await this.addHierarchyChild(workItem);
-      }
-
-      return response;
-    },
-    async undoChildRemoval(workItem, childId) {
-      const { data } = await this.updateWorkItem(workItem, childId, this.issuableGid);
+      await this.addHierarchyChild(workItem);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast?.hide();
       }
     },
-    async removeChild(childId) {
-      const { data } = await this.updateWorkItem({ id: childId }, childId, null);
+    async removeChild(workItem) {
+      const childId = workItem.id;
+      const { data } = await this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId: null } } },
+      });
+
+      await this.removeHierarchyChild(workItem);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
@@ -246,36 +215,41 @@ export default {
         });
       }
     },
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.projectPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    addWorkItemQuery(iid) {
+      if (!iid) {
+        return;
+      }
+
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.fullPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
         },
       });
     },
-    prefetchWorkItem({ id, iid }) {
+    prefetchWorkItem({ iid }) {
       this.prefetch = setTimeout(
-        () => this.addWorkItemQuery({ id, iid }),
+        () => this.addWorkItemQuery(iid),
         DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       );
     },
     clearPrefetching() {
       clearTimeout(this.prefetch);
+    },
+    toggleReportAbuseDrawer(isOpen, reply = {}) {
+      this.isReportDrawerOpen = isOpen;
+      this.reportedUrl = reply.url;
+      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    },
+    openReportAbuseDrawer(reply) {
+      this.toggleReportAbuseDrawer(true, reply);
     },
   },
   i18n: {
@@ -304,16 +278,16 @@ export default {
     <template #header>{{ $options.i18n.title }}</template>
     <template #header-suffix>
       <span
-        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
+        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3 gl-font-weight-bold gl-text-gray-500"
         data-testid="children-count"
       >
-        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
+        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2" />
         {{ childrenCountLabel }}
       </span>
     </template>
     <template #header-right>
       <gl-dropdown
-        v-if="canUpdate"
+        v-if="canUpdate && canAddTask"
         right
         size="small"
         :text="$options.i18n.addChildButtonLabel"
@@ -334,11 +308,11 @@ export default {
       </gl-dropdown>
     </template>
     <template #body>
-      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
+      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-mb-3">
+          <p class="gl-px-3 gl-py-2 gl-mb-0 gl-text-gray-500">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>
@@ -356,17 +330,12 @@ export default {
           @cancel="hideAddForm"
           @addWorkItemChild="addHierarchyChild"
         />
-        <work-item-link-child
-          v-for="child in children"
-          :key="child.id"
-          :project-path="projectPath"
+        <work-item-children-wrapper
+          :children="children"
           :can-update="canUpdate"
-          :issuable-gid="issuableGid"
-          :child-item="child"
-          @click="openChild(child, $event)"
-          @mouseover="prefetchWorkItem(child)"
-          @mouseout="clearPrefetching"
+          :work-item-id="issuableGid"
           @removeChild="removeChild"
+          @show-modal="openChild"
         />
         <work-item-detail-modal
           ref="modal"
@@ -374,6 +343,14 @@ export default {
           :work-item-iid="activeChild.iid"
           @close="closeModal"
           @workItemDeleted="handleWorkItemDeleted(activeChild)"
+          @openReportAbuse="openReportAbuseDrawer"
+        />
+        <abuse-category-selector
+          v-if="isReportDrawerOpen && reportAbusePath"
+          :reported-user-id="reportedUserId"
+          :reported-from-url="reportedUrl"
+          :show-drawer="isReportDrawerOpen"
+          @close-drawer="toggleReportAbuseDrawer(false)"
         />
       </template>
     </template>

@@ -66,7 +66,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
             .with(%w[which gmake])
             .and_return(['/usr/bin/gmake', 0])
           expect(Gitlab::Popen).to receive(:popen)
-            .with(%w[gmake clean-build all], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+            .with(%w[gmake clean all])
             .and_return(['ok', 0])
 
           subject
@@ -78,7 +78,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
               .with(%w[which gmake])
               .and_return(['/usr/bin/gmake', 0])
             expect(Gitlab::Popen).to receive(:popen)
-              .with(%w[gmake clean-build all], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+              .with(%w[gmake clean all])
               .and_return(['output', 1])
 
             expect { subject }.to raise_error /Gitaly failed to compile: output/
@@ -95,26 +95,10 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
 
         it 'calls make in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen)
-            .with(%w[make clean-build all], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+            .with(%w[make clean all])
             .and_return(['output', 0])
 
           subject
-        end
-
-        context 'when Rails.env is test' do
-          let(:command) { %w[make clean-build all] }
-
-          before do
-            stub_rails_env('test')
-          end
-
-          it 'calls make in the gitaly directory with BUNDLE_DEPLOYMENT and GEM_HOME variables' do
-            expect(Gitlab::Popen).to receive(:popen)
-              .with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil, "BUNDLE_DEPLOYMENT" => 'false', "GEM_HOME" => Bundler.bundle_path.to_s })
-              .and_return(['/usr/bin/gmake', 0])
-
-            subject
-          end
         end
       end
     end

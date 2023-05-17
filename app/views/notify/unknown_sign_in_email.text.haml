@@ -1,4 +1,4 @@
-= _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+= _('Hi %{user_name} (%{user_username})!') % { user_name: sanitize_name(@user.name), user_username: @user.username }
 
 = _('A sign-in to your account has been made from the following IP address: %{ip}') % { ip: @ip }
 

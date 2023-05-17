@@ -4,4 +4,3 @@ Lint/DuplicateRegexpCharacterClassElement:
   Details: grace period
   Exclude:
     - 'lib/gitlab/path_regex.rb'
-    - 'spec/support/shared_contexts/features/integrations/integrations_shared_context.rb'

@@ -1,10 +1,9 @@
 - group = local_assigns.fetch(:group)
 
 %li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'group_row_content' } }
-  .avatar-container.rect-avatar.s40.gl-flex-shrink-0
-    = group_icon(group, class: "avatar s40")
+  = render Pajamas::AvatarComponent.new(group, size: 32, alt: '')
 
-  .gl-min-w-0.gl-flex-grow-1
+  .gl-min-w-0.gl-flex-grow-1.gl-ml-3
     .title
       = link_to [:admin, group], class: 'group-name', data: { qa_selector: 'group_name_link' } do
         = group.full_name

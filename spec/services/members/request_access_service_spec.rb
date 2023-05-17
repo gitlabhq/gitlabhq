@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::RequestAccessService do
+RSpec.describe Members::RequestAccessService, feature_category: :subgroups do
   let(:user) { create(:user) }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do

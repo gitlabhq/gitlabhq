@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_cache do
+RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_cache,
+  feature_category: :continuous_delivery do
   include KubernetesHelpers
 
   let_it_be(:project, refind: true) { create(:project) }

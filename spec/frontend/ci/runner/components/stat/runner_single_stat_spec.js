@@ -32,10 +32,6 @@ describe('RunnerStats', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     case              | count   | value
     ${'number'}       | ${99}   | ${'99'}

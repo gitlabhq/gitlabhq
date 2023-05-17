@@ -20,10 +20,6 @@ describe('DropdownFooter', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
 
   describe('Labels view', () => {

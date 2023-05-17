@@ -41,7 +41,7 @@ module API
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        if Feature.enabled?(:environment_search_api_min_chars, user_project) && params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
+        if params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
           bad_request!("Search query is less than #{MIN_SEARCH_LENGTH} characters")
         end
 
@@ -90,8 +90,6 @@ module API
       end
       params do
         requires :environment_id, type: Integer,  desc: 'The ID of the environment'
-        # TODO: disallow renaming via the API https://gitlab.com/gitlab-org/gitlab/-/issues/338897
-        optional :name,           type: String,   desc: 'DEPRECATED: Renaming environment can lead to errors, this will be removed in 15.0'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
@@ -101,8 +99,11 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        update_params = declared_params(include_missing: false).extract!(:name, :external_url, :tier)
-        if environment.update(update_params)
+        update_params = declared_params(include_missing: false).extract!(:external_url, :tier)
+
+        environment.assign_attributes(update_params)
+
+        if environment.save
           present environment, with: Entities::Environment, current_user: current_user
         else
           render_validation_error!(environment)

@@ -17,10 +17,6 @@ describe('Deploy Board Instance', () => {
     });
 
   describe('as a non-canary deployment', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should render a div with the correct css status and tooltip data', () => {
       wrapper = createComponent({
         tooltipText: 'This is a pod',
@@ -43,10 +39,6 @@ describe('Deploy Board Instance', () => {
   });
 
   describe('as a canary deployment', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should render a div with canary class when stable prop is provided as false', async () => {
       wrapper = createComponent({
         stable: false,
@@ -58,10 +50,6 @@ describe('Deploy Board Instance', () => {
   });
 
   describe('as a legend item', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should not have a tooltip', () => {
       wrapper = createComponent();
 

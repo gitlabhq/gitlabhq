@@ -28,7 +28,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
   describe 'after_destroy' do
     subject(:integration) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: true) }
 
-    let(:cluster) { create(:cluster, :with_installed_helm) }
+    let(:cluster) { create(:cluster) }
 
     it 'deactivates prometheus_integration' do
       expect(Clusters::Applications::DeactivateIntegrationWorker)
@@ -41,7 +41,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
   describe 'after_save' do
     subject(:integration) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: enabled) }
 
-    let(:cluster) { create(:cluster, :with_installed_helm) }
+    let(:cluster) { create(:cluster) }
     let(:enabled) { true }
 
     context 'when no change to enabled status' do

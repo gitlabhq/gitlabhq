@@ -22,7 +22,7 @@ RSpec.describe GitlabSchema.types['Group'] do
       merge_requests container_repositories container_repositories_count
       packages dependency_proxy_setting dependency_proxy_manifests
       dependency_proxy_blobs dependency_proxy_image_count
-      dependency_proxy_blob_count dependency_proxy_total_size
+      dependency_proxy_blob_count dependency_proxy_total_size dependency_proxy_total_size_in_bytes
       dependency_proxy_image_prefix dependency_proxy_image_ttl_policy
       shared_runners_setting timelogs organization_state_counts organizations
       contact_state_counts contacts work_item_types

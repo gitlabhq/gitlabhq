@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UnlockArtifactsService do
+RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   where(:tag) do
@@ -24,7 +24,7 @@ RSpec.describe Ci::UnlockArtifactsService do
     let!(:older_ambiguous_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: !tag, project: project, locked: :artifacts_locked) }
     let!(:code_coverage_pipeline) { create(:ci_pipeline, :with_coverage_report_artifact, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
     let!(:pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:child_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+    let!(:child_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, child_of: pipeline, project: project, locked: :artifacts_locked) }
     let!(:newer_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
     let!(:other_ref_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: 'other_ref', tag: tag, project: project, locked: :artifacts_locked) }
     let!(:sources_pipeline) { create(:ci_sources_pipeline, source_job: source_job, source_project: project, pipeline: child_pipeline, project: project) }
@@ -120,6 +120,12 @@ RSpec.describe Ci::UnlockArtifactsService do
         let(:before_pipeline) { pipeline }
 
         it 'produces the expected SQL string' do
+          # To be removed when the ignored column id_convert_to_bigint for ci_pipelines is removed
+          # see https://gitlab.com/gitlab-org/gitlab/-/issues/397000
+          selected_columns =
+            Ci::Pipeline.column_names.map do |field|
+              Ci::Pipeline.connection.quote_table_name("#{Ci::Pipeline.table_name}.#{field}")
+            end.join(', ')
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
                 "ci_pipelines"
@@ -140,14 +146,14 @@ RSpec.describe Ci::UnlockArtifactsService do
                                 "base_and_descendants"
                             AS
                                 ((SELECT
-                                    "ci_pipelines".*
+                                    #{selected_columns}
                                 FROM
                                     "ci_pipelines"
                                 WHERE
                                     "ci_pipelines"."id" = #{before_pipeline.id})
                             UNION
                                 (SELECT
-                                    "ci_pipelines".*
+                                    #{selected_columns}
                                 FROM
                                     "ci_pipelines",
                                     "base_and_descendants",
@@ -201,8 +207,7 @@ RSpec.describe Ci::UnlockArtifactsService do
     describe '#unlock_job_artifacts_query' do
       subject { described_class.new(pipeline.project, pipeline.user).unlock_job_artifacts_query(pipeline_ids) }
 
-      context 'when running on a ref before a pipeline' do
-        let(:before_pipeline) { pipeline }
+      context 'when given a single pipeline ID' do
         let(:pipeline_ids) { [older_pipeline.id] }
 
         it 'produces the expected SQL string' do
@@ -226,8 +231,7 @@ RSpec.describe Ci::UnlockArtifactsService do
         end
       end
 
-      context 'when running on just the ref' do
-        let(:before_pipeline) { nil }
+      context 'when given multiple pipeline IDs' do
         let(:pipeline_ids) { [older_pipeline.id, newer_pipeline.id, pipeline.id] }
 
         it 'produces the expected SQL string' do

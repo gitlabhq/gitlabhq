@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
 # Repository mirroring **(FREE)**
@@ -107,13 +106,14 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 ## Mirror specific branches
 
-> Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
-To make it available, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md)
+On self-managed GitLab, by default the field `mirror_branch_regex` is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
 named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
 enter a regular expression into the **Mirror specific branches** field. Branches with names that
@@ -330,6 +330,29 @@ Mirroring does not support the short version of SSH clone URLs (`git@gitlab.com:
 and requires the full version including the protocol (`ssh://git@gitlab.com/gitlab-org/gitlab.git`).
 
 Make sure that host and project path are separated using `/` instead of `:`.
+
+### Host key verification failed
+
+This error is returned when the target host public SSH key changes.
+Public SSH keys rarely, if ever, change. If host key verification fails,
+but you suspect the key is still valid, you can refresh the key's information.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for a project.
+
+To resolve the issue:
+
+1. [Verify the host key](#verify-a-host-key).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Mirroring repositories**.
+1. To refresh the keys, either:
+
+   - Select **Detect host keys** for GitLab to fetch the host keys from the server, and display the fingerprints.
+   - Select **Input host keys manually**, and enter the host key into the **SSH host key** field.
+
+- Select **Mirror repository**.
 
 ### Transfer mirror users and tokens to a single service account in Rails console
 

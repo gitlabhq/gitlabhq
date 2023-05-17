@@ -1,8 +1,0 @@
----
-name: advanced_user_index
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110946
-rollout_issue_url: 
-milestone: '15.9'
-type: ops
-group: group::global_search
-default_enabled: true

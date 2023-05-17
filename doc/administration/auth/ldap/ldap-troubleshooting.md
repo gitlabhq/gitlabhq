@@ -170,10 +170,10 @@ We have a workaround, based on toggling the access level of affected users:
 1. As an administrator, on the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the name of the affected user.
-1. In the upper right, select **Edit**.
+1. In the upper-right corner, select **Edit**.
 1. Change the user's access level from `Regular` to `Administrator` (or vice versa).
 1. At the bottom of the page, select **Save changes**.
-1. In the upper right, select **Edit** again.
+1. In the upper-right corner, select **Edit** again.
 1. Restore the user's original access level (`Regular` or `Administrator`)
    and select **Save changes** again.
 
@@ -761,7 +761,7 @@ users, [see what to do when no users are found](#no-users-are-found).
 ### GitLab logs
 
 If a user account is blocked or unblocked due to the LDAP configuration, a
-message is [logged to `application.log`](../../logs/index.md#applicationlog).
+message is [logged to `application_json.log`](../../logs/index.md#application_jsonlog).
 
 If there is an unexpected error during an LDAP lookup (configuration error,
 timeout), the sign-in is rejected and a message is [logged to `production.log`](../../logs/index.md#productionlog).

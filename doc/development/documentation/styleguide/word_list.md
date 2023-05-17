@@ -57,6 +57,7 @@ Instead of:
 
 - In GitLab 14.4 and above...
 - In GitLab 14.4 and higher...
+- In GitLab 14.4 and newer...
 
 ## access level
 
@@ -82,6 +83,11 @@ If you can add the phrase "by zombies" to the phrase,
 the construction is passive. For example, `The button is selected by zombies`
 is passive. `Zombies select the button` is active.
 
+## Admin Area
+
+Use title case for **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
+This area of the UI says **Admin Area** at the top of the page and on the menu.
+
 ## administrator
 
 Use **administrator access** instead of **admin** when talking about a user's access level.
@@ -99,10 +105,9 @@ Instead of:
 
 - To do this thing, you must have the Admin role.
 
-## Admin Area
+## advanced search
 
-Use title case **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
-This area of the UI says **Admin Area** at the top of the page and on the menu.
+Use lowercase for **advanced search** to refer to the faster, more efficient search across the entire GitLab instance.
 
 ## agent
 
@@ -113,7 +118,7 @@ For example:
 - Install the agent in your cluster.
 - Select an agent from the list.
 
-Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
+Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
 ## agent access token
 
@@ -144,13 +149,6 @@ Instead of:
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 [View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
-
-## Alpha
-
-Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **This Alpha release is ready to test.**
-
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#alpha-features)
-in the handbook when writing about Alpha features.
 
 ## analytics
 
@@ -210,7 +208,7 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta-features)
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta)
 in the handbook when writing about Beta features.
 
 ## blacklist
@@ -282,8 +280,7 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 ## CI/CD minutes
 
-Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
-**CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
+Do not use **CI/CD minutes**. This term was renamed to [**units of compute**](#units-of-compute).
 
 ## click
 
@@ -293,13 +290,19 @@ Do not use **click**. Instead, use **select** with buttons, links, menu items, a
 ## cloud native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
-This version is different than the larger, more monolithic **Omnibus package** that is used to deploy GitLab.
+This version is different than the larger, more monolithic **Linux package** that is used to deploy GitLab.
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
 ## collapse
 
 Use **collapse** instead of **close** when you are talking about expanding or collapsing a section in the UI.
+
+## command line
+
+Use **From the command line** to introduce commands.
+
+Hyphenate when using as an adjective. For example, **a command-line tool**.
 
 ## confirmation dialog
 
@@ -408,6 +411,7 @@ Use:
 Instead of:
 
 - In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
 
 ## easily
 
@@ -476,6 +480,13 @@ Instead of:
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
+## Experiment
+
+Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
+
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#experiment)
+in the handbook when writing about Experiment features.
+
 ## FAQ
 
 We want users to find information quickly, and they rarely search for the term **FAQ**.
@@ -514,6 +525,17 @@ Filtering is different from [searching](#search).
 
 Do not use **foo** in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
 
+## fork
+
+A **fork** is a project that was created from a **upstream project** by using the
+[forking process](../../../topics/git/terminology.md#fork).
+
+The **upstream project** (also known as the **source project**) and the **fork** have a **fork relationship** and are
+**linked**.
+
+If the [**fork relationship** is removed](../../../user/project/repository/forking_workflow.md#unlink-a-fork), the
+**fork** is **unlinked** from the **upstream project**.
+
 ## future tense
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
@@ -530,9 +552,12 @@ Use title case for **Geo**.
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
-## GitLab.com
+## GitLab Flavored Markdown
 
-**GitLab.com** refers to the GitLab instance managed by GitLab itself.
+When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
+([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
 ## GitLab Helm chart, GitLab chart
 
@@ -545,25 +570,40 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
-## GitLab Flavored Markdown
+If you use it in a context of describing the
+[different installation methods](index.md#how-to-document-different-installation-methods).
+use `Helm chart (Kubernetes)`.
 
-When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
-([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+## GitLab Pages
 
-If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
+For consistency and branding, use **GitLab Pages** rather than **Pages**.
+
+However, if you use **GitLab Pages** for the first mention on a page or in the UI,
+you can use **Pages** thereafter.
+
+## GitLab Runner
+
+Use title case for **GitLab Runner**. This is the product you install. For more information about the decision for this usage,
+see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
+
+See also:
+
+- [runners](#runner-runners)
+- [runner managers](#runner-manager-runner-managers)
+- [runner workers](#runner-worker-runner-workers)
 
 ## GitLab SaaS
 
 **GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the
 GitLab instance managed by GitLab itself.
 
-## GitLab Runner
-
-Use title case for **GitLab Runner**. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
-
 ## GitLab self-managed
 
 Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+
+## GitLab.com
+
+**GitLab.com** refers to the GitLab instance managed by GitLab itself.
 
 ## guide
 
@@ -632,13 +672,29 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
+## Installation from source
+
+When referring to the installation method using the self-compiled code, refer to it
+as **self-compiled**.
+
+Use:
+
+- For self-compiled installations...
+
+Instead of:
+
+- For installations from source...
+
+For more information, see the
+[different installation methods](index.md#how-to-document-different-installation-methods).
+
 ## -ing words
 
 Remove **-ing** words whenever possible. They can be difficult to translate,
 and more precise terms are usually available. For example:
 
 - Instead of **The files using storage are deleted**, use **The files that use storage are deleted**.
-- Instead of **Delete files using the Edit button**, use **Delete files by using the Edit button**.
+- Instead of **Delete files using the Edit button**, use **Use the Edit button to delete files**.
 - Instead of **Replicating your server is required**, use **You must replicate your server**.
 
 ## issue
@@ -699,6 +755,7 @@ Instead of:
 
 - In GitLab 14.1 and higher...
 - In GitLab 14.1 and above...
+- In GitLab 14.1 and newer...
 
 ## list
 
@@ -730,7 +787,7 @@ Do not use **limitations**. Use **known issues** instead.
 
 ## log in, log on
 
-Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
+Do not use **log in** or **log on**. Use [sign in](#sign-in-sign-in) instead. If the user interface has **Log in**, you can use it.
 
 ## logged-in user, logged in user
 
@@ -747,6 +804,7 @@ Use:
 Instead of:
 
 - In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
 
 ## Maintainer
 
@@ -803,6 +861,23 @@ Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it
 
 Use lowercase for **milestones**.
 
+## Minimal Access
+
+When writing about the Minimal Access role:
+
+- Use a capital **M** and a capital **A**.
+- Write it out:
+  - Use: if you are assigned the Minimal Access role
+  - Instead of: if you are a Minimal Access user
+
+- When the Minimal Access role is the minimum required role:
+  - Use: at least the Minimal Access role
+  - Instead of: the Minimal Access role or higher
+
+Do not use bold.
+
+Do not use **Minimal Access permissions**. A user who is assigned the Minimal Access role has a set of associated permissions.
+
 ## n/a, N/A, not applicable
 
 When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids
@@ -835,6 +910,20 @@ When the variable is **optional**:
 
 - You can set the variable.
 
+## newer
+
+Do not use **newer** when talking about version numbers.
+
+Use:
+
+- In GitLab 14.4 and later...
+
+Instead of:
+
+- In GitLab 14.4 and higher...
+- In GitLab 14.4 and above...
+- In GitLab 14.4 and newer...
+
 ## normal, normally
 
 Don't use **normal** to mean the usual, typical, or standard way of doing something.
@@ -864,6 +953,35 @@ Use:
 Instead of:
 
 - Note that you can change the settings.
+
+## older
+
+Do not use **older** when talking about version numbers.
+
+Use:
+
+- In GitLab 14.1 and earlier.
+
+Instead of:
+
+- In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
+
+## Omnibus GitLab
+
+When referring to the installation method that uses the Linux package, refer to it
+as **Linux package**.
+
+Use:
+
+- For installations that use the Linux package...
+
+Instead of:
+
+- For installations that use Omnibus GitLab...
+
+For more information, see the
+[different installation methods](index.md#how-to-document-different-installation-methods).
 
 ## on
 
@@ -933,6 +1051,17 @@ An Owner is the highest role a user can have.
 
 Use title case for the GitLab Package Registry.
 
+## page
+
+If you write a phrase like, "On the **Issues** page," ensure steps for how to get to the page are nearby. Otherwise, people might not know what the **Issues** page is.
+
+The page name should be visible in the UI at the top of the page.
+If it is not, you should be able to get the name from the breadcrumb.
+
+The docs should match the case in the UI, and the page name should be bold. For example:
+
+- On the **Test cases** page, ...
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
@@ -946,6 +1075,17 @@ Use lowercase for **personal access token**.
 ## please
 
 Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+
+## Premium
+
+Use **Premium**, in uppercase, for the subscription tier.  When you refer to **Premium**
+in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
+
+## prerequisites
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
 
 ## press
 
@@ -1009,6 +1149,12 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 Use title case for **Repository Mirroring**.
 
+## requirements
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
+
 ## respectively
 
 Avoid **respectively** and be more precise instead.
@@ -1044,6 +1190,14 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 
 When referring to runners, if you have to specify that the runners are installed on a customer's GitLab instance,
 use **self-managed** rather than **self-hosted**.
+
+## runner manager, runner managers
+
+Use lowercase for **runner managers**. These are a type of runner that can create multiple runners for autoscaling. See also [GitLab Runner](#gitlab-runner).
+
+## runner worker, runner workers
+
+Use lowercase for **runner workers**. This is the process created by the runner on the host computing platform to run jobs. See also [GitLab Runner](#gitlab-runner).
 
 ## (s)
 
@@ -1120,13 +1274,16 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
 
-## sign in
+## sign in, sign-in
 
-Use **sign in** or **sign in to**.
+Use **sign in** or **sign in to** as a verb to describe the action of signing in.
 
 Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
 
 If the user interface has different words, use those.
+
+You can use **sign-in** as a noun or adjective. For example, **sign-in page** or
+**sign-in restrictions**.
 
 You can use **single sign-on**.
 
@@ -1201,6 +1358,13 @@ Use lowercase for **terminal**. For example:
 
 - Open a terminal.
 - From a terminal, run the `docker login` command.
+
+## Terraform Module Registry
+
+Use title case for the GitLab Terraform Module Registry, but use lowercase `m` when
+talking about non-specific modules. For example:
+
+- You can publish a Terraform module to your project's Terraform Module Registry.
 
 ## text box
 
@@ -1277,6 +1441,24 @@ For example:
 
 See also [**enter**](#enter).
 
+## Ultimate
+
+Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
+in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
+
+## units of compute
+
+Use **units of compute** instead of these (or similar) terms:
+
+- **CI/CD minutes**
+- **CI minutes**
+- **pipeline minutes**
+- **CI pipeline minutes**
+- **pipeline minutes quota**
+
+This language is still being standardized in the documentation and UI beginning in March, 2023.
+For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
+
 ## units of measurement
 
 Use a space between the number and the unit of measurement. For example, **128 GB**.
@@ -1314,7 +1496,10 @@ See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 ## upper left, upper right
 
-Use **upper left** and **upper right** instead of **top left** and **top right**. Hyphenate as adjectives (for example, **upper-left corner**).
+Use **upper-left corner** and **upper-right corner** to provide direction in the UI.
+If the UI element is not in a corner, use **upper left** and **upper right**.
+
+Do not use **top left** and **top right**.
 
 For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 

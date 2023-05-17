@@ -25,26 +25,24 @@ module.exports = {
 
   entry: {
     vendor: [
-      'jquery/dist/jquery.slim.js',
-      'core-js',
-      'echarts',
-      'lodash',
-      'vuex',
-      'vue',
-      'pikaday',
-      '@gitlab/at.js',
-      'jed',
-      'mermaid',
-      'katex',
-      'three',
-      'moment-mini',
-      'dompurify',
-      'bootstrap/dist/js/bootstrap.js',
-      'sortablejs/modular/sortable.esm.js',
-      'popper.js',
       '@apollo/client/core',
-      'source-map',
+      '@gitlab/at.js',
+      'core-js',
+      'dexie',
+      'dompurify',
+      'echarts',
+      'jed',
+      'jquery/dist/jquery.slim.js',
+      'katex',
+      'lodash',
       'mousetrap',
+      'pikaday',
+      'popper.js',
+      'sortablejs/modular/sortable.esm.js',
+      'source-map',
+      'three',
+      'vue',
+      'vuex',
     ],
   },
 
@@ -76,8 +74,6 @@ module.exports = {
           https://gitlab.com/gitlab-org/gitlab/-/issues/219353
           */
           'chokidar',
-          // We are ignoring esbuild as we want to force a newer version than what esbuild-loader provides
-          'esbuild',
           // We are ignoring ts-jest, because we force a newer version, compatible with our current jest version
           'ts-jest',
         ].join('|'),

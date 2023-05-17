@@ -157,7 +157,7 @@ export default {
               v-if="resolveAllDiscussionsIssuePath && !allResolved"
               :href="resolveAllDiscussionsIssuePath"
             >
-              {{ __('Create issue to resolve all threads') }}
+              {{ __('Resolve all with new issue') }}
             </gl-dropdown-item>
           </gl-dropdown>
         </gl-button-group>

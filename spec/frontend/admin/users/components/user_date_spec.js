@@ -17,11 +17,6 @@ describe('FormatDate component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each`
     date         | dateFormat          | output
     ${mockDate}  | ${undefined}        | ${'Nov 13, 2020'}

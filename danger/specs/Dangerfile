@@ -50,12 +50,8 @@ if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_ch
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
-if helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
-  warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
-end
+warn CONTROLLER_SPEC_DEPRECATION_MESSAGE if helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
 
 specs.changed_specs_files.each do |filename|
-  specs.add_suggestions_for_match_with_array(filename)
-  specs.add_suggestions_for_project_factory_usage(filename)
-  specs.add_suggestions_for_feature_category(filename)
+  specs.add_suggestions_for(filename)
 end

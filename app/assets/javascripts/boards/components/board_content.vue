@@ -1,23 +1,15 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { breakpoints } from '@gitlab/ui/dist/utils';
-import { sortBy, throttle } from 'lodash';
+import { sortBy } from 'lodash';
 import Draggable from 'vuedraggable';
-import { mapState, mapGetters, mapActions } from 'vuex';
-import { contentTop } from '~/lib/utils/common_utils';
-import { s__ } from '~/locale';
-import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
+import { mapState, mapActions } from 'vuex';
+import eventHub from '~/boards/eventhub';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes, listsQuery } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
-  i18n: {
-    fetchError: s__(
-      'Boards|An error occurred while fetching the board lists. Please reload the page.',
-    ),
-  },
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
@@ -28,72 +20,40 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: [
-    'canAdminList',
-    'boardType',
-    'fullPath',
-    'issuableType',
-    'isIssueBoard',
-    'isEpicBoard',
-    'isGroupBoard',
-    'disabled',
-    'isApolloBoard',
-  ],
+  inject: ['canAdminList', 'isIssueBoard', 'isEpicBoard', 'disabled', 'isApolloBoard'],
   props: {
     boardId: {
       type: String,
       required: true,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: true,
+    },
+    boardListsApollo: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    apolloError: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       boardHeight: null,
-      boardListsApollo: {},
-      apolloError: null,
-      updatedBoardId: this.boardId,
     };
-  },
-  apollo: {
-    boardListsApollo: {
-      query() {
-        return listsQuery[this.issuableType].query;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      skip() {
-        return !this.isApolloBoard;
-      },
-      update(data) {
-        const { lists } = data[this.boardType].board;
-        return formatBoardLists(lists);
-      },
-      result() {
-        // this allows us to delay fetching lists when we switch a board to fetch the actual board lists
-        // instead of fetching lists for the "previous" board
-        this.updatedBoardId = this.boardId;
-      },
-      error() {
-        this.apolloError = this.$options.i18n.fetchError;
-      },
-    },
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
-    ...mapGetters(['isSwimlanesOn']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
-    },
-    queryVariables() {
-      return {
-        ...(this.isIssueBoard && {
-          isGroup: this.isGroupBoard,
-          isProject: !this.isGroupBoard,
-        }),
-        fullPath: this.fullPath,
-        boardId: this.boardId,
-        filterParams: this.filterParams,
-      };
     },
     boardListsToUse() {
       const lists = this.isApolloBoard ? this.boardListsApollo : this.boardLists;
@@ -126,18 +86,11 @@ export default {
       return this.isApolloBoard ? this.apolloError : this.error;
     },
   },
-  mounted() {
-    this.setBoardHeight();
-
-    this.resizeObserver = new ResizeObserver(
-      throttle(() => {
-        this.setBoardHeight();
-      }, 150),
-    );
-    this.resizeObserver.observe(document.body);
+  created() {
+    eventHub.$on('updateBoard', this.refetchLists);
   },
-  unmounted() {
-    this.resizeObserver.disconnect();
+  beforeDestroy() {
+    eventHub.$off('updateBoard', this.refetchLists);
   },
   methods: {
     ...mapActions(['moveList', 'unsetError']),
@@ -145,19 +98,19 @@ export default {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
     },
-    setBoardHeight() {
-      if (window.innerWidth < breakpoints.md) {
-        this.boardHeight = `${window.innerHeight - contentTop()}px`;
-      } else {
-        this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
-      }
+    refetchLists() {
+      this.$apollo.queries.boardListsApollo.refetch();
     },
   },
 };
 </script>
 
 <template>
-  <div v-cloak data-qa-selector="boards_list">
+  <div
+    v-cloak
+    data-qa-selector="boards_list"
+    class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
+  >
     <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="unsetError">
       {{ errorToDisplay }}
     </gl-alert>
@@ -166,8 +119,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-scroll"
-      :style="{ height: boardHeight }"
+      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-auto"
       @end="moveList"
     >
       <board-column
@@ -176,8 +128,10 @@ export default {
         ref="board"
         :board-id="boardId"
         :list="list"
+        :filters="filterParams"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
+        @setActiveList="$emit('setActiveList', $event)"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
@@ -188,9 +142,11 @@ export default {
     <epics-swimlanes
       v-else-if="boardListsToUse.length"
       ref="swimlanes"
+      :board-id="boardId"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
-      :style="{ height: boardHeight }"
+      :filters="filterParams"
+      @setActiveList="$emit('setActiveList', $event)"
     />
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />

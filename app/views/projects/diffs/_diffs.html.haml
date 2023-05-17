@@ -2,22 +2,20 @@
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_page_context = local_assigns.fetch(:diff_page_context, nil)
-- load_diff_files_async = Feature.enabled?(:async_commit_diff_files, @project) && diff_page_context == "is-commit"
-- paginate_diffs = local_assigns.fetch(:paginate_diffs, false) && !load_diff_files_async
+- load_diff_files_async = diff_page_context == "is-commit"
+- paginate_diffs = local_assigns.fetch(:paginate_diffs, false)
 - paginate_diffs_per_page = local_assigns.fetch(:paginate_diffs_per_page, nil)
 - page = local_assigns.fetch(:page, nil)
 - diff_files = conditionally_paginate_diff_files(diffs, paginate: paginate_diffs, page: page, per: paginate_diffs_per_page)
 
-.content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
+.js-diff-files-changed.gl-py-3
   .files-changed-inner
-    .inline-parallel-buttons.gl-display-none.gl-md-display-flex
+    .inline-parallel-buttons.gl-display-none.gl-md-display-flex.gl-relative
       - if !diffs_expanded? && diff_files.any?(&:collapsed?)
         = link_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil)), class: 'gl-button btn btn-default'
       - if show_whitespace_toggle
         - if current_controller?(:commit)
           = commit_diff_whitespace_link(diffs.project, @commit, class: 'd-none d-sm-inline-block')
-        - elsif current_controller?('projects/merge_requests/diffs')
-          = diff_merge_request_whitespace_link(diffs.project, @merge_request, class: 'd-none d-sm-inline-block')
         - elsif current_controller?(:compare)
           = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'd-none d-sm-inline-block')
         - elsif current_controller?(:wikis)
@@ -32,7 +30,7 @@
 
 .files{ data: { can_create_note: can_create_note } }
   - if load_diff_files_async
-    - url = url_for(safe_params.merge(action: 'diff_files'))
+    - url = url_for(safe_params.merge(action: 'diff_files', page: page))
     .js-diffs-batch{ data: { diff_files_path: url } }
       = gl_loading_icon(size: "md", css_class: "gl-mt-4")
   - else

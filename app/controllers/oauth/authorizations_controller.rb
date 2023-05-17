@@ -108,8 +108,10 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def dangerous_scopes?
-    doorkeeper_application&.includes_scope?(*::Gitlab::Auth::API_SCOPE, *::Gitlab::Auth::READ_API_SCOPE,
-                                             *::Gitlab::Auth::ADMIN_SCOPES, *::Gitlab::Auth::REPOSITORY_SCOPES,
-                                             *::Gitlab::Auth::REGISTRY_SCOPES) && !doorkeeper_application&.trusted?
+    doorkeeper_application&.includes_scope?(
+      *::Gitlab::Auth::API_SCOPE, *::Gitlab::Auth::READ_API_SCOPE,
+      *::Gitlab::Auth::ADMIN_SCOPES, *::Gitlab::Auth::REPOSITORY_SCOPES,
+      *::Gitlab::Auth::REGISTRY_SCOPES
+    ) && !doorkeeper_application&.trusted?
   end
 end

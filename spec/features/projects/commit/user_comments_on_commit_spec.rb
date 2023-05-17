@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User comments on commit", :js, feature_category: :source_code_management do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
   include Spec::Support::Helpers::ModalHelpers
   include RepoHelpers
 
@@ -38,7 +38,7 @@ RSpec.describe "User comments on commit", :js, feature_category: :source_code_ma
         expect(page).not_to have_css(".js-note-text")
 
         # Check on `Write` tab
-        click_button("Write")
+        click_button("Continue editing")
 
         expect(page).to have_field("note[note]", with: "#{comment_text} #{emoji_code}")
 
@@ -109,7 +109,7 @@ RSpec.describe "User comments on commit", :js, feature_category: :source_code_ma
         note.hover
 
         find(".more-actions").click
-        find(".more-actions .dropdown-menu li", match: :first)
+        find(".more-actions li", match: :first)
 
         find(".js-note-delete").click
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::CreateEvidenceService do
+RSpec.describe Releases::CreateEvidenceService, feature_category: :release_orchestration do
   let_it_be(:project) { create(:project) }
 
   let(:release) { create(:release, project: project) }

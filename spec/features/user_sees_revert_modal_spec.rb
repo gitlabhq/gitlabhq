@@ -19,9 +19,12 @@ feature_category: :code_review_workflow do
   end
 
   before do
+    stub_feature_flags(unbatch_graphql_queries: false)
     sign_in(user)
     visit(project_merge_request_path(project, merge_request))
-    click_button('Merge')
+    page.within('.mr-state-widget') do
+      click_button 'Merge'
+    end
 
     wait_for_requests
   end

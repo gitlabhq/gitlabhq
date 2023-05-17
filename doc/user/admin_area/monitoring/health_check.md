@@ -92,8 +92,6 @@ Example response:
 
 On failure, the endpoint returns a `503` HTTP status code.
 
-This check does hit the database and Redis if authenticated via `token`.
-
 This check is being exempt from Rack Attack.
 
 ## Liveness

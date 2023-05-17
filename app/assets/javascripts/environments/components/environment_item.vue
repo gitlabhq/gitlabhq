@@ -16,6 +16,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
 import DeleteComponent from './environment_delete.vue';
@@ -56,7 +57,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glFeatureFlagsMixin()],
 
   props: {
     model: {
@@ -532,6 +533,10 @@ export default {
       return this.model.metrics_path || '';
     },
 
+    canShowMetricsLink() {
+      return Boolean(!this.glFeatures.removeMonitorMetrics && this.monitoringUrl);
+    },
+
     terminalPath() {
       return this.model?.terminal_path ?? '';
     },
@@ -544,7 +549,7 @@ export default {
       return (
         this.actions.length > 0 ||
         this.externalURL ||
-        this.monitoringUrl ||
+        this.canShowMetricsLink ||
         this.canStopEnvironment ||
         this.canDeleteEnvironment ||
         this.canRetry
@@ -568,7 +573,7 @@ export default {
       return Boolean(
         this.canRetry ||
           this.canShowAutoStopDate ||
-          this.monitoringUrl ||
+          this.canShowMetricsLink ||
           this.terminalPath ||
           this.canDeleteEnvironment,
       );
@@ -856,10 +861,11 @@ export default {
           />
 
           <monitoring-button-component
-            v-if="monitoringUrl"
+            v-if="canShowMetricsLink"
             :monitoring-url="monitoringUrl"
             data-track-action="click_button"
             data-track-label="environment_monitoring"
+            data-testid="environment-monitoring"
           />
 
           <terminal-button-component

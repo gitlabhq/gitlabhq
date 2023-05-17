@@ -1,25 +1,15 @@
 import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_vue/dropdown_contents_create_view.vue';
 
 import labelSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import { mockConfig, mockSuggestedColors } from './mock_data';
 
 Vue.use(Vuex);
-
-const createComponent = (initialState = mockConfig) => {
-  const store = new Vuex.Store(labelSelectModule());
-
-  store.dispatch('setInitialState', initialState);
-
-  return shallowMount(DropdownContentsCreateView, {
-    store,
-  });
-};
 
 describe('DropdownContentsCreateView', () => {
   let wrapper;
@@ -27,51 +17,54 @@ describe('DropdownContentsCreateView', () => {
     [color]: mockSuggestedColors[color],
   }));
 
+  const createComponent = (initialState = mockConfig) => {
+    const store = new Vuex.Store(labelSelectModule());
+
+    store.dispatch('setInitialState', initialState);
+
+    wrapper = shallowMountExtended(DropdownContentsCreateView, {
+      store,
+    });
+  };
+
+  const findColorSelectorInput = () => wrapper.findByTestId('selected-color');
+  const findLabelTitleInput = () => wrapper.findByTestId('label-title');
+  const findCreateClickButton = () => wrapper.findByTestId('create-click');
+  const findAllLinks = () => wrapper.find('.dropdown-content').findAllComponents(GlLink);
+
   beforeEach(() => {
     gon.suggested_label_colors = mockSuggestedColors;
-    wrapper = createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
+    createComponent();
   });
 
   describe('computed', () => {
     describe('disableCreate', () => {
       it('returns `true` when label title and color is not defined', () => {
-        expect(wrapper.vm.disableCreate).toBe(true);
+        expect(findCreateClickButton().props('disabled')).toBe(true);
       });
 
       it('returns `true` when `labelCreateInProgress` is true', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          labelTitle: 'Foo',
-          selectedColor: '#ff0000',
-        });
+        await findColorSelectorInput().vm.$emit('input', '#ff0000');
+        await findLabelTitleInput().vm.$emit('input', 'Foo');
         wrapper.vm.$store.dispatch('requestCreateLabel');
 
         await nextTick();
-        expect(wrapper.vm.disableCreate).toBe(true);
+
+        expect(findCreateClickButton().props('disabled')).toBe(true);
       });
 
       it('returns `false` when label title and color is defined and create request is not already in progress', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          labelTitle: 'Foo',
-          selectedColor: '#ff0000',
-        });
+        await findColorSelectorInput().vm.$emit('input', '#ff0000');
+        await findLabelTitleInput().vm.$emit('input', 'Foo');
 
-        await nextTick();
-        expect(wrapper.vm.disableCreate).toBe(false);
+        expect(findCreateClickButton().props('disabled')).toBe(false);
       });
     });
 
     describe('suggestedColors', () => {
       it('returns array of color objects containing color code and name', () => {
         colors.forEach((color, index) => {
-          expect(wrapper.vm.suggestedColors[index]).toEqual(expect.objectContaining(color));
+          expect(findAllLinks().at(index).attributes('title')).toBe(Object.values(color)[0]);
         });
       });
     });
@@ -86,29 +79,29 @@ describe('DropdownContentsCreateView', () => {
 
     describe('getColorName', () => {
       it('returns color name from color object', () => {
+        expect(findAllLinks().at(0).attributes('title')).toBe(Object.values(colors[0]).pop());
         expect(wrapper.vm.getColorName(colors[0])).toBe(Object.values(colors[0]).pop());
       });
     });
 
     describe('handleColorClick', () => {
-      it('sets provided `color` param to `selectedColor` prop', () => {
-        wrapper.vm.handleColorClick(colors[0]);
+      it('sets provided `color` param to `selectedColor` prop', async () => {
+        await findAllLinks()
+          .at(0)
+          .vm.$emit('click', { preventDefault: () => {} });
 
-        expect(wrapper.vm.selectedColor).toBe(Object.keys(colors[0]).pop());
+        expect(findColorSelectorInput().attributes('value')).toBe(Object.keys(colors[0]).pop());
       });
     });
 
     describe('handleCreateClick', () => {
       it('calls action `createLabel` with object containing `labelTitle` & `selectedColor`', async () => {
         jest.spyOn(wrapper.vm, 'createLabel').mockImplementation();
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          labelTitle: 'Foo',
-          selectedColor: '#ff0000',
-        });
 
-        wrapper.vm.handleCreateClick();
+        await findColorSelectorInput().vm.$emit('input', '#ff0000');
+        await findLabelTitleInput().vm.$emit('input', 'Foo');
+
+        findCreateClickButton().vm.$emit('click');
 
         await nextTick();
         expect(wrapper.vm.createLabel).toHaveBeenCalledWith(
@@ -158,27 +151,27 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders color block element for all suggested colors', () => {
-      const colorBlocksEl = wrapper.find('.dropdown-content').findAllComponents(GlLink);
-
-      colorBlocksEl.wrappers.forEach((colorBlock, index) => {
+      findAllLinks().wrappers.forEach((colorBlock, index) => {
         expect(colorBlock.attributes('style')).toContain('background-color');
         expect(colorBlock.attributes('title')).toBe(Object.values(colors[index]).pop());
       });
     });
 
     it('renders color input element', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        selectedColor: '#ff0000',
-      });
+      await findColorSelectorInput().vm.$emit('input', '#ff0000');
 
       await nextTick();
-      const colorPreviewEl = wrapper.find('.color-input-container > .dropdown-label-color-preview');
-      const colorInputEl = wrapper.find('.color-input-container').findComponent(GlFormInput);
+      const colorPreviewEl = wrapper
+        .find('.color-input-container')
+        .findAllComponents(GlFormInput)
+        .at(0);
+      const colorInputEl = wrapper
+        .find('.color-input-container')
+        .findAllComponents(GlFormInput)
+        .at(1);
 
       expect(colorPreviewEl.exists()).toBe(true);
-      expect(colorPreviewEl.attributes('style')).toContain('background-color');
+      expect(colorPreviewEl.attributes('value')).toBe('#ff0000');
       expect(colorInputEl.exists()).toBe(true);
       expect(colorInputEl.attributes('placeholder')).toBe('Use custom color #FF0000');
       expect(colorInputEl.attributes('value')).toBe('#ff0000');

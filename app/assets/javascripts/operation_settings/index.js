@@ -5,6 +5,8 @@ import store from './store';
 export default () => {
   const el = document.querySelector('.js-operation-settings');
 
+  if (!el) return false;
+
   return new Vue({
     el,
     store: store(el.dataset),

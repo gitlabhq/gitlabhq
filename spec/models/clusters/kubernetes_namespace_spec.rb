@@ -69,10 +69,12 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
 
     context 'when cluster is using the namespace' do
       before do
-        create(:cluster_kubernetes_namespace,
-               cluster: kubernetes_namespace.cluster,
-               environment: kubernetes_namespace.environment,
-               namespace: 'my-namespace')
+        create(
+          :cluster_kubernetes_namespace,
+          cluster: kubernetes_namespace.cluster,
+          environment: kubernetes_namespace.environment,
+          namespace: 'my-namespace'
+        )
       end
 
       it { is_expected.not_to be_valid }

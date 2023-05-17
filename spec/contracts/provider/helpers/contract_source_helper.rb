@@ -2,7 +2,6 @@
 
 module Provider
   module ContractSourceHelper
-    QA_PACT_BROKER_HOST = "http://localhost:9292/pacts"
     PREFIX_PATHS = {
       rake: {
         ce: "../../contracts/project",
@@ -10,7 +9,7 @@ module Provider
       },
       spec: "../contracts/project"
     }.freeze
-    SUB_PATH_REGEX = %r{project/(?<file_path>.*?)_helper.rb}.freeze
+    SUB_PATH_REGEX = %r{project/(?<file_path>.*?)_helper.rb}
 
     class << self
       def contract_location(requester:, file_path:, edition: :ce)
@@ -26,7 +25,7 @@ module Provider
         provider_url = "provider/#{construct_provider_url_path(file_path)}"
         consumer_url = "consumer/#{construct_consumer_url_path(file_path)}"
 
-        "#{QA_PACT_BROKER_HOST}/#{provider_url}/#{consumer_url}/latest"
+        "#{ENV['QA_PACT_BROKER_HOST']}/pacts/#{provider_url}/#{consumer_url}/latest"
       end
 
       def construct_provider_url_path(file_path)

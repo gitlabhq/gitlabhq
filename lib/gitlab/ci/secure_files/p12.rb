@@ -36,7 +36,7 @@ module Gitlab
         private
 
         def expires_at
-          certificate_data.not_before
+          certificate_data.not_after
         end
 
         def serial

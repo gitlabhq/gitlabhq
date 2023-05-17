@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | LFS | Migrate LFS objects to remote storage"
 namespace :gitlab do
+  require 'logger'
+
   namespace :lfs do
     task migrate: :environment do
       logger = Logger.new($stdout)

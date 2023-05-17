@@ -34,13 +34,6 @@ describe('Highlight Bar', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findLink = () => wrapper.findComponent(GlLink);
 
   describe('empty state', () => {

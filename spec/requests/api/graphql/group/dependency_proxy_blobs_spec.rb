@@ -26,6 +26,7 @@ RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :d
       #{query_graphql_field('dependency_proxy_blobs', {}, dependency_proxy_blob_fields)}
       dependencyProxyBlobCount
       dependencyProxyTotalSize
+      dependencyProxyTotalSizeInBytes
     GQL
   end
 
@@ -42,6 +43,7 @@ RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :d
   let(:dependency_proxy_blobs_response) { graphql_data.dig('group', 'dependencyProxyBlobs', 'edges') }
   let(:dependency_proxy_blob_count_response) { graphql_data.dig('group', 'dependencyProxyBlobCount') }
   let(:dependency_proxy_total_size_response) { graphql_data.dig('group', 'dependencyProxyTotalSize') }
+  let(:dependency_proxy_total_size_in_bytes_response) { graphql_data.dig('group', 'dependencyProxyTotalSizeInBytes') }
 
   before do
     stub_config(dependency_proxy: { enabled: true })
@@ -121,7 +123,13 @@ RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :d
 
   it 'returns the total size' do
     subject
+    expected_size = ActiveSupport::NumberHelper.number_to_human_size(blobs.inject(0) { |sum, blob| sum + blob.size })
+    expect(dependency_proxy_total_size_response).to eq(expected_size)
+  end
+
+  it 'returns the total size in bytes' do
+    subject
     expected_size = blobs.inject(0) { |sum, blob| sum + blob.size }
-    expect(dependency_proxy_total_size_response).to eq(ActiveSupport::NumberHelper.number_to_human_size(expected_size))
+    expect(dependency_proxy_total_size_in_bytes_response).to eq(expected_size)
   end
 end

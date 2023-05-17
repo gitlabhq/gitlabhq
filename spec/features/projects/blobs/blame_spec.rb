@@ -38,13 +38,13 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
     within '[data-testid="blob-content-holder"]' do
       expect(page).to have_css('.blame-commit')
       expect(page).not_to have_css('.gl-pagination')
-      expect(page).not_to have_link _('View entire blame')
+      expect(page).not_to have_link _('Show full blame')
     end
   end
 
   context 'when blob length is over the blame range limit' do
     before do
-      stub_const('Projects::BlameService::PER_PAGE', 2)
+      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 2)
     end
 
     it 'displays two first lines of the file with pagination' do
@@ -53,7 +53,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
       within '[data-testid="blob-content-holder"]' do
         expect(page).to have_css('.blame-commit')
         expect(page).to have_css('.gl-pagination')
-        expect(page).to have_link _('View entire blame')
+        expect(page).to have_link _('Show full blame')
 
         expect(page).to have_css('#L1')
         expect(page).not_to have_css('#L3')
@@ -85,19 +85,34 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
       end
     end
 
-    context 'when user clicks on View entire blame button' do
+    shared_examples 'a full blame page' do
+      context 'when user clicks on Show full blame button' do
+        before do
+          visit_blob_blame(path)
+          click_link _('Show full blame')
+        end
+
+        it 'displays the blame page without pagination' do
+          within '[data-testid="blob-content-holder"]' do
+            expect(page).to have_css('#L1')
+            expect(page).to have_css('#L667')
+            expect(page).not_to have_css('.gl-pagination')
+          end
+        end
+      end
+    end
+
+    context 'when streaming is enabled' do
       before do
-        visit_blob_blame(path)
+        stub_const('Gitlab::Git::BlamePagination::STREAMING_PER_PAGE', 50)
       end
 
-      it 'displays the blame page without pagination' do
-        within '[data-testid="blob-content-holder"]' do
-          click_link _('View entire blame')
+      it_behaves_like 'a full blame page'
 
-          expect(page).to have_css('#L1')
-          expect(page).to have_css('#L3')
-          expect(page).not_to have_css('.gl-pagination')
-        end
+      it 'shows loading text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410499' do
+        visit_blob_blame(path)
+        click_link _('Show full blame')
+        expect(page).to have_text('Loading full blame...')
       end
     end
 
@@ -112,7 +127,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
         within '[data-testid="blob-content-holder"]' do
           expect(page).to have_css('.blame-commit')
           expect(page).not_to have_css('.gl-pagination')
-          expect(page).not_to have_link _('View entire blame')
+          expect(page).not_to have_link _('Show full blame')
         end
       end
     end
@@ -120,7 +135,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
 
   context 'when blob length is over global max page limit' do
     before do
-      stub_const('Projects::BlameService::PER_PAGE', 200)
+      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 200)
     end
 
     let(:path) { 'files/markdown/ruby-style-guide.md' }

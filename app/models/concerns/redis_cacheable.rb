@@ -33,6 +33,14 @@ module RedisCacheable
     clear_memoization(:cached_attributes)
   end
 
+  def merge_cache_attributes(values)
+    existing_attributes = Hash(cached_attributes)
+    merged_attributes = existing_attributes.merge(values.symbolize_keys)
+    return if merged_attributes == existing_attributes
+
+    cache_attributes(merged_attributes)
+  end
+
   private
 
   def cache_attribute_key

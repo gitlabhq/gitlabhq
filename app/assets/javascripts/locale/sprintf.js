@@ -22,7 +22,9 @@ export default (input, parameters, escapeParameters = true) => {
     mappedParameters.forEach((key, parameterName) => {
       const parameterValue = mappedParameters.get(parameterName);
       const escapedParameterValue = escapeParameters ? escape(parameterValue) : parameterValue;
-      output = output.replace(new RegExp(`%{${parameterName}}`, 'g'), escapedParameterValue);
+      // Pass the param value as a function to ignore special replacement patterns like $` and $'.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#syntax
+      output = output.replace(new RegExp(`%{${parameterName}}`, 'g'), () => escapedParameterValue);
     });
   }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NewIssueWorker do
+RSpec.describe NewIssueWorker, feature_category: :team_planning do
   include AfterNextHelpers
 
   describe '#perform' do

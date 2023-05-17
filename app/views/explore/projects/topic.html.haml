@@ -1,23 +1,23 @@
-- @hide_top_links = false
-- @no_container = true
+- add_to_breadcrumbs _("Topics"), topics_explore_projects_path
+- breadcrumb_title @topic.title_or_name
 - page_title @topic.title_or_name, _("Topics")
 - max_topic_title_length = 50
 
 = render_dashboard_ultimate_trial(current_user)
 
-.gl-text-center.gl-bg-gray-10.gl-pb-2.gl-pt-6
-  .gl-pb-5.gl-align-items-center.gl-justify-content-center.gl-display-flex
-    .avatar-container.rect-avatar.s60.gl-flex-shrink-0
-      = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s60')
-    - if @topic.title_or_name.length > max_topic_title_length
-      %h1.gl-mt-3.gl-str-truncated.has-tooltip{ title: @topic.title_or_name }
-        = truncate(@topic.title_or_name, length: max_topic_title_length)
-    - else
-      %h1.gl-mt-3
-        = @topic.title_or_name
-  - if @topic.description.present?
-    .topic-description.gl-ml-4.gl-mr-4
-      = markdown(@topic.description)
+.gl-text-center.gl-bg-gray-10.gl-pb-3.gl-pt-6
+  %div{ class: container_class }
+    .gl-pb-5.gl-align-items-center.gl-justify-content-center.gl-display-flex
+      = render Pajamas::AvatarComponent.new(@topic, size: 64, alt: '')
+      - if @topic.title_or_name.length > max_topic_title_length
+        %h1.gl-mt-3.gl-ml-5.gl-str-truncated.has-tooltip{ title: @topic.title_or_name }
+          = truncate(@topic.title_or_name, length: max_topic_title_length)
+      - else
+        %h1.gl-mt-3.gl-ml-5
+          = @topic.title_or_name
+    - if @topic.description.present?
+      .topic-description
+        = markdown(@topic.description)
 
 %div{ class: container_class }
   .gl-py-5.gl-border-gray-100.gl-border-b-solid.gl-border-b-1

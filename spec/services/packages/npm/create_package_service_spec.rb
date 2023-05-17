@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::CreatePackageService do
+RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_registry do
+  include ExclusiveLeaseHelpers
+
   let(:namespace) { create(:namespace) }
   let(:project) { create(:project, namespace: namespace) }
   let(:user) { create(:user) }
@@ -14,9 +16,11 @@ RSpec.describe Packages::Npm::CreatePackageService do
   end
 
   let(:package_name) { "@#{namespace.path}/my-app" }
-  let(:version_data) { params.dig('versions', '1.0.1') }
+  let(:version_data) { params.dig('versions', version) }
+  let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
+  let(:service) { described_class.new(project, user, params) }
 
-  subject { described_class.new(project, user, params).execute }
+  subject { service.execute }
 
   shared_examples 'valid package' do
     it 'creates a package' do
@@ -57,17 +61,90 @@ RSpec.describe Packages::Npm::CreatePackageService do
       end
     end
 
-    context 'with a too large metadata structure' do
-      before do
-        params[:versions][version][:test] = 'test' * 10000
+    context 'when the npm metadatum creation results in a size error' do
+      shared_examples 'a package json structure size too large error' do
+        it 'does not create the package' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(ActiveRecord::RecordInvalid),
+            field_sizes: expected_field_sizes
+          )
+
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
+            .and not_change { Packages::Package.count }
+            .and not_change { Packages::Package.npm.count }
+            .and not_change { Packages::Tag.count }
+            .and not_change { Packages::Npm::Metadatum.count }
+        end
       end
 
-      it 'does not create the package' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
-        .and not_change { Packages::Package.count }
-        .and not_change { Packages::Package.npm.count }
-        .and not_change { Packages::Tag.count }
-        .and not_change { Packages::Npm::Metadatum.count }
+      context 'when some of the field sizes are above the error tracking size' do
+        let(:package_json) do
+          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+        end
+
+        # Only the fields that exceed the field size limit should be passed to error tracking
+        let(:expected_field_sizes) do
+          {
+            'test' => ('test' * 10000).size,
+            'field2' => ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)).size
+          }
+        end
+
+        before do
+          params[:versions][version][:test] = 'test' * 10000
+          params[:versions][version][:field1] =
+            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+          params[:versions][version][:field2] =
+            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)
+        end
+
+        it_behaves_like 'a package json structure size too large error'
+      end
+
+      context 'when all of the field sizes are below the error tracking size' do
+        let(:package_json) do
+          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+        end
+
+        let(:expected_size) { ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size }
+        # Only the five largest fields should be passed to error tracking
+        let(:expected_field_sizes) do
+          {
+            'field1' => expected_size,
+            'field2' => expected_size,
+            'field3' => expected_size,
+            'field4' => expected_size,
+            'field5' => expected_size
+          }
+        end
+
+        before do
+          5.times do |i|
+            params[:versions][version]["field#{i + 1}"] =
+              'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+          end
+        end
+
+        it_behaves_like 'a package json structure size too large error'
+      end
+    end
+
+    context 'when the npm metadatum creation results in a different error' do
+      it 'does not track the error' do
+        error_message = 'boom'
+        invalid_npm_metadatum_error = ActiveRecord::RecordInvalid.new(
+          build(:npm_metadatum).tap do |metadatum|
+            metadatum.errors.add(:base, error_message)
+          end
+        )
+
+        allow_next_instance_of(::Packages::Package) do |package|
+          allow(package).to receive(:create_npm_metadatum!).and_raise(invalid_npm_metadatum_error)
+        end
+
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /#{error_message}/)
       end
     end
 
@@ -215,6 +292,83 @@ RSpec.describe Packages::Npm::CreatePackageService do
       with_them do
         it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Version is invalid') }
       end
+    end
+
+    context 'with empty attachment data' do
+      let(:params) { super().merge({ _attachments: { "#{package_name}-#{version}.tgz" => { data: '' } } }) }
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to eq 'Attachment data is empty.' }
+    end
+
+    it 'obtains a lease to create a new package' do
+      expect_to_obtain_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+
+      subject
+    end
+
+    context 'when the lease is already taken' do
+      before do
+        stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+      end
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to eq 'Could not obtain package lease.' }
+    end
+
+    context 'when many of the same packages are created at the same time', :delete do
+      it 'only creates one package' do
+        expect { create_packages(project, user, params) }.to change { Packages::Package.count }.by(1)
+      end
+    end
+
+    context 'when many packages with different versions are created at the same time', :delete do
+      it 'creates all packages' do
+        expect { create_packages_with_versions(project, user, params) }.to change { Packages::Package.count }.by(5)
+      end
+    end
+
+    def create_packages(project, user, params)
+      with_threads do
+        described_class.new(project, user, params).execute
+      end
+    end
+
+    def create_packages_with_versions(project, user, params)
+      with_threads do |i|
+        # Modify the package's version
+        modified_params = Gitlab::Json.parse(params.to_json
+          .gsub(version, "1.0.#{i}")).with_indifferent_access
+
+        described_class.new(project, user, modified_params).execute
+      end
+    end
+
+    def with_threads(count: 5, &block)
+      return unless block
+
+      # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
+      wait_for_it = true
+
+      threads = Array.new(count) do |i|
+        Thread.new do
+          # A loop to make threads busy until we `join` them
+          true while wait_for_it
+
+          yield(i)
+        end
+      end
+
+      wait_for_it = false
+      threads.each(&:join)
+    end
+  end
+
+  describe '#lease_key' do
+    subject { service.send(:lease_key) }
+
+    it 'returns an unique key' do
+      is_expected.to eq lease_key
     end
   end
 end

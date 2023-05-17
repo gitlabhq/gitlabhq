@@ -1,6 +1,6 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { GlButton, GlLink } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/ci/runner/components/search_tokens/upgrade_status_token_config';
@@ -42,6 +42,7 @@ import { captureException } from '../sentry_utils';
 export default {
   name: 'GroupRunnersApp',
   components: {
+    GlButton,
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
@@ -56,8 +57,12 @@ export default {
     RunnerJobStatusBadge,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
+    newRunnerPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
     registrationToken: {
       type: String,
       required: false,
@@ -150,6 +155,10 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
+    shouldShowCreateRunnerWorkflow() {
+      // create_runner_workflow_for_namespace feature flag
+      return this.glFeatures.createRunnerWorkflowForNamespace;
+    },
   },
   watch: {
     search: {
@@ -207,7 +216,9 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center">
+    <div
+      class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
+    >
       <runner-type-tabs
         ref="runner-type-tabs"
         v-model="search"
@@ -219,15 +230,23 @@ export default {
         nav-class="gl-border-none!"
       />
 
-      <registration-dropdown
-        v-if="registrationToken"
-        class="gl-ml-auto"
-        :registration-token="registrationToken"
-        :type="$options.GROUP_TYPE"
-        right
-      />
+      <div class="gl-w-full gl-md-w-auto gl-display-flex">
+        <gl-button
+          v-if="shouldShowCreateRunnerWorkflow && newRunnerPath"
+          :href="newRunnerPath"
+          variant="confirm"
+        >
+          {{ s__('Runners|New group runner') }}
+        </gl-button>
+        <registration-dropdown
+          v-if="registrationToken"
+          class="gl-ml-3"
+          :registration-token="registrationToken"
+          :type="$options.GROUP_TYPE"
+          right
+        />
+      </div>
     </div>
-
     <div
       class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"
       :class="$options.FILTER_CSS_CLASSES"
@@ -250,8 +269,7 @@ export default {
       v-if="noRunnersFound"
       :registration-token="registrationToken"
       :is-search-filtered="isSearchFiltered"
-      :svg-path="emptyStateSvgPath"
-      :filtered-svg-path="emptyStateFilteredSvgPath"
+      :new-runner-path="newRunnerPath"
     />
     <template v-else>
       <runner-list

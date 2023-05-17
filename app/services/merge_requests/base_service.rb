@@ -5,6 +5,12 @@ module MergeRequests
     extend ::Gitlab::Utils::Override
     include MergeRequests::AssignsMergeParams
 
+    delegate :repository, to: :project
+
+    def initialize(project:, current_user: nil, params: {})
+      super(container: project, current_user: current_user, params: params)
+    end
+
     def create_note(merge_request, state = merge_request.state)
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
@@ -20,6 +26,10 @@ module MergeRequests
     end
 
     def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
+      # NOTE: Due to the async merge request diffs generation, we need to skip this for CreateService and execute it in
+      #   AfterCreateService instead so that the webhook consumers receive the update when diffs are ready.
+      return if merge_request.skip_ensure_merge_request_diff
+
       merge_data = Gitlab::Lazy.new { hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations) }
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
@@ -93,6 +103,10 @@ module MergeRequests
     end
 
     private
+
+    def self.constructor_container_arg(value)
+      { project: value }
+    end
 
     def refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: false)
       create_pipeline_for(merge_request, current_user, async: true, allow_duplicate: allow_duplicate)
@@ -251,12 +265,6 @@ module MergeRequests
       Gitlab::GitLogger.error(data)
 
       merge_request.update(merge_error: message) if save_message_on_model
-    end
-
-    def delete_milestone_total_merge_requests_counter_cache(milestone)
-      return unless milestone
-
-      Milestones::MergeRequestsCountService.new(milestone).delete_cache
     end
 
     def trigger_merge_request_reviewers_updated(merge_request)

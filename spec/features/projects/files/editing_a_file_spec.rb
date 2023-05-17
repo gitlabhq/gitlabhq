@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User wants to edit a file', feature_category: :projects do
-  let(:project) { create(:project, :repository) }
+  include ProjectForksHelper
+  let(:project) { create(:project, :repository, :public) }
   let(:user) { project.first_owner }
   let(:commit_params) do
     {
@@ -17,17 +18,48 @@ RSpec.describe 'Projects > Files > User wants to edit a file', feature_category:
     }
   end
 
-  before do
-    sign_in user
-    visit project_edit_blob_path(project,
-                                           File.join(project.default_branch, '.gitignore'))
+  context 'when the user has write access' do
+    before do
+      sign_in user
+      visit project_edit_blob_path(project,
+                                             File.join(project.default_branch, '.gitignore'))
+    end
+
+    it 'file has been updated since the user opened the edit page' do
+      Files::UpdateService.new(project, user, commit_params).execute
+
+      click_button 'Commit changes'
+
+      expect(page).to have_content 'Someone edited the file the same time you did.'
+    end
   end
 
-  it 'file has been updated since the user opened the edit page' do
-    Files::UpdateService.new(project, user, commit_params).execute
+  context 'when the user does not have write access' do
+    let(:user) { create(:user) }
 
-    click_button 'Commit changes'
+    context 'and the user has a fork of the project' do
+      let(:forked_project) { fork_project(project, user, namespace: user.namespace, repository: true) }
 
-    expect(page).to have_content 'Someone edited the file the same time you did.'
+      before do
+        forked_project
+        sign_in user
+        visit project_edit_blob_path(project,
+                                               File.join(project.default_branch, '.gitignore'))
+      end
+
+      context 'and the forked project is ahead of the upstream project' do
+        before do
+          Files::UpdateService.new(forked_project, user, commit_params).execute
+        end
+
+        it 'renders an error message' do
+          click_button 'Commit changes'
+
+          expect(page).to have_content(
+            %(Error: Can't edit this file. The fork and upstream project have diverged. Edit the file on the fork)
+          )
+        end
+      end
+    end
   end
 end

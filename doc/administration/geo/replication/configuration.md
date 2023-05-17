@@ -205,15 +205,16 @@ keys must be manually replicated to the **secondary** site.
    1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
-   ![Add secondary site](img/adding_a_secondary_v13_3.png)
-   1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
-   `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
+   ![Add secondary site](img/adding_a_secondary_v15_8.png)
+   1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
+   `/etc/gitlab/gitlab.rb`. These values must always match **exactly**, character
    for character.
-   1. Fill in **URL** with the `external_url` in `/etc/gitlab/gitlab.rb`. These
+   1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`. These
    values must always match, but it doesn't matter if one ends with a `/` and
    the other doesn't.
-   1. (Optional) Choose which groups or storage shards should be replicated by the
-   **secondary** site. Leave blank to replicate all. Read more in
+   1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
+   1. Optional. Select which groups or storage shards should be replicated by the
+   **secondary** site. Leave blank to replicate all. For more information, see
    [selective synchronization](#selective-synchronization).
    1. Select **Save changes** to add the **secondary** site.
 1. SSH into **each Rails, and Sidekiq node on your secondary** site and restart the services:
@@ -257,12 +258,12 @@ You can safely skip this step if:
 
 #### Custom or self-signed certificate for inbound connections
 
-If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates), this certificate can either be single-domain certificate or multi-domain.
+If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates), this can be either a single-domain or multi-domain certificate.
 
 Install the correct certificate based on your certificate type:
 
 - **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
-- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` per [these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
+- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
 
 #### Connecting to external services that use custom certificates
 
@@ -303,7 +304,7 @@ If your **primary** site is using a [custom or self-signed certificate for inbou
    sudo gitlab-ctl reconfigure
    ```
 
-### Step 5. Enable Git access over HTTP/HTTPS
+### Step 5. Enable Git access over HTTP/HTTPS and SSH
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. This is enabled by default, but if converting an existing site to Geo it should be checked:
@@ -313,7 +314,10 @@ On the **primary** site:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. Ensure "Enabled Git access protocols" is set to either "Both SSH and HTTP(S)" or "Only HTTP(S)".
+1. If using Git over SSH, then:
+   1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
+   1. Follow [Fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on both primary and secondary sites.
+1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
 
 ### Step 6. Verify proper functioning of the **secondary** site
 
@@ -365,6 +369,9 @@ A subset of projects can be chosen, either by group or by storage shard. The
 former is ideal for replicating data belonging to a subset of users, while the
 latter is more suited to progressively rolling out Geo to a large GitLab
 instance.
+
+NOTE:
+Geo's synchronization logic is outlined in the [documentation](../index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
 
 Selective synchronization:
 

@@ -68,12 +68,6 @@ describe('error tracking settings app', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('section', () => {
     it('renders the form and dropdown', () => {
       expect(wrapper.findComponent(ErrorTrackingForm).exists()).toBe(true);
@@ -92,7 +86,7 @@ describe('error tracking settings app', () => {
       store.state.settingsLoading = true;
 
       await nextTick();
-      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBe('true');
+      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeDefined();
     });
   });
 

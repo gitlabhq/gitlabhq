@@ -9,16 +9,16 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
-          user_group
+          find_authorized_group!
         end
       end
 
       after_validation do
         require_packages_enabled!
 
-        not_found! unless ::Feature.enabled?(:debian_group_packages, user_group)
+        not_found! unless ::Feature.enabled?(:debian_group_packages, project_or_group)
 
-        authorize_read_package!(user_group)
+        authorize_read_package!(project_or_group)
       end
 
       params do
@@ -45,7 +45,6 @@ module API
           tags %w[debian_packages]
         end
 
-        route_setting :authentication, authenticate_non_public: true
         get 'pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do
           present_distribution_package_file!(find_project!(params[:project_id]))
         end

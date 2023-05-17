@@ -1,0 +1,11 @@
+---
+table_name: pm_affected_packages
+classes:
+- PackageMetadata::AffectedPackage
+feature_categories:
+- software_composition_analysis
+- container_scanning
+description: Stores info for packages affected by an advisory.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117326
+milestone: '16.0'
+gitlab_schema: gitlab_pm

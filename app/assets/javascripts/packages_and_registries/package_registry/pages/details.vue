@@ -2,6 +2,7 @@
 import {
   GlBadge,
   GlButton,
+  GlLink,
   GlModal,
   GlModalDirective,
   GlTooltipDirective,
@@ -10,7 +11,7 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -37,6 +38,7 @@ import {
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
   DELETE_PACKAGE_FILES_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_FORWARDING_HELP_PAGE_PATH,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
@@ -44,6 +46,7 @@ import {
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILES_ERROR_MESSAGE,
   DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+  DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   DELETE_MODAL_TITLE,
   DELETE_MODAL_CONTENT,
@@ -54,6 +57,7 @@ import {
 
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
+import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_versions.query.graphql';
 import Tracking from '~/tracking';
 
 export default {
@@ -63,6 +67,7 @@ export default {
     GlButton,
     GlEmptyState,
     GlModal,
+    GlLink,
     GlTab,
     GlTabs,
     GlSprintf,
@@ -123,6 +128,11 @@ export default {
     },
   },
   computed: {
+    deleteModalContent() {
+      return this.isRequestForwardingEnabled
+        ? DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT
+        : this.deletePackageModalContent;
+    },
     projectName() {
       return this.packageEntity.project?.name;
     },
@@ -135,7 +145,6 @@ export default {
     queryVariables() {
       return {
         id: convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.packageId),
-        first: GRAPHQL_PAGE_SIZE,
       };
     },
     packageFiles() {
@@ -146,9 +155,6 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
-    },
-    isVersionsLoading() {
-      return this.isLoading || this.versionsMutationLoading;
     },
     packageFilesLoading() {
       return this.isLoading || this.mutationLoading;
@@ -161,17 +167,23 @@ export default {
         category: packageTypeToTrackCategory(this.packageType),
       };
     },
-    versionPageInfo() {
-      return this.packageEntity?.versions?.pageInfo ?? {};
-    },
     packageDependencies() {
       return this.packageEntity.dependencyLinks?.nodes || [];
+    },
+    packageVersionsCount() {
+      return this.packageEntity.versions?.count ?? 0;
     },
     showDependencies() {
       return this.packageType === PACKAGE_TYPE_NUGET;
     },
     showFiles() {
       return this.packageType !== PACKAGE_TYPE_COMPOSER;
+    },
+    groupSettings() {
+      return this.packageEntity.project?.group?.packageSettings ?? {};
+    },
+    isRequestForwardingEnabled() {
+      return this.groupSettings[`${this.packageType.toLowerCase()}PackageRequestsForwarding`];
     },
     showMetadata() {
       return [
@@ -187,6 +199,17 @@ export default {
         {
           query: getPackageDetails,
           variables: this.queryVariables,
+        },
+      ];
+    },
+    refetchVersionsQueryData() {
+      return [
+        {
+          query: getPackageVersionsQuery,
+          variables: {
+            id: this.queryVariables.id,
+            first: GRAPHQL_PAGE_SIZE,
+          },
         },
       ];
     },
@@ -274,34 +297,6 @@ export default {
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
     },
-    updateQuery(_, { fetchMoreResult }) {
-      return fetchMoreResult;
-    },
-    fetchPreviousVersionsPage() {
-      const variables = {
-        ...this.queryVariables,
-        first: null,
-        last: GRAPHQL_PAGE_SIZE,
-        before: this.versionPageInfo?.startCursor,
-      };
-      this.$apollo.queries.packageEntity.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
-    },
-    fetchNextVersionsPage() {
-      const variables = {
-        ...this.queryVariables,
-        first: GRAPHQL_PAGE_SIZE,
-        last: null,
-        after: this.versionPageInfo?.endCursor,
-      };
-
-      this.$apollo.queries.packageEntity.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
-    },
   },
   i18n: {
     DELETE_MODAL_TITLE,
@@ -311,22 +306,25 @@ export default {
     ),
     otherVersionsTabTitle: s__('PackageRegistry|Other versions'),
   },
+  links: {
+    REQUEST_FORWARDING_HELP_PAGE_PATH,
+  },
   modal: {
     packageDeletePrimaryAction: {
       text: s__('PackageRegistry|Permanently delete'),
-      attributes: [
-        { variant: 'danger' },
-        { category: 'primary' },
-        { 'data-qa-selector': 'delete_modal_button' },
-      ],
+      attributes: {
+        variant: 'danger',
+        category: 'primary',
+        'data-qa-selector': 'delete_modal_button',
+      },
     },
     fileDeletePrimaryAction: {
       text: __('Delete'),
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     filesDeletePrimaryAction: {
       text: s__('PackageRegistry|Permanently delete assets'),
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     cancelAction: {
       text: __('Cancel'),
@@ -403,12 +401,12 @@ export default {
         <template #title>
           <span>{{ $options.i18n.otherVersionsTabTitle }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge" data-testid="other-versions-badge">{{
-            packageEntity.versions.count
+            packageVersionsCount
           }}</gl-badge>
         </template>
 
         <delete-packages
-          :refetch-queries="refetchQueriesData"
+          :refetch-queries="refetchVersionsQueryData"
           show-success-alert
           @start="versionsMutationLoading = true"
           @end="versionsMutationLoading = false"
@@ -416,12 +414,11 @@ export default {
           <template #default="{ deletePackages }">
             <package-versions-list
               :can-destroy="packageEntity.canDestroy"
-              :is-loading="isVersionsLoading"
-              :page-info="versionPageInfo"
-              :versions="packageEntity.versions.nodes"
+              :count="packageVersionsCount"
+              :is-mutation-loading="versionsMutationLoading"
+              :is-request-forwarding-enabled="isRequestForwardingEnabled"
+              :package-id="packageEntity.id"
               @delete="deletePackages"
-              @prev-page="fetchPreviousVersionsPage"
-              @next-page="fetchNextVersionsPage"
             >
               <template #empty-state>
                 <p class="gl-mt-3" data-testid="no-versions-message">
@@ -451,15 +448,23 @@ export default {
           @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
         >
           <template #modal-title>{{ $options.i18n.DELETE_MODAL_TITLE }}</template>
-          <gl-sprintf :message="deletePackageModalContent">
-            <template #version>
-              <strong>{{ packageEntity.version }}</strong>
-            </template>
+          <p>
+            <gl-sprintf :message="deleteModalContent">
+              <template v-if="isRequestForwardingEnabled" #docLink="{ content }">
+                <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{
+                  content
+                }}</gl-link>
+              </template>
 
-            <template #name>
-              <strong>{{ packageEntity.name }}</strong>
-            </template>
-          </gl-sprintf>
+              <template #version>
+                <strong>{{ packageEntity.version }}</strong>
+              </template>
+
+              <template #name>
+                <strong>{{ packageEntity.name }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
         </gl-modal>
       </template>
     </delete-packages>

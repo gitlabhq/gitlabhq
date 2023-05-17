@@ -5,7 +5,7 @@ class TestCaseEntity < Grape::Entity
 
   expose :status, documentation: { type: 'string', example: 'success' }
   expose :name, default: "(No name)",
-                documentation: { type: 'string', example: 'Security Reports can create an auto-remediation MR' }
+    documentation: { type: 'string', example: 'Security Reports can create an auto-remediation MR' }
   expose :classname, documentation: { type: 'string', example: 'vulnerability_management_spec' }
   expose :file, documentation: { type: 'string', example: './spec/test_spec.rb' }
   expose :execution_time, documentation: { type: 'integer', example: 180 }

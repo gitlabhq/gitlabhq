@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestMergeabilityCheckWorker do
+RSpec.describe MergeRequestMergeabilityCheckWorker, feature_category: :code_review_workflow do
   subject { described_class.new }
 
   describe '#perform' do

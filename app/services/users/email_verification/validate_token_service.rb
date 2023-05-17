@@ -8,9 +8,8 @@ module Users
       TOKEN_VALID_FOR_MINUTES = 60
 
       def initialize(attr:, user:, token:)
-        super(attr: attr)
+        super(attr: attr, user: user)
 
-        @user = user
         @token = token
       end
 

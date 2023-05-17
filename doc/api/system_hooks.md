@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -126,6 +126,8 @@ Example response:
 
 ## Test system hook
 
+Executes the system hook with mock data.
+
 ```plaintext
 POST /hooks/:id
 ```
@@ -140,7 +142,7 @@ Example request:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks/1"
 ```
 
-Example response:
+The response is always the mock data:
 
 ```json
 {

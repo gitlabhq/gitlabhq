@@ -5,7 +5,7 @@ require 'spec_helper'
 require 'raven/transports/dummy'
 require 'sentry/transport/dummy_transport'
 
-RSpec.describe Gitlab::ErrorTracking do
+RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
   let(:exception) { RuntimeError.new('boom') }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
   let(:extra) { { issue_url: issue_url, some_other_info: 'info' } }
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::ErrorTracking do
     stub_feature_flags(enable_new_sentry_integration: true)
     stub_sentry_settings
 
-    allow(described_class).to receive(:sentry_configurable?) { true }
+    allow(described_class).to receive(:sentry_configurable?).and_return(true)
 
     allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
     allow(I18n).to receive(:locale).and_return('en')
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::ErrorTracking do
   describe '.track_and_raise_for_dev_exception' do
     context 'when exceptions for dev should be raised' do
       before do
-        expect(described_class).to receive(:should_raise_for_dev?).and_return(true)
+        allow(described_class).to receive(:should_raise_for_dev?).and_return(true)
       end
 
       it 'raises the exception' do
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::ErrorTracking do
 
     context 'when exceptions for dev should not be raised' do
       before do
-        expect(described_class).to receive(:should_raise_for_dev?).and_return(false)
+        allow(described_class).to receive(:should_raise_for_dev?).and_return(false)
       end
 
       it 'logs the exception with all attributes passed' do
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
-    context 'the exception implements :sentry_extra_data' do
+    context 'when the exception implements :sentry_extra_data' do
       let(:extra_info) { { event: 'explosion', size: :massive } }
 
       before do
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
-    context 'the exception implements :sentry_extra_data, which returns nil' do
+    context 'when the exception implements :sentry_extra_data, which returns nil' do
       let(:extra) { { issue_url: issue_url } }
 
       before do
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::ErrorTracking do
     end
   end
 
-  context 'event processors' do
+  describe 'event processors' do
     subject(:track_exception) { described_class.track_exception(exception, extra) }
 
     before do
@@ -269,7 +269,16 @@ RSpec.describe Gitlab::ErrorTracking do
       allow(Gitlab::ErrorTracking::Logger).to receive(:error)
     end
 
-    context 'custom GitLab context when using Raven.capture_exception directly' do
+    # This is a workaround for restoring Raven's user context below.
+    # Raven.user_context(&block) does not restore the user context correctly.
+    around do |example|
+      previous_user_context = Raven.context.user.dup
+      example.run
+    ensure
+      Raven.context.user = previous_user_context
+    end
+
+    context 'with custom GitLab context when using Raven.capture_exception directly' do
       subject(:track_exception) { Raven.capture_exception(exception) }
 
       it 'merges a default set of tags into the existing tags' do
@@ -289,7 +298,7 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
-    context 'custom GitLab context when using Sentry.capture_exception directly' do
+    context 'with custom GitLab context when using Sentry.capture_exception directly' do
       subject(:track_exception) { Sentry.capture_exception(exception) }
 
       it 'merges a default set of tags into the existing tags' do
@@ -401,15 +410,17 @@ RSpec.describe Gitlab::ErrorTracking do
       end
 
       ['Gitlab::SidekiqMiddleware::RetryError', 'SubclassRetryError'].each do |ex|
-        let(:exception) { ex.constantize.new }
+        context "with #{ex} exception" do
+          let(:exception) { ex.constantize.new }
 
-        it "does not report #{ex} exception to Sentry" do
-          expect(Gitlab::ErrorTracking::Logger).to receive(:error)
+          it "does not report exception to Sentry" do
+            expect(Gitlab::ErrorTracking::Logger).to receive(:error)
 
-          track_exception
+            track_exception
 
-          expect(Raven.client.transport.events).to eq([])
-          expect(Sentry.get_current_client.transport.events).to eq([])
+            expect(Raven.client.transport.events).to eq([])
+            expect(Sentry.get_current_client.transport.events).to eq([])
+          end
         end
       end
     end
@@ -491,7 +502,7 @@ RSpec.describe Gitlab::ErrorTracking do
     end
   end
 
-  context 'Sentry performance monitoring' do
+  describe 'Sentry performance monitoring' do
     context 'when ENABLE_SENTRY_PERFORMANCE_MONITORING env is disabled' do
       before do
         stub_env('ENABLE_SENTRY_PERFORMANCE_MONITORING', false)

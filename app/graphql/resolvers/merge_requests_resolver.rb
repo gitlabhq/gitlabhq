@@ -55,6 +55,13 @@ module Resolvers
              required: false,
              description: 'Limit result to draft merge requests.'
 
+    argument :approved, GraphQL::Types::Boolean,
+             required: false,
+             description: <<~DESC
+               Limit results to approved merge requests.
+               Available only when the feature flag `mr_approved_filter` is enabled.
+             DESC
+
     argument :created_after, Types::TimeType,
              required: false,
              description: 'Merge requests created after this timestamp.'

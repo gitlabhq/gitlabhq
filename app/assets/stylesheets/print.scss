@@ -25,6 +25,7 @@ nav,
 nav.navbar-collapse,
 nav.navbar-collapse.collapse,
 .nav-sidebar,
+.super-sidebar,
 .profiler-results,
 .tree-ref-holder,
 .tree-holder .breadcrumb,
@@ -62,9 +63,5 @@ a[href]::after {
 }
 
 .with-performance-bar .layout-page {
-  margin-top: 0;
-}
-
-.content-wrapper-margin {
-  margin-top: 0;
+  padding-top: 0;
 }

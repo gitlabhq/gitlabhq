@@ -66,14 +66,18 @@ module Gitlab
             plan_limits = Plan.default.actual_limits
 
             if plan_limits.ci_registered_group_runners < @runner_count
-              logger.error('The plan limits for group runners is set to ' \
+              warn 'The plan limits for group runners is set to ' \
                 "#{plan_limits.ci_registered_group_runners} runners. " \
-                'You should raise the plan limits to avoid errors during runner creation')
+                "You should raise the plan limits to avoid errors during runner creation by running " \
+                "the following command in the Rails console:\n" \
+                "Plan.default.actual_limits.update!(ci_registered_group_runners: #{@runner_count})"
               return false
             elsif plan_limits.ci_registered_project_runners < @runner_count
-              logger.error('The plan limits for project runners is set to ' \
+              warn 'The plan limits for project runners is set to ' \
                 "#{plan_limits.ci_registered_project_runners} runners. " \
-                'You should raise the plan limits to avoid errors during runner creation')
+                "You should raise the plan limits to avoid errors during runner creation by running " \
+                "the following command in the Rails console:\n" \
+                "Plan.default.actual_limits.update!(ci_registered_project_runners: #{@runner_count})"
               return false
             end
 
@@ -205,7 +209,7 @@ module Gitlab
                               scope.runners_token
                             end
 
-            response = ::Ci::Runners::RegisterRunnerService.new.execute(runners_token, name: name, **args)
+            response = ::Ci::Runners::RegisterRunnerService.new(runners_token, name: name, **args).execute
             runner = response.payload[:runner]
 
             ::Ci::Runners::ProcessRunnerVersionUpdateWorker.new.perform(args[:version])

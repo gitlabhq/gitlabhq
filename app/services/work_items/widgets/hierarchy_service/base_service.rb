@@ -63,9 +63,7 @@ module WorkItems
           work_item.reload_work_item_parent
           work_item.work_item_children.reset
 
-          return result unless result[:status] == :error
-
-          raise WidgetError, result[:message]
+          super
         end
       end
     end

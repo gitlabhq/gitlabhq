@@ -1,0 +1,23 @@
+<settings>
+  <servers>
+    <server>
+      <id>central-proxy</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Private-Token</name>
+            <value><%= personal_access_token %></value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <id>central-proxy</id>
+      <name>GitLab proxy of central repo</name>
+      <url><%= gitlab_address_with_port %>/api/v4/groups/<%= imported_project.group.id %>/-/packages/maven</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>

@@ -133,7 +133,11 @@ module Projects
           ],
 
           grafana_integration_attributes: [:token, :grafana_url, :enabled]
-        }
+        }.tap do |potential_params|
+          if Feature.enabled?(:remove_monitor_metrics)
+            potential_params.except!(:metrics_setting_attributes, :grafana_integration_attributes)
+          end
+        end
       end
     end
   end

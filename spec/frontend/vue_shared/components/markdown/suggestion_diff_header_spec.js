@@ -25,17 +25,13 @@ describe('Suggestion Diff component', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
 
   beforeEach(() => {
     window.gon.current_user_id = 1;
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   const findApplyButton = () => wrapper.findComponent(ApplySuggestion);

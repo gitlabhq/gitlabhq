@@ -30,11 +30,7 @@ module Types
       field :merge_trains_enabled, GraphQL::Types::Boolean, null: true,
                                                             description: 'Whether merge trains are enabled.',
                                                             method: :merge_trains_enabled?
-      field :opt_in_jwt,
-            GraphQL::Types::Boolean,
-            null: true,
-            description: 'When disabled, the JSON Web Token is always available in all jobs in the pipeline.',
-            method: :opt_in_jwt?
+
       field :project, Types::ProjectType, null: true,
                                           description: 'Project the CI/CD settings belong to.'
     end

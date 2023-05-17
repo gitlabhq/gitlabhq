@@ -1,5 +1,7 @@
 - page_title    _("Search")
 - header_title  _("Search"), search_path
 - add_page_specific_style 'page_bundles/search'
+- if show_super_sidebar?
+  - @force_desktop_expanded_sidebar = true
 
 = render template: "layouts/application"

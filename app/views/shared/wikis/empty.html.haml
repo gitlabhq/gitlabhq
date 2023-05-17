@@ -2,4 +2,12 @@
 - @right_sidebar = false
 - add_page_specific_style 'page_bundles/wiki'
 
-= render 'shared/empty_states/wikis'
+- if @error.present?
+  = render Pajamas::AlertComponent.new(alert_options: { id: 'error_explanation', class: 'gl-mb-3'},
+    dismissible: false,
+    variant: :danger) do |c|
+    = c.body do
+      %ul.gl-pl-4
+        = @error
+
+= render 'shared/empty_states/wikis', hide_create: @error.present?

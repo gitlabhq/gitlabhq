@@ -18,6 +18,10 @@ RSpec.describe FinalizeBackfillEnvironmentTierMigration, :migration, feature_cat
     end
 
     context 'when migration is missing' do
+      before do
+        batched_migrations.where(job_class_name: migration).delete_all
+      end
+
       it 'warns migration not found' do
         expect(Gitlab::AppLogger)
           .to receive(:warn).with(/Could not find batched background migration for the given configuration:/)
@@ -29,7 +33,7 @@ RSpec.describe FinalizeBackfillEnvironmentTierMigration, :migration, feature_cat
     context 'with migration present' do
       let!(:group_member_namespace_id_backfill) do
         batched_migrations.create!(
-          job_class_name: 'BackfillEnvironmentTiers',
+          job_class_name: migration,
           table_name: :environments,
           column_name: :id,
           job_arguments: [],

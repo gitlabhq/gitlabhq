@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# Generic helper functions for archives/packages
+source scripts/packages/helpers.sh
+
 export CURL_TOKEN_HEADER="${CURL_TOKEN_HEADER:-"JOB-TOKEN"}"
 
 export GITLAB_COM_CANONICAL_PROJECT_ID="278964" # https://gitlab.com/gitlab-org/gitlab
@@ -51,56 +54,9 @@ export GITLAB_ASSETS_HASH="${GITLAB_ASSETS_HASH:-"NO_HASH"}"
 export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}-${GITLAB_ASSETS_PACKAGE_VERSION}.tar.gz"
 export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}/${GITLAB_ASSETS_PACKAGE}"
 
-# Generic helper functions
-function archive_doesnt_exist() {
-  local package_url="${1}"
-
-  status=$(curl -I --silent --retry 3 --output /dev/null -w "%{http_code}" "${package_url}")
-
-  [[ "${status}" != "200" ]]
-}
-
-function create_package() {
-  local archive_filename="${1}"
-  local paths_to_archive="${2}"
-  local tar_working_folder="${3:-.}"
-
-  echoinfo "Running 'tar -czvf ${archive_filename} -C ${tar_working_folder} ${paths_to_archive}'"
-  tar -czf ${archive_filename} -C ${tar_working_folder} ${paths_to_archive}
-  du -h ${archive_filename}
-}
-
-function upload_package() {
-  local archive_filename="${1}"
-  local package_url="${2}"
-  local token_header="${CURL_TOKEN_HEADER}"
-  local token="${CI_JOB_TOKEN}"
-
-  if [[ "${UPLOAD_PACKAGE_FLAG}" = "false" ]]; then
-    echoerr "The archive ${archive_filename} isn't supposed to be uploaded for this instance (${CI_SERVER_HOST}) & project (${CI_PROJECT_PATH})!"
-    exit 1
-  fi
-
-  echoinfo "Uploading ${archive_filename} to ${package_url} ..."
-  curl --fail --silent --retry 3 --header "${token_header}: ${token}" --upload-file "${archive_filename}" "${package_url}"
-}
-
-function read_curl_package() {
-  local package_url="${1}"
-
-  echoinfo "Downloading from ${package_url} ..."
-
-  curl --fail --silent --retry 3 "${package_url}"
-}
-
-function extract_package() {
-  local tar_working_folder="${1:-.}"
-  mkdir -p "${tar_working_folder}"
-
-  echoinfo "Extracting archive to ${tar_working_folder}"
-
-  tar -xz -C ${tar_working_folder} < /dev/stdin
-}
+# Fixtures constants
+export FIXTURES_PATH="tmp/tests/frontend/**/*"
+export REUSE_FRONTEND_FIXTURES_ENABLED="${REUSE_FRONTEND_FIXTURES_ENABLED:-"true"}"
 
 # Workhorse functions
 function gitlab_workhorse_archive_doesnt_exist() {
@@ -146,4 +102,99 @@ function create_gitlab_assets_package() {
 
 function upload_gitlab_assets_package() {
   upload_package "${GITLAB_ASSETS_PACKAGE}" "${GITLAB_ASSETS_PACKAGE_URL}"
+}
+
+# Fixtures functions
+function check_fixtures_download() {
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
+    return 1
+  fi
+
+  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
+    return 1
+  fi
+
+  if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
+    return 1
+  else
+    if tooling/bin/find_only_allowed_files_changes && ! fixtures_archive_doesnt_exist; then
+      return 0
+    else
+      return 1
+    fi
+  fi
+}
+
+function check_fixtures_reuse() {
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
+    rm -rf "tmp/tests/frontend";
+    return 1
+  fi
+
+  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
+    rm -rf "tmp/tests/frontend";
+    return 1
+  fi
+
+  if [[ -d "tmp/tests/frontend" ]]; then
+    # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
+    # jobs don't download the exact same artifact multiple times.
+    if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX:-}" -ne 1 ]]; then
+      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX:-}. Dependent jobs will use the artifacts from the first parallelized job.";
+      rm -rf "tmp/tests/frontend";
+    fi
+    return 0
+  else
+    echoinfo "INFO: 'tmp/tests/frontend' does not exist.";
+    return 1
+  fi
+}
+
+function create_fixtures_package() {
+  create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
+}
+
+function download_and_extract_fixtures() {
+  read_curl_package "${FIXTURES_PACKAGE_URL}" | extract_package
+}
+
+function export_fixtures_package_variables() {
+  export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
+  export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
+}
+
+function export_fixtures_sha_for_download() {
+  export FIXTURES_SHA="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$CI_COMMIT_SHA}}"
+  export_fixtures_package_variables
+}
+
+function export_fixtures_sha_for_upload() {
+  export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+  export_fixtures_package_variables
+}
+
+function fixtures_archive_doesnt_exist() {
+  echoinfo "Checking if the package is available at ${FIXTURES_PACKAGE_URL} ..."
+
+  archive_doesnt_exist "${FIXTURES_PACKAGE_URL}"
+}
+
+function fixtures_directory_exists() {
+  local fixtures_directory="tmp/tests/frontend/"
+
+  if [[ -d "${fixtures_directory}" ]]; then
+    echo "${fixtures_directory} directory exists"
+    return 0
+  else
+    echo "${fixtures_directory} directory does not exist"
+    return 1
+  fi
+}
+
+function upload_fixtures_package() {
+  upload_package "${FIXTURES_PACKAGE}" "${FIXTURES_PACKAGE_URL}"
 }

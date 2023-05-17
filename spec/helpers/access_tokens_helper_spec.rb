@@ -37,7 +37,7 @@ RSpec.describe AccessTokensHelper do
         disable_feed_token: false,
         static_objects_external_storage_enabled?: true
       )
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
       allow(helper).to receive_messages(
         current_user: user,
         reset_feed_token_profile_path: feed_token_reset_path,

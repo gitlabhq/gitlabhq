@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens, feature_category: :authentication_and_authorization do
+RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category: :system_access do
   let_it_be(:path) { '/personal_access_tokens' }
 
   describe 'GET /personal_access_tokens' do
@@ -30,9 +30,13 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :authentication_and_
       end
     end
 
+    # Since all user types pass the same test successfully, we can avoid using
+    # shared examples and test each user type separately for its expected
+    # returned value.
+
     context 'logged in as an Administrator' do
       let_it_be(:current_user) { create(:admin) }
-      let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
+      let_it_be(:current_users_token) { create(:personal_access_token, :admin_mode, user: current_user) }
 
       it 'returns all PATs by default' do
         get api(path, current_user)
@@ -46,7 +50,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :authentication_and_
         let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token.user) }
 
         it 'returns only PATs belonging to that user' do
-          get api(path, current_user), params: { user_id: token.user.id }
+          get api(path, current_user, admin_mode: true), params: { user_id: token.user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.count).to eq(2)
@@ -440,6 +444,68 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :authentication_and_
         get api(user_token_path, current_user, personal_access_token: user_read_only_token)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe 'POST /personal_access_tokens/:id/rotate' do
+    let_it_be(:token) { create(:personal_access_token) }
+
+    let(:path) { "/personal_access_tokens/#{token.id}/rotate" }
+
+    it "rotates user's own token", :freeze_time do
+      post api(path, token.user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['token']).not_to eq(token.token)
+      expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+    end
+
+    context 'without permission' do
+      it 'returns an error message' do
+        another_user = create(:user)
+        post api(path, another_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when service raises an error' do
+      let(:error_message) { 'boom!' }
+
+      before do
+        allow_next_instance_of(PersonalAccessTokens::RotateService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+        end
+      end
+
+      it 'returns the same error message' do
+        post api(path, token.user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq("400 Bad request - #{error_message}")
+      end
+    end
+
+    context 'when token does not exist' do
+      let(:invalid_path) { "/personal_access_tokens/#{non_existing_record_id}/rotate" }
+
+      context 'for non-admin user' do
+        it 'returns unauthorized' do
+          user = create(:user)
+          post api(invalid_path, user)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'for admin user', :enable_admin_mode do
+        it 'returns not found' do
+          admin = create(:admin)
+          post api(invalid_path, admin)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

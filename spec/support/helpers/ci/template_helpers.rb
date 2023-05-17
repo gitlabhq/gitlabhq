@@ -6,6 +6,10 @@ module Ci
       'registry.gitlab.com'
     end
 
+    def auto_build_image_repository
+      "gitlab-org/cluster-integration/auto-build-image"
+    end
+
     def public_image_exist?(registry, repository, image)
       public_image_manifest(registry, repository, image).present?
     end

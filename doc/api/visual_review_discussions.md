@@ -1,16 +1,21 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Visual Review discussions API **(PREMIUM)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+# Visual Review discussions API (deprecated) **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18710) in GitLab 12.5.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387751) in GitLab 15.8
+and is planned for removal in 17.0. This change is a breaking change.
+
 Visual Review discussions are notes on merge requests sent as
-feedback from [Visual Reviews](../ci/review_apps/index.md#visual-reviews).
+feedback from [Visual Reviews](../ci/review_apps/index.md#visual-reviews-deprecated).
 
 ## Create new merge request thread
 
@@ -45,3 +50,4 @@ Parameters:
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/visual_review_discussions?body=comment"
 ```
+<!--- end_remove -->

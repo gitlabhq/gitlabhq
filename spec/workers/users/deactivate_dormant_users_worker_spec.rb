@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DeactivateDormantUsersWorker do
+RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '#perform' do
@@ -12,8 +12,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
     subject(:worker) { described_class.new }
 
-    it 'does not run for GitLab.com' do
-      expect(Gitlab).to receive(:com?).and_return(true)
+    it 'does not run for SaaS', :saas do
       # Now makes a call to current settings to determine period of dormancy
 
       worker.perform
@@ -36,6 +35,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
       where(:user_type, :expected_state) do
         :human             | 'deactivated'
+        :human_deprecated  | 'deactivated'
         :support_bot       | 'active'
         :alert_bot         | 'active'
         :visual_review_bot | 'active'
@@ -58,11 +58,13 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
       it 'does not deactivate non-active users' do
         human_user = create(:user, user_type: :human, state: :blocked, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
+        human_user2 = create(:user, user_type: :human_deprecated, state: :blocked, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
         service_user = create(:user, user_type: :service_user, state: :blocked, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
 
         worker.perform
 
         expect(human_user.reload.state).to eq('blocked')
+        expect(human_user2.reload.state).to eq('blocked')
         expect(service_user.reload.state).to eq('blocked')
       end
 

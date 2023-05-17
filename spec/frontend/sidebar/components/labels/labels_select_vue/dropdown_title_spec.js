@@ -31,10 +31,6 @@ describe('DropdownTitle', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('renders component container element with string "Labels"', () => {
       expect(wrapper.text()).toContain('Labels');

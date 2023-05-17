@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ExecuteApprovalHooksWorker do
+RSpec.describe MergeRequests::ExecuteApprovalHooksWorker, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

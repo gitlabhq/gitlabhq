@@ -4,7 +4,7 @@ module Pages
   class DeploymentUploader < GitlabUploader
     include ObjectStorage::Concern
 
-    storage_options Gitlab.config.pages
+    storage_location :pages
 
     alias_method :upload, :model
 

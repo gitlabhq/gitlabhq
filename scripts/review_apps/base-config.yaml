@@ -1,9 +1,18 @@
 safe-to-evict: &safe-to-evict
   cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
+# We disabled the upgrade checks, as they were giving too many false positives
+#
+# See https://gitlab.com/gitlab-org/quality/engineering-productivity/review-apps-broken-incidents/-/issues/33
+upgradeCheck:
+  enabled: false
+
 global:
   appConfig:
     enableUsagePing: false
+  extraEnv:
+    GITLAB_LICENSE_MODE: test
+    CUSTOMER_PORTAL_URL: https://customers.staging.gitlab.com
   image:
     pullPolicy: Always
   ingress:
@@ -23,10 +32,17 @@ gitlab:
   gitaly:
     resources:
       requests:
-        cpu: 1200m
+        # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22gitaly%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+        #
+        # Data over the 3 months (2023-02-24 - 2023-04-19)
+        #
+        # The average seems to be around 0.100vCPU (setting request accordingly). Note that this is a guesstimate based on the chart.
+        #
+        # The maximum CPU usage was 0.196vCPU (setting limit accordingly)
+        cpu: 150m
         memory: 600Mi
       limits:
-        cpu: 1800m
+        cpu: 300m
         memory: 1000Mi
     persistence:
       size: 10Gi
@@ -42,10 +58,17 @@ gitlab:
   gitlab-shell:
     resources:
       requests:
-        cpu: 500m
+        # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22gitlab-shell%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+        #
+        # Data over the 3 months (2023-02-24 - 2023-04-19)
+        #
+        # The average seems to be around 0.01vCPU (setting request accordingly). Note that this is a guesstimate based on the chart.
+        #
+        # The maximum CPU usage was 0.127vCPU (setting limit accordingly)
+        cpu: 10m
         memory: 100Mi
       limits:
-        cpu: 750m
+        cpu: 150m
         memory: 150Mi
     minReplicas: 1
     maxReplicas: 1
@@ -69,7 +92,7 @@ gitlab:
         cpu: 400m
         memory: 920Mi
       limits:
-        cpu: 800m
+        cpu: 1000m
         memory: 1380Mi
 
   sidekiq:
@@ -87,7 +110,14 @@ gitlab:
   toolbox:
     resources:
       requests:
-        cpu: 300m
+        # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22toolbox%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+        #
+        # Data over the 3 months (2023-02-24 - 2023-04-19)
+        #
+        # The average seems to be around 0.100vCPU. Note that this is a guesstimate based on the chart.
+        #
+        # The maximum CPU usage was 0.250vCPU (setting limit accordingly)
+        cpu: 150m
         memory: 1927Mi
       limits:
         cpu: 450m
@@ -124,9 +154,17 @@ gitlab:
 gitlab-runner:
   resources:
     requests:
-      cpu: 675m
+      # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3Dmonitoring.regex.full_match(%5C%22.*gitlab-runner$%5C%22)%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+      #
+      # Data over the 3 months (2023-02-24 - 2023-04-19)
+      #
+      # The average seems to be around 0.01vCPU. Note that this is a guesstimate based on the chart.
+      #
+      # The maximum CPU usage was 0.015vCPU (setting limit accordingly)
+      cpu: 10m
       memory: 100Mi
     limits:
+      # In case somebody would like to use runners in review-apps, we set the limit higher than the requests
       cpu: 1015m
       memory: 150Mi
   nodeSelector:
@@ -153,10 +191,17 @@ nginx-ingress:
       ssl-ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
     resources:
       requests:
-        cpu: 300m
+        # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22controller%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+        #
+        # Data over the 3 months (2023-02-24 - 2023-04-19)
+        #
+        # The average seems to be around 0.02vCPU. Note that this is a guesstimate based on the chart.
+        #
+        # The maximum CPU usage was 0.07vCPU (setting limit accordingly)
+        cpu: 10m
         memory: 450Mi
       limits:
-        cpu: 600m
+        cpu: 20m
         memory: 675Mi
     service:
       enableHttp: false
@@ -182,11 +227,18 @@ postgresql:
     enabled: false
   resources:
     requests:
-      cpu: 600m
+      # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3Dmonitoring.regex.full_match(%5C%22.*-postgresql$%5C%22)%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+      #
+      # Data over the 3 months (2023-02-24 - 2023-04-19)
+      #
+      # The average seems to be around 0.150vCPU. Note that this is a guesstimate based on the chart.
+      #
+      # The maximum CPU usage was 0.420vCPU (setting limit accordingly)
+      cpu: 150m
       memory: 1000Mi
     limits:
-      cpu: 1300m
-      memory: 1600Mi
+      cpu: 1000m
+      memory: 1800Mi
   master:
     nodeSelector:
       preemptible: "false"
@@ -201,10 +253,17 @@ redis:
     enabled: false
   resources:
     requests:
-      cpu: 100m
+      # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22redis%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+      #
+      # Data over the 3 months (2023-02-24 - 2023-04-19)
+      #
+      # The average seems to be around 0.03vCPU. Note that this is a guesstimate based on the chart.
+      #
+      # The maximum CPU usage was 0.500vCPU (setting limit accordingly)
+      cpu: 10m
       memory: 60Mi
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 130Mi
   master:
     nodeSelector:
@@ -217,11 +276,18 @@ registry:
     minReplicas: 1
     maxReplicas: 1
   resources:
+    # Based on https://console.cloud.google.com/monitoring/metrics-explorer;endTime=2023-04-19T08:37:33.183Z;startTime=2023-02-05T09:37:33.182Z?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_MEAN%22,%22groupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22registry%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_MEAN%22,%22secondaryGroupByFields%22:%5B%22resource.label.%5C%22namespace_name%5C%22%22%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22COLOR%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
+    #
+    # Data over the 3 months (2023-02-24 - 2023-04-19)
+    #
+    # The average seems to be around 0.0005vCPU. Note that this is a guesstimate based on the chart.
+    #
+    # The maximum CPU usage was 0.0.003vCPU (setting limit accordingly)
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 30Mi
     limits:
-      cpu: 200m
+      cpu: 50m
       memory: 45Mi
   nodeSelector:
     preemptible: "true"

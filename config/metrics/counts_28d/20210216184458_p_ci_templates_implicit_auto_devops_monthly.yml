@@ -1,11 +1,10 @@
 ---
-data_category: optional
+data_category: operational
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_monthly
 description: Count of pipelines with implicit Auto DevOps runs
 product_section: ops
 product_stage: configure
 product_group: configure
-product_category: infrastructure_as_code
 value_type: number
 status: active
 time_frame: 28d

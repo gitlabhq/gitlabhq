@@ -3,8 +3,8 @@ import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
-import { formatSearchResultCount } from '../../store/utils';
 import { slugifyWithUnderscore } from '../../../lib/utils/text_utility';
 
 export default {
@@ -22,15 +22,17 @@ export default {
     ...mapState(['navigation', 'urlQuery']),
   },
   created() {
-    this.fetchSidebarCount();
+    if (this.urlQuery?.search) {
+      this.fetchSidebarCount();
+    }
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),
-    showFormatedCount(count) {
-      return formatSearchResultCount(count);
+    showFormatedCount(countString) {
+      return formatSearchResultCount(countString);
     },
-    isCountOverLimit(count) {
-      return count.includes('+');
+    isCountOverLimit(countString) {
+      return Boolean(addCountOverLimit(countString));
     },
     handleClick(scope) {
       this.track('click_menu_item', { label: `vertical_navigation_${scope}` });
@@ -43,9 +45,6 @@ export default {
         ...this.$options.NAV_LINK_COUNT_DEFAULT_CLASSES,
         isHighlighted ? 'gl-text-gray-900' : 'gl-text-gray-500',
       ];
-    },
-    isActive(scope, index) {
-      return this.urlQuery.scope ? this.urlQuery.scope === scope : index === 0;
     },
     qaSelectorValue(item) {
       return `${slugifyWithUnderscore(item.label)}_tab`;
@@ -60,16 +59,17 @@ export default {
   <nav data-testid="search-filter">
     <gl-nav vertical pills>
       <gl-nav-item
-        v-for="(item, scope, index) in navigation"
+        v-for="(item, scope) in navigation"
         :key="scope"
-        :link-classes="linkClasses(isActive(scope, index))"
+        :link-classes="linkClasses(item.active)"
         class="gl-mb-1"
         :href="item.link"
-        :active="isActive(scope, index)"
+        :active="item.active"
         :data-qa-selector="qaSelectorValue(item)"
+        :data-testid="qaSelectorValue(item)"
         @click="handleClick(scope)"
-        ><span>{{ item.label }}</span
-        ><span v-if="item.count" :class="countClasses(isActive(scope, index))">
+        ><span data-testid="label">{{ item.label }}</span
+        ><span v-if="item.count" data-testid="count" :class="countClasses(item.active)">
           {{ showFormatedCount(item.count)
           }}<gl-icon
             v-if="isCountOverLimit(item.count)"

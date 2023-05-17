@@ -90,6 +90,12 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
 export const getDiffFileByHash = (state) => (fileHash) =>
   state.diffFiles.find((file) => file.file_hash === fileHash);
 
+export function isTreePathLoaded(state) {
+  return (path) => {
+    return Boolean(state.treeEntries[path]?.diffLoaded);
+  };
+}
+
 export const flatBlobsList = (state) =>
   Object.values(state.treeEntries).filter((f) => f.type === 'blob');
 
@@ -148,7 +154,7 @@ export const fileLineCodequality = () => () => {
 export const currentDiffIndex = (state) =>
   Math.max(
     0,
-    state.diffFiles.findIndex((diff) => diff.file_hash === state.currentDiffFileId),
+    flatBlobsList(state).findIndex((diff) => diff.fileHash === state.currentDiffFileId),
   );
 
 export const diffLines = (state) => (file) => {

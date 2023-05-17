@@ -20,9 +20,7 @@ SSH uses two keys, a public key and a private key.
 - The public key can be distributed.
 - The private key should be protected.
 
-When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.
-
-You cannot expose data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
+It is not possible to reveal confidential data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
 
 You can use your private key to [sign commits](project/repository/ssh_signed_commits/index.md),
 which makes your use of GitLab and your data even more secure.
@@ -208,7 +206,7 @@ the following command:
 ssh-keygen -o -t rsa -b 4096 -C "<comment>"
 ```
 
-## Generate an SSH key pair for a FIDO/U2F hardware security key
+## Generate an SSH key pair for a FIDO2 hardware security key
 
 To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
@@ -280,7 +278,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.
@@ -291,7 +289,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Optional. Update **Expiration date** to modify the default expiration date.
 1. Select **Add key**.
 
-For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started).
+For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started/).
 
 ## Add an SSH key to your GitLab account
 
@@ -325,7 +323,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
@@ -398,7 +396,7 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 
 Your existing SSH keys are listed at the bottom of the page. The information includes:
@@ -548,7 +546,7 @@ If you receive this error, restart your terminal and try the command again.
 
 ### `Key enrollment failed: invalid format` error
 
-You may receive the following error when [generating an SSH key pair for a FIDO/U2F hardware security key](#generate-an-ssh-key-pair-for-a-fidou2f-hardware-security-key):
+You may receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
 
 ```shell
 Key enrollment failed: invalid format
@@ -557,7 +555,7 @@ Key enrollment failed: invalid format
 You can troubleshoot this by trying the following:
 
 - Run the `ssh-keygen` command using `sudo`.
-- Verify your IDO/U2F hardware security key supports
+- Verify your FIDO2 hardware security key supports
   the key type provided.
 - Verify the version of OpenSSH is 8.2 or greater by
   running `ssh -V`.

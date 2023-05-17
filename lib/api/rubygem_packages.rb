@@ -138,7 +138,7 @@ module API
             authorize_upload!(project)
             bad_request!('File is too large') if project.actual_limits.exceeded?(:rubygems_max_file_size, params[:file].size)
 
-            track_package_event('push_package', :rubygems, user: current_user, project: project, namespace: project.namespace)
+            track_package_event('push_package', :rubygems, project: project, namespace: project.namespace)
 
             package_file = nil
 

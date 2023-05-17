@@ -9,7 +9,6 @@ class RegistrationsController < Devise::RegistrationsController
   include BizibleCSP
   include GoogleAnalyticsCSP
   include PreferredLanguageSwitcher
-  include RegistrationsTracking
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
   layout 'devise'
@@ -25,10 +24,12 @@ class RegistrationsController < Devise::RegistrationsController
 
   before_action only: [:new] do
     push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
-    push_frontend_feature_flag(:trial_email_validation, type: :development)
   end
 
-  feature_category :authentication_and_authorization
+  feature_category :user_management
+
+  helper_method :arkose_labs_enabled?
+  helper_method :registration_path_params
 
   def new
     @resource = build_resource
@@ -39,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
     set_resource_fields
 
     super do |new_user|
+      record_arkose_data
       accept_pending_invitations if new_user.persisted?
 
       persist_accepted_terms_if_required(new_user)
@@ -51,8 +53,6 @@ class RegistrationsController < Devise::RegistrationsController
       end
 
       after_request_hook(new_user)
-
-      yield new_user if block_given?
     end
 
     # Devise sets a flash message on both successful & failed signups,
@@ -128,13 +128,18 @@ class RegistrationsController < Devise::RegistrationsController
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
     return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
-    return dashboard_projects_path if Feature.enabled?(:soft_email_confirmation)
+    return dashboard_projects_path if Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
-    # when email confirmation is enabled, path to redirect is saved
+    # when email_confirmation_setting is set to `hard`, path to redirect is saved
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, after_sign_up_path)
 
-    return identity_verification_redirect_path if custom_confirmation_enabled?
+    if identity_verification_enabled?
+      session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page
+      User.sticking.stick_or_unstick_request(request.env, :user, resource.id)
+
+      return identity_verification_redirect_path
+    end
 
     Gitlab::Tracking.event(self.class.name, 'render', user: resource)
     users_almost_there_path(email: resource.email)
@@ -143,7 +148,12 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def after_sign_up_path
-    users_sign_up_welcome_path(glm_tracking_params)
+    users_sign_up_welcome_path
+  end
+
+  # overridden in EE
+  def registration_path_params
+    {}
   end
 
   def track_creation(user:)
@@ -183,6 +193,7 @@ class RegistrationsController < Devise::RegistrationsController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     add_gon_variables
+    set_minimum_password_length
     render action: 'new'
   end
 
@@ -221,13 +232,17 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email?,
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
                                                               preferred_language: preferred_language }))
                     .execute
   end
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def skip_confirmation?
+    registered_with_invite_email?
   end
 
   def registered_with_invite_email?
@@ -282,16 +297,25 @@ class RegistrationsController < Devise::RegistrationsController
     current_user
   end
 
-  def identity_verification_redirect_path
+  def record_arkose_data
     # overridden by EE module
   end
 
-  def custom_confirmation_enabled?
+  def identity_verification_enabled?
+    # overridden by EE module
+    false
+  end
+
+  def identity_verification_redirect_path
     # overridden by EE module
   end
 
   def send_custom_confirmation_instructions
     # overridden by EE module
+  end
+
+  def arkose_labs_enabled?
+    false
   end
 end
 

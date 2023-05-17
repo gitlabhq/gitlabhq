@@ -193,7 +193,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
   end
 
   context 'with an external issue tracker' do
-    let(:project) { create(:project, :with_jira_integration) }
+    let_it_be(:project) { create(:project, :with_jira_integration) }
     let(:issue)   { create(:issue, project: project) }
 
     context 'when GitLab issues are enabled' do
@@ -301,7 +301,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
 
   describe 'referables prefixes' do
     def prefixes
-      described_class::REFERABLES.each_with_object({}) do |referable, result|
+      described_class.referrables.each_with_object({}) do |referable, result|
         class_name = referable.to_s.camelize
         klass = class_name.constantize if Object.const_defined?(class_name)
 
@@ -314,7 +314,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
     end
 
     it 'returns all supported prefixes' do
-      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ & [vulnerability: *iteration:))
+      expect(prefixes.keys.uniq).to include(*%w(@ # ~ % ! $ & [vulnerability:))
     end
 
     it 'does not allow one prefix for multiple referables if not allowed specificly' do

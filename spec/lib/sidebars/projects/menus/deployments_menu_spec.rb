@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
+RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu, feature_category: :navigation do
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { described_class.new(context) }
+  end
 
   describe '#render?' do
     subject { described_class.new(context) }
@@ -47,7 +51,7 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
       end
     end
 
-    describe 'Feature Flags' do
+    describe 'Feature flags' do
       let(:item_id) { :feature_flags }
 
       it_behaves_like 'access rights checks'

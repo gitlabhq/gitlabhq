@@ -247,10 +247,12 @@ RSpec.describe DesignManagement::Version do
 
     context 'there are a bunch of different designs in a variety of states' do
       let_it_be(:version) do
-        create(:design_version,
-               created_designs: create_list(:design, 3),
-               modified_designs: create_list(:design, 4),
-               deleted_designs: create_list(:design, 5))
+        create(
+          :design_version,
+          created_designs: create_list(:design, 3),
+          modified_designs: create_list(:design, 4),
+          deleted_designs: create_list(:design, 5)
+        )
       end
 
       it 'puts them in the right buckets' do

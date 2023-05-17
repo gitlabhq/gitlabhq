@@ -11,7 +11,7 @@ export default {
     primaryProps() {
       return {
         text: __('Save'),
-        attributes: [{ variant: 'confirm' }, { category: 'primary' }],
+        attributes: { variant: 'confirm', category: 'primary' },
       };
     },
     cancelProps() {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitStatus do
+RSpec.describe CommitStatus, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be(:pipeline) do
@@ -17,13 +17,22 @@ RSpec.describe CommitStatus do
 
   it_behaves_like 'having unique enum values'
 
-  it { is_expected.to belong_to(:pipeline) }
+  it do
+    is_expected.to belong_to(:pipeline).class_name('Ci::Pipeline')
+      .with_foreign_key(:commit_id).inverse_of(:statuses)
+  end
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
+
+  it { is_expected.to validate_length_of(:stage).is_at_most(255) }
+  it { is_expected.to validate_length_of(:ref).is_at_most(255) }
+  it { is_expected.to validate_length_of(:target_url).is_at_most(255) }
+  it { is_expected.to validate_length_of(:description).is_at_most(255) }
 
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
@@ -33,6 +42,7 @@ RSpec.describe CommitStatus do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
   it { is_expected.not_to be_retried }
+  it { expect(described_class.primary_key).to eq('id') }
 
   describe '#author' do
     subject { commit_status.author }
@@ -422,29 +432,6 @@ RSpec.describe CommitStatus do
     end
   end
 
-  describe '.exclude_ignored' do
-    subject { described_class.exclude_ignored.order(:id) }
-
-    let(:statuses) do
-      [create_status(when: 'manual', status: 'skipped'),
-       create_status(when: 'manual', status: 'success'),
-       create_status(when: 'manual', status: 'failed'),
-       create_status(when: 'on_failure', status: 'skipped'),
-       create_status(when: 'on_failure', status: 'success'),
-       create_status(when: 'on_failure', status: 'failed'),
-       create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
-    end
-
-    it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
-    end
-  end
-
   describe '.failed_but_allowed' do
     subject { described_class.failed_but_allowed.order(:id) }
 
@@ -575,6 +562,15 @@ RSpec.describe CommitStatus do
         { id: status_2.id, lock_version: 3 }
       ]
       expect(described_class.match_id_and_lock_version(params)).to contain_exactly(status_1)
+    end
+  end
+
+  describe '.with_type' do
+    let_it_be(:build_job) { create_status(name: 'build job', type: ::Ci::Build) }
+    let_it_be(:bridge_job) { create_status(name: 'bridge job', type: ::Ci::Bridge) }
+
+    it 'returns statuses that match type' do
+      expect(described_class.with_type(::Ci::Build)).to contain_exactly(have_attributes(name: 'build job'))
     end
   end
 
@@ -1061,5 +1057,14 @@ RSpec.describe CommitStatus do
         expect { status.valid? }.not_to change(status, :partition_id)
       end
     end
+  end
+
+  describe '#failure_reason' do
+    subject(:status) { commit_status }
+
+    let(:attr) { :failure_reason }
+    let(:attr_value) { :unknown_failure }
+
+    it_behaves_like 'having enum with nil value'
   end
 end

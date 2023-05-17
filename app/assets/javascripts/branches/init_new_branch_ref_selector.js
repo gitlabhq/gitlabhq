@@ -17,6 +17,7 @@ export default function initNewBranchRefSelector() {
         props: {
           value: defaultBranchName,
           name: hiddenInputName,
+          queryParams: { sort: 'updated_desc' },
           projectId,
         },
       });

@@ -10,9 +10,9 @@ RSpec.describe AttachmentUploader do
   subject { uploader }
 
   it_behaves_like 'builds correct paths',
-                  store_dir: %r[uploads/-/system/note/attachment/],
-                  upload_path: %r[uploads/-/system/note/attachment/],
-                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/note/attachment/]
+    store_dir: %r[uploads/-/system/note/attachment/],
+    upload_path: %r[uploads/-/system/note/attachment/],
+    absolute_path: %r[#{CarrierWave.root}/uploads/-/system/note/attachment/]
 
   context "object_store is REMOTE" do
     before do
@@ -22,8 +22,8 @@ RSpec.describe AttachmentUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-                    store_dir: %r[note/attachment/],
-                    upload_path: %r[note/attachment/]
+      store_dir: %r[note/attachment/],
+      upload_path: %r[note/attachment/]
   end
 
   describe "#migrate!" do

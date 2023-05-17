@@ -207,14 +207,18 @@ export const Tracker = {
 
     const mappedConfig = {};
     if (config.forms) {
-      mappedConfig.forms = renameKey(config.forms, 'allow', 'whitelist');
+      mappedConfig.forms = renameKey(config.forms, 'allow', 'allowlist');
     }
 
     if (config.fields) {
-      mappedConfig.fields = renameKey(config.fields, 'allow', 'whitelist');
+      mappedConfig.fields = renameKey(config.fields, 'allow', 'allowlist');
     }
 
-    const enabler = () => window.snowplow('enableFormTracking', mappedConfig, userProvidedContexts);
+    const enabler = () =>
+      window.snowplow('enableFormTracking', {
+        options: mappedConfig,
+        context: userProvidedContexts,
+      });
 
     if (document.readyState === 'complete') {
       enabler();

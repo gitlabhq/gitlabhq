@@ -7,7 +7,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
+import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __ } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import {
@@ -16,6 +16,7 @@ import {
   DELETE_FAILURE,
   DEFAULT,
   BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
 } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -29,6 +30,7 @@ const POLL_INTERVAL = 10000;
 export default {
   name: 'PipelineHeaderSection',
   BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
   pipelineCancel: 'pipelineCancel',
   pipelineRetry: 'pipelineRetry',
   finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
@@ -231,7 +233,7 @@ export default {
           this.reportFailure(DELETE_FAILURE, errors);
           this.isDeleting = false;
         } else {
-          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
+          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success')); // eslint-disable-line import/no-deprecated
         }
       } catch {
         this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
@@ -275,6 +277,9 @@ export default {
 
       <gl-button
         v-if="canCancelPipeline"
+        v-gl-tooltip
+        :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
+        :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCanceling"
         :disabled="isCanceling"
         class="gl-ml-3"
@@ -282,7 +287,7 @@ export default {
         data-testid="cancelPipeline"
         @click="cancelPipeline()"
       >
-        {{ __('Cancel running') }}
+        {{ __('Cancel pipeline') }}
       </gl-button>
 
       <gl-button

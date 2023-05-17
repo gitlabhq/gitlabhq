@@ -3,7 +3,7 @@ table_name: clusters
 classes:
 - Clusters::Cluster
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Persists information about GitLab managed clusters
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14879
 milestone: '10.1'

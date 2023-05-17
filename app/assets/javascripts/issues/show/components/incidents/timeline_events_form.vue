@@ -199,7 +199,7 @@ export default {
         <p class="gl-ml-3 gl-align-self-end gl-line-height-32">{{ __('UTC') }}</p>
       </div>
     </div>
-    <gl-form-group v-if="glFeatures.incidentEventTags">
+    <gl-form-group>
       <label class="gl-display-flex gl-align-items-center gl-gap-3" for="timeline-input-tags">
         {{ $options.i18n.tagsLabel }}
         <timeline-events-tags-popover />
@@ -255,11 +255,10 @@ export default {
       </gl-form-group>
     </div>
     <gl-form-group class="gl-mb-0">
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-flex-wrap gl-gap-3">
         <gl-button
           variant="confirm"
           category="primary"
-          class="gl-mr-3"
           data-testid="save-button"
           :disabled="!isTimelineTextValid"
           :loading="isEventProcessed"
@@ -271,7 +270,6 @@ export default {
           v-if="showSaveAndAdd"
           variant="confirm"
           category="secondary"
-          class="gl-mr-3 gl-ml-n2"
           data-testid="save-and-add-button"
           :disabled="!isTimelineTextValid"
           :loading="isEventProcessed"
@@ -279,7 +277,7 @@ export default {
         >
           {{ $options.i18n.saveAndAdd }}
         </gl-button>
-        <gl-button class="gl-ml-n2" :disabled="isEventProcessed" @click="$emit('cancel')">
+        <gl-button :disabled="isEventProcessed" @click="$emit('cancel')">
           {{ $options.i18n.cancel }}
         </gl-button>
         <gl-button

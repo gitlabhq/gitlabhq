@@ -82,9 +82,9 @@ module JiraConnectInstallations
       Gitlab::IntegrationsLogger.info(
         integration: 'JiraConnect',
         message: 'Proxy lifecycle event received error response',
-        event_type: event,
-        status_code: status_code,
-        body: body
+        jira_event_type: event,
+        jira_status_code: status_code,
+        jira_body: body
       )
     end
   end

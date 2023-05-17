@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.issues.select(:id, :description)
+            project.issues.select(:id, :description, :iid)
           end
 
           def ordering_column

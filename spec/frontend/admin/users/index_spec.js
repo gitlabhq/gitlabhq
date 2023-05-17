@@ -19,8 +19,6 @@ describe('initAdminUsersApp', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     el = null;
   });
 
@@ -47,8 +45,6 @@ describe('initAdminUserActions', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     el = null;
   });
 

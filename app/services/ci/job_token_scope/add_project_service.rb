@@ -5,9 +5,7 @@ module Ci
     class AddProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_project, direction: :outbound)
-        direction = :outbound if Feature.disabled?(:ci_inbound_job_token_scope)
-
+      def execute(target_project, direction: :inbound)
         validate_edit!(project, target_project, current_user)
 
         link = allowlist(direction)
@@ -31,3 +29,5 @@ module Ci
     end
   end
 end
+
+Ci::JobTokenScope::AddProjectService.prepend_mod_with('Ci::JobTokenScope::AddProjectService')

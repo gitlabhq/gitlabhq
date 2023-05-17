@@ -25,33 +25,28 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   end
 
   describe 'GET #show' do
-    include_context 'group project issue'
+    before do
+      login_as(user)
+    end
 
     it_behaves_like "observability csp policy", described_class do
+      include_context 'group project issue'
       let(:tested_path) do
         project_issue_path(project, issue)
       end
     end
-  end
 
-  describe 'GET #index.json' do
-    let_it_be(:public_project) { create(:project, :public) }
+    describe 'incident tabs' do
+      let_it_be(:incident) { create(:incident, project: project) }
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let_it_be(:current_user) { create(:user) }
-
-      before do
-        sign_in current_user
+      it 'redirects to the issues route for non-incidents' do
+        get incident_issue_project_issue_path(project, issue, 'timeline')
+        expect(response).to redirect_to project_issue_path(project, issue)
       end
 
-      def request
-        get project_issues_path(public_project, format: :json), params: { scope: 'all', search: 'test' }
-      end
-    end
-
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
-      def request
-        get project_issues_path(public_project, format: :json), params: { scope: 'all', search: 'test' }
+      it 'responds with selected tab for incidents' do
+        get incident_issue_project_issue_path(project, incident, 'timeline')
+        expect(response.body).to match(/&quot;currentTab&quot;:&quot;timeline&quot;/)
       end
     end
   end
@@ -119,8 +114,9 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     context 'when private project' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false,
-ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom',
+        public_resource: false,
+        ignore_metrics: true do
         let(:url) { project_issues_url(private_project, format: :atom) }
 
         before do
@@ -128,8 +124,9 @@ ignore_metrics: true do
         end
       end
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics', public_resource: false,
-ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics',
+        public_resource: false,
+        ignore_metrics: true do
         let(:url) { project_issues_url(private_project, format: :ics) }
 
         before do

@@ -36,7 +36,11 @@ module Resolvers
             { pipeline: [:merge_request] },
             { project: [:route, { namespace: :route }] }
           ],
-          commit_path: [:pipeline, { project: [:route, { namespace: [:route] }] }],
+          commit_path: [:pipeline, { project: { namespace: [:route] } }],
+          ref_path: [{ project: [:route, { namespace: [:route] }] }],
+          browse_artifacts_path: [{ project: { namespace: [:route] } }],
+          play_path: [{ project: { namespace: [:route] } }],
+          web_path: [{ project: { namespace: [:route] } }],
           short_sha: [:pipeline],
           tags: [:tags]
         }

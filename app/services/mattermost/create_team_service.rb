@@ -9,7 +9,7 @@ module Mattermost
 
     def execute
       # The user that creates the team will be Team Admin
-      ::Mattermost::Team.new(current_user).create(@group.mattermost_team_params)
+      ::Mattermost::Team.new(current_user).create(**@group.mattermost_team_params)
     rescue ::Mattermost::ClientError => e
       @group.errors.add(:mattermost_team, e.message)
     end

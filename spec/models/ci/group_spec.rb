@@ -111,11 +111,13 @@ RSpec.describe Ci::Group do
     end
 
     def create_build(type, status: 'success', **opts)
-      create(type, pipeline: pipeline,
-                   stage: stage.name,
-                   status: status,
-                   stage_id: stage.id,
-                   **opts)
+      create(
+        type, pipeline: pipeline,
+        stage: stage.name,
+        status: status,
+        stage_id: stage.id,
+        **opts
+      )
     end
   end
 end

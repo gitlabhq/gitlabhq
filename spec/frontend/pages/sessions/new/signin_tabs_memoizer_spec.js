@@ -1,4 +1,5 @@
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlStaticSigninTabs from 'test_fixtures_static/signin_tabs.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
@@ -6,7 +7,6 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 useLocalStorageSpy();
 
 describe('SigninTabsMemoizer', () => {
-  const fixtureTemplate = 'static/signin_tabs.html';
   const tabSelector = 'ul.new-session-tabs';
   const currentTabKey = 'current_signin_tab';
   let memo;
@@ -20,7 +20,7 @@ describe('SigninTabsMemoizer', () => {
   }
 
   beforeEach(() => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(htmlStaticSigninTabs);
 
     jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
   });

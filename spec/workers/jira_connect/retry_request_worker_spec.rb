@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::RetryRequestWorker do
+RSpec.describe JiraConnect::RetryRequestWorker, feature_category: :integrations do
   describe '#perform' do
     let(:jwt) { 'some-jwt' }
     let(:event_url) { 'https://example.com/somewhere' }

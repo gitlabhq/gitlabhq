@@ -65,7 +65,6 @@ describe('Customer relations organizations root app', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
     router = null;
   });

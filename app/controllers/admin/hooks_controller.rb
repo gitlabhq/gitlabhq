@@ -3,8 +3,6 @@
 class Admin::HooksController < Admin::ApplicationController
   include ::WebHooks::HookActions
 
-  before_action :hook_logs, only: :edit
-
   feature_category :integrations
   urgency :low, [:test]
 
@@ -24,10 +22,6 @@ class Admin::HooksController < Admin::ApplicationController
 
   def hook
     @hook ||= SystemHook.find(params[:id])
-  end
-
-  def hook_logs
-    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
   end
 
   def hook_param_names

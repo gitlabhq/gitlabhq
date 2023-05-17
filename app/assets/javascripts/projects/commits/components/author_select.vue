@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapState, mapActions } from 'vuex';
-import { redirectTo, queryToObject } from '~/lib/utils/url_utility';
+import { redirectTo, queryToObject } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __ } from '~/locale';
 
 const tooltipMessage = __('Searching by both author and message is currently not supported.');
@@ -89,10 +89,10 @@ export default {
       commitListElement.style.transition = 'opacity 200ms';
 
       if (!user) {
-        return redirectTo(this.commitsPath);
+        return redirectTo(this.commitsPath); // eslint-disable-line import/no-deprecated
       }
 
-      return redirectTo(`${this.commitsPath}?author=${user}`);
+      return redirectTo(`${this.commitsPath}?author=${user}`); // eslint-disable-line import/no-deprecated
     },
     searchAuthors() {
       this.fetchAuthors(this.authorInput);

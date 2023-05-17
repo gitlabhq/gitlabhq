@@ -9,10 +9,6 @@ jest.mock('pdfjs-dist/webpack', () => {
 describe('Page component', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the page when mounting', async () => {
     const testPage = {
       render: jest.fn().mockReturnValue({ promise: Promise.resolve() }),

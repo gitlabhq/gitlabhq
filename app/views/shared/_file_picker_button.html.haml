@@ -1,9 +1,10 @@
 - classes = local_assigns.fetch(:classes, '')
+- mime_types = local_assigns.fetch(:mime_types, '')
 
 %span.js-filepicker
   = render Pajamas::ButtonComponent.new(button_options: { class: "js-filepicker-button #{classes}" }) do
     = _("Choose file…")
-  %span.file_name.js-filepicker-filename= _("No file chosen.")
-  = f.file_field field, class: "js-filepicker-input hidden"
+  %span.file_name.gl-ml-3.js-filepicker-filename= _("No file chosen.")
+  = f.file_field field, class: "js-filepicker-input hidden", accept: mime_types
   - if help_text.present?
     .form-text.text-muted= help_text

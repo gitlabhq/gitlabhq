@@ -18,8 +18,6 @@ module Gitlab
           end
 
           def dates
-            return [] if @relation_reader.legacy?
-
             RelationFactory::DATE_MODELS.flat_map do |tag|
               @relation_reader.consume_relation(@importable_path, tag, mark_as_consumed: false).map do |model|
                 model.first['due_date']

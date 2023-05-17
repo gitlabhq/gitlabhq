@@ -42,7 +42,6 @@ describe('Configure Feature Flags Modal', () => {
     wrapper.findAllComponents(GlAlert).filter((c) => c.props('variant') === 'danger');
 
   describe('idle', () => {
-    afterEach(() => wrapper.destroy());
     beforeEach(factory);
 
     it('should have Primary and Secondary actions', () => {
@@ -51,7 +50,7 @@ describe('Configure Feature Flags Modal', () => {
     });
 
     it('should default disable the primary action', () => {
-      const [{ disabled }] = findSecondaryAction().attributes;
+      const { disabled } = findSecondaryAction().attributes;
       expect(disabled).toBe(true);
     });
 
@@ -112,52 +111,48 @@ describe('Configure Feature Flags Modal', () => {
   });
 
   describe('verified', () => {
-    afterEach(() => wrapper.destroy());
     beforeEach(factory);
 
     it('should enable the secondary action', async () => {
       findProjectNameInput().vm.$emit('input', provide.projectName);
       await nextTick();
-      const [{ disabled }] = findSecondaryAction().attributes;
+      const { disabled } = findSecondaryAction().attributes;
       expect(disabled).toBe(false);
     });
   });
 
   describe('cannot rotate token', () => {
-    afterEach(() => wrapper.destroy());
     beforeEach(factory.bind(null, { canUserRotateToken: false }));
 
     it('should not display the primary action', () => {
       expect(findSecondaryAction()).toBe(null);
     });
 
-    it('should not display regenerating instance ID', async () => {
+    it('should not display regenerating instance ID', () => {
       expect(findDangerGlAlert().exists()).toBe(false);
     });
 
-    it('should disable the project name input', async () => {
+    it('should disable the project name input', () => {
       expect(findProjectNameInput().exists()).toBe(false);
     });
   });
 
   describe('has rotate error', () => {
-    afterEach(() => wrapper.destroy());
     beforeEach(() => {
       factory({ hasRotateError: true });
     });
 
-    it('should display an error', async () => {
+    it('should display an error', () => {
       expect(wrapper.findByTestId('rotate-error').exists()).toBe(true);
       expect(wrapper.find('[name="warning"]').exists()).toBe(true);
     });
   });
 
   describe('is rotating', () => {
-    afterEach(() => wrapper.destroy());
     beforeEach(factory.bind(null, { isRotating: true }));
 
-    it('should disable the project name input', async () => {
-      expect(findProjectNameInput().attributes('disabled')).toBe('true');
+    it('should disable the project name input', () => {
+      expect(findProjectNameInput().attributes('disabled')).toBeDefined();
     });
   });
 });

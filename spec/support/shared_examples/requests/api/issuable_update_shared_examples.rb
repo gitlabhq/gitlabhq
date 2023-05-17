@@ -34,5 +34,14 @@ RSpec.shared_examples 'issuable update endpoint' do
       expect(json_response['labels']).to include '&'
       expect(json_response['labels']).to include '?'
     end
+
+    it 'clears milestone when milestone_id=0' do
+      entity.update!(milestone: milestone)
+
+      put api(url, user), params: { milestone_id: 0 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['milestone']).to be_nil
+    end
   end
 end

@@ -3,8 +3,6 @@
 class Projects::AvatarsController < Projects::ApplicationController
   include SendsBlob
 
-  skip_before_action :default_cache_headers, only: :show
-
   before_action :authorize_admin_project!, only: [:destroy]
 
   feature_category :projects

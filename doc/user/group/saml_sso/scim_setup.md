@@ -116,7 +116,7 @@ For each attribute:
 1. Select the required settings.
 1. Select **Ok**.
 
-If your SAML configuration differs from [the recommended SAML settings](index.md#set-up-azure), select the mapping
+If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
 attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
 target attribute.
 
@@ -133,13 +133,13 @@ Prerequisites:
   product tier is required to use SCIM on Okta.
 - [GitLab is configured](#configure-gitlab).
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](index.md#set-up-okta).
+  described in the [Okta setup notes](index.md#okta).
 - Your Okta SAML setup matches the [configuration steps exactly](index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. Ensure you are in the Admin Area by selecting the **Admin** button located in the upper right. The button is not visible from the Admin Area.
+1. In the upper-right corner, select **Admin**. The button is not visible from the Admin Area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Search for **GitLab**, find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add**.
@@ -200,6 +200,10 @@ On subsequent visits, new and existing users can access groups either:
 
 For role information, see the [Group SAML](index.md#user-access-and-management) page.
 
+### Passwords for users created through SCIM for GitLab groups
+
+GitLab requires passwords for all user accounts. For more information on how GitLab generates passwords for users created through SCIM for GitLab groups, see [generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md).
+
 ### Link SCIM and SAML identities
 
 If [group SAML](index.md) is configured and you have an existing GitLab.com account, users can link their SCIM and SAML
@@ -210,7 +214,7 @@ To link your SCIM and SAML identities:
 
 1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account
    to match the user profile email address in your identity provider.
-1. [Link your SAML identity](index.md#linking-saml-to-your-existing-gitlabcom-account).
+1. [Link your SAML identity](index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### Remove access
 
@@ -221,6 +225,8 @@ Remove or deactivate a user on the identity provider to remove their access to:
 
 After the identity provider performs a sync based on its configured schedule, the user's membership is revoked and they
 lose access.
+
+When you enable SCIM, this does not automatically remove existing users who do not have a SAML identity.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.

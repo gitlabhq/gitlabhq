@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedTags::DestroyService do
+RSpec.describe ProtectedTags::DestroyService, feature_category: :compliance_management do
   let(:protected_tag) { create(:protected_tag) }
   let(:project) { protected_tag.project }
   let(:user) { project.first_owner }

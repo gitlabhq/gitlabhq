@@ -38,14 +38,6 @@ vendor omniauth-azure-oauth2:
     include: vendor/gems/omniauth-azure-oauth2/.gitlab-ci.yml
     strategy: depend
 
-vendor omniauth-cas3:
-  extends:
-    - .vendor:rules:omniauth-cas3
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth-cas3/.gitlab-ci.yml
-    strategy: depend
-
 vendor omniauth_crowd:
   extends:
     - .vendor:rules:omniauth_crowd
@@ -92,4 +84,20 @@ vendor gitlab_active_record:
   needs: []
   trigger:
     include: vendor/gems/gitlab_active_record/.gitlab-ci.yml
+    strategy: depend
+
+vendor cloud_profiler_agent:
+  extends:
+    - .vendor:rules:cloud_profiler_agent
+  needs: []
+  trigger:
+    include: vendor/gems/cloud_profiler_agent/.gitlab-ci.yml
+    strategy: depend
+
+vendor sidekiq-reliable-fetch:
+  extends:
+    - .vendor:rules:sidekiq-reliable-fetch
+  needs: []
+  trigger:
+    include: vendor/gems/sidekiq-reliable-fetch/.gitlab-ci.yml
     strategy: depend

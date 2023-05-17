@@ -18,10 +18,6 @@ describe('Graph group component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('When group is not collapsed', () => {
     beforeEach(() => {
       createComponent({

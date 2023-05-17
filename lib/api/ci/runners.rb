@@ -158,11 +158,11 @@ module API
           requires :id, type: Integer, desc: 'The ID of a runner'
           optional :description, type: String, desc: 'The description of the runner'
           optional :active, type: Boolean, desc: 'Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs'
-          optional :paused, type: Boolean, desc: 'Specifies whether the runner should ignore new jobs'
+          optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                               desc: 'The list of tags for a runner', documentation: { example: "['macos', 'shell']" }
-          optional :run_untagged, type: Boolean, desc: 'Specifies whether the runner can execute untagged jobs'
-          optional :locked, type: Boolean, desc: 'Specifies whether the runner is locked'
+          optional :run_untagged, type: Boolean, desc: 'Specifies if the runner can execute untagged jobs'
+          optional :locked, type: Boolean, desc: 'Specifies if the runner is locked'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
                                   desc: 'The access level of the runner'
           optional :maximum_timeout, type: Integer,

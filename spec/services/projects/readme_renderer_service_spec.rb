@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ReadmeRendererService, '#execute' do
+RSpec.describe Projects::ReadmeRendererService, '#execute', feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
 
   subject(:service) { described_class.new(project, nil, opts) }
 
   let_it_be(:project) { create(:project, title: 'My Project', description: '_custom_description_') }
 
-  let(:opts) { {} }
+  let(:opts) { { default_branch: 'master' } }
 
   it 'renders the an ERB readme template' do
     expect(service.execute).to start_with(<<~MARKDOWN)

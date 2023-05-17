@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeleteMergedBranchesWorker do
+RSpec.describe DeleteMergedBranchesWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
   let(:project) { create(:project, :repository) }

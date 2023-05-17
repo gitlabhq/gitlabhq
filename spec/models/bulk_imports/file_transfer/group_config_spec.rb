@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileTransfer::GroupConfig do
+RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :importers do
   let_it_be(:exportable) { create(:group) }
   let_it_be(:hex) { '123' }
 
@@ -47,6 +47,53 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig do
   describe '#relation_excluded_keys' do
     it 'returns excluded keys for relation' do
       expect(subject.relation_excluded_keys('group')).to include('owner_id')
+    end
+  end
+
+  describe '#batchable_relation?' do
+    context 'when relation is batchable' do
+      it 'returns true' do
+        expect(subject.batchable_relation?('labels')).to eq(true)
+      end
+    end
+
+    context 'when relation is not batchable' do
+      it 'returns false' do
+        expect(subject.batchable_relation?('namespace_settings')).to eq(false)
+      end
+    end
+
+    context 'when relation is not listed as portable' do
+      it 'returns false' do
+        expect(subject.batchable_relation?('foo')).to eq(false)
+      end
+    end
+  end
+
+  describe '#batchable_relations' do
+    it 'returns a list of collection associations for a group' do
+      expect(subject.batchable_relations).to include('labels', 'boards', 'milestones')
+      expect(subject.batchable_relations).not_to include('namespace_settings')
+    end
+  end
+
+  describe '#export_service_for' do
+    context 'when relation is a tree' do
+      it 'returns TreeExportService' do
+        expect(subject.export_service_for('labels')).to eq(BulkImports::TreeExportService)
+      end
+    end
+
+    context 'when relation is a file' do
+      it 'returns FileExportService' do
+        expect(subject.export_service_for('uploads')).to eq(BulkImports::FileExportService)
+      end
+    end
+
+    context 'when relation is unknown' do
+      it 'raises' do
+        expect { subject.export_service_for('foo') }.to raise_error(BulkImports::Error, 'Unsupported export relation')
+      end
     end
   end
 end

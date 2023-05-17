@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StuckMergeJobsWorker do
+RSpec.describe StuckMergeJobsWorker, feature_category: :code_review_workflow do
   describe 'perform' do
     let(:worker) { described_class.new }
 

@@ -36,10 +36,6 @@ describe('Registry List', () => {
   const findScopedSlotFirstValue = (index) => findScopedSlots().at(index).find('span');
   const findScopedSlotIsSelectedValue = (index) => findScopedSlots().at(index).find('p');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('header', () => {
     it('renders the title passed in the prop', () => {
       mountComponent();
@@ -62,7 +58,7 @@ describe('Registry List', () => {
       it('sets disabled prop to true when items length is 0', () => {
         mountComponent({ propsData: { ...defaultPropsData, items: [] } });
 
-        expect(findSelectAll().attributes('disabled')).toBe('true');
+        expect(findSelectAll().attributes('disabled')).toBeDefined();
       });
 
       it('when few are selected, sets indeterminate prop to true', async () => {
@@ -111,10 +107,21 @@ describe('Registry List', () => {
         expect(findDeleteSelected().text()).toBe(component.i18n.deleteSelected);
       });
 
-      it('is hidden when hiddenDelete is true', () => {
-        mountComponent({ propsData: { ...defaultPropsData, hiddenDelete: true } });
+      describe('when hiddenDelete is true', () => {
+        beforeEach(() => {
+          mountComponent({ propsData: { ...defaultPropsData, hiddenDelete: true } });
+        });
 
-        expect(findDeleteSelected().exists()).toBe(false);
+        it('is hidden', () => {
+          expect(findDeleteSelected().exists()).toBe(false);
+        });
+
+        it('populates the first slot prop correctly', () => {
+          expect(findScopedSlots().at(0).exists()).toBe(true);
+
+          // it's the first slot
+          expect(findScopedSlotFirstValue(0).text()).toBe('false');
+        });
       });
 
       it('is disabled when isLoading is true', () => {

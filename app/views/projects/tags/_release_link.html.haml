@@ -1,5 +1,5 @@
 - if can?(current_user, :read_release, release)
-  .gl-text-secondary
-    = sprite_icon("rocket", size: 12)
-    = _("Release")
+  %span
+    = sprite_icon("rocket", size: 12, css_class: "gl-text-secondary")
+    = _("Release:")
     = link_to release.name, project_release_path(project, release), class: "gl-text-blue-600!"

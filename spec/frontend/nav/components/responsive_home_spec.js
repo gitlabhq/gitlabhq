@@ -29,7 +29,7 @@ describe('~/nav/components/responsive_home.vue', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       listeners: {
         'menu-item-click': menuItemClickListener,
@@ -43,10 +43,6 @@ describe('~/nav/components/responsive_home.vue', () => {
 
   beforeEach(() => {
     menuItemClickListener = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('default', () => {

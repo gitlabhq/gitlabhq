@@ -38,10 +38,6 @@ describe('content_editor', () => {
     renderMarkdown = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when loading initial content', () => {
     describe('when the initial content is empty', () => {
       it('still hides the loading indicator', async () => {
@@ -56,7 +52,7 @@ describe('content_editor', () => {
     });
 
     describe('when the initial content is not empty', () => {
-      const initialContent = '<p><strong>bold text</strong></p>';
+      const initialContent = '<strong>bold text</strong> and <em>italic text</em>';
       beforeEach(async () => {
         mockRenderMarkdownResponse(initialContent);
 
@@ -70,7 +66,7 @@ describe('content_editor', () => {
         expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
       });
 
-      it('displays the initial content', async () => {
+      it('displays the initial content', () => {
         expect(wrapper.html()).toContain(initialContent);
       });
     });

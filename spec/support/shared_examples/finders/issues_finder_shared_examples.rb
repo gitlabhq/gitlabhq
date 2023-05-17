@@ -161,10 +161,12 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           let_it_be(:another_release) { create(:release, project: project1, tag: 'v2.0.0') }
           let_it_be(:another_milestone) { create(:milestone, project: project1, releases: [another_release]) }
           let_it_be(:another_item) do
-            create(factory,
-                   project: project1,
-                   milestone: another_milestone,
-                   title: 'another item')
+            create(
+              factory,
+              project: project1,
+              milestone: another_milestone,
+              title: 'another item'
+            )
           end
 
           let(:params) { { not: { release_tag: release.tag, project_id: project1.id } } }
@@ -421,8 +423,11 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
         let!(:created_items) do
           milestones.map do |milestone|
-            create(factory, project: milestone.project || project_in_group,
-                            milestone: milestone, author: user, assignees: [user])
+            create(
+              factory,
+              project: milestone.project || project_in_group,
+              milestone: milestone, author: user, assignees: [user]
+            )
           end
         end
 
@@ -593,7 +598,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by no label' do
-        let(:params) { { label_name: described_class::Params::FILTER_NONE } }
+        let(:params) { { label_name: IssuableFinder::Params::FILTER_NONE } }
 
         it 'returns items with no labels' do
           expect(items).to contain_exactly(item1, item4, item5)
@@ -601,7 +606,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by any label' do
-        let(:params) { { label_name: described_class::Params::FILTER_ANY } }
+        let(:params) { { label_name: IssuableFinder::Params::FILTER_ANY } }
 
         it 'returns items that have one or more label' do
           create_list(:label_link, 2, label: create(:label, project: project2), target: item3)
@@ -909,9 +914,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by item type' do
-        let_it_be(:incident_item) { create(factory, issue_type: :incident, project: project1) }
-        let_it_be(:objective) { create(factory, issue_type: :objective, project: project1) }
-        let_it_be(:key_result) { create(factory, issue_type: :key_result, project: project1) }
+        let_it_be(:incident_item) { create(factory, :incident, project: project1) }
+        let_it_be(:objective) { create(factory, :objective, project: project1) }
+        let_it_be(:key_result) { create(factory, :key_result, project: project1) }
 
         context 'no type given' do
           let(:params) { { issue_types: [] } }
@@ -983,9 +988,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         let_it_be(:root_group) { create(:group) }
         let_it_be(:group) { create(:group, parent: root_group) }
         let_it_be(:project_crm) { create(:project, :public, group: group) }
-        let_it_be(:organization) { create(:organization, group: root_group) }
-        let_it_be(:contact1) { create(:contact, group: root_group, organization: organization) }
-        let_it_be(:contact2) { create(:contact, group: root_group, organization: organization) }
+        let_it_be(:crm_organization) { create(:crm_organization, group: root_group) }
+        let_it_be(:contact1) { create(:contact, group: root_group, organization: crm_organization) }
+        let_it_be(:contact2) { create(:contact, group: root_group, organization: crm_organization) }
 
         let_it_be(:contact1_item1) { create(factory, project: project_crm) }
         let_it_be(:contact1_item2) { create(factory, project: project_crm) }
@@ -1023,10 +1028,10 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'filtering by crm organization' do
-          let(:params) { { project_id: project_crm.id, crm_organization_id: organization.id } }
+          let(:params) { { project_id: project_crm.id, crm_organization_id: crm_organization.id } }
 
           context 'when the user can read crm organization' do
-            it 'returns for that organization' do
+            it 'returns for that crm organization' do
               root_group.add_reporter(user)
 
               expect(items).to contain_exactly(contact1_item1, contact1_item2, contact2_item1)
@@ -1034,7 +1039,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
 
           context 'when the user can not read crm organization' do
-            it 'does not filter by organization' do
+            it 'does not filter by crm organization' do
               expect(items).to match_array(all_project_issues)
             end
           end

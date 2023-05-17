@@ -34,6 +34,8 @@ To report abuse from a user's profile page:
 
 ## Report abuse from a user's comment
 
+> Reporting abuse from comments in epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389992) in GitLab 15.10.
+
 To report abuse from a user's comment:
 
 1. In the comment, in the upper-right corner, select **More actions** (**{ellipsis_v}**).
@@ -48,7 +50,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from an issue
 
-1. On the issue, in the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. On the issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
@@ -56,7 +58,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from a merge request
 
-1. On the merge request, in the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. On the merge request, in the upper-right corner, select **Merge request actions** (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
 1. Select a reason for reporting this user.
 1. Complete an abuse report.
@@ -64,5 +66,4 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Related topics
 
-- Administrators can view and resolve abuse reports.
-  For more information, see [abuse reports administration documentation](admin_area/review_abuse_reports.md).
+- [Abuse reports administration documentation](admin_area/review_abuse_reports.md)

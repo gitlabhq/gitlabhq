@@ -26,10 +26,13 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
   end
 
   let(:bridge) do
-    create(:ci_bridge, status: :pending,
-                       user: user,
-                       options: trigger,
-                       pipeline: upstream_pipeline)
+    create(
+      :ci_bridge,
+      status: :pending,
+      user: user,
+      options: trigger,
+      pipeline: upstream_pipeline
+    )
   end
 
   let(:service) { described_class.new(upstream_project, user) }
@@ -704,8 +707,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
     context 'when user does not have access to push protected branch of downstream project' do
       before do
-        create(:protected_branch, :maintainers_can_push,
-               project: downstream_project, name: 'feature')
+        create(:protected_branch, :maintainers_can_push, project: downstream_project, name: 'feature')
       end
 
       it 'changes status of the bridge build' do

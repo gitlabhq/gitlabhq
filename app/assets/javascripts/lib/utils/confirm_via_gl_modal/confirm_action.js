@@ -12,6 +12,7 @@ export function confirmAction(
     modalHtmlMessage,
     title,
     hideCancel,
+    size,
   } = {},
 ) {
   return new Promise((resolve) => {
@@ -36,6 +37,7 @@ export function confirmAction(
               title,
               modalHtmlMessage,
               hideCancel,
+              size,
             },
             on: {
               confirmed() {

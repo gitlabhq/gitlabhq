@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+shopt -s nocasematch # Enable case-insensitive matching
+
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
+security_branch_regex="^security.+"
+url="$2"
+
+if [[ $local_branch =~ $security_branch_regex ]] && [[ "$url" != *"gitlab-org/security/"* ]]
+then
+  echo "Pushing security branches to remotes other than gitlab.com/gitlab-org/security has been disabled!"
+  echo "Please read https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#do-not-push-to-gitlab-orggitlab"
+  echo
+
+  exit 1
+fi

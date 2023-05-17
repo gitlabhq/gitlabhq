@@ -19,9 +19,10 @@ module Ci
       def execute
         return unless pipeline.needs_processing?
 
+        # Run the process only if we can obtain an exclusive lease; returns nil if lease is unavailable
         success = try_obtain_lease { process! }
 
-        # re-schedule if we need further processing
+        # Re-schedule if we need further processing
         if success && pipeline.needs_processing?
           PipelineProcessWorker.perform_async(pipeline.id)
         end
@@ -34,7 +35,7 @@ module Ci
       def process!
         update_stages!
         update_pipeline!
-        update_statuses_processed!
+        update_jobs_processed!
 
         Ci::ExpirePipelineCacheService.new.execute(pipeline)
 
@@ -46,62 +47,61 @@ module Ci
       end
 
       def update_stage!(stage)
-        # Update processables for a given stage in bulk/slices
+        # Update jobs for a given stage in bulk/slices
         @collection
-          .created_processable_ids_for_stage_position(stage.position)
-          .in_groups_of(BATCH_SIZE, false) { |ids| update_processables!(ids) }
+          .created_job_ids_in_stage(stage.position)
+          .in_groups_of(BATCH_SIZE, false) { |ids| update_jobs!(ids) }
 
-        status = @collection.status_for_stage_position(stage.position)
+        status = @collection.status_of_stage(stage.position)
         stage.set_status(status)
       end
 
-      def update_processables!(ids)
-        created_processables = pipeline.processables.id_in(ids)
+      def update_jobs!(ids)
+        created_jobs = pipeline
+          .current_processable_jobs
+          .id_in(ids)
           .with_project_preload
           .created
-          .latest
           .ordered_by_stage
           .select_with_aggregated_needs(project)
 
-        created_processables.each { |processable| update_processable!(processable) }
+        created_jobs.each { |job| update_job!(job) }
       end
 
       def update_pipeline!
         pipeline.set_status(@collection.status_of_all)
       end
 
-      def update_statuses_processed!
-        processing = @collection.processing_processables
+      def update_jobs_processed!
+        processing = @collection.processing_jobs
         processing.each_slice(BATCH_SIZE) do |slice|
-          pipeline.statuses.match_id_and_lock_version(slice)
+          pipeline.all_jobs.match_id_and_lock_version(slice)
             .update_as_processed!
         end
       end
 
-      def update_processable!(processable)
-        status = processable_status(processable)
-        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(status)
+      def update_job!(job)
+        previous_status = status_of_previous_jobs(job)
+        # We do not continue to process the job if the previous status is not completed
+        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(previous_status)
 
-        # transition status if possible
-        Gitlab::OptimisticLocking.retry_lock(processable, name: 'atomic_processing_update_processable') do |subject|
+        Gitlab::OptimisticLocking.retry_lock(job, name: 'atomic_processing_update_job') do |subject|
           Ci::ProcessBuildService.new(project, subject.user)
-            .execute(subject, status)
+            .execute(subject, previous_status)
 
-          # update internal representation of status
-          # to make the status change of processable
-          # to be taken into account during further processing
-          @collection.set_processable_status(
-            processable.id, processable.status, processable.lock_version)
+          # update internal representation of job
+          # to make the status change of job to be taken into account during further processing
+          @collection.set_job_status(job.id, job.status, job.lock_version)
         end
       end
 
-      def processable_status(processable)
-        if processable.scheduling_type_dag?
-          # Processable uses DAG, get status of all dependent needs
-          @collection.status_for_names(processable.aggregated_needs_names.to_a, dag: true)
+      def status_of_previous_jobs(job)
+        if job.scheduling_type_dag?
+          # job uses DAG, get status of all dependent needs
+          @collection.status_of_jobs(job.aggregated_needs_names.to_a)
         else
-          # Processable uses Stages, get status of prior stage
-          @collection.status_for_prior_stage_position(processable.stage_idx.to_i)
+          # job uses Stages, get status of prior stage
+          @collection.status_of_jobs_prior_to_stage(job.stage_idx.to_i)
         end
       end
 

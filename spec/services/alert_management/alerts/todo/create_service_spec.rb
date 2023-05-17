@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AlertManagement::Alerts::Todo::CreateService do
+RSpec.describe AlertManagement::Alerts::Todo::CreateService, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert) }
 

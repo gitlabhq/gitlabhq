@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe API::MavenPackages, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
   include WorkhorseHelpers
+  include HttpBasicAuthHelpers
 
   include_context 'workhorse headers'
 
@@ -22,7 +23,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
 
   let(:package_name) { 'com/example/my-app' }
   let(:headers) { workhorse_headers }
@@ -159,54 +160,147 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
   end
 
-  shared_examples 'downloads with a deploy token' do
-    context 'successful download' do
+  shared_examples 'allowing the download' do
+    it 'allows download' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.media_type).to eq('application/octet-stream')
+    end
+  end
+
+  shared_examples 'not allowing the download with' do |not_found_response|
+    it 'does not allow the download' do
+      subject
+
+      expect(response).to have_gitlab_http_status(not_found_response)
+    end
+  end
+
+  shared_examples 'downloads with a personal access token' do |not_found_response|
+    where(:valid, :sent_using) do
+      true  | :custom_header
+      false | :custom_header
+      true  | :basic_auth
+      false | :basic_auth
+    end
+
+    with_them do
+      let(:token) { valid ? personal_access_token.token : 'not_valid' }
+      let(:headers) do
+        case sent_using
+        when :custom_header
+          { 'Private-Token' => token }
+        when :basic_auth
+          basic_auth_header(user.username, token)
+        end
+      end
+
       subject do
         download_file(
           file_name: package_file.file_name,
-          request_headers: { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token }
+          request_headers: headers
         )
       end
 
-      it 'allows download with deploy token' do
-        subject
+      if params[:valid]
+        it_behaves_like 'allowing the download'
+      else
+        expected_status_code = not_found_response
+        # invalid PAT values sent through headers are validated.
+        # Invalid values will trigger an :unauthorized response (and not set current_user to nil)
+        expected_status_code = :unauthorized if params[:sent_using] == :custom_header && !params[:valid]
+        it_behaves_like 'not allowing the download with', expected_status_code
+      end
+    end
+  end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
+  shared_examples 'downloads with a deploy token' do |not_found_response|
+    where(:valid, :sent_using) do
+      true  | :custom_header
+      false | :custom_header
+      true  | :basic_auth
+      false | :basic_auth
+    end
+
+    with_them do
+      let(:token) { valid ? deploy_token.token : 'not_valid' }
+      let(:headers) do
+        case sent_using
+        when :custom_header
+          { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => token }
+        when :basic_auth
+          basic_auth_header(deploy_token.username, token)
+        end
       end
 
-      it 'allows download with deploy token with only write_package_registry scope' do
-        deploy_token.update!(read_package_registry: false)
+      subject do
+        download_file(
+          file_name: package_file.file_name,
+          request_headers: headers
+        )
+      end
 
-        subject
+      if params[:valid]
+        it_behaves_like 'allowing the download'
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
+        context 'with only write_package_registry scope' do
+          it_behaves_like 'allowing the download' do
+            before do
+              deploy_token.update!(read_package_registry: false)
+            end
+          end
+        end
+      else
+        it_behaves_like 'not allowing the download with', not_found_response
       end
     end
   end
 
   shared_examples 'downloads with a job token' do
-    context 'with a running job' do
-      it 'allows download with job token' do
-        download_file(file_name: package_file.file_name, params: { job_token: job.token })
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
+    where(:valid, :sent_using) do
+      true  | :custom_params
+      false | :custom_params
+      true  | :basic_auth
+      false | :basic_auth
     end
 
-    context 'with a finished job' do
-      before do
-        job.update!(status: :failed)
+    with_them do
+      let(:token) { valid ? job.token : 'not_valid' }
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, token) }
+      let(:params) { { job_token: token } }
+
+      subject do
+        case sent_using
+        when :custom_params
+          download_file(file_name: package_file.file_name, params: params)
+        when :basic_auth
+          download_file(file_name: package_file.file_name, request_headers: headers)
+        end
       end
 
-      it 'returns unauthorized error' do
-        download_file(file_name: package_file.file_name, params: { job_token: job.token })
+      context 'with a running job' do
+        if params[:valid]
+          it_behaves_like 'allowing the download'
+        else
+          it_behaves_like 'not allowing the download with', :unauthorized
+        end
+      end
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+      context 'with a finished job' do
+        before do
+          job.update!(status: :failed)
+        end
+
+        it_behaves_like 'not allowing the download with', :unauthorized
       end
     end
+  end
+
+  shared_examples 'downloads with different tokens' do |not_found_response|
+    it_behaves_like 'downloads with a personal access token', not_found_response
+    it_behaves_like 'downloads with a deploy token', not_found_response
+    it_behaves_like 'downloads with a job token'
   end
 
   shared_examples 'successfully returning the file' do
@@ -285,6 +379,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       shared_examples 'getting a file' do
@@ -336,11 +432,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it 'denies download when no private token' do
           download_file(file_name: package_file.file_name)
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
-        it_behaves_like 'downloads with a job token'
-        it_behaves_like 'downloads with a deploy token'
+        it_behaves_like 'downloads with different tokens', :unauthorized
 
         context 'with a non existing maven path' do
           subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
@@ -377,11 +472,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it 'denies download when no private token' do
           download_file(file_name: package_file.file_name)
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
-        it_behaves_like 'downloads with a job token'
-        it_behaves_like 'downloads with a deploy token'
+        it_behaves_like 'downloads with different tokens', :unauthorized
 
         it 'does not allow download by a unauthorized deploy token with same id as a user with access' do
           unauthorized_deploy_token = create(:deploy_token, read_package_registry: true, write_package_registry: true)
@@ -411,12 +505,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'project name is different from a package name' do
-      before do
-        maven_metadatum.update!(path: "wrong_name/#{package.version}")
-      end
-
       it 'rejects request' do
-        download_file(file_name: package_file.file_name)
+        download_file(file_name: package_file.file_name, path: "wrong_name/#{package.version}")
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -451,6 +541,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     it_behaves_like 'forwarding package requests'
 
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       shared_examples 'getting a file for a group' do
@@ -496,8 +588,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(not_found_response)
         end
 
-        it_behaves_like 'downloads with a job token'
-        it_behaves_like 'downloads with a deploy token'
+        it_behaves_like 'downloads with different tokens', not_found_response
 
         context 'with a non existing maven path' do
           subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
@@ -506,7 +597,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
-      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :not_found, public: :redirect }
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :unauthorized, public: :redirect }
     end
 
     context 'private project' do
@@ -535,8 +626,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(not_found_response)
         end
 
-        it_behaves_like 'downloads with a job token'
-        it_behaves_like 'downloads with a deploy token'
+        it_behaves_like 'downloads with different tokens', not_found_response
 
         context 'with a non existing maven path' do
           subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
@@ -566,7 +656,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
-      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { private: :not_found, internal: :not_found, public: :redirect }
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { private: :unauthorized, internal: :unauthorized, public: :redirect }
 
       context 'with a reporter from a subgroup accessing the root group' do
         let_it_be(:root_group) { create(:group, :private) }
@@ -660,6 +750,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       it_behaves_like 'tracking the file download event'
@@ -718,7 +810,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it 'denies download when no private token' do
         download_file(file_name: package_file.file_name)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       context 'with access to package registry for everyone' do
@@ -731,8 +823,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it_behaves_like 'successfully returning the file'
       end
 
-      it_behaves_like 'downloads with a job token'
-      it_behaves_like 'downloads with a deploy token'
+      it_behaves_like 'downloads with different tokens', :unauthorized
 
       context 'with a non existing maven path' do
         subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
@@ -901,8 +992,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it_behaves_like 'package workhorse uploads'
 
       context 'event tracking' do
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
-
         it_behaves_like 'a package tracking event', described_class.name, 'push_package'
 
         context 'when the package file fails to be created' do
@@ -917,6 +1006,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       it 'creates package and stores package file' do
+        expect_use_primary
+
         expect { upload_file_with_token(params: params) }.to change { project.packages.count }.by(1)
           .and change { Packages::Maven::Metadatum.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
@@ -962,6 +1053,17 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
+      context 'file name is too long' do
+        let(:file_name) { 'a' * (Packages::Maven::FindOrCreatePackageService::MAX_FILE_NAME_LENGTH + 1) }
+
+        it 'rejects request' do
+          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { project.packages.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('File name is too long')
+        end
+      end
+
       context 'version is not correct' do
         let(:version) { '$%123' }
 
@@ -981,9 +1083,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           package_settings.update!(maven_duplicates_allowed: false)
         end
 
-        shared_examples 'storing the package file' do
+        shared_examples 'storing the package file' do |file_name: 'my-app-1.0-20180724.124855-1'|
           it 'stores the file', :aggregate_failures do
-            expect { upload_file_with_token(params: params) }.to change { package.package_files.count }.by(1)
+            expect { upload_file_with_token(params: params, file_name: file_name) }.to change { package.package_files.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(jar_file.file_name).to eq(file_upload.original_filename)
@@ -1023,6 +1125,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
           it_behaves_like 'storing the package file'
         end
+
+        context 'when uploading a similar package file name with a classifier' do
+          it_behaves_like 'storing the package file', file_name: 'my-app-1.0-20180724.124855-1-javadoc'
+        end
       end
 
       context 'for sha1 file' do
@@ -1043,6 +1149,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
 
         it 'returns no content' do
+          expect_use_primary
+
           upload
 
           expect(response).to have_gitlab_http_status(:no_content)
@@ -1072,6 +1180,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         subject { upload_file_with_token(params: params, file_extension: 'jar.md5') }
 
         it 'returns an empty body' do
+          expect_use_primary
+
           subject
 
           expect(response.body).to eq('')
@@ -1086,10 +1196,40 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           end
         end
       end
+
+      context 'reading fingerprints from UploadedFile instance' do
+        let(:file) { Packages::Package.last.package_files.with_format('%.jar').last }
+
+        subject { upload_file_with_token(params: params) }
+
+        before do
+          allow_next_instance_of(UploadedFile) do |uploaded_file|
+            allow(uploaded_file).to receive(:size).and_return(123)
+            allow(uploaded_file).to receive(:sha1).and_return('sha1')
+            allow(uploaded_file).to receive(:md5).and_return('md5')
+          end
+        end
+
+        it 'reads size, sha1 and md5 fingerprints from uploaded_file instance' do
+          subject
+
+          expect(file.size).to eq(123)
+          expect(file.file_sha1).to eq('sha1')
+          expect(file.file_md5).to eq('md5')
+        end
+      end
+
+      def expect_use_primary
+        lb_session = ::Gitlab::Database::LoadBalancing::Session.current
+
+        expect(lb_session).to receive(:use_primary).and_call_original
+
+        allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(lb_session)
+      end
     end
 
-    def upload_file(params: {}, request_headers: headers, file_extension: 'jar')
-      url = "/projects/#{project.id}/packages/maven/#{param_path}/my-app-1.0-20180724.124855-1.#{file_extension}"
+    def upload_file(params: {}, request_headers: headers, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
+      url = "/projects/#{project.id}/packages/maven/#{param_path}/#{file_name}.#{file_extension}"
       workhorse_finalize(
         api(url),
         method: :put,
@@ -1100,8 +1240,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       )
     end
 
-    def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar')
-      upload_file(params: params, request_headers: request_headers, file_extension: file_extension)
+    def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
+      upload_file(params: params, request_headers: request_headers, file_name: file_name, file_extension: file_extension)
     end
   end
 

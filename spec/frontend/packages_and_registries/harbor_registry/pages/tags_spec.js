@@ -60,10 +60,6 @@ describe('Harbor Tags page', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains tags header', () => {
     mountComponent();
 

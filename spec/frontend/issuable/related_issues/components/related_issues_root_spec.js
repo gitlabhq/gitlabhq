@@ -7,7 +7,7 @@ import {
   issuable1,
   issuable2,
 } from 'jest/issuable/components/related_issuable_mock_data';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_CONFLICT,
@@ -19,7 +19,7 @@ import RelatedIssuesBlock from '~/related_issues/components/related_issues_block
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import relatedIssuesService from '~/related_issues/services/related_issues_service';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('RelatedIssuesRoot', () => {
   let wrapper;
@@ -34,7 +34,6 @@ describe('RelatedIssuesRoot', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   const createComponent = ({ props = {}, data = {} } = {}) => {
@@ -42,6 +41,9 @@ describe('RelatedIssuesRoot', () => {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        reportAbusePath: '/report/abuse/path',
       },
       data() {
         return data;

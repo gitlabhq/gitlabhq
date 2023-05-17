@@ -22,10 +22,6 @@ describe('App component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the correct svg illustration', () => {
     expect(wrapper.find('img').attributes('src')).toBe('illustrations/project-create-new-sm.svg');
   });

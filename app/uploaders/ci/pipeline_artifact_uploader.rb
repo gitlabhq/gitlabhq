@@ -4,7 +4,7 @@ module Ci
   class PipelineArtifactUploader < GitlabUploader
     include ObjectStorage::Concern
 
-    storage_options Gitlab.config.artifacts
+    storage_location :artifacts
 
     alias_method :upload, :model
 

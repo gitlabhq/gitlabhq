@@ -1,9 +1,11 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
-import { GlTabs } from '@gitlab/ui';
+import { GlToggle } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
+import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
 describe('Markdown field header component', () => {
   let wrapper;
@@ -14,18 +16,18 @@ describe('Markdown field header component', () => {
         previewMarkdown: false,
         ...props,
       },
-      stubs: { GlTabs },
+      stubs: { GlToggle },
     });
   };
 
-  const findWriteTab = () => wrapper.findByTestId('write-tab');
-  const findPreviewTab = () => wrapper.findByTestId('preview-tab');
+  const findPreviewToggle = () => wrapper.findByTestId('preview-toggle');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
   const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
       .filter((button) => button.props(prop) === value)
       .at(0);
+  const findDrawioToolbarButton = () => wrapper.findComponent(DrawioToolbarButton);
 
   beforeEach(() => {
     window.gl = {
@@ -35,10 +37,6 @@ describe('Markdown field header component', () => {
     };
 
     createWrapper();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('markdown header buttons', () => {
@@ -89,16 +87,14 @@ describe('Markdown field header component', () => {
     });
   });
 
-  it('activates `write` tab when previewMarkdown is false', () => {
-    expect(findWriteTab().attributes('active')).toBe('true');
-    expect(findPreviewTab().attributes('active')).toBeUndefined();
+  it('hides markdown preview when previewMarkdown is false', () => {
+    expect(findPreviewToggle().text()).toBe('Preview');
   });
 
-  it('activates `preview` tab when previewMarkdown is true', () => {
+  it('shows markdown preview when previewMarkdown is true', () => {
     createWrapper({ previewMarkdown: true });
 
-    expect(findWriteTab().attributes('active')).toBeUndefined();
-    expect(findPreviewTab().attributes('active')).toBe('true');
+    expect(findPreviewToggle().text()).toBe('Continue editing');
   });
 
   it('hides toolbar in preview mode', () => {
@@ -107,17 +103,16 @@ describe('Markdown field header component', () => {
     expect(findToolbar().classes().includes('gl-display-none!')).toBe(true);
   });
 
-  it('emits toggle markdown event when clicking preview tab', async () => {
-    const eventData = { target: {} };
-    findPreviewTab().vm.$emit('click', eventData);
+  it('emits toggle markdown event when clicking preview toggle', async () => {
+    findPreviewToggle().vm.$emit('click', true);
 
     await nextTick();
-    expect(wrapper.emitted('preview-markdown').length).toEqual(1);
+    expect(wrapper.emitted('showPreview').length).toEqual(1);
 
-    findWriteTab().vm.$emit('click', eventData);
+    findPreviewToggle().vm.$emit('click', false);
 
     await nextTick();
-    expect(wrapper.emitted('write-markdown').length).toEqual(1);
+    expect(wrapper.emitted('showPreview').length).toEqual(2);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
@@ -127,15 +122,8 @@ describe('Markdown field header component', () => {
       ),
     ]);
 
-    expect(wrapper.emitted('preview-markdown')).toBeUndefined();
-    expect(wrapper.emitted('write-markdown')).toBeUndefined();
-  });
-
-  it('blurs preview link after click', () => {
-    const target = { blur: jest.fn() };
-    findPreviewTab().vm.$emit('click', { target });
-
-    expect(target.blur).toHaveBeenCalled();
+    expect(wrapper.emitted('showPreview')).toBeUndefined();
+    expect(wrapper.emitted('hidePreview')).toBeUndefined();
   });
 
   it('renders markdown table template', () => {
@@ -168,12 +156,12 @@ describe('Markdown field header component', () => {
     expect(wrapper.find('.js-suggestion-btn').exists()).toBe(false);
   });
 
-  it('hides preview tab when previewMarkdown property is false', () => {
+  it('hides markdown preview when previewMarkdown property is false', () => {
     createWrapper({
       enablePreview: false,
     });
 
-    expect(wrapper.findByTestId('preview-tab').exists()).toBe(false);
+    expect(wrapper.findByTestId('preview-toggle').exists()).toBe(false);
   });
 
   describe('restricted tool bar items', () => {
@@ -195,6 +183,40 @@ describe('Markdown field header component', () => {
       createWrapper();
 
       expect(findToolbarButtons().length).toBe(defaultCount);
+    });
+  });
+
+  describe('when drawIOEnabled is true', () => {
+    const uploadsPath = '/uploads';
+    const markdownPreviewPath = '/preview';
+
+    beforeEach(() => {
+      createWrapper({
+        drawioEnabled: true,
+        uploadsPath,
+        markdownPreviewPath,
+      });
+    });
+
+    it('renders drawio toolbar button', () => {
+      expect(findDrawioToolbarButton().props()).toEqual({
+        uploadsPath,
+        markdownPreviewPath,
+      });
+    });
+  });
+
+  describe('with content editor switcher', () => {
+    beforeEach(() => {
+      createWrapper({
+        showContentEditorSwitcher: true,
+      });
+    });
+
+    it('re-emits event from switcher', () => {
+      wrapper.findComponent(EditorModeSwitcher).vm.$emit('input', 'richText');
+
+      expect(wrapper.emitted('enableContentEditor')).toEqual([[]]);
     });
   });
 });

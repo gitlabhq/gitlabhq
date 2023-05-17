@@ -32,7 +32,7 @@ class Import::GiteaController < Import::GithubController
         if params[:namespace_id].present?
           @namespace = Namespace.find_by_id(params[:namespace_id])
 
-          render_404 unless current_user.can?(:create_projects, @namespace)
+          render_404 unless current_user.can?(:import_projects, @namespace)
         end
       end
     end
@@ -69,6 +69,11 @@ class Import::GiteaController < Import::GithubController
       redirect_to new_import_gitea_url,
         alert: _('You need to specify both an Access Token and a Host URL.')
     end
+  end
+
+  override :serialized_imported_projects
+  def serialized_imported_projects(projects = already_added_projects)
+    ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
   end
 
   override :client_repos

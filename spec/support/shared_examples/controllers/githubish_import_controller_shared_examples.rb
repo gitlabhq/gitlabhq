@@ -138,6 +138,19 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
       .not_to exceed_all_query_limit(control_count)
   end
 
+  context 'when user is not allowed to import projects' do
+    let(:user) { create(:user) }
+    let!(:group) { create(:group).tap { |group| group.add_developer(user) } }
+
+    it 'returns 404' do
+      expect(stub_client(repos: [], orgs: [])).to receive(:repos)
+
+      get :status, params: { namespace_id: group.id }, format: :html
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   context 'when filtering' do
     let(:repo_2) { repo_fake.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' }) }
     let(:project) { create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo') }

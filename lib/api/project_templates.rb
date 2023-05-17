@@ -32,6 +32,8 @@ module API
         use :pagination
       end
       get ':id/templates/:type' do
+        bad_request! if params[:type] == 'metrics_dashboard_ymls' && Feature.enabled?(:remove_monitor_metrics)
+
         templates = TemplateFinder.all_template_names(user_project, params[:type]).values.flatten
 
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
@@ -60,6 +62,8 @@ module API
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
+        bad_request! if params[:type] == 'metrics_dashboard_ymls' && Feature.enabled?(:remove_monitor_metrics)
+
         begin
           template = TemplateFinder.build(
             params[:type],

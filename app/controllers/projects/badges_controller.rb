@@ -40,6 +40,7 @@ class Projects::BadgesController < Projects::ApplicationController
       .new(project, current_user, opts: {
              key_text: params[:key_text],
              key_width: params[:key_width],
+             value_width: params[:value_width],
              order_by: params[:order_by]
            })
 

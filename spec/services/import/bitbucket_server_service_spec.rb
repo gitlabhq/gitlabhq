@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BitbucketServerService do
+RSpec.describe Import::BitbucketServerService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   let(:base_uri) { "https://test:7990" }
@@ -93,7 +93,7 @@ RSpec.describe Import::BitbucketServerService do
       result = subject.execute(credentials)
 
       expect(result).to include(
-        message: "You don't have permissions to create this project",
+        message: "You don't have permissions to import this project",
         status: :error,
         http_status: :unauthorized
       )

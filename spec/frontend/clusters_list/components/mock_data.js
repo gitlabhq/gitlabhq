@@ -19,7 +19,7 @@ export const connectedTimeInactive = new Date(connectedTimeNow.getTime() - ACTIV
 export const clusterAgents = [
   {
     name: 'agent-1',
-    id: 'agent-1-id',
+    id: 'gid://gitlab/Clusters::Agent/1',
     configFolder: {
       webPath: '/agent/full/path',
     },
@@ -30,17 +30,17 @@ export const clusterAgents = [
   },
   {
     name: 'agent-2',
-    id: 'agent-2-id',
+    id: 'gid://gitlab/Clusters::Agent/2',
     webPath: '/agent-2',
     status: 'active',
     lastContact: connectedTimeNow.getTime(),
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },
@@ -54,14 +54,14 @@ export const clusterAgents = [
   },
   {
     name: 'agent-3',
-    id: 'agent-3-id',
+    id: 'gid://gitlab/Clusters::Agent/3',
     webPath: '/agent-3',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.5' },
+          metadata: { version: 'v14.6.0' },
         },
       ],
     },
@@ -75,17 +75,17 @@ export const clusterAgents = [
   },
   {
     name: 'agent-4',
-    id: 'agent-4-id',
+    id: 'gid://gitlab/Clusters::Agent/4',
     webPath: '/agent-4',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.7' },
+          metadata: { version: 'v14.7.0' },
         },
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },
@@ -99,17 +99,101 @@ export const clusterAgents = [
   },
   {
     name: 'agent-5',
-    id: 'agent-5-id',
+    id: 'gid://gitlab/Clusters::Agent/5',
     webPath: '/agent-5',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.5' },
+          metadata: { version: 'v14.5.0' },
         },
         {
-          metadata: { version: 'v14.3' },
+          metadata: { version: 'v14.3.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-6',
+    id: 'gid://gitlab/Clusters::Agent/6',
+    webPath: '/agent-6',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.6.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-7',
+    id: 'gid://gitlab/Clusters::Agent/7',
+    webPath: '/agent-7',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-8',
+    id: 'gid://gitlab/Clusters::Agent/8',
+    webPath: '/agent-8',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-9',
+    id: 'gid://gitlab/Clusters::Agent/9',
+    webPath: '/agent-9',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },

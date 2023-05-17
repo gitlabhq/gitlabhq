@@ -53,23 +53,23 @@ exports[`Contributors charts should render charts and a RefSelector when loading
       Excluding merge commits. Limited to 6,000 commits.
     </span>
      
-    <div>
-      <glareachart-stub
-        annotations=""
-        class="gl-mb-5"
-        data="[object Object]"
-        height="264"
-        includelegendavgmax="true"
-        legendaveragetext="Avg"
-        legendcurrenttext="Current"
-        legendlayout="inline"
-        legendmaxtext="Max"
-        legendmintext="Min"
-        option="[object Object]"
-        thresholds=""
-        width="0"
-      />
-    </div>
+    <glareachart-stub
+      annotations=""
+      class="gl-mb-5"
+      data="[object Object]"
+      height="264"
+      includelegendavgmax="true"
+      legendaveragetext="Avg"
+      legendcurrenttext="Current"
+      legendlayout="inline"
+      legendmaxtext="Max"
+      legendmintext="Min"
+      legendseriesinfo=""
+      option="[object Object]"
+      responsive=""
+      thresholds=""
+      width="auto"
+    />
      
     <div
       class="row"
@@ -91,22 +91,22 @@ exports[`Contributors charts should render charts and a RefSelector when loading
           
         </p>
          
-        <div>
-          <glareachart-stub
-            annotations=""
-            data="[object Object]"
-            height="216"
-            includelegendavgmax="true"
-            legendaveragetext="Avg"
-            legendcurrenttext="Current"
-            legendlayout="inline"
-            legendmaxtext="Max"
-            legendmintext="Min"
-            option="[object Object]"
-            thresholds=""
-            width="0"
-          />
-        </div>
+        <glareachart-stub
+          annotations=""
+          data="[object Object]"
+          height="216"
+          includelegendavgmax="true"
+          legendaveragetext="Avg"
+          legendcurrenttext="Current"
+          legendlayout="inline"
+          legendmaxtext="Max"
+          legendmintext="Min"
+          legendseriesinfo=""
+          option="[object Object]"
+          responsive=""
+          thresholds=""
+          width="auto"
+        />
       </div>
     </div>
   </div>

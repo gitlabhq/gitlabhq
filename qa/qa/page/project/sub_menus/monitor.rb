@@ -31,6 +31,22 @@ module QA
             end
           end
 
+          def go_to_monitor_on_call_schedules
+            hover_monitor do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'On-call Schedules')
+              end
+            end
+          end
+
+          def go_to_monitor_escalation_policies
+            hover_monitor do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Escalation Policies')
+              end
+            end
+          end
+
           private
 
           def hover_monitor

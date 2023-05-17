@@ -120,10 +120,6 @@
   }
 }
 
-.milestone-detail {
-  border-bottom: 1px solid var(--border-color, $border-color);
-}
-
 @include media-breakpoint-down(md) {
   .milestone-actions {
     @include clearfix();
@@ -131,42 +127,6 @@
 
     .btn:first-child {
       margin-left: 0;
-    }
-  }
-}
-
-.milestone-page-header {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  flex-wrap: wrap;
-
-  .milestone-buttons {
-    margin-left: auto;
-    order: 2;
-
-    .verbose {
-      display: none;
-    }
-  }
-
-  .header-text-content {
-    order: 3;
-    width: 100%;
-  }
-
-  @include media-breakpoint-up(xs) {
-    .milestone-buttons .verbose {
-      display: inline;
-    }
-
-    .header-text-content {
-      order: 2;
-      width: auto;
-    }
-
-    .milestone-buttons {
-      order: 3;
     }
   }
 }

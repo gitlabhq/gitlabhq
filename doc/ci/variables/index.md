@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -19,12 +19,13 @@ or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-varia
 Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/index.html)
 to execute scripts. Each shell has its own set of reserved variable names.
 
-> For more information about advanced use of GitLab CI/CD:
->
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Get to productivity faster with these [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/)
->   shared by GitLab engineers.
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how the Cloud Native Computing Foundation (CNCF) [eliminates the complexity](https://about.gitlab.com/customers/cncf/)
->   of managing projects across many cloud providers with GitLab CI/CD.
+To ensure consistent behavior, you should always put variable values in single or double quotes.
+Variables are internally parsed by the [Psych YAML parser](https://docs.ruby-lang.org/en/master/Psych.html),
+so quoted and unquoted variables might be parsed differently. For example, `VAR1: 012345`
+is interpreted as an octal value, so the value becomes `5349`, but `VAR1: "012345"` is parsed
+as a string with a value of `012345`.
+
+For more information about advanced use of GitLab CI/CD, see [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/) shared by GitLab engineers.
 
 ## Predefined CI/CD variables
 
@@ -189,7 +190,7 @@ You can make a CI/CD variable available to all projects and groups in a GitLab i
 
 Prerequisite:
 
-- You must have administrator access.
+- You must have administrator access to the instance.
 
 To add an instance variable:
 
@@ -205,9 +206,6 @@ To add an instance variable:
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is not shown
      in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
-
-The instance variables that are available in a project are listed in the project's
-**Settings > CI/CD > Variables** section.
 
 ## CI/CD variable security
 
@@ -471,7 +469,8 @@ To pass a job-created environment variable to other jobs:
    - Values can be wrapped in quotes, but cannot contain newline characters.
 1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
    artifact.
-1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
+1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts),
+   unless [jobs are configured not to receive `dotenv` variables](#control-which-jobs-receive-dotenv-variables).
 
 For example:
 
@@ -743,7 +742,7 @@ export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
 export CI_COMMIT_REF_NAME="main"
-export CI_REPOSITORY_URL="https://gitlab-ci-token:[masked]@example.com/gitlab-org/gitlab-foss.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:[masked]@example.com/gitlab-org/gitlab.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"
@@ -753,11 +752,11 @@ export CI_JOB_TOKEN="[masked]"
 export CI_PIPELINE_ID="1000"
 export CI_PIPELINE_IID="10"
 export CI_PAGES_DOMAIN="gitlab.io"
-export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-foss"
+export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab"
 export CI_PROJECT_ID="34"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
-export CI_PROJECT_NAME="gitlab-foss"
-export CI_PROJECT_TITLE="GitLab FOSS"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab"
+export CI_PROJECT_NAME="gitlab"
+export CI_PROJECT_TITLE="GitLab"
 ...
 ```
 
@@ -845,6 +844,10 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_SERVER_HOST=gitlab.com
 ++ export CI_SERVER_PORT=3000
 ++ CI_SERVER_PORT=3000
+++ export CI_SERVER_SHELL_SSH_HOST=gitlab.com
+++ CI_SERVER_SHELL_SSH_HOST=gitlab.com
+++ export CI_SERVER_SHELL_SSH_PORT=22
+++ CI_SERVER_SHELL_SSH_PORT=22
 ++ export CI_SERVER_PROTOCOL=https
 ++ CI_SERVER_PROTOCOL=https
 ++ export CI_SERVER_NAME=GitLab

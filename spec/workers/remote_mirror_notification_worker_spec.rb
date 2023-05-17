@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RemoteMirrorNotificationWorker, :mailer do
+RSpec.describe RemoteMirrorNotificationWorker, :mailer, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository, :remote_mirror) }
   let_it_be(:mirror) { project.remote_mirrors.first }
 
@@ -30,8 +30,10 @@ RSpec.describe RemoteMirrorNotificationWorker, :mailer do
     end
 
     it 'does nothing when a notification has already been sent' do
-      mirror.update_columns(last_error: "There was a problem fetching",
-                            error_notification_sent: true)
+      mirror.update_columns(
+        last_error: "There was a problem fetching",
+        error_notification_sent: true
+      )
 
       expect(NotificationService).not_to receive(:new)
 

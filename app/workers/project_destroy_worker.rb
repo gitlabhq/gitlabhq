@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectDestroyWorker # rubocop:disable Scalability/IdempotentWorker
+class ProjectDestroyWorker
   include ApplicationWorker
 
   data_consistency :always
@@ -9,6 +9,9 @@ class ProjectDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ExceptionBacktrace
 
   feature_category :source_code_management
+
+  idempotent!
+  deduplicate :until_executed, ttl: 2.hours
 
   def perform(project_id, user_id, params)
     project = Project.find(project_id)

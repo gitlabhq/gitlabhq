@@ -1,12 +1,13 @@
 - max_first_name_length = max_last_name_length = 127
 - omniauth_providers_placement ||= :bottom
 - borderless ||= false
+- form_resource_name = "new_#{resource_name}"
 
 .gl-mb-3.gl-p-4{ class: (borderless ? '' : 'gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base') }
   - if show_omniauth_providers && omniauth_providers_placement == :top
     = render 'devise/shared/signup_omniauth_providers_top'
 
-  = gitlab_ui_form_for(resource, as: "new_#{resource_name}", url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
+  = gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
     - if Gitlab::CurrentSettings.invisible_captcha_enabled
@@ -52,21 +53,20 @@
       %p.validation-warning.gl-field-error-ignore.text-secondary.hide= _('This email address does not look right, are you sure you typed it correctly?')
       -# This is used for providing entry to Jihu on email verification
       = render_if_exists 'devise/shared/signup_email_additional_info'
-    .form-group.gl-mb-5#password-strength
+    .form-group.gl-mb-5
       = f.label :password, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
-      = f.password_field :password,
-        class: 'form-control gl-form-input bottom js-password-complexity-validation',
-        data: { qa_selector: 'new_user_password_field' },
+      %input.form-control.gl-form-input.js-password{ data: { id: "#{form_resource_name}_password",
+        title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length },
+        minimum_password_length: @minimum_password_length,
+        qa_selector: 'new_user_password_field',
         autocomplete: 'new-password',
-        required: true,
-        pattern: ".{#{@minimum_password_length},}",
-        title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
-      %p.gl-field-hint.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
+        name: "#{form_resource_name}[password]" } }
+      %p.gl-field-hint-valid.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       = render_if_exists 'shared/password_requirements_list'
     = render_if_exists 'devise/shared/phone_verification', form: f
     %div
 
-    - if arkose_labs_challenge_enabled?
+    - if arkose_labs_enabled?
       = render_if_exists 'devise/registrations/arkose_labs'
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce

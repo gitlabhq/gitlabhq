@@ -38,19 +38,19 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
     resetHTMLFixture();
   });
 
-  it('mounts the component if the selector exists', async () => {
+  it('mounts the component if the selector exists', () => {
     initMock('<div id="mount-here"></div>');
 
     expect(findMock().exists()).toBe(true);
   });
 
-  it('does not mount the component if selector does not exist', async () => {
+  it('does not mount the component if selector does not exist', () => {
     initMock('<div id="do-not-mount-here"></div>');
 
     expect(didCreateApp()).toBe(false);
   });
 
-  it('passes the prop to the component if the prop exists', async () => {
+  it('passes the prop to the component if the prop exists', () => {
     initMock(`<div id="mount-here" data-view-model={"someKey":"thing","count":123}></div>`);
 
     expect(findMock().props()).toEqual({

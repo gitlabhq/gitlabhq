@@ -22,10 +22,6 @@ describe('Daterange component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDaterangePicker = () => wrapper.findComponent(GlDaterangePicker);
   const findDateRangeIndicator = () => wrapper.findByTestId('daterange-picker-indicator');
 
@@ -90,18 +86,19 @@ describe('Daterange component', () => {
       });
 
       describe('set', () => {
-        it('emits the change event with an object containing startDate and endDate', () => {
+        it('emits the change event with an object containing startDate and endDate', async () => {
           const startDate = new Date('2019-10-01');
           const endDate = new Date('2019-10-05');
-          wrapper.vm.dateRange = { startDate, endDate };
 
-          expect(wrapper.emitted().change).toEqual([[{ startDate, endDate }]]);
+          await findDaterangePicker().vm.$emit('input', { startDate, endDate });
+
+          expect(wrapper.emitted('change')).toEqual([[{ startDate, endDate }]]);
         });
       });
 
       describe('get', () => {
-        it("returns value of dateRange from state's startDate and endDate", () => {
-          expect(wrapper.vm.dateRange).toEqual({
+        it("datepicker to have default of dateRange from state's startDate and endDate", () => {
+          expect(findDaterangePicker().props('value')).toEqual({
             startDate: defaultProps.startDate,
             endDate: defaultProps.endDate,
           });

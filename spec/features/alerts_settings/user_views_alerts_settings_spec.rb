@@ -19,6 +19,7 @@ RSpec.describe 'Alert integrations settings form', :js, feature_category: :incid
   describe 'when viewing alert integrations as a maintainer' do
     context 'with the default page permissions' do
       before do
+        stub_feature_flags(remove_monitor_metrics: false)
         visit project_settings_operations_path(project, anchor: 'js-alert-management-settings')
         wait_for_requests
       end

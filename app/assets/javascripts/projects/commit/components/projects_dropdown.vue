@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
+import { debounce, uniqBy } from 'lodash';
 import {
   I18N_NO_RESULTS_MESSAGE,
   I18N_PROJECT_HEADER,
@@ -26,7 +27,7 @@ export default {
   },
   data() {
     return {
-      filterTerm: this.value,
+      filterTerm: '',
     };
   },
   computed: {
@@ -39,7 +40,18 @@ export default {
       );
     },
     listboxItems() {
-      return this.filteredResults.map(({ id, name }) => ({ value: id, text: name }));
+      const selectedItem = { value: this.selectedProject.id, text: this.selectedProject.name };
+      const transformedList = this.filteredResults.map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }));
+
+      if (this.filterTerm) {
+        return transformedList;
+      }
+
+      // Add selected item to top of list if not searching
+      return uniqBy([selectedItem].concat(transformedList), 'value');
     },
     selectedProject() {
       return this.sortedProjects.find((project) => project.id === this.targetProjectId) || {};
@@ -47,28 +59,26 @@ export default {
   },
   methods: {
     selectProject(value) {
-      this.$emit('selectProject', value);
-
-      // when we select a project, we want the dropdown to filter to the selected project
-      const project = this.listboxItems.find((x) => x.value === value);
-      this.filterTerm = project?.text || '';
+      this.$emit('input', value);
     },
-    filterTermChanged(value) {
-      this.filterTerm = value;
-    },
+    debouncedSearch: debounce(function debouncedSearch(value) {
+      this.filterTerm = value.trim();
+    }, 250),
   },
 };
 </script>
 <template>
   <gl-collapsible-listbox
+    class="gl-max-w-full"
     :header-text="$options.i18n.projectHeaderTitle"
     :items="listboxItems"
     searchable
     :search-placeholder="$options.i18n.projectSearchPlaceholder"
     :selected="selectedProject.id"
     :toggle-text="selectedProject.name"
+    toggle-class="gl-w-full"
     :no-results-text="$options.i18n.noResultsMessage"
-    @search="filterTermChanged"
+    @search="debouncedSearch"
     @select="selectProject"
   />
 </template>

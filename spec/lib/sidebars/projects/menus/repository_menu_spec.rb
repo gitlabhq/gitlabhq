@@ -6,7 +6,11 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
   let_it_be(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
-  let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: 'master') }
+  let(:is_super_sidebar) { false }
+  let(:context) do
+    Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: 'master',
+   is_super_sidebar: is_super_sidebar)
+  end
 
   subject { described_class.new(context) }
 
@@ -36,9 +40,8 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
     end
 
     context 'for menu items' do
-      shared_examples_for 'repository menu item link for' do |item_id|
+      shared_examples_for 'repository menu item link for' do
         let(:ref) { 'master' }
-        let(:item_id) { item_id }
         subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id }.link }
 
         using RSpec::Parameterized::TableSyntax
@@ -77,15 +80,39 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
         end
       end
 
+      shared_examples_for 'repository menu item with different super sidebar title' do |title, super_sidebar_title|
+        subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
+
+        specify do
+          expect(subject.title).to eq(title)
+        end
+
+        context 'when inside the super sidebar' do
+          let(:is_super_sidebar) { true }
+
+          specify do
+            expect(subject.title).to eq(super_sidebar_title)
+          end
+        end
+      end
+
+      describe 'Files' do
+        let_it_be(:item_id) { :files }
+
+        it_behaves_like 'repository menu item with different super sidebar title',
+                        _('Files'),
+                        _('Repository')
+      end
+
       describe 'Commits' do
         let_it_be(:item_id) { :commits }
 
-        it_behaves_like 'repository menu item link for', :commits do
+        it_behaves_like 'repository menu item link for' do
           let(:route) { "/#{project.full_path}/-/commits/#{ref}" }
         end
       end
 
-      describe 'Contributors' do
+      describe 'Contributor statistics' do
         let_it_be(:item_id) { :contributors }
 
         context 'when analytics is disabled' do
@@ -103,16 +130,22 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
             project.project_feature.update!(analytics_access_level: ProjectFeature::ENABLED)
           end
 
-          it_behaves_like 'repository menu item link for', :contributors do
+          it_behaves_like 'repository menu item link for' do
             let(:route) { "/#{project.full_path}/-/graphs/#{ref}" }
           end
         end
       end
 
       describe 'Network' do
-        it_behaves_like 'repository menu item link for', :graphs do
+        let_it_be(:item_id) { :graphs }
+
+        it_behaves_like 'repository menu item link for' do
           let(:route) { "/#{project.full_path}/-/network/#{ref}" }
         end
+
+        it_behaves_like 'repository menu item with different super sidebar title',
+                        _('Graph'),
+                        _('Repository graph')
       end
     end
   end

@@ -1,7 +1,7 @@
-import initNotesApp from '~/mr_notes/init_notes';
+import mountNotesApp from 'ee_else_ce/mr_notes/mount_app';
 import { initReportAbuse } from '~/projects/report_abuse';
 import { initMrPage } from '../page';
 
 initMrPage();
-initNotesApp();
+mountNotesApp();
 initReportAbuse();

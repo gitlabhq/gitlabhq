@@ -3,26 +3,21 @@
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = @error
 %h1.page-title.gl-font-size-h-display
   = _('New Branch')
-%hr
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do
-  .form-group.row
-    = label_tag :branch_name, _('Branch name'), class: 'col-form-label col-sm-2'
-    .col-sm-10
-      = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'
-      .form-text.text-muted.text-danger.js-branch-name-error
-  .form-group.row
-    = label_tag :ref, _('Create from'), class: 'col-form-label col-sm-2'
-    .col-sm-auto.create-from
-      .js-new-branch-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
-      .form-text.text-muted
-        = _('Existing branch name, tag, or commit SHA')
-  .form-actions
-    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
-      = _('Create branch')
-    = link_to _('Cancel'), project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'
-
+  .form-group.gl-max-w-80
+    = label_tag :branch_name, _('Branch name')
+    = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'
+    .form-text.text-muted.text-danger.js-branch-name-error{ 'aria-live': 'assertive' }
+  .form-group.gl-max-w-80
+    = label_tag :ref, _('Create from')
+    .js-new-branch-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
+    .form-text.text-muted
+      = _('Existing branch name, tag, or commit SHA')
+  = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
+    = _('Create branch')
+  = link_to _('Cancel'), project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'

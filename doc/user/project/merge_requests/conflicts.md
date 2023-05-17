@@ -162,9 +162,8 @@ merge commit. Verify it contains no unintended changes and doesn't break your bu
 
 ## Related topics
 
-- [Introduction to Git rebase and force-push](../../../topics/git/git_rebase.md).
-- [Git GUI apps](https://git-scm.com/downloads/guis) to help you visualize the
-  differences between branches and resolve them.
+- [Introduction to Git rebase and force-push](../../../topics/git/git_rebase.md)
+- [Git applications for visualizing the Git workflow](https://git-scm.com/downloads/guis)
 
 <!-- ## Troubleshooting
 

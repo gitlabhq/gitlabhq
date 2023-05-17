@@ -64,7 +64,7 @@ describe('~/ci/pipeline_editor/components/ui/editor_tab.vue', () => {
     mockChildMounted = jest.fn();
   });
 
-  it('tabs are mounted lazily', async () => {
+  it('tabs are mounted lazily', () => {
     createMockedWrapper();
 
     expect(mockChildMounted).toHaveBeenCalledTimes(0);
@@ -192,7 +192,7 @@ describe('~/ci/pipeline_editor/components/ui/editor_tab.vue', () => {
       createMockedWrapper();
     });
 
-    it('renders correct number of badges', async () => {
+    it('renders correct number of badges', () => {
       expect(findBadges()).toHaveLength(1);
       expect(findBadges().at(0).text()).toBe('NEW');
     });

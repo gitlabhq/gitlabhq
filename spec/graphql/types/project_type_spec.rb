@@ -24,7 +24,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       snippets_enabled jobs_enabled public_jobs open_issues_count import_status
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
-      namespace group statistics repository merge_requests merge_request issues
+      namespace group statistics statistics_details_paths repository merge_requests merge_request issues
       issue milestones pipelines removeSourceBranchAfterMerge pipeline_counts sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release
@@ -34,11 +34,11 @@ RSpec.describe GitlabSchema.types['Project'] do
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count
       pipeline_analytics squash_read_only sast_ci_configuration
-      cluster_agent cluster_agents agent_configurations
+      cluster_agent cluster_agents agent_configurations ci_access_authorized_agents user_access_authorized_agents
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
-      incident_management_timeline_event_tags visible_forks
+      incident_management_timeline_event_tags visible_forks inherited_ci_variables
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -291,7 +291,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       let_it_be(:project) { create(:project_empty_repo) }
 
       it 'raises an error' do
-        expect(subject['errors'][0]['message']).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+        expect(subject['errors'][0]['message']).to eq('UF You must <a target="_blank" rel="noopener noreferrer" ' \
                                                       'href="http://localhost/help/user/project/repository/index.md#' \
                                                       'add-files-to-a-repository">add at least one file to the ' \
                                                       'repository</a> before using Security features.')
@@ -333,6 +333,7 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :target_branches,
                                             :state,
                                             :draft,
+                                            :approved,
                                             :labels,
                                             :before,
                                             :after,
@@ -676,8 +677,8 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     before do
-      allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
     end
 
     context 'when a user can admin issues' do

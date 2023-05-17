@@ -9,14 +9,15 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 import { mockBranches, mockBranchToken } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const defaultStubs = {
   Portal: true,
   GlFilteredSearchSuggestionList: {
@@ -45,6 +46,7 @@ function createComponent(options = {}) {
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
       suggestionsListClass: () => 'custom-class',
+      termsAsTokens: () => false,
     },
     stubs,
   });
@@ -54,58 +56,83 @@ describe('BranchToken', () => {
   let mock;
   let wrapper;
 
+  const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const triggerFetchBranches = (searchTerm = null) => {
+    findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
+    return waitForPromises();
+  };
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('methods', () => {
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
-
     describe('fetchBranches', () => {
-      it('calls `config.fetchBranches` with provided searchTerm param', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchBranches');
+      it('sets loading state', async () => {
+        wrapper = createComponent({
+          config: {
+            fetchBranches: jest.fn().mockResolvedValue(new Promise(() => {})),
+          },
+        });
+        await nextTick();
 
-        wrapper.vm.fetchBranches('foo');
-
-        expect(wrapper.vm.config.fetchBranches).toHaveBeenCalledWith('foo');
+        expect(findBaseToken().props('suggestionsLoading')).toBe(true);
       });
 
-      it('sets response to `branches` when request is succesful', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchBranches').mockResolvedValue({ data: mockBranches });
+      describe('when request is successful', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              fetchBranches: jest.fn().mockResolvedValue({ data: mockBranches }),
+            },
+          });
+        });
 
-        wrapper.vm.fetchBranches('foo');
+        it('calls `config.fetchBranches` with provided searchTerm param', async () => {
+          const searchTerm = 'foo';
+          await triggerFetchBranches(searchTerm);
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.branches).toEqual(mockBranches);
+          expect(findBaseToken().props('config').fetchBranches).toHaveBeenCalledWith(searchTerm);
+        });
+
+        it('sets response to `branches`', async () => {
+          await triggerFetchBranches();
+
+          expect(findBaseToken().props('suggestions')).toEqual(mockBranches);
+        });
+
+        it('sets `loading` to false when request completes', async () => {
+          await triggerFetchBranches();
+
+          expect(findBaseToken().props('suggestionsLoading')).toBe(false);
         });
       });
 
-      it('calls `createAlert` with flash error message when request fails', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchBranches').mockRejectedValue({});
+      describe('when request fails', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              fetchBranches: jest.fn().mockRejectedValue({}),
+            },
+          });
+        });
 
-        wrapper.vm.fetchBranches('foo');
+        it('calls `createAlert` with alert error message when request fails', async () => {
+          await triggerFetchBranches();
 
-        return waitForPromises().then(() => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching branches.',
           });
         });
-      });
 
-      it('sets `loading` to false when request completes', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchBranches').mockRejectedValue({});
+        it('sets `loading` to false when request completes', async () => {
+          await triggerFetchBranches();
 
-        wrapper.vm.fetchBranches('foo');
-
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.loading).toBe(false);
+          expect(findBaseToken().props('suggestionsLoading')).toBe(false);
         });
       });
     });
@@ -120,16 +147,13 @@ describe('BranchToken', () => {
       await nextTick();
     }
 
-    beforeEach(async () => {
-      wrapper = createComponent({ value: { data: mockBranches[0].name } });
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        branches: mockBranches,
+    beforeEach(() => {
+      wrapper = createComponent({
+        value: { data: mockBranches[0].name },
+        config: {
+          initialBranches: mockBranches,
+        },
       });
-
-      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {

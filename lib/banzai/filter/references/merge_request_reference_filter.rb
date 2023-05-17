@@ -13,8 +13,7 @@ module Banzai
 
         def url_for_object(mr, project)
           h = Gitlab::Routing.url_helpers
-          h.project_merge_request_url(project, mr,
-                                              only_path: context[:only_path])
+          h.project_merge_request_url(project, mr, only_path: context[:only_path])
         end
 
         def object_link_text_extras(object, matches)

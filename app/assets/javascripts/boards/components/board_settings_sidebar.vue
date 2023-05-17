@@ -1,8 +1,15 @@
 <script>
+import produce from 'immer';
 import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { LIST, ListType, ListTypeTitles } from '~/boards/constants';
+import {
+  LIST,
+  ListType,
+  ListTypeTitles,
+  listsQuery,
+  deleteListQueries,
+} from 'ee_else_ce/boards/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
@@ -31,8 +38,34 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['canAdminList', 'scopedLabelsAvailable', 'isIssueBoard'],
+  inject: [
+    'boardType',
+    'canAdminList',
+    'issuableType',
+    'scopedLabelsAvailable',
+    'isIssueBoard',
+    'isApolloBoard',
+  ],
   inheritAttrs: false,
+  props: {
+    listId: {
+      type: String,
+      required: true,
+    },
+    boardId: {
+      type: String,
+      required: true,
+    },
+    list: {
+      type: Object,
+      required: false,
+      default: () => null,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       ListType,
@@ -45,8 +78,11 @@ export default {
     isWipLimitsOn() {
       return this.glFeatures.wipLimits && this.isIssueBoard;
     },
+    activeListId() {
+      return this.isApolloBoard ? this.listId : this.activeId;
+    },
     activeList() {
-      return this.boardLists[this.activeId] || {};
+      return (this.isApolloBoard ? this.list : this.boardLists[this.activeId]) || {};
     },
     activeListLabel() {
       return this.activeList.label;
@@ -58,27 +94,60 @@ export default {
       return ListTypeTitles[ListType.label];
     },
     showSidebar() {
+      if (this.isApolloBoard) {
+        return Boolean(this.listId);
+      }
       return this.sidebarType === LIST && this.isSidebarOpen;
     },
   },
   created() {
-    eventHub.$on('sidebar.closeAll', this.unsetActiveId);
+    eventHub.$on('sidebar.closeAll', this.unsetActiveListId);
   },
   beforeDestroy() {
-    eventHub.$off('sidebar.closeAll', this.unsetActiveId);
+    eventHub.$off('sidebar.closeAll', this.unsetActiveListId);
   },
   methods: {
     ...mapActions(['unsetActiveId', 'removeList']),
     handleModalPrimary() {
-      this.deleteBoard();
+      this.deleteBoardList();
     },
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
-    deleteBoard() {
+    async deleteBoardList() {
       this.track('click_button', { label: 'remove_list' });
-      this.removeList(this.activeId);
-      this.unsetActiveId();
+      if (this.isApolloBoard) {
+        await this.deleteList(this.activeListId);
+      } else {
+        this.removeList(this.activeId);
+      }
+      this.unsetActiveListId();
+    },
+    unsetActiveListId() {
+      if (this.isApolloBoard) {
+        this.$emit('unsetActiveId');
+      } else {
+        this.unsetActiveId();
+      }
+    },
+    async deleteList(listId) {
+      await this.$apollo.mutate({
+        mutation: deleteListQueries[this.issuableType].mutation,
+        variables: {
+          listId,
+        },
+        update: (store) => {
+          store.updateQuery(
+            { query: listsQuery[this.issuableType].query, variables: this.queryVariables },
+            (sourceData) =>
+              produce(sourceData, (draftData) => {
+                draftData[this.boardType].board.lists.nodes = draftData[
+                  this.boardType
+                ].board.lists.nodes.filter((list) => list.id !== listId);
+              }),
+          );
+        },
+      });
     },
   },
 };
@@ -91,7 +160,7 @@ export default {
       class="js-board-settings-sidebar gl-absolute"
       :open="showSidebar"
       variant="sidebar"
-      @close="unsetActiveId"
+      @close="unsetActiveListId"
     >
       <template #title>
         <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">
@@ -109,7 +178,7 @@ export default {
           </gl-button>
         </div>
       </template>
-      <template v-if="isSidebarOpen">
+      <template v-if="showSidebar">
         <div v-if="boardListType === ListType.label">
           <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
           <gl-label
@@ -127,6 +196,7 @@ export default {
         <board-settings-sidebar-wip-limit
           v-if="isWipLimitsOn"
           :max-issue-count="activeList.maxIssueCount"
+          :active-list-id="activeListId"
         />
       </template>
     </gl-drawer>
@@ -136,11 +206,11 @@ export default {
       size="sm"
       :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalAction,
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :action-secondary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalCancel,
-        attributes: [{ variant: 'default' }],
+        attributes: { variant: 'default' },
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       @primary="handleModalPrimary"
     >

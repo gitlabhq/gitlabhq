@@ -2,78 +2,57 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'WebHooks integration', :requires_admin, :integrations, :orchestrated, product_group: :integrations do
+    describe(
+      'WebHooks integration',
+      :requires_admin,
+      :integrations,
+      :orchestrated,
+      product_group: :import_and_integrate
+    ) do
       before(:context) do
         toggle_local_requests(true)
       end
 
       after(:context) do
-        Service::DockerRun::Smocker.teardown!
+        Resource::ProjectWebHook.teardown!
       end
 
       let(:session) { SecureRandom.hex(5) }
       let(:tag_name) { SecureRandom.hex(5) }
 
       it 'sends a push event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348945' do
-        setup_webhook(push: true) do |webhook, smocker|
+        Resource::ProjectWebHook.setup(session: session, push: true) do |webhook, smocker|
           Resource::Repository::ProjectPush.fabricate! do |project_push|
             project_push.project = webhook.project
           end
 
-          wait_until do
-            !smocker.history(session).empty?
-          end
-
-          events = smocker.history(session).map(&:as_hook_event)
-          aggregate_failures do
-            expect(events.size).to be(1), "Should have 1 event: \n#{events.map(&:raw).join("\n")}"
-            expect(events[0].project_name).to eql(webhook.project.name)
-            expect(events[0].push?).to be(true), "Not push event: \n#{events[0].raw}"
-          end
+          expect_web_hook_single_event_success(webhook, smocker, type: 'push')
         end
       end
 
       it 'sends a merge request event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349720' do
-        setup_webhook(merge_requests: true) do |webhook, smocker|
+        Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
           Resource::MergeRequest.fabricate_via_api! do |merge_request|
             merge_request.project = webhook.project
           end
 
-          wait_until do
-            !smocker.history(session).empty?
-          end
-
-          events = smocker.history(session).map(&:as_hook_event)
-          aggregate_failures do
-            expect(events.size).to be(1), "Should have 1 event: \n#{events.map(&:raw).join("\n")}"
-            expect(events[0].project_name).to eql(webhook.project.name)
-            expect(events[0].mr?).to be(true), "Not MR event: \n#{events[0].raw}"
-          end
+          expect_web_hook_single_event_success(webhook, smocker, type: 'merge_request')
         end
       end
 
       it 'sends a wiki page event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349722' do
-        setup_webhook(wiki_page: true) do |webhook, smocker|
+        Resource::ProjectWebHook.setup(session: session, wiki_page: true) do |webhook, smocker|
           Resource::Wiki::ProjectPage.fabricate_via_api! do |page|
             page.project = webhook.project
           end
 
-          wait_until do
-            !smocker.history(session).empty?
-          end
-
-          events = smocker.history(session).map(&:as_hook_event)
-          aggregate_failures do
-            expect(events.size).to be(1), "Should have 1 event: \n#{events.map(&:raw).join("\n")}"
-            expect(events[0].project_name).to eql(webhook.project.name)
-            expect(events[0].wiki?).to be(true), "Not wiki event: \n#{events[0].raw}"
-          end
+          expect_web_hook_single_event_success(webhook, smocker, type: 'wiki_page')
         end
       end
 
       it 'sends an issues and note event',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
-        setup_webhook(issues: true, note: true) do |webhook, smocker|
+        Resource::ProjectWebHook.setup(session: session, issues: true, note: true) do |webhook, smocker|
           issue = Resource::Issue.fabricate_via_api! do |issue_init|
             issue_init.project = webhook.project
           end
@@ -83,25 +62,24 @@ module QA
             note.issue = issue
           end
 
-          wait_until do
-            smocker.history(session).size > 1
-          end
+          expect { smocker.events(session).size }.to eventually_eq(2)
+                                                .within(max_duration: 30, sleep_interval: 2),
+            -> { "Should have 2 events, got: #{smocker.stringified_history(session)}" }
 
-          events = smocker.history(session).map(&:as_hook_event)
+          events = smocker.events(session)
+
           aggregate_failures do
-            issue_event = events.find(&:issue?)
-            note_event = events.find(&:note?)
-
-            expect(events.size).to be(2), "Should have 2 events: \n#{events.map(&:raw).join("\n")}"
-            expect(issue_event).not_to be(nil), "Not issue event: \n#{events[0].raw}"
-            expect(note_event).not_to be(nil), "Not note event: \n#{events[1].raw}"
+            expect(events).to include(
+              a_hash_including(object_kind: 'note'),
+              a_hash_including(object_kind: 'issue')
+            )
           end
         end
       end
 
       it 'sends a tag event',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383577' do
-        setup_webhook(tag_push: true) do |webhook, smocker|
+        Resource::ProjectWebHook.setup(session: session, tag_push: true) do |webhook, smocker|
           project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
             project_push.project = webhook.project
           end
@@ -112,16 +90,7 @@ module QA
             tag.name = tag_name
           end
 
-          wait_until do
-            smocker.history(session).size == 1
-          end
-
-          events = smocker.history(session).map(&:as_hook_event)
-          aggregate_failures do
-            expect(events.size).to be(1), "Should have 1 event: \n#{events.map(&:raw).join("\n")}"
-            expect(events[0].project_name).to eql(webhook.project.name)
-            expect(events[0].tag?).to be(true), "Not tag event: \n#{events[0].raw}"
-          end
+          expect_web_hook_single_event_success(webhook, smocker, type: 'tag_push')
         end
       end
 
@@ -143,17 +112,23 @@ module QA
         let(:disabled_after) { 4 }
 
         it 'hook is auto-disabled',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595' do
-          setup_webhook(fail_mock, issues: true) do |webhook, smocker|
+           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
+             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393274',
+             type: :investigating
+           } do
+          Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
             hook_trigger_times.times do
               Resource::Issue.fabricate_via_api! do |issue_init|
                 issue_init.project = webhook.project
               end
+
+              # using sleep to give rate limiter a chance to activate.
+              sleep 0.5
             end
 
-            expect { smocker.history(session).size }.to eventually_eq(disabled_after)
+            expect { smocker.events(session).size }.to eventually_eq(disabled_after)
                                                   .within(max_duration: 30, sleep_interval: 2),
-              -> { "Should have #{disabled_after} events, got: #{smocker.history(session).size}" }
+              -> { "Should have #{disabled_after} events, got: #{smocker.events(session).size}" }
 
             webhook.reload!
 
@@ -161,34 +136,27 @@ module QA
           end
         end
       end
+    end
 
-      private
+    private
 
-      def setup_webhook(mock = Vendor::Smocker::SmockerApi::DEFAULT_MOCK, **event_args)
-        Service::DockerRun::Smocker.init(wait: 10) do |smocker|
-          smocker.register(mock, session: session)
+    def expect_web_hook_single_event_success(webhook, smocker, type:)
+      expect { smocker.events(session).size }.to eventually_eq(1)
+                                                    .within(max_duration: 30, sleep_interval: 2),
+        -> { "Should have 1 events, got: #{smocker.stringified_history(session)}" }
 
-          webhook = Resource::ProjectWebHook.fabricate_via_api! do |hook|
-            hook.url = smocker.url
+      event = smocker.events(session).first
 
-            event_args.each do |event, bool|
-              hook.send("#{event}_events=", bool)
-            end
-          end
-
-          yield(webhook, smocker)
-
-          smocker.reset
-        end
+      aggregate_failures do
+        expect(event).to match(a_hash_including(
+          object_kind: type,
+          project: a_hash_including(name: webhook.project.name)
+        ))
       end
+    end
 
-      def toggle_local_requests(on)
-        Runtime::ApplicationSettings.set_application_settings(allow_local_requests_from_web_hooks_and_services: on)
-      end
-
-      def wait_until(timeout = 120, &block)
-        Support::Waiter.wait_until(max_duration: timeout, reload_page: false, raise_on_failure: false, &block)
-      end
+    def toggle_local_requests(on)
+      Runtime::ApplicationSettings.set_application_settings(allow_local_requests_from_web_hooks_and_services: on)
     end
   end
 end

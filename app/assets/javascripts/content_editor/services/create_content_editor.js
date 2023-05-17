@@ -16,6 +16,7 @@ import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import Diagram from '../extensions/diagram';
+import DrawioDiagram from '../extensions/drawio_diagram';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
@@ -39,7 +40,6 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
-import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
@@ -47,6 +47,7 @@ import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
+import Selection from '../extensions/selection';
 import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -74,7 +75,7 @@ const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
     extensions: [...extensions],
     editorProps: {
       attributes: {
-        class: 'gl-outline-0!',
+        class: 'gl-shadow-none!',
       },
     },
     ...options,
@@ -86,6 +87,9 @@ export const createContentEditor = ({
   extensions = [],
   serializerConfig = { marks: {}, nodes: {} },
   tiptapOptions,
+  drawioEnabled = false,
+  enableAutocomplete,
+  autocompleteDataSources = {},
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -131,7 +135,6 @@ export const createContentEditor = ({
     ExternalKeydownHandler.configure({ eventHub }),
     Link,
     ListItem,
-    Loading,
     MathInline,
     OrderedList,
     Paragraph,
@@ -139,10 +142,10 @@ export const createContentEditor = ({
     Reference,
     ReferenceLabel,
     ReferenceDefinition,
+    Selection,
     Sourcemap,
     Strike,
     Subscript,
-    Suggestions,
     Superscript,
     TableCell,
     TableHeader,
@@ -157,6 +160,10 @@ export const createContentEditor = ({
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
+
+  if (enableAutocomplete) allExtensions.push(Suggestions.configure({ autocompleteDataSources }));
+  if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, renderMarkdown }));
+
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ serializerConfig });
@@ -173,5 +180,6 @@ export const createContentEditor = ({
     eventHub,
     deserializer,
     assetResolver,
+    drawioEnabled,
   });
 };

@@ -1,3 +1,4 @@
+import { GlAlert } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AssociationsList from '~/admin/users/components/associations/associations_list.vue';
 
@@ -12,6 +13,8 @@ describe('AssociationsList', () => {
       merge_requests_count: 1,
     },
   };
+
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(AssociationsList, {
@@ -30,7 +33,18 @@ describe('AssociationsList', () => {
         },
       });
 
-      expect(wrapper.html()).toMatchSnapshot();
+      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().text()).toContain(
+        "An error occurred while fetching this user's contributions",
+      );
+    });
+  });
+
+  describe('with no errors', () => {
+    it('does not display an alert', () => {
+      createComponent();
+
+      expect(findAlert().exists()).toBe(false);
     });
   });
 
@@ -38,24 +52,36 @@ describe('AssociationsList', () => {
     it('renders singular counts', () => {
       createComponent();
 
-      expect(wrapper.html()).toMatchSnapshot();
+      expect(wrapper.text()).toContain(`${defaultPropsData.associationsCount.groups_count} group`);
+      expect(wrapper.text()).toContain(`${defaultPropsData.associationsCount.issues_count} issue`);
+      expect(wrapper.text()).toContain(
+        `${defaultPropsData.associationsCount.projects_count} project`,
+      );
+      expect(wrapper.text()).toContain(
+        `${defaultPropsData.associationsCount.merge_requests_count} merge request`,
+      );
     });
   });
 
   describe('when counts are plural', () => {
     it('renders plural counts', () => {
-      createComponent({
-        propsData: {
-          associationsCount: {
-            groups_count: 2,
-            projects_count: 3,
-            issues_count: 4,
-            merge_requests_count: 5,
-          },
+      const propsData = {
+        associationsCount: {
+          groups_count: 2,
+          projects_count: 3,
+          issues_count: 4,
+          merge_requests_count: 5,
         },
-      });
+      };
 
-      expect(wrapper.html()).toMatchSnapshot();
+      createComponent({ propsData });
+
+      expect(wrapper.text()).toContain(`${propsData.associationsCount.groups_count} groups`);
+      expect(wrapper.text()).toContain(`${propsData.associationsCount.issues_count} issues`);
+      expect(wrapper.text()).toContain(`${propsData.associationsCount.projects_count} projects`);
+      expect(wrapper.text()).toContain(
+        `${propsData.associationsCount.merge_requests_count} merge requests`,
+      );
     });
   });
 
@@ -72,7 +98,7 @@ describe('AssociationsList', () => {
         },
       });
 
-      expect(wrapper.html()).toMatchSnapshot();
+      expect(wrapper.html()).toBe('');
     });
   });
 });

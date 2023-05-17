@@ -121,8 +121,7 @@ RSpec.describe Ci::BuildPolicy do
 
       context 'when no one can push or merge to the branch' do
         before do
-          create(:protected_branch, :no_one_can_push,
-                 name: build.ref, project: project)
+          create(:protected_branch, :no_one_can_push, name: build.ref, project: project)
         end
 
         it 'does not include ability to update build' do
@@ -132,8 +131,7 @@ RSpec.describe Ci::BuildPolicy do
 
       context 'when developers can push to the branch' do
         before do
-          create(:protected_branch, :developers_can_merge,
-                 name: build.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: build.ref, project: project)
         end
 
         it 'includes ability to update build' do
@@ -143,8 +141,7 @@ RSpec.describe Ci::BuildPolicy do
 
       context 'when no one can create the tag' do
         before do
-          create(:protected_tag, :no_one_can_create,
-                 name: build.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: build.ref, project: project)
 
           build.update!(tag: true)
         end
@@ -156,8 +153,7 @@ RSpec.describe Ci::BuildPolicy do
 
       context 'when no one can create the tag but it is not a tag' do
         before do
-          create(:protected_tag, :no_one_can_create,
-                 name: build.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: build.ref, project: project)
         end
 
         it 'includes ability to update build' do
@@ -181,8 +177,7 @@ RSpec.describe Ci::BuildPolicy do
 
             context 'when the build was created for a protected ref' do
               before do
-                create(:protected_branch, :developers_can_push,
-                       name: build.ref, project: project)
+                create(:protected_branch, :developers_can_push, name: build.ref, project: project)
               end
 
               it { expect(policy).to be_disallowed :erase_build }
@@ -204,8 +199,7 @@ RSpec.describe Ci::BuildPolicy do
           let(:owner) { user }
 
           before do
-            create(:protected_branch, :no_one_can_push, :no_one_can_merge,
-                   name: build.ref, project: project)
+            create(:protected_branch, :no_one_can_push, :no_one_can_merge, name: build.ref, project: project)
           end
 
           it { expect(policy).to be_disallowed :erase_build }
@@ -219,8 +213,7 @@ RSpec.describe Ci::BuildPolicy do
 
         context 'when maintainers can push to the branch' do
           before do
-            create(:protected_branch, :maintainers_can_push,
-                   name: build.ref, project: project)
+            create(:protected_branch, :maintainers_can_push, name: build.ref, project: project)
           end
 
           context 'when the build was created by the maintainer' do
@@ -240,8 +233,7 @@ RSpec.describe Ci::BuildPolicy do
           let(:owner) { user }
 
           before do
-            create(:protected_branch, :no_one_can_push, :no_one_can_merge,
-                   name: build.ref, project: project)
+            create(:protected_branch, :no_one_can_push, :no_one_can_merge, name: build.ref, project: project)
           end
 
           it { expect(policy).to be_disallowed :erase_build }
@@ -257,8 +249,7 @@ RSpec.describe Ci::BuildPolicy do
 
         context 'when the build was created for a protected branch' do
           before do
-            create(:protected_branch, :developers_can_push,
-                   name: build.ref, project: project)
+            create(:protected_branch, :developers_can_push, name: build.ref, project: project)
           end
 
           it { expect(policy).to be_allowed :erase_build }
@@ -266,8 +257,9 @@ RSpec.describe Ci::BuildPolicy do
 
         context 'when the build was created for a protected tag' do
           before do
-            create(:protected_tag, :developers_can_create,
-                   name: build.ref, project: project)
+            create(:protected_tag, :developers_can_create, name: build.ref, project: project)
+
+            build.update!(tag: true)
           end
 
           it { expect(policy).to be_allowed :erase_build }

@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';
@@ -147,14 +147,13 @@ export default {
         <gl-loading-icon
           v-if="labelsFetchInProgress"
           class="labels-fetch-loading gl-align-items-center gl-w-full gl-h-full gl-mb-3"
-          size="lg"
+          size="sm"
         />
         <template v-else>
           <gl-dropdown-item
             v-for="(label, index) in visibleLabels"
             :key="label.id"
             :is-checked="isLabelSelected(label)"
-            is-check-centered
             is-check-item
             :active="shouldHighlightFirstItem && index === 0"
             active-class="is-focused"

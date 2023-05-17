@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Markup::RenderingService do
+RSpec.describe Markup::RenderingService, feature_category: :projects do
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) do
@@ -109,6 +109,23 @@ RSpec.describe Markup::RenderingService do
         expect(Gitlab::OtherMarkup).to receive(:render).with(file_name, text, context) { expected_html }
 
         is_expected.to eq(expected_html)
+      end
+    end
+
+    context 'with reStructuredText' do
+      let(:file_name) { 'foo.rst' }
+      let(:text) { "####\nPART\n####" }
+
+      it 'returns rendered html' do
+        is_expected.to eq("<h1>PART</h1>\n\n")
+      end
+
+      context 'when input has an invalid syntax' do
+        let(:text) { "####\nPART\n##" }
+
+        it 'uses a simple formatter for html' do
+          is_expected.to eq("<p>####\n<br>PART\n<br>##</p>")
+        end
       end
     end
   end

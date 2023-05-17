@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
@@ -22,7 +22,7 @@ export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
     pagePath,
   });
 
-  return Promise.all([dispatch('fetchJob')]);
+  return dispatch('fetchJob');
 };
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);

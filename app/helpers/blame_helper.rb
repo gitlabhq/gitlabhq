@@ -39,4 +39,12 @@ module BlameHelper
     row_height_exp = line_count == 1 ? COMMIT_BLOCK_HEIGHT_EXP : total_line_height_exp
     "contain-intrinsic-size: 1px calc(#{row_height_exp})"
   end
+
+  def blame_pages_streaming_url(id, project)
+    namespace_project_blame_page_url(namespace_id: project.namespace, project_id: project, id: id, streaming: true)
+  end
+
+  def entire_blame_path(id, project)
+    namespace_project_blame_streaming_path(namespace_id: project.namespace, project_id: project, id: id)
+  end
 end

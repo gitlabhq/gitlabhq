@@ -3,7 +3,6 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml
 
 code_quality:
   extends:
@@ -32,7 +31,7 @@ code_quality:
   variables:
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
     SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
-    SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan
+    SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan, sobelow
 
 brakeman-sast:
   rules: !reference [".reports:rules:brakeman-sast", rules]
@@ -126,11 +125,3 @@ package_hunter-bundler:
     - .reports:rules:package_hunter-bundler
   variables:
     PACKAGE_MANAGER: bundler
-
-license_scanning:
-  extends: .default-retry
-  stage: lint
-  needs: []
-  artifacts:
-    expire_in: 1 week  # GitLab-specific
-  rules: !reference [".reports:rules:license_scanning", rules]

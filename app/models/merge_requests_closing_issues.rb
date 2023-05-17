@@ -17,10 +17,11 @@ class MergeRequestsClosingIssues < ApplicationRecord
   scope :accessible_by, ->(user) do
     joins(:merge_request)
       .joins('INNER JOIN project_features ON merge_requests.target_project_id = project_features.project_id')
-      .where('project_features.merge_requests_access_level >= :access OR EXISTS(:authorizations)',
-             access: ProjectFeature::ENABLED,
-             authorizations: user.authorizations_for_projects(min_access_level: Gitlab::Access::REPORTER, related_project_column: "merge_requests.target_project_id")
-            )
+      .where(
+        'project_features.merge_requests_access_level >= :access OR EXISTS(:authorizations)',
+        access: ProjectFeature::ENABLED,
+        authorizations: user.authorizations_for_projects(min_access_level: Gitlab::Access::REPORTER, related_project_column: "merge_requests.target_project_id")
+      )
   end
 
   class << self

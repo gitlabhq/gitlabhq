@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::FogbugzService do
+RSpec.describe Import::FogbugzService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   let(:base_uri) { "https://test:7990" }
@@ -18,6 +18,7 @@ RSpec.describe Import::FogbugzService do
 
   before do
     allow(subject).to receive(:authorized?).and_return(true)
+    stub_application_setting(import_sources: ['fogbugz'])
   end
 
   context 'when no repo is found' do
@@ -61,7 +62,7 @@ RSpec.describe Import::FogbugzService do
       result = subject.execute(credentials)
 
       expect(result).to include(
-        message: "You don't have permissions to create this project",
+        message: "You don't have permissions to import this project",
         status: :error,
         http_status: :unauthorized
       )

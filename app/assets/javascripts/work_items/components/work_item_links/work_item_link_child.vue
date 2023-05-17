@@ -1,12 +1,13 @@
 <script>
-import { GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-
+import { GlButton, GlLabel, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
+import * as Sentry from '@sentry/browser';
 import { __, s__ } from '~/locale';
-import { createAlert } from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';
-
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import {
   STATE_OPEN,
   TASK_TYPE_NAME,
@@ -25,6 +26,7 @@ import WorkItemTreeChildren from './work_item_tree_children.vue';
 
 export default {
   components: {
+    GlLabel,
     GlLink,
     GlButton,
     GlIcon,
@@ -36,11 +38,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['fullPath'],
   props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
     canUpdate: {
       type: Boolean,
       required: true,
@@ -69,9 +68,18 @@ export default {
       isExpanded: false,
       children: [],
       isLoadingChildren: false,
+      activeToast: null,
+      childrenBeforeRemoval: [],
+      hasChildren: false,
     };
   },
   computed: {
+    labels() {
+      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes || [];
+    },
+    allowsScopedLabels() {
+      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.allowsScopedLabels;
+    },
     canHaveChildren() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE;
     },
@@ -110,10 +118,7 @@ export default {
       return this.isItemOpen ? __('Created') : __('Closed');
     },
     childPath() {
-      return `/${this.projectPath}/-/work_items/${getIdFromGraphQLId(this.childItem.id)}`;
-    },
-    hasChildren() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_HIERARCHY)?.hasChildren;
+      return `${gon?.relative_url_root || ''}/${this.fullPath}/-/work_items/${this.childItem.iid}`;
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -132,6 +137,17 @@ export default {
         );
       }
       return false;
+    },
+  },
+  watch: {
+    childItem: {
+      handler(val) {
+        this.hasChildren = this.getWidgetByType(val, WIDGET_TYPE_HIERARCHY)?.hasChildren;
+      },
+      immediate: true,
+    },
+    children(val) {
+      this.hasChildren = val?.length > 0;
     },
   },
   methods: {
@@ -165,105 +181,178 @@ export default {
         this.isLoadingChildren = false;
       }
     },
+    showScopedLabel(label) {
+      return isScopedLabel(label) && this.allowsScopedLabels;
+    },
+    async removeChild({ id }) {
+      this.cloneChildren();
+      this.isLoadingChildren = true;
+
+      try {
+        const { data } = await this.updateWorkItem(id, null);
+        if (!data?.workItemUpdate?.errors?.length) {
+          this.filterRemovedChild(id);
+
+          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
+            action: {
+              text: s__('WorkItem|Undo'),
+              onClick: this.undoChildRemoval.bind(this, id),
+            },
+          });
+        }
+      } catch (error) {
+        this.showAlert(s__('WorkItem|Something went wrong while removing child.'), error);
+        Sentry.captureException(error);
+        this.restoreChildren();
+      } finally {
+        this.isLoadingChildren = false;
+      }
+    },
+    async undoChildRemoval(childId) {
+      this.isLoadingChildren = true;
+      try {
+        const { data } = await this.updateWorkItem(childId, this.childItem.id);
+        if (!data?.workItemUpdate?.errors?.length) {
+          this.activeToast?.hide();
+          this.restoreChildren();
+        }
+      } catch (error) {
+        this.showAlert(s__('WorkItem|Something went wrong while undoing child removal.'), error);
+        Sentry.captureException(error);
+      } finally {
+        this.activeToast?.hide();
+        this.childrenBeforeRemoval = [];
+        this.isLoadingChildren = false;
+      }
+    },
+    async updateWorkItem(childId, parentId) {
+      return this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+      });
+    },
+    cloneChildren() {
+      this.childrenBeforeRemoval = cloneDeep(this.children);
+    },
+    filterRemovedChild(childId) {
+      this.children = this.children.filter(({ id }) => id !== childId);
+    },
+    restoreChildren() {
+      this.children = [...this.childrenBeforeRemoval];
+    },
+    showAlert(message, error) {
+      createAlert({
+        message,
+        captureError: true,
+        error,
+      });
+    },
   },
 };
 </script>
 
 <template>
-  <div>
+  <div class="tree-item">
     <div
-      class="gl-display-flex gl-align-items-flex-start gl-mb-3"
+      class="gl-display-flex gl-align-items-flex-start"
       :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"
     >
       <gl-button
         v-if="hasChildren"
-        v-gl-tooltip.viewport
+        v-gl-tooltip.hover
         :title="chevronTooltip"
         :aria-label="chevronTooltip"
         :icon="chevronType"
         category="tertiary"
+        size="small"
         :loading="isLoadingChildren"
         class="gl-px-0! gl-py-3! gl-mr-3"
         data-testid="expand-child"
         @click="toggleItem"
       />
       <div
-        class="gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-bg-white gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
+        class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-rounded-base"
         data-testid="links-child"
       >
-        <span
-          :id="`stateIcon-${childItem.id}`"
-          class="gl-mr-3"
-          :class="{ 'gl-display-flex': hasMetadata }"
-          data-testid="item-status-icon"
-        >
-          <gl-icon
-            class="gl-text-secondary"
-            :class="iconClass"
-            :name="iconName"
-            :aria-label="stateTimestampTypeText"
-          />
-        </span>
-        <div
-          class="gl-display-flex gl-flex-grow-1"
-          :class="{
-            'gl-flex-direction-column gl-align-items-flex-start': hasMetadata,
-            'gl-align-items-center': !hasMetadata,
-          }"
-        >
-          <div class="gl-display-flex">
-            <rich-timestamp-tooltip
-              :target="`stateIcon-${childItem.id}`"
-              :raw-timestamp="stateTimestamp"
-              :timestamp-type-text="stateTimestampTypeText"
+        <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
+          <div
+            class="gl-display-flex gl-flex-grow-1 gl-flex-wrap flex-xl-nowrap gl-align-items-center gl-justify-content-space-between gl-gap-3 gl-min-w-0"
+          >
+            <div class="item-title gl-display-flex gl-gap-3 gl-min-w-0">
+              <span
+                :id="`stateIcon-${childItem.id}`"
+                class="gl-cursor-help"
+                data-testid="item-status-icon"
+              >
+                <gl-icon
+                  class="gl-text-secondary"
+                  :class="iconClass"
+                  :name="iconName"
+                  :aria-label="stateTimestampTypeText"
+                />
+              </span>
+              <rich-timestamp-tooltip
+                :target="`stateIcon-${childItem.id}`"
+                :raw-timestamp="stateTimestamp"
+                :timestamp-type-text="stateTimestampTypeText"
+              />
+              <span v-if="childItem.confidential">
+                <gl-icon
+                  v-gl-tooltip.top
+                  name="eye-slash"
+                  class="gl-text-orange-500"
+                  data-testid="confidential-icon"
+                  :aria-label="__('Confidential')"
+                  :title="__('Confidential')"
+                />
+              </span>
+              <gl-link
+                :href="childPath"
+                class="gl-text-truncate gl-text-black-normal! gl-font-weight-semibold"
+                data-testid="item-title"
+                @click="$emit('click', $event)"
+                @mouseover="$emit('mouseover')"
+                @mouseout="$emit('mouseout')"
+              >
+                {{ childItem.title }}
+              </gl-link>
+            </div>
+            <work-item-link-child-metadata
+              v-if="hasMetadata"
+              :metadata-widgets="metadataWidgets"
+              class="gl-ml-6 ml-xl-0"
             />
-            <gl-icon
-              v-if="childItem.confidential"
-              v-gl-tooltip.top
-              name="eye-slash"
-              class="gl-mr-2 gl-text-orange-500"
-              data-testid="confidential-icon"
-              :aria-label="__('Confidential')"
-              :title="__('Confidential')"
-            />
-            <gl-link
-              :href="childPath"
-              class="gl-overflow-wrap-break gl-line-height-normal gl-text-black-normal! gl-font-weight-bold"
-              data-testid="item-title"
-              @click="$emit('click', $event)"
-              @mouseover="$emit('mouseover')"
-              @mouseout="$emit('mouseout')"
-            >
-              {{ childItem.title }}
-            </gl-link>
           </div>
-          <work-item-link-child-metadata
-            v-if="hasMetadata"
-            :metadata-widgets="metadataWidgets"
-            class="gl-mt-3"
-          />
+          <div v-if="labels.length" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
+            <gl-label
+              v-for="label in labels"
+              :key="label.id"
+              :title="label.title"
+              :background-color="label.color"
+              :description="label.description"
+              :scoped="showScopedLabel(label)"
+              class="gl-my-2 gl-mr-2 gl-mb-auto gl-label-sm"
+              tooltip-placement="top"
+            />
+          </div>
         </div>
-        <div
-          v-if="canUpdate"
-          class="gl-ml-0 gl-sm-ml-auto! gl-display-inline-flex gl-align-items-center"
-        >
+        <div v-if="canUpdate" class="gl-ml-0 gl-sm-ml-auto! gl-display-inline-flex">
           <work-item-links-menu
             :work-item-id="childItem.id"
             :parent-work-item-id="issuableGid"
             data-testid="links-menu"
-            @removeChild="$emit('removeChild', childItem.id)"
+            @removeChild="$emit('removeChild', childItem)"
           />
         </div>
       </div>
     </div>
     <work-item-tree-children
       v-if="isExpanded"
-      :project-path="projectPath"
       :can-update="canUpdate"
       :work-item-id="issuableGid"
       :work-item-type="workItemType"
       :children="children"
-      @removeChild="fetchChildren"
+      @removeChild="removeChild"
       @click="$emit('click', $event)"
     />
   </div>

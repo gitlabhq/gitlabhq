@@ -1,0 +1,28 @@
+diff --git a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+index 6093500..5e9bcbb 100644
+--- a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
++++ b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+@@ -5226,7 +5226,8 @@ function parse$4(source, { sourceMap = true, filename = DEFAULT_FILENAME, source
+                     const templateBlock = (descriptor.template = createBlock(node, source, false));
+                     templateBlock.ast = node;
+                     // warn against 2.x <template functional>
+-                    if (templateBlock.attrs.functional) {
++                    // disabled by patch-package in gitlab as temporary migration
++                    if (false && templateBlock.attrs.functional) {
+                         const err = new SyntaxError(`<template functional> is no longer supported in Vue 3, since ` +
+                             `functional components no longer have significant performance ` +
+                             `difference from stateful ones. Just use a normal <template> ` +
+diff --git a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
+index 2ce8d7a..2fbe75b 100644
+--- a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
++++ b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
+@@ -37376,7 +37376,8 @@ function parse$5(source, { sourceMap = true, filename = DEFAULT_FILENAME, source
+                     const templateBlock = (descriptor.template = createBlock(node, source, false));
+                     templateBlock.ast = node;
+                     // warn against 2.x <template functional>
+-                    if (templateBlock.attrs.functional) {
++                    // disabled by patch-package in gitlab as temporary migration
++                    if (false && templateBlock.attrs.functional) {
+                         const err = new SyntaxError(`<template functional> is no longer supported in Vue 3, since ` +
+                             `functional components no longer have significant performance ` +
+                             `difference from stateful ones. Just use a normal <template> ` +

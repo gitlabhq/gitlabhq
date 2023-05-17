@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Control the job concurrency in GitLab CI/CD
 ---
@@ -54,7 +54,7 @@ deploy:
 With this configuration, the safety on the deployments is assured while you
 can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
-## Requirements
+## Prerequisites
 
 - The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/index.md)
 - The basic knowledge of the [GitLab Environments and Deployments](../environments/index.md)
@@ -194,13 +194,11 @@ You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
 with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
 finishes.
 
-## API
+## Related topics
 
-See the [API documentation](../../api/resource_groups.md).
-
-## Related features
-
-Read more how you can use GitLab for [safe deployments](../environments/deployment_safety.md).
+- [API documentation](../../api/resource_groups.md)
+- [Log documentation](../../administration/logs/index.md#ci_resource_groups_jsonlog)
+- [GitLab for safe deployments](../environments/deployment_safety.md)
 
 ## Troubleshooting
 
@@ -254,3 +252,66 @@ deploy:
   resource_group: production
   environment: production
 ```
+
+### Jobs get stuck in "Waiting for resource"
+
+Sometimes, a job hangs with the message `Waiting for resource: <resource_group>`. To resolve,
+first check that the resource group is working correctly:
+
+1. Go to the job details page.
+1. Select **View job currently using resource**.
+1. Check the job status:
+   - If the status is `running` or `pending`, the feature is working correctly. Wait until the job finishes and releases the resource.
+   - If the status is not `running` or `pending`, the feature might not be working correctly.
+     [Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
+     - The job ID.
+     - The job status.
+     - How often the problem occurs.
+     - Steps to reproduce the problem.
+
+You can also get job information from the GraphQL API. You should use the GraphQL API if you use pipeline-level concurrency control with cross-project/parent-child pipelines because the trigger jobs are not accessible from the UI.
+
+To get job information from the GraphQL API:
+
+1. Go to the pipeline details page.
+1. Select the **Jobs** tab and find the ID of the stuck job.
+1. Go to [GraphiQL explorer](../../api/graphql/index.md#graphiql).
+1. Run the following query:
+
+    ```graphql
+    {
+      project(fullPath: "<fullpath-to-your-project>") {
+        name
+        job(id: "gid://gitlab/Ci::Bridge/<job-id>") {
+          name
+          detailedStatus {
+            action {
+              path
+              buttonTitle
+            }
+          }
+        }
+      }
+    }
+    ```
+
+    The `job.detailedStatus.action.path` field contains the job ID using the resource.
+
+1. Run the following query and check `job.status` field according to the criteria above. You can also visit the pipeline page from `pipeline.path` field.
+
+    ```graphql
+    {
+      project(fullPath: "<fullpath-to-your-project>") {
+        name
+        job(id: "gid://gitlab/Ci::Bridge/<job-id-currently-using-the-resource>") {
+          name
+          status
+          pipeline {
+            path
+          }
+        }
+      }
+    }
+    ```
+
+    If the status is not `running` or `pending`, open a new issue.

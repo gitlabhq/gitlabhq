@@ -1,44 +1,14 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 RSpec.shared_examples 'edits content using the content editor' do
+  include ContentEditorHelpers
+
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
 
-  def switch_to_content_editor
-    click_button _('View rich text')
-    click_button _('Rich text')
-  end
-
-  def type_in_content_editor(keys)
-    find(content_editor_testid).send_keys keys
-  end
-
-  def open_insert_media_dropdown
-    page.find('svg[data-testid="media-icon"]').click
-  end
-
-  def set_source_editor_content(content)
-    find('.js-gfm-input').set content
-  end
-
-  def expect_formatting_menu_to_be_visible
-    expect(page).to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
-  def expect_formatting_menu_to_be_hidden
-    expect(page).not_to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
-  def expect_media_bubble_menu_to_be_visible
-    expect(page).to have_css('[data-testid="media-bubble-menu"]')
-  end
-
-  def upload_asset(fixture_name)
-    attach_file('content_editor_image', Rails.root.join('spec', 'fixtures', fixture_name), make_visible: true)
-  end
-
-  def wait_until_hidden_field_is_updated(value)
-    expect(page).to have_field('wiki[content]', with: value, type: 'hidden')
-  end
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
 
   it 'saves page content in local storage if the user navigates away' do
     switch_to_content_editor
@@ -49,39 +19,272 @@ RSpec.shared_examples 'edits content using the content editor' do
 
     wait_until_hidden_field_is_updated /Typing text in the content editor/
 
-    refresh
+    begin
+      refresh
+    rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
+    end
 
     expect(page).to have_text('Typing text in the content editor')
-
-    refresh # also retained after second refresh
-
-    expect(page).to have_text('Typing text in the content editor')
-
-    click_link 'Cancel' # draft is deleted on cancel
-
-    page.go_back
-
-    expect(page).not_to have_text('Typing text in the content editor')
   end
 
-  describe 'formatting bubble menu' do
-    it 'shows a formatting bubble menu for a regular paragraph and headings' do
+  describe 'creating and editing links' do
+    before do
+      switch_to_content_editor
+    end
+
+    context 'when clicking the link icon in the toolbar' do
+      it 'shows the link bubble menu' do
+        page.find('[data-testid="formatting-toolbar"] [data-testid="link"]').click
+
+        expect(page).to have_css('[data-testid="link-bubble-menu"]')
+      end
+
+      context 'if no text is selected' do
+        before do
+          page.find('[data-testid="formatting-toolbar"] [data-testid="link"]').click
+        end
+
+        it 'opens an empty inline modal to create a link' do
+          page.within '[data-testid="link-bubble-menu"]' do
+            expect(page).to have_field('link-text', with: '')
+            expect(page).to have_field('link-href', with: '')
+          end
+        end
+
+        context 'when the user clicks the apply button' do
+          it 'applies the changes to the document' do
+            page.within '[data-testid="link-bubble-menu"]' do
+              fill_in 'link-text', with: 'Link to GitLab home page'
+              fill_in 'link-href', with: 'https://gitlab.com'
+
+              click_button 'Apply'
+            end
+
+            page.within content_editor_testid do
+              expect(page).to have_css('a[href="https://gitlab.com"]')
+              expect(page).to have_text('Link to GitLab home page')
+            end
+          end
+        end
+
+        context 'when the user clicks the cancel button' do
+          it 'does not apply the changes to the document' do
+            page.within '[data-testid="link-bubble-menu"]' do
+              fill_in 'link-text', with: 'Link to GitLab home page'
+              fill_in 'link-href', with: 'https://gitlab.com'
+
+              click_button 'Cancel'
+            end
+
+            page.within content_editor_testid do
+              expect(page).not_to have_css('a')
+            end
+          end
+        end
+      end
+
+      context 'if text is selected' do
+        before do
+          type_in_content_editor 'The quick brown fox jumps over the lazy dog'
+          type_in_content_editor [:shift, :left]
+          type_in_content_editor [:shift, :left]
+          type_in_content_editor [:shift, :left]
+
+          page.find('[data-testid="formatting-toolbar"] [data-testid="link"]').click
+        end
+
+        it 'prefills inline modal to create a link' do
+          page.within '[data-testid="link-bubble-menu"]' do
+            expect(page).to have_field('link-text', with: 'dog')
+            expect(page).to have_field('link-href', with: '')
+          end
+        end
+
+        context 'when the user clicks the apply button' do
+          it 'applies the changes to the document' do
+            page.within '[data-testid="link-bubble-menu"]' do
+              fill_in 'link-text', with: 'new dog'
+              fill_in 'link-href', with: 'https://en.wikipedia.org/wiki/Shiba_Inu'
+
+              click_button 'Apply'
+            end
+
+            page.within content_editor_testid do
+              expect(page).to have_selector('a[href="https://en.wikipedia.org/wiki/Shiba_Inu"]',
+                text: 'new dog'
+              )
+            end
+          end
+        end
+      end
+    end
+
+    context 'if cursor is placed on an existing link' do
+      before do
+        type_in_content_editor 'Link to [GitLab home **page**](https://gitlab.com)'
+        type_in_content_editor :left
+      end
+
+      it 'prefills inline modal to edit the link' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          page.find('[data-testid="edit-link"]').click
+
+          expect(page).to have_field('link-text', with: 'GitLab home page')
+          expect(page).to have_field('link-href', with: 'https://gitlab.com')
+        end
+      end
+
+      it 'updates the link attributes if text is not updated' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          page.find('[data-testid="edit-link"]').click
+
+          fill_in 'link-href', with: 'https://about.gitlab.com'
+
+          click_button 'Apply'
+        end
+
+        page.within content_editor_testid do
+          expect(page).to have_selector('a[href="https://about.gitlab.com"]')
+          expect(page.find('a')).to have_text('GitLab home page')
+          expect(page).to have_selector('strong', text: 'page')
+        end
+      end
+
+      it 'updates the link attributes and text if text is updated' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          page.find('[data-testid="edit-link"]').click
+
+          fill_in 'link-text', with: 'GitLab about page'
+          fill_in 'link-href', with: 'https://about.gitlab.com'
+
+          click_button 'Apply'
+        end
+
+        page.within content_editor_testid do
+          expect(page).to have_selector('a[href="https://about.gitlab.com"]',
+            text: 'GitLab about page'
+          )
+          expect(page).not_to have_selector('strong')
+        end
+      end
+
+      it 'does nothing if Cancel is clicked' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          page.find('[data-testid="edit-link"]').click
+
+          click_button 'Cancel'
+        end
+
+        page.within content_editor_testid do
+          expect(page).to have_selector('a[href="https://gitlab.com"]',
+            text: 'GitLab home page'
+          )
+          expect(page).to have_selector('strong')
+        end
+      end
+
+      context 'when the user clicks the unlink button' do
+        it 'removes the link' do
+          page.within '[data-testid="link-bubble-menu"]' do
+            page.find('[data-testid="remove-link"]').click
+          end
+
+          page.within content_editor_testid do
+            expect(page).not_to have_selector('a')
+            expect(page).to have_selector('strong', text: 'page')
+          end
+        end
+      end
+    end
+
+    context 'when selection spans more than a link' do
+      before do
+        type_in_content_editor 'a [b **c**](https://gitlab.com)'
+
+        type_in_content_editor [:shift, :left]
+        type_in_content_editor [:shift, :left]
+        type_in_content_editor [:shift, :left]
+        type_in_content_editor [:shift, :left]
+        type_in_content_editor [:shift, :left]
+
+        page.find('[data-testid="formatting-toolbar"] [data-testid="link"]').click
+      end
+
+      it 'prefills inline modal with the entire selection' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          expect(page).to have_field('link-text', with: 'a b c')
+          expect(page).to have_field('link-href', with: '')
+        end
+      end
+
+      it 'expands the link and updates the link attributes if text is not updated' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          fill_in 'link-href', with: 'https://about.gitlab.com'
+
+          click_button 'Apply'
+        end
+
+        page.within content_editor_testid do
+          expect(page).to have_selector('a[href="https://about.gitlab.com"]')
+          expect(page.find('a')).to have_text('a b c')
+          expect(page).to have_selector('strong', text: 'c')
+        end
+      end
+
+      it 'expands the link, updates the link attributes and text if text is updated' do
+        page.within '[data-testid="link-bubble-menu"]' do
+          fill_in 'link-text', with: 'new text'
+          fill_in 'link-href', with: 'https://about.gitlab.com'
+
+          click_button 'Apply'
+        end
+
+        page.within content_editor_testid do
+          expect(page).to have_selector('a[href="https://about.gitlab.com"]',
+            text: 'new text'
+          )
+          expect(page).not_to have_selector('strong')
+        end
+      end
+    end
+  end
+
+  describe 'selecting text' do
+    before do
       switch_to_content_editor
 
-      expect(page).to have_css(content_editor_testid)
+      # delete all text first
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor :backspace
 
-      type_in_content_editor 'Typing text in the content editor'
-      type_in_content_editor [:shift, :left]
+      type_in_content_editor 'The quick **brown** fox _jumps_ over the lazy dog!'
+      type_in_content_editor :enter
+      type_in_content_editor '[Link](https://gitlab.com)'
+      type_in_content_editor :enter
+      type_in_content_editor 'Jackdaws love my ~~big~~ sphinx of quartz!'
 
-      expect_formatting_menu_to_be_visible
+      # select all text
+      type_in_content_editor [modifier_key, 'a']
+    end
 
-      type_in_content_editor [:right, :right, :enter, '## Heading']
+    it 'renders selected text in a .content-editor-selection class' do
+      page.within content_editor_testid do
+        assert_selected 'The quick'
+        assert_selected 'brown'
+        assert_selected 'fox'
+        assert_selected 'jumps'
+        assert_selected 'over the lazy dog!'
 
-      expect_formatting_menu_to_be_hidden
+        assert_selected 'Link'
 
-      type_in_content_editor [:shift, :left]
+        assert_selected 'Jackdaws love my'
+        assert_selected 'big'
+        assert_selected 'sphinx of quartz!'
+      end
+    end
 
-      expect_formatting_menu_to_be_visible
+    def assert_selected(text)
+      expect(page).to have_selector('.content-editor-selection', text: text)
     end
   end
 
@@ -89,28 +292,19 @@ RSpec.shared_examples 'edits content using the content editor' do
     before do
       switch_to_content_editor
 
-      open_insert_media_dropdown
-    end
-
-    def test_displays_media_bubble_menu(media_element_selector, fixture_file)
-      upload_asset fixture_file
-
-      wait_for_requests
-
-      expect(page).to have_css(media_element_selector)
-
-      page.find(media_element_selector).click
-
-      expect_formatting_menu_to_be_hidden
-      expect_media_bubble_menu_to_be_visible
+      click_attachment_button
     end
 
     it 'displays correct media bubble menu for images', :js do
-      test_displays_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'dk.png'
+      display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'dk.png'
+
+      expect_media_bubble_menu_to_be_visible
     end
 
     it 'displays correct media bubble menu for video', :js do
-      test_displays_media_bubble_menu '[data-testid="content_editor_editablebox"] video', 'video_sample.mp4'
+      display_media_bubble_menu '[data-testid="content_editor_editablebox"] video', 'video_sample.mp4'
+
+      expect_media_bubble_menu_to_be_visible
     end
   end
 
@@ -150,7 +344,6 @@ RSpec.shared_examples 'edits content using the content editor' do
       type_in_content_editor 'var a = 0'
       type_in_content_editor [:shift, :left]
 
-      expect_formatting_menu_to_be_hidden
       expect(page).to have_css('[data-testid="code-block-bubble-menu"]')
     end
 
@@ -187,8 +380,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       expect(iframe['src']).to include('/-/sandbox/mermaid')
 
       within_frame(iframe) do
-        expect(find('svg').text).to include('JohnDoe12')
-        expect(find('svg').text).to include('HelloWorld34')
+        expect(find('svg .nodes').text).to include('JohnDoe12')
+        expect(find('svg .nodes').text).to include('HelloWorld34')
       end
 
       expect(iframe['height'].to_i).to be > 100
@@ -198,12 +391,13 @@ RSpec.shared_examples 'edits content using the content editor' do
       within_frame(iframe) do
         page.has_content?('JaneDoe34')
 
-        expect(find('svg').text).to include('JaneDoe34')
-        expect(find('svg').text).to include('HelloWorld56')
+        expect(find('svg .nodes').text).to include('JaneDoe34')
+        expect(find('svg .nodes').text).to include('HelloWorld56')
       end
     end
 
-    it 'toggles the diagram when preview button is clicked' do
+    it 'toggles the diagram when preview button is clicked',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397682' do
       find('[data-testid="preview-diagram"]').click
 
       expect(find(content_editor_testid)).not_to have_selector('iframe')
@@ -213,8 +407,61 @@ RSpec.shared_examples 'edits content using the content editor' do
       iframe = find(content_editor_testid).find('iframe')
 
       within_frame(iframe) do
-        expect(find('svg').text).to include('JohnDoe12')
-        expect(find('svg').text).to include('HelloWorld34')
+        expect(find('svg .nodes').text).to include('JohnDoe12')
+        expect(find('svg .nodes').text).to include('HelloWorld34')
+      end
+    end
+  end
+
+  describe 'pasting text' do
+    before do
+      switch_to_content_editor
+
+      type_in_content_editor "Some **rich** _text_ ~~content~~ [link](https://gitlab.com)"
+
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor [modifier_key, 'x']
+    end
+
+    it 'pastes text with formatting if ctrl + v is pressed' do
+      type_in_content_editor [modifier_key, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_selector('strong', text: 'rich')
+        expect(page).to have_selector('em', text: 'text')
+        expect(page).to have_selector('s', text: 'content')
+        expect(page).to have_selector('a[href="https://gitlab.com"]', text: 'link')
+      end
+    end
+
+    it 'pastes raw text without formatting if shift + ctrl + v is pressed' do
+      type_in_content_editor [modifier_key, :shift, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_text('Some rich text content link')
+
+        expect(page).not_to have_selector('strong')
+        expect(page).not_to have_selector('em')
+        expect(page).not_to have_selector('s')
+        expect(page).not_to have_selector('a')
+      end
+    end
+
+    it 'pastes raw text without formatting, stripping whitespaces, if shift + ctrl + v is pressed' do
+      type_in_content_editor "    Some **rich**"
+      type_in_content_editor :enter
+      type_in_content_editor "    _text_"
+      type_in_content_editor :enter
+      type_in_content_editor "    ~~content~~"
+      type_in_content_editor :enter
+      type_in_content_editor "    [link](https://gitlab.com)"
+
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor [modifier_key, 'x']
+      type_in_content_editor [modifier_key, :shift, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_text('Some rich text content link')
       end
     end
   end
@@ -225,7 +472,7 @@ RSpec.shared_examples 'edits content using the content editor' do
     before do
       if defined?(project)
         create(:issue, project: project, title: 'My Cool Linked Issue')
-        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:label, project: project, title: 'My Cool Label')
         create(:milestone, project: project, title: 'My Cool Milestone')
 
@@ -234,7 +481,7 @@ RSpec.shared_examples 'edits content using the content editor' do
         project = create(:project, group: group)
 
         create(:issue, project: project, title: 'My Cool Linked Issue')
-        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:group_label, group: group, title: 'My Cool Label')
         create(:milestone, group: group, title: 'My Cool Milestone')
 
@@ -251,7 +498,9 @@ RSpec.shared_examples 'edits content using the content editor' do
 
       expect(find(suggestions_dropdown)).to have_text('abc123')
       expect(find(suggestions_dropdown)).to have_text('all')
-      expect(find(suggestions_dropdown)).to have_text('Group Members (2)')
+      expect(find(suggestions_dropdown)).to have_text('Group Members')
+
+      type_in_content_editor 'bc'
 
       send_keys [:arrow_down, :enter]
 
@@ -330,5 +579,25 @@ RSpec.shared_examples 'edits content using the content editor' do
     def dropdown_scroll_top
       evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-dropdown-inner').scrollTop")
     end
+  end
+end
+
+RSpec.shared_examples 'inserts diagrams.net diagram using the content editor' do
+  include ContentEditorHelpers
+
+  before do
+    switch_to_content_editor
+
+    click_attachment_button
+  end
+
+  it 'displays correct media bubble menu with edit diagram button' do
+    display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'diagram.drawio.svg'
+
+    expect_media_bubble_menu_to_be_visible
+
+    click_edit_diagram_button
+
+    expect_drawio_editor_is_opened
   end
 end

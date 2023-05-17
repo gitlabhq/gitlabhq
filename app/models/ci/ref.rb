@@ -43,8 +43,7 @@ module Ci
 
     class << self
       def ensure_for(pipeline)
-        safe_find_or_create_by(project_id: pipeline.project_id,
-                               ref_path: pipeline.source_ref_path)
+        safe_find_or_create_by(project_id: pipeline.project_id, ref_path: pipeline.source_ref_path)
       end
 
       def failing_state?(status_name)

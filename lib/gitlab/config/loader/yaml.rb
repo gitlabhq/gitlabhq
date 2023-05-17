@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# NOTE: DO NOT use this class for loading GitLab CI configuration files.
+# Instead, use `Gitlab::Ci::Config::Yaml.load!`, which will properly handle
+# CI configuration headers.
+
 module Gitlab
   module Config
     module Loader
@@ -32,6 +36,10 @@ module Gitlab
 
         def load!
           @symbolized_config ||= load_raw!.deep_symbolize_keys
+        end
+
+        def blank?
+          @config.blank?
         end
 
         private

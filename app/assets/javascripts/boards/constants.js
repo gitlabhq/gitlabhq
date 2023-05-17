@@ -1,24 +1,17 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
+import toggleListCollapsedMutation from './graphql/client/board_toggle_collapsed.mutation.graphql';
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
-
-/* eslint-disable-next-line @gitlab/require-i18n-strings */
-export const AssigneeIdParamValues = ['Any', 'None'];
-
-export const issuableTypes = {
-  issue: 'issue',
-  epic: 'epic',
-};
 
 export const BoardType = {
   project: 'project',
@@ -64,10 +57,10 @@ export const INCIDENT = 'INCIDENT';
 export const flashAnimationDuration = 2000;
 
 export const boardQuery = {
-  [BoardType.group]: {
+  [WORKSPACE_GROUP]: {
     query: groupBoardQuery,
   },
-  [BoardType.project]: {
+  [WORKSPACE_PROJECT]: {
     query: projectBoardQuery,
   },
 };
@@ -84,6 +77,12 @@ export const updateListQueries = {
   },
 };
 
+export const toggleCollapsedMutations = {
+  [TYPE_ISSUE]: {
+    mutation: toggleListCollapsedMutation,
+  },
+};
+
 export const deleteListQueries = {
   [TYPE_ISSUE]: {
     mutation: destroyBoardListMutation,
@@ -94,7 +93,7 @@ export const titleQueries = {
   [TYPE_ISSUE]: {
     mutation: issueSetTitleMutation,
   },
-  [issuableTypes.epic]: {
+  [TYPE_EPIC]: {
     mutation: updateEpicTitleMutation,
   },
 };
@@ -103,7 +102,7 @@ export const subscriptionQueries = {
   [TYPE_ISSUE]: {
     mutation: issueSetSubscriptionMutation,
   },
-  [issuableTypes.epic]: {
+  [TYPE_EPIC]: {
     mutation: updateEpicSubscriptionMutation,
   },
 };
@@ -143,6 +142,7 @@ export const MilestoneFilterType = {
   started: 'Started',
   upcoming: 'Upcoming',
 };
+/* eslint-enable @gitlab/require-i18n-strings */
 
 export const DraggableItemTypes = {
   card: 'card',
@@ -155,7 +155,6 @@ export const MilestoneIDs = {
 };
 
 export default {
-  BoardType,
   ListType,
 };
 
@@ -178,3 +177,5 @@ export const BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS = [
     action: () => {},
   },
 ];
+
+export const GroupByParamType = {};

@@ -439,8 +439,8 @@ RSpec.describe Milestone do
 
   describe '#to_reference' do
     let(:group) { build_stubbed(:group) }
-    let(:project) { build_stubbed(:project, name: 'sample-project') }
-    let(:another_project) { build_stubbed(:project, name: 'another-project', namespace: project.namespace) }
+    let(:project) { build_stubbed(:project, path: 'sample-project') }
+    let(:another_project) { build_stubbed(:project, path: 'another-project', namespace: project.namespace) }
 
     context 'for a project milestone' do
       let(:milestone) { build_stubbed(:milestone, iid: 1, project: project, name: 'milestone') }
@@ -722,6 +722,14 @@ RSpec.describe Milestone do
       it 'returns false' do
         expect(milestone.group_milestone?).to be_falsey
       end
+    end
+  end
+
+  describe '#lock_version' do
+    let_it_be(:milestone) { create(:milestone, project: project) }
+
+    it 'ensures that lock_version and optimistic locking is enabled' do
+      expect(milestone.lock_version).to be_present
     end
   end
 end

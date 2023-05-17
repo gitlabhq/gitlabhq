@@ -5,7 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Moderate users **(FREE SELF)**
+# Moderate users (administration) **(FREE SELF)**
+
+This is the administration documentation. For information about moderating users at the group level, see the [group-level documentation](../group/moderate_users.md).
 
 GitLab administrators can moderate user access by approving, blocking, banning, or deactivating
 users.
@@ -161,8 +163,8 @@ A user can be deactivated from the Admin Area. To do this:
 
 For the deactivation option to be visible to an administrator, the user:
 
-- Must be currently active.
-- Must not be [dormant](#automatically-deactivate-dormant-users).
+- Must have a state of active.
+- Must be [dormant](#automatically-deactivate-dormant-users).
 
 NOTE:
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).

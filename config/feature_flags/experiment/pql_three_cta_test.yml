@@ -1,8 +1,0 @@
----
-name: pql_three_cta_test
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74054
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349799
-milestone: '14.7'
-type: experiment
-group: group::acquisition
-default_enabled: false

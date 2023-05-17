@@ -48,10 +48,6 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when doing nothing', () => {
     it('shows nothing', () => {
       createComponent();

@@ -47,7 +47,7 @@ module API
         end
 
         def check_feature_enabled
-          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api, type: :ops)
+          not_found!('Internal API not found') unless Feature.enabled?(:kubernetes_agent_internal_api, type: :ops)
         end
 
         def check_agent_token
@@ -73,6 +73,11 @@ module API
 
           Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
         end
+
+        def update_configuration(agent:, config:)
+          ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: config).execute
+          ::Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: config).execute
+        end
       end
 
       namespace 'internal' do
@@ -85,7 +90,7 @@ module API
             detail 'Retrieves agent info for the given token'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/agent_info', feature_category: :kubernetes_management, urgency: :low do
+          get '/agent_info', feature_category: :deployment_management, urgency: :low do
             project = agent.project
 
             status 200
@@ -103,7 +108,7 @@ module API
             detail 'Retrieves project info (if authorized)'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/project_info', feature_category: :kubernetes_management, urgency: :low do
+          get '/project_info', feature_category: :deployment_management, urgency: :low do
             project = find_project(params[:id])
 
             not_found! unless agent_has_access_to_project?(project)
@@ -126,12 +131,54 @@ module API
             requires :agent_id, type: Integer, desc: 'ID of the configured Agent'
             requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
           end
-          post '/', feature_category: :kubernetes_management, urgency: :low do
+          post '/', feature_category: :deployment_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
-
-            ::Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
+            update_configuration(agent: agent, config: params[:agent_config])
 
             no_content!
+          end
+        end
+
+        namespace 'kubernetes/authorize_proxy_user' do
+          desc 'Authorize a proxy user request'
+          params do
+            requires :agent_id, type: Integer, desc: 'ID of the agent accessed'
+            requires :access_type, type: String, values: ['session_cookie'], desc: 'The type of the access key being verified.'
+            requires :access_key, type: String, desc: 'The authentication secret for the given access type.'
+            given access_type: ->(val) { val == 'session_cookie' } do
+              requires :csrf_token, type: String, allow_blank: false, desc: 'CSRF token that must be checked when access_type is "session_cookie", to ensure the request originates from a GitLab browsing session.'
+            end
+          end
+          post '/', feature_category: :deployment_management do
+            # Load session
+            public_session_id_string =
+              begin
+                Gitlab::Kas::UserAccess.decrypt_public_session_id(params[:access_key])
+              rescue StandardError
+                bad_request!('Invalid access_key')
+              end
+
+            session_id = Rack::Session::SessionId.new(public_session_id_string)
+            session = ActiveSession.sessions_from_ids([session_id.private_id]).first
+            unauthorized!('Invalid session') unless session
+
+            # CSRF check
+            unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
+              unauthorized!('CSRF token does not match')
+            end
+
+            # Load user
+            user = Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
+            unauthorized!('Invalid user in session') unless user
+
+            # Load agent
+            agent = ::Clusters::Agent.find(params[:agent_id])
+            unauthorized!('Feature disabled for agent') unless ::Gitlab::Kas::UserAccess.enabled_for?(agent)
+
+            service_response = ::Clusters::Agents::AuthorizeProxyUserService.new(user, agent).execute
+            render_api_error!(service_response[:message], service_response[:reason]) unless service_response.success?
+
+            service_response.payload
           end
         end
 
@@ -149,7 +196,7 @@ module API
               optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
             end
           end
-          post '/', feature_category: :kubernetes_management do
+          post '/', feature_category: :deployment_management do
             increment_count_events
             increment_unique_events
 

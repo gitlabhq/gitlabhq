@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmojiList from '~/emoji/components/emoji_list.vue';
+import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji', () => ({
   initEmojiMap: jest.fn(() => Promise.resolve()),
@@ -14,7 +14,8 @@ jest.mock('~/emoji', () => ({
 }));
 
 let wrapper;
-async function factory(render, propsData = { searchValue: '' }) {
+
+function factory(propsData = { searchValue: '' }) {
   wrapper = extendedWrapper(
     shallowMount(EmojiList, {
       propsData,
@@ -23,35 +24,23 @@ async function factory(render, propsData = { searchValue: '' }) {
       },
     }),
   );
-
-  // Wait for categories to be set
-  await nextTick();
-
-  if (render) {
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({ render: true });
-
-    // Wait for component to render
-    await nextTick();
-  }
 }
 
 const findDefaultSlot = () => wrapper.findByTestId('default-slot');
 
 describe('Emoji list component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not render until render is set', async () => {
-    await factory(false);
+    factory();
 
     expect(findDefaultSlot().exists()).toBe(false);
+    await waitForPromises();
+    expect(findDefaultSlot().exists()).toBe(true);
   });
 
   it('renders with none filtered list', async () => {
-    await factory(true);
+    factory();
+
+    await waitForPromises();
 
     expect(JSON.parse(findDefaultSlot().text())).toEqual({
       activity: {
@@ -63,7 +52,9 @@ describe('Emoji list component', () => {
   });
 
   it('renders filtered list of emojis', async () => {
-    await factory(true, { searchValue: 'smile' });
+    factory({ searchValue: 'smile' });
+
+    await waitForPromises();
 
     expect(JSON.parse(findDefaultSlot().text())).toEqual({
       search: {

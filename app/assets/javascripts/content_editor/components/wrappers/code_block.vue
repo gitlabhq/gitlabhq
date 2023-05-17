@@ -80,8 +80,9 @@ export default {
 <template>
   <editor-state-observer @transaction="updateDiagramPreview">
     <node-view-wrapper
-      :class="`content-editor-code-block gl-relative code highlight ${$options.userColorScheme}`"
+      :class="`content-editor-code-block gl-relative code highlight gl-p-3 ${$options.userColorScheme}`"
       as="pre"
+      dir="auto"
     >
       <div
         v-if="node.attrs.showPreview"

@@ -156,11 +156,14 @@ module Gitlab
         ]
       end
 
-      def send_url(url, allow_redirects: false)
+      def send_url(url, allow_redirects: false, method: 'GET', body: nil, headers: nil)
         params = {
           'URL' => url,
-          'AllowRedirects' => allow_redirects
-        }
+          'AllowRedirects' => allow_redirects,
+          'Body' => body.to_s,
+          'Header' => headers,
+          'Method' => method
+        }.compact
 
         [
           SEND_DATA_HEADER,

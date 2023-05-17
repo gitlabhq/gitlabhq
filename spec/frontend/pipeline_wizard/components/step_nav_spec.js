@@ -19,17 +19,13 @@ describe('Pipeline Wizard - Step Navigation Component', () => {
     nextButton = wrapper.findByTestId('next-button');
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     scenario                       | showBackButton | showNextButton
     ${'does not show prev button'} | ${false}       | ${false}
     ${'has prev, but not next'}    | ${true}        | ${false}
     ${'has next, but not prev'}    | ${false}       | ${true}
     ${'has both next and prev'}    | ${true}        | ${true}
-  `('$scenario', async ({ showBackButton, showNextButton }) => {
+  `('$scenario', ({ showBackButton, showNextButton }) => {
     createComponent({ showBackButton, showNextButton });
 
     expect(prevButton.exists()).toBe(showBackButton);
@@ -57,16 +53,16 @@ describe('Pipeline Wizard - Step Navigation Component', () => {
     expect(wrapper.emitted().next.length).toBe(1);
   });
 
-  it('enables the next button if nextButtonEnabled ist set to true', async () => {
+  it('enables the next button if nextButtonEnabled ist set to true', () => {
     createComponent({ nextButtonEnabled: true });
 
-    expect(nextButton.attributes('disabled')).not.toBe('disabled');
+    expect(nextButton.attributes('disabled')).toBeUndefined();
   });
 
-  it('disables the next button if nextButtonEnabled ist set to false', async () => {
+  it('disables the next button if nextButtonEnabled ist set to false', () => {
     createComponent({ nextButtonEnabled: false });
 
-    expect(nextButton.attributes('disabled')).toBe('disabled');
+    expect(nextButton.attributes('disabled')).toBeDefined();
   });
 
   it('does not emit "next" event when clicking next button while nextButtonEnabled ist set to false', async () => {

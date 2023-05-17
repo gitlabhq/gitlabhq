@@ -1,6 +1,60 @@
 # frozen_string_literal: true
 
 require 'knapsack'
+require 'fileutils'
+
+module Knapsack
+  module Distributors
+    class BaseDistributor
+      # Refine https://github.com/KnapsackPro/knapsack/blob/v1.21.1/lib/knapsack/distributors/base_distributor.rb
+      # to take in account the additional filtering we do for predictive jobs.
+      module BaseDistributorWithTestFiltering
+        attr_reader :filter_tests
+
+        def initialize(args = {})
+          super
+
+          @filter_tests = args[:filter_tests]
+        end
+
+        def all_tests
+          @all_tests ||= begin
+            pattern_tests = Dir.glob(test_file_pattern).uniq
+
+            if filter_tests.empty?
+              pattern_tests
+            else
+              pattern_tests & filter_tests
+            end
+          end.sort
+        end
+      end
+
+      prepend BaseDistributorWithTestFiltering
+    end
+  end
+
+  class AllocatorBuilder
+    # Refine https://github.com/KnapsackPro/knapsack/blob/v1.21.1/lib/knapsack/allocator_builder.rb
+    # to take in account the additional filtering we do for predictive jobs.
+    module AllocatorBuilderWithTestFiltering
+      attr_accessor :filter_tests
+
+      def allocator
+        Knapsack::Allocator.new({
+          report: Knapsack.report.open,
+          test_file_pattern: test_file_pattern,
+          ci_node_total: Knapsack::Config::Env.ci_node_total,
+          ci_node_index: Knapsack::Config::Env.ci_node_index,
+          # Additional argument
+          filter_tests: filter_tests
+        })
+      end
+    end
+
+    prepend AllocatorBuilderWithTestFiltering
+  end
+end
 
 # A custom parallel rspec runner based on Knapsack runner
 # which takes in additional option for a file containing
@@ -13,32 +67,26 @@ require 'knapsack'
 # would be executed in the CI node.
 #
 # Reference:
-# https://github.com/ArturT/knapsack/blob/v1.20.0/lib/knapsack/runners/rspec_runner.rb
+# https://github.com/ArturT/knapsack/blob/v1.21.1/lib/knapsack/runners/rspec_runner.rb
 module Tooling
   class ParallelRSpecRunner
     def self.run(rspec_args: nil, filter_tests_file: nil)
       new(rspec_args: rspec_args, filter_tests_file: filter_tests_file).run
     end
 
-    def initialize(allocator: knapsack_allocator, filter_tests_file: nil, rspec_args: nil)
-      @allocator = allocator
+    def initialize(filter_tests_file: nil, rspec_args: nil)
       @filter_tests_file = filter_tests_file
       @rspec_args = rspec_args&.split(' ') || []
     end
 
     def run
-      Knapsack.logger.info
-      Knapsack.logger.info 'Knapsack node specs:'
-      Knapsack.logger.info node_tests
-      Knapsack.logger.info
-      Knapsack.logger.info 'Filter specs:'
-      Knapsack.logger.info filter_tests
-      Knapsack.logger.info
-      Knapsack.logger.info 'Running specs:'
-      Knapsack.logger.info tests_to_run
-      Knapsack.logger.info
+      if ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']
+        knapsack_dir = File.dirname(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH'])
+        FileUtils.mkdir_p(knapsack_dir)
+        File.write(File.join(knapsack_dir, 'node_specs.txt'), node_tests.join("\n"))
+      end
 
-      if tests_to_run.empty?
+      if node_tests.empty?
         Knapsack.logger.info 'No tests to run on this node, exiting.'
         return
       end
@@ -50,24 +98,14 @@ module Tooling
 
     private
 
-    attr_reader :allocator, :filter_tests_file, :rspec_args
+    attr_reader :filter_tests_file, :rspec_args
 
     def rspec_command
       %w[bundle exec rspec].tap do |cmd|
         cmd.push(*rspec_args)
-        cmd.push('--default-path', allocator.test_dir)
         cmd.push('--')
-        cmd.push(*tests_to_run)
+        cmd.push(*node_tests)
       end
-    end
-
-    def tests_to_run
-      if filter_tests.empty?
-        Knapsack.logger.info 'Running all node tests without filter'
-        return node_tests
-      end
-
-      @tests_to_run ||= node_tests & filter_tests
     end
 
     def node_tests
@@ -85,8 +123,11 @@ module Tooling
       File.read(filter_tests_file).split(' ')
     end
 
-    def knapsack_allocator
-      Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
+    def allocator
+      @allocator ||=
+        Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).tap do |builder|
+          builder.filter_tests = filter_tests
+        end.allocator
     end
   end
 end

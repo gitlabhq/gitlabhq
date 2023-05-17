@@ -9,9 +9,9 @@ RSpec.describe Ci::PipelineArtifactUploader do
   subject { uploader }
 
   it_behaves_like "builds correct paths",
-                  store_dir: %r[\h{2}/\h{2}/\h{64}/pipelines/\d+/artifacts/\d+],
-                  cache_dir: %r[artifacts/tmp/cache],
-                  work_dir: %r[artifacts/tmp/work]
+    store_dir: %r[\h{2}/\h{2}/\h{64}/pipelines/\d+/artifacts/\d+],
+    cache_dir: %r[artifacts/tmp/cache],
+    work_dir: %r[artifacts/tmp/work]
 
   context 'when object store is REMOTE' do
     before do

@@ -9,7 +9,7 @@ RSpec.describe ProjectMember do
 
   describe 'validations' do
     it { is_expected.to allow_value('Project').for(:source_type) }
-    it { is_expected.not_to allow_value('project').for(:source_type) }
+    it { is_expected.not_to allow_value('Group').for(:source_type) }
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
@@ -133,24 +133,6 @@ RSpec.describe ProjectMember do
     describe 'project 1 should not be changed' do
       it { expect(@project_1.users).to include(@user_1) }
       it { expect(@project_1.users).not_to include(@user_2) }
-    end
-  end
-
-  describe '.add_members_to_projects' do
-    it 'adds the given users to the given projects' do
-      projects = create_list(:project, 2)
-      users = create_list(:user, 2)
-
-      described_class.add_members_to_projects(
-        [projects.first.id, projects.second.id],
-        [users.first.id, users.second],
-        described_class::MAINTAINER)
-
-      expect(projects.first.users).to include(users.first)
-      expect(projects.first.users).to include(users.second)
-
-      expect(projects.second.users).to include(users.first)
-      expect(projects.second.users).to include(users.second)
     end
   end
 

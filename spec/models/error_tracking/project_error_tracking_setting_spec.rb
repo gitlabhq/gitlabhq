@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
+RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :error_tracking do
   include ReactiveCachingHelpers
   include Gitlab::Routing
 
@@ -93,9 +93,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
         end
 
         context 'with sentry backend' do
-          before do
-            subject.integrated = false
-          end
+          subject { build(:project_error_tracking_setting, project: project) }
 
           it 'does not create a new client key' do
             expect { subject.save! }.not_to change { ErrorTracking::ClientKey.count }
@@ -302,7 +300,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
         it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
       end
 
-      context 'when repo commit matches first release version' do
+      context 'when repo commit matches first relase version' do
         let(:commit) { instance_double(Commit, id: commit_id) }
         let(:repository) { instance_double(Repository, commit: commit) }
 
@@ -341,18 +339,19 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   describe '#update_issue' do
     let(:result) { subject.update_issue(**opts) }
-    let(:opts) { { issue_id: 1, params: {} } }
+    let(:issue_id) { 1 }
+    let(:opts) { { issue_id: issue_id, params: {} } }
 
     before do
       allow(subject).to receive(:sentry_client).and_return(sentry_client)
       allow(sentry_client).to receive(:issue_details)
-        .with({ issue_id: 1 })
+        .with({ issue_id: issue_id })
         .and_return(Gitlab::ErrorTracking::DetailedError.new(project_id: sentry_project_id))
     end
 
     context 'when sentry response is successful' do
       before do
-        allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+        allow(sentry_client).to receive(:update_issue).with(**opts).and_return(true)
       end
 
       it 'returns the successful response' do
@@ -362,7 +361,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
     context 'when sentry raises an error' do
       before do
-        allow(sentry_client).to receive(:update_issue).with(opts).and_raise(StandardError)
+        allow(sentry_client).to receive(:update_issue).with(**opts).and_raise(StandardError)
       end
 
       it 'returns the successful response' do
@@ -391,7 +390,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
           setting.update!(sentry_project_id: nil)
 
           allow(sentry_client).to receive(:projects).and_return(sentry_projects)
-          allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+          allow(sentry_client).to receive(:update_issue).with(**opts).and_return(true)
         end
 
         it 'tries to backfill it from sentry API' do
@@ -417,6 +416,25 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
           expect { result }.to raise_error(/The Sentry issue appers to be outside/)
         end
+      end
+    end
+
+    describe 'passing parameters to sentry client' do
+      include SentryClientHelpers
+
+      let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
+      let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
+      let(:token) { 'test-token' }
+      let(:sentry_client) { ErrorTracking::SentryClient.new(sentry_url, token) }
+
+      before do
+        stub_sentry_request(sentry_request_url, :put, body: true)
+
+        allow(sentry_client).to receive(:update_issue).and_call_original
+      end
+
+      it 'returns the successful response' do
+        expect(result).to eq(updated: true)
       end
     end
   end

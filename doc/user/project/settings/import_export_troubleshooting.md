@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -10,10 +10,10 @@ If you have problems with [migrating projects using file exports](import_export.
 
 ## Troubleshooting commands
 
-Finds information about the status of the import and further logs using the JID:
+Finds information about the status of the import and further logs using the JID,
+using the [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
-# Rails console
 Project.find_by_full_path('group/project').import_state.slice(:jid, :status, :last_error)
 > {"jid"=>"414dec93f941a593ea1a6894", "status"=>"finished", "last_error"=>nil}
 ```
@@ -35,6 +35,27 @@ Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and
 - Ensure shared runners are enabled in both the source and destination projects.
 - Disable shared runners on the parent group when you import the project.
 
+## Users missing from imported project
+
+If users aren't imported with imported projects, see the [preserving user contributions](import_export.md#preserving-user-contributions) requirements.
+
+A common reason for missing users is that the [public email setting](../../profile/index.md#set-your-public-email) isn't configured for users.
+To resolve this issue, ask users to configure this setting using the GitLab UI.
+
+If there are too many users for manual configuration to be feasible,
+you can set all user profiles to use a public email address using the
+[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
+  next if u.bot?
+
+  puts "Setting #{u.username}'s currently empty public email to #{u.email}…"
+  u.public_email = u.email
+  u.save!
+end
+```
+
 ## Import workarounds for large repositories
 
 [Maximum import size limitations](import_export.md#import-a-project-and-its-data)
@@ -48,41 +69,41 @@ reduce the repository size for another import attempt:
 
 1. Create a temporary working directory from the export:
 
-    ```shell
-    EXPORT=<filename-without-extension>
+   ```shell
+   EXPORT=<filename-without-extension>
 
-    mkdir "$EXPORT"
-    tar -xf "$EXPORT".tar.gz --directory="$EXPORT"/
-    cd "$EXPORT"/
-    git clone project.bundle
+   mkdir "$EXPORT"
+   tar -xf "$EXPORT".tar.gz --directory="$EXPORT"/
+   cd "$EXPORT"/
+   git clone project.bundle
 
-    # Prevent interference with recreating an importable file later
-    mv project.bundle ../"$EXPORT"-original.bundle
-    mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
+   # Prevent interference with recreating an importable file later
+   mv project.bundle ../"$EXPORT"-original.bundle
+   mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
 
-    git switch --create smaller-tmp-main
-    ```
+   git switch --create smaller-tmp-main
+   ```
 
 1. To reduce the repository size, work on this `smaller-tmp-main` branch:
    [identify and remove large files](../repository/reducing_the_repo_size_using_git.md)
    or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
    to reduce the number of commits.
 
-    ```shell
-    # Reduce the .git/objects/pack/ file size
-    cd project
-    git reflog expire --expire=now --all
-    git gc --prune=now --aggressive
+   ```shell
+   # Reduce the .git/objects/pack/ file size
+   cd project
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
 
-    # Prepare recreating an importable file
-    git bundle create ../project.bundle <default-branch-name>
-    cd ..
-    mv project/ ../"$EXPORT"-project
-    cd ..
+   # Prepare recreating an importable file
+   git bundle create ../project.bundle <default-branch-name>
+   cd ..
+   mv project/ ../"$EXPORT"-project
+   cd ..
 
-    # Recreate an importable file
-    tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
-    ```
+   # Recreate an importable file
+   tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
+   ```
 
 1. Import this new, smaller file into GitLab.
 1. In a full clone of the original repository,
@@ -153,12 +174,12 @@ Rather than attempting to push all changes at once, this workaround:
 
 You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
 methods can sometimes fail without giving enough information to troubleshoot. In these cases,
-[open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
+[open a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
 [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/projects/import_export/export_service.rb).
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 
-```shell
+```ruby
 # User needs to have permission to export
 u = User.find_by_username('someuser')
 p = Project.find_by_full_path('some/project')
@@ -265,12 +286,12 @@ Marked stuck import jobs as failed. JIDs: xyz
 | Problem | Possible solutions |
 | -------- | -------- |
 | [Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database | [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252) |
-| | Batch export
-| | Optimize SQL
-| | Move away from `ActiveRecord` callbacks (difficult)
-| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857) | DB Commit sweet spot that uses less memory |
+| | Batch export |
+| | Optimize SQL |
+| | Move away from `ActiveRecord` callbacks (difficult) |
+| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)) | DB Commit sweet spot that uses less memory |
 | | [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help |
-| | Batch reading/writing to disk and any SQL
+| | Batch reading/writing to disk and any SQL |
 
 ### Temporary solutions
 

@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       ConfigError = Class.new(StandardError)
-      TIMEOUT_SECONDS = 30.seconds
+      TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
 
       RESCUE_ERRORS = [
@@ -21,14 +21,15 @@ module Gitlab
 
       attr_reader :root, :context, :source_ref_path, :source, :logger
 
-      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, logger: nil)
+      # rubocop: disable Metrics/ParameterLists
+      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, pipeline_config: nil, logger: nil)
         @logger = logger || ::Gitlab::Ci::Pipeline::Logger.new(project: project)
         @source_ref_path = pipeline&.source_ref_path
         @project = project
 
         @context = self.logger.instrument(:config_build_context, once: true) do
           pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
-          build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
+          build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline, pipeline_config: pipeline_config)
         end
 
         @context.set_deadline(TIMEOUT_SECONDS)
@@ -49,6 +50,7 @@ module Gitlab
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message
       end
+      # rubocop: enable Metrics/ParameterLists
 
       def valid?
         @root.valid?
@@ -117,8 +119,7 @@ module Gitlab
       def expand_config(config)
         build_config(config)
 
-      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError,
-        Gitlab::Config::Loader::MultiDocYaml::DataTooLargeError => e
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
         track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, e.message
 
@@ -157,13 +158,14 @@ module Gitlab
         end
       end
 
-      def build_context(project:, pipeline:, sha:, user:, parent_pipeline:)
+      def build_context(project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:)
         Config::External::Context.new(
           project: project,
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
           variables: build_variables(pipeline: pipeline),
+          pipeline_config: pipeline_config,
           logger: logger)
       end
 

@@ -11,8 +11,8 @@ module Autocomplete
     LIMIT = 20
 
     attr_reader :current_user, :project, :group, :search, :skip_users,
-                :author_id, :todo_filter, :todo_state_filter,
-                :filter_by_current_user, :states
+      :author_id, :todo_filter, :todo_state_filter,
+      :filter_by_current_user, :states
 
     def initialize(params:, current_user:, project:, group:)
       @current_user = current_user
@@ -98,7 +98,7 @@ module Autocomplete
 
     # rubocop: disable CodeReuse/ActiveRecord
     def preload_associations(items)
-      ActiveRecord::Associations::Preloader.new.preload(items, :status)
+      ActiveRecord::Associations::Preloader.new(records: items, associations: :status).call
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

@@ -29,7 +29,7 @@ the documentation on that project if you want to dig into more advanced topics o
 aware that the documentation there reflects what's in the main branch and may not be the same as
 the version being used in GitLab.
 
-## Glossary of terms
+## Glossary
 
 To ensure a shared language, you should understand these fundamental terms we use
 when communicating about experiments:

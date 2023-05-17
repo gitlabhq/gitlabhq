@@ -48,6 +48,37 @@ Tests are executed in merge request pipelines as part of the development lifecyc
 - [Review app environment](../doc/development/testing_guide/review_apps.md)
 - [e2e:package-and-test](../doc/development/testing_guide/end_to_end/index.md#testing-code-in-merge-requests)
 
+### Including tests in other projects
+
+Pipeline template for `package-and-test` E2E tests is designed in a way so it can be included as a child pipeline in other projects.
+
+Minimal configuration example would look like this:
+
+```yaml
+qa-test:
+  stage: test
+  variables:
+    RELEASE: EE
+  trigger:
+    strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
+    include:
+      - project: gitlab-org/gitlab
+        ref: master
+        file: .gitlab/ci/package-and-test/main.gitlab-ci.yml
+```
+
+To set GitLab version used for testing, following environment variables can be used:
+
+- `RELEASE`: `omnibus` release, can be string value `EE` or `CE` for nightly release of enterprise or community edition of GitLab or can be fully qualified Docker image name
+- `QA_IMAGE`: Docker image of qa code. By default inferred from `RELEASE` but can be explicitly overridden with this variable
+
+#### Test specific environment variables
+
+Special GitLab configurations require various specific environment variables to be present for tests to work. These can be provisioned automatically using `terraform` setup in [engineering-productivity-infrastructure](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/tree/main/qa-resources/modules/e2e-ci) project.
+
 ### Logging
 
 By default tests on CI use `info` log level. `debug` level is still available in case of failure debugging. Logs are stored in jobs artifacts.
@@ -98,7 +129,7 @@ See the section above for situations that might require adjustment to the comman
 
 1.  Use the following command to start an instance that you can visit at `http://127.0.0.1`:
 
-   ```
+   ```bash
    docker run \    
     --hostname 127.0.0.1 \
     --publish 80:80 --publish 22:22 \
@@ -137,7 +168,7 @@ See the section above for situations that might require adjustment to the comman
 
 2. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
 
-   ```
+   ```bash
    docker run --hostname 127.0.0.1 --publish 80:80 --publish 22:22 --name gitlab --shm-size 256m --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['initial_root_password']='5iveL\!fe';" gitlab/gitlab-ee:nightly
    ```
 
@@ -184,7 +215,7 @@ Those tests are tagged `:transient` and therefore can be run via:
 bundle exec rspec --tag transient
 ```
 
-#### Overriding gitlab address
+#### Overriding GitLab address
 
 When running tests against GDK, the default address is `http://127.0.0.1:3000`. This value can be overridden by providing environment variable `QA_GITLAB_URL`:
 
@@ -228,7 +259,7 @@ All [supported environment variables are here](https://gitlab.com/gitlab-org/git
 #### Sending additional cookies
 
 The environment variable `QA_COOKIES` can be set to send additional cookies
-on every request. This is necessary on gitlab.com to direct traffic to the
+on every request. This is necessary on `gitlab.com` to direct traffic to the
 canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
 
 To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"`
@@ -274,7 +305,7 @@ bundle exec rspec --tag quarantine
 
 ### Running tests with a custom bin/qa test runner
 
-`bin/qa` is an additional custom wrapper script that abstracts away some of the more complicated setups that some tests require. This option requires test scenario and test instance's Gitlab address to be specified in the command. For example, to run any `Instance` scenario test, the following command can be used:
+`bin/qa` is an additional custom wrapper script that abstracts away some of the more complicated setups that some tests require. This option requires test scenario and test instance's GitLab address to be specified in the command. For example, to run any `Instance` scenario test, the following command can be used:
 
 ```shell
 bundle exec bin/qa Test::Instance::All http://localhost:3000

@@ -6,7 +6,7 @@ RSpec.shared_examples 'when the snippet is not found' do
   end
 
   it_behaves_like 'a mutation that returns top-level errors',
-                  errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 end
 
 RSpec.shared_examples 'snippet edit usage data counters' do

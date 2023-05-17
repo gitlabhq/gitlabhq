@@ -85,6 +85,11 @@ export const generateTreeList = (files) => {
           if (type === 'blob') {
             Object.assign(entry, {
               changed: true,
+              diffLoaded: false,
+              filePaths: {
+                old: file.old_path,
+                new: file.new_path,
+              },
               tempFile: file.new_file,
               deleted: file.deleted_file,
               fileHash: file.file_hash,

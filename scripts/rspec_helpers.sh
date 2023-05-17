@@ -12,6 +12,11 @@ function retrieve_tests_metadata() {
     curl --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
       echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
+
+  if [[ ! -f "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ]]; then
+    curl --location -o "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ||
+      echo "" > "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}"
+  fi
 }
 
 function update_tests_metadata() {
@@ -121,22 +126,25 @@ function rspec_db_library_code() {
 }
 
 function debug_rspec_variables() {
-  echoinfo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY}"
-  echoinfo "RETRY_FAILED_TESTS_IN_NEW_PROCESS: ${RETRY_FAILED_TESTS_IN_NEW_PROCESS}"
+  echoinfo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY:-}"
+  echoinfo "RETRY_FAILED_TESTS_IN_NEW_PROCESS: ${RETRY_FAILED_TESTS_IN_NEW_PROCESS:-}"
 
-  echoinfo "KNAPSACK_GENERATE_REPORT: ${KNAPSACK_GENERATE_REPORT}"
-  echoinfo "FLAKY_RSPEC_GENERATE_REPORT: ${FLAKY_RSPEC_GENERATE_REPORT}"
+  echoinfo "KNAPSACK_GENERATE_REPORT: ${KNAPSACK_GENERATE_REPORT:-}"
+  echoinfo "FLAKY_RSPEC_GENERATE_REPORT: ${FLAKY_RSPEC_GENERATE_REPORT:-}"
 
-  echoinfo "KNAPSACK_TEST_FILE_PATTERN: ${KNAPSACK_TEST_FILE_PATTERN}"
-  echoinfo "KNAPSACK_LOG_LEVEL: ${KNAPSACK_LOG_LEVEL}"
-  echoinfo "KNAPSACK_REPORT_PATH: ${KNAPSACK_REPORT_PATH}"
+  echoinfo "KNAPSACK_TEST_FILE_PATTERN: ${KNAPSACK_TEST_FILE_PATTERN:-}"
+  echoinfo "KNAPSACK_LOG_LEVEL: ${KNAPSACK_LOG_LEVEL:-}"
+  echoinfo "KNAPSACK_REPORT_PATH: ${KNAPSACK_REPORT_PATH:-}"
 
-  echoinfo "FLAKY_RSPEC_SUITE_REPORT_PATH: ${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-  echoinfo "FLAKY_RSPEC_REPORT_PATH: ${FLAKY_RSPEC_REPORT_PATH}"
-  echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH}"
-  echoinfo "SKIPPED_FLAKY_TESTS_REPORT_PATH: ${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
+  echoinfo "FLAKY_RSPEC_SUITE_REPORT_PATH: ${FLAKY_RSPEC_SUITE_REPORT_PATH:-}"
+  echoinfo "FLAKY_RSPEC_REPORT_PATH: ${FLAKY_RSPEC_REPORT_PATH:-}"
+  echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH:-}"
+  echoinfo "SKIPPED_TESTS_REPORT_PATH: ${SKIPPED_TESTS_REPORT_PATH:-}"
 
-  echoinfo "CRYSTALBALL: ${CRYSTALBALL}"
+  echoinfo "CRYSTALBALL: ${CRYSTALBALL:-}"
+
+  echoinfo "RSPEC_TESTS_MAPPING_ENABLED: ${RSPEC_TESTS_MAPPING_ENABLED:-}"
+  echoinfo "RSPEC_TESTS_FILTER_FILE: ${RSPEC_TESTS_FILTER_FILE:-}"
 }
 
 function handle_retry_rspec_in_new_process() {
@@ -163,8 +171,9 @@ function rspec_paralellized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
-  local rspec_opts="${1}"
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg13 1/24' would become 'rspec_unit_pg13_1_24'
+  local rspec_opts="${1:-}"
+  local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"
   local spec_folder_prefixes=""
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
@@ -193,15 +202,10 @@ function rspec_paralellized_job() {
 
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
-  export KNAPSACK_TEST_FILE_PATTERN="spec/{,**/}*_spec.rb"
-
-  if [[ "${test_level}" != "foss-impact" ]]; then
-    export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
-  fi
-
+  export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
-  export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"
+  export SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests_${report_name}.txt"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"
@@ -218,7 +222,7 @@ function rspec_paralellized_job() {
 
   debug_rspec_variables
 
-  if [[ -n "${RSPEC_TESTS_MAPPING_ENABLED}" ]]; then
+  if [[ -n "${rspec_tests_mapping_enabled}" ]]; then
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
   else
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
@@ -240,7 +244,7 @@ function retry_failed_rspec_examples() {
 
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg13 1/24' would become 'rspec_unit_pg13_1_24'
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
 
   export RETRIED_TESTS_REPORT_PATH="${rspec_flaky_folder_path}retried_tests_${report_name}_report.txt"
@@ -404,7 +408,7 @@ function generate_flaky_tests_reports() {
 
   mkdir -p ${rspec_flaky_folder_path}
 
-  find ${rspec_flaky_folder_path} -type f -name 'skipped_flaky_tests_*_report.txt' -exec cat {} + >> "${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
+  find ${rspec_flaky_folder_path} -type f -name 'skipped_tests_*.txt' -exec cat {} + >> "${SKIPPED_TESTS_REPORT_PATH}"
   find ${rspec_flaky_folder_path} -type f -name 'retried_tests_*_report.txt' -exec cat {} + >> "${RETRIED_TESTS_REPORT_PATH}"
 
   cleanup_individual_job_reports

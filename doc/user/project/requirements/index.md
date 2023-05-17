@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Plan
-group: Certify
+group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -24,12 +24,17 @@ If an industry standard *requires* that your application has a certain feature o
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
+NOTE:
+Requirements and [test cases](../../../ci/test_cases/index.md) are being
+[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
+[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
+For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a more in-depth walkthrough using a [demonstration project](https://gitlab.com/gitlab-org/requiremeents-mgmt),
-see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
+For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
 
 ![requirements list view](img/requirements_list_v13_5.png)
 
@@ -235,9 +240,9 @@ Before you import your file:
 To import requirements:
 
 1. In a project, go to **Issues > Requirements**.
-   - If the project already has existing requirements, select the import icon (**{import}**) in the
-     upper right.
-   - For a project without any requirements, select **Import CSV** in the middle of the page.
+   - For a project with requirements, in the
+     upper-right corner, select the import icon (**{import}**).
+   - For a project without requirements, in the middle of the page, select **Import CSV**.
 1. Select the file and select **Import requirements**.
 
 The file is processed in the background and a notification email is sent
@@ -296,7 +301,7 @@ Prerequisite:
 To export requirements:
 
 1. In a project, go to **Issues > Requirements**.
-1. In the upper right, select the **Export as CSV** icon (**{export}**).
+1. In the upper-right corner, select **Export as CSV** (**{export}**).
 
    A confirmation modal appears.
 

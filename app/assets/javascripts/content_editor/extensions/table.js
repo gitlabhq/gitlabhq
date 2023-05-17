@@ -1,6 +1,6 @@
 import { Table } from '@tiptap/extension-table';
 import { debounce } from 'lodash';
-import { VARIANT_WARNING } from '~/flash';
+import { VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import { getMarkdownSource } from '../services/markdown_sourcemap';
 import { shouldRenderHTMLTable } from '../services/serialization_helpers';

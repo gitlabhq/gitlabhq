@@ -10,9 +10,10 @@ import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery, autocompleteDataSources, markdownPreviewPath } from '../utils';
+import { autocompleteDataSources, markdownPreviewPath } from '../utils';
 import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 
@@ -27,22 +28,14 @@ export default {
     WorkItemDescriptionRendered,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
       required: true,
     },
-    fullPath: {
+    workItemIid: {
       type: String,
-      required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    queryVariables: {
-      type: Object,
       required: true,
     },
   },
@@ -55,7 +48,6 @@ export default {
       isSubmitting: false,
       isSubmittingWithKeydown: false,
       descriptionText: '',
-      descriptionHtml: '',
       conflictedDescription: '',
       formFieldProps: {
         'aria-label': __('Description'),
@@ -67,26 +59,19 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
-        return this.queryVariables;
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
       },
       update(data) {
-        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
-      },
-      skip() {
-        return !this.queryVariables.id && !this.queryVariables.iid;
+        return data.workspace.workItems.nodes[0];
       },
       result() {
         if (this.isEditing) {
-          if (this.descriptionText !== this.workItemDescription?.description) {
-            this.conflictedDescription = this.workItemDescription?.description;
-          }
-        } else {
-          this.descriptionText = this.workItemDescription?.description;
-          this.descriptionHtml = this.workItemDescription?.descriptionHtml;
+          this.checkForConflicts();
         }
       },
       error() {
@@ -148,6 +133,11 @@ export default {
     },
   },
   methods: {
+    checkForConflicts() {
+      if (this.descriptionText !== this.workItemDescription?.description) {
+        this.conflictedDescription = this.workItemDescription?.description;
+      }
+    },
     async startEditing() {
       this.isEditing = true;
 
@@ -254,8 +244,7 @@ export default {
         :autocomplete-data-sources="autocompleteDataSources"
         enable-autocomplete
         supports-quick-actions
-        init-on-autofocus
-        use-bottom-toolbar
+        autofocus
         @input="setDescriptionText"
         @keydown.meta.enter="updateWorkItem"
         @keydown.ctrl.enter="updateWorkItem"

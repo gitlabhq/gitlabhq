@@ -6,17 +6,20 @@ class CommitStatus < Ci::ApplicationRecord
   include Importable
   include AfterCommitQueue
   include Presentable
-  include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
+  include SafelyChangeColumnDefault
 
   self.table_name = 'ci_builds'
+  self.sequence_name = 'ci_builds_id_seq'
+  self.primary_key = :id
   partitionable scope: :pipeline
+  columns_changing_default :partition_id
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
-  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses
+  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
   belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
@@ -26,13 +29,14 @@ class CommitStatus < Ci::ApplicationRecord
   enum scheduling_type: { stage: 0, dag: 1 }, _prefix: true
   # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
+  enum failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, :before_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
   validates :name, presence: true, unless: :importing?
+  validates :stage, :ref, :target_url, :description, length: { maximum: 255 }
 
   alias_attribute :author, :user
   alias_attribute :pipeline_id, :commit_id
@@ -42,14 +46,6 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   scope :order_id_desc, -> { order(id: :desc) }
-
-  scope :exclude_ignored, -> do
-    # We want to ignore failed but allowed to fail jobs.
-    #
-    # TODO, we also skip ignored optional manual actions.
-    where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled, :manual])
-  end
 
   scope :latest, -> { where(retried: [false, nil]) }
   scope :retried, -> { where(retried: true) }
@@ -66,12 +62,13 @@ class CommitStatus < Ci::ApplicationRecord
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :with_pipeline, -> { joins(:pipeline) }
-  scope :updated_at_before, ->(date) { where('ci_builds.updated_at < ?', date) }
-  scope :created_at_before, ->(date) { where('ci_builds.created_at < ?', date) }
+  scope :updated_at_before, ->(date) { where("#{quoted_table_name}.updated_at < ?", date) }
+  scope :created_at_before, ->(date) { where("#{quoted_table_name}.created_at < ?", date) }
   scope :scheduled_at_before, ->(date) {
-    where('ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?', date)
+    where("#{quoted_table_name}.scheduled_at IS NOT NULL AND #{quoted_table_name}.scheduled_at < ?", date)
   }
   scope :with_when_executed, ->(when_executed) { where(when: when_executed) }
+  scope :with_type, ->(type) { where(type: type) }
 
   # The scope applies `pluck` to split the queries. Use with care.
   scope :for_project_paths, -> (paths) do
@@ -237,10 +234,6 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
-  end
-
-  def failed_but_allowed?
-    allow_failure? && (failed? || canceled?)
   end
 
   # Time spent running.

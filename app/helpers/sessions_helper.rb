@@ -48,4 +48,8 @@ module SessionsHelper
     # Moved to Gitlab::Utils::Email in 15.9
     Gitlab::Utils::Email.obfuscated_email(email)
   end
+
+  def remember_me_enabled?
+    Gitlab::CurrentSettings.remember_me_enabled?
+  end
 end

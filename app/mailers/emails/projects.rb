@@ -7,29 +7,37 @@ module Emails
       @project = Project.find project_id
       @target_url = project_url(@project)
       @old_path_with_namespace = old_path_with_namespace
-      mail_with_locale(to: @user.notification_email_for(@project.group),
-                       subject: subject("Project was moved"))
+      mail_with_locale(
+        to: @user.notification_email_for(@project.group),
+        subject: subject("Project was moved")
+      )
     end
 
     def project_was_exported_email(current_user, project)
       @project = project
-      mail_with_locale(to: current_user.notification_email_for(project.group),
-                       subject: subject("Project was exported"))
+      mail_with_locale(
+        to: current_user.notification_email_for(project.group),
+        subject: subject("Project was exported")
+      )
     end
 
     def project_was_not_exported_email(current_user, project, errors)
       @project = project
       @errors = errors
-      mail_with_locale(to: current_user.notification_email_for(@project.group),
-                       subject: subject("Project export error"))
+      mail_with_locale(
+        to: current_user.notification_email_for(@project.group),
+        subject: subject("Project export error")
+      )
     end
 
     def repository_cleanup_success_email(project, user)
       @project = project
       @user = user
 
-      mail_with_locale(to: user.notification_email_for(project.group),
-                       subject: subject("Project cleanup has completed"))
+      mail_with_locale(
+        to: user.notification_email_for(project.group),
+        subject: subject("Project cleanup has completed")
+      )
     end
 
     def repository_cleanup_failure_email(project, user, error)
@@ -52,9 +60,11 @@ module Emails
       add_project_headers
       headers['X-GitLab-Author'] = @message.author_username
 
-      mail_with_locale(from: sender(@message.author_id, send_from_user_email: @message.send_from_committer_email?),
-                       reply_to: @message.reply_to,
-                       subject: @message.subject)
+      mail_with_locale(
+        from: sender(@message.author_id, send_from_user_email: @message.send_from_committer_email?),
+        reply_to: @message.reply_to,
+        subject: @message.subject
+      )
     end
 
     def prometheus_alert_fired_email(project, user, alert)

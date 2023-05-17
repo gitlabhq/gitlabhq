@@ -18,11 +18,6 @@ describe('DiscussionFilterNote component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('timelineContent renders a string containing instruction for switching feed type', () => {
     expect(wrapper.find('[data-testid="discussion-filter-timeline-content"]').html()).toBe(
       '<div data-testid="discussion-filter-timeline-content">You\'re only seeing <b>other activity</b> in the feed. To add a comment, switch to one of the following options.</div>',

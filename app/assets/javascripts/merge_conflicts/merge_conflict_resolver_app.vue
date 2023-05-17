@@ -33,7 +33,7 @@ export default {
   i18n: {
     commitStatSummary: __('Showing %{conflict}'),
     resolveInfo: __(
-      'You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}',
+      'You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}.',
     ),
   },
   computed: {
@@ -148,10 +148,10 @@ export default {
                 </gl-button>
               </div>
             </div>
-            <div class="diff-content diff-wrap-lines">
+            <div class="diff-content diff-wrap-lines gl-rounded-bottom-base">
               <div
                 v-if="file.resolveMode === 'interactive' && file.type === 'text'"
-                class="file-content"
+                class="file-content gl-rounded-bottom-base"
               >
                 <parallel-conflict-lines v-if="isParallel" :file="file" />
                 <inline-conflict-lines v-else :file="file" />
@@ -164,8 +164,7 @@ export default {
           </div>
         </div>
       </div>
-      <hr />
-      <div class="resolve-conflicts-form">
+      <div class="resolve-conflicts-form gl-mt-6">
         <div class="form-group row">
           <div class="col-md-4">
             <h4 class="gl-mt-0">
@@ -180,9 +179,7 @@ export default {
                   <code>{{ s__('MergeConflict|Use theirs') }}</code>
                 </template>
                 <template #branch_name>
-                  <a class="ref-name" :href="sourceBranchPath">
-                    {{ conflictsData.sourceBranch }}
-                  </a>
+                  <a class="ref-name" :href="sourceBranchPath">{{ conflictsData.sourceBranch }}</a>
                 </template>
               </gl-sprintf>
             </div>
@@ -204,7 +201,7 @@ export default {
             <gl-button
               :disabled="!isReadyToCommit"
               variant="confirm"
-              class="js-submit-button"
+              class="js-submit-button gl-mr-2"
               @click="submitResolvedConflicts(resolveConflictsPath)"
             >
               {{ getCommitButtonText }}

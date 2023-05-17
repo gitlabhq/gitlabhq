@@ -4,8 +4,7 @@ key_path: redis_hll_counters.testing.users_expanding_testing_accessibility_repor
 description: Count of expanding the accessibility report widget
 product_section: ops
 product_stage: verify
-product_group: pipeline_insights
-product_category: accessibility_testing
+product_group: pipeline_execution
 value_type: number
 status: active
 milestone: '13.11'

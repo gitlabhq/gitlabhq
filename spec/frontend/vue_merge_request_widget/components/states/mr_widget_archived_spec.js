@@ -10,11 +10,6 @@ describe('MRWidgetArchived', () => {
     wrapper = shallowMount(archivedComponent, { propsData: { mr: {} } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders error icon', () => {
     expect(wrapper.findComponent(StateContainer).exists()).toBe(true);
     expect(wrapper.findComponent(StateContainer).props().status).toBe('failed');

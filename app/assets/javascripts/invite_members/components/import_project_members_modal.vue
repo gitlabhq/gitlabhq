@@ -2,13 +2,14 @@
 import { GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { importProjectMembers } from '~/api/projects_api';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
+import { PROJECT_SELECT_LABEL_ID } from '../constants';
 import ProjectSelect from './project_select.vue';
 
 export default {
@@ -80,11 +81,17 @@ export default {
     openModal() {
       this.$root.$emit(BV_SHOW_MODAL, this.$options.modalId);
     },
+    closeModal() {
+      this.$root.$emit(BV_HIDE_MODAL, this.$options.modalId);
+    },
     resetFields() {
       this.invalidFeedbackMessage = '';
       this.projectToBeImported = {};
     },
-    submitImport() {
+    submitImport(e) {
+      // We never want to hide when submitting
+      e.preventDefault();
+
       this.isLoading = true;
       return importProjectMembers(this.projectId, this.projectToBeImported.id)
         .then(this.onInviteSuccess)
@@ -130,7 +137,7 @@ export default {
     defaultError: s__('ImportAProjectModal|Unable to import project members'),
     successMessage: s__('ImportAProjectModal|Successfully imported'),
   },
-  projectSelectLabelId: 'project-select',
+  projectSelectLabelId: PROJECT_SELECT_LABEL_ID,
   modalId: uniqueId('import-a-project-modal-'),
 };
 </script>
@@ -143,6 +150,7 @@ export default {
     :title="$options.i18n.modalTitle"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
+    no-focus-on-show
     @primary="submitImport"
     @hidden="resetFields"
   >
@@ -157,10 +165,11 @@ export default {
       :invalid-feedback="invalidFeedbackMessage"
       :state="validationState"
       data-testid="form-group"
+      label-cols="auto"
+      label-class="gl-pt-3!"
+      :label="$options.i18n.projectLabel"
+      :label-for="$options.projectSelectLabelId"
     >
-      <label :id="$options.projectSelectLabelId" class="col-form-label">{{
-        $options.i18n.projectLabel
-      }}</label>
       <project-select v-model="projectToBeImported" />
     </gl-form-group>
     <p>{{ $options.i18n.modalHelpText }}</p>

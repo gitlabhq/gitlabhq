@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { GlDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DROPDOWN_VARIANT } from '~/vue_shared/components/color_select_dropdown/constants';
+import { stubComponent } from 'helpers/stub_component';
 import DropdownContents from '~/vue_shared/components/color_select_dropdown/dropdown_contents.vue';
 import DropdownContentsColorView from '~/vue_shared/components/color_select_dropdown/dropdown_contents_color_view.vue';
 import DropdownHeader from '~/vue_shared/components/color_select_dropdown/dropdown_header.vue';
@@ -19,31 +20,37 @@ const defaultProps = {
 describe('DropdownContent', () => {
   let wrapper;
 
-  const createComponent = ({ propsData = {} } = {}) => {
+  const createComponent = ({ propsData = {}, stubs = {} } = {}) => {
     wrapper = mountExtended(DropdownContents, {
       propsData: {
         ...defaultProps,
         ...propsData,
       },
+      stubs,
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findColorView = () => wrapper.findComponent(DropdownContentsColorView);
   const findDropdownHeader = () => wrapper.findComponent(DropdownHeader);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   it('calls dropdown `show` method on `isVisible` prop change', async () => {
-    createComponent();
-    const spy = jest.spyOn(wrapper.vm.$refs.dropdown, 'show');
+    const showDropdown = jest.fn();
+    const hideDropdown = jest.fn();
+    const dropdownStub = {
+      GlDropdown: stubComponent(GlDropdown, {
+        methods: {
+          show: showDropdown,
+          hide: hideDropdown,
+        },
+      }),
+    };
+    createComponent({ stubs: dropdownStub });
     await wrapper.setProps({
       isVisible: true,
     });
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(showDropdown).toHaveBeenCalledTimes(1);
   });
 
   it('does not emit `setColor` event on dropdown hide if color did not change', () => {

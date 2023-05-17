@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -129,5 +129,38 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
         extra: {}
       )
     }
+  end
+
+  describe '#to_hash' do
+    context 'when interpolation is being used' do
+      before do
+        allow(Gitlab::Template::GitlabCiYmlTemplate)
+          .to receive(:find)
+          .and_return(template_double)
+      end
+
+      let(:template_double) do
+        instance_double(Gitlab::Template::GitlabCiYmlTemplate, content: template_content)
+      end
+
+      let(:template_content) do
+        <<~YAML
+          spec:
+            inputs:
+              env:
+          ---
+          deploy:
+            script: deploy $[[ inputs.env ]]
+        YAML
+      end
+
+      let(:params) do
+        { template: template, inputs: { env: 'production' } }
+      end
+
+      it 'correctly interpolates the content' do
+        expect(template_file.to_hash).to eq({ deploy: { script: 'deploy production' } })
+      end
+    end
   end
 end

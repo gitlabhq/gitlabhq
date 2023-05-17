@@ -9,6 +9,7 @@ class Label < ApplicationRecord
   include Sortable
   include FromUnion
   include Presentable
+  include EachBatch
 
   cache_markdown_field :description, pipeline: :single_line
 
@@ -64,6 +65,10 @@ class Label < ApplicationRecord
       .merge(LabelLink.where(target: target_relation))
       .select(arel_table[Arel.star], LabelLink.arel_table[:target_id])
       .with_preloaded_container
+  end
+
+  def self.pluck_titles
+    pluck(:title)
   end
 
   def self.prioritized(project)

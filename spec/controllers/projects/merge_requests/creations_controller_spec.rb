@@ -99,9 +99,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
 
   describe 'GET pipelines' do
     before do
-      create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id,
-                           ref: 'remove-submodule',
-                           project: fork_project)
+      create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id, ref: 'remove-submodule', project: fork_project)
     end
 
     it 'renders JSON including serialized pipelines' do
@@ -188,13 +186,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
       expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
 
-      get :branch_to,
-          params: {
-            namespace_id: fork_project.namespace,
-            project_id: fork_project,
-            target_project_id: project.id,
-            ref: 'master'
-          }
+      get :branch_to, params: {
+        namespace_id: fork_project.namespace,
+        project_id: fork_project,
+        target_project_id: project.id,
+        ref: 'master'
+      }
 
       expect(assigns(:commit)).not_to be_nil
       expect(response).to have_gitlab_http_status(:ok)
@@ -204,13 +201,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
       expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { false }.at_least(:once)
 
-      get :branch_to,
-          params: {
-            namespace_id: fork_project.namespace,
-            project_id: fork_project,
-            target_project_id: project.id,
-            ref: 'master'
-          }
+      get :branch_to, params: {
+        namespace_id: fork_project.namespace,
+        project_id: fork_project,
+        target_project_id: project.id,
+        ref: 'master'
+      }
 
       expect(assigns(:commit)).to be_nil
       expect(response).to have_gitlab_http_status(:ok)
@@ -220,13 +216,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
       expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
 
-      get :branch_to,
-          params: {
-            namespace_id: fork_project.namespace,
-            project_id: fork_project,
-            target_project_id: project.id,
-            ref: 'master'
-          }
+      get :branch_to, params: {
+        namespace_id: fork_project.namespace,
+        project_id: fork_project,
+        target_project_id: project.id,
+        ref: 'master'
+      }
 
       expect(assigns(:commit)).to be_nil
       expect(response).to have_gitlab_http_status(:ok)

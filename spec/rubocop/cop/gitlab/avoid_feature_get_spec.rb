@@ -7,8 +7,6 @@ require_relative '../../../../rubocop/cop/gitlab/avoid_feature_get'
 RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureGet do
   let(:msg) { described_class::MSG }
 
-  subject(:cop) { described_class.new }
-
   it 'bans use of Feature.ban' do
     expect_offense(<<~RUBY)
       Feature.get

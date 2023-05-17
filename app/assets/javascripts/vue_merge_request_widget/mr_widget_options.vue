@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty, clamp } from 'lodash';
 import {
   registerExtension,
   registeredExtensions,
@@ -9,11 +9,10 @@ import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/ap
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
-import { createAlert } from '~/flash';
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
+import { createAlert } from '~/alert';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
-import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -44,7 +43,13 @@ import UnresolvedDiscussionsState from './components/states/unresolved_discussio
 import WorkInProgressState from './components/states/work_in_progress.vue';
 import ExtensionsContainer from './components/extensions/container';
 import WidgetContainer from './components/widget/app.vue';
-import { STATE_MACHINE, stateToComponentMap } from './constants';
+import {
+  STATE_MACHINE,
+  stateToComponentMap,
+  STATE_QUERY_POLLING_INTERVAL_DEFAULT,
+  STATE_QUERY_POLLING_INTERVAL_BACKOFF,
+  FOUR_MINUTES_IN_MS,
+} from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
@@ -99,6 +104,7 @@ export default {
   apollo: {
     state: {
       query: getStateQuery,
+      notifyOnNetworkStatusChange: true,
       manual: true,
       skip() {
         return !this.mr;
@@ -106,10 +112,19 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      result({ data: { project } }) {
-        if (project) {
-          this.mr.setGraphqlData(project);
-          this.loading = false;
+      pollInterval() {
+        return this.pollInterval;
+      },
+      result(response) {
+        if (!response.loading) {
+          this.pollInterval = this.apolloStateQueryPollingInterval;
+
+          if (response.data?.project) {
+            this.mr.setGraphqlData(response.data.project);
+            this.loading = false;
+          }
+        } else {
+          this.checkStatus(undefined, undefined, false);
         }
       },
       subscribeToMore: {
@@ -140,6 +155,10 @@ export default {
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
+  provide: {
+    expandDetailsTooltip: __('Expand merge details'),
+    collapseDetailsTooltip: __('Collapse merge details'),
+  },
   props: {
     mrData: {
       type: Object,
@@ -158,9 +177,27 @@ export default {
       loading: true,
       recomputeComponentName: 0,
       issuableId: false,
+      startingPollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
+      pollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
     };
   },
   computed: {
+    apolloStateQueryMaxPollingInterval() {
+      return this.startingPollInterval + FOUR_MINUTES_IN_MS;
+    },
+    apolloStateQueryPollingInterval() {
+      if (this.startingPollInterval < 0) {
+        return 0;
+      }
+
+      const unboundedInterval = STATE_QUERY_POLLING_INTERVAL_BACKOFF * this.pollInterval;
+
+      return clamp(
+        unboundedInterval,
+        this.startingPollInterval,
+        this.apolloStateQueryMaxPollingInterval,
+      );
+    },
     shouldRenderApprovals() {
       return this.mr.state !== 'nothingToMerge';
     },
@@ -193,7 +230,7 @@ export default {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
     shouldRenderMergedPipeline() {
-      return this.mr.state === 'merged' && !isEmpty(this.mr.mergePipeline);
+      return this.mr.state === STATUS_MERGED && !isEmpty(this.mr.mergePipeline);
     },
     showMergePipelineForkWarning() {
       return Boolean(
@@ -231,7 +268,7 @@ export default {
       return (this.mr.humanAccess || '').toLowerCase();
     },
     hasMergeError() {
-      return this.mr.mergeError && this.state !== 'closed';
+      return this.mr.mergeError && this.state !== STATUS_CLOSED;
     },
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
@@ -284,7 +321,8 @@ export default {
   mounted() {
     MRWidgetService.fetchInitialData()
       .then(({ data, headers }) => {
-        this.startingPollInterval = Number(headers['POLL-INTERVAL']);
+        this.startingPollInterval =
+          Number(headers['POLL-INTERVAL']) || STATE_QUERY_POLLING_INTERVAL_DEFAULT;
         this.initWidget(data);
       })
       .catch(() =>
@@ -295,9 +333,6 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
-    if (this.pollingInterval) {
-      this.pollingInterval.destroy();
-    }
 
     if (this.deploymentsInterval) {
       this.deploymentsInterval.destroy();
@@ -332,7 +367,6 @@ export default {
         this.initPostMergeDeploymentsPolling();
       }
 
-      this.initPolling();
       this.bindEventHubListeners();
       eventHub.$on('mr.discussion.updated', this.checkStatus);
 
@@ -363,8 +397,10 @@ export default {
     createService(store) {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
-    checkStatus(cb, isRebased) {
-      this.$apollo.queries.state.refetch();
+    checkStatus(cb, isRebased, refetch = true) {
+      if (refetch) {
+        this.$apollo.queries.state.refetch();
+      }
 
       return this.service
         .checkStatus()
@@ -384,21 +420,10 @@ export default {
         );
     },
     setFaviconHelper() {
-      if (this.mr.ciStatusFaviconPath) {
-        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
+      if (this.mr.faviconOverlayPath) {
+        return setFaviconOverlay(this.mr.faviconOverlayPath);
       }
       return Promise.resolve();
-    },
-    initPolling() {
-      if (this.startingPollInterval <= 0) return;
-
-      this.pollingInterval = new SmartInterval({
-        callback: this.checkStatus,
-        startingInterval: this.startingPollInterval,
-        maxInterval: this.startingPollInterval + secondsToMilliseconds(4 * 60),
-        hiddenInterval: secondsToMilliseconds(6 * 60),
-        incrementByFactorOf: 2,
-      });
     },
     initDeploymentsPolling() {
       this.deploymentsInterval = this.deploymentsPoll(this.fetchPreMergeDeployments);
@@ -453,7 +478,6 @@ export default {
             el.innerHTML = res.data;
             document.body.appendChild(el);
             document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
-            Project.initRefSwitcher();
           }
         })
         .catch(() =>
@@ -476,10 +500,10 @@ export default {
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
     resumePolling() {
-      this.pollingInterval?.resume();
+      this.$apollo.queries.state.startPolling(this.pollInterval);
     },
     stopPolling() {
-      this.pollingInterval?.stopTimer();
+      this.$apollo.queries.state.stopPolling();
     },
     bindEventHubListeners() {
       eventHub.$on('MRWidgetUpdateRequested', (cb) => {

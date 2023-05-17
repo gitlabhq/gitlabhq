@@ -37,6 +37,7 @@ module QA
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = second_fork_project
+          push.user = user
           push.file_name = 'new_file'
           push.file_content = '# This is a new file'
           push.commit_message = 'Add new file'

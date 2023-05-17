@@ -88,9 +88,9 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         end
       end
 
-      context 'when the feature flag is disabled' do
+      context 'when the tracking database is shared' do
         before do
-          stub_feature_flags(execute_batched_migrations_on_schedule: false)
+          skip_if_database_exists(tracking_database)
         end
 
         it 'does nothing' do
@@ -101,22 +101,17 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         end
       end
 
-      context 'when the feature flag is enabled' do
-        let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
-
+      context 'when the tracking database is not shared' do
         before do
-          stub_feature_flags(execute_batched_migrations_on_schedule: true)
-
-          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
-            .with(connection: base_model.connection)
-            .and_return(nil)
+          skip_if_shared_database(tracking_database)
         end
 
-        context 'when database config is shared' do
-          it 'does nothing' do
-            expect(Gitlab::Database).to receive(:db_config_share_with)
-              .with(base_model.connection_db_config).and_return('main')
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(execute_batched_migrations_on_schedule: false)
+          end
 
+          it 'does nothing' do
             expect(worker).not_to receive(:active_migration)
             expect(worker).not_to receive(:run_active_migration)
 
@@ -124,123 +119,146 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           end
         end
 
-        context 'when no active migrations exist' do
-          context 'when parallel execution is disabled' do
-            before do
-              stub_feature_flags(batched_migrations_parallel_execution: false)
-            end
+        context 'when the feature flag is enabled' do
+          let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
+          let(:connection) { base_model.connection }
 
+          before do
+            stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+            allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+                                                                                .with(connection: connection)
+                                                                                .and_return(nil)
+          end
+
+          context 'when database config is shared' do
             it 'does nothing' do
+              expect(Gitlab::Database).to receive(:db_config_share_with)
+                                            .with(base_model.connection_db_config).and_return('main')
+
+              expect(worker).not_to receive(:active_migration)
               expect(worker).not_to receive(:run_active_migration)
 
               worker.perform
             end
           end
 
-          context 'when parallel execution is enabled' do
-            before do
-              stub_feature_flags(batched_migrations_parallel_execution: true)
-            end
+          context 'when no active migrations exist' do
+            context 'when parallel execution is disabled' do
+              before do
+                stub_feature_flags(batched_migrations_parallel_execution: false)
+              end
 
-            it 'does nothing' do
-              expect(worker).not_to receive(:queue_migrations_for_execution)
-
-              worker.perform
-            end
-          end
-        end
-
-        context 'when active migrations exist' do
-          let(:job_interval) { 5.minutes }
-          let(:lease_timeout) { 15.minutes }
-          let(:lease_key) { described_class.name.demodulize.underscore }
-          let(:migration_id) { 123 }
-          let(:migration) do
-            build(
-              :batched_background_migration, :active,
-              id: migration_id, interval: job_interval, table_name: table_name
-            )
-          end
-
-          let(:execution_worker_class) do
-            case tracking_database
-            when :main
-              Database::BatchedBackgroundMigration::MainExecutionWorker
-            when :ci
-              Database::BatchedBackgroundMigration::CiExecutionWorker
-            end
-          end
-
-          before do
-            allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
-              .with(connection: base_model.connection)
-              .and_return(migration)
-          end
-
-          context 'when parallel execution is disabled' do
-            before do
-              stub_feature_flags(batched_migrations_parallel_execution: false)
-            end
-
-            let(:execution_worker) { instance_double(execution_worker_class) }
-
-            context 'when the calculated timeout is less than the minimum allowed' do
-              let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
-              let(:job_interval) { 2.minutes }
-
-              it 'sets the lease timeout to the minimum value' do
-                expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
-
-                expect(execution_worker_class).to receive(:new).and_return(execution_worker)
-                expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
-
-                expect(worker).to receive(:run_active_migration).and_call_original
+              it 'does nothing' do
+                expect(worker).not_to receive(:run_active_migration)
 
                 worker.perform
               end
             end
 
-            it 'always cleans up the exclusive lease' do
-              lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+            context 'when parallel execution is enabled' do
+              before do
+                stub_feature_flags(batched_migrations_parallel_execution: true)
+              end
 
-              expect(lease).to receive(:try_obtain).and_return(true)
+              it 'does nothing' do
+                expect(worker).not_to receive(:queue_migrations_for_execution)
 
-              expect(worker).to receive(:run_active_migration).and_raise(RuntimeError, 'I broke')
-              expect(lease).to receive(:cancel)
-
-              expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
-            end
-
-            it 'delegetes the execution to ExecutionWorker' do
-              base_model = Gitlab::Database.database_base_models[tracking_database]
-
-              expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(base_model.connection).and_yield
-              expect(execution_worker_class).to receive(:new).and_return(execution_worker)
-              expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
-
-              worker.perform
+                worker.perform
+              end
             end
           end
 
-          context 'when parallel execution is enabled' do
-            before do
-              stub_feature_flags(batched_migrations_parallel_execution: true)
+          context 'when active migrations exist' do
+            let(:job_interval) { 5.minutes }
+            let(:lease_timeout) { 15.minutes }
+            let(:lease_key) { described_class.name.demodulize.underscore }
+            let(:migration_id) { 123 }
+            let(:migration) do
+              build(
+                :batched_background_migration, :active,
+                id: migration_id, interval: job_interval, table_name: table_name
+              )
             end
 
-            it 'delegetes the execution to ExecutionWorker' do
-              expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
-                .to receive(:active_migrations_distinct_on_table).with(
-                  connection: base_model.connection,
-                  limit: execution_worker_class.max_running_jobs
-                ).and_return([migration])
+            let(:execution_worker_class) do
+              case tracking_database
+              when :main
+                Database::BatchedBackgroundMigration::MainExecutionWorker
+              when :ci
+                Database::BatchedBackgroundMigration::CiExecutionWorker
+              end
+            end
 
-              expected_arguments = [
-                [tracking_database.to_s, migration_id]
-              ]
+            before do
+              allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+                                                                                  .with(connection: connection)
+                                                                                  .and_return(migration)
+            end
 
-              expect(execution_worker_class).to receive(:perform_with_capacity).with(expected_arguments)
+            context 'when parallel execution is disabled' do
+              before do
+                stub_feature_flags(batched_migrations_parallel_execution: false)
+              end
 
-              worker.perform
+              let(:execution_worker) { instance_double(execution_worker_class) }
+
+              context 'when the calculated timeout is less than the minimum allowed' do
+                let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
+                let(:job_interval) { 2.minutes }
+
+                it 'sets the lease timeout to the minimum value' do
+                  expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
+
+                  expect(execution_worker_class).to receive(:new).and_return(execution_worker)
+                  expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
+
+                  expect(worker).to receive(:run_active_migration).and_call_original
+
+                  worker.perform
+                end
+              end
+
+              it 'always cleans up the exclusive lease' do
+                lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+
+                expect(lease).to receive(:try_obtain).and_return(true)
+
+                expect(worker).to receive(:run_active_migration).and_raise(RuntimeError, 'I broke')
+                expect(lease).to receive(:cancel)
+
+                expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
+              end
+
+              it 'delegetes the execution to ExecutionWorker' do
+                expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(connection).and_yield
+                expect(execution_worker_class).to receive(:new).and_return(execution_worker)
+                expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
+
+                worker.perform
+              end
+            end
+
+            context 'when parallel execution is enabled' do
+              before do
+                stub_feature_flags(batched_migrations_parallel_execution: true)
+              end
+
+              it 'delegetes the execution to ExecutionWorker' do
+                expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
+                  .to receive(:active_migrations_distinct_on_table).with(
+                    connection: base_model.connection,
+                    limit: execution_worker_class.max_running_jobs
+                  ).and_return([migration])
+
+                expected_arguments = [
+                  [tracking_database.to_s, migration_id]
+                ]
+
+                expect(execution_worker_class).to receive(:perform_with_capacity).with(expected_arguments)
+
+                worker.perform
+              end
             end
           end
         end
@@ -248,7 +266,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     end
   end
 
-  describe 'executing an entire migration', :freeze_time, if: Gitlab::Database.has_config?(tracking_database) do
+  describe 'executing an entire migration', :freeze_time, if: Gitlab::Database.has_database?(tracking_database) do
     include Gitlab::Database::DynamicModelHelpers
     include Database::DatabaseHelpers
 

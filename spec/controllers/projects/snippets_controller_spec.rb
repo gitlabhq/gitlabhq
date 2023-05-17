@@ -102,12 +102,11 @@ RSpec.describe Projects::SnippetsController do
       project.add_maintainer(admin)
       sign_in(admin)
 
-      post :mark_as_spam,
-           params: {
-             namespace_id: project.namespace,
-             project_id: project,
-             id: snippet.id
-           }
+      post :mark_as_spam, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: snippet.id
+      }
     end
 
     it 'updates the snippet', :enable_admin_mode do

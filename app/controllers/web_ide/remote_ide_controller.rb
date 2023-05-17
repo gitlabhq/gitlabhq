@@ -4,7 +4,7 @@ require 'uri'
 
 module WebIde
   class RemoteIdeController < ApplicationController
-    include VSCodeCDNCSP
+    include WebIdeCSP
 
     rescue_from URI::InvalidComponentError, with: :render_404
 

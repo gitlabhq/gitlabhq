@@ -1,0 +1,201 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registration utils for "linux" platform commandPrompt is correct 1`] = `"$"`;
+
+exports[`registration utils for "linux" platform installScript is correct for "386" architecture 1`] = `
+"# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-386
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start"
+`;
+
+exports[`registration utils for "linux" platform installScript is correct for "amd64" architecture 1`] = `
+"# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start"
+`;
+
+exports[`registration utils for "linux" platform installScript is correct for "arm" architecture 1`] = `
+"# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start"
+`;
+
+exports[`registration utils for "linux" platform installScript is correct for "arm64" architecture 1`] = `
+"# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start"
+`;
+
+exports[`registration utils for "linux" platform platformArchitectures returns correct list of architectures 1`] = `
+Array [
+  "amd64",
+  "386",
+  "arm",
+  "arm64",
+]
+`;
+
+exports[`registration utils for "linux" platform registerCommand is correct 1`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "linux" platform registerCommand is correct 2`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+]
+`;
+
+exports[`registration utils for "linux" platform runCommand is correct 1`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "osx" platform commandPrompt is correct 1`] = `"$"`;
+
+exports[`registration utils for "osx" platform installScript is correct for "amd64" architecture 1`] = `
+"# Download the binary for your system
+sudo curl --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# The rest of the commands execute as the user who will run the runner
+# Register the runner (steps below), then run
+cd ~
+gitlab-runner install
+gitlab-runner start"
+`;
+
+exports[`registration utils for "osx" platform installScript is correct for "arm64" architecture 1`] = `
+"# Download the binary for your system
+sudo curl --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-arm64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# The rest of the commands execute as the user who will run the runner
+# Register the runner (steps below), then run
+cd ~
+gitlab-runner install
+gitlab-runner start"
+`;
+
+exports[`registration utils for "osx" platform platformArchitectures returns correct list of architectures 1`] = `
+Array [
+  "amd64",
+  "arm64",
+]
+`;
+
+exports[`registration utils for "osx" platform registerCommand is correct 1`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "osx" platform registerCommand is correct 2`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+]
+`;
+
+exports[`registration utils for "osx" platform runCommand is correct 1`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "windows" platform commandPrompt is correct 1`] = `">"`;
+
+exports[`registration utils for "windows" platform installScript is correct for "386" architecture 1`] = `
+"# Run PowerShell: https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7#with-administrative-privileges-run-as-administrator
+# Create a folder somewhere on your system, for example: C:\\\\GitLab-Runner
+New-Item -Path 'C:\\\\GitLab-Runner' -ItemType Directory
+
+# Change to the folder
+cd 'C:\\\\GitLab-Runner'
+
+# Download binary
+Invoke-WebRequest -Uri \\"https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-386.exe\\" -OutFile \\"gitlab-runner.exe\\"
+
+# Register the runner (steps below), then run
+.\\\\gitlab-runner.exe install
+.\\\\gitlab-runner.exe start"
+`;
+
+exports[`registration utils for "windows" platform installScript is correct for "amd64" architecture 1`] = `
+"# Run PowerShell: https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7#with-administrative-privileges-run-as-administrator
+# Create a folder somewhere on your system, for example: C:\\\\GitLab-Runner
+New-Item -Path 'C:\\\\GitLab-Runner' -ItemType Directory
+
+# Change to the folder
+cd 'C:\\\\GitLab-Runner'
+
+# Download binary
+Invoke-WebRequest -Uri \\"https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe\\" -OutFile \\"gitlab-runner.exe\\"
+
+# Register the runner (steps below), then run
+.\\\\gitlab-runner.exe install
+.\\\\gitlab-runner.exe start"
+`;
+
+exports[`registration utils for "windows" platform platformArchitectures returns correct list of architectures 1`] = `
+Array [
+  "amd64",
+  "386",
+]
+`;
+
+exports[`registration utils for "windows" platform registerCommand is correct 1`] = `
+Array [
+  ".\\\\gitlab-runner.exe register",
+  "  --url http://test.host",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "windows" platform registerCommand is correct 2`] = `
+Array [
+  ".\\\\gitlab-runner.exe register",
+  "  --url http://test.host",
+]
+`;
+
+exports[`registration utils for "windows" platform runCommand is correct 1`] = `".\\\\gitlab-runner.exe run"`;

@@ -8,9 +8,9 @@ RSpec.shared_examples 'local and remote storage migration' do
 
   where(:start_store, :end_store, :method) do
     ObjectStorage::Store::LOCAL  | ObjectStorage::Store::REMOTE | :migrate_to_remote_storage
-    ObjectStorage::Store::REMOTE | ObjectStorage::Store::REMOTE | :migrate_to_remote_storage # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    ObjectStorage::Store::REMOTE | ObjectStorage::Store::REMOTE | :migrate_to_remote_storage
     ObjectStorage::Store::REMOTE | ObjectStorage::Store::LOCAL  | :migrate_to_local_storage
-    ObjectStorage::Store::LOCAL  | ObjectStorage::Store::LOCAL  | :migrate_to_local_storage # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    ObjectStorage::Store::LOCAL  | ObjectStorage::Store::LOCAL  | :migrate_to_local_storage
   end
 
   with_them do

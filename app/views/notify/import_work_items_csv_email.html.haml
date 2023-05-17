@@ -1,0 +1,49 @@
+- info_style = 'font-size:16px; text-align:center;  line-height:24px;'
+- error_style = 'font-size:13px; text-align:center; line-height:16px; color:#dd2b0e;'
+
+%p{ style: info_style }
+  - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none;")
+  = s_('Notify|Here are the results for your CSV import for %{project_link}.').html_safe % { project_link: project_link }
+
+- success_lines = @results[:success]
+%p{ style: info_style }
+  - if success_lines > 0
+    - work_items = n_('%d work item', '%d work items', success_lines) % success_lines
+    = s_('Notify|%{work_items} successfully imported.') % { work_items: work_items }
+  - else
+    = s_('Notify|No work items have been imported.')
+
+  - if @results[:parse_error]
+    %p{ style: info_style }
+      = s_('Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.')
+
+- type_errors = @results[:type_errors]
+- if type_errors
+  %p{ style: info_style }
+    = s_('Notify|Some values in the "type" column could not be matched with supported work item types:')
+
+  - blank_lines = type_errors[:blank]
+  - missing_lines = type_errors[:missing]
+  - disallowed_lines = type_errors[:disallowed]
+
+  - if blank_lines.present?
+    %p{ style: error_style }
+      = s_('Notify|%{singular_or_plural_line} %{error_lines}: Work item type is empty.') % { singular_or_plural_line: n_('Line', 'Lines', blank_lines.size), error_lines: blank_lines.join(', ') }
+
+  - if missing_lines.present?
+    %p{ style: error_style }
+      = s_('Notify|%{singular_or_plural_line} %{error_lines}: Work item type cannot be found or is not supported.') % { singular_or_plural_line: n_('Line', 'Lines', missing_lines.size), error_lines: missing_lines.join(', ') }
+
+  - if disallowed_lines.present?
+    %p{ style: error_style }
+      = s_('Notify|%{singular_or_plural_line} %{error_lines}: Work item type is not available. Please check your license and permissions.') % { singular_or_plural_line: n_('Line', 'Lines', disallowed_lines.size), error_lines: disallowed_lines.join(', ') }
+
+- error_lines = @results[:error_lines]
+- if error_lines.present?
+  %p{ style: error_style }
+    = s_('Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check that these lines have the following fields: %{required_headers}.') % { singular_or_plural_line: n_('line', 'lines', error_lines.size), required_headers: WorkItems::ImportCsvService.required_headers.join(', '),
+      error_lines: error_lines.join(', ') }
+
+- if error_lines.present? || type_errors
+  %p{ style: info_style }
+    = s_('Notify|Please fix the lines with errors and try the CSV import again.')

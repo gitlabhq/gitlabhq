@@ -10,14 +10,11 @@ class ProfilesController < Profiles::ApplicationController
     check_rate_limit!(:profile_update_username, scope: current_user)
   end
   skip_before_action :require_email, only: [:show, :update]
-  before_action do
-    push_frontend_feature_flag(:webauthn)
-  end
 
   feature_category :user_profile, [:show, :update, :reset_incoming_email_token, :reset_feed_token,
                             :reset_static_object_token, :update_username]
 
-  feature_category :authentication_and_authorization, [:audit_log]
+  feature_category :system_access, [:audit_log]
   urgency :low, [:show, :update]
 
   def show
@@ -133,6 +130,7 @@ class ProfilesController < Profiles::ApplicationController
       :organization,
       :private_profile,
       :include_private_contributions,
+      :achievements_enabled,
       :timezone,
       :job_title,
       :pronouns,

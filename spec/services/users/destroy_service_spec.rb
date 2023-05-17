@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DestroyService do
+RSpec.describe Users::DestroyService, feature_category: :user_management do
   let!(:user)      { create(:user) }
   let!(:admin)     { create(:admin) }
   let!(:namespace) { user.namespace }

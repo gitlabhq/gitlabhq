@@ -53,7 +53,7 @@ class Gitlab::BackgroundMigration::RemoveOccurrencePipelinesAndDuplicateVulnerab
   def mark_job_as_succeeded(*arguments)
     Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
       self.class.name.demodulize,
-       arguments
+      arguments
     )
   end
 end

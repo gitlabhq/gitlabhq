@@ -24,16 +24,12 @@ describe('UserActionDropdown', () => {
         ...propsData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
 
   const findRemoveMemberDropdownItem = () => wrapper.findComponent(RemoveMemberDropdownItem);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when user has `canRemove` permissions', () => {
     beforeEach(() => {

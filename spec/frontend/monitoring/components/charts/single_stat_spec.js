@@ -21,10 +21,6 @@ describe('Single Stat Chart component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('statValue', () => {
       it('should display the correct value', () => {

@@ -30,7 +30,7 @@ module Groups
     end
 
     def check_observability_allowed
-      render_404 unless Gitlab::Observability.observability_enabled?(current_user, group)
+      render_404 unless Gitlab::Observability.allowed_for_action?(current_user, group, params[:action])
     end
   end
 end

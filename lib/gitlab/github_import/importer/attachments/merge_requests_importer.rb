@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.merge_requests.select(:id, :description)
+            project.merge_requests.select(:id, :description, :iid)
           end
 
           def ordering_column

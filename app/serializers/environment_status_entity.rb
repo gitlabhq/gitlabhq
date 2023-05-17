@@ -23,6 +23,10 @@ class EnvironmentStatusEntity < Grape::Entity
     stop_project_environment_path(es.project, es.environment)
   end
 
+  expose :retry_url, if: ->(*) { can_rollback_environment? } do |es|
+    retry_project_job_path(es.project, es.deployment.deployable)
+  end
+
   expose :external_url do |es|
     es.environment.external_url
   end
@@ -39,6 +43,10 @@ class EnvironmentStatusEntity < Grape::Entity
 
   expose :deployment, as: :details do |es, options|
     DeploymentEntity.represent(es.deployment, options.merge(project: es.project, only: [:playable_build]))
+  end
+
+  expose :environment_available do |es|
+    es.environment.available?
   end
 
   expose :changes
@@ -67,5 +75,9 @@ class EnvironmentStatusEntity < Grape::Entity
 
   def can_stop_environment?
     can?(current_user, :stop_environment, environment)
+  end
+
+  def can_rollback_environment?
+    object.deployable && can?(current_user, :play_job, object.deployable)
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::RespondToTermsService do
+RSpec.describe Users::RespondToTermsService, feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:term) { create(:term) }
 

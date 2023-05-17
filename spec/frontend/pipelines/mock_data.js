@@ -1190,6 +1190,10 @@ export const mockFailedJobsQueryResponse = {
                 readBuild: true,
                 updateBuild: true,
               },
+              trace: {
+                htmlSummary: '<span>Html Summary</span>',
+              },
+              failureMessage: 'Failed',
             },
             {
               __typename: 'CiJob',
@@ -1218,6 +1222,8 @@ export const mockFailedJobsQueryResponse = {
                 readBuild: true,
                 updateBuild: true,
               },
+              trace: null,
+              failureMessage: 'Failed',
             },
           ],
         },
@@ -1226,18 +1232,8 @@ export const mockFailedJobsQueryResponse = {
   },
 };
 
-export const mockFailedJobsSummaryData = [
-  {
-    id: 1848,
-    failure: null,
-    failure_summary:
-      '<span>Pulling docker image node:latest ...<br/></span><span>Using docker image sha256:738d733448be00c72cb6618b7a06a1424806c6d239d8885e92f9b1e8727092b5 for node:latest with digest node@sha256:e5b7b349d517159246070bf14242027a9e220ffa8bd98a67ba1495d969c06c01 ...<br/></span><div class="section-start" data-timestamp="1651175313" data-section="prepare-script" role="button"></div><span class="term-fg-l-cyan term-bold section section-header js-s-prepare-script">Preparing environment</span><span class="section section-header js-s-prepare-script"><br/></span><span class="section line js-s-prepare-script">Running on runner-kvkqh24-project-20-concurrent-0 via 0706719b1b8d...<br/></span><div class="section-end" data-section="prepare-script"></div><div class="section-start" data-timestamp="1651175313" data-section="get-sources" role="button"></div><span class="term-fg-l-cyan term-bold section section-header js-s-get-sources">Getting source from Git repository</span><span class="section section-header js-s-get-sources"><br/></span><span class="term-fg-l-green term-bold section line js-s-get-sources">Fetching changes with git depth set to 50...</span><span class="section line js-s-get-sources"><br/>Reinitialized existing Git repository in /builds/root/ci-project/.git/<br/>fatal: couldn\'t find remote ref refs/heads/test<br/></span><div class="section-end" data-section="get-sources"></div><span class="term-fg-l-red term-bold">ERROR: Job failed: exit code 1<br/></span>',
-  },
-];
-
 export const mockFailedJobsData = [
   {
-    normalizedId: 1848,
     __typename: 'CiJob',
     status: 'FAILED',
     detailedStatus: {
@@ -1260,13 +1256,25 @@ export const mockFailedJobsData = [
       },
     },
     id: 'gid://gitlab/Ci::Build/1848',
-    stage: { __typename: 'CiStage', id: 'gid://gitlab/Ci::Stage/358', name: 'build' },
+    stage: {
+      __typename: 'CiStage',
+      id: 'gid://gitlab/Ci::Stage/358',
+      name: 'build',
+    },
     name: 'wait_job',
     retryable: true,
-    userPermissions: { __typename: 'JobPermissions', readBuild: true, updateBuild: true },
+    userPermissions: {
+      __typename: 'JobPermissions',
+      readBuild: true,
+      updateBuild: true,
+    },
+    trace: {
+      htmlSummary: '<span>Html Summary</span>',
+    },
+    failureMessage: 'Job failed',
+    _showDetails: true,
   },
   {
-    normalizedId: 1710,
     __typename: 'CiJob',
     status: 'FAILED',
     detailedStatus: {
@@ -1281,52 +1289,27 @@ export const mockFailedJobsData = [
       action: null,
     },
     id: 'gid://gitlab/Ci::Build/1710',
-    stage: { __typename: 'CiStage', id: 'gid://gitlab/Ci::Stage/358', name: 'build' },
+    stage: {
+      __typename: 'CiStage',
+      id: 'gid://gitlab/Ci::Stage/358',
+      name: 'build',
+    },
     name: 'wait_job',
     retryable: false,
-    userPermissions: { __typename: 'JobPermissions', readBuild: true, updateBuild: true },
-  },
-];
-
-export const mockPreparedFailedJobsData = [
-  {
-    __typename: 'CiJob',
-    _showDetails: true,
-    detailedStatus: {
-      __typename: 'DetailedStatus',
-      action: {
-        __typename: 'StatusAction',
-        buttonTitle: 'Retry this job',
-        icon: 'retry',
-        id: 'Ci::Build-failed-1848',
-        method: 'post',
-        path: '/root/ci-project/-/jobs/1848/retry',
-        title: 'Retry',
-      },
-      detailsPath: '/root/ci-project/-/jobs/1848',
-      group: 'failed',
-      icon: 'status_failed',
-      id: 'failed-1848-1848',
-      label: 'failed',
-      text: 'failed',
-      tooltip: 'failed - (script failure)',
+    userPermissions: {
+      __typename: 'JobPermissions',
+      readBuild: true,
+      updateBuild: true,
     },
-    failure: null,
-    failureSummary:
-      '<span>Pulling docker image node:latest ...<br/></span><span>Using docker image sha256:738d733448be00c72cb6618b7a06a1424806c6d239d8885e92f9b1e8727092b5 for node:latest with digest node@sha256:e5b7b349d517159246070bf14242027a9e220ffa8bd98a67ba1495d969c06c01 ...<br/></span><div class="section-start" data-timestamp="1651175313" data-section="prepare-script" role="button"></div><span class="term-fg-l-cyan term-bold section section-header js-s-prepare-script">Preparing environment</span><span class="section section-header js-s-prepare-script"><br/></span><span class="section line js-s-prepare-script">Running on runner-kvkqh24-project-20-concurrent-0 via 0706719b1b8d...<br/></span><div class="section-end" data-section="prepare-script"></div><div class="section-start" data-timestamp="1651175313" data-section="get-sources" role="button"></div><span class="term-fg-l-cyan term-bold section section-header js-s-get-sources">Getting source from Git repository</span><span class="section section-header js-s-get-sources"><br/></span><span class="term-fg-l-green term-bold section line js-s-get-sources">Fetching changes with git depth set to 50...</span><span class="section line js-s-get-sources"><br/>Reinitialized existing Git repository in /builds/root/ci-project/.git/<br/>fatal: couldn\'t find remote ref refs/heads/test<br/></span><div class="section-end" data-section="get-sources"></div><span class="term-fg-l-red term-bold">ERROR: Job failed: exit code 1<br/></span>',
-    id: 'gid://gitlab/Ci::Build/1848',
-    name: 'wait_job',
-    normalizedId: 1848,
-    retryable: true,
-    stage: { __typename: 'CiStage', id: 'gid://gitlab/Ci::Stage/358', name: 'build' },
-    status: 'FAILED',
-    userPermissions: { __typename: 'JobPermissions', readBuild: true, updateBuild: true },
+    trace: null,
+    failureMessage: 'Job failed',
+    _showDetails: true,
   },
 ];
 
-export const mockPreparedFailedJobsDataNoPermission = [
+export const mockFailedJobsDataNoPermission = [
   {
-    ...mockPreparedFailedJobsData[0],
+    ...mockFailedJobsData[0],
     userPermissions: { __typename: 'JobPermissions', readBuild: false, updateBuild: false },
   },
 ];

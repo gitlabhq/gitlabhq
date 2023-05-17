@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::UsageDataNonSqlMetrics, feature_category: :service_ping do
+RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:user, admin: true) }
@@ -21,8 +21,12 @@ RSpec.describe API::UsageDataNonSqlMetrics, feature_category: :service_ping do
         stub_database_flavor_check
       end
 
+      it_behaves_like 'GET request permissions for admin mode' do
+        let(:path) { endpoint }
+      end
+
       it 'returns non sql metrics if user is admin' do
-        get api(endpoint, admin)
+        get api(endpoint, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['counts']).to be_a(Hash)
@@ -53,7 +57,7 @@ RSpec.describe API::UsageDataNonSqlMetrics, feature_category: :service_ping do
       end
 
       it 'returns not_found for admin' do
-        get api(endpoint, admin)
+        get api(endpoint, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

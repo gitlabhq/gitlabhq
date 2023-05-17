@@ -53,8 +53,7 @@ RSpec.describe Profiles::PreferencesController do
           first_day_of_week: '1',
           preferred_language: 'jp',
           tab_width: '5',
-          render_whitespace_in_code: 'true',
-          use_legacy_web_ide: 'true'
+          render_whitespace_in_code: 'true'
         }.with_indifferent_access
 
         expect(user).to receive(:assign_attributes).with(ActionController::Parameters.new(prefs).permit!)
@@ -107,6 +106,34 @@ RSpec.describe Profiles::PreferencesController do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(response.parsed_body['message']).to eq _('Failed to save preferences.')
         expect(response.parsed_body['type']).to eq('alert')
+      end
+    end
+
+    context 'on disable_follow_users feature flag' do
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(disable_follow_users: false)
+        end
+
+        it 'does not update enabled_following preference of user' do
+          prefs = { enabled_following: false }
+
+          go params: prefs
+          user.reload
+
+          expect(user.enabled_following).to eq(true)
+        end
+      end
+
+      context 'with feature flag enabled' do
+        it 'does not update enabled_following preference of user' do
+          prefs = { enabled_following: false }
+
+          go params: prefs
+          user.reload
+
+          expect(user.enabled_following).to eq(false)
+        end
       end
     end
   end

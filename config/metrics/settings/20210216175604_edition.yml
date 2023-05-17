@@ -5,11 +5,11 @@ description: Edition of GitLab such as EE or CE
 product_section: enablement
 product_stage: enablement
 product_group: distribution
-product_category: collection
 value_type: string
 status: active
 time_frame: none
 data_source: system
+instrumentation_class: EditionMetric
 distribution:
 - ce
 - ee

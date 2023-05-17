@@ -11,11 +11,12 @@ module Gitlab
 
             def initialize(params, context)
               @location = params[:component]
+
               super
             end
 
             def matching?
-              super && ::Feature.enabled?(:ci_include_components, context.project)
+              super && ::Feature.enabled?(:ci_include_components, context.project&.root_namespace)
             end
 
             def content
@@ -48,9 +49,7 @@ module Gitlab
             end
 
             def validate_content!
-              return if content.present?
-
-              errors.push(component_result.message)
+              errors.push(component_result.message) unless content.present?
             end
 
             private

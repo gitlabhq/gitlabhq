@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosDestroyer::ProjectPrivateWorker do
+RSpec.describe TodosDestroyer::ProjectPrivateWorker, feature_category: :team_planning do
   it "calls the Todos::Destroy::ProjectPrivateService with the params it was given" do
     service = double
 

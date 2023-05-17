@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_store_caching, :sidekiq_inline, feature_category: :team_planning do
+RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_store_caching, :sidekiq_inline, feature_category: :metrics do
   include PrometheusHelpers
   include KubernetesHelpers
   include GrafanaApiHelpers
@@ -17,6 +17,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
   let(:metrics_url) { urls.metrics_project_environment_url(project, environment) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     clear_host_from_memoized_variables
     stub_gitlab_domain
 
@@ -28,6 +29,20 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
     clear_host_from_memoized_variables
   end
 
+  shared_examples_for 'metrics dashboard unavailable' do
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'shows no embedded metrics' do
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_no_css('div.prometheus-graph')
+      end
+    end
+  end
+
   context 'internal metrics embeds' do
     before do
       import_common_metrics
@@ -35,6 +50,8 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
 
       allow(Prometheus::ProxyService).to receive(:new).and_call_original
     end
+
+    include_examples 'metrics dashboard unavailable'
 
     it 'shows embedded metrics' do
       visit project_issue_path(project, issue)
@@ -48,6 +65,20 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
         .to have_received(:new)
         .with(environment, 'GET', 'query_range', hash_including('start', 'end', 'step'))
         .at_least(:once)
+    end
+
+    context 'with remove_monitor_metrics flag enabled' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'does not show embedded metrics' do
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_css('div.prometheus-graph')
+        expect(page).not_to have_text('Memory Usage (Total)')
+        expect(page).not_to have_text('Core Usage (Total)')
+      end
     end
 
     context 'when dashboard params are in included the url' do
@@ -120,7 +151,9 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       allow(Grafana::ProxyService).to receive(:new).and_call_original
     end
 
-    it 'shows embedded metrics' do
+    include_examples 'metrics dashboard unavailable'
+
+    it 'shows embedded metrics', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402973' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_css('div.prometheus-graph')
@@ -157,6 +190,8 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       stub_any_prometheus_request_with_response
     end
 
+    include_examples 'metrics dashboard unavailable'
+
     it 'shows embedded metrics' do
       visit project_issue_path(project, issue)
 
@@ -185,6 +220,8 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
     let(:query_params) { { group: 'Cluster Health', title: 'CPU Usage', y_label: 'CPU (cores)' } }
     let(:metrics_url) { urls.namespace_project_cluster_url(*params, **query_params) }
     let(:description) { "# Summary \n[](#{metrics_url})" }
+
+    include_examples 'metrics dashboard unavailable'
 
     it 'shows embedded metrics' do
       visit project_issue_path(project, issue)

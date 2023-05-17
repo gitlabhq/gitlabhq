@@ -18,18 +18,18 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 * [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
 * [ ] The original MR has been deployed to GitLab.com (not applicable for documentation or spec changes).
 * [ ] This MR has a [severity label] assigned (if applicable).
-* [ ] Ensure the `e2e:package-and-test` job has either succeeded or been approved by a Software Engineer in Test.
+* [ ] This MR has been approved by a maintainer (only one approval is required).
+* [ ] Ensure the `e2e:package-and-test-ee` job has either succeeded or been approved by a Software Engineer in Test.
 
 #### Note to the merge request author and maintainer
 
-The process of backporting bug fixes into stable branches is tracked as part of an
-[internal pilot]. If you have questions about this process, please:
+If you have questions about the patch release process, please:
 
-* Refer to the [internal pilot] issue for feedback or questions.
 * Refer to the [patch release runbook for engineers and maintainers] for guidance.
+* Ask questions on the [`#releases`] Slack channel (internal only).
 
 [severity label]: https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity
-[internal pilot]: https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2886
-[patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/process_new.md
+[patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md
+[`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
 
 /assign me

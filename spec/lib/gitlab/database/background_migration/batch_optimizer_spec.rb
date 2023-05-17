@@ -113,5 +113,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchOptimizer do
         expect { subject }.to change { migration.reload.batch_size }.to(1_000)
       end
     end
+
+    context 'when migration max_batch_size is less than MIN_BATCH_SIZE' do
+      let(:migration_params) { { max_batch_size: 900 } }
+
+      it 'does not raise an error' do
+        mock_efficiency(0.7)
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 end

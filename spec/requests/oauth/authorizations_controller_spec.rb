@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::AuthorizationsController, feature_category: :authentication_and_authorization do
+RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'custom://test') }
   let_it_be(:oauth_authorization_path) do

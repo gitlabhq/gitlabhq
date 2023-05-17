@@ -26,14 +26,9 @@ describe('GroupSelect', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="true"]');
+  const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="menu"]');
   const findAvatarByLabel = (text) =>
     wrapper
       .findAllComponents(GlAvatarLabeled)
@@ -66,6 +61,7 @@ describe('GroupSelect', () => {
       expect(groupsApi.getGroups).toHaveBeenCalledWith(group1.name, {
         exclude_internal: true,
         active: true,
+        order_by: 'similarity',
       });
     });
 

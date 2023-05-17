@@ -9,6 +9,7 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :projects do
 
   before do
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
 
     visit(project_path(project))
 
@@ -68,11 +69,11 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :projects do
   end
 
   context 'when navigating to the Project pages' do
-    it 'redirects to the project page' do
+    it 'redirects to the project overview page' do
       visit project_issues_path(project)
 
       find('body').native.send_key('g')
-      find('body').native.send_key('p')
+      find('body').native.send_key('o')
 
       expect(page).to have_active_navigation(project.name)
     end
@@ -155,6 +156,14 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :projects do
   end
 
   context 'when navigating to the CI/CD pages' do
+    it 'redirects to the Pipelines page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('p')
+
+      expect(page).to have_active_navigation('CI/CD')
+      expect(page).to have_active_sub_navigation('Pipelines')
+    end
+
     it 'redirects to the Jobs page' do
       find('body').native.send_key('g')
       find('body').native.send_key('j')

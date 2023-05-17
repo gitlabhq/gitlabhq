@@ -16,6 +16,7 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
 
   def request_csv(params = {})
     visit project_issues_path(project, params)
+    click_button 'Actions'
     click_button 'Export as CSV'
     click_on 'Export issues'
   end

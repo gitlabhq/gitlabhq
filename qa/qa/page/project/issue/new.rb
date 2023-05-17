@@ -17,3 +17,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Issue::New.prepend_mod_with('Page::Project::Issue::New', namespace: QA)

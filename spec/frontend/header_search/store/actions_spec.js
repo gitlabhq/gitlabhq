@@ -16,7 +16,7 @@ import {
   MOCK_ISSUE_PATH,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Header Search Store Actions', () => {
   let state;

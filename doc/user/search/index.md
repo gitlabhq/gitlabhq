@@ -50,7 +50,7 @@ Global search only flags with an error any search that includes more than:
 
 ## Perform a search
 
-To start a search, type your search query in the search bar in the upper right of the screen.
+To start a search, in the upper-right corner of the screen, in the search bar, type your search query.
 You must type at least two characters.
 
 ![search navbar](img/search_navbar_v15_7.png)
@@ -82,16 +82,23 @@ where the results were found.
 1. From the code search result, hover over the line number.
 1. On the left, select **View blame**.
 
-   ![code search results](img/code_search_git_blame_v15_1.png)
+![code search results](img/code_search_git_blame_v15_1.png)
+
+### Filter code search results by language
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
+
+To filter code search results by one or more languages:
+
+1. On the code search page, on the left sidebar, select one or more languages.
+1. On the left sidebar, select **Apply**.
 
 ## Search for projects by full path
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `full_path_project_search`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/388473) on GitLab.com in GitLab 15.9.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111808) on self-managed GitLab 15.10.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
 
 You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
 As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.

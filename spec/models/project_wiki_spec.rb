@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectWiki do
+RSpec.describe ProjectWiki, feature_category: :wiki do
   it_behaves_like 'wiki model' do
     let(:wiki_container) { create(:project, :wiki_repo, namespace: user.namespace) }
     let(:wiki_container_without_repo) { create(:project, namespace: user.namespace) }
@@ -15,6 +15,33 @@ RSpec.describe ProjectWiki do
     describe '#disk_path' do
       it 'returns the repository storage path' do
         expect(subject.disk_path).to eq("#{subject.container.disk_path}.wiki")
+      end
+    end
+
+    describe '#create_wiki_repository' do
+      context 'when a project_wiki_repositories record does not exist' do
+        let_it_be(:wiki_container) { create(:project) }
+
+        it 'creates a new record' do
+          expect { subject.create_wiki_repository }.to change { wiki_container.wiki_repository }
+            .from(nil).to(kind_of(Projects::WikiRepository))
+        end
+
+        context 'on a read-only instance' do
+          before do
+            allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          end
+
+          it 'does not attempt to create a new record' do
+            expect { subject.create_wiki_repository }.not_to change { wiki_container.wiki_repository }
+          end
+        end
+      end
+
+      context 'when a project_wiki_repositories record exists' do
+        it 'does not create a new record in the database' do
+          expect { subject.create_wiki_repository }.not_to change { wiki_container.wiki_repository }
+        end
       end
     end
 

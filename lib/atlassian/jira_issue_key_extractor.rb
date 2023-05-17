@@ -6,12 +6,13 @@ module Atlassian
       new(...).issue_keys.any?
     end
 
-    def initialize(*text)
+    def initialize(*text, custom_regex: nil)
       @text = text.join(' ')
+      @match_regex = custom_regex || Gitlab::Regex.jira_issue_key_regex
     end
 
     def issue_keys
-      @text.scan(Gitlab::Regex.jira_issue_key_regex).uniq
+      @text.scan(@match_regex).flatten.uniq
     end
   end
 end

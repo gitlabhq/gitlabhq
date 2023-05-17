@@ -160,5 +160,4 @@ required number of seconds.
 }
 ```
 
-The `namespace` field is only available in [GitLab Premium](https://about.gitlab.com/pricing/)
-and higher.
+The `namespace` field is only available in [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/).

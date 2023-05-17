@@ -1,0 +1,13 @@
+# Simple translated string
+msgid " %{start} to %{end}"
+msgstr " %{start} bis %{end}"
+
+# Simple translated, pluralized string
+msgid "%d Alert:"
+msgid_plural "%d Alerts:"
+msgstr[0] "%d Warnung:"
+msgstr[1] "%d Warnungen:"
+
+# Simple string without translation
+msgid "Example"
+msgstr ""

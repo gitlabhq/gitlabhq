@@ -1,0 +1,10 @@
+---
+name: ai_ci_config_generator
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120141
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407799
+milestone: '16.0'
+type: development
+# This is an ai experiment related to the pipeline authoring groups features
+# We use the authors group so the MR label matches for danger
+group: group::pipeline execution
+default_enabled: false

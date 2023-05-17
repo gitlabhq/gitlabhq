@@ -30,7 +30,7 @@ when your platform does not support it.
     - Negative intent should be set to `1.5`.
  1. Ensure you see new individual images copied into `app/assets/images/emoji/`
  1. Ensure you can see the new emojis and their aliases in the GitLab Flavored Markdown (GLFM) Autocomplete
- 1. Ensure you can see the new emojis and their aliases in the award emoji menu
+ 1. Ensure you can see the new emojis and their aliases in the emoji reactions menu
  1. You might need to add new emoji Unicode support checks and rules for platforms
     that do not support a certain emoji and we need to fallback to an image.
     See `app/assets/javascripts/emoji/support/is_emoji_unicode_supported.js`

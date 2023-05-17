@@ -17,10 +17,6 @@ describe('ActiveCheckbox', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInputInCheckbox = () => findGlFormCheckbox().find('input');
 
@@ -30,7 +26,7 @@ describe('ActiveCheckbox', () => {
         createComponent({}, { isInheriting: true });
 
         expect(findGlFormCheckbox().exists()).toBe(true);
-        expect(findInputInCheckbox().attributes('disabled')).toBe('disabled');
+        expect(findInputInCheckbox().attributes('disabled')).toBeDefined();
       });
     });
 
@@ -39,7 +35,7 @@ describe('ActiveCheckbox', () => {
         createComponent({ activateDisabled: true });
 
         expect(findGlFormCheckbox().exists()).toBe(true);
-        expect(findInputInCheckbox().attributes('disabled')).toBe('disabled');
+        expect(findInputInCheckbox().attributes('disabled')).toBeDefined();
       });
     });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::StuckProjectImportJobsWorker do
+RSpec.describe Gitlab::Import::StuckProjectImportJobsWorker, feature_category: :importers do
   let(:worker) { described_class.new }
 
   describe 'with scheduled import_status' do

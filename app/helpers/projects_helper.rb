@@ -2,6 +2,8 @@
 
 module ProjectsHelper
   include Gitlab::Utils::StrongMemoize
+  include CompareHelper
+  include Gitlab::Allowable
 
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
@@ -130,12 +132,22 @@ module ProjectsHelper
 
     source_default_branch = source_project.default_branch
 
+    merge_request =
+      MergeRequest.opened
+        .from_project(project).of_projects(source_project.id).from_source_branches(ref).first
+
     {
+      project_path: project.full_path,
+      selected_branch: ref,
       source_name: source_project.full_name,
       source_path: project_path(source_project),
+      source_default_branch: source_default_branch,
+      can_sync_branch: can_sync_branch?(project, ref).to_s,
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),
+      create_mr_path: create_merge_request_path(project, source_project, ref, merge_request),
+      view_mr_path: merge_request && project_merge_request_path(source_project, merge_request),
       behind_compare_path: project_compare_path(
         source_project, from: ref, to: source_default_branch, from_project_id: project.id
       )
@@ -217,6 +229,18 @@ module ProjectsHelper
       .load_in_batch_for_projects(projects)
   end
 
+  def last_pipeline_from_status_cache(project)
+    if Feature.enabled?(:last_pipeline_from_pipeline_status, project)
+      pipeline_status = project.pipeline_status
+      return unless pipeline_status.has_status?
+
+      # commits have far more attributes than id, but last_pipeline only requires sha
+      return Commit.from_hash({ id: pipeline_status.sha }, project).last_pipeline
+    end
+
+    project.last_pipeline
+  end
+
   def show_no_ssh_key_message?
     Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
       cookies[:hide_no_ssh_message].blank? &&
@@ -233,6 +257,14 @@ module ProjectsHelper
     return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
     cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
+  end
+
+  def show_mobile_devops_project_promo?(project)
+    return false unless ::Feature.enabled?(:mobile_devops_projects_promo, project)
+
+    return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
+
+    cookies["hide_mobile_devops_promo_#{project.id}".to_sym].blank?
   end
 
   def no_password_message
@@ -474,7 +506,7 @@ module ProjectsHelper
 
   def clusters_deprecation_alert_message
     if has_active_license?
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.')
     else
       s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
     end
@@ -498,7 +530,37 @@ module ProjectsHelper
     format_cached_count(1000, number)
   end
 
+  def remote_mirror_setting_enabled?
+    false
+  end
+
+  def http_clone_url_to_repo(project)
+    project.http_url_to_repo
+  end
+
+  def ssh_clone_url_to_repo(project)
+    project.ssh_url_to_repo
+  end
+
   private
+
+  def create_merge_request_path(project, source_project, ref, merge_request)
+    return if merge_request.present?
+    return unless can?(current_user, :create_merge_request_from, project)
+    return unless can?(current_user, :create_merge_request_in, source_project)
+
+    create_mr_path(
+      from: ref,
+      source_project: project,
+      to: source_project.default_branch,
+      target_project: source_project)
+  end
+
+  def can_sync_branch?(project, ref)
+    return false unless project.repository.branch_exists?(ref)
+
+    ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(ref)
+  end
 
   def localized_access_names
     {
@@ -753,7 +815,7 @@ module ProjectsHelper
   end
 
   def show_visibility_confirm_modal?(project)
-    project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
+    project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end
 
   def confirm_reduce_visibility_message(project)
@@ -822,6 +884,14 @@ end
 
 def can_admin_group_clusters?(project)
   project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
+end
+
+def can_view_branch_rules?
+  can?(current_user, :maintainer_access, @project)
+end
+
+def branch_rules_path
+  project_settings_repository_path(@project, anchor: 'js-branch-rules')
 end
 
 ProjectsHelper.prepend_mod_with('ProjectsHelper')

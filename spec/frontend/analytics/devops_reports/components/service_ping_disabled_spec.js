@@ -6,10 +6,6 @@ import ServicePingDisabled from '~/analytics/devops_reports/components/service_p
 describe('~/analytics/devops_reports/components/service_ping_disabled.vue', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createWrapper = ({ isAdmin = false } = {}) => {
     wrapper = mountExtended(ServicePingDisabled, {
       provide: {

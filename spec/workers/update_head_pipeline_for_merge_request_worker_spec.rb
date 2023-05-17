@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UpdateHeadPipelineForMergeRequestWorker do
+RSpec.describe UpdateHeadPipelineForMergeRequestWorker, feature_category: :continuous_integration do
   describe '#perform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
@@ -66,11 +66,13 @@ RSpec.describe UpdateHeadPipelineForMergeRequestWorker do
 
     context 'when a merge request pipeline exists' do
       let_it_be(:merge_request_pipeline) do
-        create(:ci_pipeline,
-               project: project,
-               source: :merge_request_event,
-               sha: latest_sha,
-               merge_request: merge_request)
+        create(
+          :ci_pipeline,
+          project: project,
+          source: :merge_request_event,
+          sha: latest_sha,
+          merge_request: merge_request
+        )
       end
 
       it 'sets the merge request pipeline as the head pipeline' do

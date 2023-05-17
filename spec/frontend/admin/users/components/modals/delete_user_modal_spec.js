@@ -73,11 +73,6 @@ describe('Delete user modal', () => {
     formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders modal with form included', () => {
     createComponent();
     expect(findForm().element).toMatchSnapshot();
@@ -89,8 +84,8 @@ describe('Delete user modal', () => {
     });
 
     it('has disabled buttons', () => {
-      expect(findPrimaryButton().attributes('disabled')).toBe('true');
-      expect(findSecondaryButton().attributes('disabled')).toBe('true');
+      expect(findPrimaryButton().attributes('disabled')).toBeDefined();
+      expect(findSecondaryButton().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -107,8 +102,8 @@ describe('Delete user modal', () => {
     });
 
     it('has disabled buttons', () => {
-      expect(findPrimaryButton().attributes('disabled')).toBe('true');
-      expect(findSecondaryButton().attributes('disabled')).toBe('true');
+      expect(findPrimaryButton().attributes('disabled')).toBeDefined();
+      expect(findSecondaryButton().attributes('disabled')).toBeDefined();
     });
   });
 

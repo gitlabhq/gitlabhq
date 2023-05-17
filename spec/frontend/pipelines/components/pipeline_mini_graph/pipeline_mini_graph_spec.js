@@ -33,11 +33,6 @@ describe('Pipeline Mini Graph', () => {
       createComponent();
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
-    });
-
     it('should render the pipeline stages', () => {
       expect(findPipelineStages().exists()).toBe(true);
     });
@@ -69,11 +64,6 @@ describe('Pipeline Mini Graph', () => {
       createComponent({
         upstreamPipeline: mockLinkedPipelines.triggered_by,
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
     });
 
     it('should have the correct props', () => {
@@ -116,11 +106,6 @@ describe('Pipeline Mini Graph', () => {
         updateDropdown: false,
         upstreamPipeline: undefined,
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
     });
 
     it('should render the downstream linked pipelines mini list only', () => {

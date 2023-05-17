@@ -94,10 +94,10 @@ module StubGitlabCalls
   end
 
   def stub_commonmark_sourcepos_disabled
-    render_options = Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS
+    engine = Banzai::Filter::MarkdownFilter.render_engine(nil)
 
-    allow_next_instance_of(Banzai::Filter::MarkdownEngines::CommonMark) do |instance|
-      allow(instance).to receive(:render_options).and_return(render_options)
+    allow_next_instance_of(engine) do |instance|
+      allow(instance).to receive(:sourcepos_disabled?).and_return(true)
     end
   end
 

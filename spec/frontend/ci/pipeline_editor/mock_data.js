@@ -12,7 +12,7 @@ export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';
 export const mockIncludesHelpPagePath = '/-/includes/help';
 export const mockLintHelpPagePath = '/-/lint-help';
-export const mockLintUnavailableHelpPagePath = '/-/pipeline-editor/troubleshoot';
+export const mockCiTroubleshootingPath = '/-/pipeline-editor/troubleshoot';
 export const mockSimulatePipelineHelpPagePath = '/-/simulate-pipeline-help';
 export const mockYmlHelpPagePath = '/-/yml-help';
 export const mockCommitMessage = 'My commit message';
@@ -579,6 +579,36 @@ export const mockCommitCreateResponse = {
         sha: mockCommitNextSha,
       },
       commitPipelinePath: '',
+    },
+  },
+};
+
+export const mockRunnersTagsQueryResponse = {
+  data: {
+    runners: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Ci::Runner/1',
+          tagList: ['tag1', 'tag2'],
+          __typename: 'CiRunner',
+        },
+        {
+          id: 'gid://gitlab/Ci::Runner/2',
+          tagList: ['tag2', 'tag3'],
+          __typename: 'CiRunner',
+        },
+        {
+          id: 'gid://gitlab/Ci::Runner/3',
+          tagList: ['tag2', 'tag4'],
+          __typename: 'CiRunner',
+        },
+        {
+          id: 'gid://gitlab/Ci::Runner/4',
+          tagList: [],
+          __typename: 'CiRunner',
+        },
+      ],
+      __typename: 'CiRunnerConnection',
     },
   },
 };

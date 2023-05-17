@@ -8,6 +8,10 @@ module API
 
     before { authenticate_non_get! }
 
+    rescue_from ActiveRecord::QueryCanceled do |_e|
+      render_api_error!({ error: 'Request timed out' }, 408)
+    end
+
     helpers Helpers::MergeRequestsHelpers
 
     # These endpoints are defined in `TimeTrackingEndpoints` and is shared by
@@ -114,6 +118,9 @@ module API
       end
 
       def recheck_mergeability_of(merge_requests:)
+        return if ::Feature.enabled?(:restrict_merge_status_recheck, user_project) &&
+          !can?(current_user, :update_merge_request, user_project)
+
         merge_requests.each { |mr| mr.check_mergeability(async: true) }
       end
 

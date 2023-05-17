@@ -13,11 +13,6 @@ describe('LockedWarning component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLink = () => wrapper.findComponent(GlLink);
 
@@ -40,11 +35,11 @@ describe('LockedWarning component', () => {
       expect(alert.props('dismissible')).toBe(false);
     });
 
-    it(`displays correct message`, async () => {
+    it(`displays correct message`, () => {
       expect(alert.text()).toMatchInterpolatedText(sprintf(i18n.alertMessage, { issuableType }));
     });
 
-    it(`displays a link with correct text`, async () => {
+    it(`displays a link with correct text`, () => {
       expect(link.exists()).toBe(true);
       expect(link.text()).toBe(`the ${issuableType}`);
     });

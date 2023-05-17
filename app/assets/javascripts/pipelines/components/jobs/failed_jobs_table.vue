@@ -2,8 +2,8 @@
 import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
-import { createAlert } from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import RetryFailedJobMutation from '../../graphql/mutations/retry_failed_job.mutation.graphql';
 import { DEFAULT_FIELDS } from '../../constants';
@@ -40,7 +40,7 @@ export default {
         if (errors.length > 0) {
           this.showErrorMessage();
         } else {
-          redirectTo(job.detailedStatus.detailsPath);
+          redirectTo(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
         }
       } catch {
         this.showErrorMessage();
@@ -51,6 +51,9 @@ export default {
     },
     showErrorMessage() {
       createAlert({ message: s__('Job|There was a problem retrying the failed job.') });
+    },
+    failureSummary(trace) {
+      return trace ? trace.htmlSummary : s__('Job|No job log');
     },
   },
 };
@@ -90,8 +93,8 @@ export default {
       </div>
     </template>
 
-    <template #cell(failure)="{ item }">
-      <span>{{ item.failure }}</span>
+    <template #cell(failureMessage)="{ item }">
+      <span data-testid="job-failure-message">{{ item.failureMessage }}</span>
     </template>
 
     <template #cell(actions)="{ item }">
@@ -110,7 +113,7 @@ export default {
         class="gl-w-full gl-text-left gl-border-none"
         data-testid="job-log"
       >
-        <code v-safe-html="item.failureSummary" class="gl-reset-bg gl-p-0" >
+        <code v-safe-html="failureSummary(item.trace)" class="gl-reset-bg gl-p-0" data-testid="job-trace-summary">
         </code>
       </pre>
     </template>

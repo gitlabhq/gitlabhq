@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -39,7 +39,7 @@ The following tools are used:
 - [`gettext_i18n_rails_js`](https://github.com/webhippie/gettext_i18n_rails_js):
   this gem makes the translations available in JavaScript. It provides the following Rake task:
 
-  - `rake gettext:po_to_json`: reads the contents of the PO files and generates JSON files that
+  - `rake gettext:compile`: reads the contents of the PO files and generates JS files which
     contain all the available translations.
 
 - PO editor: there are multiple applications that can help us work with PO files. A good option is
@@ -561,9 +561,8 @@ To include formatting in the translated string, you can do the following:
 - In Ruby/HAML:
 
   ```ruby
-    html_escape(_('Some %{strongOpen}bold%{strongClose} text.')) % { strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe }
-
-    # => 'Some <strong>bold</strong> text.'
+  safe_format(_('Some %{strongOpen}bold%{strongClose} text.'), strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe)
+  # => 'Some <strong>bold</strong> text.'
   ```
 
 - In JavaScript:
@@ -801,8 +800,8 @@ translatable in certain languages.
 
   ```haml
   - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
-  - zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
-  = html_escape(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}')) % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+  - zones_link_start = safe_format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: zones_link_url)
+  = safe_format(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}'), zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe)
   ```
 
 - In Vue, instead of:
@@ -1007,4 +1006,4 @@ Suppose you want to add translations for a new language, for example, French:
 To manually test Vue translations:
 
 1. Change the GitLab localization to another language than English.
-1. Generate JSON files using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+1. Generate JSON files using `bin/rake gettext:compile`.

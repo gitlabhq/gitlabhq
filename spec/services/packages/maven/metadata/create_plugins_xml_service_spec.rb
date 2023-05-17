@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Maven::Metadata::CreatePluginsXmlService do
+RSpec.describe ::Packages::Maven::Metadata::CreatePluginsXmlService, feature_category: :package_registry do
   let_it_be(:group_id) { 'my/test' }
   let_it_be(:package) { create(:maven_package, name: group_id, version: nil) }
 

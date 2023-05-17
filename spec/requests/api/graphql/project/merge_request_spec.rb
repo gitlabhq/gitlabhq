@@ -480,4 +480,31 @@ RSpec.describe 'getting merge request information nested in a project', feature_
       merge_request.assignees << user
     end
   end
+
+  context 'when selecting `awardEmoji`' do
+    let_it_be(:award_emoji) { create(:award_emoji, awardable: merge_request, user: current_user) }
+
+    let(:mr_fields) do
+      <<~QUERY
+      awardEmoji {
+        nodes {
+          user {
+            username
+          }
+          name
+        }
+      }
+      QUERY
+    end
+
+    it 'includes award emojis' do
+      post_graphql(query, current_user: current_user)
+
+      response = merge_request_graphql_data['awardEmoji']['nodes']
+
+      expect(response.length).to eq(1)
+      expect(response.first['user']['username']).to eq(current_user.username)
+      expect(response.first['name']).to eq(award_emoji.name)
+    end
+  end
 end

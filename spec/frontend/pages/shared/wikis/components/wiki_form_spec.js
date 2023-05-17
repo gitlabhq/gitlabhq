@@ -103,8 +103,6 @@ describe('WikiForm', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('displays markdown editor', () => {
@@ -116,9 +114,9 @@ describe('WikiForm', () => {
       expect.objectContaining({
         value: pageInfoPersisted.content,
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
-        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
+        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
       }),
     );
 
@@ -172,7 +170,7 @@ describe('WikiForm', () => {
 
     nextTick();
 
-    expect(findMarkdownEditor().props('enablePreview')).toBe(enabled);
+    expect(findMarkdownEditor().vm.$attrs['enable-preview']).toBe(enabled);
   });
 
   it.each`
@@ -306,7 +304,7 @@ describe('WikiForm', () => {
       expect(findFormat().element.getAttribute('disabled')).toBeDefined();
     });
 
-    it('sends tracking event when editor loads', async () => {
+    it('sends tracking event when editor loads', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
         label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
       });
@@ -320,7 +318,7 @@ describe('WikiForm', () => {
         await triggerFormSubmit();
       });
 
-      it('triggers tracking events on form submit', async () => {
+      it('triggers tracking events on form submit', () => {
         expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
           label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
         });

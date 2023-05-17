@@ -25,7 +25,9 @@ module Groups
                  groups_with_guest_access_plus
                end
 
-      groups = groups.search(params[:search]) if params[:search].present?
+      groups = by_hierarchy(groups)
+      groups = by_ignorable(groups)
+      groups = by_search(groups)
 
       sort(groups).with_route
     end
@@ -47,6 +49,26 @@ module Groups
     def can_share_project?
       Ability.allowed?(current_user, :admin_project, project_to_be_shared) &&
         project_to_be_shared.allowed_to_share_with_group?
+    end
+
+    def by_ignorable(groups)
+      # groups already linked to this project or groups above the project's
+      # current hierarchy needs to be ignored.
+      groups.id_not_in(project_to_be_shared.related_group_ids)
+    end
+
+    def by_hierarchy(groups)
+      return groups if project_to_be_shared.personal? || sharing_outside_hierarchy_allowed?
+
+      groups.id_in(root_ancestor.self_and_descendants_ids)
+    end
+
+    def sharing_outside_hierarchy_allowed?
+      !root_ancestor.prevent_sharing_groups_outside_hierarchy
+    end
+
+    def root_ancestor
+      project_to_be_shared.root_ancestor
     end
   end
 end

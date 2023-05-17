@@ -6,10 +6,9 @@ class Wiki
   include Repositories::CanHousekeepRepository
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
+  include Gitlab::Git::WrapsGitalyErrors
 
   extend ActiveModel::Naming
-
-  DuplicatePageError = Class.new(StandardError)
 
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
     markdown: {
@@ -187,6 +186,8 @@ class Wiki
 
   def has_home_page?
     !!find_page(HOMEPAGE)
+  rescue StandardError
+    false
   end
 
   def empty?
@@ -287,9 +288,7 @@ class Wiki
 
   def create_page(title, content, format = :markdown, message = nil)
     with_valid_format(format) do |default_extension|
-      if file_exists_by_regex?(title)
-        raise_duplicate_page_error!
-      end
+      next duplicated_page_error if file_exists_by_regex?(title)
 
       capture_git_error(:created) do
         create_wiki_repository unless repository_exists?
@@ -300,13 +299,9 @@ class Wiki
 
         true
       rescue Gitlab::Git::Index::IndexError
-        raise_duplicate_page_error!
+        duplicated_page_error
       end
     end
-  rescue DuplicatePageError => e
-    @error_message = _("Duplicate page: %{error_message}" % { error_message: e.message })
-
-    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -326,10 +321,17 @@ class Wiki
           content,
           previous_path: page.path,
           **multi_commit_options(:updated, message, title))
+        repository.move_dir_files(
+          user,
+          sluggified_title(title),
+          page.url_path,
+          **multi_commit_options(:moved, message, title))
 
         after_wiki_activity
 
         true
+      rescue Gitlab::Git::Index::IndexError
+        duplicated_page_error
       end
     end
   end
@@ -398,13 +400,11 @@ class Wiki
   # Callbacks for synchronous processing after wiki changes.
   # These will be executed after any change made through GitLab itself (web UI and API),
   # but not for Git pushes.
-  def after_wiki_activity
-  end
+  def after_wiki_activity; end
 
   # Callbacks for background processing after wiki changes.
   # These will be executed after any change to the wiki repository.
-  def after_post_receive
-  end
+  def after_post_receive; end
 
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
@@ -416,12 +416,14 @@ class Wiki
   end
 
   def capture_git_error(action, &block)
-    yield block
+    wrapped_gitaly_errors(&block)
   rescue Gitlab::Git::Index::IndexError,
-         Gitlab::Git::CommitError,
-         Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError,
-         ArgumentError => e
+    Gitlab::Git::CommitError,
+    Gitlab::Git::PreReceiveError,
+    Gitlab::Git::CommandError,
+    ArgumentError => e
+
+    @error_message = e.message
 
     Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
 
@@ -471,8 +473,9 @@ class Wiki
     repository.ls_files(default_branch).any? { |s| s =~ regex }
   end
 
-  def raise_duplicate_page_error!
-    raise ::Wiki::DuplicatePageError, _('A page with that title already exists')
+  def duplicated_page_error
+    @error_message = _("Duplicate page: A page with that title already exists")
+    false
   end
 
   def sluggified_full_path(title, extension)
@@ -491,7 +494,9 @@ class Wiki
     escaped_path = RE2::Regexp.escape(sluggified_title(title))
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
-    matched_files = repository.search_files_by_regexp(path_regexp, version, limit: 1)
+    matched_files = capture_git_error(:find) do
+      repository.search_files_by_regexp(path_regexp, version, limit: 1)
+    end
     return if matched_files.blank?
 
     Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)

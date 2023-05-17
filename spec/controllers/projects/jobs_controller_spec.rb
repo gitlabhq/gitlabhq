@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
+RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration, factory_default: :keep do
   include ApiHelpers
   include HttpIOHelpers
 
+  let_it_be(:namespace) { create_default(:namespace) }
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:owner) { create(:owner) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:maintainer) { create(:user) }
@@ -19,11 +21,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     project.add_developer(developer)
     project.add_reporter(reporter)
     project.add_guest(guest)
+    create_default(:owner)
+    create_default(:user)
+    create_default(:ci_trigger_request)
+    create_default(:ci_stage)
   end
 
   let(:user) { developer }
 
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:default_pipeline) { create_default(:ci_pipeline) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -106,9 +113,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       def create_job(name, status)
         user = create(:user)
         pipeline = create(:ci_pipeline, project: project, user: user)
-        create(:ci_build, :tags, :triggered, :artifacts,
-               pipeline: pipeline, name: name, status: status,
-               user: user)
+        create(
+          :ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, name: name, status: status, user: user
+        )
       end
     end
 
@@ -151,7 +159,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when requesting JSON' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
       let(:user) { developer }
 
       before do
@@ -210,9 +217,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'when job has artifacts' do
-        context 'with not expiry date' do
-          let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+        let_it_be(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
+        context 'with not expiry date' do
           context 'when artifacts are unlocked' do
             before do
               job.pipeline.unlocked!
@@ -233,7 +240,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           context 'when artifacts are locked' do
             before do
-              job.pipeline.artifacts_locked!
+              job.pipeline.reload.artifacts_locked!
             end
 
             it 'exposes needed information' do
@@ -251,11 +258,13 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
         end
 
         context 'with expired artifacts' do
-          let(:job) { create(:ci_build, :success, :artifacts, :expired, pipeline: pipeline) }
+          before do
+            job.update!(artifacts_expire_at: 1.minute.ago)
+          end
 
           context 'when artifacts are unlocked' do
             before do
-              job.pipeline.unlocked!
+              job.pipeline.reload.unlocked!
             end
 
             it 'exposes needed information' do
@@ -274,7 +283,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           context 'when artifacts are locked' do
             before do
-              job.pipeline.artifacts_locked!
+              job.pipeline.reload.artifacts_locked!
             end
 
             it 'exposes needed information' do
@@ -291,19 +300,17 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             end
           end
         end
-      end
 
-      context 'when job passed with no trace' do
-        let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+        context 'when job passed with no trace' do
+          it 'exposes empty state illustrations' do
+            get_show_json
 
-        it 'exposes empty state illustrations' do
-          get_show_json
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('job/job_details')
-          expect(json_response['status']['illustration']).to have_key('image')
-          expect(json_response['status']['illustration']).to have_key('size')
-          expect(json_response['status']['illustration']).to have_key('title')
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['status']['illustration']).to have_key('image')
+            expect(json_response['status']['illustration']).to have_key('size')
+            expect(json_response['status']['illustration']).to have_key('title')
+          end
         end
       end
 
@@ -319,7 +326,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'with deployment' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
         let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
@@ -511,7 +517,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when requesting triggered job JSON' do
-      let!(:merge_request) { create(:merge_request, source_project: project) }
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
       let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
@@ -832,8 +837,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
           retried_build = Ci::Build.last
 
           Ci::Build.clone_accessors.each do |accessor|
-            expect(job.read_attribute(accessor))
-              .to eq(retried_build.read_attribute(accessor)),
+            expect(job.read_attribute(accessor)).to eq(retried_build.read_attribute(accessor)),
               "Mismatched attribute on \"#{accessor}\". " \
               "It was \"#{job.read_attribute(accessor)}\" but changed to \"#{retried_build.read_attribute(accessor)}\""
           end
@@ -855,10 +859,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_retry
       post :retry, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: job.id
-                   }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
   end
 
@@ -869,8 +873,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     before do
       project.add_developer(user)
 
-      create(:protected_branch, :developers_can_merge,
-             name: 'protected-branch', project: project)
+      create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
 
       sign_in(user)
     end

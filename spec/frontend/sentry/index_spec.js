@@ -4,8 +4,6 @@ import LegacySentryConfig from '~/sentry/legacy_sentry_config';
 import SentryConfig from '~/sentry/sentry_config';
 
 describe('Sentry init', () => {
-  let originalGon;
-
   const dsn = 'https://123@sentry.gitlab.test/123';
   const environment = 'test';
   const currentUserId = '1';
@@ -14,7 +12,6 @@ describe('Sentry init', () => {
   const featureCategory = 'my_feature_category';
 
   beforeEach(() => {
-    originalGon = window.gon;
     window.gon = {
       sentry_dsn: dsn,
       sentry_environment: environment,
@@ -26,10 +23,6 @@ describe('Sentry init', () => {
 
     jest.spyOn(LegacySentryConfig, 'init').mockImplementation();
     jest.spyOn(SentryConfig, 'init').mockImplementation();
-  });
-
-  afterEach(() => {
-    window.gon = originalGon;
   });
 
   it('exports new version of Sentry in the global object', () => {
@@ -59,6 +52,51 @@ describe('Sentry init', () => {
 
     it('does not configure legacy sentry', () => {
       expect(LegacySentryConfig.init).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('with "data-page" attr in body', () => {
+    const mockPage = 'projects:show';
+
+    beforeEach(() => {
+      document.body.dataset.page = mockPage;
+
+      index();
+    });
+
+    afterEach(() => {
+      delete document.body.dataset.page;
+    });
+
+    it('configures sentry with a "page" tag', () => {
+      expect(SentryConfig.init).toHaveBeenCalledTimes(1);
+      expect(SentryConfig.init).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: {
+            revision,
+            page: mockPage,
+            feature_category: featureCategory,
+          },
+        }),
+      );
+    });
+  });
+
+  describe('with no tags configuration', () => {
+    beforeEach(() => {
+      window.gon.revision = undefined;
+      window.gon.feature_category = undefined;
+
+      index();
+    });
+
+    it('configures sentry with no tags', () => {
+      expect(SentryConfig.init).toHaveBeenCalledTimes(1);
+      expect(SentryConfig.init).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: {},
+        }),
+      );
     });
   });
 });

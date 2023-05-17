@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::Destroy::DestroyedIssuableService do
+RSpec.describe Todos::Destroy::DestroyedIssuableService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 

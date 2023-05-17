@@ -12,10 +12,7 @@ This page includes information about the minimum requirements you need to instal
 
 ### Redis versions
 
-GitLab 13.0 and later requires Redis version 5.0 or higher.
-
-Redis version 6.0 or higher is recommended, as this is what ships with
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 13.9.
+GitLab 16.0 and later requires Redis 6.0 or later.
 
 ## Hardware requirements
 
@@ -92,7 +89,7 @@ the following table) as these were used for development and testing:
 | 13.0           | 11                         |
 | 14.0           | 12.7                      |
 | 15.0           | 12.10                      |
-| 16.0 (planned) | 13.6                       |
+| 16.0           | 13.6                       |
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).

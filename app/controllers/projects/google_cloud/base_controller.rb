@@ -45,8 +45,8 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
     return_url = project_google_cloud_configuration_path(project)
     state = generate_session_key_redirect(request.url, return_url)
     @authorize_url = GoogleApi::CloudPlatform::Client.new(nil,
-                                                          callback_google_api_auth_url,
-                                                          state: state).authorize_url
+      callback_google_api_auth_url,
+      state: state).authorize_url
     redirect_to @authorize_url
   end
 

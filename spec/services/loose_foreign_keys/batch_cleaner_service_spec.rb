@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::BatchCleanerService do
+RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :database do
   include MigrationsHelpers
 
   def create_table_structure

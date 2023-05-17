@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::ValidatePushOtpService do
+RSpec.describe Users::ValidatePushOtpService, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   subject(:validate) { described_class.new(user).execute }

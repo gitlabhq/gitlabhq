@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+          base.view 'app/views/layouts/nav/breadcrumbs/_breadcrumbs.html.haml' do
             element :breadcrumb_links_content
           end
         end

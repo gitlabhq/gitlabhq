@@ -6,7 +6,7 @@ import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Report from '~/sidebar/components/time_tracking/report.vue';
 import getIssueTimelogsQuery from '~/sidebar/queries/get_issue_timelogs.query.graphql';
 import getMrTimelogsQuery from '~/sidebar/queries/get_mr_timelogs.query.graphql';
@@ -17,7 +17,7 @@ import {
   timelogToRemoveId,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Issuable Time Tracking Report', () => {
   Vue.use(VueApollo);
@@ -51,7 +51,6 @@ describe('Issuable Time Tracking Report', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

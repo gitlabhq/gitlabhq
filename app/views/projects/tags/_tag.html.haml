@@ -2,9 +2,9 @@
 - release = @releases.find { |release| release.tag == tag.name }
 - commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
 
-%li.flex-row.js-tag-list{ class: "gl-white-space-normal! gl-align-items-flex-start!" }
+%li.gl-justify-content-space-between{ class: "gl-md-display-flex! gl-align-items-flex-start!", data: { testid: 'tag-row' } }
   .row-main-content
-    = sprite_icon('tag')
+    = sprite_icon('tag', css_class: "gl-text-secondary")
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'
 
     - if protected_tag?(@project, tag)
@@ -21,12 +21,13 @@
       = render 'release_link', project: @project, release: release
 
     - if tag.message.present?
-      %pre.wrap
+      %pre.wrap.gl-mt-3.gl-max-w-80
         = strip_signature(tag.message)
 
-  .row-fixed-content.controls.flex-row
+  .row-fixed-content.flex-row
     - if tag.has_signature?
-      = render partial: 'projects/commit/signature', object: tag.signature
+      .gl-mr-3
+        = render partial: 'projects/commit/signature', object: tag.signature
 
     - if commit_status
       = render 'ci/status/icon', size: 24, status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
@@ -34,8 +35,11 @@
       .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
         %svg.s24
 
-    = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
-
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: tag, project: @project, release: release, option_css_classes: 'gl-mr-3!'
+
+    .gl-mr-3
+      = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
+
+    - if can?(current_user, :admin_tag, @project)
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

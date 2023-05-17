@@ -3,7 +3,7 @@ table_name: pm_checkpoints
 classes:
 - PackageMetadata::Checkpoint
 feature_categories:
-- license_compliance
+- software_composition_analysis
 description: Tracks position of last synced file.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109713
 milestone: '15.9'

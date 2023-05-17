@@ -22,11 +22,10 @@ describe('FileTreePopover component', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('default', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({ stubs: { GlSprintf } });
     });
 
@@ -46,7 +45,7 @@ describe('FileTreePopover component', () => {
   });
 
   describe('when popover has already been dismissed before', () => {
-    it('does not render popover', async () => {
+    it('does not render popover', () => {
       localStorage.setItem(FILE_TREE_POPOVER_DISMISSED_KEY, 'true');
       createComponent();
 

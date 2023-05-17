@@ -21,30 +21,32 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :runner_fleet 
       }
     end
 
-    context 'assigning runner to same project' do
-      let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-
-      it 'redirects to the admin runner edit page' do
-        send_create
-
-        expect(response).to have_gitlab_http_status(:redirect)
-        expect(response).to redirect_to edit_admin_runner_url(project_runner)
-      end
-    end
-
-    context 'assigning runner to another project' do
+    context 'when assigning to another project' do
       let(:project_runner) { create(:ci_runner, :project, projects: [source_project]) }
       let(:source_project) { create(:project) }
 
       it 'redirects to the admin runner edit page' do
         send_create
 
+        expect(flash[:success]).to be_present
         expect(response).to have_gitlab_http_status(:redirect)
         expect(response).to redirect_to edit_admin_runner_url(project_runner)
       end
     end
 
-    context 'for unknown project' do
+    context 'when assigning to same project' do
+      let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'redirects to the admin runner edit page' do
+        send_create
+
+        expect(flash[:alert]).to be_present
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to edit_admin_runner_url(project_runner)
+      end
+    end
+
+    context 'when assigning to an unknown project' do
       let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
       let(:project_id) { 0 }
@@ -70,7 +72,7 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :runner_fleet 
       }
     end
 
-    context 'unassigning runner from project' do
+    context 'when unassigning runner from project' do
       let(:runner_project_id) { project_runner.runner_projects.last.id }
 
       it 'redirects to the admin runner edit page' do
@@ -81,7 +83,7 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :runner_fleet 
       end
     end
 
-    context 'for unknown project runner relationship' do
+    context 'when unassigning from unknown project' do
       let(:runner_project_id) { 0 }
 
       it 'shows 404 for unknown project runner relationship' do

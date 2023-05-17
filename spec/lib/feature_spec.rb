@@ -2,39 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
+RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: false, feature_category: :shared do
   include StubVersion
 
   before do
     # reset Flipper AR-engine
     Feature.reset
     skip_feature_flags_yaml_validation
-  end
-
-  describe '.feature_flags_available?' do
-    it 'returns false on connection error' do
-      expect(ActiveRecord::Base.connection).to receive(:active?).and_raise(PG::ConnectionBad) # rubocop:disable Database/MultipleDatabases
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false when connection is not active' do
-      expect(ActiveRecord::Base.connection).to receive(:active?).and_return(false) # rubocop:disable Database/MultipleDatabases
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false when the flipper table does not exist' do
-      expect(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false on NoDatabaseError' do
-      expect(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
   end
 
   describe '.get' do
@@ -154,17 +128,6 @@ RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
     end
   end
 
-  describe '.register_feature_groups' do
-    before do
-      Flipper.unregister_groups
-      described_class.register_feature_groups
-    end
-
-    it 'registers expected groups' do
-      expect(Flipper.groups).to include(an_object_having_attributes(name: :gitlab_team_members))
-    end
-  end
-
   describe '.enabled?' do
     before do
       allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
@@ -249,7 +212,7 @@ RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
     end
 
     it { expect(described_class.send(:l1_cache_backend)).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
-    it { expect(described_class.send(:l2_cache_backend)).to eq(Rails.cache) }
+    it { expect(described_class.send(:l2_cache_backend)).to eq(Gitlab::Redis::FeatureFlag.cache_store) }
 
     it 'caches the status in L1 and L2 caches',
        :request_store, :use_clean_rails_memory_store_caching do
@@ -358,22 +321,6 @@ RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
 
       it 'is false for any other actor' do
         expect(described_class.enabled?(key, create(:user))).to be_falsey
-      end
-    end
-
-    context 'with gitlab_team_members feature group' do
-      let(:actor) { build_stubbed(:user) }
-
-      before do
-        Flipper.unregister_groups
-        described_class.register_feature_groups
-        described_class.enable(:enabled_feature_flag, :gitlab_team_members)
-      end
-
-      it 'delegates check to FeatureGroups::GitlabTeamMembers' do
-        expect(FeatureGroups::GitlabTeamMembers).to receive(:enabled?).with(actor)
-
-        described_class.enabled?(:enabled_feature_flag, actor)
       end
     end
 

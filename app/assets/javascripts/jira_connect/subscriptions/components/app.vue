@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
 import { SET_ALERT } from '../store/mutation_types';
 import SignInPage from '../pages/sign_in/sign_in_page.vue';
@@ -23,11 +22,7 @@ export default {
     SubscriptionsPage,
     UserLink,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
-    usersPath: {
-      default: '',
-    },
     subscriptionsPath: {
       default: '',
     },
@@ -45,21 +40,14 @@ export default {
       return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
-      if (this.isOauthEnabled) {
-        return Boolean(this.currentUser);
-      }
-
-      return Boolean(!this.usersPath);
-    },
-    isOauthEnabled() {
-      return this.glFeatures.jiraConnectOauth;
+      return Boolean(this.currentUser);
     },
     /**
      * Returns false if the GitLab for Jira app doesn't support the user's browser.
      * Any web API that the GitLab for Jira app depends on should be checked here.
      */
     isBrowserSupported() {
-      return !this.isOauthEnabled || AccessorUtilities.canUseCrypto();
+      return AccessorUtilities.canUseCrypto();
     },
     gitlabUrl() {
       return gon.gitlab_url;
@@ -80,11 +68,10 @@ export default {
     }),
     ...mapActions(['fetchSubscriptions']),
     /**
-     * Fetch subscriptions from the REST API,
-     * if the jiraConnectOauth flag is enabled.
+     * Fetch subscriptions from the REST API.
      */
     fetchSubscriptionsOauth() {
-      if (!this.isOauthEnabled || !this.userSignedIn) return;
+      if (!this.userSignedIn) return;
 
       this.fetchSubscriptions(this.subscriptionsPath);
     },
@@ -113,12 +100,7 @@ export default {
       <gl-link :href="gitlabUrl" target="_blank">
         <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />
       </gl-link>
-      <user-link
-        :user-signed-in="userSignedIn"
-        :has-subscriptions="hasSubscriptions"
-        :user="currentUser"
-        class="gl-fixed gl-right-4"
-      />
+      <user-link v-if="userSignedIn" :user="currentUser" class="gl-fixed gl-right-4" />
     </header>
 
     <main class="jira-connect-app gl-px-5 gl-pt-7 gl-mx-auto">

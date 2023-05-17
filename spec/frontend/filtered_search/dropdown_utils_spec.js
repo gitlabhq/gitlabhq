@@ -1,12 +1,11 @@
-import { loadHTMLFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlMergeRequestList from 'test_fixtures/merge_requests/merge_request_list.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Dropdown Utils', () => {
-  const issuableListFixture = 'merge_requests/merge_request_list.html';
-
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {
       const escaped = DropdownUtils.getEscapedText('textWithoutSpace');
@@ -355,7 +354,7 @@ describe('Dropdown Utils', () => {
     let authorToken;
 
     beforeEach(() => {
-      loadHTMLFixture(issuableListFixture);
+      setHTMLFixture(htmlMergeRequestList);
 
       authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
       const searchTermToken = FilteredSearchSpecHelper.createSearchVisualToken('search term');

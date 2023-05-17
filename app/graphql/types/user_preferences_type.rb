@@ -10,6 +10,10 @@ module Types
       description: 'Sort order for issue lists.',
       null: true
 
+    field :visibility_pipeline_id_type, Types::VisibilityPipelineIdTypeEnum,
+      description: 'Determines whether the pipeline list shows ID or IID.',
+      null: true
+
     def issues_sort
       object.issues_sort.to_sym
     end

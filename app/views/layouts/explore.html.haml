@@ -1,11 +1,6 @@
-- page_title _("Explore")
+- header_title _("Explore"), explore_root_path
 
-- if current_user
-  - @left_sidebar = true
-  - nav "your_work"
-
-- unless current_user
-  - @hide_breadcrumbs = true
-  - header_title _("Explore GitLab"), explore_root_path
+- @left_sidebar = true
+- nav "explore"
 
 = render template: "layouts/application"

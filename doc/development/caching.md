@@ -332,11 +332,11 @@ views/projects/_home_panel:462ad2485d7d6957e03ceba2c6717c29/projects/16-20210316
 ```
 
 1. The view name and template tree digest
-    `views/projects/_home_panel:462ad2485d7d6957e03ceba2c6717c29`
+   `views/projects/_home_panel:462ad2485d7d6957e03ceba2c6717c29`
 1. The model name, ID, and `updated_at` values
-    `projects/16-20210316142425469452`
+   `projects/16-20210316142425469452`
 1. The symbol we passed in, converted to a string
-    `tag_list`
+   `tag_list`
 
 ### Look for
 

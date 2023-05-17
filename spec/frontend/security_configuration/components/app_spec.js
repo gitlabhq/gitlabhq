@@ -8,60 +8,20 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
-import {
-  SAST_NAME,
-  SAST_SHORT_NAME,
-  SAST_DESCRIPTION,
-  SAST_HELP_PATH,
-  SAST_CONFIG_HELP_PATH,
-  LICENSE_COMPLIANCE_NAME,
-  LICENSE_COMPLIANCE_DESCRIPTION,
-  LICENSE_COMPLIANCE_HELP_PATH,
-  AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
-} from '~/security_configuration/components/constants';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
-import {
-  REPORT_TYPE_LICENSE_COMPLIANCE,
-  REPORT_TYPE_SAST,
-} from '~/vue_shared/security_reports/constants';
+import { securityFeaturesMock, provideMock } from '../mock_data';
 
-const upgradePath = '/upgrade';
-const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
-const autoDevopsPath = '/autoDevopsPath';
 const gitlabCiHistoryPath = 'test/historyPath';
-const projectFullPath = 'namespace/project';
-const vulnerabilityTrainingDocsPath = 'user/application_security/vulnerabilities/index';
+const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
 
 useLocalStorageSpy();
 Vue.use(VueApollo);
 
-describe('App component', () => {
+describe('~/security_configuration/components/app', () => {
   let wrapper;
   let userCalloutDismissSpy;
-
-  const securityFeaturesMock = [
-    {
-      name: SAST_NAME,
-      shortName: SAST_SHORT_NAME,
-      description: SAST_DESCRIPTION,
-      helpPath: SAST_HELP_PATH,
-      configurationHelpPath: SAST_CONFIG_HELP_PATH,
-      type: REPORT_TYPE_SAST,
-      available: true,
-    },
-  ];
-
-  const complianceFeaturesMock = [
-    {
-      name: LICENSE_COMPLIANCE_NAME,
-      description: LICENSE_COMPLIANCE_DESCRIPTION,
-      helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-      type: REPORT_TYPE_LICENSE_COMPLIANCE,
-      configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    },
-  ];
 
   const createComponent = ({ shouldShowCallout = true, ...propsData } = {}) => {
     userCalloutDismissSpy = jest.fn();
@@ -69,17 +29,10 @@ describe('App component', () => {
     wrapper = mountExtended(SecurityConfigurationApp, {
       propsData: {
         augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
         securityTrainingEnabled: true,
         ...propsData,
       },
-      provide: {
-        upgradePath,
-        autoDevopsHelpPagePath,
-        autoDevopsPath,
-        projectFullPath,
-        vulnerabilityTrainingDocsPath,
-      },
+      provide: provideMock,
       stubs: {
         ...stubChildren(SecurityConfigurationApp),
         GlLink: false,
@@ -118,20 +71,10 @@ describe('App component', () => {
       text: i18n.configurationHistory,
       container: findByTestId('security-testing-tab'),
     });
-  const findComplianceViewHistoryLink = () =>
-    findLink({
-      href: gitlabCiHistoryPath,
-      text: i18n.configurationHistory,
-      container: findByTestId('compliance-testing-tab'),
-    });
-  const findUpgradeBanner = () => wrapper.findComponent(UpgradeBanner);
+
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('basic structure', () => {
     beforeEach(() => {
@@ -141,11 +84,11 @@ describe('App component', () => {
     it('renders main-heading with correct text', () => {
       const mainHeading = findMainHeading();
       expect(mainHeading.exists()).toBe(true);
-      expect(mainHeading.text()).toContain('Security Configuration');
+      expect(mainHeading.text()).toContain('Security configuration');
     });
 
     describe('tabs', () => {
-      const expectedTabs = ['security-testing', 'compliance-testing', 'vulnerability-management'];
+      const expectedTabs = ['security-testing', 'vulnerability-management'];
 
       it('renders GlTab Component', () => {
         expect(findTab().exists()).toBe(true);
@@ -174,9 +117,8 @@ describe('App component', () => {
 
     it('renders right amount of feature cards for given props with correct props', () => {
       const cards = findFeatureCards();
-      expect(cards).toHaveLength(2);
+      expect(cards).toHaveLength(1);
       expect(cards.at(0).props()).toEqual({ feature: securityFeaturesMock[0] });
-      expect(cards.at(1).props()).toEqual({ feature: complianceFeaturesMock[0] });
     });
 
     it('renders a basic description', () => {
@@ -188,7 +130,6 @@ describe('App component', () => {
     });
 
     it('should not show configuration History Link when gitlabCiPresent & gitlabCiHistoryPath are not defined', () => {
-      expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
     });
   });
@@ -205,17 +146,19 @@ describe('App component', () => {
     });
 
     describe('when error occurs', () => {
+      const errorMessage = 'There was a manage via MR error';
+
       it('should show Alert with error Message', async () => {
         expect(findManageViaMRErrorAlert().exists()).toBe(false);
-        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+        findFeatureCards().at(0).vm.$emit('error', errorMessage);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
-        expect(findManageViaMRErrorAlert().text()).toEqual('There was a manage via MR error');
+        expect(findManageViaMRErrorAlert().text()).toBe(errorMessage);
       });
 
       it('should hide Alert when it is dismissed', async () => {
-        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+        findFeatureCards().at(0).vm.$emit('error', errorMessage);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
@@ -306,7 +249,6 @@ describe('App component', () => {
 
             createComponent({
               augmentedSecurityFeatures: securityFeaturesMock,
-              augmentedComplianceFeatures: complianceFeaturesMock,
               autoDevopsEnabled: true,
             });
 
@@ -328,79 +270,11 @@ describe('App component', () => {
     });
   });
 
-  describe('upgrade banner', () => {
-    const makeAvailable = (available) => (feature) => ({ ...feature, available });
-
-    describe('given at least one unavailable feature', () => {
-      beforeEach(() => {
-        createComponent({
-          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
-        });
-      });
-
-      it('renders the banner', () => {
-        expect(findUpgradeBanner().exists()).toBe(true);
-      });
-
-      it('calls the dismiss callback when closing the banner', () => {
-        expect(userCalloutDismissSpy).not.toHaveBeenCalled();
-
-        findUpgradeBanner().vm.$emit('close');
-
-        expect(userCalloutDismissSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('given at least one unavailable feature, but banner is already dismissed', () => {
-      beforeEach(() => {
-        createComponent({
-          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
-          shouldShowCallout: false,
-        });
-      });
-
-      it('does not render the banner', () => {
-        expect(findUpgradeBanner().exists()).toBe(false);
-      });
-    });
-
-    describe('given all features are available', () => {
-      beforeEach(() => {
-        createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock.map(makeAvailable(true)),
-          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(true)),
-        });
-      });
-
-      it('does not render the banner', () => {
-        expect(findUpgradeBanner().exists()).toBe(false);
-      });
-    });
-  });
-
   describe('when given latestPipelinePath props', () => {
     beforeEach(() => {
       createComponent({
         latestPipelinePath: 'test/path',
       });
-    });
-
-    it('should show latest pipeline info on the security tab  with correct link when latestPipelinePath is defined', () => {
-      const latestPipelineInfoSecurity = findByTestId('latest-pipeline-info-security');
-
-      expect(latestPipelineInfoSecurity.text()).toMatchInterpolatedText(
-        i18n.latestPipelineDescription,
-      );
-      expect(latestPipelineInfoSecurity.find('a').attributes('href')).toBe('test/path');
-    });
-
-    it('should show latest pipeline info on the compliance tab  with correct link when latestPipelinePath is defined', () => {
-      const latestPipelineInfoCompliance = findByTestId('latest-pipeline-info-compliance');
-
-      expect(latestPipelineInfoCompliance.text()).toMatchInterpolatedText(
-        i18n.latestPipelineDescription,
-      );
-      expect(latestPipelineInfoCompliance.find('a').attributes('href')).toBe('test/path');
     });
   });
 
@@ -413,10 +287,8 @@ describe('App component', () => {
     });
 
     it('should show configuration History Link', () => {
-      expect(findComplianceViewHistoryLink().exists()).toBe(true);
       expect(findSecurityViewHistoryLink().exists()).toBe(true);
 
-      expect(findComplianceViewHistoryLink().attributes('href')).toBe('test/historyPath');
       expect(findSecurityViewHistoryLink().attributes('href')).toBe('test/historyPath');
     });
   });
@@ -424,7 +296,7 @@ describe('App component', () => {
   describe('Vulnerability management', () => {
     const props = { securityTrainingEnabled: true };
 
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({
         ...props,
       });

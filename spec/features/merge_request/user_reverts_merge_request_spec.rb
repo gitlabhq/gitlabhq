@@ -8,12 +8,15 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(unbatch_graphql_queries: false)
     project.add_developer(user)
     sign_in(user)
 
     visit(merge_request_path(merge_request))
 
-    click_button('Merge')
+    page.within('.mr-state-widget') do
+      click_button 'Merge'
+    end
 
     wait_for_requests
 
@@ -34,7 +37,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
 
     revert_commit
 
-    expect(page).to have_content('Sorry, we cannot revert this merge request automatically.')
+    expect(page).to have_content('Merge request revert failed:')
   end
 
   it 'reverts a merge request in a new merge request', :sidekiq_might_not_need_inline do

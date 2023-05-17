@@ -1,3 +1,5 @@
+import { SEARCH, EXISTING_TAG } from './constants';
+
 export default ({
   isExistingRelease,
   projectId,
@@ -62,4 +64,6 @@ export default ({
   includeTagNotes: false,
   existingRelease: null,
   originalReleasedAt: new Date(),
+  step: SEARCH,
+  tagStep: EXISTING_TAG,
 });

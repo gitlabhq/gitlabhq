@@ -2,7 +2,7 @@
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
 
@@ -60,11 +60,7 @@ Please update your Git repository remotes as soon as possible.`),
     primaryProps() {
       return {
         text: __('Update username'),
-        attributes: [
-          { variant: 'confirm' },
-          { category: 'primary' },
-          { disabled: this.isRequestPending },
-        ],
+        attributes: { variant: 'confirm', category: 'primary', disabled: this.isRequestPending },
       };
     },
     cancelProps() {
@@ -117,6 +113,7 @@ Please update your Git repository remotes as soon as possible.`),
         <input
           :id="$options.inputId"
           v-model="newUsername"
+          data-testid="new-username-input"
           :disabled="isRequestPending"
           class="form-control"
           required="required"

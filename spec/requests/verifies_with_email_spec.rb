@@ -42,7 +42,7 @@ feature_category: :user_management do
   shared_examples_for 'two factor prompt or successful login' do
     it 'shows the 2FA prompt when enabled or redirects to the root path' do
       if user.two_factor_enabled?
-        expect(response.body).to include('Two-factor authentication code')
+        expect(response.body).to include('Enter verification code')
       else
         expect(response).to redirect_to(root_path)
       end
@@ -135,7 +135,7 @@ feature_category: :user_management do
   describe 'verify_with_email' do
     context 'when user is locked and a verification_user_id session variable exists' do
       before do
-        encrypted_token = Devise.token_generator.digest(User, :unlock_token, 'token')
+        encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
         user.update!(locked_at: Time.current, unlock_token: encrypted_token)
         stub_session(verification_user_id: user.id)
       end

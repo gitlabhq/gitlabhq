@@ -31,31 +31,31 @@ RSpec.describe UpdateStartDateForIterationsCadences, :freeze_time, feature_categ
   before do
     # Past iteratioin
     sprints.create!(id: 1, iid: 1, **cadence_params(auto_cadence1),
-                    start_date: Date.current - 1.week, due_date: Date.current - 1.day)
+      start_date: Date.current - 1.week, due_date: Date.current - 1.day)
     # Current iteraition
     sprints.create!(id: 3, iid: 5, **cadence_params(auto_cadence1),
-                    start_date: Date.current, due_date: Date.current + 1.week)
+      start_date: Date.current, due_date: Date.current + 1.week)
     # First upcoming iteration
     sprints.create!(id: 4, iid: 8, **cadence_params(auto_cadence1),
-                    start_date: first_upcoming_start_date, due_date: first_upcoming_start_date + 1.week)
+      start_date: first_upcoming_start_date, due_date: first_upcoming_start_date + 1.week)
     # Second upcoming iteration
     sprints.create!(id: 5, iid: 9, **cadence_params(auto_cadence1),
-                    start_date: first_upcoming_start_date + 2.weeks, due_date: first_upcoming_start_date + 3.weeks)
+      start_date: first_upcoming_start_date + 2.weeks, due_date: first_upcoming_start_date + 3.weeks)
 
     sprints.create!(id: 6, iid: 1, **cadence_params(manual_cadence2),
-                    start_date: Date.current, due_date: Date.current + 1.week)
+      start_date: Date.current, due_date: Date.current + 1.week)
     sprints.create!(id: 7, iid: 5, **cadence_params(manual_cadence2),
-                    start_date: Date.current + 2.weeks, due_date: Date.current + 3.weeks)
+      start_date: Date.current + 2.weeks, due_date: Date.current + 3.weeks)
   end
 
   describe '#up' do
     it "updates the start date of an automatic cadence to the start date of its first upcoming sprint record." do
       expect { migration.up }
-            .to change { auto_cadence1.reload.start_date }.to(first_upcoming_start_date)
-            .and not_change { auto_cadence2.reload.start_date } # the cadence doesn't have any upcoming iteration.
-            .and not_change { auto_cadence3.reload.start_date } # the cadence is empty; it has no iterations.
-            .and not_change { manual_cadence1.reload.start_date } # manual cadence don't need to be touched.
-            .and not_change { manual_cadence2.reload.start_date } # manual cadence don't need to be touched.
+        .to change { auto_cadence1.reload.start_date }.to(first_upcoming_start_date)
+        .and not_change { auto_cadence2.reload.start_date } # the cadence doesn't have any upcoming iteration.
+        .and not_change { auto_cadence3.reload.start_date } # the cadence is empty; it has no iterations.
+        .and not_change { manual_cadence1.reload.start_date } # manual cadence don't need to be touched.
+        .and not_change { manual_cadence2.reload.start_date } # manual cadence don't need to be touched.
     end
   end
 
@@ -64,10 +64,10 @@ RSpec.describe UpdateStartDateForIterationsCadences, :freeze_time, feature_categ
       migration.up
 
       expect { migration.down }
-          .to change { auto_cadence1.reload.start_date }.to(original_cadence_start_date)
-          .and not_change { auto_cadence2.reload.start_date } # the cadence is empty; it has no iterations.
-          .and not_change { manual_cadence1.reload.start_date } # manual cadence don't need to be touched.
-          .and not_change { manual_cadence2.reload.start_date } # manual cadence don't need to be touched.
+        .to change { auto_cadence1.reload.start_date }.to(original_cadence_start_date)
+        .and not_change { auto_cadence2.reload.start_date } # the cadence is empty; it has no iterations.
+        .and not_change { manual_cadence1.reload.start_date } # manual cadence don't need to be touched.
+        .and not_change { manual_cadence2.reload.start_date } # manual cadence don't need to be touched.
     end
   end
 end

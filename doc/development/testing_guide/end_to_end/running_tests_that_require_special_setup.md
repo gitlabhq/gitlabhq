@@ -219,7 +219,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
    # Using a full image address
    GITLAB_QA_ACCESS_TOKEN=your-token-here gitlab-qa Test::Integration::Geo registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:examplesha123456789 --no-teardown
-    ```
+   ```
 
    You can use the `--no-tests` option to build the containers only, and then run the [`EE::Scenario::Test::Geo` scenario](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa/qa/ee/scenario/test/geo.rb) from your GDK to complete setup and run tests. However, there might be configuration issues if your GDK and the containers are based on different GitLab versions. With the `--no-teardown` option, GitLab-QA uses the same GitLab version for the GitLab containers and the GitLab QA container used to configure the Geo setup.
 
@@ -369,15 +369,15 @@ To run the LDAP tests on your local with TLS disabled, follow these steps:
 
 1. Run the GitLab container:
 
-  ```shell
-  sudo docker run \
-    --hostname localhost \
-    --net test \
-    --publish 443:443 --publish 80:80 --publish 22:22 \
-    --name gitlab \
-    --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>389, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"plain\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
-  gitlab/gitlab-ee:latest
-  ```
+   ```shell
+   sudo docker run \
+     --hostname localhost \
+     --net test \
+     --publish 443:443 --publish 80:80 --publish 22:22 \
+     --name gitlab \
+     --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>389, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"plain\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
+   gitlab/gitlab-ee:latest
+   ```
 
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
@@ -427,6 +427,8 @@ For instructions on how to run these tests using the `gitlab-qa` gem, please ref
 ### What are mobile tests
 
 Tests that are tagged with `:mobile` can be run against specified mobile devices using cloud emulator/simulator services.
+
+These tests run in the [nightly pipeline](https://gitlab.com/gitlab-org/quality/nightly/-/pipelines) in the `ce:remote_mobile_safari` job.
 
 ### How to run mobile tests with Sauce Labs
 
@@ -527,3 +529,76 @@ end
 ```
 
 When running mobile tests for phone layouts, both `remote_mobile_device_name` and `mobile_layout` are `true` but when using a tablet layout, only `remote_mobile_device_name` is true. This is because phone layouts have more menus closed by default such as how both tablets and phones have the left nav closed but unlike phone layouts, tablets have the regular top navigation bar, not the mobile one. So in the case where the navigation being edited needs to be used in tablet layouts as well, use `remote_mobile_device_name` instead of `mobile_layout?` when prepending so it will use it if it's a tablet layout as well.
+
+## Targeting canary vs non-canary components in live environments
+
+Use the `QA_COOKIES` ENV variable to have the entire test target a `canary` (`staging-canary` or `canary`) or `non-canary` (`staging` or `production`) environment.
+
+Locally, that would mean prepending the ENV variable to your call to bin/qa. To target the `canary` version of that environment:
+
+```shell
+QA_COOKIES="gitlab_canary=true" WEBDRIVER_HEADLESS=false bin/qa Test::Instance::Staging <YOUR SPECIFIC TAGS OR TESTS>
+```
+
+Alternatively, you may set the cookie to `false` to ensure the `non-canary` version is targeted.
+
+You can also export the cookie for your current session to avoid prepending it each time:
+
+```shell
+export QA_COOKIES="gitlab_canary=true"
+```
+
+### Updating the cookie within a running spec
+
+Within a specific test, you can target either the `canary` or `non-canary` nodes within live environments, such as `staging` and `production`.
+
+For example, to switch back and forth between the two environments, you could utilize the `target_canary` method:
+
+```ruby
+it 'tests toggling between canary and non-canary nodes' do
+  Runtime::Browser.visit(:gitlab, Page::Main::Login)
+
+  # After starting the browser session, use the target_canary method ...
+
+  Runtime::Browser::Session.target_canary(true)
+  Flow::Login.sign_in
+
+  verify_session_on_canary(true)
+
+  Runtime::Browser::Session.target_canary(false)
+
+  # Refresh the page ...
+
+  verify_session_on_canary(false)
+
+  # Log out and clean up ...
+end
+
+def verify_session_on_canary(enable_canary)
+  Page::Main::Menu.perform do |menu|
+    aggregate_failures 'testing session log in' do
+      expect(menu.canary?).to be(enable_canary)
+    end
+  end
+end
+```
+
+You can verify whether GitLab is appropriately redirecting your session to the `canary` or `non-canary` nodes with the `menu.canary?` method.
+
+The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](beginners_guide.md).
+
+## OpenID Connect (OIDC) tests
+
+To run the [`login_via_oidc_with_gitlab_as_idp_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/188e2c876a17a097448d7f3ed35bdf264fed0d3b/qa/qa/specs/features/browser_ui/1_manage/login/login_via_oidc_with_gitlab_as_idp_spec.rb) on your local machine:
+
+1. Make sure your GDK is set to run on a non-localhost address such as `gdk.test:3000`.
+1. Configure a [loopback interface to 172.16.123.1](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/6fe7b46403229f12ab6d903f99b024e0b82cb94a/doc/howto/local_network.md#create-loopback-interface).
+1. Make sure Docker Desktop or Rancher Desktop is running.
+1. Add an entry to your `/etc/hosts` file for `gitlab-oidc-consumer.bridge` pointing to `127.0.0.1`.
+1. From the `qa` directory, run the following command. To set the GitLab image you want to use, update the `RELEASE` variable. For example, to use the latest EE image, set `RELEASE` to `gitlab/gitlab-ee:latest`:
+
+   ```shell
+   bundle install
+
+   RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:1d5a644145dfe901ea7648d825f8f9f3006d0acf' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oidc_with_gitlab_as_idp_spec.rb
+   ```

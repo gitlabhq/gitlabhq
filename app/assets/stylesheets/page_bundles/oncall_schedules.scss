@@ -57,10 +57,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   @include gl-h-full;
   @include gl-w-full;
   @include gl-overflow-x-auto;
-  @include gl-border-gray-100;
-  @include gl-border-1;
-  @include gl-border-solid;
-  @include gl-rounded-base;
 }
 
 .timeline-section {
@@ -68,15 +64,12 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   @include gl-top-0;
   z-index: 20;
 
-  .timeline-header-blank,
+  .timeline-header-label,
   .timeline-header-item {
     @include gl-float-left;
-    height: $header-item-height;
-    border-bottom: $border-style;
-    background-color: var(--white, $white);
   }
 
-  .timeline-header-blank {
+  .timeline-header-label {
     @include gl-sticky;
     @include gl-top-0;
     @include gl-left-0;
@@ -85,13 +78,8 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   }
 
   .timeline-header-item {
-    &:last-of-type .item-label {
-      @include gl-border-r-0;
-    }
-
-    .item-label,
     .item-sublabel .sublabel-value {
-      color: var(--gray-400, $gray-400);
+      color: var(--gray-700, $gray-700);
       @include gl-font-weight-normal;
 
       &.label-dark {
@@ -101,11 +89,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
       &.label-bold {
         @include gl-font-weight-bold;
       }
-    }
-
-    .item-label {
-      border-right: $border-style;
-      border-bottom: $border-style;
     }
 
     .item-sublabel {
@@ -118,7 +101,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
         text-align: center;
         @include gl-font-base;
-        padding: 2px 0;
       }
     }
 
@@ -131,10 +113,15 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
       @include gl-rounded-full;
       transform: translate(-50%, 50%);
     }
+
+    &:first-of-type {
+      .week-item-sublabel .sublabel-value:nth-of-type(7) {
+        @include gl-border-r;
+      }
+    }
   }
 }
 
-.timeline-section .timeline-header-blank,
 .list-section .details-cell {
   &::after {
     @include gl-h-full;
@@ -159,7 +146,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   @include gl-left-0;
   width: $details-cell-width;
   @include gl-font-base;
-  background-color: var(--white, $white);
   z-index: 10;
 }
 
@@ -181,4 +167,8 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
     @include gl-pointer-events-none;
     transform: translateX(-50%);
   }
+}
+
+.rotation-asignee-container {
+  overflow-x: clip;
 }

@@ -7,12 +7,14 @@ approvers: [ "@cheryl.li", "@jreporter" ]
 owning-stage: "~devops::verify"
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # CI/CD Scaling
 
 ## Summary
 
 GitLab CI/CD is one of the most data and compute intensive components of GitLab.
-Since its [initial release in November 2012](https://about.gitlab.com/blog/2012/11/13/continuous-integration-server-from-gitlab/),
+Since its initial release in 2012,
 the CI/CD subsystem has evolved significantly. It was [integrated into GitLab in September 2015](https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/)
 and has become [one of the most beloved CI/CD solutions](https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/).
 

@@ -25,11 +25,6 @@ describe('Release block milestone info', () => {
     milestones = convertObjectPropsToCamelCase(originalMilestones, { deep: true });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const milestoneProgressBarContainer = () => wrapper.find('.js-milestone-progress-bar-container');
   const milestoneListContainer = () => wrapper.find('.js-milestone-list-container');
   const issuesContainer = () => wrapper.find('[data-testid="issue-stats"]');

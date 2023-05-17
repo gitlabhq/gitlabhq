@@ -2,20 +2,31 @@
 
 require 'spec_helper'
 
-RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
+RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, feature_category: :service_ping do
   include SnowplowHelpers
 
   let(:service) { described_class.new }
+  let(:dates) { { start_date: Date.today.beginning_of_week, end_date: Date.today.next_week } }
 
   let_it_be(:user, reload: true) { create :user }
   let_it_be(:project) { create(:project) }
 
   shared_examples 'it records the event in the event counter' do
     specify do
-      tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
+      tracking_params = { event_names: event_action, **dates }
 
       expect { subject }
-        .to change { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(**tracking_params) }
+        .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
+        .by(1)
+    end
+  end
+
+  shared_examples 'it records a git write event' do
+    specify do
+      tracking_params = { event_names: 'git_write_action', **dates }
+
+      expect { subject }
+        .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
         .by(1)
     end
   end
@@ -65,11 +76,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+        let(:event_action) { :merge_request_action }
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'created' }
         let(:label) {  described_class::MR_EVENT_LABEL }
@@ -95,11 +105,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+        let(:event_action) { :merge_request_action }
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'closed' }
         let(:label) {  described_class::MR_EVENT_LABEL }
@@ -125,11 +134,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+        let(:event_action) { :merge_request_action }
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'merged' }
         let(:label) { described_class::MR_EVENT_LABEL }
@@ -276,8 +284,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION }
+        let(:event_action) { :wiki_action }
       end
+
+      it_behaves_like "it records a git write event"
     end
 
     (Event.actions.keys - Event::WIKI_ACTIONS).each do |bad_action|
@@ -312,8 +322,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it_behaves_like 'service for creating a push event', PushEventPayloadService
 
     it_behaves_like "it records the event in the event counter" do
-      let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
+      let(:event_action) { :project_action }
     end
+
+    it_behaves_like "it records a git write event"
 
     it_behaves_like 'Snowplow event tracking with RedisHLL context' do
       let(:category) { described_class.to_s }
@@ -338,8 +350,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it_behaves_like 'service for creating a push event', BulkPushEventPayloadService
 
     it_behaves_like "it records the event in the event counter" do
-      let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
+      let(:event_action) { :project_action }
     end
+
+    it_behaves_like "it records a git write event"
 
     it_behaves_like 'Snowplow event tracking with RedisHLL context' do
       let(:category) { described_class.to_s }
@@ -400,16 +414,17 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
+        let(:event_action) { :design_action }
       end
+
+      it_behaves_like "it records a git write event"
 
       describe 'Snowplow tracking' do
         let(:project) { design.project }
         let(:namespace) { project.namespace }
         let(:category) { described_class.name }
-        let(:property) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s }
+        let(:property) { :design_action.to_s }
         let(:label) { ::EventCreateService::DEGIGN_EVENT_LABEL }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
 
         context 'for create event' do
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
@@ -448,8 +463,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like "it records the event in the event counter" do
-        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
+        let(:event_action) { :design_action }
       end
+
+      it_behaves_like "it records a git write event"
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject(:design_service) { service.destroy_designs([design], author) }
@@ -459,9 +476,8 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:category) { described_class.name }
         let(:action) { 'destroy' }
         let(:user) { author }
-        let(:property) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s }
+        let(:property) { :design_action.to_s }
         let(:label) { ::EventCreateService::DEGIGN_EVENT_LABEL }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end
     end
   end
@@ -471,7 +487,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
     let(:note) { create(:note) }
     let(:author) { create(:user) }
-    let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+    let(:event_action) { :merge_request_action }
 
     it { expect(leave_note).to be_truthy }
 
@@ -485,7 +501,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       it_behaves_like "it records the event in the event counter"
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:note) { create(:diff_note_on_merge_request) }
         let(:category) { described_class.name }
         let(:action) { 'commented' }
@@ -502,10 +517,9 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
     context 'when it is not a diff note' do
       it 'does not change the unique action counter' do
-        counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-        tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
+        tracking_params = { event_names: event_action, start_date: Date.yesterday, end_date: Date.today }
 
-        expect { subject }.not_to change { counter_class.count_unique_events(**tracking_params) }
+        expect { subject }.not_to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
       end
     end
   end

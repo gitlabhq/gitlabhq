@@ -6,10 +6,6 @@ import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 describe('modal copy button', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     wrapper = shallowMount(ModalCopyButton, {
       propsData: {
@@ -17,14 +13,7 @@ describe('modal copy button', () => {
         title: 'Copy this value',
         id: 'test-id',
       },
-      slots: {
-        default: 'test',
-      },
     });
-  });
-
-  it('should show the default slot', () => {
-    expect(wrapper.text()).toBe('test');
   });
 
   describe('clipboard', () => {

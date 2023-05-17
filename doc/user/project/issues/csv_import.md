@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -36,8 +36,8 @@ To import issues:
 
 1. Go to your project's Issues list page.
 1. Open the import feature, depending if the project has issues:
-   - Existing issues are present: Select the import icon in the upper right, next to **Edit issues**.
-   - Project has no issues: Select **Import CSV** in the middle of the page.
+   - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** (**{ellipsis_v}**) **> Import CSV**.
+   - The project has no issues: in the middle of the page, select **Import CSV**.
 1. Select the file you want to import, and then select **Import issues**.
 
 The file is processed in the background, and a notification email is sent

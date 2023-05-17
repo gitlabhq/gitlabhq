@@ -4,10 +4,9 @@ import ConfirmDialog from '~/ci/pipeline_editor/components/ui/confirm_unsaved_ch
 describe('pipeline_editor/components/ui/confirm_unsaved_changes_dialog', () => {
   let beforeUnloadEvent;
   let setDialogContent;
-  let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(ConfirmDialog, {
+    shallowMount(ConfirmDialog, {
       propsData,
     });
   };
@@ -21,7 +20,6 @@ describe('pipeline_editor/components/ui/confirm_unsaved_changes_dialog', () => {
   afterEach(() => {
     beforeUnloadEvent.preventDefault.mockRestore();
     setDialogContent.mockRestore();
-    wrapper.destroy();
   });
 
   it('shows confirmation dialog when there are unsaved changes', () => {

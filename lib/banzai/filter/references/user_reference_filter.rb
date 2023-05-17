@@ -139,11 +139,7 @@ module Banzai
         end
 
         def team_member?(user)
-          if parent_group?
-            parent.member?(user)
-          else
-            parent.team.member?(user)
-          end
+          parent.member?(user)
         end
 
         def parent_url(link_content, author)

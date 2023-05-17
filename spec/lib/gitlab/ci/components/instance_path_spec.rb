@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
 
   let(:path) { described_class.new(address: address, content_filename: 'template.yml') }
-  let(:settings) { Settingslogic.new({ 'component_fqdn' => current_host }) }
+  let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => current_host }) }
   let(:current_host) { 'acme.com/' }
 
   before do
@@ -95,6 +95,37 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
       it 'returns nil when fetching the content' do
         expect(path.fetch_content!(current_user: user)).to be_nil
+      end
+    end
+
+    context 'when version is `~latest`' do
+      let(:version) { '~latest' }
+
+      context 'when project is a catalog resource' do
+        before do
+          create(:catalog_resource, project: existing_project)
+        end
+
+        context 'when project has releases' do
+          let_it_be(:releases) do
+            [
+              create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now - 1.day),
+              create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now)
+            ]
+          end
+
+          it 'returns the sha of the latest release' do
+            expect(path.sha).to eq(releases.last.sha)
+          end
+        end
+
+        context 'when project does not have releases' do
+          it { expect(path.sha).to be_nil }
+        end
+      end
+
+      context 'when project is not a catalog resource' do
+        it { expect(path.sha).to be_nil }
       end
     end
 

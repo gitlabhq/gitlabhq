@@ -1,7 +1,16 @@
 <script>
 import { GlToggle, GlAlert } from '@gitlab/ui';
+import { sprintf } from '~/locale';
 import { updateGroup } from '~/api/groups_api';
-import { I18N_UPDATE_ERROR_MESSAGE, I18N_REFRESH_MESSAGE } from '../constants';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import {
+  I18N_CONFIRM_MESSAGE,
+  I18N_CONFIRM_OK,
+  I18N_CONFIRM_CANCEL,
+  I18N_CONFIRM_TITLE,
+  I18N_UPDATE_ERROR_MESSAGE,
+  I18N_REFRESH_MESSAGE,
+} from '../constants';
 
 export default {
   components: {
@@ -10,6 +19,8 @@ export default {
   },
   inject: [
     'groupId',
+    'groupName',
+    'groupIsEmpty',
     'sharedRunnersSetting',
     'parentSharedRunnersSetting',
     'runnerEnabledValue',
@@ -39,9 +50,28 @@ export default {
     },
   },
   methods: {
-    onSharedRunnersToggle(value) {
-      const newSetting = value ? this.runnerEnabledValue : this.runnerDisabledValue;
-      this.updateSetting(newSetting);
+    async onSharedRunnersToggle(enabled) {
+      if (enabled) {
+        this.updateSetting(this.runnerEnabledValue);
+        return;
+      }
+      if (this.groupIsEmpty) {
+        this.updateSetting(this.runnerDisabledValue);
+        return;
+      }
+
+      // Confirm when disabling for a group with subgroups or projects
+      const confirmDisabled = await confirmAction(I18N_CONFIRM_MESSAGE, {
+        title: sprintf(I18N_CONFIRM_TITLE, { groupName: this.groupName }),
+        cancelBtnText: I18N_CONFIRM_CANCEL,
+        primaryBtnText: I18N_CONFIRM_OK,
+        primaryBtnVariant: 'danger',
+        size: 'md',
+      });
+
+      if (confirmDisabled) {
+        this.updateSetting(this.runnerDisabledValue);
+      }
     },
     onOverrideToggle(value) {
       const newSetting = value ? this.runnerAllowOverrideValue : this.runnerDisabledValue;

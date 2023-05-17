@@ -22,10 +22,6 @@ describe('File finder item spec', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders file name & path', () => {
     createComponent();
 
@@ -40,7 +36,7 @@ describe('File finder item spec', () => {
       expect(wrapper.classes()).toContain('is-focused');
     });
 
-    it('does not have is-focused class when not focused', async () => {
+    it('does not have is-focused class when not focused', () => {
       createComponent({ focused: false });
 
       expect(wrapper.classes()).not.toContain('is-focused');
@@ -54,13 +50,13 @@ describe('File finder item spec', () => {
       expect(wrapper.find('.diff-changed-stats').exists()).toBe(false);
     });
 
-    it('renders when a changed file', async () => {
+    it('renders when a changed file', () => {
       createComponent({ file: { changed: true } });
 
       expect(wrapper.find('.diff-changed-stats').exists()).toBe(true);
     });
 
-    it('renders when a temp file', async () => {
+    it('renders when a temp file', () => {
       createComponent({ file: { tempFile: true } });
 
       expect(wrapper.find('.diff-changed-stats').exists()).toBe(true);
@@ -84,7 +80,7 @@ describe('File finder item spec', () => {
       expect(findChangedFilePath().findAll('.highlighted')).toHaveLength(4);
     });
 
-    it('adds ellipsis to long text', async () => {
+    it('adds ellipsis to long text', () => {
       const path = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
@@ -105,7 +101,7 @@ describe('File finder item spec', () => {
       expect(findChangedFileName().findAll('.highlighted')).toHaveLength(4);
     });
 
-    it('does not add ellipsis to long text', async () => {
+    it('does not add ellipsis to long text', () => {
       const name = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)

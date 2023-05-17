@@ -14,6 +14,7 @@ module BulkImports
     belongs_to :group, optional: true
 
     has_one :upload, class_name: 'BulkImports::ExportUpload'
+    has_many :batches, class_name: 'BulkImports::ExportBatch'
 
     validates :project, presence: true, unless: :group
     validates :group, presence: true, unless: :project
@@ -32,6 +33,7 @@ module BulkImports
 
       event :finish do
         transition started: :finished
+        transition finished: :finished
         transition failed: :failed
       end
 

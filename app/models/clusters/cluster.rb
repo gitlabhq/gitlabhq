@@ -11,18 +11,8 @@ module Clusters
 
     self.table_name = 'clusters'
 
-    APPLICATIONS = {
-      Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
-      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
-      Clusters::Applications::Crossplane.application_name => Clusters::Applications::Crossplane,
-      Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
-      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
-      Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
-      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative
-    }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
-    APPLICATIONS_ASSOCIATIONS = APPLICATIONS.values.map(&:association_name).freeze
 
     self.reactive_cache_work_type = :external_dependency
 
@@ -54,14 +44,6 @@ module Clusters
       has_one application.association_name, class_name: application.to_s, inverse_of: :cluster # rubocop:disable Rails/ReflectionClassName
     end
 
-    has_one_cluster_application :helm
-    has_one_cluster_application :ingress
-    has_one_cluster_application :crossplane
-    has_one_cluster_application :prometheus
-    has_one_cluster_application :runner
-    has_one_cluster_application :jupyter
-    has_one_cluster_application :knative
-
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
 
@@ -87,9 +69,6 @@ module Clusters
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-
-    delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
-    delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
     alias_attribute :base_domain, :domain
     alias_attribute :provided_by_user?, :user?
@@ -123,7 +102,6 @@ module Clusters
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
 
     scope :managed, -> { where(managed: true) }
-    scope :with_persisted_applications, -> { eager_load(*APPLICATIONS_ASSOCIATIONS) }
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
     scope :with_management_project, -> { where.not(management_project: nil) }
 
@@ -232,24 +210,6 @@ module Clusters
       connection_data.merge(Gitlab::Kubernetes::Node.new(self).all)
     end
 
-    def persisted_applications
-      APPLICATIONS_ASSOCIATIONS.filter_map { |association_name| public_send(association_name) } # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    def applications
-      APPLICATIONS.each_value.map do |application_class|
-        find_or_build_application(application_class)
-      end
-    end
-
-    def find_or_build_application(application_class)
-      raise ArgumentError, "#{application_class} is not in APPLICATIONS" unless APPLICATIONS.value?(application_class)
-
-      association_name = application_class.association_name
-
-      public_send(association_name) || public_send("build_#{association_name}") # rubocop:disable GitlabSecurity/PublicSend
-    end
-
     def find_or_build_integration_prometheus
       integration_prometheus || build_integration_prometheus
     end
@@ -268,18 +228,6 @@ module Clusters
 
     def platform_kubernetes_rbac?
       !!platform_kubernetes&.rbac?
-    end
-
-    def application_helm_available?
-      !!application_helm&.available?
-    end
-
-    def application_ingress_available?
-      !!application_ingress&.available?
-    end
-
-    def application_knative_available?
-      !!application_knative&.available?
     end
 
     def integration_prometheus_available?
@@ -362,12 +310,6 @@ module Clusters
         instance
       else
         raise NotImplementedError
-      end
-    end
-
-    def serverless_domain
-      strong_memoize(:serverless_domain) do
-        self.application_knative&.serverless_domain_cluster
       end
     end
 

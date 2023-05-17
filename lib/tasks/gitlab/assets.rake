@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'fileutils'
-
 module Tasks
   module Gitlab
     module Assets
@@ -17,6 +15,13 @@ module Tasks
         yarn.lock
         babel.config.js
         config/webpack.config.js
+      ].freeze
+      # Ruby gems might emit assets which have an impact on compilation
+      # or have a direct impact on asset compilation (e.g. scss) and therefore
+      # we should compile when these change
+      RAILS_ASSET_FILES = %w[
+        Gemfile
+        Gemfile.lock
       ].freeze
       EXCLUDE_PATTERNS = %w[
         app/assets/javascripts/locale/**/app.js
@@ -50,6 +55,9 @@ module Tasks
         Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
       end
 
+      # Files listed here should match the list in:
+      # .assets-compilation-patterns in .gitlab/ci/rules.gitlab-ci.yml
+      # So we make sure that any impacting changes we do rebuild cache
       def self.assets_impacting_compilation
         assets_folders = FOSS_ASSET_FOLDERS
         assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
@@ -57,6 +65,7 @@ module Tasks
 
         asset_files = Dir.glob(JS_ASSET_PATTERNS)
         asset_files += JS_ASSET_FILES
+        asset_files += RAILS_ASSET_FILES
 
         assets_folders.each do |folder|
           asset_files.concat(Dir.glob(["#{folder}/**/*.*"]))
@@ -78,6 +87,8 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Compile all frontend assets'
     task :compile do
+      require 'fileutils'
+
       require_dependency 'gitlab/task_helpers'
 
       puts "Assets SHA256 for `master`: #{Tasks::Gitlab::Assets.master_assets_sha256.inspect}"
@@ -86,9 +97,9 @@ namespace :gitlab do
       if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
         FileUtils.rm_rf([Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR] + Dir.glob('app/assets/javascripts/locale/**/app.js'))
 
-        # gettext:po_to_json needs to run before rake:assets:precompile because
+        # gettext:compile needs to run before rake:assets:precompile because
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
-        Gitlab::TaskHelpers.invoke_and_time_task('gettext:po_to_json')
+        Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

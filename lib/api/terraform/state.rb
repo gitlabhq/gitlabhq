@@ -28,18 +28,16 @@ module API
 
         increment_unique_values('p_terraform_state_api_unique_users', current_user.id)
 
-        if Feature.enabled?(:route_hll_to_snowplow_phase2, user_project&.namespace)
-          Gitlab::Tracking.event(
-            'API::Terraform::State',
-            'terraform_state_api_request',
-            namespace: user_project&.namespace,
-            user: current_user,
-            project: user_project,
-            label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
-            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                               event: 'p_terraform_state_api_unique_users').to_context]
-          )
-        end
+        Gitlab::Tracking.event(
+          'API::Terraform::State',
+          'terraform_state_api_request',
+          namespace: user_project&.namespace,
+          user: current_user,
+          project: user_project,
+          label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                             event: 'p_terraform_state_api_unique_users').to_context]
+        )
       end
 
       params do
@@ -56,17 +54,6 @@ module API
           helpers do
             def remote_state_handler
               ::Terraform::RemoteStateHandler.new(user_project, current_user, name: params[:name], lock_id: params[:ID])
-            end
-
-            def not_found_for_dots?
-              Feature.disabled?(:allow_dots_on_tf_state_names) && params[:name].include?(".")
-            end
-
-            # Change the state name to behave like before, https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105674
-            # has been introduced. This behavior can be controlled via `allow_dots_on_tf_state_names` FF.
-            # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106861
-            def legacy_state_name!
-              params[:name] = params[:name].split('.').first
             end
           end
 
@@ -85,8 +72,6 @@ module API
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           get do
-            legacy_state_name! if not_found_for_dots?
-
             remote_state_handler.find_with_lock do |state|
               no_content! unless state.latest_file && state.latest_file.exists?
 
@@ -111,7 +96,6 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           post do
             authorize! :admin_terraform_state, user_project
-            legacy_state_name! if not_found_for_dots?
 
             data = request.body.read
             no_content! if data.empty?
@@ -140,7 +124,6 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           delete do
             authorize! :admin_terraform_state, user_project
-            legacy_state_name! if not_found_for_dots?
 
             remote_state_handler.find_with_lock do |state|
               ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
@@ -172,8 +155,6 @@ module API
             requires :Path, type: String, desc: 'Terraform path'
           end
           post '/lock' do
-            not_found! if not_found_for_dots?
-
             authorize! :admin_terraform_state, user_project
 
             status_code = :ok
@@ -217,8 +198,6 @@ module API
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
           end
           delete '/lock' do
-            not_found! if not_found_for_dots?
-
             authorize! :admin_terraform_state, user_project
 
             remote_state_handler.unlock!

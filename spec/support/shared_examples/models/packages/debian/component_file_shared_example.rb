@@ -20,7 +20,6 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
   let_it_be(:component_file_other_architecture, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_2) }
   let_it_be(:component_file_other_component, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_2, architecture: architecture1_1) }
   let_it_be(:component_file_other_compression_type, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, compression_type: :xz) }
-  let_it_be(:component_file_other_file_md5, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_md5: 'other_md5') }
   let_it_be(:component_file_other_file_sha256, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_sha256: 'other_sha256') }
   let_it_be(:component_file_other_container, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component2_1, architecture: architecture2_1) }
   let_it_be_with_refind(:component_file_with_file_type_sources) { create("debian_#{container_type}_component_file", :sources, component: component1_1) }
@@ -98,10 +97,6 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
 
     describe '#file_store' do
       it { is_expected.to validate_presence_of(:file_store) }
-    end
-
-    describe '#file_md5' do
-      it { is_expected.to validate_presence_of(:file_md5) }
     end
 
     describe '#file_sha256' do
@@ -229,6 +224,22 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { component_file_other_compression_type.relative_path }
 
       it { is_expected.to eq("#{component1_1.name}/binary-#{architecture1_1.name}/Packages.xz") }
+    end
+  end
+
+  describe '#empty?' do
+    subject { component_file_with_architecture.empty? }
+
+    context 'with a non-empty component' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with an empty component' do
+      before do
+        component_file_with_architecture.update! size: 0
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 end

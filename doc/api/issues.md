@@ -182,7 +182,7 @@ Example response:
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 [
@@ -195,7 +195,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -213,7 +213,7 @@ Issues created by users on GitLab Premium or higher include the `epic` property:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `iteration` property:
+Issues created by users on GitLab Premium or Ultimate include the `iteration` property:
 
 ```json
 {
@@ -409,7 +409,7 @@ Example response:
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 [
@@ -422,7 +422,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -619,7 +619,7 @@ Example response:
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 [
@@ -632,7 +632,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 ]
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -781,7 +781,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -792,7 +792,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -941,7 +941,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -952,7 +952,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -1090,7 +1090,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -1101,7 +1101,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -1267,7 +1267,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -1278,7 +1278,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -1452,7 +1452,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -1463,7 +1463,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {
@@ -1704,7 +1704,7 @@ Example response:
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `weight` property:
+Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
 {
@@ -1715,7 +1715,7 @@ Issues created by users on GitLab Premium or higher include the `weight` propert
 }
 ```
 
-Issues created by users on GitLab Premium or higher include the `epic` property:
+Issues created by users on GitLab Premium or Ultimate include the `epic` property:
 
 ```json
 {

@@ -222,6 +222,10 @@ export default {
         position: 0,
       }
       const nonReactive = {
+        // FIXME: replace with markRaw in Vue3
+        // See https://gitlab.com/gitlab-org/gitlab/-/issues/395772
+        __v_skip: true,
+        
         id: uid++,
         index,
         used: true,

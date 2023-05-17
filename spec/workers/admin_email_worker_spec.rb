@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AdminEmailWorker do
+RSpec.describe AdminEmailWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
   describe '.perform' do

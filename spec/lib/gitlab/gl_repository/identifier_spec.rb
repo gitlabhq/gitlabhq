@@ -68,10 +68,12 @@ RSpec.describe Gitlab::GlRepository::Identifier do
   end
 
   describe 'design' do
+    let(:design_repository_container) { project.design_repository.container }
+
     it_behaves_like 'parsing gl_repository identifier' do
       let(:record_id) { project.id }
-      let(:identifier) { "design-#{project.id}" }
-      let(:expected_container) { project }
+      let(:identifier) { "design-#{design_repository_container.id}" }
+      let(:expected_container) { design_repository_container }
       let(:expected_type) { Gitlab::GlRepository::DESIGN }
     end
   end

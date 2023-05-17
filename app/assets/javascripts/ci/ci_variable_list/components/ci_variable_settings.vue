@@ -9,6 +9,10 @@ export default {
     CiVariableModal,
   },
   props: {
+    areEnvironmentsLoading: {
+      type: Boolean,
+      required: true,
+    },
     areScopedVariablesAvailable: {
       type: Boolean,
       required: false,
@@ -37,6 +41,10 @@ export default {
       type: Number,
       required: false,
       default: 0,
+    },
+    pageInfo: {
+      type: Object,
+      required: true,
     },
     variables: {
       type: Array,
@@ -87,11 +95,16 @@ export default {
         :entity="entity"
         :is-loading="isLoading"
         :max-variable-limit="maxVariableLimit"
+        :page-info="pageInfo"
         :variables="variables"
+        @handle-prev-page="$emit('handle-prev-page')"
+        @handle-next-page="$emit('handle-next-page')"
         @set-selected-variable="setSelectedVariable"
+        @sort-changed="(val) => $emit('sort-changed', val)"
       />
       <ci-variable-modal
         v-if="showModal"
+        :are-environments-loading="areEnvironmentsLoading"
         :are-scoped-variables-available="areScopedVariablesAvailable"
         :environments="environments"
         :hide-environment-scope="hideEnvironmentScope"
@@ -102,6 +115,7 @@ export default {
         @delete-variable="deleteVariable"
         @hideModal="hideModal"
         @update-variable="updateVariable"
+        @search-environment-scope="$emit('search-environment-scope', $event)"
       />
     </div>
   </div>

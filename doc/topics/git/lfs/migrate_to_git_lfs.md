@@ -35,7 +35,7 @@ The method described on this guide rewrites Git history. Make
 sure to back up your repository before beginning and use it at your
 own risk.
 
-## Requirements
+## Prerequisites
 
 Before beginning, make sure:
 
@@ -161,7 +161,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    expand **Protected branches**.
    1. Select the default branch from the **Branch** dropdown list,
    and set up the
-   **Allowed to push** and **Allowed to merge** rules.
+   **Allowed to push and merge** and **Allowed to merge** rules.
    1. Select **Protect**.
 
 <!-- ## Troubleshooting

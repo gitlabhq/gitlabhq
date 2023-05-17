@@ -44,7 +44,7 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
       end
 
       let_it_be(:deployment_success) do
-        create(:deployment, :success, environment: environment, deployable: build)
+        create(:deployment, :success, environment: environment, deployable: build, finished_at: 1.hour.since)
       end
 
       let_it_be(:deployment_failed) do

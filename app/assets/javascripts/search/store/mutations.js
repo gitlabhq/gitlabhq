@@ -24,7 +24,7 @@ export default {
     state.projects = [];
   },
   [types.SET_QUERY](state, { key, value }) {
-    state.query[key] = value;
+    state.query = { ...state.query, [key]: value };
   },
   [types.SET_SIDEBAR_DIRTY](state, value) {
     state.sidebarDirty = value;

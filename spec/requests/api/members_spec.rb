@@ -130,6 +130,8 @@ RSpec.describe API::Members, feature_category: :subgroups do
     let(:project_user) { create(:user) }
     let(:linked_group_user) { create(:user) }
     let!(:project_group_link) { create(:project_group_link, project: project, group: linked_group) }
+    let(:invited_group_developer) { create(:user, username: 'invited_group_developer') }
+    let(:invited_group) { create(:group) { |group| group.add_developer(invited_group_developer) } }
 
     let(:project) do
       create(:project, :public, group: nested_group) do |project|
@@ -146,19 +148,21 @@ RSpec.describe API::Members, feature_category: :subgroups do
     let(:nested_group) do
       create(:group, parent: group) do |nested_group|
         nested_group.add_developer(nested_user)
+        create(:group_group_link, :guest, shared_with_group: invited_group, shared_group: nested_group)
       end
     end
 
-    it 'finds all project members including inherited members' do
+    it 'finds all project members including inherited members and members shared into ancestor groups' do
       get api("/projects/#{project.id}/members/all", developer)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
+      expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id, invited_group_developer.id]
+      expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
     end
 
-    it 'returns only one member for each user without returning duplicated members' do
+    it 'returns only one member for each user without returning duplicated members with correct access levels' do
       linked_group.add_developer(developer)
 
       get api("/projects/#{project.id}/members/all", developer)
@@ -172,7 +176,8 @@ RSpec.describe API::Members, feature_category: :subgroups do
         [maintainer.id, Gitlab::Access::OWNER],
         [nested_user.id, Gitlab::Access::DEVELOPER],
         [project_user.id, Gitlab::Access::DEVELOPER],
-        [linked_group_user.id, Gitlab::Access::DEVELOPER]
+        [linked_group_user.id, Gitlab::Access::DEVELOPER],
+        [invited_group_developer.id, Gitlab::Access::GUEST]
       ]
       expect(json_response.map { |u| [u['id'], u['access_level']] }).to match_array(expected_users_and_access_levels)
     end
@@ -183,7 +188,8 @@ RSpec.describe API::Members, feature_category: :subgroups do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id]
+      expected_user_ids = [maintainer.id, developer.id, nested_user.id, invited_group_developer.id]
+      expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
     end
 
     context 'with a subgroup' do
@@ -737,6 +743,30 @@ RSpec.describe API::Members, feature_category: :subgroups do
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.members.count }.by(-1)
+        end
+
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :member_delete do
+          let(:current_user) { maintainer }
+
+          let(:another_member) { create(:user) }
+
+          before do
+            source.add_developer(another_member)
+          end
+
+          # We rate limit scoped by the group / project
+          let(:delete_paths) do
+            [
+              api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
+              api("/#{source_type.pluralize}/#{source.id}/members/#{another_member.id}", maintainer)
+            ]
+          end
+
+          def request
+            delete_member_path = delete_paths.shift
+
+            delete delete_member_path
+          end
         end
 
         it_behaves_like '412 response' do

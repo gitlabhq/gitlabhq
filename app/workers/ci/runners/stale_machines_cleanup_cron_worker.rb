@@ -15,7 +15,7 @@ module Ci
       idempotent!
 
       def perform
-        result = ::Ci::Runners::StaleMachinesCleanupService.new.execute
+        result = ::Ci::Runners::StaleManagersCleanupService.new.execute
         log_extra_metadata_on_done(:status, result.status)
         log_hash_metadata_on_done(result.payload)
       end

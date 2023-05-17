@@ -17,7 +17,7 @@ exports[`Expand button on click when short text is provided renders button after
       role="img"
     >
       <use
-        href="#ellipsis_h"
+        href="file-mock#ellipsis_h"
       />
     </svg>
       
@@ -47,7 +47,7 @@ exports[`Expand button on click when short text is provided renders button after
       role="img"
     >
       <use
-        href="#ellipsis_h"
+        href="file-mock#ellipsis_h"
       />
     </svg>
       
@@ -72,7 +72,7 @@ exports[`Expand button when short text is provided renders button before text 1`
       role="img"
     >
       <use
-        href="#ellipsis_h"
+        href="file-mock#ellipsis_h"
       />
     </svg>
       
@@ -102,7 +102,7 @@ exports[`Expand button when short text is provided renders button before text 1`
       role="img"
     >
       <use
-        href="#ellipsis_h"
+        href="file-mock#ellipsis_h"
       />
     </svg>
       

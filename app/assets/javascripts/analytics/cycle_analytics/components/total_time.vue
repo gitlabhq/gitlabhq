@@ -14,9 +14,7 @@ export default {
       return Object.keys(this.time).length;
     },
     calculatedTime() {
-      const {
-        time: { days = null, mins = null, hours = null, seconds = null },
-      } = this;
+      const { days = null, mins = null, hours = null, seconds = null } = this.time;
 
       if (days) {
         return {

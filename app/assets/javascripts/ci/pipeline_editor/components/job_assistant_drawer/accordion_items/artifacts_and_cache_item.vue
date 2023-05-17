@@ -1,0 +1,104 @@
+<script>
+import { GlAccordionItem, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
+import { get, toPath } from 'lodash';
+import { i18n } from '../constants';
+
+export default {
+  i18n,
+  components: {
+    GlFormGroup,
+    GlAccordionItem,
+    GlFormInput,
+    GlButton,
+  },
+  props: {
+    job: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    formOptions() {
+      return [
+        {
+          key: 'artifacts.paths',
+          title: i18n.ARTIFACTS_AND_CACHE,
+          paths: this.job.artifacts.paths,
+          generateInputDataTestId: (index) => `artifacts-paths-input-${index}`,
+          generateDeleteButtonDataTestId: (index) => `delete-artifacts-paths-button-${index}`,
+          addButtonDataTestId: 'add-artifacts-paths-button',
+        },
+        {
+          key: 'artifacts.exclude',
+          title: i18n.ARTIFACTS_EXCLUDE_PATHS,
+          paths: this.job.artifacts.exclude,
+          generateInputDataTestId: (index) => `artifacts-exclude-input-${index}`,
+          generateDeleteButtonDataTestId: (index) => `delete-artifacts-exclude-button-${index}`,
+          addButtonDataTestId: 'add-artifacts-exclude-button',
+        },
+        {
+          key: 'cache.paths',
+          title: i18n.CACHE_PATHS,
+          paths: this.job.cache.paths,
+          generateInputDataTestId: (index) => `cache-paths-input-${index}`,
+          generateDeleteButtonDataTestId: (index) => `delete-cache-paths-button-${index}`,
+          addButtonDataTestId: 'add-cache-paths-button',
+        },
+      ];
+    },
+  },
+  methods: {
+    deleteStringArrayItem(path) {
+      const parentPath = toPath(path).slice(0, -1);
+      const array = get(this.job, parentPath);
+      if (array.length <= 1) {
+        return;
+      }
+      this.$emit('update-job', path);
+    },
+  },
+};
+</script>
+<template>
+  <gl-accordion-item :title="$options.i18n.ARTIFACTS_AND_CACHE">
+    <div v-for="entry in formOptions" :key="entry.key" class="form-group">
+      <div class="gl-display-flex">
+        <label class="gl-font-weight-bold gl-mb-3">{{ entry.title }}</label>
+      </div>
+      <div
+        v-for="(path, index) in entry.paths"
+        :key="index"
+        class="gl-display-flex gl-align-items-center gl-mb-3"
+      >
+        <div class="gl-flex-grow-1 gl-flex-basis-0 gl-mr-3">
+          <gl-form-input
+            class="gl-w-full!"
+            :value="path"
+            :data-testid="entry.generateInputDataTestId(index)"
+            @input="$emit('update-job', `${entry.key}[${index}]`, $event)"
+          />
+        </div>
+        <gl-button
+          category="tertiary"
+          icon="remove"
+          :data-testid="entry.generateDeleteButtonDataTestId(index)"
+          @click="deleteStringArrayItem(`${entry.key}[${index}]`)"
+        />
+      </div>
+      <gl-button
+        category="secondary"
+        variant="confirm"
+        :data-testid="entry.addButtonDataTestId"
+        @click="$emit('update-job', `${entry.key}[${entry.paths.length}]`, '')"
+        >{{ $options.i18n.ADD_PATH }}</gl-button
+      >
+    </div>
+    <gl-form-group :label="$options.i18n.CACHE_KEY">
+      <gl-form-input
+        :value="job.cache.key"
+        data-testid="cache-key-input"
+        @input="$emit('update-job', 'cache.key', $event)"
+      />
+    </gl-form-group>
+  </gl-accordion-item>
+</template>

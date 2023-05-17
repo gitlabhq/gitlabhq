@@ -17,6 +17,11 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
         let(:amount) { 10 }
         let(:increment) { Gitlab::Counters::Increment.new(amount: amount, ref: 3) }
         let(:counter_key) { model.counter(attribute).key }
+        let(:returns_current) do
+          model.class.counter_attributes
+               .find { |a| a[:attribute] == attribute }
+               .fetch(:returns_current, false)
+        end
 
         subject { model.increment_counter(attribute, increment) }
 
@@ -58,6 +63,33 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
                 .and_call_original
 
               subject
+            end
+          end
+
+          describe '#increment_amount' do
+            it 'increases the egress in cache' do
+              model.increment_amount(attribute, 3)
+
+              expect(model.counter(attribute).get).to eq(3)
+            end
+          end
+
+          describe '#current_counter' do
+            let(:data_transfer_node) do
+              args = { project: project }
+              args[attribute] = 2
+              create(:project_data_transfer, **args)
+            end
+
+            it 'increases the amount in cache' do
+              if returns_current
+                incremented_by = 4
+                db_state = model.read_attribute(attribute)
+
+                model.send("increment_#{attribute}".to_sym, incremented_by)
+
+                expect(model.send(attribute)).to eq(db_state + incremented_by)
+              end
             end
           end
 
@@ -155,14 +187,24 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
   end
 
   describe '#update_counters_with_lease' do
-    let(:increments) { { build_artifacts_size: 1, packages_size: 2 } }
+    let_it_be(:first_attribute) { counter_attributes.first }
+    let_it_be(:second_attribute) { counter_attributes.second }
+
+    let_it_be(:increments) do
+      increments_hash = {}
+
+      increments_hash[first_attribute] = 1
+      increments_hash[second_attribute] = 2
+
+      increments_hash
+    end
 
     subject { model.update_counters_with_lease(increments) }
 
     it 'updates counters of the record' do
       expect { subject }
-        .to change { model.reload.build_artifacts_size }.by(1)
-        .and change { model.reload.packages_size }.by(2)
+        .to change { model.reload.send(first_attribute) }.by(1)
+        .and change { model.reload.send(second_attribute) }.by(2)
     end
 
     it_behaves_like 'obtaining lease to update database' do
@@ -191,19 +233,6 @@ RSpec.shared_examples 'obtaining lease to update database' do
       expect(Gitlab::AppLogger).to receive(:warn).once
 
       expect { subject }.not_to raise_error
-    end
-  end
-
-  context 'when feature flag counter_attribute_db_lease_for_update is disabled' do
-    before do
-      stub_feature_flags(counter_attribute_db_lease_for_update: false)
-      allow(model).to receive(:in_lock).and_call_original
-    end
-
-    it 'does not attempt to get a lock' do
-      expect(model).not_to receive(:in_lock)
-
-      subject
     end
   end
 end

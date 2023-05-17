@@ -10,8 +10,7 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_categ
         mode: :per_attribute_iv,
         key: ::Settings.attr_encrypted_db_key_base_32,
         algorithm: 'aes-256-gcm',
-        encode: false,
-        encode_iv: false
+        encode: false
     end
   end
 
@@ -52,6 +51,7 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_categ
     already_encrypted_token = Ci::Trigger.find(with_encryption.id)
     expect(already_encrypted_token.encrypted_token).to eq(with_encryption.encrypted_token)
     expect(already_encrypted_token.encrypted_token_iv).to eq(with_encryption.encrypted_token_iv)
+    expect(already_encrypted_token.token).to eq(already_encrypted_token.encrypted_token_tmp)
     expect(with_encryption.token).to eq(with_encryption.encrypted_token_tmp)
   end
 end

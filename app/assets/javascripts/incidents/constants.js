@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import { s__ } from '~/locale';
 
 export const I18N = {
@@ -44,7 +43,6 @@ export const ESCALATION_STATUSES = {
   RESOLVED: s__('AlertManagement|Resolved'),
 };
 
-export const DEFAULT_PAGE_SIZE = 20;
 export const TH_CREATED_AT_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 export const TH_SEVERITY_TEST_ID = { 'data-testid': 'incident-management-severity-sort' };
 export const TH_ESCALATION_STATUS_TEST_ID = { 'data-testid': 'incident-management-status-sort' };
@@ -52,11 +50,13 @@ export const TH_INCIDENT_SLA_TEST_ID = { 'data-testid': 'incident-management-sla
 export const TH_PUBLISHED_TEST_ID = { 'data-testid': 'incident-management-published-sort' };
 export const INCIDENT_DETAILS_PATH = 'incident';
 
+const category = 'Incident Management'; // eslint-disable-line @gitlab/require-i18n-strings
+
 /**
  * Tracks snowplow event when user clicks create new incident
  */
 export const trackIncidentCreateNewOptions = {
-  category: 'Incident Management',
+  category,
   action: 'create_incident_button_clicks',
 };
 
@@ -64,7 +64,7 @@ export const trackIncidentCreateNewOptions = {
  * Tracks snowplow event when user views incidents list
  */
 export const trackIncidentListViewsOptions = {
-  category: 'Incident Management',
+  category,
   action: 'view_incidents_list',
 };
 
@@ -72,6 +72,6 @@ export const trackIncidentListViewsOptions = {
  * Tracks snowplow event when user views incident details
  */
 export const trackIncidentDetailsViewsOptions = {
-  category: 'Incident Management',
+  category,
   action: 'view_incident_details',
 };

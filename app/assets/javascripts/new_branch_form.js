@@ -10,12 +10,12 @@ export default class NewBranchForm {
   }
 
   addBinding() {
-    this.name.addEventListener('blur', this.validate);
+    this.name.addEventListener('change', this.validate);
   }
 
   init() {
     if (this.name != null && this.name.value.length > 0) {
-      const event = new CustomEvent('blur');
+      const event = new CustomEvent('change');
       this.name.dispatchEvent(event);
     }
   }
@@ -77,6 +77,7 @@ export default class NewBranchForm {
     const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
       this.branchNameError.textContent = errors.join(', ');
+      this.name.focus();
     }
   }
 }

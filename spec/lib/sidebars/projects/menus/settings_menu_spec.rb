@@ -22,6 +22,12 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
     end
   end
 
+  describe '#separated?' do
+    it 'returns true' do
+      expect(subject.separated?).to be true
+    end
+  end
+
   describe 'Menu items' do
     subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
 

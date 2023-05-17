@@ -2,9 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Chat', feature_category: :user_profile do
-  let(:user) { create(:user) }
-  let(:integration) { create(:integration) }
+RSpec.describe 'Profile > Chat', feature_category: :integrations do
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -12,7 +11,12 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
 
   describe 'uses authorization link' do
     let(:params) do
-      { team_id: 'T00', team_domain: 'my_chat_team', user_id: 'U01', user_name: 'my_chat_user' }
+      {
+        team_id: 'f1924a8db44ff3bb41c96424cdc20676',
+        team_domain: 'my_chat_team',
+        user_id: 'ay5sq51sebfh58ktrce5ijtcwy',
+        user_name: 'my_chat_user'
+      }
     end
 
     let!(:authorize_url) { ChatNames::AuthorizeUserService.new(params).execute }
@@ -20,6 +24,36 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
 
     before do
       visit authorize_path
+    end
+
+    it 'names the Mattermost integration correctly' do
+      expect(page).to have_content(
+        'An application called Mattermost slash commands is requesting access to your GitLab account'
+      )
+      expect(page).to have_content('Authorize Mattermost slash commands')
+    end
+
+    context 'when params are of the GitLab for Slack app' do
+      let(:params) do
+        { team_id: 'T00', team_domain: 'my_chat_team', user_id: 'U01', user_name: 'my_chat_user' }
+      end
+
+      shared_examples 'names the GitLab for Slack app integration correctly' do
+        specify do
+          expect(page).to have_content(
+            'An application called GitLab for Slack app is requesting access to your GitLab account'
+          )
+          expect(page).to have_content('Authorize GitLab for Slack app')
+        end
+      end
+
+      include_examples 'names the GitLab for Slack app integration correctly'
+
+      context 'with a Slack enterprise-enabled team' do
+        let(:params) { super().merge(user_id: 'W01') }
+
+        include_examples 'names the GitLab for Slack app integration correctly'
+      end
     end
 
     context 'clicks authorize' do
@@ -60,7 +94,7 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
   end
 
   describe 'visits chat accounts' do
-    let!(:chat_name) { create(:chat_name, user: user, integration: integration) }
+    let_it_be(:chat_name) { create(:chat_name, user: user) }
 
     before do
       visit profile_chat_names_path

@@ -1,5 +1,3 @@
-/* eslint-disable func-names */
-
 import $ from 'jquery';
 import { hide, initTooltips, show } from '~/tooltips';
 import { parseBoolean } from './lib/utils/common_utils';
@@ -24,6 +22,7 @@ export default class BuildArtifacts {
 
   // eslint-disable-next-line class-methods-use-this
   setupEntryClick() {
+    // eslint-disable-next-line func-names
     return $('.tree-holder').on('click', 'tr[data-link]', function () {
       visitUrl(this.dataset.link, parseBoolean(this.dataset.externalLink));
     });

@@ -25,12 +25,6 @@ describe('ErrorDetails', () => {
   }
 
   describe('Stacktrace', () => {
-    afterEach(() => {
-      if (wrapper) {
-        wrapper.destroy();
-      }
-    });
-
     it('should render single Stacktrace entry', () => {
       mountComponent([stackTraceEntry]);
       expect(wrapper.findAllComponents(StackTraceEntry).length).toBe(1);

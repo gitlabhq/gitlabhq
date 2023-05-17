@@ -17,6 +17,27 @@ RSpec.describe Gitlab::SidekiqConfig do
     end
   end
 
+  describe '.cron_jobs' do
+    it 'renames job_class to class and removes incomplete jobs' do
+      expect(Gitlab)
+        .to receive(:config)
+        .twice
+        .and_return(GitlabSettings::Options.build(
+          load_dynamic_cron_schedules!: true,
+          cron_jobs: {
+            job: { cron: '0 * * * *', job_class: 'SomeWorker' },
+            incomplete_job: { cron: '0 * * * *' }
+          }))
+
+      expect(Gitlab::AppLogger)
+        .to receive(:error)
+        .with("Invalid cron_jobs config key: 'incomplete_job'. Check your gitlab config file.")
+
+      expect(described_class.cron_jobs)
+        .to eq('job' => { 'class' => 'SomeWorker', 'cron' => '0 * * * *' })
+    end
+  end
+
   describe '.worker_queues' do
     it 'includes all queues' do
       queues = described_class.worker_queues

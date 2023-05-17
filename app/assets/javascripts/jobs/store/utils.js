@@ -18,12 +18,26 @@ export const parseLine = (line = {}, lineNumber) => ({
  * @param Object line
  * @param Number lineNumber
  */
-export const parseHeaderLine = (line = {}, lineNumber) => ({
-  isClosed: parseBoolean(line.section_options?.collapsed),
-  isHeader: true,
-  line: parseLine(line, lineNumber),
-  lines: [],
-});
+export const parseHeaderLine = (line = {}, lineNumber, hash) => {
+  // if a hash is present in the URL then we ensure
+  // all sections are visible so we can scroll to the hash
+  // in the DOM
+  if (hash) {
+    return {
+      isClosed: false,
+      isHeader: true,
+      line: parseLine(line, lineNumber),
+      lines: [],
+    };
+  }
+
+  return {
+    isClosed: parseBoolean(line.section_options?.collapsed),
+    isHeader: true,
+    line: parseLine(line, lineNumber),
+    lines: [],
+  };
+};
 
 /**
  * Finds the matching header section
@@ -104,7 +118,7 @@ export const getIncrementalLineNumber = (acc) => {
  * @param Array accumulator
  * @returns Array parsed log lines
  */
-export const logLinesParser = (lines = [], accumulator = []) =>
+export const logLinesParser = (lines = [], accumulator = [], hash = '') =>
   lines.reduce(
     (acc, line, index) => {
       const lineNumber = accumulator.length > 0 ? getIncrementalLineNumber(acc) : index;
@@ -113,7 +127,7 @@ export const logLinesParser = (lines = [], accumulator = []) =>
 
       // If the object is an header, we parse it into another structure
       if (line.section_header) {
-        acc.push(parseHeaderLine(line, lineNumber));
+        acc.push(parseHeaderLine(line, lineNumber, hash));
       } else if (isCollapsibleSection(acc, last, line)) {
         // if the object belongs to a nested section, we append it to the new `lines` array of the
         // previously formatted header

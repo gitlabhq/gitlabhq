@@ -29,11 +29,9 @@ class ApplicationController < ActionController::Base
   before_action :limit_session_time, if: -> { !current_user }
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
-  before_action :validate_user_service_ticket!
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
   before_action :default_headers
-  before_action :default_cache_headers
   before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
@@ -61,12 +59,10 @@ class ApplicationController < ActionController::Base
   helper_method :can?
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
-    :gitlab_import_enabled?, :gitlab_import_configured?,
     :bitbucket_import_enabled?, :bitbucket_import_configured?,
     :bitbucket_server_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
-    :manifest_import_enabled?, :phabricator_import_enabled?,
-    :masked_page_url
+    :manifest_import_enabled?, :masked_page_url
 
   def self.endpoint_id_for_action(action_name)
     "#{name}##{action_name}"
@@ -90,7 +86,7 @@ class ApplicationController < ActionController::Base
     render_403
   end
 
-  rescue_from Gitlab::Auth::IpBlacklisted do
+  rescue_from Gitlab::Auth::IpBlocked do
     Gitlab::AuthLogger.error(
       message: 'Rack_Attack',
       env: :blocklist,
@@ -108,6 +104,11 @@ class ApplicationController < ActionController::Base
 
   rescue_from RateLimitedService::RateLimitedError do |e|
     e.log_request(request, current_user)
+    response.headers.merge!(e.headers)
+    render plain: e.message, status: :too_many_requests
+  end
+
+  rescue_from Gitlab::Git::ResourceExhaustedError do |e|
     response.headers.merge!(e.headers)
     render plain: e.message, status: :too_many_requests
   end
@@ -260,10 +261,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html do
-        render template,
-               layout: "errors",
-               status: status,
-               locals: { message: message }
+        render template, layout: "errors", status: status, locals: { message: message }
       end
       format.any { head status }
     end
@@ -319,30 +317,12 @@ class ApplicationController < ActionController::Base
     headers['X-Content-Type-Options'] = 'nosniff'
   end
 
-  def default_cache_headers
-    headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
-  end
-
   def stream_csv_headers(csv_filename)
     no_cache_headers
     stream_headers
 
     headers['Content-Type'] = 'text/csv; charset=utf-8; header=present'
     headers['Content-Disposition'] = "attachment; filename=\"#{csv_filename}\""
-  end
-
-  def validate_user_service_ticket!
-    return unless signed_in? && session[:service_tickets]
-
-    valid = session[:service_tickets].all? do |provider, ticket|
-      Gitlab::Auth::OAuth::Session.valid?(provider, ticket)
-    end
-
-    unless valid
-      session[:service_tickets] = nil
-      sign_out current_user
-      redirect_to new_user_session_path
-    end
   end
 
   def check_password_expiration
@@ -452,14 +432,6 @@ class ApplicationController < ActionController::Base
     Gitlab::Auth::OAuth::Provider.enabled?(:github)
   end
 
-  def gitlab_import_enabled?
-    request.host != 'gitlab.com' && Gitlab::CurrentSettings.import_sources.include?('gitlab')
-  end
-
-  def gitlab_import_configured?
-    Gitlab::Auth::OAuth::Provider.enabled?(:gitlab)
-  end
-
   def bitbucket_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('bitbucket')
   end
@@ -482,10 +454,6 @@ class ApplicationController < ActionController::Base
 
   def manifest_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('manifest')
-  end
-
-  def phabricator_import_enabled?
-    Gitlab::PhabricatorImport.available?
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

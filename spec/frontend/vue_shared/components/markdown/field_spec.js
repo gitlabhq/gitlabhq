@@ -18,12 +18,6 @@ const textareaValue = 'testing\n123';
 const uploadsPath = 'test/uploads';
 const restrictedToolBarItems = ['quote'];
 
-function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
-  expect(writeLink.element.children[0].classList.contains('active')).toBe(isWrite);
-  expect(previewLink.element.children[0].classList.contains('active')).toBe(!isWrite);
-  expect(wrapper.find('.md-preview-holder').element.style.display).toBe(isWrite ? 'none' : '');
-}
-
 describe('Markdown field component', () => {
   let axiosMock;
   let subject;
@@ -92,8 +86,7 @@ describe('Markdown field component', () => {
     });
   }
 
-  const getPreviewLink = () => subject.findByTestId('preview-tab');
-  const getWriteLink = () => subject.findByTestId('write-tab');
+  const getPreviewToggle = () => subject.findByTestId('preview-toggle');
   const getMarkdownButton = () => subject.find('.js-md');
   const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
   const getVideo = () => subject.find('video');
@@ -109,8 +102,7 @@ describe('Markdown field component', () => {
     <p>markdown preview</p>
     <video src="${FIXTURES_PATH}/static/mock-video.mp4"></video>
   `;
-    let previewLink;
-    let writeLink;
+    let previewToggle;
     let dropzoneSpy;
 
     beforeEach(() => {
@@ -140,8 +132,8 @@ describe('Markdown field component', () => {
         .onPost(markdownPreviewPath)
         .reply(HTTP_STATUS_OK, { references: { users: [], commands: 'test command' } });
 
-      previewLink = getPreviewLink();
-      previewLink.vm.$emit('click', { target: {} });
+      previewToggle = getPreviewToggle();
+      previewToggle.vm.$emit('click', true);
 
       await axios.waitFor(markdownPreviewPath);
       const referencedCommands = subject.find('[data-testid="referenced-commands"]');
@@ -155,26 +147,29 @@ describe('Markdown field component', () => {
         axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { body: previewHTML });
       });
 
-      it('sets preview link as active', async () => {
-        previewLink = getPreviewLink();
-        previewLink.vm.$emit('click', { target: {} });
+      it('sets preview toggle as active', async () => {
+        previewToggle = getPreviewToggle();
+
+        expect(previewToggle.text()).toBe('Preview');
+
+        previewToggle.vm.$emit('click', true);
 
         await nextTick();
-        expect(previewLink.element.children[0].classList.contains('active')).toBe(true);
+        expect(previewToggle.text()).toBe('Continue editing');
       });
 
       it('shows preview loading text', async () => {
-        previewLink = getPreviewLink();
-        previewLink.vm.$emit('click', { target: {} });
+        previewToggle = getPreviewToggle();
+        previewToggle.vm.$emit('click', true);
 
         await nextTick();
         expect(subject.find('.md-preview-holder').element.textContent.trim()).toContain('Loading…');
       });
 
       it('renders markdown preview and GFM', async () => {
-        previewLink = getPreviewLink();
+        previewToggle = getPreviewToggle();
 
-        previewLink.vm.$emit('click', { target: {} });
+        previewToggle.vm.$emit('click', true);
 
         await axios.waitFor(markdownPreviewPath);
         expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
@@ -182,8 +177,8 @@ describe('Markdown field component', () => {
       });
 
       it('calls video.pause() on comment input when isSubmitting is changed to true', async () => {
-        previewLink = getPreviewLink();
-        previewLink.vm.$emit('click', { target: {} });
+        previewToggle = getPreviewToggle();
+        previewToggle.vm.$emit('click', true);
 
         await axios.waitFor(markdownPreviewPath);
         const video = getVideo();
@@ -195,34 +190,27 @@ describe('Markdown field component', () => {
         expect(callPause).toHaveBeenCalled();
       });
 
-      it('clicking already active write or preview link does nothing', async () => {
-        writeLink = getWriteLink();
-        previewLink = getPreviewLink();
+      it('switches between preview/write on toggle', async () => {
+        previewToggle = getPreviewToggle();
 
-        writeLink.vm.$emit('click', { target: {} });
+        previewToggle.vm.$emit('click', true);
         await nextTick();
+        expect(subject.find('.md-preview-holder').element.style.display).toBe(''); // visible
 
-        assertMarkdownTabs(true, writeLink, previewLink, subject);
-        writeLink.vm.$emit('click', { target: {} });
+        previewToggle.vm.$emit('click', false);
         await nextTick();
-
-        assertMarkdownTabs(true, writeLink, previewLink, subject);
-        previewLink.vm.$emit('click', { target: {} });
-        await nextTick();
-
-        assertMarkdownTabs(false, writeLink, previewLink, subject);
-        previewLink.vm.$emit('click', { target: {} });
-        await nextTick();
-
-        assertMarkdownTabs(false, writeLink, previewLink, subject);
+        expect(subject.find('.md-preview-holder').element.style.display).toBe('none');
       });
 
-      it('passes correct props to MarkdownToolbar', () => {
+      it('passes correct props to MarkdownHeader and MarkdownToolbar', () => {
         expect(findMarkdownToolbar().props()).toEqual({
           canAttachFile: true,
           markdownDocsPath,
           quickActionsDocsPath: '',
           showCommentToolBar: true,
+        });
+
+        expect(findMarkdownHeader().props()).toMatchObject({
           showContentEditorSwitcher: false,
         });
       });
@@ -380,13 +368,13 @@ describe('Markdown field component', () => {
     it('defaults to false', () => {
       createSubject();
 
-      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(false);
+      expect(findMarkdownHeader().props('showContentEditorSwitcher')).toBe(false);
     });
 
     it('passes showContentEditorSwitcher', () => {
       createSubject({ showContentEditorSwitcher: true });
 
-      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(true);
+      expect(findMarkdownHeader().props('showContentEditorSwitcher')).toBe(true);
     });
   });
 });

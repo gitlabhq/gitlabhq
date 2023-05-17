@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::InactiveProjectsDeletionNotificationWorker do
+RSpec.describe Projects::InactiveProjectsDeletionNotificationWorker, feature_category: :compliance_management do
   describe "#perform" do
     subject(:worker) { described_class.new }
 
@@ -22,14 +22,15 @@ RSpec.describe Projects::InactiveProjectsDeletionNotificationWorker do
       worker.perform(project.id, deletion_date)
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.hget('inactive_projects_deletion_warning_email_notified',
-                          "project:#{project.id}")).to eq(Date.current.to_s)
+        expect(
+          redis.hget('inactive_projects_deletion_warning_email_notified', "project:#{project.id}")
+        ).to eq(Date.current.to_s)
       end
     end
 
     it 'rescues and logs the exception if project does not exist' do
-      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(ActiveRecord::RecordNotFound),
-                                                                    { project_id: non_existing_project_id })
+      expect(Gitlab::ErrorTracking).to receive(:log_exception)
+        .with(instance_of(ActiveRecord::RecordNotFound), { project_id: non_existing_project_id })
 
       worker.perform(non_existing_project_id, deletion_date)
     end

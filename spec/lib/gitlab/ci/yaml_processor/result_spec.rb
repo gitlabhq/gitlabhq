@@ -47,8 +47,8 @@ module Gitlab
           end
 
           it 'returns expanded yaml config' do
-            expanded_config = YAML.safe_load(config_metadata[:merged_yaml], [Symbol])
-            included_config = YAML.safe_load(included_yml, [Symbol])
+            expanded_config = YAML.safe_load(config_metadata[:merged_yaml], permitted_classes: [Symbol])
+            included_config = YAML.safe_load(included_yml, permitted_classes: [Symbol])
 
             expect(expanded_config).to include(*included_config.keys)
           end

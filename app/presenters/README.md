@@ -165,15 +165,15 @@ however, there is a risk that it accidentally overrides important logic.
 
 For example, [this production incident](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/5498)
 was caused by [including `ActionView::Helpers::UrlHelper` in a presenter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69537/diffs#4b581cff00ef3cc9780efd23682af383de302e7d_3_3).
-The `tag` accesor in `Ci::Build` was accidentally overridden by `ActionView::Helpers::TagHelper#tag`,
-and as a conseuqence, a wrong `tag` value was persited into database.
+The `tag` accessor in `Ci::Build` was accidentally overridden by `ActionView::Helpers::TagHelper#tag`,
+and as a consequence, a wrong `tag` value was persisted into database.
 
-Starting from GitLab 14.4, we validate the presenters (specifically all of the subclasses of `Gitlab::View::Presenter::Delegated`)
+Starting from GitLab 14.4, we [validate](../../lib/gitlab/utils/delegator_override/validator.rb) the presenters (specifically all of the subclasses of `Gitlab::View::Presenter::Delegated`)
 that they do not accidentally override core/backend logic. In such case, a pipeline in merge requests fails with an error message,
 here is an example:
 
 ```plaintext
-We've detected that a presetner is overriding a specific method(s) on a subject model.
+We've detected that a presenter is overriding a specific method(s) on a subject model.
 There is a risk that it accidentally modifies the backend/core logic that leads to production incident.
 Please follow https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/presenters/README.md#validate-accidental-overrides
 to resolve this error with caution.
@@ -193,7 +193,7 @@ Here are the potential solutions:
 
 ### How to use the `Gitlab::Utils::DelegatorOverride` validator
 
-If a presenter class inhertis from `Gitlab::View::Presenter::Delegated`,
+If a presenter class inherits from `Gitlab::View::Presenter::Delegated`,
 you should define what object class is presented:
 
 ```ruby
@@ -201,7 +201,7 @@ class WebHookLogPresenter < Gitlab::View::Presenter::Delegated
   presents ::WebHookLog, as: :web_hook_log            # This defines that the presenter presents `WebHookLog` Active Record model.
 ```
 
-These presenters are validated not to accidentaly override the methods in the presented object.
+These presenters are validated not to accidentally override the methods in the presented object.
 You can run the validation locally with:
 
 ```shell

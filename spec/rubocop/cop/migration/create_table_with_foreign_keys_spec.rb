@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
 RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
-  let(:cop) { described_class.new }
-
   context 'outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
@@ -148,9 +146,11 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
             users
             web_hook_logs
           ].each do |table|
-            let(:table_name) { table }
+            context "with #{table}" do
+              let(:table_name) { table }
 
-            it_behaves_like 'target to high traffic table', dsl_method, table
+              it_behaves_like 'target to high traffic table', dsl_method, table
+            end
           end
         end
 

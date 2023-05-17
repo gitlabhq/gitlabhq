@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Database guides
+# Database development guidelines
 
 ## Database Reviews
 
@@ -64,6 +64,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Hash indexes](hash_indexes.md)
 - [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
+- [Load balancing](load_balancing.md)
 - [`NOT NULL` constraints](not_null_constraints.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Pagination guidelines](pagination_guidelines.md)
@@ -109,6 +110,8 @@ including the major methods:
 - [Introduction](clickhouse/index.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
+- [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)
+- [Tiered Storage in ClickHouse](clickhouse/tiered_storage.md)
 
 ## Miscellaneous
 

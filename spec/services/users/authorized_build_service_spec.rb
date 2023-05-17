@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::AuthorizedBuildService do
+RSpec.describe Users::AuthorizedBuildService, feature_category: :user_management do
   describe '#execute' do
     let_it_be(:current_user) { create(:user) }
 

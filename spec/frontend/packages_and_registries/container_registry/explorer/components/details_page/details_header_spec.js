@@ -1,10 +1,10 @@
 import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue';
@@ -22,37 +22,27 @@ import {
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import getContainerRepositoryMetadata from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_metadata.query.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import { imageTagsCountMock } from '../../mock_data';
+import { containerRepositoryMock, imageTagsCountMock } from '../../mock_data';
 
 describe('Details Header', () => {
   let wrapper;
   let apolloProvider;
 
   const defaultImage = {
-    name: 'foo',
-    updatedAt: '2020-11-03T13:29:21Z',
-    canDelete: true,
-    project: {
-      visibility: 'public',
-      path: 'path',
-      containerExpirationPolicy: {
-        enabled: false,
-      },
-    },
+    ...containerRepositoryMock,
   };
 
   // set the date to Dec 4, 2020
   useFakeDate(2020, 11, 4);
-  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
 
-  const findLastUpdatedAndVisibility = () => findByTestId('updated-and-visibility');
-  const findTitle = () => findByTestId('title');
-  const findTagsCount = () => findByTestId('tags-count');
-  const findCleanup = () => findByTestId('cleanup');
+  const findCreatedAndVisibility = () => wrapper.findByTestId('created-and-visibility');
+  const findTitle = () => wrapper.findByTestId('title');
+  const findTagsCount = () => wrapper.findByTestId('tags-count');
+  const findCleanup = () => wrapper.findByTestId('cleanup');
   const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findMenu = () => wrapper.findComponent(GlDropdown);
-  const findSize = () => findByTestId('image-size');
+  const findSize = () => wrapper.findByTestId('image-size');
 
   const waitForMetadataItems = async () => {
     // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
@@ -69,11 +59,11 @@ describe('Details Header', () => {
     const requestHandlers = [[getContainerRepositoryMetadata, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       apolloProvider,
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         TitleArea,
@@ -85,9 +75,7 @@ describe('Details Header', () => {
 
   afterEach(() => {
     // if we want to mix createMockApollo and manual mocks we need to reset everything
-    wrapper.destroy();
     apolloProvider = undefined;
-    wrapper = null;
   });
 
   describe('image name', () => {
@@ -99,7 +87,7 @@ describe('Details Header', () => {
       });
 
       it('root image shows project path name', () => {
-        expect(findTitle().text()).toBe('path');
+        expect(findTitle().text()).toBe('gitlab-test');
       });
 
       it('has an icon', () => {
@@ -121,7 +109,7 @@ describe('Details Header', () => {
       });
 
       it('shows image.name', () => {
-        expect(findTitle().text()).toContain('foo');
+        expect(findTitle().text()).toContain('rails-12009');
       });
 
       it('has no icon', () => {
@@ -249,7 +237,7 @@ describe('Details Header', () => {
         expect(findCleanup().props('icon')).toBe('expire');
       });
 
-      it('when the expiration policy is disabled', async () => {
+      it('when cleanup is not scheduled', async () => {
         mountComponent();
         await waitForMetadataItems();
 
@@ -289,12 +277,12 @@ describe('Details Header', () => {
       );
     });
 
-    describe('visibility and updated at', () => {
-      it('has last updated text', async () => {
+    describe('visibility and created at', () => {
+      it('has created text', async () => {
         mountComponent();
         await waitForMetadataItems();
 
-        expect(findLastUpdatedAndVisibility().props('text')).toBe('Last updated 1 month ago');
+        expect(findCreatedAndVisibility().props('text')).toBe('Created Nov 3, 2020 13:29');
       });
 
       describe('visibility icon', () => {
@@ -302,7 +290,7 @@ describe('Details Header', () => {
           mountComponent();
           await waitForMetadataItems();
 
-          expect(findLastUpdatedAndVisibility().props('icon')).toBe('eye');
+          expect(findCreatedAndVisibility().props('icon')).toBe('eye');
         });
         it('shows an eye slashed when the project is not public', async () => {
           mountComponent({
@@ -310,7 +298,7 @@ describe('Details Header', () => {
           });
           await waitForMetadataItems();
 
-          expect(findLastUpdatedAndVisibility().props('icon')).toBe('eye-slash');
+          expect(findCreatedAndVisibility().props('icon')).toBe('eye-slash');
         });
       });
     });

@@ -3,7 +3,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -36,7 +36,7 @@ import {
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 const mockAlertDismiss = jest.fn();
-jest.mock('~/flash', () => ({
+jest.mock('~/alert', () => ({
   createAlert: jest.fn().mockImplementation(() => ({
     dismiss: mockAlertDismiss,
   })),
@@ -257,14 +257,14 @@ describe('Actions Notes Store', () => {
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, pollResponse, pollHeaders);
     const failureMock = () =>
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    const advanceAndRAF = async (time) => {
+    const advanceAndRAF = (time) => {
       if (time) {
         jest.advanceTimersByTime(time);
       }
 
       return waitForPromises();
     };
-    const advanceXMoreIntervals = async (number) => {
+    const advanceXMoreIntervals = (number) => {
       const timeoutLength = pollInterval * number;
 
       return advanceAndRAF(timeoutLength);
@@ -273,7 +273,7 @@ describe('Actions Notes Store', () => {
       await store.dispatch('poll');
       await advanceAndRAF(2);
     };
-    const cleanUp = async () => {
+    const cleanUp = () => {
       jest.clearAllTimers();
 
       return store.dispatch('stopPolling');
@@ -876,7 +876,7 @@ describe('Actions Notes Store', () => {
       const res = { errors: { base: ['something went wrong'] } };
       const error = { message: 'Unprocessable entity', response: { data: res } };
 
-      it('sets flash alert using errors.base message', async () => {
+      it('sets an alert using errors.base message', async () => {
         const resp = await actions.saveNote(
           {
             commit() {},
@@ -905,6 +905,20 @@ describe('Actions Notes Store', () => {
         );
         expect(data).toBe(res);
         expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('dispatches clearDrafts is command names contains submit_review', async () => {
+        const response = { command_names: ['submit_review'], valid: true };
+        dispatch = jest.fn().mockResolvedValue(response);
+        await actions.saveNote(
+          {
+            commit() {},
+            dispatch,
+          },
+          payload,
+        );
+
+        expect(dispatch).toHaveBeenCalledWith('batchComments/clearDrafts');
       });
     });
   });
@@ -946,7 +960,7 @@ describe('Actions Notes Store', () => {
       });
     });
 
-    it('when service fails, flashes error message', () => {
+    it('when service fails, creates an alert with error message', () => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
       Api.applySuggestion.mockReturnValue(Promise.reject(response));
@@ -1438,10 +1452,6 @@ describe('Actions Notes Store', () => {
 
   describe('fetchDiscussions', () => {
     const discussion = { notes: [] };
-
-    afterEach(() => {
-      window.gon = {};
-    });
 
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts`', () => {
       axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });

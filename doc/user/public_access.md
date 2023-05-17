@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -95,8 +95,7 @@ For more information, see [Restrict visibility levels](admin_area/settings/visib
 
 ## Related topics
 
-- For more granular control of project features, you can
-  [change the visibility of features](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project).
+- [Change the visibility of features](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project)
 
 <!-- ## Troubleshooting
 

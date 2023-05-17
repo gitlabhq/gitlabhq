@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::FogbugzController do
+RSpec.describe Import::FogbugzController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
@@ -11,6 +11,8 @@ RSpec.describe Import::FogbugzController do
   let(:namespace_id) { 5 }
 
   before do
+    stub_application_setting(import_sources: ['fogbugz'])
+
     sign_in(user)
   end
 
@@ -116,8 +118,7 @@ RSpec.describe Import::FogbugzController do
 
   describe 'GET status' do
     let(:repo) do
-      instance_double(Gitlab::FogbugzImport::Repository,
-                      id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
+      instance_double(Gitlab::FogbugzImport::Repository, id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
     end
 
     it 'redirects to new page form when client is invalid' do

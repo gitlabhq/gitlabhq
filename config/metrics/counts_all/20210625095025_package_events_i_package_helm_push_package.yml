@@ -4,7 +4,6 @@ description: The total count of Helm packages that have been published.
 product_section: ops
 product_stage: package
 product_group: package
-product_category: package_registry
 value_type: number
 status: active
 milestone: "14.1"

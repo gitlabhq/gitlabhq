@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnAuthenticate from '~/authentication/webauthn/authenticate';
 import MockWebAuthnDevice from './mock_webauthn_device';
@@ -35,7 +36,7 @@ describe('WebAuthnAuthenticate', () => {
   };
 
   beforeEach(() => {
-    loadHTMLFixture('webauthn/authenticate.html');
+    setHTMLFixture(htmlWebauthnAuthenticate);
     fallbackElement = document.createElement('div');
     fallbackElement.classList.add('js-2fa-form');
     webAuthnDevice = new MockWebAuthnDevice();

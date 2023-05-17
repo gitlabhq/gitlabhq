@@ -1,10 +1,10 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect GKE clusters through cluster certificates (DEPRECATED) **(FREE)**
+# Connect GKE clusters through cluster certificates (deprecated) **(FREE)**
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -77,7 +77,7 @@ cluster certificates:
    - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
      under which to create the cluster.
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
-   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
+   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-resource)
      of the Virtual Machine instance to base the cluster on.
    - **Enable Cloud Run for Anthos** - Check this if you want to use Cloud Run for Anthos for this cluster.
      See the [Cloud Run for Anthos section](#cloud-run-for-anthos) for more information.

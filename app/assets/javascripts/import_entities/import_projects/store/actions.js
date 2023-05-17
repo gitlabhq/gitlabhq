@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import _ from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
@@ -83,7 +83,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     .get(
       pathWithParams({
         path: reposPath,
-        filter: filter ?? '',
+        ...(filter ?? {}),
         ...paginationParams({ state }),
       }),
     )
@@ -141,7 +141,7 @@ const fetchImportFactory = (importPath = isRequired()) => (
     })
     .catch((e) => {
       const serverErrorMessage = e?.response?.data?.errors;
-      const flashMessage = serverErrorMessage
+      const alertMessage = serverErrorMessage
         ? sprintf(
             s__('ImportProjects|Importing the project failed: %{reason}'),
             {
@@ -152,7 +152,7 @@ const fetchImportFactory = (importPath = isRequired()) => (
         : s__('ImportProjects|Importing the project failed');
 
       createAlert({
-        message: flashMessage,
+        message: alertMessage,
       });
 
       commit(types.RECEIVE_IMPORT_ERROR, repoId);
@@ -179,7 +179,7 @@ export const cancelImportFactory = (cancelImportPath) => ({ state, commit }, { r
     })
     .catch((e) => {
       const serverErrorMessage = e?.response?.data?.errors;
-      const flashMessage = serverErrorMessage
+      const alertMessage = serverErrorMessage
         ? sprintf(
             s__('ImportProjects|Cancelling project import failed: %{reason}'),
             {
@@ -190,7 +190,7 @@ export const cancelImportFactory = (cancelImportPath) => ({ state, commit }, { r
         : s__('ImportProjects|Cancelling project import failed');
 
       createAlert({
-        message: flashMessage,
+        message: alertMessage,
       });
     });
 };
@@ -203,7 +203,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
 
   eTagPoll = new Poll({
     resource: {
-      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, filter: state.filter })),
+      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, ...state.filter })),
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>

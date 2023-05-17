@@ -1,5 +1,6 @@
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { assertProps } from 'helpers/assert_props';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import { RELEASED_AT_ASC, RELEASED_AT_DESC, CREATED_ASC, CREATED_DESC } from '~/releases/constants';
 
@@ -16,10 +17,6 @@ describe('releases_sort.vue', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
@@ -96,7 +93,7 @@ describe('releases_sort.vue', () => {
   describe('prop validation', () => {
     it('validates that the `value` prop is one of the expected sort strings', () => {
       expect(() => {
-        createComponent('not a valid value');
+        assertProps(ReleasesSort, { value: 'not a valid value' });
       }).toThrow('Invalid prop: custom validator check failed');
     });
   });

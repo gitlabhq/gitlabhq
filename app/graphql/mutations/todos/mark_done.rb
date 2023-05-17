@@ -2,7 +2,7 @@
 
 module Mutations
   module Todos
-    class MarkDone < ::Mutations::Todos::Base
+    class MarkDone < ::Mutations::BaseMutation
       graphql_name 'TodoMarkDone'
 
       authorize :update_todo

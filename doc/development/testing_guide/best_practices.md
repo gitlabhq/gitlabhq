@@ -313,7 +313,28 @@ NOTE:
 `stub_method` does not support method existence and method arity checks.
 
 WARNING:
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec's mocks](https://relishapp.com/rspec/rspec-mocks/v/3-10/docs/basics) if available.
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
+
+#### Stubbing member access level
+
+To stub [member access level](../../user/permissions.md#roles) for factory stubs like `Project` or `Group` use
+[`stub_member_access_level`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/stub_member_access_level.rb):
+
+```ruby
+let(:project) { build_stubbed(:project) }
+let(:maintainer) { build_stubbed(:user) }
+let(:policy) { ProjectPolicy.new(maintainer, project) }
+
+it 'allows admin_project ability' do
+  stub_member_access_level(project, maintainer: maintainer)
+
+  expect(policy).to be_allowed(:admin_project)
+end
+```
+
+NOTE:
+Refrain from using this stub helper if the test code relies on persisting
+`project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
 
 #### Identify slow tests
 
@@ -434,7 +455,7 @@ results are available, and not just the first failure.
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
   use a Capybara matcher beforehand (such as `find('.js-foo')`) to ensure the element actually exists.
 - Use `focus: true` to isolate parts of the specs you want to run.
-- Use [`:aggregate_failures`](https://relishapp.com/rspec/rspec-core/docs/expectation-framework-integration/aggregating-failures) when there is more than one expectation in a test.
+- Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
 - Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
   when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
@@ -450,6 +471,10 @@ You must [set feature category metadata for each RSpec example](../feature_categ
 You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to execute tests depending on whether running with `FOSS_ONLY=1`.
 
 Example: [SchemaValidator reads a different path depending on the license](https://gitlab.com/gitlab-org/gitlab/-/blob/7cdcf9819cfa02c701d6fa9f18c1e7a8972884ed/spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb#L571)
+
+### Tests depending on SaaS
+
+You can use the `:saas` RSpec metadata tag helper on context/spec blocks to test code that only runs on GitLab.com. This helper sets `Gitlab.config.gitlab['url']` to `Gitlab::Saas.com_url`.
 
 ### Coverage
 
@@ -506,6 +531,8 @@ We strongly recommend that you query by the element's text label instead of by I
 If needed, you can scope interactions within a specific area of the page by using `within`.
 As you will likely be scoping to an element such as a `div`, which typically does not have a label,
 you may use a `data-testid` selector in this case.
+
+You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility.md#automated-accessibility-testing-with-axe) in feature tests.
 
 ##### Externalized contents
 
@@ -865,8 +892,6 @@ it 'is overdue' do
   travel_to(3.days.from_now) do
     expect(issue).to be_overdue
   end
-
-  travel_back # Returns the current time back to its original state
 end
 ```
 
@@ -1015,7 +1040,7 @@ a single test triggers the rate limit, the `:disable_rate_limit` can be used ins
 #### Stubbing File methods
 
 In the situations where you need to
-[stub](https://relishapp.com/rspec/rspec-mocks/v/3-9/docs/basics/allowing-messages)
+[stub](https://rspec.info/features/3-12/rspec-mocks/basics/allowing-messages/)
 methods such as `File.read`, make sure to:
 
 1. Stub `File.read` for only the file path you are interested in.
@@ -1191,10 +1216,16 @@ When you want to ensure that no event got called, you can use `expect_no_snowplo
     it 'does not track any snowplow events' do
       get :show
 
-      expect_no_snowplow_event
+      expect_no_snowplow_event(category: described_class.name, action: 'some_action')
     end
   end
 ```
+
+Even though `category` and `action` can be omitted, you should at least
+specify a `category` to avoid flaky tests. For example,
+`Users::ActivityService` may track a Snowplow event after an API
+request, and `expect_no_snowplow_event` will fail if that happens to run
+when no arguments are specified.
 
 #### Test Snowplow context against the schema
 
@@ -1279,14 +1310,40 @@ they apply to multiple type of specs.
 #### `be_like_time`
 
 Time returned from a database can differ in precision from time objects
-in Ruby, so we need flexible tolerances when comparing in specs. We can
-use `be_like_time` to compare that times are within one second of each
-other.
+in Ruby, so we need flexible tolerances when comparing in specs.
+
+The PostgreSQL time and timestamp types
+have [the resolution of 1 microsecond](https://www.postgresql.org/docs/current/datatype-datetime.html).
+However, the precision of Ruby `Time` can vary [depending on the OS.](https://blog.paulswartz.net/post/142749676062/ruby-time-precision-os-x-vs-linux)
+
+Consider the following snippet:
+
+```ruby
+project = create(:project)
+
+expect(project.created_at).to eq(Project.find(project.id).created_at)
+```
+
+On Linux, `Time` can have the maximum precision of 9 and
+`project.created_at` has a value (like `2023-04-28 05:53:30.808033064`) with the same precision.
+However, the actual value `created_at` (like `2023-04-28 05:53:30.808033`) stored to and loaded from the database
+doesn't have the same precision, and the match would fail.
+On macOS X, the precision of `Time` matches that of the PostgreSQL timestamp type
+ and the match could succeed.
+
+To avoid the issue, we can use `be_like_time` or `be_within` to compare
+that times are within one second of each other.
 
 Example:
 
 ```ruby
 expect(metrics.merged_at).to be_like_time(time)
+```
+
+Example for `be_within`:
+
+```ruby
+expect(violation.reload.merged_at).to be_within(0.00001.seconds).of(merge_request.merged_at)
 ```
 
 #### `have_gitlab_http_status`

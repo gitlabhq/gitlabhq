@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabShellWorker, :sidekiq_inline do
+RSpec.describe GitlabShellWorker, :sidekiq_inline, feature_category: :source_code_management do
   describe '#perform' do
     Gitlab::Shell::PERMITTED_ACTIONS.each do |action|
       describe "with the #{action} action" do

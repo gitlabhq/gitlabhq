@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import { logError } from '~/lib/logger';
 import api from '~/api';

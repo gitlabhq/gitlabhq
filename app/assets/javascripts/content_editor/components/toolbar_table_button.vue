@@ -83,7 +83,7 @@ export default {
     text-sr-only
     lazy
   >
-    <gl-dropdown-form class="gl-px-3!">
+    <gl-dropdown-form class="gl-px-3! gl-pb-2!">
       <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
         <gl-button
           v-for="c of list(maxCols)"

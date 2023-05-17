@@ -1,11 +1,10 @@
 import VueApollo from 'vue-apollo';
-import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 import { escape } from 'lodash';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { sprintf } from '~/locale';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import ValidationSegment, {
   i18n,
 } from '~/ci/pipeline_editor/components/header/validation_segment.vue';
@@ -20,8 +19,8 @@ import {
 } from '~/ci/pipeline_editor/constants';
 import {
   mergeUnwrappedCiConfig,
+  mockCiTroubleshootingPath,
   mockCiYml,
-  mockLintUnavailableHelpPagePath,
   mockYmlHelpPagePath,
 } from '../../mock_data';
 
@@ -43,29 +42,27 @@ describe('Validation segment component', () => {
       },
     });
 
-    wrapper = extendedWrapper(
-      shallowMount(ValidationSegment, {
-        apolloProvider: mockApollo,
-        provide: {
-          ymlHelpPagePath: mockYmlHelpPagePath,
-          lintUnavailableHelpPagePath: mockLintUnavailableHelpPagePath,
-        },
-        propsData: {
-          ciConfig: mergeUnwrappedCiConfig(),
-          ciFileContent: mockCiYml,
-          ...props,
-        },
-      }),
-    );
+    wrapper = shallowMountExtended(ValidationSegment, {
+      apolloProvider: mockApollo,
+      provide: {
+        ymlHelpPagePath: mockYmlHelpPagePath,
+        ciTroubleshootingPath: mockCiTroubleshootingPath,
+      },
+      propsData: {
+        ciConfig: mergeUnwrappedCiConfig(),
+        ciFileContent: mockCiYml,
+        ...props,
+      },
+      stubs: {
+        GlSprintf,
+      },
+    });
   };
 
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findLearnMoreLink = () => wrapper.findByTestId('learnMoreLink');
-  const findValidationMsg = () => wrapper.findByTestId('validationMsg');
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findHelpLink = () => wrapper.findComponent(GlLink);
+  const findValidationMsg = () => wrapper.findComponent(GlSprintf);
+  const findValidationSegment = () => wrapper.findByTestId('validation-segment');
 
   it('shows the loading state', () => {
     createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
@@ -82,8 +79,12 @@ describe('Validation segment component', () => {
       expect(findIcon().props('name')).toBe('check');
     });
 
+    it('does not render a link', () => {
+      expect(findHelpLink().exists()).toBe(false);
+    });
+
     it('shows a message for empty state', () => {
-      expect(findValidationMsg().text()).toBe(i18n.empty);
+      expect(findValidationSegment().text()).toBe(i18n.empty);
     });
   });
 
@@ -97,12 +98,15 @@ describe('Validation segment component', () => {
     });
 
     it('shows a message for valid state', () => {
-      expect(findValidationMsg().text()).toContain(i18n.valid);
+      expect(findValidationSegment().text()).toBe(
+        sprintf(i18n.valid, { linkStart: '', linkEnd: '' }),
+      );
     });
 
     it('shows the learn more link', () => {
-      expect(findLearnMoreLink().attributes('href')).toBe(mockYmlHelpPagePath);
-      expect(findLearnMoreLink().text()).toBe(i18n.learnMore);
+      expect(findValidationMsg().exists()).toBe(true);
+      expect(findValidationMsg().text()).toBe('Learn more');
+      expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
     });
   });
 
@@ -117,13 +121,16 @@ describe('Validation segment component', () => {
       expect(findIcon().props('name')).toBe('warning-solid');
     });
 
-    it('has message for invalid state', () => {
-      expect(findValidationMsg().text()).toBe(i18n.invalid);
+    it('shows a message for invalid state', () => {
+      expect(findValidationSegment().text()).toBe(
+        sprintf(i18n.invalid, { linkStart: '', linkEnd: '' }),
+      );
     });
 
     it('shows the learn more link', () => {
-      expect(findLearnMoreLink().attributes('href')).toBe(mockYmlHelpPagePath);
-      expect(findLearnMoreLink().text()).toBe('Learn more');
+      expect(findValidationMsg().exists()).toBe(true);
+      expect(findValidationMsg().text()).toBe('Learn more');
+      expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
     });
 
     describe('with multiple errors', () => {
@@ -140,11 +147,16 @@ describe('Validation segment component', () => {
           },
         });
       });
+
+      it('shows the learn more link', () => {
+        expect(findValidationMsg().exists()).toBe(true);
+        expect(findValidationMsg().text()).toBe('Learn more');
+        expect(findHelpLink().attributes('href')).toBe(mockYmlHelpPagePath);
+      });
+
       it('shows an invalid state with an error', () => {
-        // Test the error is shown _and_ the string matches
-        expect(findValidationMsg().text()).toContain(firstError);
-        expect(findValidationMsg().text()).toBe(
-          sprintf(i18n.invalidWithReason, { reason: firstError }),
+        expect(findValidationSegment().text()).toBe(
+          sprintf(i18n.invalidWithReason, { reason: firstError, linkStart: '', linkEnd: '' }),
         );
       });
     });
@@ -163,10 +175,8 @@ describe('Validation segment component', () => {
         });
       });
       it('shows an invalid state with an error while preventing XSS', () => {
-        const { innerHTML } = findValidationMsg().element;
-
-        expect(innerHTML).not.toContain(evilError);
-        expect(innerHTML).toContain(escape(evilError));
+        expect(findValidationSegment().html()).not.toContain(evilError);
+        expect(findValidationSegment().html()).toContain(escape(evilError));
       });
     });
   });
@@ -182,16 +192,18 @@ describe('Validation segment component', () => {
     });
 
     it('show a message that the service is unavailable', () => {
-      expect(findValidationMsg().text()).toBe(i18n.unavailableValidation);
+      expect(findValidationSegment().text()).toBe(
+        sprintf(i18n.unavailableValidation, { linkStart: '', linkEnd: '' }),
+      );
     });
 
     it('shows the time-out icon', () => {
       expect(findIcon().props('name')).toBe('time-out');
     });
 
-    it('shows the learn more link', () => {
-      expect(findLearnMoreLink().attributes('href')).toBe(mockLintUnavailableHelpPagePath);
-      expect(findLearnMoreLink().text()).toBe(i18n.learnMore);
+    it('shows the link to ci troubleshooting', () => {
+      expect(findValidationMsg().exists()).toBe(true);
+      expect(findHelpLink().attributes('href')).toBe(mockCiTroubleshootingPath);
     });
   });
 });

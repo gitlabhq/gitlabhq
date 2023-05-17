@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## RPCs
 
-Gitaly is a wrapper around the `git` binary, running in a [Gitaly Cluster](../../../administration/gitaly/index.md). It provides managed access to the file system housing the `git` repositories, via Golang Remote Procedure Calls (RPCs). Other functions are access optimization, caching, and a form of pagination against the file system.
+Gitaly is a wrapper around the `git` binary, running in a [Gitaly Cluster](../../../administration/gitaly/index.md). It provides managed access to the file system housing the `git` repositories, using Go Remote Procedure Calls (RPCs). Other functions are access optimization, caching, and a form of pagination against the file system.
 
 The comprehensive [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md) is focused on making updates to Gitaly, and offers many insights into how to understand the Gitaly code.
 

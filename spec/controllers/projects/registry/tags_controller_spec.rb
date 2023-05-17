@@ -76,11 +76,8 @@ RSpec.describe Projects::Registry::TagsController do
 
     def get_tags
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project,
-                    repository_id: repository
-                  },
-                  format: :json
+        namespace_id: project.namespace, project_id: project, repository_id: repository
+      }, format: :json
     end
   end
 
@@ -121,12 +118,11 @@ RSpec.describe Projects::Registry::TagsController do
 
     def destroy_tag(name)
       post :destroy, params: {
-                       namespace_id: project.namespace,
-                       project_id: project,
-                       repository_id: repository,
-                       id: name
-                     },
-                     format: :json
+        namespace_id: project.namespace,
+        project_id: project,
+        repository_id: repository,
+        id: name
+      }, format: :json
     end
   end
 
@@ -162,12 +158,11 @@ RSpec.describe Projects::Registry::TagsController do
 
     def bulk_destroy_tags(names)
       post :bulk_destroy, params: {
-                       namespace_id: project.namespace,
-                       project_id: project,
-                       repository_id: repository,
-                       ids: names
-                     },
-                          format: :json
+        namespace_id: project.namespace,
+        project_id: project,
+        repository_id: repository,
+        ids: names
+      }, format: :json
     end
   end
 

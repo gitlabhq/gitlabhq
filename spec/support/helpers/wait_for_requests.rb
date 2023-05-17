@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'wait_helpers'
+
 module WaitForRequests
+  include WaitHelpers
   extend self
 
   # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests

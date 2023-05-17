@@ -2,20 +2,20 @@
 
 module API
   class Lint < ::API::Base
-    feature_category :pipeline_authoring
+    feature_category :pipeline_composition
 
     helpers do
       def can_lint_ci?
         signup_unrestricted = Gitlab::CurrentSettings.signup_enabled? && !Gitlab::CurrentSettings.signup_limited?
         internal_user = current_user.present? && !current_user.external?
-        is_developer = current_user.present? && current_user.projects.any? { |p| p.team.member?(current_user, Gitlab::Access::DEVELOPER) }
+        is_developer = current_user.present? && current_user.projects.any? { |p| p.member?(current_user, Gitlab::Access::DEVELOPER) }
 
         signup_unrestricted || internal_user || is_developer
       end
     end
 
     namespace :ci do
-      desc 'Validates the .gitlab-ci.yml content' do
+      desc 'REMOVED: Validates the .gitlab-ci.yml content' do
         detail 'Checks if CI/CD YAML configuration is valid'
         success code: 200, model: Entities::Ci::Lint::Result
         tags %w[ci_lint]
@@ -28,16 +28,7 @@ module API
       end
 
       post '/lint', urgency: :low do
-        unauthorized! unless can_lint_ci?
-
-        result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)
-          .validate(params[:content], dry_run: false)
-
-        status 200
-        Entities::Ci::Lint::Result.represent(result, current_user: current_user, include_jobs: params[:include_jobs]).serializable_hash.tap do |presented_result|
-          presented_result[:status] = presented_result[:valid] ? 'valid' : 'invalid'
-          presented_result.delete(:merged_yaml) unless params[:include_merged_yaml]
-        end
+        render_api_error!('410 Gone', 410)
       end
     end
 
@@ -56,7 +47,7 @@ module API
       end
 
       get ':id/ci/lint', urgency: :low do
-        authorize! :read_code, user_project
+        authorize_read_code!
 
         if user_project.commit.present?
           content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)

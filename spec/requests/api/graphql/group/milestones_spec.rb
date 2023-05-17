@@ -35,12 +35,6 @@ RSpec.describe 'Milestones through GroupQuery', feature_category: :team_planning
     end
 
     context 'when filtering by timeframe' do
-      it 'fetches milestones between start_date and due_date' do
-        fetch_milestones(user, { start_date: now.to_s, end_date: (now + 2.days).to_s })
-
-        expect_array_response(milestone_2.to_global_id.to_s, milestone_3.to_global_id.to_s)
-      end
-
       it 'fetches milestones between timeframe start and end arguments' do
         today = Date.today
         fetch_milestones(user, { timeframe: { start: today.to_s, end: (today + 2.days).to_s } })

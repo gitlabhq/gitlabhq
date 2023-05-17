@@ -38,7 +38,7 @@ export default {
   <span>
     <span ref="issueTimeEstimate" class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help">
       <gl-icon name="hourglass" class="board-card-info-icon gl-mr-2" />
-      <time class="board-card-info-text">{{ timeEstimate }}</time>
+      <time class="gl-font-sm board-card-info-text">{{ timeEstimate }}</time>
     </span>
     <gl-tooltip
       :target="() => $refs.issueTimeEstimate"

@@ -1,50 +1,51 @@
 - merged = local_assigns.fetch(:merged, false)
 - commit = @repository.commit(branch.dereferenced_target)
 - merge_project = merge_request_source_project_for_project(@project)
-%li{ class: "branch-item gl-display-flex! gl-align-items-center! js-branch-item js-branch-#{branch.name}", data: { name: branch.name, qa_selector: 'branch_container', qa_name: branch.name } }
-  .branch-info
-    .gl-display-flex.gl-align-items-center
-      = sprite_icon('branch', size: 12, css_class: 'gl-flex-shrink-0')
-      = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3', data: { qa_selector: 'branch_link' } do
-        = branch.name
-      = clipboard_button(text: branch.name, title: _("Copy branch name"))
-      - if branch.name == @repository.root_ref
-        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
-      - elsif merged
-        = gl_badge_tag s_('Branches|merged'), { variant: :info, size: :sm }, { class: 'gl-ml-2', title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref }, data: { toggle: 'tooltip', container: 'body', qa_selector: 'badge_content' } }
-      - if protected_branch?(@project, branch)
-        = gl_badge_tag s_('Branches|protected'), { variant: :success, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
+%li{ class: "branch-item gl-py-3! js-branch-item js-branch-#{branch.name}", data: { name: branch.name, qa_selector: 'branch_container', qa_name: branch.name } }
+  .branch-item-content.gl-display-flex.gl-align-items-center.gl-px-3.gl-py-2
+    .branch-info
+      .gl-display-flex.gl-align-items-center
+        = sprite_icon('branch', size: 12, css_class: 'gl-flex-shrink-0')
+        = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3', data: { qa_selector: 'branch_link' } do
+          = branch.name
+        = clipboard_button(text: branch.name, title: _("Copy branch name"))
+        - if branch.name == @repository.root_ref
+          = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
+        - elsif merged
+          = gl_badge_tag s_('Branches|merged'), { variant: :info, size: :sm }, { class: 'gl-ml-2', title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref }, data: { toggle: 'tooltip', container: 'body', qa_selector: 'badge_content' } }
+        - if protected_branch?(@project, branch)
+          = gl_badge_tag s_('Branches|protected'), { variant: :success, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
 
-      = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
+        = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 
-    .block-truncated
-      - if commit
-        = render 'projects/branches/commit', commit: commit, project: @project
-      - else
-        = s_('Branches|Can’t find HEAD commit for this branch')
-
-  - if branch.name != @repository.root_ref
-    .js-branch-divergence-graph
-
-  .controls.d-none.d-md-block<
-    - if commit_status
-      = render 'ci/status/icon', size: 24, status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
-    - elsif show_commit_status
-      .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
-        %svg.s24
-
-    - if merge_project && create_mr_button?(from: branch.name, source_project: @project)
-      = render Pajamas::ButtonComponent.new(href: create_mr_path(from: branch.name, source_project: @project)) do
-        = _('Merge request')
+      .block-truncated
+        - if commit
+          = render 'projects/branches/commit', commit: commit, project: @project
+        - else
+          = s_('Branches|Can’t find HEAD commit for this branch')
 
     - if branch.name != @repository.root_ref
-      = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
-        class: "gl-button btn btn-default js-onboarding-compare-branches #{'gl-ml-3' unless merge_project}",
-        method: :post,
-        title: s_('Branches|Compare') do
-        = s_('Branches|Compare')
+      .js-branch-divergence-graph
 
-    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
+    .controls.d-none.d-md-block<
+      - if commit_status
+        = render 'ci/status/icon', size: 24, status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
+      - elsif show_commit_status
+        .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
+          %svg.s24
 
-    - if can?(current_user, :push_code, @project)
-      = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged
+      - if merge_project && create_mr_button?(from: branch.name, source_project: @project)
+        = render Pajamas::ButtonComponent.new(href: create_mr_path(from: branch.name, source_project: @project)) do
+          = _('Merge request')
+
+      - if branch.name != @repository.root_ref
+        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
+          class: "gl-button btn btn-default js-onboarding-compare-branches #{'gl-ml-3' unless merge_project}",
+          method: :post,
+          title: s_('Branches|Compare') do
+          = s_('Branches|Compare')
+
+      = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
+
+      - if can?(current_user, :push_code, @project)
+        = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged

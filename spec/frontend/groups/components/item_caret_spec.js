@@ -15,13 +15,6 @@ describe('ItemCaret', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findAllGlIcons = () => wrapper.findAllComponents(GlIcon);
   const findGlIcon = () => wrapper.findComponent(GlIcon);
 

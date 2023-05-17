@@ -1,27 +1,60 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlDropdown } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
+import waitForPromises from 'helpers/wait_for_promises';
+
+import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+
+import createApolloProvider from 'helpers/mock_apollo_helper';
 
 const defaultMockRoute = {
   name: 'blobPath',
 };
 
+const TEST_PROJECT_PATH = 'test-project/path';
+
+Vue.use(VueApollo);
+
 describe('Repository breadcrumbs component', () => {
   let wrapper;
+  let permissionsQuerySpy;
 
-  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
-    const $apollo = {
-      queries: {
+  const createPermissionsQueryResponse = ({
+    pushCode = false,
+    forkProject = false,
+    createMergeRequestIn = false,
+  } = {}) => ({
+    data: {
+      project: {
+        id: 1,
+        __typename: '__typename',
         userPermissions: {
-          loading: true,
+          __typename: '__typename',
+          pushCode,
+          forkProject,
+          createMergeRequestIn,
         },
       },
-    };
+    },
+  });
+
+  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
+    const apolloProvider = createApolloProvider([[permissionsQuery, permissionsQuerySpy]]);
+
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: projectPathQuery,
+      data: {
+        projectPath: TEST_PROJECT_PATH,
+      },
+    });
 
     wrapper = shallowMount(Breadcrumbs, {
+      apolloProvider,
       propsData: {
         currentPath,
         ...extraProps,
@@ -34,16 +67,28 @@ describe('Repository breadcrumbs component', () => {
           defaultMockRoute,
           ...mockRoute,
         },
-        $apollo,
       },
     });
   };
 
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findNewDirectoryModal = () => wrapper.findComponent(NewDirectoryModal);
+  const findRouterLink = () => wrapper.findAllComponents(RouterLinkStub);
 
-  afterEach(() => {
-    wrapper.destroy();
+  beforeEach(() => {
+    permissionsQuerySpy = jest.fn().mockResolvedValue(createPermissionsQueryResponse());
+  });
+
+  it('queries for permissions', async () => {
+    factory('/');
+
+    // We need to wait for the projectPath query to resolve
+    await waitForPromises();
+
+    expect(permissionsQuerySpy).toHaveBeenCalledWith({
+      projectPath: TEST_PROJECT_PATH,
+    });
   });
 
   it.each`
@@ -55,7 +100,7 @@ describe('Repository breadcrumbs component', () => {
   `('renders $linkCount links for path $path', ({ path, linkCount }) => {
     factory(path);
 
-    expect(wrapper.findAllComponents(RouterLinkStub).length).toEqual(linkCount);
+    expect(findRouterLink().length).toEqual(linkCount);
   });
 
   it.each`
@@ -68,36 +113,27 @@ describe('Repository breadcrumbs component', () => {
     'links to the correct router path when routeName is $routeName',
     ({ routeName, path, linkTo }) => {
       factory(path, {}, { name: routeName });
-      expect(wrapper.findAllComponents(RouterLinkStub).at(3).props('to')).toEqual(linkTo);
+      expect(findRouterLink().at(3).props('to')).toEqual(linkTo);
     },
   );
 
   it('escapes hash in directory path', () => {
     factory('app/assets/javascripts#');
 
-    expect(wrapper.findAllComponents(RouterLinkStub).at(3).props('to')).toEqual(
-      '/-/tree/app/assets/javascripts%23',
-    );
+    expect(findRouterLink().at(3).props('to')).toEqual('/-/tree/app/assets/javascripts%23');
   });
 
   it('renders last link as active', () => {
     factory('app/assets');
 
-    expect(wrapper.findAllComponents(RouterLinkStub).at(2).attributes('aria-current')).toEqual(
-      'page',
-    );
+    expect(findRouterLink().at(2).attributes('aria-current')).toEqual('page');
   });
 
   it('does not render add to tree dropdown when permissions are false', async () => {
-    factory('/', { canCollaborate: false });
-
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
-
+    factory('/', { canCollaborate: false }, {});
     await nextTick();
 
-    expect(wrapper.findComponent(GlDropdown).exists()).toBe(false);
+    expect(findDropdown().exists()).toBe(false);
   });
 
   it.each`
@@ -111,20 +147,19 @@ describe('Repository breadcrumbs component', () => {
     'does render add to tree dropdown $isRendered when route is $routeName',
     ({ routeName, isRendered }) => {
       factory('app/assets/javascripts.js', { canCollaborate: true }, { name: routeName });
-      expect(wrapper.findComponent(GlDropdown).exists()).toBe(isRendered);
+      expect(findDropdown().exists()).toBe(isRendered);
     },
   );
 
   it('renders add to tree dropdown when permissions are true', async () => {
+    permissionsQuerySpy.mockResolvedValue(
+      createPermissionsQueryResponse({ forkProject: true, createMergeRequestIn: true }),
+    );
+
     factory('/', { canCollaborate: true });
-
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
-
     await nextTick();
 
-    expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
+    expect(findDropdown().exists()).toBe(true);
   });
 
   describe('renders the upload blob modal', () => {
@@ -137,10 +172,6 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
-
       await nextTick();
 
       expect(findUploadBlobModal().exists()).toBe(true);
@@ -156,10 +187,6 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
-
       await nextTick();
 
       expect(findNewDirectoryModal().exists()).toBe(true);

@@ -1,10 +1,4 @@
-import {
-  GlSkeletonLoader,
-  GlAlert,
-  GlEmptyState,
-  GlIntersectionObserver,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -12,23 +6,26 @@ import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query.graphql';
+import getJobsCountQuery from '~/jobs/components/table/graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
+import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {
   mockJobsResponsePaginated,
   mockJobsResponseEmpty,
   mockFailedSearchToken,
+  mockJobsCountResponse,
 } from '../../mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Job table app', () => {
   let wrapper;
@@ -37,7 +34,9 @@ describe('Job table app', () => {
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const countSuccessHandler = jest.fn().mockResolvedValue(mockJobsCountResponse);
+
+  const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(JobsTable);
   const findTabs = () => wrapper.findComponent(JobsTableTabs);
@@ -48,14 +47,18 @@ describe('Job table app', () => {
   const triggerInfiniteScroll = () =>
     wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
-  const createMockApolloProvider = (handler) => {
-    const requestHandlers = [[getJobsQuery, handler]];
+  const createMockApolloProvider = (handler, countHandler) => {
+    const requestHandlers = [
+      [getJobsQuery, handler],
+      [getJobsCountQuery, countHandler],
+    ];
 
     return createMockApollo(requestHandlers);
   };
 
   const createComponent = ({
     handler = successHandler,
+    countHandler = countSuccessHandler,
     mountFn = shallowMount,
     data = {},
   } = {}) => {
@@ -68,13 +71,9 @@ describe('Job table app', () => {
       provide: {
         fullPath: projectPath,
       },
-      apolloProvider: createMockApolloProvider(handler),
+      apolloProvider: createMockApolloProvider(handler, countHandler),
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('loading state', () => {
     it('should display skeleton loader when loading', () => {
@@ -118,6 +117,35 @@ describe('Job table app', () => {
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
     });
 
+    it('avoids refetch jobs query when scope has not changed', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+
+      await findTabs().vm.$emit('fetchJobsByStatus', null);
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+    });
+
+    it('should refetch jobs count query when the amount jobs and count do not match', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+
+      // after applying filter a new count is fetched
+      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(1);
+
+      // tab is switched to `finished`, no count
+      await findTabs().vm.$emit('fetchJobsByStatus', ['FAILED', 'SUCCESS', 'CANCELED']);
+
+      // tab is switched back to `all`, the old filter count has to be overwritten with new count
+      await findTabs().vm.$emit('fetchJobsByStatus', null);
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(2);
+    });
+
     describe('when infinite scrolling is triggered', () => {
       it('does not display a skeleton loader', () => {
         triggerInfiniteScroll();
@@ -148,12 +176,39 @@ describe('Job table app', () => {
   });
 
   describe('error state', () => {
-    it('should show an alert if there is an error fetching the data', async () => {
+    it('should show an alert if there is an error fetching the jobs data', async () => {
       createComponent({ handler: failedHandler });
 
       await waitForPromises();
 
-      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().text()).toBe('There was an error fetching the jobs for your project.');
+      expect(findTable().exists()).toBe(false);
+    });
+
+    it('should show an alert if there is an error fetching the jobs count data', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(
+        'There was an error fetching the number of jobs for your project.',
+      );
+    });
+
+    it('jobs table should still load if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('jobs count should be zero if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTabs().props('allJobsCount')).toBe(0);
     });
   });
 
@@ -215,6 +270,18 @@ describe('Job table app', () => {
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
     });
 
+    it('refetches jobs count query when filtering', async () => {
+      createComponent();
+
+      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(1);
+    });
+
     it('shows raw text warning when user inputs raw text', async () => {
       const expectedWarning = {
         message: s__(
@@ -226,11 +293,13 @@ describe('Job table app', () => {
       createComponent();
 
       jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
+      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
 
       expect(createAlert).toHaveBeenCalledWith(expectedWarning);
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
     });
 
     it('updates URL query string when filtering jobs by status', async () => {
@@ -242,6 +311,43 @@ describe('Job table app', () => {
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?statuses=FAILED`,
+      });
+    });
+
+    it('resets query param after clearing tokens', () => {
+      createComponent();
+
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: 30,
+        fullPath: 'gitlab-org/gitlab',
+        statuses: 'FAILED',
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        statuses: 'FAILED',
+      });
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?statuses=FAILED`,
+      });
+
+      findFilteredSearch().vm.$emit('filterJobsBySearch', []);
+
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/`,
+      });
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: 30,
+        fullPath: 'gitlab-org/gitlab',
+        statuses: null,
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        statuses: null,
       });
     });
   });

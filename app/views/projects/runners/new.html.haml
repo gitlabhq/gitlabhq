@@ -1,0 +1,5 @@
+- add_to_breadcrumbs _('CI/CD Settings'), project_settings_ci_cd_path(@project)
+- breadcrumb_title s_('Runners|New runner')
+- page_title s_('Runners|Create a project runner')
+
+#js-project-new-runner{ data: { project_id: @project.to_global_id } }

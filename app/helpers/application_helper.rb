@@ -181,14 +181,14 @@ module ApplicationHelper
     css_classes << html_class unless html_class.blank?
 
     content_tag :time, l(time, format: "%b %d, %Y"),
-                class: css_classes.join(' '),
-                title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
-                datetime: time.to_time.getutc.iso8601,
-                data: {
-                  toggle: 'tooltip',
-                  placement: placement,
-                  container: 'body'
-                }
+      class: css_classes.join(' '),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
+      datetime: time.to_time.getutc.iso8601,
+      data: {
+        toggle: 'tooltip',
+        placement: placement,
+        container: 'body'
+      }
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
@@ -200,7 +200,7 @@ module ApplicationHelper
 
       if !exclude_author && object.last_edited_by
         output << content_tag(:span, ' by ')
-        output << link_to_member(object.project, object.last_edited_by, avatar: false, author_class: nil)
+        output << link_to_member(object.project, object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline', author_class: nil)
       end
 
       output
@@ -276,12 +276,16 @@ module ApplicationHelper
     if startup_css_enabled?
       stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
     else
-      stylesheet_link_tag(path, crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+      stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
     end
   end
 
   def startup_css_enabled?
-    !params.has_key?(:no_startup_css)
+    !Feature.enabled?(:remove_startup_css) && !params.has_key?(:no_startup_css)
+  end
+
+  def sign_in_with_redirect?
+    current_page?(new_user_session_path) && session[:user_return_to].present?
   end
 
   def outdated_browser?
@@ -316,6 +320,7 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
+    class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar
     class_names << system_message_class
     class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com?
 
@@ -372,6 +377,12 @@ module ApplicationHelper
 
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
+  end
+
+  def collapsed_super_sidebar?
+    return false if @force_desktop_expanded_sidebar
+
+    cookies["super_sidebar_collapsed"] == "true"
   end
 
   def locale_path

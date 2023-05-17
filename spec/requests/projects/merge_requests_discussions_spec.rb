@@ -27,6 +27,21 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
     end
     # rubocop:enable RSpec/InstanceVariable
 
+    shared_examples 'N+1 queries' do
+      it 'avoids N+1 DB queries', :request_store do
+        send_request # warm up
+
+        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+        control = ActiveRecord::QueryRecorder.new { send_request }
+
+        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+
+        expect do
+          send_request
+        end.not_to exceed_query_limit(control).with_threshold(notes_metadata_threshold)
+      end
+    end
+
     it 'returns 200' do
       send_request
 
@@ -34,17 +49,20 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
     end
 
     # https://docs.gitlab.com/ee/development/query_recorder.html#use-request-specs-instead-of-controller-specs
-    it 'avoids N+1 DB queries', :request_store do
-      send_request # warm up
+    context 'with notes_metadata_threshold' do
+      let(:notes_metadata_threshold) { 1 }
 
-      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
-      control = ActiveRecord::QueryRecorder.new { send_request }
+      it_behaves_like 'N+1 queries'
 
-      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+      context 'when external_note_author_service_desk feature flag is disabled' do
+        let(:notes_metadata_threshold) { 0 }
 
-      expect do
-        send_request
-      end.not_to exceed_query_limit(control)
+        before do
+          stub_feature_flags(external_note_author_service_desk: false)
+        end
+
+        it_behaves_like 'N+1 queries'
+      end
     end
 
     it 'limits Gitaly queries', :request_store do
@@ -59,7 +77,7 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
         .to change { Gitlab::GitalyClient.get_request_count }.by_at_most(4)
     end
 
-    context 'caching', :use_clean_rails_memory_store_caching do
+    context 'caching' do
       let(:reference) { create(:issue, project: project) }
       let(:author) { create(:user) }
       let!(:first_note) { create(:diff_note_on_merge_request, author: author, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
@@ -81,193 +99,180 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
 
       shared_examples 'cache hit' do
         it 'gets cached on subsequent requests' do
-          expect_next_instance_of(DiscussionSerializer) do |serializer|
-            expect(serializer).not_to receive(:represent)
-          end
+          expect(DiscussionSerializer).not_to receive(:new)
 
           send_request
         end
       end
 
-      context 'when mr_discussions_http_cache and disabled_mr_discussions_redis_cache are enabled' do
+      before do
+        send_request
+      end
+
+      it_behaves_like 'cache hit'
+
+      context 'when a note in a discussion got updated' do
         before do
-          send_request
+          first_note.update!(updated_at: 1.minute.from_now)
         end
 
-        it_behaves_like 'cache hit'
-
-        context 'when a note in a discussion got updated' do
-          before do
-            first_note.update!(updated_at: 1.minute.from_now)
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when a note in a discussion got its reference state updated' do
-          before do
-            reference.close!
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when a note in a discussion got resolved' do
-          before do
-            travel_to(1.minute.from_now) do
-              first_note.resolve!(user)
-            end
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when a note is added to a discussion' do
-          let!(:third_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note, third_note] }
-          end
-        end
-
-        context 'when a note is removed from a discussion' do
-          before do
-            second_note.destroy!
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note] }
-          end
-        end
-
-        context 'when an emoji is awarded to a note in discussion' do
-          before do
-            travel_to(1.minute.from_now) do
-              create(:award_emoji, awardable: first_note)
-            end
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when an award emoji is removed from a note in discussion' do
-          before do
-            travel_to(1.minute.from_now) do
-              award_emoji.destroy!
-            end
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when the diff note position changes' do
-          before do
-            # This replicates a position change wherein timestamps aren't updated
-            # which is why `Gitlab::Timeless.timeless` is utilized. This is the
-            # same approach being used in Discussions::UpdateDiffPositionService
-            # which is responsible for updating the positions of diff discussions
-            # when MR updates.
-            first_note.position = Gitlab::Diff::Position.new(
-              old_path: first_note.position.old_path,
-              new_path: first_note.position.new_path,
-              old_line: first_note.position.old_line,
-              new_line: first_note.position.new_line + 1,
-              diff_refs: first_note.position.diff_refs
-            )
-
-            Gitlab::Timeless.timeless(first_note, &:save)
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when the HEAD diff note position changes' do
-          before do
-            # This replicates a DiffNotePosition change. This is the same approach
-            # being used in Discussions::CaptureDiffNotePositionService which is
-            # responsible for updating/creating DiffNotePosition of a diff discussions
-            # in relation to HEAD diff.
-            new_position = Gitlab::Diff::Position.new(
-              old_path: first_note.position.old_path,
-              new_path: first_note.position.new_path,
-              old_line: first_note.position.old_line,
-              new_line: first_note.position.new_line + 1,
-              diff_refs: first_note.position.diff_refs
-            )
-
-            DiffNotePosition.create_or_update_for(
-              first_note,
-              diff_type: :head,
-              position: new_position,
-              line_code: 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521'
-            )
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when author detail changes' do
-          before do
-            author.update!(name: "#{author.name} (Updated)")
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when author status changes' do
-          before do
-            Users::SetStatusService.new(author, message: "updated status").execute
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when author role changes' do
-          before do
-            Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(author_membership)
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
-        end
-
-        context 'when current_user role changes' do
-          before do
-            Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.member(user))
-          end
-
-          it_behaves_like 'cache miss' do
-            let(:changed_notes) { [first_note, second_note] }
-          end
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
         end
       end
 
-      context 'when disabled_mr_discussions_redis_cache is disabled' do
+      context 'when a note in a discussion got its reference state updated' do
         before do
-          stub_feature_flags(disabled_mr_discussions_redis_cache: false)
-          send_request
+          reference.close!
         end
 
-        it_behaves_like 'cache hit'
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note in a discussion got resolved' do
+        before do
+          travel_to(1.minute.from_now) do
+            first_note.resolve!(user)
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note is added to a discussion' do
+        let!(:third_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note, third_note] }
+        end
+      end
+
+      context 'when a note is removed from a discussion' do
+        before do
+          second_note.destroy!
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note] }
+        end
+      end
+
+      context 'when an emoji is awarded to a note in discussion' do
+        before do
+          travel_to(1.minute.from_now) do
+            create(:award_emoji, awardable: first_note)
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when an award emoji is removed from a note in discussion' do
+        before do
+          travel_to(1.minute.from_now) do
+            award_emoji.destroy!
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when the diff note position changes' do
+        before do
+          # This replicates a position change wherein timestamps aren't updated
+          # which is why `save(touch: false)` is utilized. This is the same
+          # approach being used in Discussions::UpdateDiffPositionService which
+          # is responsible for updating the positions of diff discussions when
+          # MR updates.
+          first_note.position = Gitlab::Diff::Position.new(
+            old_path: first_note.position.old_path,
+            new_path: first_note.position.new_path,
+            old_line: first_note.position.old_line,
+            new_line: first_note.position.new_line + 1,
+            diff_refs: first_note.position.diff_refs
+          )
+
+          first_note.save!(touch: false)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when the HEAD diff note position changes' do
+        before do
+          # This replicates a DiffNotePosition change. This is the same approach
+          # being used in Discussions::CaptureDiffNotePositionService which is
+          # responsible for updating/creating DiffNotePosition of a diff discussions
+          # in relation to HEAD diff.
+          new_position = Gitlab::Diff::Position.new(
+            old_path: first_note.position.old_path,
+            new_path: first_note.position.new_path,
+            old_line: first_note.position.old_line,
+            new_line: first_note.position.new_line + 1,
+            diff_refs: first_note.position.diff_refs
+          )
+
+          DiffNotePosition.create_or_update_for(
+            first_note,
+            diff_type: :head,
+            position: new_position,
+            line_code: 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521'
+          )
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author detail changes' do
+        before do
+          author.update!(name: "#{author.name} (Updated)")
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author status changes' do
+        before do
+          Users::SetStatusService.new(author, message: "updated status").execute
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author role changes' do
+        before do
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(author_membership)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when current_user role changes' do
+        before do
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.member(user))
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
       end
     end
   end

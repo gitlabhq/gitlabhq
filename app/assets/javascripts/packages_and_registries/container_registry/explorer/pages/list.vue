@@ -1,8 +1,8 @@
 <script>
 import {
+  GlButton,
   GlEmptyState,
   GlTooltipDirective,
-  GlModal,
   GlSprintf,
   GlLink,
   GlAlert,
@@ -10,31 +10,33 @@ import {
 } from '@gitlab/ui';
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import DeleteImage from '../components/delete_image.vue';
 import RegistryHeader from '../components/list_page/registry_header.vue';
+import DeleteModal from '../components/delete_modal.vue';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
   CONNECTION_ERROR_TITLE,
   CONNECTION_ERROR_MESSAGE,
-  REMOVE_REPOSITORY_MODAL_TEXT,
-  REMOVE_REPOSITORY_LABEL,
   EMPTY_RESULT_TITLE,
   EMPTY_RESULT_MESSAGE,
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   SORT_FIELDS,
+  SETTINGS_TEXT,
 } from '../constants/index';
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
 
 export default {
   name: 'RegistryListPage',
   components: {
+    GlButton,
     GlEmptyState,
     ProjectEmptyState: () =>
       import(
@@ -52,7 +54,7 @@ export default {
       import(
         /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
       ),
-    GlModal,
+    DeleteModal,
     GlSprintf,
     GlLink,
     GlAlert,
@@ -74,10 +76,9 @@ export default {
   i18n: {
     CONNECTION_ERROR_TITLE,
     CONNECTION_ERROR_MESSAGE,
-    REMOVE_REPOSITORY_MODAL_TEXT,
-    REMOVE_REPOSITORY_LABEL,
     EMPTY_RESULT_TITLE,
     EMPTY_RESULT_MESSAGE,
+    SETTINGS_TEXT,
   },
   searchConfig: SORT_FIELDS,
   apollo: {
@@ -144,8 +145,11 @@ export default {
       }
       return [];
     },
+    itemsToBeDeleted() {
+      return this.itemToDelete?.id ? [this.itemToDelete] : [];
+    },
     graphqlResource() {
-      return this.config.isGroupPage ? 'group' : 'project';
+      return this.config.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     queryVariables() {
       return {
@@ -306,6 +310,13 @@ export default {
             :docker-push-command="dockerPushCommand"
             :docker-login-command="dockerLoginCommand"
           />
+          <gl-button
+            v-if="config.showContainerRegistrySettings"
+            v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
+            icon="settings"
+            :href="config.cleanupPoliciesSettingsPath"
+            :aria-label="$options.i18n.SETTINGS_TEXT"
+          />
         </template>
       </registry-header>
       <persisted-search
@@ -367,26 +378,13 @@ export default {
         @end="mutationLoading = false"
       >
         <template #default="{ doDelete }">
-          <gl-modal
+          <delete-modal
             ref="deleteModal"
-            size="sm"
-            modal-id="delete-image-modal"
-            :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-              text: __('Remove'),
-              attributes: { variant: 'danger' },
-            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-            @primary="doDelete"
+            :items-to-be-deleted="itemsToBeDeleted"
+            delete-image
+            @confirmDelete="doDelete"
             @cancel="track('cancel_delete')"
-          >
-            <template #modal-title>{{ $options.i18n.REMOVE_REPOSITORY_LABEL }}</template>
-            <p>
-              <gl-sprintf :message="$options.i18n.REMOVE_REPOSITORY_MODAL_TEXT">
-                <template #title>
-                  <b>{{ itemToDelete.path }}</b>
-                </template>
-              </gl-sprintf>
-            </p>
-          </gl-modal>
+          />
         </template>
       </delete-image>
     </template>

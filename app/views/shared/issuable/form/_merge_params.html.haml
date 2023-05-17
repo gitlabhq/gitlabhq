@@ -9,22 +9,25 @@
     %label
       = _('Merge options')
     - if issuable.can_remove_source_branch?(current_user)
-      .form-check.gl-mb-3
+      .form-check.gl-pl-0
         = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
-        = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?, class: 'form-check-input js-form-update'
-        = label_tag 'merge_request[force_remove_source_branch]', class: 'form-check-label' do
-          = _("Delete source branch when merge request is accepted.")
+        = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[force_remove_source_branch]', checked: issuable.force_remove_source_branch?, value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
+          = c.label do
+            = _("Delete source branch when merge request is accepted.")
+
     - if !project.squash_never?
-      .form-check
+      .form-check.gl-pl-0
         - if project.squash_always?
           = hidden_field_tag 'merge_request[squash]', '1', id: nil
-          = check_box_tag 'merge_request[squash]', '1', project.squash_enabled_by_default?, class: 'form-check-input', disabled: 'true'
+          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: project.squash_enabled_by_default?, value: '1', checkbox_options: { class: 'js-form-update', disabled: true }) do |c|
+            = c.label do
+              = _("Squash commits when merge request is accepted.")
+              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank', rel: 'noopener noreferrer'
+            = c.help_text do
+              = _('Required in this project.')
         - else
           = hidden_field_tag 'merge_request[squash]', '0', id: nil
-          = check_box_tag 'merge_request[squash]', '1', issuable_squash_option?(issuable, project), class: 'form-check-input js-form-update'
-        = label_tag 'merge_request[squash]', class: 'form-check-label' do
-          = _("Squash commits when merge request is accepted.")
-          = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank', rel: 'noopener noreferrer'
-        - if project.squash_always?
-          .gl-text-gray-400
-            = _('Required in this project.')
+          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: issuable_squash_option?(issuable, project), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
+            = c.label do
+              = _("Squash commits when merge request is accepted.")
+              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank', rel: 'noopener noreferrer'

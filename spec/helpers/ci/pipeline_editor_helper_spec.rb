@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper do
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   describe 'can_view_pipeline_editor?' do
     subject { helper.can_view_pipeline_editor?(project) }
@@ -29,12 +30,12 @@ RSpec.describe Ci::PipelineEditorHelper do
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),
         "ci-lint-path" => project_ci_lint_path(project),
+        "ci-troubleshooting-path" => help_page_path('ci/troubleshooting', anchor: 'common-cicd-issues'),
         "default-branch" => project.default_branch_or_main,
         "empty-state-illustration-path" => 'illustrations/empty.svg',
         "initial-branch-name" => nil,
         "includes-help-page-path" => help_page_path('ci/yaml/includes'),
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
-        "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
         "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
         "new-merge-request-path" => '/mock/project/-/merge_requests/new',
         "pipeline-page-path" => project_pipelines_path(project),
@@ -62,6 +63,10 @@ RSpec.describe Ci::PipelineEditorHelper do
         .to receive(:image_path)
         .with('illustrations/project-run-CICD-pipelines-sm.svg')
         .and_return('illustrations/validate.svg')
+
+      allow(helper)
+        .to receive(:current_user)
+        .and_return(user)
     end
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }

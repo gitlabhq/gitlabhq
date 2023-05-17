@@ -43,6 +43,29 @@ FactoryBot.define do
     end
   end
 
+  factory :gitlab_slack_application_integration, class: 'Integrations::GitlabSlackApplication' do
+    project
+    active { true }
+    type { 'Integrations::GitlabSlackApplication' }
+    slack_integration { association :slack_integration, integration: instance }
+
+    transient do
+      all_channels { true }
+    end
+
+    after(:build) do |integration, evaluator|
+      next unless evaluator.all_channels
+
+      integration.event_channel_names.each do |name|
+        integration.send("#{name}=".to_sym, "##{name}")
+      end
+    end
+
+    trait :all_features_supported do
+      slack_integration { association :slack_integration, :all_features_supported, integration: instance }
+    end
+  end
+
   factory :packagist_integration, class: 'Integrations::Packagist' do
     project
     type { 'Integrations::Packagist' }
@@ -85,9 +108,12 @@ FactoryBot.define do
       api_url { '' }
       username { 'jira_username' }
       password { 'jira_password' }
+      jira_auth_type { 0 }
       jira_issue_transition_automatic { false }
       jira_issue_transition_id { '56-1' }
       issues_enabled { false }
+      jira_issue_prefix { '' }
+      jira_issue_regex { '' }
       project_key { nil }
       vulnerabilities_enabled { false }
       vulnerabilities_issuetype { nil }
@@ -98,6 +124,7 @@ FactoryBot.define do
       if evaluator.create_data
         integration.jira_tracker_data = build(:jira_tracker_data,
           integration: integration, url: evaluator.url, api_url: evaluator.api_url,
+          jira_auth_type: evaluator.jira_auth_type,
           jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
           jira_issue_transition_id: evaluator.jira_issue_transition_id,
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
@@ -199,6 +226,7 @@ FactoryBot.define do
     url { 'https://mysite.atlassian.net' }
     username { 'jira_user' }
     password { 'my-secret-password' }
+    jira_auth_type { 0 }
   end
 
   trait :chat_notification do
@@ -261,7 +289,27 @@ FactoryBot.define do
 
     app_store_issuer_id { 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
     app_store_key_id { 'ABC1' }
-    app_store_private_key { File.read('spec/fixtures/ssl_key.pem') }
+    app_store_private_key_file_name { 'auth_key.p8' }
+    app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
+  end
+
+  factory :google_play_integration, class: 'Integrations::GooglePlay' do
+    project
+    active { true }
+    type { 'Integrations::GooglePlay' }
+
+    package_name { 'com.gitlab.foo.bar' }
+    service_account_key_file_name { 'service_account.json' }
+    service_account_key { File.read('spec/fixtures/service_account.json') }
+  end
+
+  factory :squash_tm_integration, class: 'Integrations::SquashTm' do
+    project
+    active { true }
+    type { 'Integrations::SquashTm' }
+
+    url { 'https://url-to-squash.com' }
+    token { 'squash_tm_token' }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

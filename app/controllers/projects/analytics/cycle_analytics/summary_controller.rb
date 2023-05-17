@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class Projects::Analytics::CycleAnalytics::SummaryController < Projects::ApplicationController
+  extend ::Gitlab::Utils::Override
   include CycleAnalyticsParams
 
   respond_to :json
 
-  feature_category :planning_analytics
+  feature_category :team_planning
 
   before_action :authorize_read_cycle_analytics!
 
@@ -16,6 +17,10 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
   end
 
   private
+
+  def namespace
+    @project.project_namespace
+  end
 
   def project_level
     @project_level ||= Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(allowed_params))

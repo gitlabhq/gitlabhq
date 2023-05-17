@@ -1,6 +1,6 @@
 import { stateFilterData } from '~/search/sidebar/constants/state_filter_data';
 import { confidentialFilterData } from '~/search/sidebar/constants/confidential_filter_data';
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 
 export const MAX_FREQUENT_ITEMS = 5;
 
@@ -17,3 +17,15 @@ export const SIDEBAR_PARAMS = [
 ];
 
 export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };
+
+export const ICON_MAP = {
+  blobs: 'code',
+  issues: 'issues',
+  merge_requests: 'merge-request',
+  commits: 'commit',
+  notes: 'comments',
+  milestones: 'tag',
+  users: 'users',
+  projects: 'project',
+  wiki_blobs: 'overview',
+};

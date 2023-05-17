@@ -23,7 +23,6 @@ fragment Release on Release {
         url
         directAssetUrl
         linkType
-        external
       }
     }
   }

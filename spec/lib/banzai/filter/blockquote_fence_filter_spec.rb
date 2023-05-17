@@ -31,4 +31,8 @@ RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_pl
       end.not_to raise_error
     end
   end
+
+  it_behaves_like 'text filter timeout' do
+    let(:text) { ">>>\ntest\n>>>" }
+  end
 end

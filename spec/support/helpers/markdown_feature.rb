@@ -48,6 +48,10 @@ class MarkdownFeature
     @issue ||= create(:issue, project: project)
   end
 
+  def work_item
+    @issue ||= create(:work_item, project: project)
+  end
+
   def merge_request
     @merge_request ||= create(:merge_request, :simple, source_project: project)
   end
@@ -104,6 +108,10 @@ class MarkdownFeature
 
   def xissue
     @xissue ||= create(:issue, project: xproject)
+  end
+
+  def xwork_item
+    @xwork_item ||= create(:work_item, project: xproject)
   end
 
   def xmerge_request

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::SquashService do
+RSpec.describe MergeRequests::SquashService, feature_category: :source_code_management do
   let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
   let(:user) { project.first_owner }
   let(:project) { create(:project, :repository) }
@@ -13,21 +13,27 @@ RSpec.describe MergeRequests::SquashService do
   end
 
   let(:merge_request_with_one_commit) do
-    create(:merge_request,
-           source_branch: 'feature', source_project: project,
-           target_branch: 'master', target_project: project)
+    create(
+      :merge_request,
+      source_branch: 'feature', source_project: project,
+      target_branch: 'master', target_project: project
+    )
   end
 
   let(:merge_request_with_only_new_files) do
-    create(:merge_request,
-           source_branch: 'video', source_project: project,
-           target_branch: 'master', target_project: project)
+    create(
+      :merge_request,
+      source_branch: 'video', source_project: project,
+      target_branch: 'master', target_project: project
+    )
   end
 
   let(:merge_request_with_large_files) do
-    create(:merge_request,
-           source_branch: 'squash-large-files', source_project: project,
-           target_branch: 'master', target_project: project)
+    create(
+      :merge_request,
+      source_branch: 'squash-large-files', source_project: project,
+      target_branch: 'master', target_project: project
+    )
   end
 
   shared_examples 'the squash succeeds' do

@@ -4,7 +4,6 @@ description: Count of pipelines with implicit runs using the latest SAST IaC tem
 product_section: sec
 product_stage: secure
 product_group: static_analysis
-product_category: SAST
 value_type: number
 status: removed
 milestone: '14.5'

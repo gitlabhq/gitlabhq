@@ -46,14 +46,10 @@ module Preloaders
     end
 
     def all_memberships
-      if Feature.enabled?(:include_memberships_from_group_shares_in_preloader)
-        [
-          direct_memberships.select(*GroupMember.cached_column_list),
-          memberships_from_group_shares
-        ]
-      else
-        [direct_memberships]
-      end
+      [
+        direct_memberships.select(*GroupMember.cached_column_list),
+        memberships_from_group_shares
+      ]
     end
 
     def direct_memberships

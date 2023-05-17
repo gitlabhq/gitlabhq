@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
+RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:issue) { create(:issue, author: user) }
@@ -11,7 +11,8 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
     let_it_be(:events) do
       [
         create(:resource_milestone_event, issue: issue, milestone: milestone, action: :add, created_at: '2020-01-01 04:00'),
-        create(:resource_milestone_event, issue: issue, milestone: milestone, action: :remove, created_at: '2020-01-02 08:00')
+        create(:resource_milestone_event, issue: issue, milestone: milestone, action: :remove, created_at: '2020-01-02 08:00'),
+        create(:resource_milestone_event, issue: issue, milestone: nil, action: :remove, created_at: '2020-01-02 08:00')
       ]
     end
 
@@ -22,7 +23,8 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
       expect(notes.map(&:note)).to eq(
         [
           "changed milestone to %#{milestone.iid}",
-          'removed milestone'
+          "removed milestone %#{milestone.iid}",
+          "removed milestone "
         ])
     end
 

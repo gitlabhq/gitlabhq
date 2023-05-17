@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe UpdateApplicationSettingsContainerRegistryExpPolWorkerCapacityDefault,
-feature_category: :container_registry do
+  feature_category: :container_registry do
   let(:settings) { table(:application_settings) }
 
   context 'with no rows in the application_settings table' do

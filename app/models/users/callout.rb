@@ -43,10 +43,9 @@ module Users
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
       security_training_feature_promotion: 42, # EE-only
-      storage_enforcement_banner_first_enforcement_threshold: 43, # EE-only
-      storage_enforcement_banner_second_enforcement_threshold: 44, # EE-only
-      storage_enforcement_banner_third_enforcement_threshold: 45, # EE-only
-      storage_enforcement_banner_fourth_enforcement_threshold: 46, # EE-only
+      namespace_storage_pre_enforcement_banner: 43, # EE-only
+      # 44, 45, 46 were unused and removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330,
+      # they can be replaced.
       # 47 and 48 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
       # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
       # because the banner was no longer relevant.
@@ -60,12 +59,13 @@ module Users
       namespace_storage_limit_banner_warning_threshold: 56, # EE-only
       namespace_storage_limit_banner_alert_threshold: 57, # EE-only
       namespace_storage_limit_banner_error_threshold: 58, # EE-only
-      project_quality_summary_feedback: 59,       # EE-only
+      project_quality_summary_feedback: 59, # EE-only
       merge_request_settings_moved_callout: 60,
       new_top_level_group_alert: 61,
       artifacts_management_page_feedback_banner: 62,
-      vscode_web_ide: 63,
-      vscode_web_ide_callout: 64
+      # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
+      branch_rules_info_callout: 65,
+      create_runner_workflow_banner: 66
     }
 
     validates :feature_name,

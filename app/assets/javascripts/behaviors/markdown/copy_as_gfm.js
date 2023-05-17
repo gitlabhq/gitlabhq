@@ -164,7 +164,7 @@ export class CopyAsGFM {
 
   static nodeToGFM(node) {
     return Promise.all([
-      import(/* webpackChunkName: 'gfm_copy_extra' */ 'prosemirror-model'),
+      import(/* webpackChunkName: 'gfm_copy_extra' */ '@tiptap/pm/model'),
       import(/* webpackChunkName: 'gfm_copy_extra' */ './schema'),
       import(/* webpackChunkName: 'gfm_copy_extra' */ './serializer'),
     ])

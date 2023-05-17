@@ -70,10 +70,12 @@ export default {
       },
       update(data) {
         const { pipelineSchedules: { nodes: list = [], count } = {} } = data.project || {};
+        const currentUser = data.currentUser || {};
 
         return {
           list,
           count,
+          currentUser,
         };
       },
       error() {
@@ -279,6 +281,7 @@ export default {
         <pipeline-schedules-table
           v-else
           :schedules="schedules.list"
+          :current-user="schedules.currentUser"
           @showTakeOwnershipModal="setTakeOwnershipModal"
           @showDeleteModal="setDeleteModal"
           @playPipelineSchedule="playPipelineSchedule"

@@ -45,12 +45,6 @@ describe('AlertManagementStatus', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('sidebar', () => {
     it('displays the dropdown status header', () => {
       mountComponent({ props: { isSidebar: true } });

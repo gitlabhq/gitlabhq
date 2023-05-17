@@ -71,8 +71,10 @@ describe('Branch rule', () => {
   });
 
   it('renders a detail button with the correct href', () => {
+    const encodedBranchName = encodeURIComponent(branchRulePropsMock.name);
+
     expect(findDetailsButton().attributes('href')).toBe(
-      `${branchRuleProvideMock.branchRulesPath}?branch=${branchRulePropsMock.name}`,
+      `${branchRuleProvideMock.branchRulesPath}?branch=${encodedBranchName}`,
     );
   });
 });

@@ -1,6 +1,7 @@
 package zipartifacts
 
 import (
+	"archive/zip"
 	"context"
 	"fmt"
 	"io"
@@ -11,7 +12,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/httprs"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
-	zip "gitlab.com/gitlab-org/golang-archive-zip"
 	"gitlab.com/gitlab-org/labkit/mask"
 )
 

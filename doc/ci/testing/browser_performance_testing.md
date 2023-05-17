@@ -1,12 +1,17 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 # Browser Performance Testing **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3507) in GitLab 10.3.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388719) in GitLab 15.9
+and is planned for removal in 17.0. This change is a breaking change.
 
 If your application offers a web interface and you're using
 [GitLab CI/CD](../index.md), you can quickly determine the rendering performance

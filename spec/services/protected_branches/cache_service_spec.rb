@@ -3,7 +3,7 @@
 #
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
+RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     subject(:service) { described_class.new(entity, user) }
 
@@ -145,6 +145,7 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
     context 'when feature flag disabled' do
       before do
         stub_feature_flags(group_protected_branches: false)
+        stub_feature_flags(allow_protected_branches_for_group: false)
       end
 
       it_behaves_like 'execute with entity'

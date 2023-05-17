@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'promote_to_incident quick action' do
+  include ListboxHelpers
+
   describe '/promote_to_incident' do
     context 'when issue can be promoted' do
       it 'promotes issue to incident' do
@@ -52,9 +54,11 @@ RSpec.shared_examples 'promote_to_incident quick action' do
       context 'when incident is selected for issue type' do
         it 'promotes issue to incident' do
           visit new_project_issue_path(project)
+          wait_for_requests
+
           fill_in('Title', with: 'Title')
           find('.js-issuable-type-filter-dropdown-wrap').click
-          click_link('Incident')
+          select_listbox_item(_('Incident'))
           fill_in('Description', with: '/promote_to_incident')
           click_button('Create issue')
 

@@ -1,4 +1,5 @@
 import { isEqual } from 'lodash';
+import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import * as constants from '../constants';
 import * as types from './mutation_types';
@@ -319,11 +320,11 @@ export default {
   },
 
   [types.CLOSE_ISSUE](state) {
-    Object.assign(state.noteableData, { state: constants.CLOSED });
+    Object.assign(state.noteableData, { state: STATUS_CLOSED });
   },
 
   [types.REOPEN_ISSUE](state) {
-    Object.assign(state.noteableData, { state: constants.REOPENED });
+    Object.assign(state.noteableData, { state: STATUS_REOPENED });
   },
 
   [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
@@ -430,5 +431,8 @@ export default {
   },
   [types.SET_IS_POLLING_INITIALIZED](state, value) {
     state.isPollingInitialized = value;
+  },
+  [types.SET_MERGE_REQUEST_FILTERS](state, value) {
+    state.mergeRequestFilters = value;
   },
 };

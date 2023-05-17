@@ -40,7 +40,7 @@ module QA
           def go_to_repository_contributors
             hover_repository do
               within_submenu do
-                click_element(:sidebar_menu_item_link, menu_item: 'Contributors')
+                click_element(:sidebar_menu_item_link, menu_item: 'Contributor statistics')
               end
             end
           end

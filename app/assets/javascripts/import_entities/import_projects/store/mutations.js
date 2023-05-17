@@ -23,8 +23,8 @@ const processLegacyEntries = ({ newRepositories, existingRepositories, factory }
 };
 
 export default {
-  [types.SET_FILTER](state, filter) {
-    state.filter = filter;
+  [types.SET_FILTER](state, newFilter) {
+    state.filter = { ...state.filter, ...newFilter };
     state.repositories = [];
     state.pageInfo = {
       page: 0,

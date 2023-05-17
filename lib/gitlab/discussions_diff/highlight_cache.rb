@@ -16,11 +16,11 @@ module Gitlab
         def write_multiple(mapping)
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.multi do |multi|
+              redis.pipelined do |pipelined|
                 mapping.each do |raw_key, value|
                   key = cache_key_for(raw_key)
 
-                  multi.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
+                  pipelined.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
                 end
               end
             end
@@ -41,7 +41,13 @@ module Gitlab
           content =
             with_redis do |redis|
               Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-                redis.mget(keys)
+                if ::Feature.enabled?(:use_pipeline_over_multikey)
+                  redis.pipelined do |pipeline|
+                    keys.each { |key| pipeline.get(key) }
+                  end
+                else
+                  redis.mget(keys)
+                end
               end
             end
 
@@ -66,7 +72,13 @@ module Gitlab
 
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.del(keys)
+              if ::Feature.enabled?(:use_pipeline_over_multikey)
+                redis.pipelined do |pipeline|
+                  keys.each { |key| pipeline.del(key) }
+                end.sum
+              else
+                redis.del(keys)
+              end
             end
           end
         end

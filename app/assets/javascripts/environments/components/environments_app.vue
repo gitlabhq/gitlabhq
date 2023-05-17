@@ -76,7 +76,7 @@ export default {
   inject: ['newEnvironmentPath', 'canCreateEnvironment', 'helpPagePath'],
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
-    reviewAppButtonLabel: s__('Environments|Enable review app'),
+    reviewAppButtonLabel: s__('Environments|Enable review apps'),
     cleanUpEnvsButtonLabel: s__('Environments|Clean up environments'),
     available: __('Available'),
     stopped: __('Stopped'),
@@ -124,11 +124,23 @@ export default {
     hasEnvironments() {
       return this.environments.length > 0 || this.folders.length > 0;
     },
+    showEmptyState() {
+      return !this.$apollo.queries.environmentApp.loading && !this.hasEnvironments;
+    },
     hasSearch() {
       return Boolean(this.search);
     },
     availableCount() {
       return this.environmentApp?.availableCount;
+    },
+    stoppedCount() {
+      return this.environmentApp?.stoppedCount;
+    },
+    hasAnyEnvironment() {
+      return this.availableCount > 0 || this.stoppedCount > 0;
+    },
+    showContent() {
+      return this.hasAnyEnvironment || this.hasSearch;
     },
     addEnvironment() {
       if (!this.canCreateEnvironment) {
@@ -169,9 +181,6 @@ export default {
           variant: 'confirm',
         },
       };
-    },
-    stoppedCount() {
-      return this.environmentApp?.stoppedCount;
     },
     totalItems() {
       return this.pageInfo?.total;
@@ -253,45 +262,45 @@ export default {
     <stop-environment-modal :environment="environmentToStop" graphql />
     <confirm-rollback-modal :environment="environmentToRollback" graphql />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
-    <gl-tabs
-      :action-secondary="openReviewAppModal"
-      :action-primary="openCleanUpEnvsModal"
-      :action-tertiary="addEnvironment"
-      sync-active-tab-with-query-params
-      query-param-name="scope"
-      @secondary="showReviewAppModal"
-      @primary="showCleanUpEnvsModal"
-    >
-      <gl-tab
-        :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"
-        @click="setScope($options.ENVIRONMENTS_SCOPE.AVAILABLE)"
+    <template v-if="showContent">
+      <gl-tabs
+        :action-secondary="openReviewAppModal"
+        :action-primary="openCleanUpEnvsModal"
+        :action-tertiary="addEnvironment"
+        sync-active-tab-with-query-params
+        query-param-name="scope"
+        @secondary="showReviewAppModal"
+        @primary="showCleanUpEnvsModal"
       >
-        <template #title>
-          <span>{{ $options.i18n.available }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
-            {{ availableCount }}
-          </gl-badge>
-        </template>
-      </gl-tab>
-      <gl-tab
-        :query-param-value="$options.ENVIRONMENTS_SCOPE.STOPPED"
-        @click="setScope($options.ENVIRONMENTS_SCOPE.STOPPED)"
-      >
-        <template #title>
-          <span>{{ $options.i18n.stopped }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
-            {{ stoppedCount }}
-          </gl-badge>
-        </template>
-      </gl-tab>
-    </gl-tabs>
-    <gl-search-box-by-type
-      class="gl-mb-4"
-      :value="search"
-      :placeholder="$options.i18n.searchPlaceholder"
-      @input="setSearch"
-    />
-    <template v-if="hasEnvironments">
+        <gl-tab
+          :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"
+          @click="setScope($options.ENVIRONMENTS_SCOPE.AVAILABLE)"
+        >
+          <template #title>
+            <span>{{ $options.i18n.available }}</span>
+            <gl-badge size="sm" class="gl-tab-counter-badge">
+              {{ availableCount }}
+            </gl-badge>
+          </template>
+        </gl-tab>
+        <gl-tab
+          :query-param-value="$options.ENVIRONMENTS_SCOPE.STOPPED"
+          @click="setScope($options.ENVIRONMENTS_SCOPE.STOPPED)"
+        >
+          <template #title>
+            <span>{{ $options.i18n.stopped }}</span>
+            <gl-badge size="sm" class="gl-tab-counter-badge">
+              {{ stoppedCount }}
+            </gl-badge>
+          </template>
+        </gl-tab>
+      </gl-tabs>
+      <gl-search-box-by-type
+        class="gl-mb-4"
+        :value="search"
+        :placeholder="$options.i18n.searchPlaceholder"
+        @input="setSearch"
+      />
       <environment-folder
         v-for="folder in folders"
         :key="folder.name"
@@ -309,10 +318,10 @@ export default {
       />
     </template>
     <empty-state
-      v-else-if="!$apollo.queries.environmentApp.loading"
+      v-if="showEmptyState"
       :help-path="helpPagePath"
-      :scope="scope"
       :has-term="hasSearch"
+      @enable-review="showReviewAppModal"
     />
     <gl-pagination
       align="center"

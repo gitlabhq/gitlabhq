@@ -95,9 +95,12 @@ export default {
         class="board-card-info-icon gl-mr-2"
         name="calendar"
       />
-      <time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
-        body
-      }}</time>
+      <time
+        :class="{ 'text-danger': isPastDue }"
+        datetime="date"
+        class="gl-font-sm board-card-info-text"
+        >{{ body }}</time
+      >
     </span>
     <gl-tooltip :target="() => $refs.issueDueDate" :placement="tooltipPlacement">
       <span class="bold">{{ __('Due date') }}</span>

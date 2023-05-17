@@ -17,12 +17,19 @@ module Integrations
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
 
+    AUTH_TYPE_BASIC = 0
+    AUTH_TYPE_PAT = 1
+
     SNOWPLOW_EVENT_CATEGORY = self.name
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
-    validates :username, presence: true, if: :activated?
+    validates :username, presence: true, if: ->(object) { object.activated? && !object.personal_access_token_authorization? }
     validates :password, presence: true, if: :activated?
+    validates :jira_auth_type, presence: true, inclusion: { in: [AUTH_TYPE_BASIC, AUTH_TYPE_PAT] }, if: :activated?
+    validates :jira_issue_prefix, untrusted_regexp: true, length: { maximum: 255 }, if: :activated?
+    validates :jira_issue_regex,  untrusted_regexp: true, length: { maximum: 255 }, if: :activated?
+    validate :validate_jira_cloud_auth_type_is_basic, if: :activated?
 
     validates :jira_issue_transition_id,
               format: {
@@ -58,19 +65,44 @@ module Integrations
           help: -> { s_('JiraService|If different from the Web URL') },
           exposes_secrets: true
 
+    field :jira_auth_type,
+          type: 'select',
+          required: true,
+          section: SECTION_TYPE_CONNECTION,
+          title: -> { s_('JiraService|Authentication type') },
+          choices: -> {
+            [
+              [s_('JiraService|Basic'), AUTH_TYPE_BASIC],
+              [s_('JiraService|Jira personal access token (Jira Data Center and Jira Server only)'), AUTH_TYPE_PAT]
+            ]
+          }
+
     field :username,
           section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('JiraService|Username or email') },
-          help: -> { s_('JiraService|Username for the server version or an email for the cloud version') }
+          required: false,
+          title: -> { s_('JiraService|Email or username') },
+          help: -> { s_('JiraService|Only required for Basic authentication. Email for Jira Cloud or username for Jira Data Center and Jira Server') }
 
     field :password,
           section: SECTION_TYPE_CONNECTION,
           required: true,
           title: -> { s_('JiraService|Password or API token') },
-          non_empty_password_title: -> { s_('JiraService|Enter new password or API token') },
-          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
-          help: -> { s_('JiraService|Password for the server version or an API token for the cloud version') }
+          non_empty_password_title: -> { s_('JiraService|New API token, password, or Jira personal access token') },
+          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
+          help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
+          is_secret: true
+
+    field :jira_issue_regex,
+           section: SECTION_TYPE_CONFIGURATION,
+           required: false,
+           title: -> { s_('JiraService|Jira issue regex') },
+           help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
+
+    field :jira_issue_prefix,
+          section: SECTION_TYPE_CONFIGURATION,
+          required: false,
+          title: -> { s_('JiraService|Jira issue prefix') },
+          help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
 
     field :jira_issue_transition_id, api_only: true
 
@@ -90,8 +122,8 @@ module Integrations
     end
 
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-    def self.reference_pattern(only_long: true)
-      @reference_pattern ||= /(?<issue>\b#{Gitlab::Regex.jira_issue_key_regex})/
+    def reference_pattern(only_long: true)
+      @reference_pattern ||= jira_issue_match_regex
     end
 
     def self.valid_jira_cloud_url?(url)
@@ -119,16 +151,23 @@ module Integrations
     def options
       url = URI.parse(client_url)
 
-      {
-        username: username&.strip,
-        password: password,
-        site: URI.join(url, '/').to_s.delete_suffix('/'), # Intended to find the root
+      options = {
+        site: URI.join(url, '/').to_s.chomp('/'), # Find the root URL
         context_path: (url.path.presence || '/').delete_suffix('/'),
         auth_type: :basic,
-        use_cookies: true,
-        additional_cookies: ['OBBasicAuth=fromDialog'],
         use_ssl: url.scheme == 'https'
       }
+
+      if personal_access_token_authorization?
+        options[:default_headers] = { 'Authorization' => "Bearer #{password}" }
+      else
+        options[:username] = username&.strip
+        options[:password] = password
+        options[:use_cookies] = true
+        options[:additional_cookies] = ['OBBasicAuth=fromDialog']
+      end
+
+      options
     end
 
     def client
@@ -166,6 +205,11 @@ module Integrations
           type: SECTION_TYPE_JIRA_TRIGGER,
           title: _('Trigger'),
           description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.')
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: _('Jira issue matching'),
+          description: s_('Configure custom rules for Jira issue key matching')
         }
       ]
 
@@ -323,7 +367,17 @@ module Integrations
       jira_issue_transition_automatic || jira_issue_transition_id.present?
     end
 
+    def personal_access_token_authorization?
+      jira_auth_type == AUTH_TYPE_PAT
+    end
+
     private
+
+    def jira_issue_match_regex
+      match_regex = (jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex)
+
+      /\b#{jira_issue_prefix}(?<issue>#{match_regex})/
+    end
 
     def parse_project_from_issue_key(issue_key)
       issue_key.gsub(Gitlab::Regex.jira_issue_key_project_key_extraction_regex, '')
@@ -390,8 +444,6 @@ module Integrations
       key = "i_ecosystem_jira_service_#{action}"
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user.id)
-
-      return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
 
       optional_arguments = {
         project: project,
@@ -606,7 +658,6 @@ module Integrations
       # If API-based detection methods fail here then
       # we can only assume it's either Cloud or Server
       # based on the URL being *.atlassian.net
-
       if self.class.valid_jira_cloud_url?(client_url)
         data_fields.deployment_cloud!
       else
@@ -625,6 +676,17 @@ module Integrations
       end
 
       description
+    end
+
+    def validate_jira_cloud_auth_type_is_basic
+      return unless self.class.valid_jira_cloud_url?(client_url) && jira_auth_type != AUTH_TYPE_BASIC
+
+      errors.add(:base,
+        format(
+          s_('JiraService|For Jira Cloud, the authentication type must be %{basic}'),
+          basic: s_('JiraService|Basic')
+        )
+      )
     end
   end
 end

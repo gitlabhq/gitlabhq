@@ -37,10 +37,6 @@ describe('TermsApp', () => {
     isLoggedIn.mockReturnValue(true);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findFormWithAction = (path) => wrapper.find(`form[action="${path}"]`);
   const findButton = (path) => findFormWithAction(path).find('button[type="submit"]');
   const findScrollableViewport = () => wrapper.findByTestId('scrollable-viewport');
@@ -69,7 +65,6 @@ describe('TermsApp', () => {
   describe('accept button', () => {
     it('is disabled until user scrolls to the bottom of the terms', async () => {
       createComponent();
-
       expect(findButton(defaultProvide.paths.accept).attributes('disabled')).toBe('disabled');
 
       wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');

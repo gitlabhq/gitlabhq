@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class IdentityProviderPolicy < BasePolicy
-  desc "Provider is SAML or CAS3"
-  condition(:protected_provider, scope: :subject, score: 0) { %w(saml cas3).include?(@subject.to_s) }
+  desc "Provider is SAML"
+  condition(:protected_provider, scope: :subject, score: 0) { @subject.to_s == 'saml' }
 
   rule { anonymous }.prevent_all
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GroupLinks::DestroyService, '#execute' do
+RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_category: :subgroups do
   let_it_be(:user) { create :user }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:group) { create(:group) }
@@ -31,10 +31,11 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute' do
       stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour,
-                [[user.id]],
-                batch_delay: 30.seconds, batch_size: 100)
+        receive(:bulk_perform_in).with(
+          1.hour,
+          [[user.id]],
+          batch_delay: 30.seconds, batch_size: 100
+        )
       )
 
       subject.execute(group_link)

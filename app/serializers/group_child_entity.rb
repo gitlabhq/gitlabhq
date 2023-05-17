@@ -6,7 +6,7 @@ class GroupChildEntity < Grape::Entity
   include MarkupHelper
 
   expose :id, :name, :description, :visibility, :full_name,
-         :created_at, :updated_at, :avatar_url
+    :created_at, :updated_at, :avatar_url
 
   expose :type do |instance|
     type
@@ -35,12 +35,10 @@ class GroupChildEntity < Grape::Entity
   # Project only attributes
   expose :last_activity_at, if: lambda { |instance| project? }
 
-  expose :star_count, :archived,
-         if: lambda { |_instance, _options| project? }
+  expose :star_count, :archived, if: lambda { |_instance, _options| project? }
 
   # Group only attributes
-  expose :children_count, :parent_id,
-         unless: lambda { |_instance, _options| project? }
+  expose :children_count, :parent_id, unless: lambda { |_instance, _options| project? }
 
   expose :subgroup_count, if: lambda { |group| access_group_counts?(group) }
 

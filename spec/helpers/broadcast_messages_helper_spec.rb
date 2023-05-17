@@ -12,11 +12,8 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
   end
 
   shared_examples 'returns role-targeted broadcast message when in project, group, or sub-group URL' do
-    let(:feature_flag_state) { true }
-
     before do
-      stub_feature_flags(role_targeted_broadcast_messages: feature_flag_state)
-      allow(helper).to receive(:cookies) { {} }
+      allow(helper).to receive(:cookies).and_return({})
     end
 
     context 'when in a project page' do
@@ -30,12 +27,6 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       end
 
       it { is_expected.to eq message }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when in a group page' do
@@ -49,22 +40,10 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       end
 
       it { is_expected.to eq message }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when not in a project, group, or sub-group page' do
       it { is_expected.to be_nil }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
   end
 
@@ -72,7 +51,10 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     subject { helper.current_broadcast_notification_message }
 
     context 'with available broadcast notification messages' do
-      let!(:broadcast_message_1) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day) }
+      let!(:broadcast_message_1) do
+        create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day)
+      end
+
       let!(:broadcast_message_2) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now) }
 
       it { is_expected.to eq broadcast_message_2 }
@@ -91,7 +73,13 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     end
 
     describe 'user access level targeted messages' do
-      let_it_be(:message) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now, target_access_levels: [Gitlab::Access::DEVELOPER]) }
+      let_it_be(:message) do
+        create(:broadcast_message,
+          broadcast_type: 'notification',
+          starts_at: Time.now,
+          target_access_levels: [Gitlab::Access::DEVELOPER]
+        )
+      end
 
       include_examples 'returns role-targeted broadcast message when in project, group, or sub-group URL'
     end
@@ -99,7 +87,13 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
 
   describe '#current_broadcast_banner_messages' do
     describe 'user access level targeted messages' do
-      let_it_be(:message) { create(:broadcast_message, broadcast_type: 'banner', starts_at: Time.now, target_access_levels: [Gitlab::Access::DEVELOPER]) }
+      let_it_be(:message) do
+        create(:broadcast_message,
+          broadcast_type: 'banner',
+          starts_at: Time.now,
+          target_access_levels: [Gitlab::Access::DEVELOPER]
+        )
+      end
 
       subject { helper.current_broadcast_banner_messages.first }
 
@@ -147,7 +141,20 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     subject(:single_broadcast_message) { Gitlab::Json.parse(admin_broadcast_messages_data([message])).first }
 
     it 'returns the expected messages data attributes' do
-      keys = %w[id status preview starts_at ends_at target_roles target_path type edit_path delete_path]
+      keys = %w[
+        id
+        status
+        message
+        theme
+        broadcast_type
+        dismissable
+        starts_at
+        ends_at
+        target_roles
+        target_path
+        type edit_path
+        delete_path
+      ]
 
       expect(single_broadcast_message.keys).to match(keys)
     end
@@ -155,6 +162,26 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
       expect(single_broadcast_message['starts_at']).to eq('2019-12-31T00:00:00Z')
       expect(single_broadcast_message['ends_at']).to eq('2020-01-02T00:00:00Z')
+    end
+  end
+
+  describe '#broadcast_message_data' do
+    let(:starts_at) { 1.day.ago }
+    let(:ends_at) { 1.day.from_now }
+    let(:message) { build(:broadcast_message, id: non_existing_record_id, starts_at: starts_at, ends_at: ends_at) }
+
+    it 'returns the expected message data attributes' do
+      keys = [
+        :id, :message, :broadcast_type, :theme, :dismissable, :target_access_levels, :messages_path,
+        :preview_path, :target_path, :starts_at, :ends_at, :target_access_level_options
+      ]
+
+      expect(broadcast_message_data(message).keys).to match(keys)
+    end
+
+    it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
+      expect(broadcast_message_data(message)[:starts_at]).to eq('2019-12-31T00:00:00Z')
+      expect(broadcast_message_data(message)[:ends_at]).to eq('2020-01-02T00:00:00Z')
     end
   end
 end

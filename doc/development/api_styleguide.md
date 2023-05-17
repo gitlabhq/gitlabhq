@@ -57,6 +57,59 @@ get do
 end
 ```
 
+## Breaking changes
+
+We must not make breaking changes to our REST API v4, even in major GitLab releases.
+
+Our REST API maintains its own versioning independent of GitLab versioning.
+The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md#compatibility-guidelines),
+which means we cannot make breaking changes until a major version change (most likely, `5`).
+
+Because version `5` is not scheduled, we allow rare [exceptions](#exceptions).
+
+### Accommodating backward compatibility instead of breaking changes
+
+Backward compatibility can often be accommodated in the API by continuing to adapt a changed feature to
+the old API schema. For example, our REST API
+[exposes](https://gitlab.com/gitlab-org/gitlab/-/blob/c104f6b8/lib/api/entities/merge_request_basic.rb#L43-47) both
+`work_in_progress` and `draft` fields.
+
+### Exceptions
+
+The exception is only when:
+
+- A feature must be removed in a major GitLab release.
+- Backward compatibility cannot be maintained
+  [in any form](#accommodating-backward-compatibility-instead-of-breaking-changes).
+
+This exception should be rare.
+
+Even in this exception, rather than removing a field or argument, we must always do the following:
+
+- Return an empty response for a field (for example, `"null"` or `[]`).
+- Turn an argument into a no-op.
+
+## What is a breaking change
+
+Some examples of breaking changes are:
+
+- Removing or renaming fields, arguments, or enum values.
+- Removing endpoints.
+- Adding new redirects (not all clients follow redirects).
+- Changing the type of fields in the response (for example, from `String` to `Integer`).
+- Adding a new **required** argument.
+- Changing authentication, authorization, or other header requirements.
+- Changing [any status code](../api/rest/index.md#status-codes) other than `500`.
+
+## What is not a breaking change
+
+Some examples of non-breaking changes:
+
+- Any additive change, such as adding endpoints, non-required arguments, fields, or enum values.
+- Changes to error messages.
+- Changes from a `500` status code to [any supported status code](../api/rest/index.md#status-codes) (this is a bugfix).
+- Changes to the order of fields returned in a response.
+
 ## Declared parameters
 
 Grape allows you to access only the parameters that have been declared by your
@@ -332,6 +385,18 @@ expect(response).to match_response_schema('merge_requests')
 ```
 
 Also see [verifying N+1 performance](#verifying-with-tests) in tests.
+
+## Error handling
+
+When throwing an error with a message that is meant to be user-facing, you should
+use the error message utility function contained in `lib/gitlab/utils/error_message.rb`.
+It adds a prefix to the error message, making it distinguishable from non-user-facing error messages.
+
+```ruby
+Gitlab::Utils::ErrorMessage.to_user_facing('Example user-facing error-message')
+```
+
+Please make sure that the Frontend is aware of the prefix usage and is using the according utils. See [Error handling](fe_guide/style/javascript.md#error-handling) in JavaScript style guide for more information.
 
 ## Include a changelog entry
 

@@ -12,7 +12,7 @@ import {
 import { mapState, mapGetters, mapActions } from 'vuex';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import invalidUrl from '~/lib/utils/invalid_url';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { PANEL_NEW_PAGE } from '../router/constants';
@@ -113,7 +113,7 @@ export default {
       const dashboardPath = encodeURIComponent(
         dashboard.out_of_the_box_dashboard ? dashboard.path : dashboard.display_name,
       );
-      redirectTo(`${baseURL}/${dashboardPath}`);
+      redirectTo(`${baseURL}/${dashboardPath}`); // eslint-disable-line import/no-deprecated
     },
   },
 

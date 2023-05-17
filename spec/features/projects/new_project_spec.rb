@@ -3,7 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'New project', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+  include Features::TopNavSpecHelpers
+
+  before do
+    stub_application_setting(import_sources: Gitlab::ImportSources.values)
+  end
 
   context 'as a user' do
     let_it_be(:user) { create(:user) }
@@ -67,26 +71,38 @@ RSpec.describe 'New project', :js, feature_category: :projects do
   context 'as an admin' do
     let(:user) { create(:admin) }
 
-    before do
-      sign_in(user)
+    shared_examples '"New project" page' do
+      before do
+        sign_in(user)
+      end
+
+      it 'shows "New project" page', :js do
+        visit new_project_path
+        click_link 'Create blank project'
+
+        expect(page).to have_content('Project name')
+        expect(page).to have_content('Project URL')
+        expect(page).to have_content('Project slug')
+
+        click_link('New project')
+        click_link 'Import project'
+
+        expect(page).to have_link('GitHub')
+        expect(page).to have_link('Bitbucket')
+        expect(page).to have_button('Repository by URL')
+        expect(page).to have_link('GitLab export')
+      end
     end
 
-    it 'shows "New project" page', :js do
-      visit new_project_path
-      click_link 'Create blank project'
+    include_examples '"New project" page'
 
-      expect(page).to have_content('Project name')
-      expect(page).to have_content('Project URL')
-      expect(page).to have_content('Project slug')
+    context 'when the new navigation is enabled' do
+      before do
+        user.update!(use_new_navigation: true)
+        stub_feature_flags(super_sidebar_nav: true)
+      end
 
-      click_link('New project')
-      click_link 'Import project'
-
-      expect(page).to have_link('GitHub')
-      expect(page).to have_link('Bitbucket')
-      expect(page).to have_link('GitLab.com')
-      expect(page).to have_button('Repository by URL')
-      expect(page).to have_link('GitLab export')
+      include_examples '"New project" page'
     end
 
     shared_examples 'renders importer link' do |params|
@@ -123,11 +139,9 @@ RSpec.describe 'New project', :js, feature_category: :projects do
             'github': :new_import_github_path,
             'bitbucket': :status_import_bitbucket_path,
             'bitbucket server': :status_import_bitbucket_server_path,
-            'gitlab.com': :status_import_gitlab_path,
             'fogbugz': :new_import_fogbugz_path,
             'gitea': :new_import_gitea_path,
-            'manifest': :new_import_manifest_path,
-            'phabricator': :new_import_phabricator_path
+            'manifest': :new_import_manifest_path
           }
         end
 
@@ -560,22 +574,52 @@ RSpec.describe 'New project', :js, feature_category: :projects do
     end
   end
 
-  context 'from GitLab.com', :js do
-    let(:target_link) { 'GitLab.com' }
-    let(:provider) { :gitlab }
+  describe 'sidebar' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:parent_group) { create(:group) }
 
-    context 'as a user' do
-      let(:user) { create(:user) }
-      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, ask your GitLab administrator to configure OAuth integration' }
-
-      it_behaves_like 'has instructions to enable OAuth'
+    before do
+      parent_group.add_owner(user)
+      sign_in(user)
     end
 
-    context 'as an admin', :do_not_mock_admin_mode_setting do
-      let(:user) { create(:admin) }
-      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, as administrator you need to configure OAuth integration' }
+    context 'in the current navigation' do
+      before do
+        user.update!(use_new_navigation: false)
+      end
 
-      it_behaves_like 'has instructions to enable OAuth'
+      context 'for a new top-level project' do
+        it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :new_project_path, :projects
+      end
+
+      context 'for a new group project' do
+        it 'shows the group sidebar of the parent group' do
+          visit new_project_path(namespace_id: parent_group.id)
+          expect(page).to have_selector(".nav-sidebar[aria-label=\"Group navigation\"] .context-header[title=\"#{parent_group.name}\"]")
+        end
+      end
+    end
+
+    context 'in the new navigation' do
+      before do
+        parent_group.add_owner(user)
+        user.update!(use_new_navigation: true)
+        sign_in(user)
+      end
+
+      context 'for a new top-level project' do
+        it 'shows the "Your work" navigation' do
+          visit new_project_path
+          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: "Your work")
+        end
+      end
+
+      context 'for a new group project' do
+        it 'shows the group sidebar of the parent group' do
+          visit new_project_path(namespace_id: parent_group.id)
+          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: parent_group.name)
+        end
+      end
     end
   end
 end

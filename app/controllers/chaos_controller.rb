@@ -52,13 +52,14 @@ class ChaosController < ActionController::Base
   def validate_chaos_secret
     unless chaos_secret_configured
       render plain: "chaos misconfigured: please configure GITLAB_CHAOS_SECRET",
-             status: :internal_server_error
+        status: :internal_server_error
+
       return
     end
 
     unless Devise.secure_compare(chaos_secret_configured, chaos_secret_request)
       render plain: "To experience chaos, please set a valid `X-Chaos-Secret` header or `token` param",
-             status: :unauthorized
+        status: :unauthorized
     end
   end
 

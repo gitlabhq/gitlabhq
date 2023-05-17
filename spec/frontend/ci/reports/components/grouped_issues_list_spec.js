@@ -15,10 +15,6 @@ describe('Grouped Issues List', () => {
 
   const findHeading = (groupName) => wrapper.find(`[data-testid="${groupName}Heading"`);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a smart virtual list with the correct props', () => {
     createComponent({
       propsData: {

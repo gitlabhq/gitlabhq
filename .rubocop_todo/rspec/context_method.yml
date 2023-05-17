@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/ContextMethod:
-  Details: grace period
-  Exclude:
-    - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
-    - 'ee/spec/models/geo_node_status_spec.rb'

@@ -3,7 +3,7 @@
 class ExternalDiffUploader < GitlabUploader
   include ObjectStorage::Concern
 
-  storage_options Gitlab.config.external_diffs
+  storage_location :external_diffs
 
   alias_method :upload, :model
 

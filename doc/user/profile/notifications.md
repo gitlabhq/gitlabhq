@@ -1,5 +1,4 @@
 ---
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/notifications.html'
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
@@ -240,7 +239,7 @@ Turning this toggle off only unsubscribes you from updates related to this issue
 Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 
 <!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action on the right sidebar, your project or instance may have
+If you don't see this action on the right sidebar, your project or instance might have
 enabled a feature flag for [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions).
 
 ### Notification events on issues, merge requests, and epics
@@ -286,7 +285,8 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 ## Notifications for unknown sign-ins
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27211) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27211) in GitLab 13.0.
+> - Listing the full name and username of the signed-in user [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225183) in GitLab 15.10.
 
 NOTE:
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
@@ -295,7 +295,12 @@ The feature is always enabled on GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,
 GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially
-malicious or unauthorized sign-ins.
+malicious or unauthorized sign-ins. This notification email includes the:
+
+- Hostname.
+- User's name and username.
+- IP address.
+- Date and time of sign-in.
 
 GitLab uses several methods to identify a known sign-in. All methods must fail for a notification email to be sent.
 
@@ -306,7 +311,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 
-## Notifications for attempted sign-in using wrong two-factor authentication codes
+## Notifications for attempted sign-ins using incorrect verification codes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
 
@@ -357,6 +362,7 @@ The following table lists all GitLab-specific email headers:
 | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `List-Id`                                                     | The path of the project in an RFC 2919 mailing list identifier. You can use it for email organization with filters.                            |
 | `X-GitLab-(Resource)-ID`                                      | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource. |
+| `X-GitLab-ConfidentialIssue`                                  | The boolean value indicating issue confidentiality for notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222908) in GitLab 16.0. |
 | `X-GitLab-Discussion-ID`                                      | The ID of the thread the comment belongs to, in notification emails for comments.                                                              |
 | `X-GitLab-Group-Id`                                           | The group's ID. Only present on notification emails for [epics](../group/epics/index.md).                                                      |
 | `X-GitLab-Group-Path`                                         | The group's path. Only present on notification emails for [epics](../group/epics/index.md)                                                     |

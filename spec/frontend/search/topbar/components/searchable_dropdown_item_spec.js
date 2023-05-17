@@ -24,10 +24,6 @@ describe('Global Search Searchable Dropdown Item', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findGlAvatar = () => wrapper.findComponent(GlAvatar);
   const findDropdownTitle = () => wrapper.findByTestId('item-title');

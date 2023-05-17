@@ -1,5 +1,13 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { initPipelineCountListener } from './utils';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 /**
  * Used in:
@@ -20,9 +28,12 @@ export default () => {
         components: {
           CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
         },
+        apolloProvider,
         provide: {
           artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
           artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
+          fullPath: pipelineTableViewEl.dataset.fullPath,
+          manualActionsLimit: 50,
         },
         render(createElement) {
           return createElement('commit-pipelines-table', {

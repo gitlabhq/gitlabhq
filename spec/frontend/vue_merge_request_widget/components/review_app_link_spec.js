@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import ReviewAppLink from '~/vue_merge_request_widget/components/review_app_link.vue';
 
@@ -17,10 +18,6 @@ describe('review app link', () => {
     wrapper = shallowMount(ReviewAppLink, { propsData: props });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders provided link as href attribute', () => {
     expect(wrapper.attributes('href')).toBe(props.link);
   });
@@ -35,6 +32,10 @@ describe('review app link', () => {
 
   it('renders svg icon', () => {
     expect(wrapper.find('svg')).not.toBeNull();
+  });
+
+  it('renders unsafe links', () => {
+    expect(wrapper.findComponent(GlButton).props('isUnsafeLink')).toBe(true);
   });
 
   it('tracks an event when clicked', () => {

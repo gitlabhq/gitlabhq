@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require_relative '../../support/matchers/be_request_urgency'
-require_relative '../../../lib/gitlab/endpoint_attributes/config'
-require_relative '../../../lib/gitlab/endpoint_attributes'
+require 'spec_helper'
 
-RSpec.describe Gitlab::EndpointAttributes do
+RSpec.describe Gitlab::EndpointAttributes, feature_category: :api do
   let(:base_controller) do
     Class.new do
       include ::Gitlab::EndpointAttributes

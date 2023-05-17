@@ -92,8 +92,10 @@ module Projects
 
     def build_fork_network_member(fork_to_project)
       if allowed_fork?
-        fork_to_project.build_fork_network_member(forked_from_project: @project,
-                                                  fork_network: fork_network)
+        fork_to_project.build_fork_network_member(
+          forked_from_project: @project,
+          fork_network: fork_network
+        )
       else
         fork_to_project.errors.add(:forked_from_project_id, 'is forbidden')
       end

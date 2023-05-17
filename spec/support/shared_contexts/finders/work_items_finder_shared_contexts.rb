@@ -12,47 +12,55 @@ RSpec.shared_context 'WorkItemsFinder context' do
   let_it_be(:milestone) { create(:milestone, project: project1, releases: [release]) }
   let_it_be(:label) { create(:label, project: project2) }
   let_it_be(:label2) { create(:label, project: project2) }
-  let_it_be(:item1, reload: true) do
-    create(:work_item,
-           author: user,
-           assignees: [user],
-           project: project1,
-           milestone: milestone,
-           title: 'gitlab',
-           created_at: 1.week.ago,
-           updated_at: 1.week.ago)
+  let_it_be_with_reload(:item1) do
+    create(
+      :work_item,
+      author: user,
+      assignees: [user],
+      project: project1,
+      milestone: milestone,
+      title: 'gitlab',
+      created_at: 1.week.ago,
+      updated_at: 1.week.ago
+    )
   end
 
-  let_it_be(:item2, reload: true) do
-    create(:work_item,
-           author: user,
-           assignees: [user],
-           project: project2,
-           description: 'gitlab',
-           created_at: 1.week.from_now,
-           updated_at: 1.week.from_now)
+  let_it_be_with_reload(:item2) do
+    create(
+      :work_item,
+      author: user,
+      assignees: [user],
+      project: project2,
+      description: 'gitlab',
+      created_at: 1.week.from_now,
+      updated_at: 1.week.from_now
+    )
   end
 
-  let_it_be(:item3, reload: true) do
-    create(:work_item,
-           author: user2,
-           assignees: [user2],
-           project: project2,
-           title: 'tanuki',
-           description: 'tanuki',
-           created_at: 2.weeks.from_now,
-           updated_at: 2.weeks.from_now)
+  let_it_be_with_reload(:item3) do
+    create(
+      :work_item,
+      author: user2,
+      assignees: [user2],
+      project: project2,
+      title: 'tanuki',
+      description: 'tanuki',
+      created_at: 2.weeks.from_now,
+      updated_at: 2.weeks.from_now
+    )
   end
 
-  let_it_be(:item4, reload: true) { create(:work_item, project: project3) }
-  let_it_be(:item5, reload: true) do
-    create(:work_item,
-           author: user,
-           assignees: [user],
-           project: project1,
-           title: 'wotnot',
-           created_at: 3.days.ago,
-           updated_at: 3.days.ago)
+  let_it_be_with_reload(:item4) { create(:work_item, project: project3) }
+  let_it_be_with_reload(:item5) do
+    create(
+      :work_item,
+      author: user,
+      assignees: [user],
+      project: project1,
+      title: 'wotnot',
+      created_at: 3.days.ago,
+      updated_at: 3.days.ago
+    )
   end
 
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: item1) }

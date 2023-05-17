@@ -43,6 +43,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
       end
 
       it 'matches multiple subdomains' do
+        allow(GitlabEdition).to receive(:jh?).and_return(false)
         QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 
         aggregate_failures do
@@ -51,19 +52,61 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         end
       end
 
+      it 'matches multiple subdomains on jh side' do
+        allow(GitlabEdition).to receive(:jh?).and_return(true)
+        QA::Runtime::Scenario.define(:gitlab_address, "https://staging.jihulab.com")
+
+        aggregate_failures do
+          expect(described_class.context_matches?(subdomain: [:release, :staging])).to be_truthy
+          expect(described_class.context_matches?(:production, subdomain: [:release, :staging])).to be_truthy
+        end
+      end
+
       it 'matches :production' do
+        allow(GitlabEdition).to receive(:jh?).and_return(false)
         QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.com/")
 
         expect(described_class.context_matches?(:production)).to be_truthy
       end
 
+      it 'matches :production on jh side' do
+        allow(GitlabEdition).to receive(:jh?).and_return(true)
+
+        QA::Runtime::Scenario.define(:gitlab_address, "https://jihulab.com/")
+        expect(described_class.context_matches?(:production)).to be_truthy
+
+        QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.hk/")
+        expect(described_class.context_matches?(:production)).to be_truthy
+      end
+
       it 'matches domain' do
+        allow(GitlabEdition).to receive(:jh?).and_return(false)
         QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
 
         aggregate_failures do
           expect(described_class.context_matches?(:production)).to be_falsey
           expect(described_class.context_matches?(domain: 'gitlab')).to be_falsey
           expect(described_class.context_matches?(domain: 'jihulab')).to be_truthy
+        end
+      end
+
+      it 'matches domain on jh side' do
+        # To simulate run tests in JH
+        allow(GitlabEdition).to receive(:jh?).and_return(true)
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
+
+        aggregate_failures do
+          expect(described_class.context_matches?(:production)).to be_truthy
+          expect(described_class.context_matches?(domain: 'gitlab')).to be_falsey
+          expect(described_class.context_matches?(domain: 'jihulab')).to be_truthy
+        end
+
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk')
+
+        aggregate_failures do
+          expect(described_class.context_matches?(:production)).to be_truthy
+          expect(described_class.context_matches?(domain: 'jihulab')).to be_falsey
+          expect(described_class.context_matches?(domain: 'gitlab')).to be_truthy
         end
       end
 
@@ -86,6 +129,20 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
           expect(described_class.context_matches?(subdomain: [:staging])).to be_falsey
           expect(described_class.context_matches?(domain: 'example')).to be_falsey
         end
+      end
+    end
+
+    context 'with generic condition context matcher' do
+      it 'matches truthy lambda condition result' do
+        expect(described_class.context_matches?(condition: -> { true })).to be_truthy
+      end
+
+      it 'matches truthy condition result' do
+        expect(described_class.context_matches?(condition: true)).to be_truthy
+      end
+
+      it 'skips falsey condition result' do
+        expect(described_class.context_matches?(condition: false)).to be_falsey
       end
     end
 
@@ -119,7 +176,33 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
 
     context 'with different environment set' do
       before do
+        allow(GitlabEdition).to receive(:jh?).and_return(false)
         QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com')
+      end
+
+      it 'does not run against production' do
+        group = describe_successfully 'Runs in staging', :something, only: { subdomain: :staging } do
+          it('runs in staging') {}
+        end
+
+        expect(group.examples[0].execution_result.status).to eq(:pending)
+      end
+
+      context 'when excluding contexts' do
+        it 'runs against production' do
+          group = describe_successfully 'Runs in staging', :something, except: { subdomain: :staging } do
+            it('runs in staging') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:passed)
+        end
+      end
+    end
+
+    context 'with different environment set on jh side' do
+      before do
+        allow(GitlabEdition).to receive(:jh?).and_return(true)
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
       end
 
       it 'does not run against production' do
@@ -226,7 +309,82 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
 
   context 'production' do
     before do
+      allow(GitlabEdition).to receive(:jh?).and_return(false)
       QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com/')
+    end
+
+    it 'runs on production' do
+      group = describe_successfully do
+        it('runs on prod', only: :production) {}
+        it('does not run in prod', only: { subdomain: :staging }) {}
+        it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
+      end
+
+      aggregate_failures do
+        expect(group.examples[0].execution_result.status).to eq(:passed)
+        expect(group.examples[1].execution_result.status).to eq(:pending)
+        expect(group.examples[2].execution_result.status).to eq(:passed)
+      end
+    end
+
+    context 'when excluding contexts' do
+      it 'skips production' do
+        group = describe_successfully do
+          it('skips prod', except: :production) {}
+          it('runs on prod', except: { subdomain: :staging }) {}
+          it('skips prod and staging', except: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
+        end
+
+        aggregate_failures do
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+          expect(group.examples[1].execution_result.status).to eq(:passed)
+          expect(group.examples[2].execution_result.status).to eq(:pending)
+        end
+      end
+    end
+  end
+
+  context 'jh mainland production ' do
+    before do
+      allow(GitlabEdition).to receive(:jh?).and_return(true)
+      QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com/')
+    end
+
+    it 'runs on production' do
+      group = describe_successfully do
+        it('runs on prod', only: :production) {}
+        it('does not run in prod', only: { subdomain: :staging }) {}
+        it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'jihulab' }) {}
+      end
+
+      aggregate_failures do
+        expect(group.examples[0].execution_result.status).to eq(:passed)
+        expect(group.examples[1].execution_result.status).to eq(:pending)
+        expect(group.examples[2].execution_result.status).to eq(:passed)
+      end
+    end
+
+    context 'when excluding contexts' do
+      it 'skips production' do
+        group = describe_successfully do
+          it('skips prod', except: :production) {}
+          it('runs on prod', except: { subdomain: :staging }) {}
+          it('skips prod and staging', except: { subdomain: /(staging.)?/, domain: 'jihulab' }) {}
+        end
+
+        aggregate_failures do
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+          expect(group.examples[1].execution_result.status).to eq(:passed)
+          expect(group.examples[2].execution_result.status).to eq(:pending)
+        end
+      end
+    end
+  end
+
+  context 'jh hk production ' do
+    before do
+      allow(GitlabEdition).to receive(:jh?).and_return(true)
+      QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk/')
     end
 
     it 'runs on production' do

@@ -27,12 +27,14 @@ import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
+import RulesNeedsYaml from './yaml_tests/positive_tests/rules_needs.yml';
 import ProjectPathYaml from './yaml_tests/positive_tests/project_path.yml';
 import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 import IdTokensYaml from './yaml_tests/positive_tests/id_tokens.yml';
 import HooksYaml from './yaml_tests/positive_tests/hooks.yml';
 import SecretsYaml from './yaml_tests/positive_tests/secrets.yml';
+import ServicesYaml from './yaml_tests/positive_tests/services.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -45,6 +47,7 @@ import ProjectPathIncludeLeadSlashYaml from './yaml_tests/negative_tests/project
 import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/include/no_slash.yml';
 import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
+import RulesNeedsNegativeYaml from './yaml_tests/negative_tests/rules_needs.yml';
 import TriggerNegative from './yaml_tests/negative_tests/trigger.yml';
 import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
@@ -52,6 +55,7 @@ import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variabl
 import IdTokensNegativeYaml from './yaml_tests/negative_tests/id_tokens.yml';
 import HooksNegative from './yaml_tests/negative_tests/hooks.yml';
 import SecretsNegativeYaml from './yaml_tests/negative_tests/secrets.yml';
+import ServicesNegativeYaml from './yaml_tests/negative_tests/services.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -86,9 +90,11 @@ describe('positive tests', () => {
       JobWhenYaml,
       HooksYaml,
       RulesYaml,
+      RulesNeedsYaml,
       VariablesYaml,
       ProjectPathYaml,
       IdTokensYaml,
+      ServicesYaml,
       SecretsYaml,
     }),
   )('schema validates %s', (_, input) => {
@@ -113,10 +119,13 @@ describe('negative tests', () => {
       // YAML
       ArtifactsNegativeYaml,
       CacheKeyNeative,
+      HooksNegative,
       IdTokensNegativeYaml,
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,
+      RulesNeedsNegativeYaml,
+      TriggerNegative,
       VariablesInvalidOptionsYaml,
       VariablesInvalidSyntaxDescYaml,
       VariablesWrongSyntaxUsageExpand,
@@ -126,8 +135,7 @@ describe('negative tests', () => {
       ProjectPathIncludeNoSlashYaml,
       ProjectPathIncludeTailSlashYaml,
       SecretsNegativeYaml,
-      TriggerNegative,
-      HooksNegative,
+      ServicesNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

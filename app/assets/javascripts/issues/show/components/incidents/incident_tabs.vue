@@ -1,6 +1,6 @@
 <script>
 import { GlTab, GlTabs } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -35,7 +35,7 @@ export default {
     IncidentMetricTab: () =>
       import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
-  inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
+  inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],
   i18n: incidentTabsI18n,
   apollo: {
     alert: {
@@ -59,12 +59,15 @@ export default {
   data() {
     return {
       alert: null,
-      activeTabIndex: 0,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.alert.loading;
+    },
+    activeTabIndex() {
+      const { tabId } = this.$route.params;
+      return tabId ? this.tabMapping.tabNamesToIndex[tabId] : 0;
     },
     tabMapping() {
       const availableTabs = [TAB_NAMES.SUMMARY];
@@ -72,7 +75,7 @@ export default {
       if (this.uploadMetricsFeatureAvailable) {
         availableTabs.push(TAB_NAMES.METRICS);
       }
-      if (this.alert) {
+      if (this.hasLinkedAlerts) {
         availableTabs.push(TAB_NAMES.ALERTS);
       }
 
@@ -93,20 +96,25 @@ export default {
         return this.activeTabIndex;
       },
       set(index) {
-        this.handleTabChange(index);
-        this.activeTabIndex = index;
+        const newPath = `/${this.tabMapping.tabIndexToName[index]}`;
+        // Only push if the new path differs from the old path.
+        if (newPath !== this.$route.path) {
+          this.$router.push(newPath);
+          this.updateJsIssueWidgets(index);
+        }
       },
     },
   },
   mounted() {
     this.trackPageViews();
+    this.updateJsIssueWidgets(this.activeTabIndex);
   },
   methods: {
     trackPageViews() {
       const { category, action } = trackIncidentDetailsViewsOptions;
       Tracking.event(category, action);
     },
-    handleTabChange(tabIndex) {
+    updateJsIssueWidgets(tabIndex) {
       /**
        * TODO: Implement a solution that does not violate Vue principles in using
        * DOM manipulation directly (#361618)
@@ -153,7 +161,7 @@ export default {
         <incident-metric-tab />
       </gl-tab>
       <gl-tab
-        v-if="alert"
+        v-if="hasLinkedAlerts"
         class="alert-management-details"
         :title="$options.i18n.alertsTitle"
         data-testid="alert-details-tab"

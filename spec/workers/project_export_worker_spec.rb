@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectExportWorker do
+RSpec.describe ProjectExportWorker, feature_category: :importers do
   it_behaves_like 'export worker'
 
   context 'exporters duration measuring' do

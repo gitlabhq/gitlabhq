@@ -3,16 +3,16 @@
 .col-lg-3
   %p
     = s_('PrometheusService|Custom metrics require Prometheus installed on a cluster with environment scope "*" OR a manually configured Prometheus to be available.')
-    = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md', anchor: 'adding-custom-metrics'), target: '_blank', rel: "noopener noreferrer"
+    = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
-  .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{integration.active}" } }
-    .card-header
+  = render Pajamas::CardComponent.new(header_options: { class: 'gl-display-flex gl-align-items-center' }, body_options: { class: 'gl-p-0' }, card_options: { class: 'gl-mb-5 custom-monitored-metrics js-panel-custom-monitored-metrics', data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{integration.active}" } }) do |c|
+    - c.header do
       %strong
         = s_('PrometheusService|Custom metrics')
-      = gl_badge_tag 0, nil, class: 'js-custom-monitored-count'
+      = gl_badge_tag 0, nil, class: 'gl-ml-2 js-custom-monitored-count'
       = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn gl-button btn-confirm gl-ml-auto js-new-metric-button hidden'
-    .card-body
+    - c.body do
       .flash-container.hidden
         .flash-warning
           .flash-text

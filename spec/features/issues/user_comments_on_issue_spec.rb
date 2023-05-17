@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User comments on issue", :js, feature_category: :team_planning do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -31,6 +31,8 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
         find(".error-alert", visible: false)
       end
     end
+
+    it_behaves_like 'edits content using the content editor'
 
     it "adds comment with code block" do
       code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"

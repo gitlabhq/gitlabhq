@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
-import { selectedRect as getSelectedRect } from '@_ueberdosis/prosemirror-tables';
+import { selectedRect as getSelectedRect } from '@tiptap/pm/tables';
 import { __ } from '~/locale';
 
 const TABLE_CELL_HEADER = 'th';
@@ -110,6 +110,7 @@ export default {
   <node-view-wrapper
     class="gl-relative gl-padding-5 gl-min-w-10"
     :as="cellType"
+    dir="auto"
     @click="hideDropdown"
   >
     <span

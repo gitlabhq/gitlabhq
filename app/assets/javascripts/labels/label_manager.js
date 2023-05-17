@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import { dispose } from '~/tooltips';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -106,7 +106,7 @@ export default class LabelManager {
     if (action === 'remove') {
       $('.js-priority-badge', $label).remove();
     } else {
-      $('.label-links', $label).append(this.$badgeItemTemplate.clone().html());
+      $('.label-links', $label).prepend(this.$badgeItemTemplate.clone().html());
     }
   }
 

@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Data Stores
+group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -156,7 +156,7 @@ regenerate a clean `db/structure.sql` for the migrations you're
 adding. This script applies all migrations found in `db/migrate`
 or `db/post_migrate`, so if there are any migrations you don't want to
 commit to the schema, rename or remove them. If your branch is not
-targeting `main` you can set the `TARGET` environment variable.
+targeting the default Git branch, you can set the `TARGET` environment variable.
 
 ```shell
 # Regenerate schema against `main`
@@ -184,21 +184,7 @@ git checkout origin/master db/structure.sql
 VERSION=<migration ID> bundle exec rails db:migrate:main
 ```
 
-### Adding new tables to the database dictionary
-
-GitLab connects to two different Postgres databases: `main` and `ci`. New tables should be defined in [`db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs):
-
-```yaml
-table_name: table name exmaple
-description: Description example
-introduced_by_url: Merge request link
-milestone: Milestone example
-feature_categories:
-- Feature category example
-classes:
-- Class example
-gitlab_schema: gitlab_main
-```
+After a table has been created, it should be added to the database dictionary, following the steps mentioned in the [database dictionary guide](database/database_dictionary.md#adding-tables).
 
 ## Avoiding downtime
 
@@ -278,6 +264,27 @@ to be longer. Some methods for shortening a name that's too long:
   `index_vulnerability_findings_remediations_on_remediation_id`.
 - Instead of columns, specify the purpose of the index, such as `index_users_for_unconfirmation_notification`.
 
+### Migration timestamp age
+
+The timestamp portion of a migration filename determines the order in which migrations
+are run. It's important to maintain a rough correlation between:
+
+1. When a migration is added to the GitLab codebase.
+1. The timestamp of the migration itself.
+
+A new migration's timestamp should *never* be before the previous hard stop.
+Migrations are occasionally squashed, and if a migration is added whose timestamp
+falls before the previous hard stop, a problem like what happened in
+[issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) can occur.
+
+For example, if we are currently developing against GitLab 16.0, the previous
+hard stop is 15.11. 15.11 was released on April 23rd, 2023. Therefore, the
+minimum acceptable timestamp would be 20230424000000.
+
+#### Best practice
+
+While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last hard stop.
+
 ## Heavy operations in a single transaction
 
 When using a single-transaction migration, a transaction holds a database connection
@@ -307,7 +314,7 @@ which is a "versioned" class. For new migrations, the latest version should be u
 can be looked up in `Gitlab::Database::Migration::MIGRATION_CLASSES`) to use the latest version
 of migration helpers.
 
-In this example, we use version 2.0 of the migration class:
+In this example, we use version 2.1 of the migration class:
 
 ```ruby
 class TestMigration < Gitlab::Database::Migration[2.1]
@@ -323,7 +330,7 @@ version of migration helpers automatically.
 Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
 in GitLab 14.3.
 For merge requests targeting previous stable branches, use the old format and still inherit from
-`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.0]`.
+`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.1]`.
 
 ## Retry mechanism when acquiring database locks
 
@@ -345,7 +352,7 @@ on the `users` table once it has been enqueued.
 
 More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
 
-For stability reasons, GitLab.com has a specific [`statement_timeout`](../user/gitlab_com/index.md#postgresql)
+For stability reasons, GitLab.com has a short `statement_timeout`
 set. When the migration is invoked, any database query has
 a fixed time to execute. In a worst-case scenario, the request sits in the
 lock queue, blocking other queries for the duration of the configured statement timeout,
@@ -644,89 +651,14 @@ for more details.
 
 ## Adding indexes
 
-Before adding an index, consider if this one is necessary. There are situations in which an index
-might not be required, like:
-
-- The table is small (less than `1,000` records) and it's not expected to exponentially grow in size.
-- Any existing indexes filter out enough rows.
-- The reduction in query timings after the index is added is not significant.
-
-Additionally, wide indexes are not required to match all filter criteria of queries, we just need
-to cover enough columns so that the index lookup has a small enough selectivity. Please review our
-[Adding Database indexes](database/adding_database_indexes.md) guide for more details.
-
-When adding an index to a non-empty table make sure to use the method
-`add_concurrent_index` instead of the regular `add_index` method.
-The `add_concurrent_index` method automatically creates concurrent indexes
-when using PostgreSQL, removing the need for downtime.
-
-To use this method, you must disable single-transactions mode
-by calling the method `disable_ddl_transaction!` in the body of your migration
-class like so:
-
-```ruby
-class MyMigration < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-
-  INDEX_NAME = 'index_name'
-
-  def up
-    add_concurrent_index :table, :column, name: INDEX_NAME
-  end
-
-  def down
-    remove_concurrent_index :table, :column, name: INDEX_NAME
-  end
-end
-```
-
-You must explicitly name indexes that are created with more complex
-definitions beyond table name, column names, and uniqueness constraint.
-Consult the [Adding Database Indexes](database/adding_database_indexes.md#requirements-for-naming-indexes)
-guide for more details.
-
-If you need to add a unique index, please keep in mind there is the possibility
-of existing duplicates being present in the database. This means that should
-always _first_ add a migration that removes any duplicates, before adding the
-unique index.
-
-For a small table (such as an empty one or one with less than `1,000` records),
-it is recommended to use `add_index` in a single-transaction migration, combining it with other
-operations that don't require `disable_ddl_transaction!`.
+Before adding an index, consider if one is necessary. The [Adding Database indexes](database/adding_database_indexes.md) guide contains more details to help you decide if an index is necessary and provides best practices for adding indexes.
 
 ## Testing for existence of indexes
 
-If a migration requires conditional logic based on the absence or
-presence of an index, you must test for existence of that index using
-its name. This helps avoids problems with how Rails compares index definitions,
-which can lead to unexpected results. For more details, review the
-[Adding Database Indexes](database/adding_database_indexes.md#why-explicit-names-are-required)
+If a migration requires conditional logic based on the absence or presence of an index, you must test for existence of that index using its name. This helps avoids problems with how Rails compares index definitions, which can lead to unexpected results.
+
+For more details, review the [Adding Database Indexes](database/adding_database_indexes.md#testing-for-existence-of-indexes)
 guide.
-
-The easiest way to test for existence of an index by name is to use the
-`index_name_exists?` method, but the `index_exists?` method can also
-be used with a name option. For example:
-
-```ruby
-class MyMigration < Gitlab::Database::Migration[2.1]
-  INDEX_NAME = 'index_name'
-
-  def up
-    # an index must be conditionally created due to schema inconsistency
-    unless index_exists?(:table_name, :column_name, name: INDEX_NAME)
-      add_index :table_name, :column_name, name: INDEX_NAME
-    end
-  end
-
-  def down
-    # no op
-  end
-end
-```
-
-Keep in mind that concurrent index helpers like `add_concurrent_index`,
-`remove_concurrent_index`, and `remove_concurrent_index_by_name` already
-perform existence checks internally.
 
 ## Adding foreign-key constraints
 
@@ -972,6 +904,8 @@ def down
 end
 ```
 
+After a table has been dropped, it should be added to the database dictionary, following the steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
+
 ## Dropping a sequence
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
@@ -1009,6 +943,20 @@ end
 NOTE:
 `add_sequence` should be avoided for columns with foreign keys.
 Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
+
+## Truncate a table
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
+
+Truncating a table is uncommon, but you can use the `truncate_tables!` method provided by the database team.
+
+Under the hood, it works like this:
+
+- Finds the `gitlab_schema` for the tables to be truncated.
+- If the `gitlab_schema` for the tables is included in the connection's gitlab_schemas,
+  it then executes the `TRUNCATE` statement.
+- If the `gitlab_schema` for the tables is not included in the connection's
+  gitlab_schemas, it does nothing.
 
 ## Swapping primary key
 

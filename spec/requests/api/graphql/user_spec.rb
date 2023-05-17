@@ -10,6 +10,12 @@ RSpec.describe 'User', feature_category: :user_profile do
   shared_examples 'a working user query' do
     it_behaves_like 'a working graphql query' do
       before do
+        # TODO: This license stub is necessary because the remote development workspaces field
+        #       defined in the EE version of UserInterface gets picked up here and thus the license
+        #       check happens. This comes from the `ancestors` call in
+        #       lib/graphql/schema/member/has_fields.rb#fields in the graphql library.
+        stub_licensed_features(remote_development: true)
+
         post_graphql(query, current_user: current_user)
       end
     end
@@ -36,9 +42,17 @@ RSpec.describe 'User', feature_category: :user_profile do
   end
 
   context 'when username parameter is used' do
-    let(:query) { graphql_query_for(:user, { username: current_user.username.to_s }) }
+    context 'when username is identically cased' do
+      let(:query) { graphql_query_for(:user, { username: current_user.username.to_s }) }
 
-    it_behaves_like 'a working user query'
+      it_behaves_like 'a working user query'
+    end
+
+    context 'when username is differently cased' do
+      let(:query) { graphql_query_for(:user, { username: current_user.username.to_s.upcase }) }
+
+      it_behaves_like 'a working user query'
+    end
   end
 
   context 'when username and id parameter are used' do

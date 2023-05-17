@@ -3,70 +3,39 @@
   dependencies: []
   cache: {}
 
-.notify-slack:
+create-issues-for-failing-tests:
   extends:
     - .notify-defaults
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/curl
-  variables:
-    MERGE_REQUEST_URL: ${CI_MERGE_REQUEST_PROJECT_URL}/-/merge_requests/${CI_MERGE_REQUEST_IID}
-  before_script:
-    - apk update && apk add git bash
-    - echo "NOTIFY_CHANNEL is ${NOTIFY_CHANNEL}"
-    - echo "CI_PIPELINE_URL is ${CI_PIPELINE_URL}"
-
-notify-update-gitaly:
-  extends:
-    - .notify-slack
-  rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $GITALY_UPDATE_BRANCH'
-      when: on_failure
-      allow_failure: true
-  variables:
-    NOTIFY_CHANNEL: g_gitaly
-    GITALY_UPDATE_BRANCH: release-tools/update-gitaly
-  script:
-    - scripts/slack ${NOTIFY_CHANNEL} "☠️ \`${GITALY_UPDATE_BRANCH}\` failed! ☠️ See ${CI_PIPELINE_URL} (triggered from ${MERGE_REQUEST_URL})" ci_failing "GitLab QA Bot"
-
-notify-security-pipeline:
-  extends:
-    - .notify-slack
-    - .delivery:rules:security-pipeline-merge-result-failure
-  variables:
-    NOTIFY_CHANNEL: f_upcoming_release
-  script:
-    # <!subteam^S0127FU8PDE> mentions the `@release-managers` group
-    - scripts/slack ${NOTIFY_CHANNEL} "<!subteam^S0127FU8PDE> ☠️  Pipeline for merged result failed! ☠️ See ${CI_PIPELINE_URL} (triggered from ${MERGE_REQUEST_URL})" ci_failing "GitLab Release Tools Bot"
-
-notify-pipeline-failure:
-  extends:
-    - .notify-defaults
-    - .notify:rules:notify-pipeline-failure
+    - .notify:rules:create-issues-for-failing-tests
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   variables:
-    INCIDENT_PROJECT: "${BROKEN_BRANCH_INCIDENTS_PROJECT}"
-    BROKEN_BRANCH_PROJECT_TOKEN: "${BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN}"
-    INCIDENT_JSON: "${CI_PROJECT_DIR}/incident.json"
-    SLACK_CHANNEL: "${NOTIFY_PIPELINE_FAILURE_CHANNEL}"
-    FAILED_PIPELINE_SLACK_MESSAGE_FILE: "${CI_PROJECT_DIR}/failed_pipeline_slack_message.json"
+    FAILED_TESTS_DIR: "${CI_PROJECT_DIR}/tmp/failed_tests"
+    FAILING_ISSUES_PROJECT: "gitlab-org/quality/engineering-productivity/flaky-tests-playground"
+    FAILING_ISSUE_JSON_DIR: "${CI_PROJECT_DIR}/tmp/issues"
   before_script:
-    - source scripts/utils.sh
-    - apt-get update && apt-get install -y jq
+    - source ./scripts/utils.sh
+    - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
   script:
-    - |
-      if [[ "${CREATE_INCIDENT_FOR_PIPELINE_FAILURE}" == "true" ]]; then
-        scripts/create-pipeline-failure-incident.rb -p ${INCIDENT_PROJECT} -f ${INCIDENT_JSON} -t ${BROKEN_BRANCH_PROJECT_TOKEN} ||
-          scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline incident creation failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter";
-        echosuccess "Created incident $(jq '.web_url' ${INCIDENT_JSON})";
-      fi
-    - |
-      scripts/generate-failed-pipeline-slack-message.rb -i ${INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
-      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL" ||
-        scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter";
-
+    - mkdir -p "${FAILING_ISSUE_JSON_DIR}"
+    - retrieve_failed_tests "${FAILED_TESTS_DIR}" "json" "latest"
+    - scripts/pipeline/create_test_failure_issues.rb --project "${FAILING_ISSUES_PROJECT}" --tests-report-file "${FAILED_TESTS_DIR}/rspec_failed_tests.json" --issues-json-folder "${FAILING_ISSUE_JSON_DIR}" --api-token "${FAILING_ISSUES_PROJECT_TOKEN}"
+    - scripts/pipeline/create_test_failure_issues.rb --project "${FAILING_ISSUES_PROJECT}" --tests-report-file "${FAILED_TESTS_DIR}/rspec_ee_failed_tests.json" --issues-json-folder "${FAILING_ISSUE_JSON_DIR}" --api-token "${FAILING_ISSUES_PROJECT_TOKEN}"
   artifacts:
     paths:
-      - ${INCIDENT_JSON}
-      - ${FAILED_PIPELINE_SLACK_MESSAGE_FILE}
+      - ${FAILED_TESTS_DIR}/
+      - ${FAILING_ISSUE_JSON_DIR}/
     when: always
     expire_in: 2 days
+
+notify-package-and-test-failure:
+  extends:
+    - .notify-defaults
+    - .notify:rules:notify-package-and-test-failure
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  before_script:
+    - source scripts/utils.sh
+    - apt-get update
+    - install_gitlab_gem
+  script:
+    - scripts/generate-failed-package-and-test-mr-message.rb

@@ -57,6 +57,10 @@ module QA
             sandbox.visit!
           end
 
+          unless group_show.has_subgroup?(path)
+            raise ResourceFabricationFailedError, "Resource at #{path} could not be found under #{sandbox.path}"
+          end
+
           group_show.click_subgroup(path)
           @id = group_show.group_id
         end

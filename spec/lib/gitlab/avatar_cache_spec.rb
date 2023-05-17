@@ -62,40 +62,52 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
   end
 
   describe "#delete_by_email" do
-    subject { described_class.delete_by_email(*emails) }
+    shared_examples 'delete emails' do
+      subject { described_class.delete_by_email(*emails) }
 
-    before do
-      perform_fetch
-    end
+      before do
+        perform_fetch
+      end
 
-    context "no emails, somehow" do
-      let(:emails) { [] }
+      context "no emails, somehow" do
+        let(:emails) { [] }
 
-      it { is_expected.to eq(0) }
-    end
+        it { is_expected.to eq(0) }
+      end
 
-    context "single email" do
-      let(:emails) { "foo@bar.com" }
+      context "single email" do
+        let(:emails) { "foo@bar.com" }
 
-      it "removes the email" do
-        expect(read(key, "20:2:true")).to eq(avatar_path)
+        it "removes the email" do
+          expect(read(key, "20:2:true")).to eq(avatar_path)
 
-        expect(subject).to eq(1)
+          expect(subject).to eq(1)
 
-        expect(read(key, "20:2:true")).to eq(nil)
+          expect(read(key, "20:2:true")).to eq(nil)
+        end
+      end
+
+      context "multiple emails" do
+        let(:emails) { ["foo@bar.com", "missing@baz.com"] }
+
+        it "removes the emails it finds" do
+          expect(read(key, "20:2:true")).to eq(avatar_path)
+
+          expect(subject).to eq(1)
+
+          expect(read(key, "20:2:true")).to eq(nil)
+        end
       end
     end
 
-    context "multiple emails" do
-      let(:emails) { ["foo@bar.com", "missing@baz.com"] }
-
-      it "removes the emails it finds" do
-        expect(read(key, "20:2:true")).to eq(avatar_path)
-
-        expect(subject).to eq(1)
-
-        expect(read(key, "20:2:true")).to eq(nil)
+    context 'when feature flag disabled' do
+      before do
+        stub_feature_flags(use_pipeline_over_multikey: false)
       end
+
+      it_behaves_like 'delete emails'
     end
+
+    it_behaves_like 'delete emails'
   end
 end

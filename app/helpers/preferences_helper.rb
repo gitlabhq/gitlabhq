@@ -132,7 +132,7 @@ module PreferencesHelper
     Gitlab::CurrentSettings.gitpod_url.presence || 'https://gitpod.io/'
   end
 
-  # Ensure that anyone adding new options updates `DASHBOARD_CHOICES` too
+  # Ensure that anyone adding new options updates `localized_dashboard_choices` too
   def validate_dashboard_choices!(user_dashboards)
     if user_dashboards.size != localized_dashboard_choices.size
       raise "`User` defines #{user_dashboards.size} dashboard choices," \

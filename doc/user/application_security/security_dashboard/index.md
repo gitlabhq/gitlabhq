@@ -19,6 +19,9 @@ To use the Security Dashboards, you must:
   shared runners on GitLab.com, you are using the correct version.
 - Have the [correct role](../../permissions.md) for the project or group.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=QHQHN4luNpc).
+
 ## When Security Dashboards are updated
 
 The Security Dashboards show results of scans from the most recent completed pipeline on the
@@ -64,7 +67,7 @@ Project Security Dashboards show statistics for all vulnerabilities with a curre
 To view total number of vulnerabilities over time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Security Dashboard**.
+1. On the left sidebar, select **Security and Compliance > Security Dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
    - To view a specific time frame, use the time range handles (**{scroll-handle}**).
@@ -77,7 +80,7 @@ To view total number of vulnerabilities over time:
 To download an SVG image of the vulnerabilities chart:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Security dashboard**.
+1. On the left sidebar, select **Security and Compliance > Security dashboard**.
 1. Select **Save chart as an image** (**{download}**).
 
 ## View vulnerabilities over time for a group
@@ -133,7 +136,7 @@ The Security Center includes:
 - A [vulnerability report](../vulnerability_report/index.md).
 - A settings area to configure which projects to display.
 
-![Security Center Dashboard with projects](img/security_center_dashboard_v13_4.png)
+![Security Center Dashboard with projects](img/security_center_dashboard_v15_10.png)
 
 ### View the Security Center
 
@@ -150,6 +153,9 @@ To add projects to the Security Center:
 
 After you add projects, the security dashboard and vulnerability report show the vulnerabilities
 found in those projects' default branches.
+
+You can add a maximum of 1,000 projects, however the **Project** filter in the **Vulnerability
+Report** is limited to 100 projects.
 
 <!-- ## Troubleshooting
 

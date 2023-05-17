@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { s__ } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';

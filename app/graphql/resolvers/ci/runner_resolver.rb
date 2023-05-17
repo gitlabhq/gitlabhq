@@ -22,11 +22,15 @@ module Resolvers
 
       def find_runner(id:)
         runner_id = GitlabSchema.parse_gid(id, expected_type: ::Ci::Runner).model_id.to_i
-        preload_tag_list = lookahead.selects?(:tag_list)
+        key = {
+          preload_tag_list: lookahead.selects?(:tag_list),
+          preload_creator: lookahead.selects?(:created_by)
+        }
 
-        BatchLoader::GraphQL.for(runner_id).batch(key: { preload_tag_list: preload_tag_list }) do |ids, loader, batch|
+        BatchLoader::GraphQL.for(runner_id).batch(key: key) do |ids, loader, batch|
           results = ::Ci::Runner.id_in(ids)
           results = results.with_tags if batch[:key][:preload_tag_list]
+          results = results.with_creator if batch[:key][:preload_creator]
 
           results.each { |record| loader.call(record.id, record) }
         end

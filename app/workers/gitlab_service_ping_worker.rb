@@ -52,3 +52,5 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
     nil
   end
 end
+
+GitlabServicePingWorker.prepend_mod

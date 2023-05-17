@@ -79,7 +79,8 @@ RSpec.shared_examples 'an accessible' do
   let(:access) do
     [{ 'type' => 'repository',
        'name' => project.full_path,
-       'actions' => actions }]
+       'actions' => actions,
+       'meta' => { 'project_path' => project.full_path } }]
   end
 
   it_behaves_like 'a valid token'
@@ -244,12 +245,14 @@ RSpec.shared_examples 'a container registry auth service' do
         {
           'type' => 'repository',
           'name' => project.full_path,
-          'actions' => ['pull']
+          'actions' => ['pull'],
+          'meta' => { 'project_path' => project.full_path }
         },
         {
           'type' => 'repository',
           'name' => "#{project.full_path}/*",
-          'actions' => ['pull']
+          'actions' => ['pull'],
+          'meta' => { 'project_path' => project.full_path }
         }
       ]
     end
@@ -822,16 +825,20 @@ RSpec.shared_examples 'a container registry auth service' do
           [
             { 'type' => 'repository',
               'name' => internal_project.full_path,
-              'actions' => ['pull'] },
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => internal_project.full_path } },
             { 'type' => 'repository',
               'name' => private_project.full_path,
-              'actions' => ['pull'] },
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => private_project.full_path } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
-              'actions' => ['pull'] },
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => public_project.full_path } },
             { 'type' => 'repository',
               'name' => public_project_private_container_registry.full_path,
-              'actions' => ['pull'] }
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => public_project_private_container_registry.full_path } }
           ]
         end
       end
@@ -845,10 +852,12 @@ RSpec.shared_examples 'a container registry auth service' do
           [
             { 'type' => 'repository',
               'name' => internal_project.full_path,
-              'actions' => ['pull'] },
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => internal_project.full_path } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
-              'actions' => ['pull'] }
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => public_project.full_path } }
           ]
         end
       end
@@ -862,7 +871,8 @@ RSpec.shared_examples 'a container registry auth service' do
           [
             { 'type' => 'repository',
               'name' => public_project.full_path,
-              'actions' => ['pull'] }
+              'actions' => ['pull'],
+              'meta' => { 'project_path' => public_project.full_path } }
           ]
         end
       end
@@ -1255,6 +1265,31 @@ RSpec.shared_examples 'a container registry auth service' do
 
       it_behaves_like 'a forbidden' do
         it_behaves_like 'containing the import error'
+      end
+    end
+  end
+
+  context 'with a project with a path containing special characters' do
+    let_it_be(:bad_project) { create(:project) }
+
+    before do
+      bad_project.update_attribute(:path, "#{bad_project.path}_")
+    end
+
+    describe '#access_token' do
+      let(:token) { described_class.access_token(['pull'], [bad_project.full_path]) }
+      let(:access) do
+        [{ 'type' => 'repository',
+           'name' => bad_project.full_path,
+           'actions' => ['pull'] }]
+      end
+
+      subject { { token: token } }
+
+      it_behaves_like 'a valid token'
+
+      it 'has the correct scope' do
+        expect(payload).to include('access' => access)
       end
     end
   end

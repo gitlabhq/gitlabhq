@@ -19,10 +19,6 @@ describe('ItemTitle', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders title contents', () => {
     expect(findInputEl().attributes()).toMatchObject({
       'data-placeholder': 'Add a title...',
@@ -51,7 +47,7 @@ describe('ItemTitle', () => {
     expect(wrapper.emitted(eventName)).toBeDefined();
   });
 
-  it('renders only the text content from clipboard', async () => {
+  it('renders only the text content from clipboard', () => {
     const htmlContent = '<strong>bold text</strong>';
     const buildClipboardData = (data = {}) => ({
       clipboardData: {

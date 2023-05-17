@@ -78,3 +78,5 @@ You may have connectivity issues due to the following reasons:
   - If the curl command returns a failure, either:
     - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html) in `gitlab.rb` to point to your server.
     - Contact your network administrator to make changes to the proxy.
+  - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on the server, then run `gitlab-ctl reconfigure`.
+  

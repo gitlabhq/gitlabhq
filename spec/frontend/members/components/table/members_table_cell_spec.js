@@ -97,11 +97,6 @@ describe('MembersTableCell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each`
     member           | expectedMemberType
     ${memberMock}    | ${MEMBER_TYPES.user}

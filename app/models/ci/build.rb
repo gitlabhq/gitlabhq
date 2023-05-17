@@ -18,14 +18,15 @@ module Ci
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
-    belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
+    belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
       refspecs: -> (build) { build.merge_request_ref? },
       artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
       multi_build_steps: -> (build) { build.multi_build_steps? },
-      return_exit_code: -> (build) { build.exit_codes_defined? }
+      return_exit_code: -> (build) { build.exit_codes_defined? },
+      fallback_cache_keys: -> (build) { build.fallback_cache_keys_defined? }
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
@@ -35,8 +36,8 @@ module Ci
 
     has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
-    has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
-    has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
+    has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
+    has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
@@ -47,7 +48,7 @@ module Ci
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
-    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
+    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :build
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
@@ -55,7 +56,9 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
-    has_one :runner_machine, through: :metadata, class_name: 'Ci::RunnerMachine'
+    has_one :runner_manager_build, class_name: 'Ci::RunnerManagerBuild', foreign_key: :build_id, inverse_of: :build,
+      autosave: true
+    has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, foreign_key: :build_id, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', foreign_key: :build_id, inverse_of: :build
@@ -71,6 +74,7 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
     delegate :apple_app_store_integration, to: :project
+    delegate :google_play_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
@@ -132,7 +136,7 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
-    scope :eager_load_for_archiving_trace, -> { includes(:project, :pending_state) }
+    scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
 
     scope :eager_load_everything, -> do
       includes(
@@ -180,7 +184,9 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token, encrypted: :required
+    add_authentication_token_field :token,
+      encrypted: :required,
+      format_with_prefix: :partition_id_prefix_in_16_bit_encode
 
     after_save :stick_build_if_status_changed
 
@@ -592,14 +598,21 @@ module Ci
           .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_JOB_STARTED_AT', value: started_at&.iso8601)
-          .append(key: 'CI_BUILD_ID', value: id.to_s)
-          .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
+
+        if Feature.disabled?(:ci_remove_legacy_predefined_variables, project)
+          variables
+            .append(key: 'CI_BUILD_ID', value: id.to_s)
+            .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
+        end
+
+        variables
           .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
           .concat(harbor_variables)
           .concat(apple_app_store_variables)
+          .concat(google_play_variables)
       end
     end
 
@@ -648,6 +661,13 @@ module Ci
       return [] unless pipeline.protected_ref?
 
       Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
+    end
+
+    def google_play_variables
+      return [] unless google_play_integration.try(:activated?)
+      return [] unless pipeline.protected_ref?
+
+      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables)
     end
 
     def features
@@ -757,9 +777,7 @@ module Ci
     end
 
     def remove_token!
-      if Feature.enabled?(:remove_job_token_on_completion, project)
-        update!(token_encrypted: nil)
-      end
+      update!(token_encrypted: nil)
     end
 
     # acts_as_taggable uses this method create/remove tags with contexts
@@ -802,7 +820,7 @@ module Ci
       return unless project
       return if user&.blocked?
 
-      ActiveRecord::Associations::Preloader.new.preload([self], { runner: :tags })
+      ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
@@ -902,9 +920,15 @@ module Ci
     def cache
       cache = Array.wrap(options[:cache])
 
+      cache.each do |single_cache|
+        single_cache[:fallback_keys] = [] unless single_cache.key?(:fallback_keys)
+      end
+
       if project.jobs_cache_index
         cache = cache.map do |single_cache|
-          single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
+          cache = single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
+          fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{project.jobs_cache_index}" } }
+          cache.merge(fallback.compact)
         end
       end
 
@@ -913,8 +937,14 @@ module Ci
       cache.map do |entry|
         type_suffix = !entry[:unprotect] && pipeline.protected_ref? ? 'protected' : 'non_protected'
 
-        entry.merge(key: "#{entry[:key]}-#{type_suffix}")
+        cache = entry.merge(key: "#{entry[:key]}-#{type_suffix}")
+        fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{type_suffix}" } }
+        cache.merge(fallback.compact)
       end
+    end
+
+    def fallback_cache_keys_defined?
+      Array.wrap(options[:cache]).any? { |cache| cache[:fallback_keys].present? }
     end
 
     def credentials
@@ -1091,10 +1121,6 @@ module Ci
       ::Ci::PendingBuild.upsert_from_build!(self)
     end
 
-    def create_runtime_metadata!
-      ::Ci::RunningBuild.upsert_shared_runner_build!(self)
-    end
-
     ##
     # We can have only one queuing entry or running build tracking entry,
     # because there is a unique index on `build_id` in each table, but we need
@@ -1159,11 +1185,6 @@ module Ci
       else
         group_name
       end
-    end
-
-    override :format_token
-    def format_token(token)
-      "#{partition_id.to_s(16)}_#{token}"
     end
 
     protected
@@ -1231,10 +1252,10 @@ module Ci
     end
 
     def job_jwt_variables
-      if project.ci_cd_settings.opt_in_jwt?
+      if id_tokens?
         id_tokens_variables
       else
-        predefined_jwt_variables.concat(id_tokens_variables)
+        predefined_jwt_variables
       end
     end
 
@@ -1251,8 +1272,6 @@ module Ci
     end
 
     def id_tokens_variables
-      return [] unless id_tokens?
-
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
           token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])
@@ -1307,6 +1326,10 @@ module Ci
           event: 'i_ci_secrets_management_id_tokens_build_created'
         ).to_context]
       )
+    end
+
+    def partition_id_prefix_in_16_bit_encode
+      "#{partition_id.to_s(16)}_"
     end
   end
 end

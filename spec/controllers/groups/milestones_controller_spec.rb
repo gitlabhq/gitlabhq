@@ -230,11 +230,10 @@ RSpec.describe Groups::MilestonesController do
 
   describe "#create" do
     it "creates group milestone with Chinese title" do
-      post :create,
-           params: {
-             group_id: group.to_param,
-             milestone: milestone_params
-           }
+      post :create, params: {
+        group_id: group.to_param,
+        milestone: milestone_params
+      }
 
       milestone = Milestone.find_by_title(title)
 
@@ -251,16 +250,30 @@ RSpec.describe Groups::MilestonesController do
     it "updates group milestone" do
       milestone_params[:title] = "title changed"
 
-      put :update,
-           params: {
-             id: milestone.iid,
-             group_id: group.to_param,
-             milestone: milestone_params
-           }
+      put :update, params: {
+        id: milestone.iid,
+        group_id: group.to_param,
+        milestone: milestone_params
+      }
 
       milestone.reload
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.title).to eq("title changed")
+    end
+
+    it "handles ActiveRecord::StaleObjectError" do
+      milestone_params[:title] = "title changed"
+      # Purposely reduce the lock_version to trigger an ActiveRecord::StaleObjectError
+      milestone_params[:lock_version] = milestone.lock_version - 1
+
+      put :update, params: {
+        id: milestone.iid,
+        group_id: group.to_param,
+        milestone: milestone_params
+      }
+
+      expect(response).not_to redirect_to(group_milestone_path(group, milestone.iid))
+      expect(response).to render_template(:edit)
     end
   end
 
@@ -390,21 +403,19 @@ RSpec.describe Groups::MilestonesController do
   context 'for a non-GET request' do
     context 'when requesting the canonical path with different casing' do
       it 'does not 404' do
-        post :create,
-             params: {
-               group_id: group.to_param,
-               milestone: { title: title }
-             }
+        post :create, params: {
+          group_id: group.to_param,
+          milestone: { title: title }
+        }
 
         expect(response).not_to have_gitlab_http_status(:not_found)
       end
 
       it 'does not redirect to the correct casing' do
-        post :create,
-             params: {
-               group_id: group.to_param,
-               milestone: { title: title }
-             }
+        post :create, params: {
+          group_id: group.to_param,
+          milestone: { title: title }
+        }
 
         expect(response).not_to have_gitlab_http_status(:moved_permanently)
       end
@@ -414,11 +425,10 @@ RSpec.describe Groups::MilestonesController do
       let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
       it 'returns not found' do
-        post :create,
-             params: {
-               group_id: redirect_route.path,
-               milestone: { title: title }
-             }
+        post :create, params: {
+          group_id: redirect_route.path,
+          milestone: { title: title }
+        }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

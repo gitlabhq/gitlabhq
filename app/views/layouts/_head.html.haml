@@ -1,6 +1,7 @@
 - page_description brand_title unless page_description
 - site_name = _('GitLab')
-%head{ prefix: "og: http://ogp.me/ns#" }
+- omit_og = sign_in_with_redirect?
+%head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
 
   %title= page_title(site_name)
@@ -10,6 +11,7 @@
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   = render 'layouts/startup_js'
+  = yield :startup_js
 
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
@@ -45,6 +47,7 @@
     = render 'layouts/startup_css_activation'
 
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
+  = render 'layouts/snowplow'
 
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
@@ -57,26 +60,29 @@
 
   = yield :page_specific_javascripts
 
+  = webpack_bundle_tag 'super_sidebar' if show_super_sidebar?
+
   = webpack_controller_bundle_tags
 
   = yield :project_javascripts
 
-  -# Open Graph - http://ogp.me/
-  %meta{ property: 'og:type', content: "object" }
-  %meta{ property: 'og:site_name', content: site_name }
-  %meta{ property: 'og:title', content: page_title }
-  %meta{ property: 'og:description', content: page_description }
-  %meta{ property: 'og:image', content: page_image }
-  %meta{ property: 'og:image:width', content: '64' }
-  %meta{ property: 'og:image:height', content: '64' }
-  %meta{ property: 'og:url', content: request.base_url + request.fullpath }
+  - unless omit_og
+    -# Open Graph - http://ogp.me/
+    %meta{ property: 'og:type', content: "object" }
+    %meta{ property: 'og:site_name', content: site_name }
+    %meta{ property: 'og:title', content: page_title }
+    %meta{ property: 'og:description', content: page_description }
+    %meta{ property: 'og:image', content: page_image }
+    %meta{ property: 'og:image:width', content: '64' }
+    %meta{ property: 'og:image:height', content: '64' }
+    %meta{ property: 'og:url', content: request.base_url + request.fullpath }
 
-  -# Twitter Card - https://dev.twitter.com/cards/types/summary
-  %meta{ property: 'twitter:card', content: "summary" }
-  %meta{ property: 'twitter:title', content: page_title }
-  %meta{ property: 'twitter:description', content: page_description }
-  %meta{ property: 'twitter:image', content: page_image }
-  = page_card_meta_tags
+    -# Twitter Card - https://dev.twitter.com/cards/types/summary
+    %meta{ property: 'twitter:card', content: "summary" }
+    %meta{ property: 'twitter:title', content: page_title }
+    %meta{ property: 'twitter:description', content: page_description }
+    %meta{ property: 'twitter:image', content: page_image }
+    = page_card_meta_tags
 
   %meta{ name: "description", content: page_description }
 
@@ -98,6 +104,5 @@
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/matomo' if extra_config.has_key?('matomo_url') && extra_config.has_key?('matomo_site_id')
-  = render 'layouts/snowplow'
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/184)
   = render_if_exists "layouts/frontend_monitor"

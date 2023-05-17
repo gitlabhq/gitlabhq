@@ -16,6 +16,8 @@ module Projects
       urgency :low
 
       def create
+        return not_found if Feature.enabled?(:remove_monitor_metrics)
+
         result = ::Metrics::Dashboard::CloneDashboardService.new(project, current_user, dashboard_params).execute
 
         if result[:status] == :success
@@ -26,6 +28,8 @@ module Projects
       end
 
       def update
+        return not_found if Feature.enabled?(:remove_monitor_metrics)
+
         result = ::Metrics::Dashboard::UpdateDashboardService.new(project, current_user, dashboard_params.merge(file_content_params)).execute
 
         if result[:status] == :success

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Visits::CreateService do
+RSpec.describe Boards::Visits::CreateService, feature_category: :team_planning do
   describe '#execute' do
     let(:user) { create(:user) }
 

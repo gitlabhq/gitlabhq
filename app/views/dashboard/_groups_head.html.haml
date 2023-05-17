@@ -1,14 +1,13 @@
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= _('Groups')
 
-  - if current_user.can_create_group?
-    .page-title-controls
+  .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
+    = link_to _("Explore groups"), explore_groups_path
+    - if current_user.can_create_group?
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { qa_selector: "new_group_button", testid: "new-group-button" } }) do
         = _("New group")
-.top-area
-  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
-    = gl_tab_link_to _("Your groups"), dashboard_groups_path
-    = gl_tab_link_to _("Explore public groups"), explore_groups_path, data: { qa_selector: "public_groups_tab" }
+
+.top-area.gl-py-3.gl-justify-content-end.gl-border-bottom-0
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'

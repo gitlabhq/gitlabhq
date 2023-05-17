@@ -81,6 +81,11 @@ difficult to achieve locally.
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
   start to fail.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/402915): State leakage can result from
+  data records created with `let_it_be` shared between test examples, while some test modifies the model
+  either deliberately or unwillingly causing out-of-sync data in test examples. This can result in `PG::QueryCanceled: ERROR` in the subsequent test examples or retries.
+  For more information about state leakages and resolution options,
+  see [GitLab testing best practices](best_practices.md#lets-talk-about-let).
 
 ### Random input
 
@@ -116,6 +121,8 @@ Adding a delay in API or controller could help reproducing the issue.
   time before throwing an `element not found` error.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101728/diffs): A CSS selector
   only appears after a GraphQL requests has finished, and the UI has updated.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/408215): A false-positive test, Capybara imediatly returns true after
+page visit and page is not fully loaded, or if the element is not detectable by webdriver (such as being rendered outside the viewport or behind other elements).
 
 ### Datetime-sensitive
 
@@ -130,6 +137,7 @@ Adding a delay in API or controller could help reproducing the issue.
 **Examples:**
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/118612): A test that breaks after some time passed.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/403332): A test that breaks in the last day of the month.
 
 ### Unstable infrastructure
 
@@ -150,15 +158,28 @@ usually a good idea.
 
 ## Quarantined tests
 
-When a test frequently fails in `master`,
-create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
+When we have a flaky test in `master`:
 
-If the test cannot be fixed in a timely fashion, there is an impact on the
-productivity of all the developers, so it should be quarantined. There are two ways to quarantine tests, depending on the test framework being used: RSpec and Jest.
+1. Create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
+1. Quarantine the test after the first failure.
+   If the test cannot be fixed in a timely fashion, there is an impact on the
+   productivity of all the developers, so it should be quarantined.
 
 ### RSpec
 
-For RSpec tests, you can use the `:quarantine` metadata with the issue URL.
+#### Fast quarantine
+
+To quickly quarantine a test without having to open a merge request and wait for pipelines,
+you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
+
+#### Long-term quarantine
+
+Once a test is fast-quarantined, you can proceed with the long-term quarantining process. This can be done by opening a merge request.
+
+First, ensure the test file has a [`feature_category` metadata](../feature_categorization/index.md#rspec-examples), to ensure correct attribution of the test file.
+
+Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
+~"failure::flaky-test" issue you created previously.
 
 ```ruby
 it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
@@ -171,6 +192,8 @@ This means it is skipped unless run with `--tag quarantine`:
 ```shell
 bin/rspec --tag quarantine
 ```
+
+After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
 
 ### Jest
 
@@ -220,11 +243,10 @@ For example, `FLAKY_RSPEC_GENERATE_REPORT=1 bin/rspec ...`.
 
 ### Usage of the `rspec/flaky/report-suite.json` report
 
-The `rspec/flaky/report-suite.json` report is:
-
-- Used for [automatically skipping known flaky tests](../pipelines/index.md#automatic-skipping-of-flaky-tests).
-- [Imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/master/extract/gitlab_flaky_tests/upload.py)
-  once per day, for monitoring with the [internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
+The `rspec/flaky/report-suite.json` report is
+[imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/7085bea51bb2f8f823e073393934ba5f97259459/extract/gitlab_flaky_tests/upload.py#L19)
+once per day, for monitoring with the
+[internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
 
 ## Problems we had in the past at GitLab
 
@@ -251,9 +273,9 @@ which would give us the minimal test combination to reproduce the failure:
    for the list under `Knapsack node specs:` in the CI job output log.
 1. Save the list of specs as a file, and run:
 
-    ```shell
-    cat knapsack_specs.txt | xargs scripts/rspec_bisect_flaky
-    ```
+   ```shell
+   cat knapsack_specs.txt | xargs scripts/rspec_bisect_flaky
+   ```
 
 If there is an order-dependency issue, the script above will print the minimal
 reproduction.
@@ -299,6 +321,12 @@ If a spec hangs, it might be caused by a [bug in Rails](https://github.com/rails
 
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81112>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/337039>
+
+## Suggestions
+
+### Split the test file
+
+It could help to split the large RSpec files in multiple files in order to narrow down the context and identify the problematic tests.
 
 ## Resources
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BitbucketController do
+RSpec.describe Import::BitbucketController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
@@ -48,11 +48,13 @@ RSpec.describe Import::BitbucketController do
       let(:expires_at) { Time.current + 1.day }
       let(:expires_in) { 1.day }
       let(:access_token) do
-        double(token: token,
-               secret: secret,
-               expires_at: expires_at,
-               expires_in: expires_in,
-               refresh_token: refresh_token)
+        double(
+          token: token,
+          secret: secret,
+          expires_at: expires_at,
+          expires_in: expires_in,
+          refresh_token: refresh_token
+        )
       end
 
       before do
@@ -63,10 +65,10 @@ RSpec.describe Import::BitbucketController do
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token)
           .with(hash_including(
-                  'grant_type' => 'authorization_code',
-                  'code' => code,
-                  'redirect_uri' => users_import_bitbucket_callback_url),
-                {})
+            'grant_type' => 'authorization_code',
+            'code' => code,
+            'redirect_uri' => users_import_bitbucket_callback_url),
+            {})
           .and_return(access_token)
         stub_omniauth_provider('bitbucket')
 
@@ -441,6 +443,17 @@ RSpec.describe Import::BitbucketController do
           user: user,
           extra: { user_role: 'Not a member', import_type: 'bitbucket' }
         )
+      end
+    end
+
+    context 'when user can not import projects' do
+      let!(:other_namespace) { create(:group, name: 'other_namespace').tap { |other_namespace| other_namespace.add_developer(user) } }
+
+      it 'returns 422 response' do
+        post :create, params: { target_namespace: other_namespace.name }, format: :json
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.parsed_body['errors']).to eq('You are not allowed to import projects in this namespace.')
       end
     end
   end

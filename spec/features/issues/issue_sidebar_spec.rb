@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   include MobileHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
+  include CookieHelper
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
@@ -20,6 +21,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   context 'when signed in' do
     before do
       sign_in(user)
+      set_cookie('new-actions-popover-viewed', 'true')
     end
 
     context 'when concerning the assignee', :js do
@@ -86,12 +88,12 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
             end
 
             within '.js-right-sidebar' do
-              find('.block.assignee').click(x: 0, y: 0)
+              find('.block.assignee').click(x: 0, y: 0, offset: 0)
               find('.block.assignee .edit-link').click
             end
 
-            expect(page.all('.dropdown-menu-user li').length).to eq(1)
-            expect(find('.dropdown-input-field').value).to eq(user2.name)
+            expect(page.all('.dropdown-menu-user li').length).to eq(6)
+            expect(find('.dropdown-input-field').value).to eq('')
           end
 
           it 'shows label text as "Apply" when assignees are changed' do
@@ -119,8 +121,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
             page.within '.dropdown-menu-user' do
               expect(page).to have_link('Invite members')
-              expect(page).to have_selector('[data-track-action="click_invite_members"]')
-              expect(page).to have_selector('[data-track-label="edit_assignee"]')
 
               click_link 'Invite members'
             end
@@ -207,6 +207,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
     context 'as an allowed user' do
       before do
+        stub_feature_flags(moved_mr_sidebar: false)
         project.add_developer(user)
         visit_issue(project, issue)
       end
@@ -295,6 +296,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
     context 'as a guest' do
       before do
+        stub_feature_flags(moved_mr_sidebar: false)
         project.add_guest(user)
         visit_issue(project, issue)
       end

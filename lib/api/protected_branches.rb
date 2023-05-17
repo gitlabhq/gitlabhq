@@ -6,8 +6,6 @@ module API
 
     BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
 
-    before { authorize_admin_project }
-
     feature_category :source_code_management
 
     helpers Helpers::ProtectedBranchesHelpers
@@ -33,6 +31,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_branches' do
+        authorize_read_code!
+
         protected_branches =
           ProtectedBranchesFinder
             .new(user_project, params)
@@ -55,6 +55,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
+        authorize_read_code!
+
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
         present protected_branch, with: Entities::ProtectedBranch, project: user_project
@@ -86,6 +88,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do
+        authorize_admin_project
+
         protected_branch = user_project.protected_branches.find_by(name: params[:name])
 
         if protected_branch
@@ -109,18 +113,22 @@ module API
         failure [
           { code: 422, message: 'Push access levels access level has already been taken' },
           { code: 404, message: '404 Project Not Found' },
-          { code: 401, message: '401 Unauthorized' }
+          { code: 401, message: '401 Unauthorized' },
+          { code: 400, message: '400 Bad request' }
         ]
       end
       params do
         requires :name, type: String, desc: 'The name of the branch', documentation: { example: 'main' }
         optional :allow_force_push, type: Boolean,
-                                    desc: 'Allow force push for all users with push access.'
+                                    desc: 'Allow force push for all users with push access.',
+                                    allow_blank: false
 
         use :optional_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
       patch ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
+        authorize_admin_project
+
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
         declared_params = declared_params(include_missing: false)
@@ -148,6 +156,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS, urgency: :low do
+        authorize_admin_project
+
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
         destroy_conditionally!(protected_branch) do

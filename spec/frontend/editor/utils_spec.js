@@ -1,6 +1,8 @@
 import { editor as monacoEditor } from 'monaco-editor';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as utils from '~/editor/utils';
+import languages from '~/ide/lib/languages';
+import { registerLanguages } from '~/ide/utils';
 import { DEFAULT_THEME } from '~/ide/lib/themes';
 
 describe('Source Editor utils', () => {
@@ -53,20 +55,24 @@ describe('Source Editor utils', () => {
   });
 
   describe('getBlobLanguage', () => {
-    it.each`
-      path           | expectedLanguage
-      ${'foo.js'}    | ${'javascript'}
-      ${'foo.js.rb'} | ${'ruby'}
-      ${'foo.bar'}   | ${'plaintext'}
-      ${undefined}   | ${'plaintext'}
-    `(
-      'sets the $expectedThemeName theme when $themeName is set in the user preference',
-      ({ path, expectedLanguage }) => {
-        const language = utils.getBlobLanguage(path);
+    beforeEach(() => {
+      registerLanguages(...languages);
+    });
 
-        expect(language).toEqual(expectedLanguage);
-      },
-    );
+    it.each`
+      path                    | expectedLanguage
+      ${'foo.js'}             | ${'javascript'}
+      ${'foo.js.rb'}          | ${'ruby'}
+      ${'foo.bar'}            | ${'plaintext'}
+      ${undefined}            | ${'plaintext'}
+      ${'foo/bar/foo.js'}     | ${'javascript'}
+      ${'CODEOWNERS'}         | ${'codeowners'}
+      ${'.gitlab/CODEOWNERS'} | ${'codeowners'}
+    `(`returns '$expectedLanguage' for '$path' path`, ({ path, expectedLanguage }) => {
+      const language = utils.getBlobLanguage(path);
+
+      expect(language).toEqual(expectedLanguage);
+    });
   });
 
   describe('setupCodeSnipet', () => {

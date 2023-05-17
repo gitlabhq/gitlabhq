@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker do
+RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category: :code_review_workflow do
   describe '#perform' do
     let_it_be(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline) }

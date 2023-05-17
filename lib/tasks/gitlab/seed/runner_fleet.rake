@@ -28,10 +28,12 @@ namespace :gitlab do
           runner_count: args.runner_count&.to_i
         ).seed
 
-        Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder.new(
-          projects_to_runners: projects_to_runners,
-          job_count: args.job_count&.to_i
-        ).seed
+        if projects_to_runners
+          Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder.new(
+            projects_to_runners: projects_to_runners,
+            job_count: args.job_count&.to_i
+          ).seed
+        end
       end
 
       puts "Seed finished. Timings: #{timings}"

@@ -1,0 +1,31 @@
+valid_services_list:
+  services:
+    - php:7
+    - node:latest
+    - golang:1.10
+
+valid_services_object:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: ["/usr/local/bin/db-postgres"]
+      command: ["start"]
+
+services_with_variables:
+  services:
+    - name: bitnami/nginx
+      alias: nginx
+      variables:
+        NGINX_HTTP_PORT_NUMBER: ${NGINX_HTTP_PORT_NUMBER}
+
+pull_policy_string:
+  script: echo "A single pull policy."
+  services:
+    - name: postgres:11.6
+      pull_policy: if-not-present
+
+pull_policy_array:
+  script: echo "Multiple pull policies."
+  services:
+    - name: postgres:11.6
+      pull_policy: [always, if-not-present]

@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -107,7 +107,7 @@ the components outlined above and the pre-loaded demo runbook.
             '''
             We set user's id, login and access token on single user image to
             enable repository integration for JupyterHub.
-            See: https://gitlab.com/gitlab-org/gitlab-foss/issues/47138#note_154294790
+            See: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47138#note_154294790
             '''
             auth_state = await spawner.user.get_auth_state()
 

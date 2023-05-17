@@ -169,6 +169,7 @@ module Noteable
   def expire_note_etag_cache
     return unless discussions_rendered_on_frontend?
     return unless etag_caching_enabled?
+    return unless project.present?
 
     Gitlab::EtagCaching::Store.new.touch(note_etag_key)
   end
@@ -197,7 +198,7 @@ module Noteable
   def creatable_note_email_address(author)
     return unless supports_creating_notes_by_email?
 
-    project_email = project.new_issuable_address(author, self.class.name.underscore)
+    project_email = project&.new_issuable_address(author, base_class_name.underscore)
     return unless project_email
 
     project_email.sub('@', "-#{iid}@")

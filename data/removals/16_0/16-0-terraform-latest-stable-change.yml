@@ -1,0 +1,21 @@
+- title: "The stable Terraform CI/CD template has been replaced with the latest template"
+  announcement_milestone: "15.8"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: timofurrer  # (required) GitLab username of the person reporting the removal
+  stage: deploy  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386001  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    With every major GitLab version, we update the stable Terraform templates with the current latest templates.
+    This change affects the [quickstart](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+    and the [base](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) templates.
+
+    The new templates do not change the directory to `$TF_ROOT` explicitly: `gitlab-terraform` gracefully
+    handles directory changing. If you altered the job scripts to assume that the current working directory is `$TF_ROOT`, you must manually add `cd "$TF_ROOT"` now.
+
+    Because the latest template introduces Merge Request Pipeline support which is not supported in Auto DevOps,
+    those rules are not yet integrated into the stable template.
+    However, we may introduce them later on, which may break your Terraform pipelines in regards to which jobs are executed.
+
+    To accommodate the changes, you might need to adjust the [`rules`](https://docs.gitlab.com/ee/ci/yaml/#rules) in your
+    `.gitlab-ci.yml` file.

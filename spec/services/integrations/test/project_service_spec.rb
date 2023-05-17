@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Test::ProjectService do
+RSpec.describe Integrations::Test::ProjectService, feature_category: :integrations do
   include AfterNextHelpers
 
   describe '#execute' do

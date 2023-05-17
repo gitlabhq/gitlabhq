@@ -18,10 +18,6 @@ describe('google_cloud/deployments/service_table', () => {
     wrapper = mount(DeploymentsServiceTable, { propsData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should contain a table', () => {
     expect(findTable().exists()).toBe(true);
   });

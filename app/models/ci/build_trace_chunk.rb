@@ -9,7 +9,7 @@ module Ci
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::OptimisticLocking
 
-    belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
+    belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id, inverse_of: :trace_chunks
 
     partitionable scope: :build
 

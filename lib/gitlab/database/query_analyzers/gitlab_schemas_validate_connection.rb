@@ -15,7 +15,7 @@ module Gitlab
 
           def analyze(parsed)
             tables = parsed.pg.select_tables + parsed.pg.dml_tables
-            table_schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
+            table_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
             return if table_schemas.empty?
 
             allowed_schemas = ::Gitlab::Database.gitlab_schemas_for_connection(parsed.connection)

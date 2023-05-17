@@ -38,7 +38,7 @@ module Gitlab
       end
 
       def puma?
-        !!defined?(::Puma)
+        !!defined?(::Puma::Server)
       end
 
       def sidekiq?

@@ -35,6 +35,7 @@ module Gitlab
           deployable_id: deployment.deployable_id,
           deployable_url: deployable_url,
           environment: deployment.environment.name,
+          environment_tier: deployment.environment.tier,
           environment_slug: deployment.environment.slug,
           environment_external_url: deployment.environment.external_url,
           project: deployment.project.hook_attrs,

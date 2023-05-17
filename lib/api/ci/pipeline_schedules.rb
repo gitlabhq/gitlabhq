@@ -141,9 +141,12 @@ module API
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-          authorize! :take_ownership_pipeline_schedule, pipeline_schedule
+          authorize! :admin_pipeline_schedule, pipeline_schedule
 
-          if pipeline_schedule.own!(current_user)
+          if pipeline_schedule.owned_by?(current_user)
+            status(:ok) # Set response code to 200 if schedule is already owned by current user
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
+          elsif pipeline_schedule.own!(current_user)
             present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
             render_validation_error!(pipeline_schedule)

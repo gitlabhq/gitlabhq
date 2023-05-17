@@ -1,6 +1,6 @@
 <script>
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
 
 export default {
@@ -16,12 +16,10 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query']),
+    ...mapState(['query', 'useNewNavigation']),
+    ...mapGetters(['currentScope']),
     ANY() {
       return this.filterData.filters.ANY;
-    },
-    scope() {
-      return this.query.scope;
     },
     initialFilter() {
       return this.query[this.filterData.filterParam];
@@ -30,7 +28,7 @@ export default {
       return this.initialFilter || this.ANY.value;
     },
     filtersArray() {
-      return this.filterData.filterByScope[this.scope];
+      return this.filterData.filterByScope[this.currentScope];
     },
     selectedFilter: {
       get() {
@@ -58,7 +56,7 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0">{{ filterData.header }}</h5>
+    <h5 class="gl-mt-0" :class="{ 'gl-font-sm': useNewNavigation }">{{ filterData.header }}</h5>
     <gl-form-radio-group v-model="selectedFilter">
       <gl-form-radio v-for="f in filtersArray" :key="f.value" :value="f.value">
         {{ radioLabel(f) }}

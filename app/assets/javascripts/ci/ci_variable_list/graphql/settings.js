@@ -205,33 +205,40 @@ export const mergeVariables = (existing, incoming, { args }) => {
   return result;
 };
 
-export const cacheConfig = {
-  cacheConfig: {
-    typePolicies: {
-      Query: {
-        fields: {
-          ciVariables: {
-            keyArgs: false,
-            merge: mergeVariables,
+export const mergeOnlyIncomings = (_, incoming) => {
+  return incoming;
+};
+
+export const generateCacheConfig = (isVariablePagesEnabled = false) => {
+  const merge = isVariablePagesEnabled ? mergeOnlyIncomings : mergeVariables;
+  return {
+    cacheConfig: {
+      typePolicies: {
+        Query: {
+          fields: {
+            ciVariables: {
+              keyArgs: false,
+              merge,
+            },
           },
         },
-      },
-      Project: {
-        fields: {
-          ciVariables: {
-            keyArgs: ['fullPath', 'endpoint', 'id'],
-            merge: mergeVariables,
+        Project: {
+          fields: {
+            ciVariables: {
+              keyArgs: ['fullPath'],
+              merge,
+            },
           },
         },
-      },
-      Group: {
-        fields: {
-          ciVariables: {
-            keyArgs: ['fullPath'],
-            merge: mergeVariables,
+        Group: {
+          fields: {
+            ciVariables: {
+              keyArgs: ['fullPath'],
+              merge,
+            },
           },
         },
       },
     },
-  },
+  };
 };

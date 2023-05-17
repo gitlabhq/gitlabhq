@@ -23,6 +23,8 @@
 #     chance = (queue weight / total weight of all queues) * 100
 ---
 :queues:
+- - abuse_new_abuse_report
+  - 1
 - - adjourned_project_deletion
   - 1
 - - admin_emails
@@ -81,7 +83,11 @@
   - 1
 - - bulk_imports_export_request
   - 1
+- - bulk_imports_finish_batched_relation_export
+  - 1
 - - bulk_imports_pipeline
+  - 1
+- - bulk_imports_relation_batch_export
   - 1
 - - bulk_imports_relation_export
   - 1
@@ -99,6 +105,8 @@
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
   - 1
+- - ci_llm_generate_config
+  - 1
 - - ci_parse_secure_file_metadata
   - 1
 - - ci_runners_process_runner_version_update
@@ -108,6 +116,8 @@
 - - cluster_agent
   - 1
 - - compliance_management_chain_of_custody_report
+  - 1
+- - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
@@ -177,7 +187,11 @@
   - 1
 - - elastic_namespace_rollout
   - 1
+- - elastic_namespace_update
+  - 1
 - - elastic_project_transfer
+  - 1
+- - elastic_wiki_indexer
   - 1
 - - email_receiver
   - 2
@@ -295,6 +309,8 @@
   - 1
 - - ldap_group_sync
   - 2
+- - llm_completion
+  - 1
 - - mail_scheduler
   - 2
 - - mailers
@@ -323,9 +339,13 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
+- - merge_requests_llm_summarize_merge_request
+  - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval
+  - 1
+- - merge_requests_set_reviewer_reviewed
   - 1
 - - merge_requests_stream_approval_audit_event
   - 1
@@ -338,6 +358,10 @@
 - - metrics_dashboard_sync_dashboards
   - 1
 - - migrate_external_diffs
+  - 1
+- - ml_experiment_tracking_associate_ml_candidate_to_package
+  - 1
+- - namespaces_free_user_cap_notification_clearing
   - 1
 - - namespaces_free_user_cap_over_limit_notification
   - 1
@@ -385,8 +409,6 @@
   - 1
 - - personal_access_tokens
   - 1
-- - phabricator_import_import_tasks
-  - 1
 - - pipeline_background
   - 1
 - - pipeline_creation
@@ -403,6 +425,10 @@
   - 3
 - - product_analytics_initialize_analytics
   - 1
+- - product_analytics_initialize_snowplow_product_analytics
+  - 1
+- - product_analytics_post_push
+  - 1
 - - project_cache
   - 1
 - - project_destroy
@@ -417,13 +443,21 @@
   - 1
 - - projects_delete_branch
   - 1
+- - projects_deregister_suggested_reviewers_project
+  - 1
 - - projects_finalize_project_statistics_refresh
   - 1
+- - projects_forks_sync
+  - 1
 - - projects_git_garbage_collect
+  - 1
+- - projects_import_export_create_relation_exports
   - 1
 - - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export
+  - 1
+- - projects_import_export_wait_relation_exports
   - 1
 - - projects_inactive_projects_deletion_notification
   - 1
@@ -481,7 +515,15 @@
   - 1
 - - sbom_reports
   - 1
+- - search_namespace_index_integrity
+  - 1
+- - search_project_index_integrity
+  - 1
+- - search_zoekt_namespace_indexer
+  - 1
 - - security_auto_fix
+  - 1
+- - security_orchestration_configuration_create_bot
   - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
@@ -493,10 +535,6 @@
   - 1
 - - security_sync_scan_policies
   - 1
-- - self_monitoring_project_create
-  - 2
-- - self_monitoring_project_delete
-  - 2
 - - service_desk_email_receiver
   - 2
 - - set_user_status_based_on_user_cap_setting
@@ -504,6 +542,8 @@
 - - snippets_schedule_bulk_repository_shard_moves
   - 1
 - - snippets_update_repository_storage
+  - 1
+- - ssh_keys_update_last_used_at
   - 1
 - - status_page_publish
   - 1
@@ -546,6 +586,10 @@
 - - web_hooks_log_execution
   - 1
 - - wikis_git_garbage_collect
+  - 1
+- - work_items_import_work_items_csv
+  - 1
+- - work_items_update_parent_objectives_progress
   - 1
 - - x509_certificate_revoke
   - 1

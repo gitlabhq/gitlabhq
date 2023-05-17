@@ -1,6 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import {
+  VARIANT_EMBEDDED,
+  VARIANT_STANDALONE,
+} from '~/sidebar/components/labels/labels_select_widget/constants';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
@@ -66,10 +69,6 @@ describe('DropdownContent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
   const findLabelsView = () => wrapper.findComponent(DropdownContentsLabelsView);
   const findDropdownHeader = () => wrapper.findComponent(DropdownHeaderStub);
@@ -93,7 +92,7 @@ describe('DropdownContent', () => {
   });
 
   it('emits `setLabels` event on dropdown hide if labels changed on non-sidebar widget', async () => {
-    createComponent({ props: { variant: DropdownVariant.Standalone } });
+    createComponent({ props: { variant: VARIANT_STANDALONE } });
     const updatedLabel = {
       id: 28,
       title: 'Bug',
@@ -109,7 +108,7 @@ describe('DropdownContent', () => {
   });
 
   it('emits `setLabels` event on visibility change if labels changed on sidebar widget', async () => {
-    createComponent({ props: { variant: DropdownVariant.Standalone, isVisible: true } });
+    createComponent({ props: { variant: VARIANT_STANDALONE, isVisible: true } });
     const updatedLabel = {
       id: 28,
       title: 'Bug',
@@ -177,6 +176,21 @@ describe('DropdownContent', () => {
       expect(findCreateView().exists()).toBe(false);
       expect(findLabelsView().exists()).toBe(true);
     });
+
+    it('selects created labels', async () => {
+      const createdLabel = {
+        id: 29,
+        title: 'new label',
+        description: null,
+        color: '#FF0000',
+        textColor: '#FFFFFF',
+      };
+
+      findCreateView().vm.$emit('labelCreated', createdLabel);
+      await nextTick();
+
+      expect(findLabelsView().props('localSelectedLabels')).toContain(createdLabel);
+    });
   });
 
   describe('Labels view', () => {
@@ -193,13 +207,13 @@ describe('DropdownContent', () => {
     });
 
     it('does not render footer on standalone dropdown', () => {
-      createComponent({ props: { variant: DropdownVariant.Standalone } });
+      createComponent({ props: { variant: VARIANT_STANDALONE } });
 
       expect(findDropdownFooter().exists()).toBe(false);
     });
 
     it('renders footer on embedded dropdown', () => {
-      createComponent({ props: { variant: DropdownVariant.Embedded } });
+      createComponent({ props: { variant: VARIANT_EMBEDDED } });
 
       expect(findDropdownFooter().exists()).toBe(true);
     });

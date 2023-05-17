@@ -34,7 +34,6 @@ describe('RelatedMergeRequests', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

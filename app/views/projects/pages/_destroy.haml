@@ -1,16 +1,13 @@
 - if @project.pages_deployed?
   - if can?(current_user, :remove_pages, @project)
-    = render Pajamas::CardComponent.new(card_options: { class: 'border-danger' }, header_options: {class: 'bg-danger text-white'}) do |c|
-      - c.with_header do
+    .gl-bg-red-50.gl-inset-border-l-3-red-600.gl-py-5.gl-px-6
+      %h4.gl-font-lg.gl-mt-0= s_('GitLabPages|Remove pages')
+      %p= s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
+      = render Pajamas::ButtonComponent.new(href: project_pages_path(@project),
+        variant: :danger,
+        method: :delete,
+        button_options: {data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_('GitLabPages|Remove pages')}) do
         = s_('GitLabPages|Remove pages')
-      - c.with_body do
-        = s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
-      - c.with_footer do
-        = render Pajamas::ButtonComponent.new(href: project_pages_path(@project),
-          variant: :danger,
-          method: :delete,
-          button_options: {data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_('GitLabPages|Remove pages')}) do
-          = s_('GitLabPages|Remove pages')
   - else
     .nothing-here-block
       = s_('GitLabPages|Only project maintainers can remove pages')

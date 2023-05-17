@@ -1,0 +1,10 @@
+#import "./work_item.fragment.graphql"
+
+mutation workItemConvert($input: WorkItemConvertInput!) {
+  workItemConvert(input: $input) {
+    workItem {
+      ...WorkItem
+    }
+    errors
+  }
+}

@@ -28,5 +28,5 @@
       %pre.commit-description<
         = preserve(markdown_field(commit, :description))
 
-= render 'projects/diffs/diffs', diffs: @diffs
+= render 'projects/diffs/diffs', diffs: @diffs, diff_page_context: "is-wiki"
 = render 'shared/wikis/sidebar'

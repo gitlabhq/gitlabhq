@@ -5,7 +5,7 @@
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
   RSpec.describe "Manage", :skip_live_env, only: { job: "large-gitlab-import" } do
-    describe "Gitlab migration", orchestrated: false, product_group: :import do
+    describe "Gitlab migration", orchestrated: false, product_group: :import_and_integrate do
       include_context "with gitlab group migration"
 
       let!(:logger) { Runtime::Logger.logger }
@@ -64,10 +64,6 @@ module QA
       let(:pipelines) { imported_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
-
-      before do
-        Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
-      end
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|

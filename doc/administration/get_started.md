@@ -1,7 +1,7 @@
 ---
-info: For assistance with this CSM Onboarding page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
-group: unassigned
+group: Tutorials
 ---
 
 # Get started administering GitLab **(FREE)**
@@ -100,7 +100,6 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
 - Prometheus and its exporters are on by default. However, you need to [configure the service](../administration/monitoring/prometheus/index.md#configuring-prometheus).
 - Learn more about [GitLab architecture](../development/architecture.md).
 - Find out why [application performance metrics](https://about.gitlab.com/blog/2020/05/07/working-with-performance-metrics/) matter.
-- Create a [self-monitoring project](../administration/monitoring/gitlab_self_monitoring_project/index.md) to track the health of your instance.
 - Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
 
 ### Components of monitoring
@@ -151,7 +150,8 @@ Backups of GitLab databases and file systems are taken every 24 hours, and are k
 - You can use the project export option in:
   - [The UI](../user/project/settings/import_export.md#export-a-project-and-its-data).
   - [The API](../api/project_import_export.md#schedule-an-export).
-- [Group export](../user/group/settings/import_export.md) does *not* export the projects in it, but does export:
+- [Group export by uploading a file export](../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated)
+  does **not** export the projects in it, but does export:
   - Epics
   - Milestones
   - Boards

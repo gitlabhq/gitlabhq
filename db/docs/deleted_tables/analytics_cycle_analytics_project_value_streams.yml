@@ -1,0 +1,11 @@
+---
+table_name: analytics_cycle_analytics_project_value_streams
+classes:
+feature_categories:
+- value_stream_management
+description: Used to store the value stream configurations for projects. Scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/390194
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60925
+milestone: '13.12'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118980
+removed_in_milestone: '16.0'

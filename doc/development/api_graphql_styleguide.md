@@ -40,6 +40,13 @@ GraphiQL is an interactive GraphQL API explorer where you can play around with e
 You can access it in any GitLab environment on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
 
+## Reviewing merge requests with GraphQL changes
+
+The GraphQL framework has some specific gotchas to be aware of, and domain expertise is required to ensure they are satisfied.
+
+If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
+[our GraphQL review guide](graphql_guide/reviewing.md).
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -287,13 +294,13 @@ or by calling `#to_global_id` on an object that has mixed in the
 `GlobalID::Identification` module.
 
 Using an example from
-[`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/3c95bd9/app/graphql/types/notes/discussion_type.rb#L24-26):
+[`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/af48df44/app/graphql/types/notes/discussion_type.rb#L22-30):
 
 ```ruby
-field :reply_id, GraphQL::Types::ID
+field :reply_id, Types::GlobalIDType[Discussion]
 
 def reply_id
-  ::Gitlab::GlobalId.build(object, id: object.reply_id)
+  Gitlab::GlobalId.build(object, id: object.reply_id)
 end
 ```
 
@@ -597,7 +604,7 @@ description 'Mutates an object. Does not mutate the object if ' \
 def resolve(id: )
   object = authorized_find!(id: id)
 
-  raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`my_feature_flag` feature flag is disabled.' \
+  raise_resource_not_available_error! '`my_feature_flag` feature flag is disabled.' \
     if Feature.disabled?(:my_feature_flag, object)
   # ...
 end
@@ -785,7 +792,7 @@ The documentation mentions that the old Global ID style is now deprecated.
 ## Mark schema items as Alpha
 
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
-[Alpha](../policy/alpha-beta-support.md#alpha-features).
+[Alpha](../policy/alpha-beta-support.md#experiment).
 
 An item marked as Alpha is [exempt from the deprecation process](#breaking-change-exemptions) and can be removed
 at any time without notice. Mark an item as Alpha when it is
@@ -875,7 +882,7 @@ module Types
     graphql_name 'IssuableSeverity'
     description 'Incident severity'
 
-    ::IssuableSeverity.severities.keys.each do |severity|
+    ::IssuableSeverity.severities.each_key do |severity|
       value severity.upcase, value: severity, description: "#{severity.titleize} severity."
     end
   end
@@ -1132,7 +1139,9 @@ you need to do something more custom however, remember, if you encounter an
 object the `current_user` does not have access to when resolving a field, then
 the entire field should resolve to `null`.
 
-### Deriving resolvers (`BaseResolver.single` and `BaseResolver.last`)
+### Deriving resolvers
+
+(including `BaseResolver.single` and `BaseResolver.last`)
 
 For some use cases, we can derive resolvers from others.
 The main use case for this is one resolver to find all items, and another to
@@ -1704,8 +1713,8 @@ object on the mutation. This would allow you to use the
 
 When a user is not allowed to perform the action, or an object is not
 found, we should raise a
-`Gitlab::Graphql::Errors::ResourceNotAvailable` error which is
-correctly rendered to the clients.
+`Gitlab::Graphql::Errors::ResourceNotAvailable` by calling `raise_resource_not_available_error!`
+from in the `resolve` method.
 
 ### Errors in mutations
 

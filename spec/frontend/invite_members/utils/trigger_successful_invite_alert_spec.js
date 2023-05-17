@@ -6,14 +6,14 @@ import {
   TOAST_MESSAGE_LOCALSTORAGE_KEY,
   TOAST_MESSAGE_SUCCESSFUL,
 } from '~/invite_members/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 useLocalStorageSpy();
 
 describe('Display Successful Invitation Alert', () => {
-  it('does not show alert if localStorage key not present', () => {
+  it('does not show an alert if localStorage key not present', () => {
     localStorage.removeItem(TOAST_MESSAGE_LOCALSTORAGE_KEY);
 
     displaySuccessfulInvitationAlert();
@@ -21,7 +21,7 @@ describe('Display Successful Invitation Alert', () => {
     expect(createAlert).not.toHaveBeenCalled();
   });
 
-  it('shows alert when localStorage key is present', () => {
+  it('shows an alert when localStorage key is present', () => {
     localStorage.setItem(TOAST_MESSAGE_LOCALSTORAGE_KEY, 'true');
 
     displaySuccessfulInvitationAlert();

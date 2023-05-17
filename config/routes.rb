@@ -24,11 +24,12 @@ InitializerConnections.raise_if_new_database_connection do
 
     use_doorkeeper do
       controllers applications: 'oauth/applications',
-                  authorized_applications: 'oauth/authorized_applications',
-                  authorizations: 'oauth/authorizations',
-                  token_info: 'oauth/token_info',
-                  tokens: 'oauth/tokens'
+        authorized_applications: 'oauth/authorized_applications',
+        authorizations: 'oauth/authorizations',
+        token_info: 'oauth/token_info',
+        tokens: 'oauth/tokens'
     end
+    put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
 
     # This prefixless path is required because Jira gets confused if we set it up with a path
     # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
@@ -66,10 +67,7 @@ InitializerConnections.raise_if_new_database_connection do
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
         resources :groups_projects, only: [:new, :create] do
-          collection do
-            post :import
-            put :exit
-          end
+          post :import, on: :collection
         end
         draw :verification
       end
@@ -87,6 +85,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     # JSON Web Token
     get 'jwt/auth' => 'jwt#auth'
+    post 'jwt/auth', to: proc { [404, {}, ['']] }
 
     # Health check
     get 'health_check(/:checks)' => 'health_check#index', as: :health_check
@@ -152,15 +151,16 @@ InitializerConnections.raise_if_new_database_connection do
 
         # Remote host can contain "." characters so it needs a constraint
         post 'remote/:remote_host(/*remote_path)',
-             as: :remote,
-             to: 'web_ide/remote_ide#index',
-             constraints: { remote_host: %r{[^/?]+} }
+          as: :remote,
+          to: 'web_ide/remote_ide#index',
+          constraints: { remote_host: %r{[^/?]+} }
       end
 
       draw :operations
       draw :jira_connect
 
       Gitlab.ee do
+        draw :remote_development
         draw :security
         draw :smartcard
         draw :trial
@@ -222,6 +222,8 @@ InitializerConnections.raise_if_new_database_connection do
       # Deprecated route for permanent failures
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
+
+      get '/timelogs' => 'time_tracking/timelogs#index'
     end
     # End of the /-/ scope.
 

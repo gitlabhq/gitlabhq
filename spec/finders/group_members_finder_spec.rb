@@ -56,44 +56,67 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
       }
     end
 
-    it 'raises an error if a non-supported relation type is used' do
-      expect do
-        described_class.new(group).execute(include_relations: [:direct, :invalid_relation_type])
-      end.to raise_error(ArgumentError, "invalid_relation_type is not a valid relation type. Valid relation types are direct, inherited, descendants, shared_from_groups.")
-    end
-
-    using RSpec::Parameterized::TableSyntax
-
-    where(:subject_relations, :subject_group, :expected_members) do
-      []                                                       | :group         | []
-      GroupMembersFinder::DEFAULT_RELATIONS                    | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
-      [:direct]                                                | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
-      [:inherited]                                             | :group         | []
-      [:descendants]                                           | :group         | [:user1_sub_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
-      [:shared_from_groups]                                    | :group         | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
-      [:direct, :inherited, :descendants, :shared_from_groups] | :group         | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
-      []                                                       | :sub_group     | []
-      GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_group     | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
-      [:direct]                                                | :sub_group     | [:user1_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
-      [:inherited]                                             | :sub_group     | [:user1_group, :user2_group, :user3_group, :user4_group]
-      [:descendants]                                           | :sub_group     | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:shared_from_groups]                                    | :sub_group     | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
-      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_group     | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
-      []                                                       | :sub_sub_group | []
-      GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
-      [:direct]                                                | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
-      [:inherited]                                             | :sub_sub_group | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
-      [:descendants]                                           | :sub_sub_group | []
-      [:shared_from_groups]                                    | :sub_sub_group | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
-      [:direct, :inherited, :descendants, :shared_from_groups] | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
-    end
-
-    with_them do
-      it 'returns correct members' do
-        result = described_class.new(groups[subject_group]).execute(include_relations: subject_relations)
-
-        expect(result.to_a).to match_array(expected_members.map { |name| members[name] })
+    shared_examples 'member relations' do
+      it 'raises an error if a non-supported relation type is used' do
+        expect do
+          described_class.new(group).execute(include_relations: [:direct, :invalid_relation_type])
+        end.to raise_error(ArgumentError, "invalid_relation_type is not a valid relation type. Valid relation types are direct, inherited, descendants, shared_from_groups.")
       end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:subject_relations, :subject_group, :expected_members) do
+        []                                                       | :group         | []
+        GroupMembersFinder::DEFAULT_RELATIONS                    | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
+        [:direct]                                                | :group         | [:user1_group, :user2_group, :user3_group, :user4_group]
+        [:inherited]                                             | :group         | []
+        [:descendants]                                           | :group         | [:user1_sub_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
+        [:shared_from_groups]                                    | :group         | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+        [:direct, :inherited, :descendants, :shared_from_groups] | :group         | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
+        []                                                       | :sub_group     | []
+        GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_group     | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
+        [:direct]                                                | :sub_group     | [:user1_sub_group, :user2_sub_group, :user3_sub_group, :user4_sub_group]
+        [:inherited]                                             | :sub_group     | [:user1_group, :user2_group, :user3_group, :user4_group]
+        [:descendants]                                           | :sub_group     | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
+        [:shared_from_groups]                                    | :sub_group     | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+        [:direct, :inherited, :descendants, :shared_from_groups] | :sub_group     | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
+        []                                                       | :sub_sub_group | []
+        GroupMembersFinder::DEFAULT_RELATIONS                    | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_group]
+        [:direct]                                                | :sub_sub_group | [:user1_sub_sub_group, :user2_sub_sub_group, :user3_sub_sub_group, :user4_sub_sub_group]
+        [:inherited]                                             | :sub_sub_group | [:user1_sub_group, :user2_group, :user3_sub_group, :user4_group]
+        [:descendants]                                           | :sub_sub_group | []
+        [:shared_from_groups]                                    | :sub_sub_group | [:user1_public_shared_group, :user2_public_shared_group, :user3_public_shared_group, :user4_public_shared_group]
+        [:direct, :inherited, :descendants, :shared_from_groups] | :sub_sub_group | [:user1_sub_sub_group, :user2_group, :user3_sub_group, :user4_public_shared_group]
+      end
+
+      with_them do
+        it 'returns correct members' do
+          result = described_class.new(groups[subject_group]).execute(include_relations: subject_relations)
+
+          expect(result.to_a).to match_array(expected_members.map { |name| members[name] })
+        end
+      end
+    end
+
+    it_behaves_like 'member relations'
+
+    it 'returns the correct access level of the members shared through group sharing' do
+      shared_members_access = described_class
+                                .new(groups[:group])
+                                .execute(include_relations: [:shared_from_groups])
+                                .to_a
+                                .map(&:access_level)
+
+      correct_access_levels = ([Gitlab::Access::DEVELOPER] * 3) << Gitlab::Access::REPORTER
+      expect(shared_members_access).to match_array(correct_access_levels)
+    end
+
+    context 'when members_with_shared_group_access feature flag is disabled' do
+      before do
+        stub_feature_flags(members_with_shared_group_access: false)
+      end
+
+      it_behaves_like 'member relations'
     end
   end
 
@@ -222,6 +245,58 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
 
       it 'returns owners and maintainers' do
         expect(by_access_levels).to match_array([owner1, owner2, maintainer1, maintainer2])
+      end
+    end
+  end
+
+  context 'filter by user type' do
+    subject(:by_user_type) { described_class.new(group, user1, params: { user_type: user_type }).execute }
+
+    let_it_be(:service_account) { create(:user, :service_account) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+
+    let_it_be(:service_account_member) { group.add_developer(service_account) }
+    let_it_be(:project_bot_member) { group.add_developer(project_bot) }
+
+    context 'when the user is an owner' do
+      before do
+        group.add_owner(user1)
+      end
+
+      context 'when filtering by project bots' do
+        let(:user_type) { 'project_bot' }
+
+        it 'returns filtered members' do
+          expect(by_user_type).to match_array([project_bot_member])
+        end
+      end
+
+      context 'when filtering by service accounts' do
+        let(:user_type) { 'service_account' }
+
+        it 'returns filtered members' do
+          expect(by_user_type).to match_array([service_account_member])
+        end
+      end
+    end
+
+    context 'when the user is a maintainer' do
+      let(:user_type) { 'service_account' }
+
+      let_it_be(:user1_member) { group.add_maintainer(user1) }
+
+      it 'returns unfiltered members' do
+        expect(by_user_type).to match_array([user1_member, service_account_member, project_bot_member])
+      end
+    end
+
+    context 'when the user is a developer' do
+      let(:user_type) { 'service_account' }
+
+      let_it_be(:user1_member) { group.add_developer(user1) }
+
+      it 'returns unfiltered members' do
+        expect(by_user_type).to match_array([user1_member, service_account_member, project_bot_member])
       end
     end
   end

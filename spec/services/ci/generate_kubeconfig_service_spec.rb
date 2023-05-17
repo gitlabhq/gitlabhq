@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GenerateKubeconfigService do
+RSpec.describe Ci::GenerateKubeconfigService, feature_category: :deployment_management do
   describe '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
@@ -13,12 +13,12 @@ RSpec.describe Ci::GenerateKubeconfigService do
 
     let_it_be(:project_agent_authorization) do
       agent = create(:cluster_agent, project: agent_project)
-      create(:agent_project_authorization, agent: agent, project: project)
+      create(:agent_ci_access_project_authorization, agent: agent, project: project)
     end
 
     let_it_be(:group_agent_authorization) do
       agent = create(:cluster_agent, project: agent_project)
-      create(:agent_group_authorization, agent: agent, group: group)
+      create(:agent_ci_access_group_authorization, agent: agent, group: group)
     end
 
     let(:template) do
@@ -33,7 +33,7 @@ RSpec.describe Ci::GenerateKubeconfigService do
     let(:agent_authorizations) { [project_agent_authorization, group_agent_authorization] }
     let(:filter_service) do
       instance_double(
-        ::Clusters::Agents::FilterAuthorizationsService,
+        ::Clusters::Agents::Authorizations::CiAccess::FilterService,
         execute: agent_authorizations
       )
     end
@@ -42,7 +42,7 @@ RSpec.describe Ci::GenerateKubeconfigService do
 
     before do
       allow(Gitlab::Kubernetes::Kubeconfig::Template).to receive(:new).and_return(template)
-      allow(::Clusters::Agents::FilterAuthorizationsService).to receive(:new).and_return(filter_service)
+      allow(::Clusters::Agents::Authorizations::CiAccess::FilterService).to receive(:new).and_return(filter_service)
     end
 
     it 'returns a Kubeconfig Template' do
@@ -59,7 +59,7 @@ RSpec.describe Ci::GenerateKubeconfigService do
     end
 
     it "filters the pipeline's agents by `nil` environment" do
-      expect(::Clusters::Agents::FilterAuthorizationsService).to receive(:new).with(
+      expect(::Clusters::Agents::Authorizations::CiAccess::FilterService).to receive(:new).with(
         pipeline.cluster_agent_authorizations,
         environment: nil
       )
@@ -89,7 +89,7 @@ RSpec.describe Ci::GenerateKubeconfigService do
       subject(:execute) { described_class.new(pipeline, token: build.token, environment: 'production').execute }
 
       it "filters the pipeline's agents by the specified environment" do
-        expect(::Clusters::Agents::FilterAuthorizationsService).to receive(:new).with(
+        expect(::Clusters::Agents::Authorizations::CiAccess::FilterService).to receive(:new).with(
           pipeline.cluster_agent_authorizations,
           environment: 'production'
         )

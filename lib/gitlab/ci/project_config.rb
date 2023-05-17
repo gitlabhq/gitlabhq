@@ -26,6 +26,7 @@ module Gitlab
       end
 
       delegate :content, :source, to: :@config, allow_nil: true
+      delegate :internal_include_prepended?, to: :@config
 
       def exists?
         !!@config&.exists?

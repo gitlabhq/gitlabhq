@@ -1,10 +1,6 @@
-query getPackageDetails(
-  $id: PackagesPackageID!
-  $first: Int
-  $last: Int
-  $after: String
-  $before: String
-) {
+#import "~/packages_and_registries/package_registry/graphql/fragments/package_group_settings.fragment.graphql"
+
+query getPackageDetails($id: PackagesPackageID!) {
   package(id: $id) {
     id
     name
@@ -15,6 +11,7 @@ query getPackageDetails(
     updatedAt
     status
     canDestroy
+    publicPackage
     npmUrl
     mavenUrl
     conanUrl
@@ -28,6 +25,9 @@ query getPackageDetails(
       path
       name
       fullPath
+      group {
+        ...GroupPackageSettings
+      }
     }
     tags(first: 10) {
       nodes {
@@ -61,31 +61,8 @@ query getPackageDetails(
         downloadPath
       }
     }
-    versions(after: $after, before: $before, first: $first, last: $last) {
+    versions {
       count
-      nodes {
-        id
-        name
-        canDestroy
-        createdAt
-        version
-        status
-        _links {
-          webPath
-        }
-        tags(first: 1) {
-          nodes {
-            id
-            name
-          }
-        }
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        endCursor
-        startCursor
-      }
     }
     dependencyLinks {
       nodes {

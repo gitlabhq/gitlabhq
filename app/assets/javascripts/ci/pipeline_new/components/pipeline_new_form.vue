@@ -18,7 +18,7 @@ import { uniqueId } from 'lodash';
 import Vue from 'vue';
 import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__, __, n__ } from '~/locale';
 import {
   CC_VALIDATION_REQUIRED_ERROR,
@@ -43,6 +43,7 @@ const i18n = {
   defaultError: __('Something went wrong on our end. Please try again.'),
   refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
   submitErrorTitle: s__('Pipeline|Pipeline cannot be run.'),
+  configButtonTitle: s__('Pipelines|Go to the pipeline editor'),
   warningTitle: __('The form contains the following warning:'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   removeVariableLabel: s__('CiVariables|Remove variable'),
@@ -79,6 +80,14 @@ export default {
   props: {
     pipelinesPath: {
       type: String,
+      required: true,
+    },
+    pipelinesEditorPath: {
+      type: String,
+      required: true,
+    },
+    canViewPipelineEditor: {
+      type: Boolean,
       required: true,
     },
     defaultBranch: {
@@ -330,7 +339,7 @@ export default {
       const { id, errors, totalWarnings, warnings } = data.createPipeline;
 
       if (id) {
-        redirectTo(`${this.pipelinesPath}/${id}`);
+        redirectTo(`${this.pipelinesPath}/${id}`); // eslint-disable-line import/no-deprecated
         return;
       }
 
@@ -373,9 +382,18 @@ export default {
       :dismissible="false"
       variant="danger"
       class="gl-mb-4"
-      data-testid="run-pipeline-error-alert"
     >
-      <span v-safe-html="error"></span>
+      <span v-safe-html="error" data-testid="run-pipeline-error-alert" class="block"></span>
+      <gl-button
+        v-if="canViewPipelineEditor"
+        class="gl-my-3"
+        data-testid="ci-cd-pipeline-configuration"
+        variant="confirm"
+        :aria-label="$options.i18n.configButtonTitle"
+        :href="pipelinesEditorPath"
+      >
+        {{ $options.i18n.configButtonTitle }}
+      </gl-button>
     </gl-alert>
     <gl-alert
       v-if="shouldShowWarning"
@@ -406,7 +424,11 @@ export default {
       </details>
     </gl-alert>
     <gl-form-group :label="s__('Pipeline|Run for branch name or tag')">
-      <refs-dropdown v-model="refValue" @loadingError="onRefsLoadingError" />
+      <refs-dropdown
+        v-model="refValue"
+        :project-id="projectId"
+        @loadingError="onRefsLoadingError"
+      />
     </gl-form-group>
 
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />

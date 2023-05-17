@@ -1,0 +1,8 @@
+install:
+  image: maven:3.6-jdk-11
+  script:
+    - "mvn install -U -s settings.xml"
+  only:
+    - "<%= imported_project.default_branch %>"
+  tags:
+    - "runner-for-<%= imported_project.group.name %>"

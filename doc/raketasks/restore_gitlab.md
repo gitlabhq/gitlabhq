@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Restore GitLab
+# Restore GitLab **(FREE SELF)**
 
 GitLab provides a command line interface to restore your entire installation,
 and is flexible enough to fit your needs.
@@ -29,15 +29,21 @@ restore. This is because the system user performing the restore actions (`git`)
 is usually not allowed to create or delete the SQL database needed to import
 data into (`gitlabhq_production`). All existing data is either erased
 (SQL) or moved to a separate directory (such as repositories and uploads).
+Restoring SQL data skips views owned by PostgreSQL extensions.
 
-To restore a backup, you must restore `/etc/gitlab/gitlab-secrets.json`
-(for Omnibus packages) or `/home/git/gitlab/.secret` (for installations from
-source). This file contains the database encryption key,
-[CI/CD variables](../ci/variables/index.md), and
+To restore a backup, **you must also restore the GitLab secrets**.
+These include the database encryption key, [CI/CD variables](../ci/variables/index.md), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
-If you fail to restore this encryption key file along with the application data
-backup, users with two-factor authentication enabled and GitLab Runner
-loses access to your GitLab server.
+Without the keys, [multiple issues occur](backup_restore.md#when-the-secrets-file-is-lost),
+including loss of access by users with [two-factor authentication enabled](../user/profile/account/two_factor_authentication.md),
+and GitLab Runners cannot log in.
+
+Restore:
+
+- `/etc/gitlab/gitlab-secrets.json` (Linux package)
+- `/home/git/gitlab/.secret` (self-compiled installations)
+- Rails secret (cloud-native GitLab)
+  - [This can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html), if required.
 
 You may also want to restore your previous `/etc/gitlab/gitlab.rb` (for Omnibus packages)
 or `/home/git/gitlab/config/gitlab.yml` (for installations from source) and
@@ -59,6 +65,9 @@ empty before attempting a restore. Otherwise, GitLab attempts to move these dire
 restoring the new data, which causes an error.
 
 Read more about [configuring NFS mounts](../administration/nfs.md)
+
+Restoring a backup from an instance using local storage restores to local storage even if the target instance uses object storage.
+Migrations to object storage must be done before or after restoration.
 
 ## Restore for Omnibus GitLab installations
 
@@ -88,11 +97,15 @@ sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl status
 ```
 
+Next, ensure you have completed the [restore prerequisites](#restore-prerequisites) steps and have run `gitlab-ctl reconfigure`
+after copying over the GitLab secrets file from the original installation.
+
 Next, restore the backup, specifying the timestamp of the backup you wish to
 restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
+# NOTE: "_gitlab_backup.tar" is omitted from the name
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
@@ -114,13 +127,9 @@ WARNING:
 The restore command requires [additional parameters](backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
-Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
-[as previously mentioned](#restore-prerequisites).
-
-Reconfigure, restart and [check](../administration/raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+Next, restart and [check](../administration/raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 
 ```shell
-sudo gitlab-ctl reconfigure
 sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
@@ -155,9 +164,34 @@ the restore target directories are empty.
 For both these installation types, the backup tarball has to be available in
 the backup location (default location is `/var/opt/gitlab/backups`).
 
-If you use Docker Swarm, [first disable the health check](#restore-gitlab-from-backup-using-docker-swarm).
+### Restore for Helm chart installations
 
-For Docker installations, the restore task can be run from host:
+The GitLab Helm chart uses the process documented in
+[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-a-gitlab-installation)
+
+### Restore for Docker image installations
+
+If you're using [Docker Swarm](../install/docker.md#install-gitlab-using-docker-swarm-mode),
+the container might restart during the restore process because Puma is shut down,
+and so the container health check fails. To work around this problem,
+temporarily disable the health check mechanism.
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   healthcheck:
+     disable: true
+   ```
+
+1. Deploy the stack:
+
+   ```shell
+   docker stack deploy --compose-file docker-compose.yml mystack
+   ```
+
+For more information, see [issue 6846](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846 "GitLab restore can fail owing to `gitlab-healthcheck`").
+
+The restore task can be run from the host:
 
 ```shell
 # Stop the processes that are connected to the database
@@ -176,31 +210,6 @@ docker restart <name of container>
 # Check GitLab
 docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 ```
-
-Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
-
-WARNING:
-`gitlab-rake gitlab:backup:restore` doesn't set the correct file system
-permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
-In GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
-issue.
-
-The GitLab Helm chart uses a different process, documented in
-[restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
-
-### Restore GitLab from backup using Docker Swarm
-
-Docker Swarm might restart the container during the restore process because Puma is shut down,
-and so the container health check fails. To work around this problem, disable the health check
-mechanism in Docker compose file:
-
-```yaml
-healthcheck:
-  disable: true
-```
-
-Read more in issue #6846,
-[GitLab restore can fail owing to `gitlab-healthcheck`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846).
 
 ## Restore for installation from source
 
@@ -273,9 +282,7 @@ project or group from there:
    the backed-up instance from which you want to restore.
 1. [Restore the backup](#restore-gitlab) into this new instance, then
    export your [project](../user/project/settings/import_export.md)
-   or [group](../user/group/settings/import_export.md). Be sure to read the
-   **Important Notes** on either export feature's documentation to understand
-   what is and isn't exported.
+   or [group](../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated). For more information about what is and isn't exported, see the export feature's documentation.
 1. After the export is complete, go to the old instance and then import it.
 1. After importing the projects or groups that you wanted is complete, you may
    delete the new, temporary GitLab instance.

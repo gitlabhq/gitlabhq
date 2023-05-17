@@ -5,15 +5,14 @@ module Gitlab
     class BaseBuilder
       attr_accessor :object
 
-      MARKDOWN_SIMPLE_IMAGE = %r{
-          #{::Gitlab::Regex.markdown_code_or_html_blocks}
-        |
-          (?<image>
-            !
-            \[(?<title>[^\n]*?)\]
-            \((?<url>(?!(https?://|//))[^\n]+?)\)
-          )
-      }mx.freeze
+      MARKDOWN_SIMPLE_IMAGE =
+        "#{::Gitlab::Regex.markdown_code_or_html_blocks_untrusted}" \
+        '|' \
+        '(?P<image>' \
+        '!' \
+        '\[(?P<title>[^\n]*?)\]' \
+        '\((?P<url>(?P<https>(https?://|//)?)[^\n]+?)\)' \
+        ')'.freeze
 
       def initialize(object)
         @object = object
@@ -37,15 +36,18 @@ module Gitlab
       def absolute_image_urls(markdown_text)
         return markdown_text unless markdown_text.present?
 
-        markdown_text.gsub(MARKDOWN_SIMPLE_IMAGE) do
-          if $~[:image]
-            url = $~[:url]
+        regex = Gitlab::UntrustedRegexp.new(MARKDOWN_SIMPLE_IMAGE, multiline: false)
+        return markdown_text unless regex.match?(markdown_text)
+
+        regex.replace_gsub(markdown_text) do |match|
+          if match[:image] && !match[:https]
+            url = match[:url]
             url = "#{uploads_prefix}#{url}" if url.start_with?('/uploads')
             url = "/#{url}" unless url.start_with?('/')
 
-            "![#{$~[:title]}](#{Gitlab.config.gitlab.url}#{url})"
+            "![#{match[:title]}](#{Gitlab.config.gitlab.url}#{url})"
           else
-            $~[0]
+            match.to_s
           end
         end
       end

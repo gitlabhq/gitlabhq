@@ -15,10 +15,6 @@ describe('IDE job log scroll button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     direction | icon             | title
     ${'up'}   | ${'scroll_up'}   | ${'Scroll to top'}
@@ -45,6 +41,6 @@ describe('IDE job log scroll button', () => {
   it('disables button when disabled is true', () => {
     createComponent({ disabled: true });
 
-    expect(wrapper.find('button').attributes('disabled')).toBe('disabled');
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined();
   });
 });

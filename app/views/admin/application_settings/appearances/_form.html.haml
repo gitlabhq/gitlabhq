@@ -16,7 +16,8 @@
             = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove header logo'), header_logos_admin_application_settings_appearances_path, data: { confirm: _("Header logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove header logo') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: header_logos_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Header logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove header logo') } }) do
+                = _('Remove header logo')
             %hr
           = f.hidden_field :header_logo_cache
           = f.file_field :header_logo, class: "", accept: 'image/*'
@@ -35,7 +36,8 @@
             = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove favicon'), favicon_admin_application_settings_appearances_path, data: { confirm: _("Favicon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove favicon') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: favicon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Favicon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove favicon') } }) do
+                = _('Remove favicon')
             %hr
           = f.hidden_field :favicon_cache
           = f.file_field :favicon, class: '', accept: 'image/*'
@@ -67,7 +69,8 @@
             = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove logo'), logo_admin_application_settings_appearances_path, data: { confirm: _("Logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove logo') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm remove-logo"
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: logo_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove logo') } }) do
+                = _('Remove logo')
             %hr
           = f.hidden_field :logo_cache
           = f.file_field :logo, class: "", accept: 'image/*'
@@ -98,7 +101,8 @@
             = image_tag @appearance.pwa_icon_path, class: 'appearance-pwa-icon-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove icon'), pwa_icon_admin_application_settings_appearances_path, data: { confirm: _("Icon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove icon') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm remove-logo"
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: pwa_icon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Icon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove icon') } }) do
+                = _('Remove icon')
             %hr
           = f.hidden_field :pwa_icon_cache
           = f.file_field :pwa_icon, class: "", accept: 'image/*'

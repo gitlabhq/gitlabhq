@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Consul::Internal do
 
     context 'when consul setting is not present in gitlab.yml' do
       before do
-        allow(Gitlab.config).to receive(:consul).and_raise(Settingslogic::MissingSetting)
+        allow(Gitlab.config).to receive(:consul).and_raise(GitlabSettings::MissingSetting)
       end
 
       it 'does not fail' do
@@ -77,9 +77,11 @@ RSpec.describe Gitlab::Consul::Internal do
 
   shared_examples 'returns nil given blank value of' do |input_symbol|
     [nil, ''].each do |value|
-      let(input_symbol) { value }
+      context "with #{value}" do
+        let(input_symbol) { value }
 
-      it { is_expected.to be_nil }
+        it { is_expected.to be_nil }
+      end
     end
   end
 

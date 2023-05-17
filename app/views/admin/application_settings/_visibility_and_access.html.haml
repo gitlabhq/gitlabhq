@@ -28,15 +28,15 @@
       %span.form-text.gl-mt-0.gl-mb-3#import-sources-help
         = _('Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub')
         = link_to sprite_icon('question-o'), help_page_path("integration/github")
-        , Bitbucket
+        and Bitbucket
         = link_to sprite_icon('question-o'), help_page_path("integration/bitbucket")
-        and GitLab.com
-        = link_to sprite_icon('question-o'), help_page_path("integration/gitlab")
       = hidden_field_tag 'application_setting[import_sources][]'
       - import_sources_checkboxes(f).each do |source|
         = source
 
     = render_if_exists 'admin/application_settings/ldap_access_setting', form: f
+
+    = render_if_exists 'admin/application_settings/saml_group_locks_setting', form: f
 
     .form-group{ data: { testid: 'project-export' } }
       = f.label :project_export, s_('AdminSettings|Project export'), class: 'label-bold'

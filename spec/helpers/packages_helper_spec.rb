@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe PackagesHelper do
+RSpec.describe PackagesHelper, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
+  include AdminModeHelper
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:base_url) { "#{Gitlab.config.gitlab.url}/api/v4/" }
@@ -38,11 +39,18 @@ RSpec.describe PackagesHelper do
 
   describe '#pypi_registry_url' do
     let_it_be(:base_url_with_token) { base_url.sub('://', '://__token__:<your_personal_token>@') }
+    let_it_be(:public_project) { create(:project, :public) }
 
-    it 'returns the pypi registry url' do
-      url = helper.pypi_registry_url(1)
+    it 'returns the pypi registry url with token when project is private' do
+      url = helper.pypi_registry_url(project)
 
-      expect(url).to eq("#{base_url_with_token}projects/1/packages/pypi/simple")
+      expect(url).to eq("#{base_url_with_token}projects/#{project.id}/packages/pypi/simple")
+    end
+
+    it 'returns the pypi registry url without token when project is public' do
+      url = helper.pypi_registry_url(public_project)
+
+      expect(url).to eq("#{base_url}projects/#{public_project.id}/packages/pypi/simple")
     end
   end
 
@@ -118,6 +126,130 @@ RSpec.describe PackagesHelper do
       end
 
       it { is_expected.to eq(expected_result) }
+    end
+  end
+
+  describe '#show_container_registry_settings' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.show_container_registry_settings(project) }
+
+    context 'with container registry config enabled' do
+      before do
+        stub_config(registry: { enabled: true })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'with container registry config disabled' do
+      before do
+        stub_config(registry: { enabled: false })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(true)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
+  describe '#show_group_package_registry_settings' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.show_group_package_registry_settings(group) }
+
+    context 'with package registry config enabled' do
+      before do
+        stub_config(packages: { enabled: true })
+      end
+
+      context "with admin", :enable_admin_mode do
+        before do
+          allow(helper).to receive(:current_user) { admin }
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context "with owner" do
+        before do
+          group.add_owner(user)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      %i[maintainer developer reporter guest].each do |role|
+        context "with #{role}" do
+          before do
+            group.public_send("add_#{role}", user)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
+    end
+
+    context 'with package registry config disabled' do
+      before do
+        stub_config(packages: { enabled: false })
+      end
+
+      context "with admin", :enable_admin_mode do
+        before do
+          allow(helper).to receive(:current_user) { admin }
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      %i[owner maintainer developer reporter guest].each do |role|
+        context "with #{role}" do
+          before do
+            group.public_send("add_#{role}", user)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
     end
   end
 end

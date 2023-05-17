@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_knative
+feature_categories:
+- deployment_management
+description: "(Deprecated) A GitLab managed Knative installation in a Kubernetes cluster"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b5155b90ee233e2824c168fbb06b3ce5d3aeb194
+milestone: '11.5'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119515
+removed_in_milestone: '16.0'

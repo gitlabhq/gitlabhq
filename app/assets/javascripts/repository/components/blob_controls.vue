@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
@@ -101,7 +101,6 @@ export default {
         fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
       // eslint-disable-next-line no-new
       new ShortcutsBlob({
-        skipResetBindings: true,
         fileBlobPermalinkUrl,
         fileBlobPermalinkUrlElement,
       });

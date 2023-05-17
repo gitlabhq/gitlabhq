@@ -78,7 +78,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   shared_examples 'issues statistics' do
-    it 'returns issues statistics' do
+    it 'returns issues statistics', :aggregate_failures do
       get api("/issues_statistics", user), params: params
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -90,9 +90,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /issues/:id' do
+    let(:path) { "/issues/#{issue.id}" }
+
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'when unauthorized' do
       it 'returns unauthorized' do
-        get api("/issues/#{issue.id}")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -101,7 +105,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     context 'when authorized' do
       context 'as a normal user' do
         it 'returns forbidden' do
-          get api("/issues/#{issue.id}", user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -109,8 +113,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       context 'as an admin' do
         context 'when issue exists' do
-          it 'returns the issue' do
-            get api("/issues/#{issue.id}", admin)
+          it 'returns the issue', :aggregate_failures do
+            get api(path, admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.dig('author', 'id')).to eq(issue.author.id)
@@ -121,7 +125,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         context 'when issue does not exist' do
           it 'returns 404' do
-            get api("/issues/0", admin)
+            get api("/issues/#{non_existing_record_id}", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -132,7 +136,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'GET /issues' do
     context 'when unauthenticated' do
-      it 'returns an array of all issues' do
+      it 'returns an array of all issues', :aggregate_failures do
         get api('/issues'), params: { scope: 'all' }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -162,14 +166,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
-      it 'returns an array of issues matching state in milestone' do
+      it 'returns an array of issues matching state in milestone', :aggregate_failures do
         get api('/issues'), params: { milestone: 'foo', scope: 'all' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect_paginated_array_response([])
       end
 
-      it 'returns an array of issues matching state in milestone' do
+      it 'returns an array of issues matching state in milestone', :aggregate_failures do
         get api('/issues'), params: { milestone: milestone.title, scope: 'all' }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -273,7 +277,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when authenticated' do
-      it 'returns an array of issues' do
+      it 'returns an array of issues', :aggregate_failures do
         get api('/issues', user)
 
         expect_paginated_array_response([issue.id, closed_issue.id])
@@ -532,7 +536,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       context 'with incident issues' do
         let_it_be(:incident) { create(:incident, project: project) }
 
-        it 'avoids N+1 queries' do
+        it 'avoids N+1 queries', :aggregate_failures do
           get api('/issues', user) # warm up
 
           control = ActiveRecord::QueryRecorder.new do
@@ -553,7 +557,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       context 'with issues closed as duplicates' do
         let_it_be(:dup_issue_1) { create(:issue, :closed_as_duplicate, project: project) }
 
-        it 'avoids N+1 queries' do
+        it 'avoids N+1 queries', :aggregate_failures do
           get api('/issues', user) # warm up
 
           control = ActiveRecord::QueryRecorder.new do
@@ -639,7 +643,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           expect_paginated_array_response([])
         end
 
-        it 'returns an array of labeled issues matching given state' do
+        it 'returns an array of labeled issues matching given state', :aggregate_failures do
           get api('/issues', user), params: { labels: label.title, state: :opened }
 
           expect_paginated_array_response(issue.id)
@@ -647,7 +651,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           expect(json_response.first['state']).to eq('opened')
         end
 
-        it 'returns an array of labeled issues matching given state with labels param as array' do
+        it 'returns an array of labeled issues matching given state with labels param as array', :aggregate_failures do
           get api('/issues', user), params: { labels: [label.title], state: :opened }
 
           expect_paginated_array_response(issue.id)
@@ -917,14 +921,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
       end
 
-      it 'matches V4 response schema' do
+      it 'matches V4 response schema', :aggregate_failures do
         get api('/issues', user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/issues')
       end
 
-      it 'returns a related merge request count of 0 if there are no related merge requests' do
+      it 'returns a related merge request count of 0 if there are no related merge requests', :aggregate_failures do
         get api('/issues', user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -932,7 +936,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(json_response.first).to include('merge_requests_count' => 0)
       end
 
-      it 'returns a related merge request count > 0 if there are related merge requests' do
+      it 'returns a related merge request count > 0 if there are related merge requests', :aggregate_failures do
         create(:merge_requests_closing_issues, issue: issue)
 
         get api('/issues', user)
@@ -1013,28 +1017,28 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         let!(:issue2) { create(:issue, author: user2, project: project, created_at: 2.days.ago) }
         let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: project, created_at: 1.day.ago) }
 
-        it 'returns issues with by assignee_username' do
+        it 'returns issues with by assignee_username', :aggregate_failures do
           get api("/issues", user), params: { assignee_username: [assignee.username], scope: 'all' }
 
           expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
           expect_paginated_array_response([confidential_issue.id, issue3.id])
         end
 
-        it 'returns issues by assignee_username as string' do
+        it 'returns issues by assignee_username as string', :aggregate_failures do
           get api("/issues", user), params: { assignee_username: assignee.username, scope: 'all' }
 
           expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
           expect_paginated_array_response([confidential_issue.id, issue3.id])
         end
 
-        it 'returns error when multiple assignees are passed' do
+        it 'returns error when multiple assignees are passed', :aggregate_failures do
           get api("/issues", user), params: { assignee_username: [assignee.username, another_assignee.username], scope: 'all' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response["error"]).to include("allows one value, but found 2")
         end
 
-        it 'returns error when assignee_username and assignee_id are passed together' do
+        it 'returns error when assignee_username and assignee_id are passed together', :aggregate_failures do
           get api("/issues", user), params: { assignee_username: [assignee.username], assignee_id: another_assignee.id, scope: 'all' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -1088,7 +1092,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues/:issue_iid' do
-    it 'exposes full reference path' do
+    it 'exposes full reference path', :aggregate_failures do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -1106,7 +1110,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'user does not have permission to view new issue' do
-        it 'does not return the issue as closed_as_duplicate_of' do
+        it 'does not return the issue as closed_as_duplicate_of', :aggregate_failures do
           get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1119,7 +1123,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           new_issue.project.add_guest(user)
         end
 
-        it 'returns the issue as closed_as_duplicate_of' do
+        it 'returns the issue as closed_as_duplicate_of', :aggregate_failures do
           get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1131,12 +1135,21 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe "POST /projects/:id/issues" do
-    it 'creates a new project issue' do
+    it 'creates a new project issue', :aggregate_failures do
       post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['issue_type']).to eq('issue')
+    end
+
+    context 'when confidential is null' do
+      it 'responds with 400 error', :aggregate_failures do
+        post api("/projects/#{project.id}/issues", user), params: { title: 'issue', confidential: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('confidential is empty')
+      end
     end
 
     context 'when issue create service returns an unrecoverable error' do
@@ -1146,7 +1159,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
       end
 
-      it 'returns and error message and status code from the service' do
+      it 'returns and error message and status code from the service', :aggregate_failures do
         post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' }
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -1160,6 +1173,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:entity) { issue }
     end
 
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/issues/#{issue.iid}" }
+      let(:params) { { labels: 'label1', updated_at: Time.new(2000, 1, 1) } }
+    end
+
     describe 'updated_at param' do
       let(:fixed_time) { Time.new(2001, 1, 1) }
       let(:updated_at) { Time.new(2000, 1, 1) }
@@ -1168,15 +1186,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         travel_to fixed_time
       end
 
-      it 'allows admins to set the timestamp' do
-        put api("/projects/#{project.id}/issues/#{issue.iid}", admin), params: { labels: 'label1', updated_at: updated_at }
+      it 'allows admins to set the timestamp', :aggregate_failures do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", admin, admin_mode: true), params: { labels: 'label1', updated_at: updated_at }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Time.parse(json_response['updated_at'])).to be_like_time(updated_at)
         expect(ResourceLabelEvent.last.created_at).to be_like_time(updated_at)
       end
 
-      it 'does not allow other users to set the timestamp' do
+      it 'does not allow other users to set the timestamp', :aggregate_failures do
         reporter = create(:user)
         project.add_developer(reporter)
 
@@ -1192,7 +1210,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       it 'allows issue type to be converted' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { issue_type: 'incident' }
 
-        expect(issue.reload.incident?).to be(true)
+        expect(issue.reload.work_item_type.incident?).to be(true)
       end
     end
   end
@@ -1259,7 +1277,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'with valid params' do
-        it 'reorders issues and returns a successful 200 response' do
+        it 'reorders issues and returns a successful 200 response', :aggregate_failures do
           put api("/projects/#{project.id}/issues/#{issue1.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1286,7 +1304,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         let(:other_project) { create(:project, group: group) }
         let(:other_issue) { create(:issue, project: other_project, relative_position: 80) }
 
-        it 'reorders issues and returns a successful 200 response' do
+        it 'reorders issues and returns a successful 200 response', :aggregate_failures do
           put api("/projects/#{other_project.id}/issues/#{other_issue.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
 
           expect(response).to have_gitlab_http_status(:ok)

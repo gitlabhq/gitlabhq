@@ -22,7 +22,7 @@ describe('Pipeline editor file nav', () => {
           includes,
         },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs,
       }),
@@ -35,7 +35,6 @@ describe('Pipeline editor file nav', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('template', () => {
@@ -61,11 +60,11 @@ describe('Pipeline editor file nav', () => {
         expect(fileTreeItems().exists()).toBe(false);
       });
 
-      it('renders alert tip', async () => {
+      it('renders alert tip', () => {
         expect(findTip().exists()).toBe(true);
       });
 
-      it('renders learn more link', async () => {
+      it('renders learn more link', () => {
         expect(findTip().props('secondaryButtonLink')).toBe(mockIncludesHelpPagePath);
       });
 
@@ -88,7 +87,7 @@ describe('Pipeline editor file nav', () => {
         });
       });
 
-      it('does not render alert tip', async () => {
+      it('does not render alert tip', () => {
         expect(findTip().exists()).toBe(false);
       });
     });

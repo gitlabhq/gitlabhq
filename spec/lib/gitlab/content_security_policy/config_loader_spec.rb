@@ -102,11 +102,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     end
 
     describe 'Zuora directives' do
-      context 'when is Gitlab.com?' do
-        before do
-          allow(::Gitlab).to receive(:com?).and_return(true)
-        end
-
+      context 'when on SaaS', :saas do
         it 'adds Zuora host to CSP' do
           expect(directives['frame_src']).to include('https://*.zuora.com/apps/PublicHostedPageLite.do')
         end

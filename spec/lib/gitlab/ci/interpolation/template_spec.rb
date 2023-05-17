@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Interpolation::Template, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Interpolation::Template, feature_category: :pipeline_composition do
   subject { described_class.new(YAML.safe_load(config), ctx) }
 
   let(:config) do

@@ -1,13 +1,11 @@
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
-  IssuableStatusText,
+  issuableStatusText,
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUS_REOPENED,
@@ -21,29 +19,27 @@ import FormComponent from '~/issues/show/components/form.vue';
 import TitleComponent from '~/issues/show/components/title.vue';
 import IncidentTabs from '~/issues/show/components/incidents/incident_tabs.vue';
 import PinnedLinks from '~/issues/show/components/pinned_links.vue';
-import { POLLING_DELAY } from '~/issues/show/constants';
 import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   appProps,
   initialRequest,
   publishedIncidentUrl,
+  putRequest,
   secondRequest,
   zoomMeetingUrl,
 } from '../mock_data/mock_data';
 
-jest.mock('~/flash');
-jest.mock('~/issues/show/event_hub');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/behaviors/markdown/render_gfm');
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
 describe('Issuable output', () => {
-  let mock;
-  let realtimeRequestCount = 0;
+  let axiosMock;
   let wrapper;
 
   const findStickyHeader = () => wrapper.findByTestId('issue-sticky-header');
@@ -57,15 +53,14 @@ describe('Issuable output', () => {
   const findForm = () => wrapper.findComponent(FormComponent);
   const findPinnedLinks = () => wrapper.findComponent(PinnedLinks);
 
-  const mountComponent = (props = {}, options = {}, data = {}) => {
+  const createComponent = ({ props = {}, options = {}, data = {} } = {}) => {
     wrapper = shallowMountExtended(IssuableApp, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: { ...appProps, ...props },
       provide: {
         fullPath: 'gitlab-org/incidents',
-        iid: '19',
         uploadMetricsFeatureAvailable: false,
       },
       stubs: {
@@ -79,98 +74,125 @@ describe('Issuable output', () => {
       },
       ...options,
     });
+
+    jest.advanceTimersToNextTimer(2);
+    return waitForPromises();
+  };
+
+  const emitHubEvent = (event) => {
+    eventHub.$emit(event);
+    return waitForPromises();
+  };
+
+  const openForm = () => {
+    return emitHubEvent('open.form');
+  };
+
+  const updateIssuable = () => {
+    return emitHubEvent('update.issuable');
+  };
+
+  const advanceToNextPoll = () => {
+    // We get new data through the HTTP request.
+    jest.advanceTimersToNextTimer();
+    return waitForPromises();
   };
 
   beforeEach(() => {
-    setHTMLFixture(`
-      <div>
-        <title>Title</title>
-        <div class="detail-page-description content-block">
-        <details open>
-          <summary>One</summary>
-        </details>
-        <details>
-          <summary>Two</summary>
-        </details>
-      </div>
-        <div class="flash-container"></div>
-        <span id="task_status"></span>
-      </div>
-    `);
+    jest.spyOn(eventHub, '$emit');
 
-    mock = new MockAdapter(axios);
-    mock
-      .onGet('/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes')
-      .reply(() => {
-        const res = Promise.resolve([HTTP_STATUS_OK, REALTIME_REQUEST_STACK[realtimeRequestCount]]);
-        realtimeRequestCount += 1;
-        return res;
-      });
+    axiosMock = new MockAdapter(axios);
+    const endpoint = '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes';
 
-    mountComponent();
-
-    jest.advanceTimersByTime(2);
+    axiosMock.onGet(endpoint).replyOnce(HTTP_STATUS_OK, REALTIME_REQUEST_STACK[0], {
+      'POLL-INTERVAL': '1',
+    });
+    axiosMock.onGet(endpoint).reply(HTTP_STATUS_OK, REALTIME_REQUEST_STACK[1], {
+      'POLL-INTERVAL': '-1',
+    });
+    axiosMock.onPut().reply(HTTP_STATUS_OK, putRequest);
   });
 
-  afterEach(() => {
-    mock.restore();
-    realtimeRequestCount = 0;
-    wrapper.vm.poll.stop();
-    wrapper.destroy();
-    resetHTMLFixture();
+  describe('update', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
+    it('should render a title/description/edited and update title/description/edited on update', async () => {
+      expect(findTitle().props('titleText')).toContain(initialRequest.title_text);
+      expect(findDescription().props('descriptionText')).toContain('this is a description');
+
+      expect(findEdited().exists()).toBe(true);
+      expect(findEdited().props('updatedByPath')).toMatch(/\/some_user$/);
+      expect(findEdited().props('updatedAt')).toBe(initialRequest.updated_at);
+      expect(findDescription().props().lockVersion).toBe(initialRequest.lock_version);
+
+      await advanceToNextPoll();
+
+      expect(findTitle().props('titleText')).toContain('2');
+      expect(findDescription().props('descriptionText')).toContain('42');
+
+      expect(findEdited().exists()).toBe(true);
+      expect(findEdited().props('updatedByName')).toBe('Other User');
+      expect(findEdited().props('updatedByPath')).toMatch(/\/other_user$/);
+      expect(findEdited().props('updatedAt')).toBe(secondRequest.updated_at);
+    });
   });
 
-  it('should render a title/description/edited and update title/description/edited on update', () => {
-    return axios
-      .waitForAll()
-      .then(() => {
-        expect(findTitle().props('titleText')).toContain('this is a title');
-        expect(findDescription().props('descriptionText')).toContain('this is a description');
+  describe('with permissions', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
 
-        expect(findEdited().exists()).toBe(true);
-        expect(findEdited().props('updatedByPath')).toMatch(/\/some_user$/);
-        expect(findEdited().props('updatedAt')).toBe(initialRequest.updated_at);
-        expect(wrapper.vm.state.lock_version).toBe(initialRequest.lock_version);
-      })
-      .then(() => {
-        wrapper.vm.poll.makeRequest();
-        return axios.waitForAll();
-      })
-      .then(() => {
-        expect(findTitle().props('titleText')).toContain('2');
-        expect(findDescription().props('descriptionText')).toContain('42');
+    it('shows actions on `open.form` event', async () => {
+      expect(findForm().exists()).toBe(false);
 
-        expect(findEdited().exists()).toBe(true);
-        expect(findEdited().props('updatedByName')).toBe('Other User');
-        expect(findEdited().props('updatedByPath')).toMatch(/\/other_user$/);
-        expect(findEdited().props('updatedAt')).toBe(secondRequest.updated_at);
-      });
+      await openForm();
+
+      expect(findForm().exists()).toBe(true);
+    });
+
+    it('update formState if form is not open', async () => {
+      const titleValue = initialRequest.title_text;
+
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().props('titleText')).toBe(titleValue);
+
+      await advanceToNextPoll();
+
+      // The title component has the new data, so the state was updated
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().props('titleText')).toBe(secondRequest.title_text);
+    });
+
+    it('does not update formState if form is already open', async () => {
+      const titleValue = initialRequest.title_text;
+
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().props('titleText')).toBe(titleValue);
+
+      await openForm();
+
+      // Opening the form, the data has not changed
+      expect(findForm().props().formState.title).toBe(titleValue);
+
+      await advanceToNextPoll();
+
+      // We expect the prop value not to have changed after another API call
+      expect(findForm().props().formState.title).toBe(titleValue);
+    });
   });
 
-  it('shows actions if permissions are correct', async () => {
-    wrapper.vm.showForm = true;
+  describe('without permissions', () => {
+    beforeEach(async () => {
+      await createComponent({ props: { canUpdate: false } });
+    });
 
-    await nextTick();
-    expect(findForm().exists()).toBe(true);
-  });
+    it('does not show actions if permissions are incorrect', async () => {
+      await openForm();
 
-  it('does not show actions if permissions are incorrect', async () => {
-    wrapper.vm.showForm = true;
-    wrapper.setProps({ canUpdate: false });
-
-    await nextTick();
-    expect(findForm().exists()).toBe(false);
-  });
-
-  it('does not update formState if form is already open', async () => {
-    wrapper.vm.updateAndShowForm();
-
-    wrapper.vm.state.titleText = 'testing 123';
-
-    wrapper.vm.updateAndShowForm();
-
-    await nextTick();
-    expect(wrapper.vm.store.formState.title).not.toBe('testing 123');
+      expect(findForm().exists()).toBe(false);
+    });
   });
 
   describe('Pinned links propagated', () => {
@@ -178,288 +200,130 @@ describe('Issuable output', () => {
       prop                      | value
       ${'zoomMeetingUrl'}       | ${zoomMeetingUrl}
       ${'publishedIncidentUrl'} | ${publishedIncidentUrl}
-    `('sets the $prop correctly on underlying pinned links', ({ prop, value }) => {
+    `('sets the $prop correctly on underlying pinned links', async ({ prop, value }) => {
+      await createComponent();
+
       expect(findPinnedLinks().props(prop)).toBe(value);
     });
   });
 
-  describe('updateIssuable', () => {
-    it('fetches new data after update', async () => {
-      const updateStoreSpy = jest.spyOn(wrapper.vm, 'updateStoreState');
-      const getDataSpy = jest.spyOn(wrapper.vm.service, 'getData');
-      jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-        data: { web_url: window.location.pathname },
-      });
-
-      await wrapper.vm.updateIssuable();
-      expect(updateStoreSpy).toHaveBeenCalled();
-      expect(getDataSpy).toHaveBeenCalled();
+  describe('updating an issue', () => {
+    beforeEach(async () => {
+      await createComponent();
     });
 
-    it('correctly updates issuable data', async () => {
-      const spy = jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-        data: { web_url: window.location.pathname },
-      });
+    it('fetches new data after update', async () => {
+      await advanceToNextPoll();
 
-      await wrapper.vm.updateIssuable();
-      expect(spy).toHaveBeenCalledWith(wrapper.vm.formState);
+      await updateIssuable();
+
+      expect(axiosMock.history.put).toHaveLength(1);
+      // The call was made with the new data
+      expect(axiosMock.history.put[0].data.title).toEqual(findTitle().props().title);
+    });
+
+    it('closes the form after fetching data', async () => {
+      await updateIssuable();
+
       expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
     });
 
     it('does not redirect if issue has not moved', async () => {
-      jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-        data: {
-          web_url: window.location.pathname,
-          confidential: wrapper.vm.isConfidential,
-        },
+      axiosMock.onPut().reply(HTTP_STATUS_OK, {
+        ...putRequest,
+        confidential: appProps.isConfidential,
       });
 
-      await wrapper.vm.updateIssuable();
+      await updateIssuable();
+
       expect(visitUrl).not.toHaveBeenCalled();
     });
 
     it('does not redirect if issue has not moved and user has switched tabs', async () => {
-      jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-        data: {
-          web_url: '',
-          confidential: wrapper.vm.isConfidential,
-        },
+      axiosMock.onPut().reply(HTTP_STATUS_OK, {
+        ...putRequest,
+        web_url: '',
+        confidential: appProps.isConfidential,
       });
 
-      await wrapper.vm.updateIssuable();
+      await updateIssuable();
+
       expect(visitUrl).not.toHaveBeenCalled();
     });
 
     it('redirects if returned web_url has changed', async () => {
-      jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-        data: {
-          web_url: '/testing-issue-move',
-          confidential: wrapper.vm.isConfidential,
-        },
+      const webUrl = '/testing-issue-move';
+
+      axiosMock.onPut().reply(HTTP_STATUS_OK, {
+        ...putRequest,
+        web_url: webUrl,
+        confidential: appProps.isConfidential,
       });
 
-      wrapper.vm.updateIssuable();
+      await updateIssuable();
 
-      await wrapper.vm.updateIssuable();
-      expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
-    });
-
-    describe('shows dialog when issue has unsaved changed', () => {
-      it('confirms on title change', async () => {
-        wrapper.vm.showForm = true;
-        wrapper.vm.state.titleText = 'title has changed';
-        const e = { returnValue: null };
-        wrapper.vm.handleBeforeUnloadEvent(e);
-
-        await nextTick();
-        expect(e.returnValue).not.toBeNull();
-      });
-
-      it('confirms on description change', async () => {
-        wrapper.vm.showForm = true;
-        wrapper.vm.state.descriptionText = 'description has changed';
-        const e = { returnValue: null };
-        wrapper.vm.handleBeforeUnloadEvent(e);
-
-        await nextTick();
-        expect(e.returnValue).not.toBeNull();
-      });
-
-      it('does nothing when nothing has changed', async () => {
-        const e = { returnValue: null };
-        wrapper.vm.handleBeforeUnloadEvent(e);
-
-        await nextTick();
-        expect(e.returnValue).toBeNull();
-      });
+      expect(visitUrl).toHaveBeenCalledWith(webUrl);
     });
 
     describe('error when updating', () => {
-      it('closes form on error', async () => {
-        jest.spyOn(wrapper.vm.service, 'updateIssuable').mockRejectedValue();
+      it('closes form', async () => {
+        axiosMock.onPut().reply(HTTP_STATUS_UNAUTHORIZED);
 
-        await wrapper.vm.updateIssuable();
+        await updateIssuable();
+
         expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-        expect(createAlert).toHaveBeenCalledWith({ message: `Error updating issue` });
+        expect(createAlert).toHaveBeenCalledWith({
+          message: `Error updating issue. Request failed with status code 401`,
+        });
       });
 
       it('returns the correct error message for issuableType', async () => {
-        jest.spyOn(wrapper.vm.service, 'updateIssuable').mockRejectedValue();
+        axiosMock.onPut().reply(HTTP_STATUS_UNAUTHORIZED);
+
+        await updateIssuable();
+
         wrapper.setProps({ issuableType: 'merge request' });
 
-        await nextTick();
-        await wrapper.vm.updateIssuable();
+        await updateIssuable();
+
         expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-        expect(createAlert).toHaveBeenCalledWith({ message: `Error updating merge request` });
+        expect(createAlert).toHaveBeenCalledWith({
+          message: `Error updating merge request. Request failed with status code 401`,
+        });
       });
 
       it('shows error message from backend if exists', async () => {
         const msg = 'Custom error message from backend';
-        jest
-          .spyOn(wrapper.vm.service, 'updateIssuable')
-          .mockRejectedValue({ response: { data: { errors: [msg] } } });
+        axiosMock.onPut().reply(HTTP_STATUS_UNAUTHORIZED, { errors: [msg] });
 
-        await wrapper.vm.updateIssuable();
+        await updateIssuable();
+
         expect(createAlert).toHaveBeenCalledWith({
-          message: `${wrapper.vm.defaultErrorMessage}. ${msg}`,
+          message: `Error updating issue. ${msg}`,
         });
       });
     });
   });
 
-  describe('updateAndShowForm', () => {
+  describe('Locked warning', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
     it('shows locked warning if form is open & data is different', async () => {
-      await nextTick();
-      wrapper.vm.updateAndShowForm();
+      await openForm();
+      await advanceToNextPoll();
 
-      wrapper.vm.poll.makeRequest();
-
-      await new Promise((resolve) => {
-        wrapper.vm.$watch('formState.lockedWarningVisible', (value) => {
-          if (value) {
-            resolve();
-          }
-        });
-      });
-
-      expect(wrapper.vm.formState.lockedWarningVisible).toBe(true);
-      expect(wrapper.vm.formState.lock_version).toBe(1);
-    });
-  });
-
-  describe('requestTemplatesAndShowForm', () => {
-    let formSpy;
-
-    beforeEach(() => {
-      formSpy = jest.spyOn(wrapper.vm, 'updateAndShowForm');
-    });
-
-    it('shows the form if template names as hash request is successful', () => {
-      const mockData = {
-        test: [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }],
-      };
-      mock
-        .onGet('/issuable-templates-path')
-        .reply(() => Promise.resolve([HTTP_STATUS_OK, mockData]));
-
-      return wrapper.vm.requestTemplatesAndShowForm().then(() => {
-        expect(formSpy).toHaveBeenCalledWith(mockData);
-      });
-    });
-
-    it('shows the form if template names as array request is successful', () => {
-      const mockData = [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }];
-      mock
-        .onGet('/issuable-templates-path')
-        .reply(() => Promise.resolve([HTTP_STATUS_OK, mockData]));
-
-      return wrapper.vm.requestTemplatesAndShowForm().then(() => {
-        expect(formSpy).toHaveBeenCalledWith(mockData);
-      });
-    });
-
-    it('shows the form if template names request failed', () => {
-      mock
-        .onGet('/issuable-templates-path')
-        .reply(() => Promise.reject(new Error('something went wrong')));
-
-      return wrapper.vm.requestTemplatesAndShowForm().then(() => {
-        expect(createAlert).toHaveBeenCalledWith({ message: 'Error updating issue' });
-
-        expect(formSpy).toHaveBeenCalledWith();
-      });
-    });
-  });
-
-  describe('show inline edit button', () => {
-    it('should render by default', () => {
-      expect(findTitle().props('showInlineEditButton')).toBe(true);
-    });
-
-    it('should render if showInlineEditButton', async () => {
-      wrapper.setProps({ showInlineEditButton: true });
-
-      await nextTick();
-      expect(findTitle().props('showInlineEditButton')).toBe(true);
-    });
-
-    it('should not render if showInlineEditButton is false', async () => {
-      wrapper.setProps({ showInlineEditButton: false });
-
-      await nextTick();
-      expect(findTitle().props('showInlineEditButton')).toBe(false);
-    });
-  });
-
-  describe('updateStoreState', () => {
-    it('should make a request and update the state of the store', () => {
-      const data = { foo: 1 };
-      const getDataSpy = jest.spyOn(wrapper.vm.service, 'getData').mockResolvedValue({ data });
-      const updateStateSpy = jest
-        .spyOn(wrapper.vm.store, 'updateState')
-        .mockImplementation(jest.fn);
-
-      return wrapper.vm.updateStoreState().then(() => {
-        expect(getDataSpy).toHaveBeenCalled();
-        expect(updateStateSpy).toHaveBeenCalledWith(data);
-      });
-    });
-
-    it('should show error message if store update fails', () => {
-      jest.spyOn(wrapper.vm.service, 'getData').mockRejectedValue();
-      wrapper.setProps({ issuableType: 'merge request' });
-
-      return wrapper.vm.updateStoreState().then(() => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: `Error updating ${wrapper.vm.issuableType}`,
-        });
-      });
-    });
-  });
-
-  describe('issueChanged', () => {
-    beforeEach(() => {
-      wrapper.vm.store.formState.title = '';
-      wrapper.vm.store.formState.description = '';
-      wrapper.setProps({
-        initialDescriptionText: '',
-        initialTitleText: '',
-      });
-    });
-
-    it('returns true when title is changed', () => {
-      wrapper.vm.store.formState.title = 'RandomText';
-
-      expect(wrapper.vm.issueChanged).toBe(true);
-    });
-
-    it('returns false when title is empty null', () => {
-      wrapper.vm.store.formState.title = null;
-
-      expect(wrapper.vm.issueChanged).toBe(false);
-    });
-
-    it('returns true when description is changed', () => {
-      wrapper.vm.store.formState.description = 'RandomText';
-
-      expect(wrapper.vm.issueChanged).toBe(true);
-    });
-
-    it('returns false when description is empty null', () => {
-      wrapper.vm.store.formState.description = null;
-
-      expect(wrapper.vm.issueChanged).toBe(false);
-    });
-
-    it('returns false when `initialDescriptionText` is null and `formState.description` is empty string', () => {
-      wrapper.vm.store.formState.description = '';
-      wrapper.setProps({ initialDescriptionText: null });
-
-      expect(wrapper.vm.issueChanged).toBe(false);
+      expect(findForm().props().formState.lockedWarningVisible).toBe(true);
+      expect(findForm().props().formState.lock_version).toBe(1);
     });
   });
 
   describe('sticky header', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
     describe('when title is in view', () => {
       it('is not shown', () => {
         expect(findStickyHeader().exists()).toBe(false);
@@ -468,20 +332,17 @@ describe('Issuable output', () => {
 
     describe('when title is not in view', () => {
       beforeEach(() => {
-        wrapper.vm.state.titleText = 'Sticky header title';
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       });
 
       it('shows with title', () => {
-        expect(findStickyHeader().text()).toContain('Sticky header title');
+        expect(findStickyHeader().text()).toContain(initialRequest.title_text);
       });
 
       it('shows with title for an epic', async () => {
-        wrapper.setProps({ issuableType: 'epic' });
+        await wrapper.setProps({ issuableType: 'epic' });
 
-        await nextTick();
-
-        expect(findStickyHeader().text()).toContain('Sticky header title');
+        expect(findStickyHeader().text()).toContain(' this is a title');
       });
 
       it.each`
@@ -493,9 +354,7 @@ describe('Issuable output', () => {
       `(
         'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
         async ({ issuableType, issuableStatus, statusIcon }) => {
-          wrapper.setProps({ issuableType, issuableStatus });
-
-          await nextTick();
+          await wrapper.setProps({ issuableType, issuableStatus });
 
           expect(findStickyHeader().findComponent(GlIcon).props('name')).toBe(statusIcon);
         },
@@ -507,11 +366,9 @@ describe('Issuable output', () => {
         ${'shows with Closed when status is closed'} | ${STATUS_CLOSED}
         ${'shows with Open when status is reopened'} | ${STATUS_REOPENED}
       `('$title', async ({ state }) => {
-        wrapper.setProps({ issuableStatus: state });
+        await wrapper.setProps({ issuableStatus: state });
 
-        await nextTick();
-
-        expect(findStickyHeader().text()).toContain(IssuableStatusText[state]);
+        expect(findStickyHeader().text()).toContain(issuableStatusText[state]);
       });
 
       it.each`
@@ -519,9 +376,7 @@ describe('Issuable output', () => {
         ${'does not show confidential badge when issue is not confidential'} | ${false}
         ${'shows confidential badge when issue is confidential'}             | ${true}
       `('$title', async ({ isConfidential }) => {
-        wrapper.setProps({ isConfidential });
-
-        await nextTick();
+        await wrapper.setProps({ isConfidential });
 
         const confidentialEl = findConfidentialBadge();
         expect(confidentialEl.exists()).toBe(isConfidential);
@@ -538,9 +393,7 @@ describe('Issuable output', () => {
         ${'does not show locked badge when issue is not locked'} | ${false}
         ${'shows locked badge when issue is locked'}             | ${true}
       `('$title', async ({ isLocked }) => {
-        wrapper.setProps({ isLocked });
-
-        await nextTick();
+        await wrapper.setProps({ isLocked });
 
         expect(findLockedBadge().exists()).toBe(isLocked);
       });
@@ -550,9 +403,7 @@ describe('Issuable output', () => {
         ${'does not show hidden badge when issue is not hidden'} | ${false}
         ${'shows hidden badge when issue is hidden'}             | ${true}
       `('$title', async ({ isHidden }) => {
-        wrapper.setProps({ isHidden });
-
-        await nextTick();
+        await wrapper.setProps({ isHidden });
 
         const hiddenBadge = findHiddenBadge();
 
@@ -569,6 +420,10 @@ describe('Issuable output', () => {
   });
 
   describe('Composable description component', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
     const findIncidentTabs = () => wrapper.findComponent(IncidentTabs);
     const borderClass = 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6';
 
@@ -587,13 +442,13 @@ describe('Issuable output', () => {
     });
 
     describe('when using incident tabs description wrapper', () => {
-      beforeEach(() => {
-        mountComponent(
-          {
+      beforeEach(async () => {
+        await createComponent({
+          props: {
             descriptionComponent: IncidentTabs,
             showTitleBorder: false,
           },
-          {
+          options: {
             mocks: {
               $apollo: {
                 queries: {
@@ -604,7 +459,7 @@ describe('Issuable output', () => {
               },
             },
           },
-        );
+        });
       });
 
       it('does not the description component', () => {
@@ -622,48 +477,77 @@ describe('Issuable output', () => {
   });
 
   describe('taskListUpdateStarted', () => {
-    it('stops polling', () => {
-      jest.spyOn(wrapper.vm.poll, 'stop');
+    beforeEach(async () => {
+      await createComponent();
+    });
 
-      wrapper.vm.taskListUpdateStarted();
+    it('stops polling', async () => {
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
 
-      expect(wrapper.vm.poll.stop).toHaveBeenCalled();
+      findDescription().vm.$emit('taskListUpdateStarted');
+
+      await advanceToNextPoll();
+
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
     });
   });
 
   describe('taskListUpdateSucceeded', () => {
-    it('enables polling', () => {
-      jest.spyOn(wrapper.vm.poll, 'enable');
-      jest.spyOn(wrapper.vm.poll, 'makeDelayedRequest');
+    beforeEach(async () => {
+      await createComponent();
+      findDescription().vm.$emit('taskListUpdateStarted');
+    });
 
-      wrapper.vm.taskListUpdateSucceeded();
+    it('enables polling', async () => {
+      // Ensure that polling is not working before
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
+      await advanceToNextPoll();
 
-      expect(wrapper.vm.poll.enable).toHaveBeenCalled();
-      expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
+
+      // Enable Polling an move forward
+      findDescription().vm.$emit('taskListUpdateSucceeded');
+      await advanceToNextPoll();
+
+      // Title has changed: polling works!
+      expect(findTitle().props().titleText).toBe(secondRequest.title_text);
     });
   });
 
   describe('taskListUpdateFailed', () => {
-    it('enables polling and calls updateStoreState', () => {
-      jest.spyOn(wrapper.vm.poll, 'enable');
-      jest.spyOn(wrapper.vm.poll, 'makeDelayedRequest');
-      jest.spyOn(wrapper.vm, 'updateStoreState');
+    beforeEach(async () => {
+      await createComponent();
+      findDescription().vm.$emit('taskListUpdateStarted');
+    });
 
-      wrapper.vm.taskListUpdateFailed();
+    it('enables polling and calls updateStoreState', async () => {
+      // Ensure that polling is not working before
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
+      await advanceToNextPoll();
 
-      expect(wrapper.vm.poll.enable).toHaveBeenCalled();
-      expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
-      expect(wrapper.vm.updateStoreState).toHaveBeenCalled();
+      expect(findTitle().props().titleText).toBe(initialRequest.title_text);
+
+      // Enable Polling an move forward
+      findDescription().vm.$emit('taskListUpdateFailed');
+      await advanceToNextPoll();
+
+      // Title has changed: polling works!
+      expect(findTitle().props().titleText).toBe(secondRequest.title_text);
     });
   });
 
   describe('saveDescription event', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
     it('makes request to update issue', async () => {
       const description = 'I have been updated!';
       findDescription().vm.$emit('saveDescription', description);
+
       await waitForPromises();
 
-      expect(mock.history.put[0].data).toContain(description);
+      expect(axiosMock.history.put[0].data).toContain(description);
     });
   });
 });

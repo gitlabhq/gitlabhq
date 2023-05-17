@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::OperationsController do
+RSpec.describe Projects::Settings::OperationsController, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
 
@@ -11,6 +11,8 @@ RSpec.describe Projects::Settings::OperationsController do
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
+
     sign_in(user)
   end
 
@@ -62,6 +64,20 @@ RSpec.describe Projects::Settings::OperationsController do
         .and_return(operations_update_service)
       expect(operations_update_service).to receive(:execute)
         .and_return(return_value)
+    end
+  end
+
+  shared_examples 'PATCHable without metrics dashboard' do
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      include_examples 'PATCHable' do
+        let(:permitted_params) do
+          ActionController::Parameters.new({}).permit!
+        end
+      end
     end
   end
 
@@ -124,7 +140,7 @@ RSpec.describe Projects::Settings::OperationsController do
     end
   end
 
-  context 'incident management' do
+  context 'incident management', feature_category: :incident_management do
     describe 'GET #show' do
       context 'with existing setting' do
         let!(:incident_management_setting) do
@@ -278,7 +294,7 @@ RSpec.describe Projects::Settings::OperationsController do
     end
   end
 
-  context 'error tracking' do
+  context 'error tracking', feature_category: :error_tracking do
     describe 'GET #show' do
       context 'with existing setting' do
         let!(:error_tracking_setting) do
@@ -323,7 +339,7 @@ RSpec.describe Projects::Settings::OperationsController do
     end
   end
 
-  context 'metrics dashboard setting' do
+  context 'metrics dashboard setting', feature_category: :metrics do
     describe 'PATCH #update' do
       let(:params) do
         {
@@ -333,11 +349,12 @@ RSpec.describe Projects::Settings::OperationsController do
         }
       end
 
-      it_behaves_like 'PATCHable'
+      include_examples 'PATCHable'
+      include_examples 'PATCHable without metrics dashboard'
     end
   end
 
-  context 'grafana integration' do
+  context 'grafana integration', feature_category: :metrics do
     describe 'PATCH #update' do
       let(:params) do
         {
@@ -349,7 +366,8 @@ RSpec.describe Projects::Settings::OperationsController do
         }
       end
 
-      it_behaves_like 'PATCHable'
+      include_examples 'PATCHable'
+      include_examples 'PATCHable without metrics dashboard'
     end
   end
 

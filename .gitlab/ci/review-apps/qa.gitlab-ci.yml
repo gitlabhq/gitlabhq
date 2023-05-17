@@ -1,10 +1,11 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 2.0.0
+    ref: 3.1.3
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
+  - template: Verify/Browser-Performance.gitlab-ci.yml
 
 .test-variables:
   variables:
@@ -39,7 +40,6 @@ include:
     WD_INSTALL_DIR: /usr/local/bin
     RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml
   script:
-    - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO} ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
     - echo "Running - '${QA_COMMAND}'"
     - eval "$QA_COMMAND"
@@ -107,31 +107,14 @@ review-qa-non-blocking-parallel:
     - .rules:qa-non-blocking-parallel
   parallel: 5
 
-review-performance:
+browser_performance:
   extends:
     - .default-retry
     - .review:rules:review-performance
-  image:
-    name: sitespeedio/sitespeed.io
-    entrypoint: [""]
   stage: qa
   needs: ["review-deploy"]
-  before_script:
-    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - mkdir -p gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir -p sitespeed-results
-  script:
-    - /start.sh --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
-  after_script:
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
-    expire_in: 31d
+  variables:
+    URL: environment_url.txt
 
 e2e-test-report:
   extends:
@@ -186,7 +169,7 @@ notify-slack:
     TYPE: "(review-app) "
   when: on_failure
   script:
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml"  # generate summary
+    - bundle exec prepare-stage-reports --input-files "${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml"
     - !reference [.notify-slack-qa, script]
 
 export-test-metrics:

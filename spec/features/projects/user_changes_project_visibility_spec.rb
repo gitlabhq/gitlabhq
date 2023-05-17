@@ -91,23 +91,4 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
 
     it_behaves_like 'does not require confirmation'
   end
-
-  context 'with unlink_fork_network_upon_visibility_decrease = false' do
-    let(:project) { create(:project, :empty_repo, :public) }
-
-    before do
-      stub_feature_flags(unlink_fork_network_upon_visibility_decrease: false)
-
-      fork_project(project, project.first_owner)
-
-      sign_in(project.first_owner)
-
-      visit edit_project_path(project)
-
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/381259
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(110)
-    end
-
-    it_behaves_like 'does not require confirmation'
-  end
 end

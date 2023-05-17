@@ -18,10 +18,6 @@ describe('Erased block', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with job erased by user', () => {
     beforeEach(() => {
       createComponent({

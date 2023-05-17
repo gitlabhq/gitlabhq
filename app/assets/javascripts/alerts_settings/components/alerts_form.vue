@@ -5,8 +5,7 @@ import {
   GlLink,
   GlFormGroup,
   GlFormCheckbox,
-  GlDropdown,
-  GlDropdownItem,
+  GlCollapsibleListbox,
 } from '@gitlab/ui';
 import {
   I18N_ALERT_SETTINGS_FORM,
@@ -22,8 +21,7 @@ export default {
     GlLink,
     GlFormGroup,
     GlFormCheckbox,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   inject: ['service', 'alertSettings'],
   data() {
@@ -40,9 +38,6 @@ export default {
   TAKING_INCIDENT_ACTION_DOCS_LINK,
   ISSUE_TEMPLATES_DOCS_LINK,
   computed: {
-    issueTemplateHeader() {
-      return this.issueTemplate || NO_ISSUE_TEMPLATE_SELECTED.name;
-    },
     formData() {
       return {
         create_issue: this.createIssueEnabled,
@@ -53,12 +48,6 @@ export default {
     },
   },
   methods: {
-    selectIssueTemplate(templateKey) {
-      this.issueTemplate = templateKey;
-    },
-    isTemplateSelected(templateKey) {
-      return templateKey === this.issueTemplate;
-    },
     updateAlertsIntegrationSettings() {
       this.loading = true;
 
@@ -99,23 +88,13 @@ export default {
             <span class="gl-font-weight-normal gl-pl-2">{{ $options.i18n.introLinkText }}</span>
           </gl-link>
         </label>
-        <gl-dropdown
+        <gl-collapsible-listbox
           id="alert-integration-settings-issue-template"
+          v-model="issueTemplate"
+          :items="templates"
+          block
           data-qa-selector="incident_templates_dropdown"
-          :text="issueTemplateHeader"
-          :block="true"
-        >
-          <gl-dropdown-item
-            v-for="template in templates"
-            :key="template.key"
-            data-qa-selector="incident_templates_item"
-            is-check-item
-            :is-checked="isTemplateSelected(template.key)"
-            @click="selectIssueTemplate(template.key)"
-          >
-            {{ template.name }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+        />
       </gl-form-group>
 
       <gl-form-group class="gl-pl-0 gl-mb-5">

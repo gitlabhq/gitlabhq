@@ -14,10 +14,6 @@ describe('The DAG annotations', () => {
   const getToggleButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = {}, method = shallowMount) => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-
     wrapper = method(DagAnnotations, {
       propsData,
       data() {
@@ -27,11 +23,6 @@ describe('The DAG annotations', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('when there is one annotation', () => {
     const currentNote = singleNote['dag-link103'];

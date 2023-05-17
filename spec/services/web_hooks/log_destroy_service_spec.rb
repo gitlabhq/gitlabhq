@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::LogDestroyService do
+RSpec.describe WebHooks::LogDestroyService, feature_category: :webhooks do
   subject(:service) { described_class.new(hook.id) }
 
   describe '#execute' do

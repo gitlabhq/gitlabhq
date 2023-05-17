@@ -77,15 +77,21 @@ RSpec.shared_examples 'an editable merge request' do
     expect(page).to have_selector('.js-quick-submit')
   end
 
-  it 'warns about version conflict' do
+  it 'warns about version conflict', :js do
     merge_request.update!(title: "New title")
 
     fill_in 'merge_request_title', with: 'bug 345'
     fill_in 'merge_request_description', with: 'bug description'
 
-    click_button 'Save changes'
+    click_button _('Save changes')
 
-    expect(page).to have_content 'Someone edited the merge request the same time you did'
+    expect(page).to have_content(
+      format(
+        _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."), # rubocop:disable Layout/LineLength
+        model_name: _('merge request'),
+        link_to_model: _('merge request')
+      )
+    )
   end
 
   it 'preserves description textarea height', :js do
@@ -104,8 +110,8 @@ RSpec.shared_examples 'an editable merge request' do
     fill_in 'merge_request_description', with: long_description
 
     height = get_textarea_height
-    find('.js-md-preview-button').click
-    find('.js-md-write-button').click
+    click_button("Preview")
+    click_button("Continue editing")
     new_height = get_textarea_height
 
     expect(height).to eq(new_height)

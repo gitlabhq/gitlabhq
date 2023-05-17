@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::SystemNotes::AlertManagementService do
+RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :projects do
   let_it_be(:author)   { create(:user) }
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:noteable) { create(:alert_management_alert, :with_incident, :acknowledged, project: project) }

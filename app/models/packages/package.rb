@@ -31,6 +31,8 @@ class Packages::Package < ApplicationRecord
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
+  after_create_commit :publish_creation_event, if: :generic?
+
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
@@ -70,9 +72,8 @@ class Packages::Package < ApplicationRecord
               scope: %i[project_id version package_type],
               conditions: -> { not_pending_destruction }
             },
-            unless: -> { pending_destruction? || conan? || debian_package? }
+            unless: -> { pending_destruction? || conan? }
 
-  validate :unique_debian_package_name, if: :debian_package?
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
@@ -84,7 +85,7 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
-  validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
+  validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
@@ -155,6 +156,7 @@ class Packages::Package < ApplicationRecord
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
   scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
+  scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
@@ -179,6 +181,7 @@ class Packages::Package < ApplicationRecord
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
+  scope :with_npm_scope, ->(scope) { npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%") }
 
   scope :order_project_path, -> do
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
@@ -220,6 +223,12 @@ class Packages::Package < ApplicationRecord
 
   def self.by_name_and_version!(name, version)
     find_by!(name: name, version: version)
+  end
+
+  def self.existing_debian_packages_with(name:, version:)
+    debian.with_name(name)
+          .with_version(version)
+          .not_pending_destruction
   end
 
   def self.pluck_names
@@ -288,9 +297,14 @@ class Packages::Package < ApplicationRecord
   end
 
   # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
+  # TODO: rename the method https://gitlab.com/gitlab-org/gitlab/-/issues/410352
   def original_build_info
     strong_memoize(:original_build_info) do
-      build_infos.first
+      if Feature.enabled?(:packages_display_last_pipeline, project)
+        build_infos.last
+      else
+        build_infos.first
+      end
     end
   end
 
@@ -353,6 +367,18 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def publish_creation_event
+    ::Gitlab::EventStore.publish(
+      ::Packages::PackageCreatedEvent.new(data: {
+        project_id: project_id,
+        id: id,
+        name: name,
+        version: version,
+        package_type: package_type
+      })
+    )
+  end
+
   private
 
   def composer_tag_version?
@@ -404,19 +430,6 @@ class Packages::Package < ApplicationRecord
     project.root_namespace.path == ::Packages::Npm.scope_of(name)
   end
 
-  def unique_debian_package_name
-    return unless debian_publication&.distribution
-
-    package_exists = debian_publication.distribution.packages
-                            .with_name(name)
-                            .with_version(version)
-                            .not_pending_destruction
-                            .id_not_in(id)
-                            .exists?
-
-    errors.add(:base, _('Debian package already exists in Distribution')) if package_exists
-  end
-
   def forbidden_debian_changes
     return unless persisted?
 
@@ -426,3 +439,5 @@ class Packages::Package < ApplicationRecord
     end
   end
 end
+
+Packages::Package.prepend_mod

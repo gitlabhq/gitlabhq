@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       end
     end
 
-    context 'with failures' do
+    context 'with StandardError' do
       before do
         allow(Gitlab::ErrorTracking).to receive(:track_exception)
         allow(service).to receive(:sleep)
@@ -140,6 +140,21 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
                 .with(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
         service.perform_service_discovery
+      end
+    end
+
+    context 'with Exception' do
+      it 'logs error and re-raises the exception' do
+        error = Exception.new('uncaught-test-error')
+
+        expect(service).to receive(:refresh_if_necessary).and_raise(error)
+
+        expect(Gitlab::Database::LoadBalancing::Logger).to receive(:error).with(
+          event: :service_discovery_unexpected_exception,
+          message: "Service discovery encountered an uncaught error: uncaught-test-error"
+        )
+
+        expect { service.perform_service_discovery }.to raise_error(Exception, error.message)
       end
     end
   end

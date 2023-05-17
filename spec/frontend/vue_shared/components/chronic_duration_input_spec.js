@@ -10,8 +10,6 @@ describe('vue_shared/components/chronic_duration_input', () => {
   let hiddenElement;
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     textElement = null;
     hiddenElement = null;
   });
@@ -22,10 +20,6 @@ describe('vue_shared/components/chronic_duration_input', () => {
   };
 
   const createComponent = (props = {}) => {
-    if (wrapper) {
-      throw new Error('There should only be one wrapper created per test');
-    }
-
     wrapper = mount(ChronicDurationInput, { propsData: props });
     findComponents();
   };

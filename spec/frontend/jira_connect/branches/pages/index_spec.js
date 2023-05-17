@@ -25,10 +25,6 @@ describe('NewBranchForm', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('page title', () => {
     it.each`
       initialBranchName    | pageTitle

@@ -18,24 +18,6 @@ module Ci
       }
     end
 
-    def bridge_data(build, project)
-      {
-        "build_id" => build.id,
-        "empty-state-illustration-path" => image_path('illustrations/job-trigger-md.svg'),
-        "pipeline_iid" => build.pipeline.iid,
-        "project_full_path" => project.full_path
-      }
-    end
-
-    def job_counts
-      {
-        "all" => limited_counter_with_delimiter(@all_builds),
-        "pending" => limited_counter_with_delimiter(@all_builds.pending),
-        "running" => limited_counter_with_delimiter(@all_builds.running),
-        "finished" => limited_counter_with_delimiter(@all_builds.finished)
-      }
-    end
-
     def job_statuses
       statuses = Ci::HasStatus::AVAILABLE_STATUSES
 

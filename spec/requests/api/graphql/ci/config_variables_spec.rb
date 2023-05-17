@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_category: :pipeline_authoring do
+RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_category: :secrets_management do
   include GraphqlHelpers
   include ReactiveCachingHelpers
 
@@ -20,7 +20,7 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
     %(
       query {
         project(fullPath: "#{project.full_path}") {
-          ciConfigVariables(sha: "#{ref}") {
+          ciConfigVariables(ref: "#{ref}") {
             key
             value
             valueOptions

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SastParserService do
+RSpec.describe Security::CiConfiguration::SastParserService, feature_category: :static_application_security_testing do
   describe '#configuration' do
     include_context 'read ci configuration for sast enabled project'
 

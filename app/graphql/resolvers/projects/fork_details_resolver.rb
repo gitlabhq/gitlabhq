@@ -13,8 +13,15 @@ module Resolvers
 
       def resolve(**args)
         return unless project.forked?
+        return unless authorized_fork_source?
 
-        ::Projects::Forks::DivergenceCounts.new(project, args[:ref]).counts
+        ::Projects::Forks::Details.new(project, args[:ref])
+      end
+
+      private
+
+      def authorized_fork_source?
+        Ability.allowed?(current_user, :read_code, project.fork_source)
       end
     end
   end

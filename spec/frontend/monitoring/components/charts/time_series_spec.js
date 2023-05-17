@@ -58,10 +58,6 @@ describe('Time series component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('With a single time series', () => {
     describe('general functions', () => {
       const findChart = () => wrapper.findComponent({ ref: 'chart' });

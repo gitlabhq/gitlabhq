@@ -123,7 +123,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
     context 'when the feature category is already set in the surrounding block' do
       it 'takes the feature category from the worker, not the caller' do
-        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+        Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestWithContextWorker.bulk_perform_async_with_contexts(
             %w(job1 job2),
             arguments_proc: -> (name) { [name, 1, 2, 3] },
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       end
 
       it 'takes the feature category from the caller if the worker is not owned' do
-        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+        Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
             %w(job1 job2),
             arguments_proc: -> (name) { [name, 1, 2, 3] },
@@ -150,8 +150,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         job1 = TestNotOwnedWithContextWorker.job_for_args(['job1', 1, 2, 3])
         job2 = TestNotOwnedWithContextWorker.job_for_args(['job2', 1, 2, 3])
 
-        expect(job1['meta.feature_category']).to eq('authentication_and_authorization')
-        expect(job2['meta.feature_category']).to eq('authentication_and_authorization')
+        expect(job1['meta.feature_category']).to eq('system_access')
+        expect(job2['meta.feature_category']).to eq('system_access')
       end
     end
   end

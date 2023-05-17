@@ -23,7 +23,6 @@ describe('IDE: User opens a file in the Web IDE', () => {
 
   afterEach(() => {
     vm.$destroy();
-    vm = null;
     resetHTMLFixture();
   });
 

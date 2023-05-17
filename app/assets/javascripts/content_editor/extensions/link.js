@@ -18,6 +18,8 @@ export const extractHrefFromMarkdownLink = (match) => {
 };
 
 export default Link.extend({
+  inclusive: false,
+
   addOptions() {
     return {
       ...this.parent?.(),
@@ -27,7 +29,6 @@ export default Link.extend({
 
   addInputRules() {
     const markdownLinkSyntaxInputRuleRegExp = /(?:^|\s)\[([\w|\s|-]+)\]\((?<href>.+?)\)$/gm;
-    const urlSyntaxRegExp = /(?:^|\s)(?<href>(?:https?:\/\/|www\.)[\S]+)(?:\s|\n)$/gim;
 
     return [
       markInputRule({
@@ -35,16 +36,15 @@ export default Link.extend({
         type: this.type,
         getAttributes: extractHrefFromMarkdownLink,
       }),
-      markInputRule({
-        find: urlSyntaxRegExp,
-        type: this.type,
-        getAttributes: extractHrefFromMatch,
-      }),
     ];
   },
   addAttributes() {
     return {
       ...this.parent?.(),
+      uploading: {
+        default: false,
+        renderHTML: ({ uploading }) => (uploading ? { class: 'with-attachment-icon' } : {}),
+      },
       href: {
         default: null,
         parseHTML: (element) => element.getAttribute('href'),
@@ -62,6 +62,20 @@ export default Link.extend({
         default: false,
         renderHTML: () => '',
       },
+    };
+  },
+  addCommands() {
+    return {
+      ...this.parent?.(),
+      editLink: (attrs) => ({ chain }) => {
+        chain().setMeta('creatingLink', true).setLink(attrs).run();
+      },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      'Mod-k': () => this.editor.commands.editLink(),
     };
   },
 });

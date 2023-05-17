@@ -45,7 +45,11 @@ module Gitlab
           raise ArgumentError, 'access path invalid' unless valid?
 
           @value ||= objects.inject(@ctx) do |memo, value|
-            memo.fetch(value.to_sym)
+            key = value.to_sym
+
+            break @errors.push("unknown interpolation key: `#{key}`") unless memo.key?(key)
+
+            memo.fetch(key)
           end
         rescue KeyError => e
           @errors.push(e)

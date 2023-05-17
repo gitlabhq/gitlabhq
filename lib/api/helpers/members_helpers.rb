@@ -43,8 +43,7 @@ module API
       end
 
       def source_members(source)
-        return source.namespace_members if source.is_a?(Project) &&
-          Feature.enabled?(:project_members_index_by_project_namespace, source)
+        return source.namespace_members if source.is_a?(Project)
 
         source.members
       end
@@ -56,7 +55,8 @@ module API
       end
 
       def find_all_members_for_project(project)
-        MembersFinder.new(project, current_user).execute(include_relations: [:inherited, :direct, :invited_groups])
+        include_relations = [:inherited, :direct, :invited_groups, :shared_into_ancestors]
+        MembersFinder.new(project, current_user).execute(include_relations: include_relations)
       end
 
       def find_all_members_for_group(group)

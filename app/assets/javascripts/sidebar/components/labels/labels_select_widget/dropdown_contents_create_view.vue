@@ -8,11 +8,12 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
-import { LabelType } from './constants';
+import { DEFAULT_LABEL_COLOR } from './constants';
 
 const errorMessage = __('Error creating label.');
 
@@ -44,11 +45,16 @@ export default {
       type: String,
       required: true,
     },
+    searchKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      labelTitle: '',
-      selectedColor: '',
+      labelTitle: this.searchKey,
+      selectedColor: DEFAULT_LABEL_COLOR,
       labelCreateInProgress: false,
       error: undefined,
     };
@@ -62,7 +68,7 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      const attributePath = this.labelCreateType === LabelType.group ? 'groupPath' : 'projectPath';
+      const attributePath = this.labelCreateType === WORKSPACE_GROUP ? 'groupPath' : 'projectPath';
 
       return {
         title: this.labelTitle,
@@ -126,7 +132,7 @@ export default {
         if (labelCreate.errors.length) {
           [this.error] = labelCreate.errors;
         } else {
-          this.$emit('hideCreateView');
+          this.$emit('labelCreated', labelCreate.label);
         }
       } catch {
         createAlert({ message: errorMessage });
@@ -163,11 +169,14 @@ export default {
         />
       </div>
       <div class="color-input-container gl-display-flex">
-        <span
-          class="dropdown-label-color-preview gl-relative gl-display-inline-block"
+        <gl-form-input
+          v-model.trim="selectedColor"
+          class="gl-rounded-top-right-none gl-rounded-bottom-right-none gl-mr-n1 gl-mb-2 gl-w-8"
+          type="color"
+          :value="selectedColor"
+          :placeholder="__('Select color')"
           data-testid="selected-color"
-          :style="{ backgroundColor: selectedColor }"
-        ></span>
+        />
         <gl-form-input
           v-model.trim="selectedColor"
           class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"

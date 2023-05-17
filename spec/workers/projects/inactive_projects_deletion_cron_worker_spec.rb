@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
+RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :compliance_management do
   include ProjectHelpers
 
   shared_examples 'worker is running for more than 4 minutes' do
@@ -92,8 +92,11 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
 
       it 'invokes Projects::InactiveProjectsDeletionNotificationWorker for inactive projects' do
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis).to receive(:hset).with('inactive_projects_deletion_warning_email_notified',
-                                               "project:#{inactive_large_project.id}", Date.current)
+          expect(redis).to receive(:hset).with(
+            'inactive_projects_deletion_warning_email_notified',
+            "project:#{inactive_large_project.id}",
+            Date.current
+          )
         end
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).to receive(:perform_async).with(
           inactive_large_project.id, deletion_date).and_call_original
@@ -104,8 +107,11 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
 
       it 'does not invoke InactiveProjectsDeletionNotificationWorker for already notified inactive projects' do
         Gitlab::Redis::SharedState.with do |redis|
-          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{inactive_large_project.id}",
-                     Date.current.to_s)
+          redis.hset(
+            'inactive_projects_deletion_warning_email_notified',
+            "project:#{inactive_large_project.id}",
+            Date.current.to_s
+          )
         end
 
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
@@ -116,8 +122,11 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
 
       it 'invokes Projects::DestroyService for projects that are inactive even after being notified' do
         Gitlab::Redis::SharedState.with do |redis|
-          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{inactive_large_project.id}",
-                     15.months.ago.to_date.to_s)
+          redis.hset(
+            'inactive_projects_deletion_warning_email_notified',
+            "project:#{inactive_large_project.id}",
+            15.months.ago.to_date.to_s
+          )
         end
 
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
@@ -129,8 +138,9 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
         expect(inactive_large_project.reload.pending_delete).to eq(true)
 
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.hget('inactive_projects_deletion_warning_email_notified',
-                            "project:#{inactive_large_project.id}")).to be_nil
+          expect(
+            redis.hget('inactive_projects_deletion_warning_email_notified', "project:#{inactive_large_project.id}")
+          ).to be_nil
         end
       end
 

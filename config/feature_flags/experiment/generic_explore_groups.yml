@@ -1,8 +1,0 @@
----
-name: generic_explore_groups
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103019"
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381564
-milestone: '15.6'
-type: experiment
-group: group::source code
-default_enabled: true

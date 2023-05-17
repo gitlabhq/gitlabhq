@@ -1,9 +1,9 @@
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 
 describe('Mutations TestReports Store', () => {
   let mockState;
@@ -58,7 +58,7 @@ describe('Mutations TestReports Store', () => {
       expect(mockState.errorMessage).toBe(message);
     });
 
-    it('should show a flash message otherwise', () => {
+    it('should show an alert otherwise', () => {
       mutations[types.SET_SUITE_ERROR](mockState, {});
 
       expect(createAlert).toHaveBeenCalled();

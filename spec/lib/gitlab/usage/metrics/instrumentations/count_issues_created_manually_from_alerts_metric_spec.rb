@@ -16,11 +16,7 @@ feature_category: :service_ping do
 
   it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }
 
-  context 'on Gitlab.com' do
-    before do
-      allow(Gitlab).to receive(:com?).and_return(true)
-    end
-
+  context 'on SaaS', :saas do
     let(:expected_value) { -1 }
 
     it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }

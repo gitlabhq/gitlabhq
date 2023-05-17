@@ -290,6 +290,7 @@ RSpec.shared_examples 'value stream analytics label based stage' do
 
     context 'when `ProjectLabel is given' do
       let_it_be(:label) { create(:label) }
+      let(:expected_error) { s_('CycleAnalyticsStage|is not available for the selected group') }
 
       it 'raises error when `ProjectLabel` is given for `start_event_label`' do
         params = {
@@ -300,7 +301,9 @@ RSpec.shared_examples 'value stream analytics label based stage' do
           end_event_identifier: :issue_closed
         }
 
-        expect { described_class.new(params) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+        stage = described_class.new(params)
+        expect(stage).to be_invalid
+        expect(stage.errors.messages_for(:start_event_label_id)).to eq([expected_error])
       end
 
       it 'raises error when `ProjectLabel` is given for `end_event_label`' do
@@ -312,7 +315,9 @@ RSpec.shared_examples 'value stream analytics label based stage' do
           end_event_label: label
         }
 
-        expect { described_class.new(params) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+        stage = described_class.new(params)
+        expect(stage).to be_invalid
+        expect(stage.errors.messages_for(:end_event_label_id)).to eq([expected_error])
       end
     end
   end

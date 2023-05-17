@@ -68,11 +68,11 @@ component can have two indicators:
   and
   [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
   services, that threshold is **5 seconds** when not opted in to the
-  [`rails_requests` SLI](../application_slis/rails_request_apdex.md).
+  [`rails_request` SLI](../application_slis/rails_request.md).
 
   We've made this target configurable in [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525).
-  To learn how to customize the request Apdex, see
-  [Rails request Apdex SLI](../application_slis/rails_request_apdex.md).
+  To customize the request Apdex, see
+  [Rails request SLIs](../application_slis/rails_request.md).
   This new Apdex measurement is not part of the error budget until you
   [opt in](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1451).
 
@@ -136,3 +136,39 @@ For example, see the `server` component of the `web-pages` service:
 ![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail.png)
 
 To add more SLIs tailored to specific features, you can use an [Application SLI](../application_slis/index.md).
+
+## Kibana dashboard for error budgets
+
+For a detailed analysis you can use [a specialized Kibana dashboard](https://log.gprd.gitlab.net/goto/771b5c10-c0ec-11ed-85ed-e7557b0a598c), like this:
+
+![Kibana dashboard](img/error_budgets_kibana_dashboard_v15_10.png)
+
+Description:
+
+- **Apdex requests over limit (graph)** - Displays only requests that exceeded their
+  target duration.
+- **Apdex operations over-limit duration (graph)** - Displays the distribution of duration
+  components (database, Redis, Gitaly, and Rails app).
+- **Apdex requests** (pie chart) - Displays the percentage of `2xx`, `3xx`, `4xx` and
+  `5xx` requests.
+- **Slow request component distribution** - Highlights the component responsible
+  for Apdex violation.
+- **Apdex operations over limit** (table) - Displays a number of operations over
+  limit for each endpoint.
+- **Apdex requests over limit** - Displays a list of individual requests responsible
+  for Apdex violation.
+
+### Use the dashboard
+
+1. Select the feature category you want to investigate.
+   1. Scroll to the **Feature Category** section. Enter the feature name.
+   1. Select **Apply changes**. Selected results contain only requests related to this feature category.
+1. Select the time frame for the investigation.
+1. Review dashboard and pay attention to the type of failures.
+
+Questions to answer:
+
+1. Does the failure pattern look like a spike? Or does it persist?
+1. Does the failure look related to a particular component? (database, Redis, ...)
+1. Does the failure affect a specific endpoint? Or is it system-wide?
+1. Does the failure appear caused by infrastructure incidents?

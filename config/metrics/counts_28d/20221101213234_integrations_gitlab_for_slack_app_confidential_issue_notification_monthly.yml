@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.integrations.i_integrations_gitlab_for_slack_app_confidential_issue_notification_monthly
+description: Calculated unique users to trigger a Slack message by performing an action on a confidential issue by month
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+milestone: "15.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102249
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_integrations_gitlab_for_slack_app_confidential_issue_notification
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

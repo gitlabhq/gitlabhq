@@ -20,8 +20,7 @@ class StuckExportJobsWorker
   def perform
     failed_jobs_count = mark_stuck_jobs_as_failed!
 
-    Gitlab::Metrics.add_event(:stuck_export_jobs,
-                              failed_jobs_count: failed_jobs_count)
+    Gitlab::Metrics.add_event(:stuck_export_jobs, failed_jobs_count: failed_jobs_count)
   end
 
   private

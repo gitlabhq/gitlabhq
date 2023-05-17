@@ -1,313 +1,167 @@
 ---
 # Compliance category
 - name: g_edit_by_web_ide
-  category: ide_edit
-  redis_slot: edit
   aggregation: daily
 - name: g_edit_by_sfe
-  category: ide_edit
-  redis_slot: edit
   aggregation: daily
 - name: g_edit_by_snippet_ide
-  category: ide_edit
-  redis_slot: edit
   aggregation: daily
 - name: g_edit_by_live_preview
-  category: ide_edit
-  redis_slot: edit
   aggregation: daily
 - name: i_search_total
-  category: search
-  redis_slot: search
   aggregation: weekly
 - name: wiki_action
-  category: source_code
   aggregation: daily
 - name: design_action
-  category: source_code
   aggregation: daily
 - name: project_action
-  category: source_code
   aggregation: daily
 - name: git_write_action
-  category: source_code
   aggregation: daily
 - name: merge_request_action
-  category: source_code
   aggregation: daily
 - name: i_source_code_code_intelligence
-  redis_slot: source_code
-  category: source_code
   aggregation: daily
 # Incident management
 - name: incident_management_alert_status_changed
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_alert_assigned
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_alert_todo
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_created
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_reopened
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_closed
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_assigned
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_todo
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_comment
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_zoom_meeting
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_relate
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_unrelate
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_incident_change_confidential
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 # Incident management timeline events
 - name: incident_management_timeline_event_created
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_timeline_event_edited
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 - name: incident_management_timeline_event_deleted
-  redis_slot: incident_management
-  category: incident_management
   aggregation: weekly
 # Incident management alerts
 - name: incident_management_alert_create_incident
-  redis_slot: incident_management
-  category: incident_management_alerts
   aggregation: weekly
 # Testing category
 - name: i_testing_test_case_parsed
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_summary_widget_total
-  category: testing
-  redis_slot: testing
   aggregation: weekly
 - name: i_testing_test_report_uploaded
-  category: testing
-  redis_slot: testing
   aggregation: weekly
 - name: i_testing_coverage_report_uploaded
-  category: testing
-  redis_slot: testing
   aggregation: weekly
 # Project Management group
 - name: g_project_management_issue_title_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_description_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_assignee_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_made_confidential
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_made_visible
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_created
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_closed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_reopened
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_label_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_milestone_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_cross_referenced
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_moved
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_related
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_unrelated
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_marked_as_duplicate
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_locked
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_unlocked
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_designs_added
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_designs_modified
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_designs_removed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_due_date_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_design_comments_removed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_time_estimate_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_time_spent_changed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_comment_added
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_comment_edited
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_comment_removed
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_cloned
-  category: issues_edit
-  redis_slot: project_management
   aggregation: daily
 # Runner group
 - name: g_runner_fleet_read_jobs_statistics
-  category: runner
-  redis_slot: runner
   aggregation: weekly
 # Secrets Management
 - name: i_snippets_show
-  category: snippets
-  redis_slot: snippets
   aggregation: weekly
 # Terraform
 - name: p_terraform_state_api_unique_users
-  category: terraform
-  redis_slot: terraform
   aggregation: weekly
 # Pipeline Authoring group
+- name: ci_interpolation_users
+  aggregation: weekly
 - name: o_pipeline_authoring_unique_users_committing_ciconfigfile
-  category: pipeline_authoring
-  redis_slot: pipeline_authoring
   aggregation: weekly
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
-  category: pipeline_authoring
-  redis_slot: pipeline_authoring
   aggregation: weekly
 - name: i_ci_secrets_management_id_tokens_build_created
-  category: ci_secrets_management
-  redis_slot: ci_secrets_management
   aggregation: weekly
 # Merge request widgets
 - name: users_expanding_secure_security_report
-  redis_slot: secure
-  category: secure
   aggregation: weekly
 - name: users_expanding_testing_code_quality_report
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 - name: users_expanding_testing_accessibility_report
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 - name: users_expanding_testing_license_compliance_report
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 - name: users_visiting_testing_license_compliance_full_report
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 - name: users_visiting_testing_manage_license_compliance
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 - name: users_clicking_license_testing_visiting_external_website
-  redis_slot: testing
-  category: testing
   aggregation: weekly
 # Geo group
 - name: g_geo_proxied_requests
-  category: geo
-  redis_slot: geo
   aggregation: daily
 # Manage
 - name: unique_active_user
-  category: manage
   aggregation: weekly
 # Environments page
 - name: users_visiting_environments_pages
-  category: environments
-  redis_slot: users
   aggregation: weekly

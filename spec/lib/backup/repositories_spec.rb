@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Backup::Repositories do
+RSpec.describe Backup::Repositories, feature_category: :backup_restore do
   let(:progress) { spy(:stdout) }
   let(:strategy) { spy(:strategy) }
   let(:storages) { [] }
@@ -159,13 +159,14 @@ RSpec.describe Backup::Repositories do
 
   describe '#restore' do
     let_it_be(:project) { create(:project, :repository) }
+
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project, author: project.first_owner) }
 
     it 'calls enqueue for each repository type', :aggregate_failures do
       subject.restore(destination)
 
-      expect(strategy).to have_received(:start).with(:restore, destination)
+      expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default])
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
@@ -246,7 +247,7 @@ RSpec.describe Backup::Repositories do
 
         subject.restore(destination)
 
-        expect(strategy).to have_received(:start).with(:restore, destination)
+        expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default])
         expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
         expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
@@ -268,7 +269,7 @@ RSpec.describe Backup::Repositories do
 
           subject.restore(destination)
 
-          expect(strategy).to have_received(:start).with(:restore, destination)
+          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: nil)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
@@ -289,7 +290,7 @@ RSpec.describe Backup::Repositories do
 
           subject.restore(destination)
 
-          expect(strategy).to have_received(:start).with(:restore, destination)
+          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: nil)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)

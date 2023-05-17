@@ -119,16 +119,6 @@ RSpec.describe 'Project fork', feature_category: :projects do
     end
   end
 
-  shared_examples "increments the fork counter on the source project's page" do
-    specify :sidekiq_might_not_need_inline do
-      create_forks
-
-      visit project_path(project)
-
-      expect(page).to have_css('.fork-count', text: 2)
-    end
-  end
-
   it_behaves_like 'fork button on project page'
   it_behaves_like 'create fork page', 'Fork project'
 
@@ -185,25 +175,17 @@ RSpec.describe 'Project fork', feature_category: :projects do
       end
     end
 
-    context 'with cache_home_panel feature flag' do
+    context 'when user is a maintainer in multiple groups' do
       before do
         create(:group_member, :maintainer, user: user, group: group2)
       end
 
-      context 'when caching is enabled' do
-        before do
-          stub_feature_flags(cache_home_panel: project)
-        end
+      it "increments the fork counter on the source project's page", :sidekiq_might_not_need_inline do
+        create_forks
 
-        it_behaves_like "increments the fork counter on the source project's page"
-      end
+        visit project_path(project)
 
-      context 'when caching is disabled' do
-        before do
-          stub_feature_flags(cache_home_panel: false)
-        end
-
-        it_behaves_like "increments the fork counter on the source project's page"
+        expect(page).to have_css('.fork-count', text: 2)
       end
     end
   end

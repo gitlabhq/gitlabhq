@@ -7,10 +7,6 @@ describe('Issue Time Estimate component', () => {
 
   const findIssueTimeEstimate = () => wrapper.find('[data-testid="issue-time-estimate"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when limitToHours is false', () => {
     beforeEach(() => {
       wrapper = shallowMount(IssueTimeEstimate, {

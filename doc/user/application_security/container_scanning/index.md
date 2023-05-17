@@ -15,11 +15,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
 > - Container Scanning variables that reference Docker [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/357264) in GitLab 15.4.
+> - Container Scanning template [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/381665) from `Security/Container-Scanning.gitlab-ci.yml` to `Jobs/Container-Scanning.gitlab-ci.yml` in GitLab 15.6.
 
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
 vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
 apps.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
 
 Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
@@ -71,14 +75,14 @@ information directly in the merge request.
 | [Access to Security Dashboard page](#security-dashboard) | No | Yes |
 | [Access to Dependency List page](../dependency_list/index.md) | No | Yes |
 
-## Requirements
+## Prerequisites
 
 To enable container scanning in your pipeline, you need the following:
 
 - GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 - [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor on Linux/amd64.
-- Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
+- Docker `18.09.03` or later installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
 - [Build and push](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
@@ -90,19 +94,19 @@ To enable container scanning in your pipeline, you need the following:
 ## Configuration
 
 To enable container scanning, add the
-[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
+[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
 to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 ```
 
 The included template:
 
 - Creates a `container_scanning` job in your CI/CD pipeline.
 - Pulls the built Docker image from your project's [container registry](../../packages/container_registry/index.md)
-  (see [requirements](#requirements)) and scans it for possible vulnerabilities.
+  (see [prerequisites](#prerequisites)) and scans it for possible vulnerabilities.
 
 GitLab saves the results as a
 [Container Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
@@ -117,7 +121,7 @@ registry, and scans the image:
 ```yaml
 include:
   - template: Jobs/Build.gitlab-ci.yml
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -142,7 +146,7 @@ enables verbose output for the analyzer:
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 variables:
     SECURE_LOG_LEVEL: 'debug'
@@ -154,7 +158,7 @@ To scan images located in a registry other than the project's, use the following
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -178,7 +182,9 @@ container_scanning:
     - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
 
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+variables:
     CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
     CS_REGISTRY_USER: AWS
     CS_REGISTRY_PASSWORD: "$AWS_ECR_PASSWORD"
@@ -199,7 +205,7 @@ For example:
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -223,7 +229,7 @@ By default, the report only includes packages managed by the Operating System (O
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -251,7 +257,7 @@ including a large number of false positives.
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:5` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:6` | Docker image of the analyzer. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
@@ -260,10 +266,6 @@ including a large number of false positives.
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. | Trivy |
-| <!-- start_remove The following content will be removed on remove_date: '2023-08-22' --> `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_IMAGE`. The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
-| `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_PASSWORD`. Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
-| `DOCKER_USER`                  | `$CI_REGISTRY_USER` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_USER`. Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
-| `DOCKERFILE_PATH`              | `Dockerfile`  | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_DOCKERFILE_PATH`. The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All <!-- end_remove --> |
 | `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
 | `CS_REGISTRY_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
 | `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
@@ -303,9 +305,9 @@ standard tag plus the `-fips` extension.
 
 | Scanner name    | `CS_ANALYZER_IMAGE` |
 | --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:5-fips` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:5-fips` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:5-fips` |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:6-fips` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:6-fips` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:6-fips` |
 
 NOTE:
 Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
@@ -326,7 +328,7 @@ To enable Container Scanning in a project, create a merge request from the Secur
 page:
 
 1. In the project where you want to enable Container Scanning, go to
-   **Security & Compliance > Configuration**.
+   **Security and Compliance > Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Container Scanning.
@@ -346,7 +348,7 @@ This example sets `GIT_STRATEGY` to `fetch`:
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -362,9 +364,9 @@ The following options are available:
 
 | Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
 |----------------------------------------------------------|--------------------------------------------------------------------|
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5`       |
-| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:5` |
-| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:5` |
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:6`       |
+| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:6` |
+| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:6` |
 
 ### Setting the default branch image
 
@@ -392,7 +394,7 @@ duplicated:
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -525,7 +527,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use container scanning in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisites).
 - To configure a local Docker container registry with copies of the container scanning images. You
   can find these images in their respective registries:
 
@@ -555,9 +557,9 @@ For container scanning, import the following images from `registry.gitlab.com` i
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/container-scanning:5
-registry.gitlab.com/security-products/container-scanning/grype:5
-registry.gitlab.com/security-products/container-scanning/trivy:5
+registry.gitlab.com/security-products/container-scanning:6
+registry.gitlab.com/security-products/container-scanning/grype:6
+registry.gitlab.com/security-products/container-scanning/trivy:6
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -578,7 +580,7 @@ For details on saving and transporting Docker images as a file, see the Docker d
 
    ```yaml
    include:
-     - template: Jobs/Container-Scanning.gitlab-ci.yml
+     - template: Security/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
      image: $CI_REGISTRY/namespace/container-scanning
@@ -597,7 +599,7 @@ following `.gitlab-ci.yml` example as a template.
 
 ```yaml
 variables:
-  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:5
+  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:6
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
 image: docker:stable
@@ -629,7 +631,7 @@ This example shows the configuration needed to scan images in a private [Google 
 
 ```yaml
 include:
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -692,6 +694,14 @@ These reports must follow a format defined in the
 - [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
 
 For more information, see [Security scanner integration](../../../development/integrations/secure.md).
+
+### CycloneDX Software Bill of Materials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
+
+In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
+
+You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Security Dashboard
 
@@ -771,7 +781,7 @@ To prevent the error, ensure the Docker version that the runner is using is
 
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ## Changes
 

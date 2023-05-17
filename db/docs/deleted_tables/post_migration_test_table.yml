@@ -1,0 +1,11 @@
+---
+table_name: post_migration_test_table
+classes: []
+feature_categories:
+  - database
+description: Test table to verify the behavior of the post-deploy independent pipeline
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91119
+milestone: '15.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92571
+removed_in_milestone: '15.2'

@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy.
 
-## Overview
-
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
@@ -123,7 +121,8 @@ The following are required to run Geo:
   - Note,[PostgreSQL 12 is deprecated](../../update/deprecations.md#postgresql-12-deprecated) and is removed in GitLab 16.0.
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
-- All sites must run [the same GitLab and PostgreSQL versions](setup/database.md#postgresql-replication).
+- All sites must run the same GitLab version.
+- All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
   - If using different operating system versions between Geo sites,
     [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
     across Geo sites to avoid silent corruption of database indexes.

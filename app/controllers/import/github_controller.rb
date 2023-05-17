@@ -11,6 +11,10 @@ class Import::GithubController < Import::BaseController
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
   before_action :expire_etag_cache, only: [:status, :create]
 
+  before_action only: [:status] do
+    push_frontend_feature_flag(:import_details_page)
+  end
+
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
@@ -53,17 +57,22 @@ class Import::GithubController < Import::BaseController
         render json: { imported_projects: serialized_imported_projects,
                        provider_repos: serialized_provider_repos,
                        incompatible_repos: serialized_incompatible_repos,
-                       page_info: client_repos_response[:page_info] }
+                       page_info: client_repos_response[:page_info],
+                       provider_repo_count: client_repos_response[:count] }
       end
 
       format.html do
         if params[:namespace_id].present?
           @namespace = Namespace.find_by_id(params[:namespace_id])
 
-          render_404 unless current_user.can?(:create_projects, @namespace)
+          render_404 unless current_user.can?(:import_projects, @namespace)
         end
       end
     end
+  end
+
+  def details
+    render_404 unless Feature.enabled?(:import_details_page)
   end
 
   def create
@@ -80,6 +89,21 @@ class Import::GithubController < Import::BaseController
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
     render json: Import::GithubRealtimeRepoSerializer.new.represent(already_added_projects)
+  end
+
+  def failures
+    project = Project.imported_from(provider_name).find(params[:project_id])
+
+    unless project.import_finished?
+      return render status: :bad_request, json: {
+        message: _('The import is not complete.')
+      }
+    end
+
+    failures = project.import_failures.with_external_identifiers
+    serializer = Import::GithubFailureSerializer.new.with_pagination(request, response)
+
+    render json: serializer.represent(failures)
   end
 
   def cancel
@@ -108,6 +132,14 @@ class Import::GithubController < Import::BaseController
     end
 
     render json: canceled
+  end
+
+  def counts
+    render json: {
+      owned: client_proxy.count_repos_by('owned', current_user.id),
+      collaborated: client_proxy.count_repos_by('collaborated', current_user.id),
+      organization: client_proxy.count_repos_by('organization', current_user.id)
+    }
   end
 
   protected
@@ -145,7 +177,10 @@ class Import::GithubController < Import::BaseController
   end
 
   def serialized_imported_projects(projects = already_added_projects)
-    ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
+    ProjectSerializer.new.represent(
+      projects,
+      serializer: :import, provider_url: provider_url, client: client_proxy
+    )
   end
 
   def expire_etag_cache
@@ -245,11 +280,7 @@ class Import::GithubController < Import::BaseController
     {
       before: params[:before].presence,
       after: params[:after].presence,
-      first: PAGE_LENGTH,
-      # TODO: remove after rollout FF github_client_fetch_repos_via_graphql
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/385649
-      page: [1, params[:page].to_i].max,
-      per_page: PAGE_LENGTH
+      first: PAGE_LENGTH
     }
   end
 

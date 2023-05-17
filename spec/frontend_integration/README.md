@@ -22,6 +22,8 @@ We can generate the necessary fixtures and GraphQL schema by running:
 bundle exec rake frontend:fixtures gitlab:graphql:schema:dump
 ```
 
+You can also download those fixtures from the package registry: see [download fixtures](https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html#download-fixtures) for more info.
+
 Then we can use [Jest](https://jestjs.io/) to run the frontend integration tests:
 
 ```shell

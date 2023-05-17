@@ -12,6 +12,11 @@ export const INPUT_RULE_TRACKING_ACTION = 'execute_input_rule';
 
 export const TEXT_STYLE_DROPDOWN_ITEMS = [
   {
+    contentType: 'paragraph',
+    editorCommand: 'setParagraph',
+    label: __('Normal text'),
+  },
+  {
     contentType: 'heading',
     commandParams: { level: 1 },
     editorCommand: 'setHeading',
@@ -35,11 +40,6 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
     commandParams: { level: 4 },
     label: __('Heading 4'),
   },
-  {
-    contentType: 'paragraph',
-    editorCommand: 'setParagraph',
-    label: __('Normal text'),
-  },
 ];
 
 export const ALERT_EVENT = 'alert';
@@ -47,6 +47,7 @@ export const KEYDOWN_EVENT = 'keydown';
 
 export const PARSE_HTML_PRIORITY_LOWEST = 1;
 export const PARSE_HTML_PRIORITY_DEFAULT = 50;
+export const PARSE_HTML_PRIORITY_HIGH = 75;
 export const PARSE_HTML_PRIORITY_HIGHEST = 100;
 
 export const EXTENSION_PRIORITY_LOWER = 75;

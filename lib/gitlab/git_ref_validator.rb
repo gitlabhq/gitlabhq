@@ -12,10 +12,10 @@ module Gitlab
     # Validates a given name against the git reference specification
     #
     # Returns true for a valid reference name, false otherwise
-    def validate(ref_name)
+    def validate(ref_name, skip_head_ref_check: false)
       return false if ref_name.to_s.empty? # #blank? raises an ArgumentError for invalid encodings
       return false if ref_name.start_with?(*(EXPANDED_PREFIXES + DISALLOWED_PREFIXES))
-      return false if ref_name == 'HEAD'
+      return false if ref_name == 'HEAD' && !skip_head_ref_check
 
       begin
         Rugged::Reference.valid_name?("refs/heads/#{ref_name}")

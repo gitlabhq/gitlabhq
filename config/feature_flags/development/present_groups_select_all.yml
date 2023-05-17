@@ -1,8 +1,0 @@
----
-name: present_groups_select_all
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93633
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370306
-milestone: '15.5'
-type: development
-group: group::workspace
-default_enabled: false

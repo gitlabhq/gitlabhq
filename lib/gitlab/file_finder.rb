@@ -44,15 +44,11 @@ module Gitlab
 
     # Overridden in Gitlab::WikiFileFinder
     def search_paths(query)
-      if Feature.enabled?(:code_basic_search_files_by_regexp, project)
-        return [] if query.blank? || ref.blank?
+      return [] if query.blank? || ref.blank?
 
-        escaped_query = RE2::Regexp.escape(query)
-        query_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)#{escaped_query}")
-        repository.search_files_by_regexp(query_regexp, ref)
-      else
-        repository.search_files_by_name(query, ref)
-      end
+      escaped_query = RE2::Regexp.escape(query)
+      query_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)#{escaped_query}")
+      repository.search_files_by_regexp(query_regexp, ref)
     end
   end
 end

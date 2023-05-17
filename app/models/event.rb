@@ -9,6 +9,9 @@ class Event < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
   include ShaAttribute
+  include IgnorableColumns
+
+  ignore_column :target_id_convert_to_bigint, remove_with: '16.2', remove_after: '2023-07-22'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,
@@ -66,7 +69,7 @@ class Event < ApplicationRecord
     # If the association for "target" defines an "author" association we want to
     # eager-load this so Banzai & friends don't end up performing N+1 queries to
     # get the authors of notes, issues, etc. (likewise for "noteable").
-    incs = %i(author noteable).select do |a|
+    incs = %i(author noteable work_item_type).select do |a|
       reflections['events'].active_record.reflect_on_association(a)
     end
 

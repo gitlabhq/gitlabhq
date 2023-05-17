@@ -103,6 +103,15 @@ module Gitlab
             # Slightly randomize the retry delay so that, in the case of a total
             # dns outage, all starting services do not pressure the dns server at the same time.
             sleep(rand(RETRY_DELAY_RANGE))
+          rescue Exception => error # rubocop:disable Lint/RescueException
+            # All exceptions are logged to find any pattern and solve https://gitlab.com/gitlab-org/gitlab/-/issues/364370
+            # This will be removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120173
+            Gitlab::Database::LoadBalancing::Logger.error(
+              event: :service_discovery_unexpected_exception,
+              message: "Service discovery encountered an uncaught error: #{error.message}"
+            )
+
+            raise
           end
 
           interval

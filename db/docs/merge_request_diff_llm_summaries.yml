@@ -1,0 +1,11 @@
+---
+table_name: merge_request_diff_llm_summaries
+classes:
+- MergeRequest::DiffLlmSummary
+feature_categories:
+- code_review_workflow
+description: This is the table that stores information about the diff summaries produced
+  from different LLM's.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118671
+milestone: '16.0'
+gitlab_schema: gitlab_main

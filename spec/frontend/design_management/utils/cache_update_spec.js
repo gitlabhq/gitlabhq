@@ -10,10 +10,10 @@ import {
   ADD_IMAGE_DIFF_NOTE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
 } from '~/design_management/utils/error_messages';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import design from '../mock_data/design';
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 
 describe('Design Management cache update', () => {
   const mockErrors = ['code red!'];

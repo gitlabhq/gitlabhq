@@ -65,11 +65,6 @@ describe('IDE pipelines list', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('fetches latest pipeline', () => {
     createComponent();
 

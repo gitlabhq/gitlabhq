@@ -8,10 +8,12 @@ RSpec.describe Ci::TrackEnvironmentUsage do
 
     context 'when build is the verify action for the environment' do
       let(:build) do
-        build_stubbed(:ci_build,
-                      ref: 'master',
-                      environment: 'staging',
-                      options: { environment: { action: 'verify' } })
+        build_stubbed(
+          :ci_build,
+          ref: 'master',
+          environment: 'staging',
+          options: { environment: { action: 'verify' } }
+        )
       end
 
       it { is_expected.to be_truthy }
@@ -19,10 +21,12 @@ RSpec.describe Ci::TrackEnvironmentUsage do
 
     context 'when build is not the verify action for the environment' do
       let(:build) do
-        build_stubbed(:ci_build,
-                      ref: 'master',
-                      environment: 'staging',
-                      options: { environment: { action: 'start' } })
+        build_stubbed(
+          :ci_build,
+          ref: 'master',
+          environment: 'staging',
+          options: { environment: { action: 'start' } }
+        )
       end
 
       it { is_expected.to be_falsey }

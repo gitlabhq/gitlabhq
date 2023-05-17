@@ -11,12 +11,20 @@ module BulkImports
     data_consistency :always
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
+    worker_resource_boundary :memory
 
-    def perform(user_id, portable_id, portable_class, relation)
+    def perform(user_id, portable_id, portable_class, relation, batched = false)
       user = User.find(user_id)
       portable = portable(portable_id, portable_class)
+      config = BulkImports::FileTransfer.config_for(portable)
 
-      RelationExportService.new(user, portable, relation, jid).execute
+      if Feature.enabled?(:bulk_imports_batched_import_export) &&
+          Gitlab::Utils.to_boolean(batched) &&
+          config.batchable_relation?(relation)
+        BatchedRelationExportService.new(user, portable, relation, jid).execute
+      else
+        RelationExportService.new(user, portable, relation, jid).execute
+      end
     end
 
     private

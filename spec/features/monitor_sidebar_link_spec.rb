@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category: :not_owned do
+RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category: :shared do
   let_it_be_with_reload(:project) { create(:project, :internal, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -11,6 +11,7 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
   before do
     project.add_role(user, role) if role
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   shared_examples 'shows Monitor menu based on the access level' do

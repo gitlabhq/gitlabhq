@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Policy do
+RSpec.describe Gitlab::Ci::Config::Entry::Policy, feature_category: :continuous_integration do
   let(:entry) { described_class.new(config) }
 
   context 'when using simplified policy' do

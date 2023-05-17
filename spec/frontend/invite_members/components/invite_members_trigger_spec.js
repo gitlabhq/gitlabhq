@@ -1,12 +1,15 @@
-import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
+  TRIGGER_ELEMENT_WITH_EMOJI,
+  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
+  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
+import { GlEmoji } from '../mock_data/member_modal';
 
 jest.mock('~/experimentation/experiment_tracking');
 
@@ -19,7 +22,9 @@ let findButton;
 const triggerComponent = {
   button: GlButton,
   anchor: GlLink,
-  'side-nav': GlLink,
+  'text-emoji': GlLink,
+  'dropdown-text-emoji': GlDropdownItem,
+  'dropdown-text': GlButton,
 };
 
 const createComponent = (props = {}) => {
@@ -28,6 +33,11 @@ const createComponent = (props = {}) => {
       displayText,
       ...triggerProps,
       ...props,
+    },
+    stubs: {
+      GlEmoji,
+      GlDisclosureDropdownItem,
+      GlButton,
     },
   });
 };
@@ -40,8 +50,8 @@ const triggerItems = [
     triggerElement: 'anchor',
   },
   {
-    triggerElement: TRIGGER_ELEMENT_SIDE_NAV,
-    icon: 'plus',
+    triggerElement: TRIGGER_ELEMENT_WITH_EMOJI,
+    icon: 'shaking_hands',
   },
 ];
 
@@ -49,10 +59,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
   triggerProps = { ...triggerItem, triggerSource };
 
   findButton = () => wrapper.findComponent(triggerComponent[triggerItem.triggerElement]);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('configurable attributes', () => {
     it('includes the correct displayText for the button', () => {
@@ -91,31 +97,45 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
       });
     });
   });
+});
 
-  describe('tracking', () => {
-    it('does not add tracking attributes', () => {
-      createComponent();
+describe('link with emoji', () => {
+  it('includes the specified icon with correct size when triggerElement is link', () => {
+    const findEmoji = () => wrapper.findComponent(GlEmoji);
 
-      expect(findButton().attributes('data-track-action')).toBeUndefined();
-      expect(findButton().attributes('data-track-label')).toBeUndefined();
-    });
+    createComponent({ triggerElement: TRIGGER_ELEMENT_WITH_EMOJI, icon: 'shaking_hands' });
 
-    it('adds tracking attributes', () => {
-      createComponent({ label: '_label_', event: '_event_' });
-
-      expect(findButton().attributes('data-track-action')).toBe('_event_');
-      expect(findButton().attributes('data-track-label')).toBe('_label_');
-    });
+    expect(findEmoji().exists()).toBe(true);
+    expect(findEmoji().attributes('data-name')).toBe('shaking_hands');
   });
 });
 
-describe('side-nav with icon', () => {
+describe('dropdown item with emoji', () => {
   it('includes the specified icon with correct size when triggerElement is link', () => {
-    const findIcon = () => wrapper.findComponent(GlIcon);
+    const findEmoji = () => wrapper.findComponent(GlEmoji);
 
-    createComponent({ triggerElement: TRIGGER_ELEMENT_SIDE_NAV, icon: 'plus' });
+    createComponent({ triggerElement: TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI, icon: 'shaking_hands' });
 
-    expect(findIcon().exists()).toBe(true);
-    expect(findIcon().props('name')).toBe('plus');
+    expect(findEmoji().exists()).toBe(true);
+    expect(findEmoji().attributes('data-name')).toBe('shaking_hands');
+  });
+});
+
+describe('disclosure dropdown item', () => {
+  const findTrigger = () => wrapper.findComponent(GlDisclosureDropdownItem);
+
+  beforeEach(() => {
+    createComponent({ triggerElement: TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN });
+  });
+
+  it('renders a trigger button', () => {
+    expect(findTrigger().exists()).toBe(true);
+    expect(findTrigger().text()).toBe(displayText);
+  });
+
+  it('emits modalOpened which clicked', () => {
+    findTrigger().vm.$emit('action');
+
+    expect(wrapper.emitted('modal-opened')).toHaveLength(1);
   });
 });

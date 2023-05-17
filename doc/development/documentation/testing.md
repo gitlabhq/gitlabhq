@@ -49,17 +49,21 @@ To run tests locally, it's important to:
 ### Lint checks
 
 Lint checks are performed by the [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh)
-script and can be executed as follows:
+script and can be executed with the help of a Rake task as follows:
 
-1. Go to the `gitlab` directory.
+1. Go to your `gitlab` directory.
 1. Run:
 
    ```shell
-   MD_DOC_PATH=path/to/my_doc.md scripts/lint-doc.sh
+   rake lint:markdown
    ```
 
-Where `MD_DOC_PATH` points to the file or directory you would like to run lint checks for.
-If you omit it completely, it defaults to the `doc/` directory.
+To specify a single file or directory you would like to run lint checks for, run:
+
+```shell
+MD_DOC_PATH=path/to/my_doc.md rake lint:markdown
+```
+
 The output should be similar to:
 
 ```plaintext
@@ -77,7 +81,7 @@ The output should be similar to:
 This requires you to either:
 
 - Have the [required lint tools installed](#local-linters) on your computer.
-- A working Docker installation, in which case an image with these tools pre-installed is used.
+- A working Docker or containerd installation, to use an image with these tools pre-installed.
 
 ### Documentation link tests
 

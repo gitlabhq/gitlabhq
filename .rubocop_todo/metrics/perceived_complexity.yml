@@ -17,4 +17,3 @@ Metrics/PerceivedComplexity:
     - 'qa/qa/support/repeater.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
     - 'sidekiq_cluster/cli.rb'
-    - 'spec/support/cycle_analytics_helpers/test_generation.rb'

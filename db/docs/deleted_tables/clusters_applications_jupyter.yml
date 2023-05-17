@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_jupyter
+feature_categories:
+- deployment_management
+description: "(Deprecated) A GitLab managed Jupyter installation in a Kubernetes cluster"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/db9f765852d9fef464e69c0bf47a382f2ab7219d
+milestone: '11.0'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119469
+removed_in_milestone: '16.0'

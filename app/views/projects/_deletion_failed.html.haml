@@ -4,6 +4,6 @@
 = render Pajamas::AlertComponent.new(variant: :warning,
   dismissible: false,
   alert_options: { class: 'project-deletion-failed-message' }) do |c|
-  = c.body do
+  - c.with_body do
     This project was scheduled for deletion, but failed with the following message:
     = project.delete_error

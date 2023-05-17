@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::BulkDestroyService do
+RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
 
   let(:user) { create(:user) }

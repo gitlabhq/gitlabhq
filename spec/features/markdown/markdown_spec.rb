@@ -68,7 +68,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       end
 
       aggregate_failures 'parses mermaid code block' do
-        expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
+        expect(doc).to have_selector('pre[data-canonical-lang=mermaid] > code.js-render-mermaid')
       end
 
       aggregate_failures 'parses strikethroughs' do
@@ -250,6 +250,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       aggregate_failures 'all reference filters' do
         expect(doc).to reference_users
         expect(doc).to reference_issues
+        expect(doc).to reference_work_items
         expect(doc).to reference_merge_requests
         expect(doc).to reference_snippets
         expect(doc).to reference_commit_ranges
@@ -345,6 +346,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       aggregate_failures 'all reference filters' do
         expect(doc).to reference_users
         expect(doc).to reference_issues
+        expect(doc).to reference_work_items
         expect(doc).to reference_merge_requests
         expect(doc).to reference_snippets
         expect(doc).to reference_commit_ranges

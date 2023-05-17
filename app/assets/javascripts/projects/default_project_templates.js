@@ -53,10 +53,6 @@ export default {
     text: s__('ProjectTemplates|Pages/Plain HTML'),
     icon: '.template-option .icon-plainhtml',
   },
-  gitbook: {
-    text: s__('ProjectTemplates|Pages/GitBook'),
-    icon: '.template-option .icon-gitbook',
-  },
   hexo: {
     text: s__('ProjectTemplates|Pages/Hexo'),
     icon: '.template-option .icon-hexo',
@@ -120,5 +116,9 @@ export default {
   typo3_distribution: {
     text: s__('ProjectTemplates|TYPO3 Distribution'),
     icon: '.template-option .icon-typo3',
+  },
+  laravel: {
+    text: s__('ProjectTemplates|Laravel Framework'),
+    icon: '.template-option .icon-laravel',
   },
 };

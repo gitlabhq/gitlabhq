@@ -1,0 +1,38 @@
+empty_services:
+  services:
+
+without_name:
+  services:
+    - alias: db-postgres
+      entrypoint: ["/usr/local/bin/db-postgres"]
+      command: ["start"]
+
+invalid_entrypoint:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: "/usr/local/bin/db-postgres" # must be array
+
+empty_entrypoint:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: []
+
+invalid_command:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      command: "start" # must be array
+
+empty_command:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      command: []
+
+empty_pull_policy:
+  script: echo "Multiple pull policies."
+  services:
+    - name: postgres:11.6
+      pull_policy: []

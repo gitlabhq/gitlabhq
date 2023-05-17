@@ -101,14 +101,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFeaturePackageRegistr
   end
 
   subject(:perform_migration) do
-    described_class.new(start_id: project1.id,
-                        end_id: project5.id,
-                        batch_table: :projects,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: project1.id,
+      end_id: project5.id,
+      batch_table: :projects,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   it 'backfills project_features.package_registry_access_level', :aggregate_failures do

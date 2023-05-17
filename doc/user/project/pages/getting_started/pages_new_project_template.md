@@ -1,10 +1,10 @@
 ---
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a Pages website from a template **(FREE)**
+# Create a GitLab Pages website from a project template **(FREE)**
 
 GitLab provides templates for the most popular Static Site Generators (SSGs).
 You can create a new project from a template and run the CI/CD pipeline to generate a Pages website.
@@ -32,4 +32,4 @@ For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
 
 To view the HTML and other assets that were created for the site,
-[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).

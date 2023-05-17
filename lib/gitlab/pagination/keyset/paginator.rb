@@ -94,8 +94,6 @@ module Gitlab
             data = order.cursor_attributes_for_node(records.last)
             data[direction_key] = FORWARD_DIRECTION
             cursor_converter.dump(data)
-          else
-            nil
           end
         end
 

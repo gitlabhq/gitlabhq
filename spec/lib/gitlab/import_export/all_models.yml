@@ -14,6 +14,7 @@ issues:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - sent_notifications
 - sentry_issue
 - issuable_severity
@@ -92,6 +93,25 @@ notes:
 - suggestions
 - diff_note_positions
 - review
+- note_metadata
+note_metadata:
+  - note
+  - email_participant
+commit_notes:
+- award_emoji
+- noteable
+- author
+- updated_by
+- last_edited_by
+- resolved_by
+- todos
+- events
+- system_note_metadata
+- note_diff_file
+- suggestions
+- diff_note_positions
+- review
+- note_metadata
 label_links:
 - target
 - label
@@ -166,6 +186,7 @@ merge_requests:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - label_links
 - labels
 - last_edited_by
@@ -202,7 +223,7 @@ merge_requests:
 - approver_groups
 - approved_by_users
 - draft_notes
-- merge_train
+- merge_train_car
 - blocks_as_blocker
 - blocks_as_blockee
 - blocking_merge_requests
@@ -246,6 +267,11 @@ ci_pipelines:
 - statuses
 - statuses_order_id_desc
 - latest_statuses_ordered_by_stage
+- latest_statuses
+- all_jobs
+- current_jobs
+- all_processable_jobs
+- current_processable_jobs
 - builds
 - bridges
 - processables
@@ -283,6 +309,7 @@ ci_pipelines:
 - job_artifacts
 - vulnerabilities_finding_pipelines
 - vulnerability_findings
+- vulnerability_state_transitions
 - pipeline_config
 - security_scans
 - security_findings
@@ -293,7 +320,6 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
-- latest_statuses
 - dast_profile
 - dast_profiles_pipeline
 - dast_site_profile
@@ -317,6 +343,7 @@ stages:
 - processables
 - builds
 - bridges
+- generic_commit_statuses
 - latest_statuses
 - retried_statuses
 statuses:
@@ -327,6 +354,92 @@ statuses:
 - auto_canceled_by
 - needs
 - ci_stage
+builds:
+- user
+- auto_canceled_by
+- ci_stage
+- needs
+- resource
+- pipeline
+- sourced_pipeline
+- resource_group
+- metadata
+- runner
+- trigger_request
+- erased_by
+- deployment
+- pending_state
+- queuing_entry
+- runtime_metadata
+- trace_chunks
+- report_results
+- namespace
+- job_artifacts
+- job_variables
+- sourced_pipelines
+- pages_deployments
+- job_artifacts_archive
+- job_artifacts_metadata
+- job_artifacts_trace
+- job_artifacts_junit
+- job_artifacts_sast
+- job_artifacts_dependency_scanning
+- job_artifacts_container_scanning
+- job_artifacts_dast
+- job_artifacts_codequality
+- job_artifacts_license_scanning
+- job_artifacts_performance
+- job_artifacts_metrics
+- job_artifacts_metrics_referee
+- job_artifacts_network_referee
+- job_artifacts_lsif
+- job_artifacts_dotenv
+- job_artifacts_cobertura
+- job_artifacts_terraform
+- job_artifacts_accessibility
+- job_artifacts_cluster_applications
+- job_artifacts_secret_detection
+- job_artifacts_requirements
+- job_artifacts_coverage_fuzzing
+- job_artifacts_browser_performance
+- job_artifacts_load_performance
+- job_artifacts_api_fuzzing
+- job_artifacts_cluster_image_scanning
+- job_artifacts_cyclonedx
+- job_artifacts_requirements_v2
+- runner_manager
+- runner_manager_build
+- runner_session
+- trace_metadata
+- terraform_state_versions
+- taggings
+- base_tags
+- tag_taggings
+- tags
+- security_scans
+- dast_site_profiles_build
+- dast_site_profile
+- dast_scanner_profiles_build
+- dast_scanner_profile
+bridges:
+- user
+- pipeline
+- auto_canceled_by
+- ci_stage
+- needs
+- resource
+- sourced_pipeline
+- resource_group
+- metadata
+- trigger_request
+- downstream_pipeline
+- upstream_pipeline
+generic_commit_statuses:
+- user
+- pipeline
+- auto_canceled_by
+- ci_stage
+- needs
 variables:
 - project
 triggers:
@@ -391,6 +504,7 @@ container_repositories:
 - project
 - name
 project:
+- catalog_resource
 - external_status_checks
 - base_tags
 - project_topics
@@ -399,7 +513,9 @@ project:
 - cluster
 - clusters
 - cluster_agents
+- ci_access_project_authorizations
 - cluster_project
+- workspaces
 - creator
 - cycle_analytics_stages
 - value_streams
@@ -408,6 +524,7 @@ project:
 - project_namespace
 - management_clusters
 - boards
+- application_setting
 - last_event
 - integrations
 - push_hooks_integrations
@@ -432,6 +549,7 @@ project:
 - discord_integration
 - drone_ci_integration
 - emails_on_push_integration
+- google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
 - shimo_integration
@@ -466,12 +584,14 @@ project:
 - external_wiki_integration
 - mock_ci_integration
 - mock_monitoring_integration
+- squash_tm_integration
 - forked_to_members
 - forked_from_project
 - forks
 - merge_requests
 - fork_merge_requests
 - issues
+- work_items
 - labels
 - events
 - milestones
@@ -527,6 +647,7 @@ project:
 - redirect_routes
 - statistics
 - container_repositories
+- container_registry_data_repair_detail
 - uploads
 - file_uploads
 - import_state
@@ -600,14 +721,15 @@ project:
 - project_registry
 - packages
 - package_files
-- repository_files
+- rpm_repository_files
+- npm_metadata_caches
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
 - webide_pipelines
 - reviews
 - incident_management_setting
-- merge_trains
+- merge_train_cars
 - designs
 - project_aliases
 - external_pull_requests
@@ -618,6 +740,8 @@ project:
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting
+- service_desk_custom_email_verification
+- service_desk_custom_email_credential
 - security_setting
 - import_failures
 - container_expiration_policy
@@ -673,6 +797,7 @@ project:
 - sbom_occurrences
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
+- design_management_repository
 award_emoji:
 - awardable
 - user
@@ -759,6 +884,7 @@ incident_management_setting:
 - project
 merge_trains:
 - project
+merge_train_cars:
 - merge_request
 boards:
 - group
@@ -859,6 +985,8 @@ bulk_import_export:
   - group
 service_desk_setting:
   - file_template_project
+service_desk_custom_email_verification:
+  - triggerer
 approvals:
   - user
   - merge_request
@@ -890,3 +1018,22 @@ resource_iteration_events:
 iterations_cadence:
   - group
   - iterations
+catalog_resource:
+  - project
+approval_rules:
+  - users
+  - groups
+  - group_users
+  - security_orchestration_policy_configuration
+  - protected_branches
+  - approval_merge_request_rule_sources
+  - approval_merge_request_rules
+  - approval_project_rules_users
+  - approval_project_rules_protected_branches
+  - scan_result_policy_read
+approval_project_rules_users:
+  - user
+  - approval_project_rule
+approval_project_rules_protected_branches:
+  - protected_branch
+  - approval_project_rule

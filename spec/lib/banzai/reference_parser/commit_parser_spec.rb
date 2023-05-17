@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe Banzai::ReferenceParser::CommitParser, feature_category: :source_code_management do
   include ReferenceParserHelpers
 
-  let(:project) { create(:project, :public) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+
   subject { described_class.new(Banzai::RenderContext.new(project, user)) }
 
   let(:link) { empty_html_link }
@@ -130,20 +131,28 @@ RSpec.describe Banzai::ReferenceParser::CommitParser, feature_category: :source_
   end
 
   describe '#find_commits' do
-    it 'returns an Array of commit objects' do
-      commit = double(:commit)
+    let_it_be(:ids) { project.repository.commits(project.default_branch, limit: 3).map(&:id) }
 
-      expect(project).to receive(:commit).with('123').and_return(commit)
-      expect(project).to receive(:valid_repo?).and_return(true)
+    it 'is empty when repo is invalid' do
+      allow(project).to receive(:valid_repo?).and_return(false)
 
-      expect(subject.find_commits(project, %w{123})).to eq([commit])
+      expect(subject.find_commits(project, ids)).to eq([])
     end
 
-    it 'skips commit IDs for which no commit could be found' do
-      expect(project).to receive(:commit).with('123').and_return(nil)
-      expect(project).to receive(:valid_repo?).and_return(true)
+    it 'returns commits by the specified ids' do
+      expect(subject.find_commits(project, ids).map(&:id)).to eq(%w[
+        b83d6e391c22777fca1ed3012fce84f633d7fed0
+        498214de67004b1da3d820901307bed2a68a8ef6
+        1b12f15a11fc6e62177bef08f47bc7b5ce50b141
+      ])
+    end
 
-      expect(subject.find_commits(project, %w{123})).to eq([])
+    it 'is limited' do
+      stub_const("#{described_class}::COMMITS_LIMIT", 1)
+
+      expect(subject.find_commits(project, ids).map(&:id)).to eq([
+        "b83d6e391c22777fca1ed3012fce84f633d7fed0"
+      ])
     end
   end
 

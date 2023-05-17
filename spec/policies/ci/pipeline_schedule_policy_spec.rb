@@ -19,8 +19,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
 
       context 'when no one can push or merge to the branch' do
         before do
-          create(:protected_branch, :no_one_can_push,
-                 name: pipeline_schedule.ref, project: project)
+          create(:protected_branch, :no_one_can_push, name: pipeline_schedule.ref, project: project)
         end
 
         it 'does not include ability to play pipeline schedule' do
@@ -30,8 +29,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
 
       context 'when developers can push to the branch' do
         before do
-          create(:protected_branch, :developers_can_merge,
-                 name: pipeline_schedule.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: pipeline_schedule.ref, project: project)
         end
 
         it 'includes ability to update pipeline' do
@@ -45,8 +43,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
         before do
           pipeline_schedule.update!(ref: tag)
 
-          create(:protected_tag, :no_one_can_create,
-                 name: pipeline_schedule.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: pipeline_schedule.ref, project: project)
         end
 
         it 'does not include ability to play pipeline schedule' do
@@ -56,8 +53,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
 
       context 'when no one can create the tag but it is not a tag' do
         before do
-          create(:protected_tag, :no_one_can_create,
-                 name: pipeline_schedule.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: pipeline_schedule.ref, project: project)
         end
 
         it 'includes ability to play pipeline schedule' do
@@ -104,7 +100,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
       end
 
       it 'includes abilities to take ownership' do
-        expect(policy).to be_allowed :take_ownership_pipeline_schedule
+        expect(policy).to be_allowed :admin_pipeline_schedule
       end
     end
   end

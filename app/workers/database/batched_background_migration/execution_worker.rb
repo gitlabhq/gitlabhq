@@ -11,7 +11,6 @@ module Database
 
       INTERVAL_VARIANCE = 5.seconds.freeze
       LEASE_TIMEOUT_MULTIPLIER = 3
-      MAX_RUNNING_MIGRATIONS = 4
 
       included do
         data_consistency :always
@@ -21,7 +20,7 @@ module Database
 
       class_methods do
         def max_running_jobs
-          MAX_RUNNING_MIGRATIONS
+          Gitlab::CurrentSettings.database_max_running_batched_background_migrations
         end
 
         # We have to overirde this one, as we want

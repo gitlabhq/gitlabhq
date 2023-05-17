@@ -14,10 +14,6 @@ describe('Page size selector component', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each(PAGE_SIZES)('shows expected text in the dropdown button for page size %s', (pageSize) => {
     createWrapper({ pageSize });
 

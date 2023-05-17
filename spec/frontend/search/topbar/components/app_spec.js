@@ -36,10 +36,6 @@ describe('GlobalSearchTopbar', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
   const findGroupFilter = () => wrapper.findComponent(GroupFilter);
   const findProjectFilter = () => wrapper.findComponent(ProjectFilter);

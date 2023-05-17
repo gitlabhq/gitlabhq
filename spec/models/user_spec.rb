@@ -42,9 +42,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:time_display_relative).to(:user_preference) }
     it { is_expected.to delegate_method(:time_display_relative=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:time_format_in_24h).to(:user_preference) }
-    it { is_expected.to delegate_method(:time_format_in_24h=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
     it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
 
@@ -78,11 +75,14 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:diffs_addition_color).to(:user_preference) }
     it { is_expected.to delegate_method(:diffs_addition_color=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:use_legacy_web_ide).to(:user_preference) }
-    it { is_expected.to delegate_method(:use_legacy_web_ide=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:use_new_navigation).to(:user_preference) }
     it { is_expected.to delegate_method(:use_new_navigation=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:pinned_nav_items).to(:user_preference) }
+    it { is_expected.to delegate_method(:pinned_nav_items=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -98,9 +98,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:registration_objective).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:registration_objective=).to(:user_detail).with_arguments(:args).allow_nil }
-
-    it { is_expected.to delegate_method(:requires_credit_card_verification).to(:user_detail).allow_nil }
-    it { is_expected.to delegate_method(:requires_credit_card_verification=).to(:user_detail).with_arguments(:args).allow_nil }
 
     it { is_expected.to delegate_method(:discord).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:discord=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -174,6 +171,14 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
+    it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
+    it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
+    it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
+
+    it do
+      is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
+    end
 
     describe 'default values' do
       let(:user) { described_class.new }
@@ -188,6 +193,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { expect(user.notified_of_own_activity).to be_falsey }
       it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
+      it { expect(user.color_scheme_id).to eq(Gitlab::CurrentSettings.default_syntax_highlighting_theme) }
     end
 
     describe '#user_detail' do
@@ -279,6 +285,31 @@ RSpec.describe User, feature_category: :user_profile do
         current_user.block
 
         expect(abuse_report.reload.user).to eq(other_user)
+      end
+    end
+
+    describe '#abuse_metadata' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:contribution_calendar) { Gitlab::ContributionsCalendar.new(user) }
+
+      before do
+        allow(Gitlab::ContributionsCalendar).to receive(:new).and_return(contribution_calendar)
+        allow(contribution_calendar).to receive(:activity_dates).and_return({ first: 3, second: 5, third: 4 })
+
+        allow(user).to receive_messages(
+          account_age_in_days: 10,
+          two_factor_enabled?: true
+        )
+      end
+
+      it 'returns the expected hash' do
+        abuse_metadata = user.abuse_metadata
+
+        expect(abuse_metadata.length).to eq 2
+        expect(abuse_metadata).to include(
+          account_age: 10,
+          two_factor_enabled: 1
+        )
       end
     end
 
@@ -472,6 +503,37 @@ RSpec.describe User, feature_category: :user_profile do
           # Change an unrelated value
           user.name = "Example McExampleFace"
           expect(user).to be_valid
+        end
+      end
+
+      context 'namespace_move_dir_allowed' do
+        context 'when the user is not a new record' do
+          before do
+            expect(user.new_record?).to eq(false)
+          end
+
+          it 'checks when username changes' do
+            expect(user).to receive(:namespace_move_dir_allowed)
+
+            user.username = 'newuser'
+            user.validate
+          end
+
+          it 'does not check if the username did not change' do
+            expect(user).not_to receive(:namespace_move_dir_allowed)
+            expect(user.username_changed?).to eq(false)
+
+            user.validate
+          end
+        end
+
+        it 'does not check if the user is a new record' do
+          user = User.new(username: 'newuser')
+
+          expect(user.new_record?).to eq(true)
+          expect(user).not_to receive(:namespace_move_dir_allowed)
+
+          user.validate
         end
       end
     end
@@ -978,10 +1040,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      describe 'and U2F' do
-        it_behaves_like "returns the right users", :two_factor_via_u2f
-      end
-
       describe 'and WebAuthn' do
         it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
@@ -995,26 +1053,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
-      end
-
-      describe 'and u2f' do
-        it 'excludes users with 2fa enabled via U2F' do
-          user_with_2fa = create(:user, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
-
-        it 'excludes users with 2fa enabled via OTP and U2F' do
-          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
       end
 
       describe 'and webauthn' do
@@ -2076,7 +2114,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:incoming_email_token) { 'ilqx6jm1u945macft4eff0nw' }
 
     it 'returns incoming email token when supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 
@@ -2084,7 +2122,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'returns `nil` when not supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 
@@ -2109,6 +2147,59 @@ RSpec.describe User, feature_category: :user_profile do
       user = build_stubbed(:user, reset_password_sent_at: Time.current)
 
       expect(user.recently_sent_password_reset?).to eq true
+    end
+  end
+
+  describe '#remember_me!' do
+    let(:user) { create(:user) }
+
+    context 'when remember me application setting is enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true)
+      end
+
+      it 'sets rememberable attributes' do
+        expect(user.remember_created_at).to be_nil
+
+        user.remember_me!
+
+        expect(user.remember_created_at).not_to be_nil
+      end
+    end
+
+    context 'when remember me application setting is not enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: false)
+      end
+
+      it 'sets rememberable attributes' do
+        expect(user.remember_created_at).to be_nil
+
+        user.remember_me!
+
+        expect(user.remember_created_at).to be_nil
+      end
+    end
+  end
+
+  describe '#forget_me!' do
+    let(:user) { create(:user) }
+
+    context 'when remember me application setting is disabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true)
+      end
+
+      it 'allows user to be forgotten when previously remembered' do
+        user.remember_me!
+
+        expect(user.remember_created_at).not_to be_nil
+
+        stub_application_setting(remember_me_enabled: false)
+        user.forget_me!
+
+        expect(user.remember_created_at).to be_nil
+      end
     end
   end
 
@@ -2174,6 +2265,24 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    context 'Duo Auth' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(true)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(true) }
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+
     context 'FortiTokenCloud' do
       context 'when enabled via GitLab settings' do
         before do
@@ -2203,54 +2312,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it { expect(user.two_factor_otp_enabled?).to eq(false) }
-      end
-    end
-  end
-
-  context 'two_factor_u2f_enabled?' do
-    let_it_be(:user) { create(:user, :two_factor) }
-
-    context 'when webauthn feature flag is enabled' do
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns false' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(false)
-        end
-      end
-    end
-
-    context 'when webauthn feature flag is disabled' do
-      before do
-        stub_feature_flags(webauthn: false)
-      end
-
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns true' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(true)
-        end
       end
     end
   end
@@ -2380,6 +2441,20 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect(user.forkable_namespaces).to contain_exactly(user.namespace, group, subgroup, developer_group)
         end
+
+        it 'includes groups where the user has access via group shares to create projects' do
+          shared_group = create(:group)
+          create(
+            :group_group_link,
+            :maintainer,
+            shared_with_group: group,
+            shared_group: shared_group
+          )
+
+          expect(user.forkable_namespaces).to contain_exactly(
+            user.namespace, group, subgroup, shared_group
+          )
+        end
       end
 
       describe '#manageable_groups' do
@@ -2396,14 +2471,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'manageable groups examples'
-
-        context 'when feature flag :linear_user_manageable_groups is disabled' do
-          before do
-            stub_feature_flags(linear_user_manageable_groups: false)
-          end
-
-          it_behaves_like 'manageable groups examples'
-        end
       end
     end
   end
@@ -3847,6 +3914,54 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.following?(followee)).to be_falsey
     end
+
+    it 'does not follow if user disabled following' do
+      user = create(:user)
+      user.enabled_following = false
+
+      followee = create(:user)
+
+      expect(user.follow(followee)).to eq(false)
+
+      expect(user.following?(followee)).to be_falsey
+    end
+
+    it 'does not follow if followee user disabled following' do
+      user = create(:user)
+
+      followee = create(:user)
+      followee.enabled_following = false
+
+      expect(user.follow(followee)).to eq(false)
+
+      expect(user.following?(followee)).to be_falsey
+    end
+
+    context 'when disable_follow_users feature flag is off' do
+      before do
+        stub_feature_flags(disable_follow_users: false)
+      end
+
+      it 'follows user even if user disabled following' do
+        user = create(:user)
+        user.enabled_following = false
+
+        followee = create(:user)
+
+        expect(user.follow(followee)).to be_truthy
+        expect(user.following?(followee)).to be_truthy
+      end
+
+      it 'follows user even if followee user disabled following' do
+        user = create(:user)
+
+        followee = create(:user)
+        followee.enabled_following = false
+
+        expect(user.follow(followee)).to be_truthy
+        expect(user.following?(followee)).to be_truthy
+      end
+    end
   end
 
   describe '#unfollow' do
@@ -3886,6 +4001,39 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.unfollow(followees.first)).to be_truthy
       expect(user.following?(followees.first)).to be_falsey
+    end
+  end
+
+  describe '#following_users_allowed?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:followee) { create(:user) }
+
+    where(:user_enabled_following, :followee_enabled_following, :feature_flag_status, :result) do
+      true  | true  | false | true
+      true  | false | false | true
+      true  | true  | true  | true
+      true  | false | true  | false
+      false | true  | false | true
+      false | true  | true  | false
+      false | false | false | true
+      false | false | true  | false
+    end
+
+    with_them do
+      before do
+        user.enabled_following = user_enabled_following
+        followee.enabled_following = followee_enabled_following
+        followee.save!
+        stub_feature_flags(disable_follow_users: feature_flag_status)
+      end
+
+      it { expect(user.following_users_allowed?(followee)).to eq result }
+    end
+
+    it 'is false when user and followee is the same user' do
+      expect(user.following_users_allowed?(user)).to eq(false)
     end
   end
 
@@ -5225,13 +5373,13 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#source_groups_of_two_factor_authentication_requirement' do
-    let_it_be(:group_not_requiring_2FA) { create :group }
+    let_it_be(:group_not_requiring_2fa) { create :group }
 
     let(:user) { create :user }
 
     before do
       group.add_member(user, GroupMember::OWNER)
-      group_not_requiring_2FA.add_member(user, GroupMember::OWNER)
+      group_not_requiring_2fa.add_member(user, GroupMember::OWNER)
     end
 
     context 'when user is direct member of group requiring 2FA' do
@@ -5713,6 +5861,34 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user).not_to be_blocked
     end
+
+    context 'when target user is the same as deleted_by' do
+      let(:deleted_by) { user }
+
+      it 'blocks the user and schedules the record for deletion with the correct delay' do
+        freeze_time do
+          expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
+
+          user.delete_async(deleted_by: deleted_by)
+
+          expect(user).to be_blocked
+        end
+      end
+
+      context 'when delay_delete_own_user feature flag is disabled' do
+        before do
+          stub_feature_flags(delay_delete_own_user: false)
+        end
+
+        it 'schedules user for deletion without blocking them' do
+          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
+
+          user.delete_async(deleted_by: deleted_by)
+
+          expect(user).not_to be_blocked
+        end
+      end
+    end
   end
 
   describe '#max_member_access_for_project_ids' do
@@ -5777,8 +5953,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
 
-        expected_all = expected.merge(second_maintainer_project.id => Gitlab::Access::MAINTAINER,
-                                      second_developer_project.id => Gitlab::Access::DEVELOPER)
+        expected_all = expected.merge(
+          second_maintainer_project.id => Gitlab::Access::MAINTAINER,
+          second_developer_project.id => Gitlab::Access::DEVELOPER
+        )
 
         access_levels(projects)
 
@@ -5856,8 +6034,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         all_groups = groups + [second_maintainer_group.id, second_developer_group.id]
 
-        expected_all = expected.merge(second_maintainer_group.id => Gitlab::Access::MAINTAINER,
-                                      second_developer_group.id => Gitlab::Access::DEVELOPER)
+        expected_all = expected.merge(
+          second_maintainer_group.id => Gitlab::Access::MAINTAINER,
+          second_developer_group.id => Gitlab::Access::DEVELOPER
+        )
 
         access_levels(groups)
 
@@ -6566,11 +6746,13 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:group_callout,
-               user: user,
-               group_id: group.id,
-               feature_name: feature_name,
-               dismissed_at: 4.months.ago)
+        create(
+          :group_callout,
+          user: user,
+          group_id: group.id,
+          feature_name: feature_name,
+          dismissed_at: 4.months.ago
+        )
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -6600,11 +6782,13 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:project_callout,
-              user: user,
-              project_id: project.id,
-              feature_name: feature_name,
-              dismissed_at: 4.months.ago)
+        create(
+          :project_callout,
+          user: user,
+          project_id: project.id,
+          feature_name: feature_name,
+          dismissed_at: 4.months.ago
+        )
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -6840,7 +7024,8 @@ RSpec.describe User, feature_category: :user_profile do
             { user_type: :support_bot },
             { user_type: :security_bot },
             { user_type: :automation_bot },
-            { user_type: :admin_bot }
+            { user_type: :admin_bot },
+            { user_type: :llm_bot }
           ]
         end
 
@@ -7002,6 +7187,14 @@ RSpec.describe User, feature_category: :user_profile do
 
       it_behaves_like 'does not require password to be present'
     end
+
+    context 'when user is a security_policy bot user' do
+      before do
+        user.update!(user_type: 'security_policy_bot')
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
   end
 
   describe 'can_trigger_notifications?' do
@@ -7104,42 +7297,103 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when user is confirmed' do
       let(:user) { create(:user) }
 
-      it 'is falsey' do
-        expect(user.confirmed?).to be_truthy
-        expect(subject).to be_falsey
+      it 'is false' do
+        expect(user.confirmed?).to be(true)
+        expect(subject).to be(false)
       end
     end
 
     context 'when user is not confirmed' do
       let_it_be(:user) { build_stubbed(:user, :unconfirmed, confirmation_sent_at: Time.current) }
 
-      it 'is truthy when soft_email_confirmation feature is disabled' do
-        stub_feature_flags(soft_email_confirmation: false)
-        expect(subject).to be_truthy
+      context 'when email confirmation setting is set to `off`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'off')
+        end
+
+        it { is_expected.to be(false) }
       end
 
-      context 'when soft_email_confirmation feature is enabled' do
+      context 'when email confirmation setting is set to `soft`' do
         before do
-          stub_feature_flags(soft_email_confirmation: true)
+          stub_application_setting_enum('email_confirmation_setting', 'soft')
         end
 
-        it 'is falsey when confirmation period is valid' do
-          expect(subject).to be_falsey
+        context 'when confirmation period is valid' do
+          it { is_expected.to be(false) }
         end
 
-        it 'is truthy when confirmation period is expired' do
-          travel_to(User.allow_unconfirmed_access_for.from_now + 1.day) do
-            expect(subject).to be_truthy
+        context 'when confirmation period is expired' do
+          before do
+            travel_to(User.allow_unconfirmed_access_for.from_now + 1.day)
           end
+
+          it { is_expected.to be(true) }
         end
 
         context 'when user has no confirmation email sent' do
           let(:user) { build(:user, :unconfirmed, confirmation_sent_at: nil) }
 
-          it 'is truthy' do
-            expect(subject).to be_truthy
-          end
+          it { is_expected.to be(true) }
         end
+      end
+
+      context 'when email confirmation setting is set to `hard`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
+  describe '#confirmation_period_valid?' do
+    subject { user.send(:confirmation_period_valid?) }
+
+    let_it_be(:user) { create(:user) }
+
+    context 'when email confirmation setting is set to `off`' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'off')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when email confirmation setting is set to `soft`' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+      end
+
+      context 'when within confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when outside confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today - described_class.confirm_within - 7.days)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when email confirmation setting is set to `hard`' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    describe '#in_confirmation_period?' do
+      it 'is expected to be an alias' do
+        expect(user.method(:in_confirmation_period?).original_name).to eq(:confirmation_period_valid?)
       end
     end
   end
@@ -7433,9 +7687,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'with a defined project namespace_commit_email' do
           it 'returns the defined namespace_commit_email' do
-            project_commit_email = create(:namespace_commit_email,
-                                          user: user,
-                                          namespace: project.project_namespace)
+            project_commit_email = create(
+              :namespace_commit_email,
+              user: user,
+              namespace: project.project_namespace
+            )
 
             expect(emails).to eq(project_commit_email)
           end
@@ -7455,9 +7711,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'with a defined project namespace_commit_email' do
           it 'returns the defined namespace_commit_email' do
-            project_commit_email = create(:namespace_commit_email,
-                                          user: user,
-                                          namespace: project.project_namespace)
+            project_commit_email = create(
+              :namespace_commit_email,
+              user: user,
+              namespace: project.project_namespace
+            )
 
             expect(emails).to eq(project_commit_email)
           end
@@ -7476,9 +7734,11 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'with a defined project namespace_commit_email' do
         it 'returns the defined namespace_commit_email' do
-          project_commit_email = create(:namespace_commit_email,
-                                        user: user,
-                                        namespace: project.project_namespace)
+          project_commit_email = create(
+            :namespace_commit_email,
+            user: user,
+            namespace: project.project_namespace
+          )
 
           expect(emails).to eq(project_commit_email)
         end

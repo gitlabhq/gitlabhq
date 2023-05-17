@@ -2,7 +2,7 @@
 
 module Mutations
   module Todos
-    class Create < ::Mutations::Todos::Base
+    class Create < ::Mutations::BaseMutation
       graphql_name 'TodoCreate'
 
       authorize :create_todo
@@ -17,7 +17,7 @@ module Mutations
             description: 'To-do item created.'
 
       def resolve(target_id:)
-        target = authorized_find!(target_id)
+        target = authorized_find!(id: target_id)
 
         todo = TodoService.new.mark_todo(target, current_user)&.first
         errors = errors_on_object(todo) if todo
@@ -26,12 +26,6 @@ module Mutations
           todo: todo,
           errors: errors
         }
-      end
-
-      private
-
-      def find_object(id)
-        GitlabSchema.find_by_gid(id)
       end
     end
   end

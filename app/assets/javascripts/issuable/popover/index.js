@@ -6,6 +6,7 @@ import MRPopover from './components/mr_popover.vue';
 
 const componentsByReferenceType = {
   issue: IssuePopover,
+  work_item: IssuePopover,
   merge_request: MRPopover,
 };
 

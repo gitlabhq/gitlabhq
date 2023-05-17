@@ -15,11 +15,6 @@ describe('SecuritySummary component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each([
     { message: '' },
     { message: 'foo' },

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Markdown::Attachment do
+RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :importers do
   let(:name) { FFaker::Lorem.word }
   let(:url) { FFaker::Internet.uri('https') }
 
@@ -98,6 +98,62 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment do
 
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
+    end
+  end
+
+  describe '#part_of_project_blob?' do
+    let(:attachment) { described_class.new('test', url) }
+    let(:import_source) { 'nickname/public-test-repo' }
+
+    context 'when url is a part of project blob' do
+      let(:url) { "https://github.com/#{import_source}/blob/main/example.md" }
+
+      it { expect(attachment.part_of_project_blob?(import_source)).to eq true }
+    end
+
+    context 'when url is not a part of project blob' do
+      let(:url) { "https://github.com/#{import_source}/files/9020437/git-cheat-sheet.txt" }
+
+      it { expect(attachment.part_of_project_blob?(import_source)).to eq false }
+    end
+  end
+
+  describe '#doc_belongs_to_project?' do
+    let(:attachment) { described_class.new('test', url) }
+    let(:import_source) { 'nickname/public-test-repo' }
+
+    context 'when url relates to this project' do
+      let(:url) { "https://github.com/#{import_source}/files/9020437/git-cheat-sheet.txt" }
+
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq true }
+    end
+
+    context 'when url is not related to this project' do
+      let(:url) { 'https://github.com/nickname/other-repo/files/9020437/git-cheat-sheet.txt' }
+
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq false }
+    end
+
+    context 'when url is a part of project blob' do
+      let(:url) { "https://github.com/#{import_source}/blob/main/example.md" }
+
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq false }
+    end
+  end
+
+  describe '#media?' do
+    let(:attachment) { described_class.new('test', url) }
+
+    context 'when it is a media link' do
+      let(:url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ef2.jpeg' }
+
+      it { expect(attachment.media?).to eq true }
+    end
+
+    context 'when it is not a media link' do
+      let(:url) { 'https://github.com/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt' }
+
+      it { expect(attachment.media?).to eq false }
     end
   end
 

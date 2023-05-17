@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { PAGINATION_SORT_FIELD_END_EVENT, PAGINATION_SORT_DIRECTION_DESC } from '../constants';
 import { formatMedianValues } from '../utils';
+import { PAGINATION_SORT_FIELD_END_EVENT, PAGINATION_SORT_DIRECTION_DESC } from '../constants';
 import * as types from './mutation_types';
 
 export default {
   [types.INITIALIZE_VSA](
     state,
-    { endpoints, features, createdBefore, createdAfter, pagination = {} },
+    { groupPath, features, createdBefore, createdAfter, pagination = {}, namespace = {} },
   ) {
-    state.endpoints = endpoints;
+    state.groupPath = groupPath;
+    state.namespace = namespace;
     state.createdBefore = createdBefore;
     state.createdAfter = createdAfter;
     state.features = features;

@@ -75,7 +75,6 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :enable-autocomplete="enableAutocomplete"
       supports-quick-actions
-      use-bottom-toolbar
       autofocus
       @input="$emit('input', $event)"
       @keydown.meta.enter="updateIssuable"
@@ -83,6 +82,7 @@ export default {
     />
     <markdown-field
       v-else
+      class="gl-mt-3"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"

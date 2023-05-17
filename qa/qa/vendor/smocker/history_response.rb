@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './event_payload'
 require 'time'
 
 module QA
@@ -21,12 +20,6 @@ module QA
         # Smocker request data
         def request
           payload[:request]
-        end
-
-        # @return [EventPayload] the request body as a webhook event
-        def as_hook_event
-          body = request&.dig(:body)
-          EventPayload.new body if body
         end
 
         # @return [Time] Time request was recieved

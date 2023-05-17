@@ -7,6 +7,18 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
     create(:merge_request, source_project: project, target_project: project, description: '# Description header')
   end
 
+  context 'feature flags' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+
+    it 'pushes content_editor_on_issues feature flag to frontend' do
+      stub_feature_flags(content_editor_on_issues: true)
+
+      visit merge_request_path(merge_request)
+
+      expect(page).to have_pushed_frontend_feature_flags(contentEditorOnIssues: true)
+    end
+  end
+
   context 'when a merge request does not have repository' do
     let(:project) { create(:project, :public, :repository) }
 
@@ -44,25 +56,25 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
       end
 
       it 'renders empty description preview' do
-        find('.gfm-form').fill_in(:merge_request_description, with: '')
+        fill_in(:merge_request_description, with: '')
 
-        page.within('.gfm-form') do
-          click_button('Preview')
+        page.within('.js-vue-markdown-field') do
+          click_button("Preview")
 
-          expect(find('.js-md-preview')).to have_content('Nothing to preview.')
+          expect(find('.js-vue-md-preview')).to have_content('Nothing to preview.')
         end
       end
 
       it 'renders description preview' do
-        find('.gfm-form').fill_in(:merge_request_description, with: ':+1: Nice')
+        fill_in(:merge_request_description, with: ':+1: Nice')
 
-        page.within('.gfm-form') do
-          click_button('Preview')
+        page.within('.js-vue-markdown-field') do
+          click_button("Preview")
 
-          expect(find('.js-md-preview')).to have_css('gl-emoji')
+          expect(find('.js-vue-md-preview')).to have_css('gl-emoji')
         end
 
-        expect(find('.gfm-form')).to have_css('.js-md-preview').and have_button('Write')
+        expect(find('.js-vue-markdown-field')).to have_css('.js-md-preview-button')
         expect(find('#merge_request_description', visible: false)).not_to be_visible
       end
     end
@@ -92,7 +104,7 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
         visit(merge_request_path(merge_request))
       end
 
-      it 'shows diverged commits count' do
+      it 'shows diverged commits count', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408223' do
         expect(page).not_to have_content(/([0-9]+ commits? behind)/)
       end
     end

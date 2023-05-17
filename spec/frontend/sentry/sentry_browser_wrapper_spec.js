@@ -25,7 +25,7 @@ describe('SentryBrowserWrapper', () => {
     let mockCaptureMessage;
     let mockWithScope;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       mockCaptureException = jest.fn();
       mockCaptureMessage = jest.fn();
       mockWithScope = jest.fn();

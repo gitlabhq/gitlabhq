@@ -13,10 +13,6 @@ describe('Code component', () => {
     json = JSON.parse(JSON.stringify(fixture));
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without output', () => {
     beforeEach(() => {
       wrapper = mountComponent(json.cells[0]);

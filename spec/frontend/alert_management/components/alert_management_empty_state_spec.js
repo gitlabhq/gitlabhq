@@ -19,12 +19,6 @@ describe('AlertManagementEmptyState', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const EmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('Empty state', () => {

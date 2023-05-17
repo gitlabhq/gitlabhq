@@ -1,13 +1,13 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Upgrading PostgreSQL for Auto DevOps **(FREE)**
 
-Auto DevOps provides an [in-cluster PostgreSQL database](customize.md#postgresql-database-support)
-for your application.
+When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
+[in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.
 
 The version of the chart used to provision PostgreSQL:
 
@@ -49,12 +49,12 @@ being modified after the database dump is created.
 1. Get the Kubernetes namespace for the environment. It typically looks like `<project-name>-<project-id>-<environment>`.
    In our example, the namespace is called `minimal-ruby-app-4349298-production`.
 
-    ```shell
-    $ kubectl get ns
+   ```shell
+   $ kubectl get ns
 
-    NAME                                                  STATUS   AGE
-    minimal-ruby-app-4349298-production                   Active   7d14h
-    ```
+   NAME                                                  STATUS   AGE
+   minimal-ruby-app-4349298-production                   Active   7d14h
+   ```
 
 1. For ease of use, export the namespace name:
 
@@ -64,20 +64,20 @@ being modified after the database dump is created.
 
 1. Get the deployment name for your application with the following command. In our example, the deployment name is `production`.
 
-    ```shell
-    $ kubectl get deployment --namespace "$APP_NAMESPACE"
-    NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
-    production            2/2     2            2           7d21h
-    production-postgres   1/1     1            1           7d21h
-    ```
+   ```shell
+   $ kubectl get deployment --namespace "$APP_NAMESPACE"
+   NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+   production            2/2     2            2           7d21h
+   production-postgres   1/1     1            1           7d21h
+   ```
 
 1. To prevent the database from being modified, set replicas to 0 for the deployment with the following command.
    We use the deployment name from the previous step (`deployments/<DEPLOYMENT_NAME>`).
 
-    ```shell
-    $ kubectl scale --replicas=0 deployments/production --namespace "$APP_NAMESPACE"
-    deployment.extensions/production scaled
-    ```
+   ```shell
+   $ kubectl scale --replicas=0 deployments/production --namespace "$APP_NAMESPACE"
+   deployment.extensions/production scaled
+   ```
 
 1. You must also set replicas to zero for workers if you have any.
 
@@ -85,26 +85,26 @@ being modified after the database dump is created.
 
 1. Get the service name for PostgreSQL. The name of the service should end with `-postgres`. In our example the service name is `production-postgres`.
 
-    ```shell
-    $ kubectl get svc --namespace "$APP_NAMESPACE"
-    NAME                     TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
-    production-auto-deploy   ClusterIP   10.30.13.90   <none>        5000/TCP   7d14h
-    production-postgres      ClusterIP   10.30.4.57    <none>        5432/TCP   7d14h
-    ```
+   ```shell
+   $ kubectl get svc --namespace "$APP_NAMESPACE"
+   NAME                     TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+   production-auto-deploy   ClusterIP   10.30.13.90   <none>        5000/TCP   7d14h
+   production-postgres      ClusterIP   10.30.4.57    <none>        5432/TCP   7d14h
+   ```
 
 1. Get the pod name for PostgreSQL with the following command. In our example, the pod name is `production-postgres-5db86568d7-qxlxv`.
 
-    ```shell
-    $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=production-postgres
-    NAME                                   READY   STATUS    RESTARTS   AGE
-    production-postgres-5db86568d7-qxlxv   1/1     Running   0          7d14h
-    ```
+   ```shell
+   $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=production-postgres
+   NAME                                   READY   STATUS    RESTARTS   AGE
+   production-postgres-5db86568d7-qxlxv   1/1     Running   0          7d14h
+   ```
 
 1. Connect to the pod with:
 
-    ```shell
-    kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" -- bash
-    ```
+   ```shell
+   kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" -- bash
+   ```
 
 1. Once, connected, create a dump file with the following command.
 
@@ -114,20 +114,20 @@ being modified after the database dump is created.
 
    - When prompted for the database password, the default is `testing-password`.
 
-    ```shell
-    ## Format is:
-    # pg_dump -h SERVICE_NAME -U USERNAME DATABASE_NAME > /tmp/backup.sql
+     ```shell
+     ## Format is:
+     # pg_dump -h SERVICE_NAME -U USERNAME DATABASE_NAME > /tmp/backup.sql
 
-    pg_dump -h production-postgres -U user production > /tmp/backup.sql
-    ```
+     pg_dump -h production-postgres -U user production > /tmp/backup.sql
+     ```
 
 1. Once the backup dump is complete, exit the Kubernetes exec process with `Control-D` or `exit`.
 
 1. Download the dump file with the following command:
 
-    ```shell
-    kubectl cp --namespace "$APP_NAMESPACE" production-postgres-5db86568d7-qxlxv:/tmp/backup.sql backup.sql
-    ```
+   ```shell
+   kubectl cp --namespace "$APP_NAMESPACE" production-postgres-5db86568d7-qxlxv:/tmp/backup.sql backup.sql
+   ```
 
 ## Retain persistent volumes
 
@@ -184,8 +184,7 @@ You can also
 1. Set `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value. This flag is a
    safeguard to prevent accidental deletion of databases.
    <!-- DO NOT REPLACE when upgrading GitLab's supported version. This is NOT related to GitLab's PostgreSQL version support, but the one deployed by Auto DevOps. -->
-1. If you have a `POSTGRES_VERSION` set, make sure it is set to `9.6.16` *or
-higher*. This is the
+1. If you have a `POSTGRES_VERSION` set, make sure it is set to `9.6.16` *or later*. This is the
    minimum PostgreSQL version supported by Auto DevOps. See also the list of
    [tags available](https://hub.docker.com/r/bitnami/postgresql/tags).
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
@@ -205,11 +204,11 @@ higher*. This is the
 1. Get the pod name for the new PostgreSQL, in our example, the pod name is
    `production-postgresql-0`:
 
-    ```shell
-    $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=postgresql
-    NAME                      READY   STATUS    RESTARTS   AGE
-    production-postgresql-0   1/1     Running   0          19m
-    ````
+   ```shell
+   $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=postgresql
+   NAME                      READY   STATUS    RESTARTS   AGE
+   production-postgresql-0   1/1     Running   0          19m
+   ````
 
 1. Copy the dump file from the backup steps to the pod:
 

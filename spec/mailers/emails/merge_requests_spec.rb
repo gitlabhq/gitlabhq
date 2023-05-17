@@ -13,12 +13,15 @@ RSpec.describe Emails::MergeRequests do
   let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:merge_request) do
-    create(:merge_request, source_project: project,
-                           target_project: project,
-                           author: current_user,
-                           assignees: [assignee],
-                           reviewers: [reviewer],
-                           description: 'Awesome description')
+    create(
+      :merge_request,
+      source_project: project,
+      target_project: project,
+      author: current_user,
+      assignees: [assignee],
+      reviewers: [reviewer],
+      description: 'Awesome description'
+    )
   end
 
   let(:recipient) { assignee }

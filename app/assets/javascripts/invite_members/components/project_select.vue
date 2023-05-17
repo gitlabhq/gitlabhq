@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { getProjects } from '~/rest_api';
-import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
+import { SEARCH_DELAY, GROUP_FILTERS, PROJECT_SELECT_LABEL_ID } from '../constants';
 
 // We can have GlCollapsibleListbox dropdown panel with full
 // width once we implement
@@ -96,6 +96,7 @@ export default {
     errorFetchingProjects: s__(
       'ProjectSelect|There was an error fetching the projects. Please try again.',
     ),
+    projectSelectLabelId: PROJECT_SELECT_LABEL_ID,
   },
   defaultFetchOptions: {
     exclude_internal: true,
@@ -110,6 +111,7 @@ export default {
     :items="projects"
     :searching="isFetching"
     :toggle-text="selectedProjectName"
+    :toggle-aria-labelled-by="$options.projectSelectLabelId"
     :search-placeholder="$options.i18n.searchPlaceholder"
     :no-results-text="$options.i18n.emptySearchResult"
     data-testid="project-select-dropdown"

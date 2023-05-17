@@ -136,7 +136,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(secure_file_with_metadata.name)
-        expect(json_response['expires_at']).to eq('2022-04-26T19:20:40.000Z')
+        expect(json_response['expires_at']).to eq('2023-04-26T19:20:39.000Z')
         expect(json_response['metadata'].keys).to match_array(%w[id issuer subject expires_at])
         expect(json_response['file_extension']).to eq('cer')
       end

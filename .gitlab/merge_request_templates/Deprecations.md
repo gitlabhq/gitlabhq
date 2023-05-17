@@ -106,4 +106,4 @@ If you have trouble running the Rake task, check the [troubleshooting steps](htt
 
 /label ~"release post" ~"release post item" ~"Technical Writing" ~"release post item::deprecation"
 /label ~"type::maintenance"
-/label ~"maintenance::refactor"
+/label ~"maintenance::removal"

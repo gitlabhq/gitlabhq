@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -28,17 +28,21 @@ To invite a group to a project, you must be at least one of the following:
 
 In addition:
 
-- The group you're inviting must have a more restrictive
- [visibility level](../../public_access.md#project-and-group-visibility)
-  than the project. For example, you can invite:
-  - A private group to a public project.
-  - An internal group to a public project.
-  - A private group to an internal project.
+- You must be a member of the group or the subgroup being invited.
 
-- The group or subgroup must be in the project's [namespace](../../namespace/index.md).
+- The [visibility level](../../public_access.md#project-and-group-visibility) of the group you're inviting
+must be at least as restrictive as that of the project. For example, you can invite:
+  - A _private_ group to a _private_ project
+  - A _private_ group to an _internal_ project.
+  - A _private_ group to a _public_ project.
+  - An _internal_ group to an _internal_ project.
+  - An _internal_ group to a _public_ project.
+  - A _public_ group to a _public_ project.
+
+- If the project's root ancestor group [does not allow the project to be shared outside the hierarchy](../../group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy), the invited group or subgroup must be in the project's [namespace](../../namespace/index.md).
   For example, a project in the namespace `group/subgroup01/project`:
   - Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.
-  - Cannot be shared with `group`.
+  - Cannot be shared with `group_abc`.
 
 ## Share a project with a group
 
@@ -70,16 +74,20 @@ are given access to the project. In addition:
 
 ## Maximum role
 
+When you invite a group to a project, the maximum role is the highest level of access the invited group members are allowed to have in the project.
+
 When multiple groups contain the same members, and the groups
 have access to the same project, the group members are
-given the most restrictive role for the project.
-
-This most restrictive role is called the *maximum role*, or **Max role**.
+given the highest access level of the two for the project.
 
 The member's **Max role** is the more restrictive of:
 
 - The role the user is assigned for the group.
 - The role you chose when you invited the group to the project.
+
+NOTE:
+The Max role does not elevate the privileges of users.
+For example, if a group member has the role of Developer, and the group is invited to a project with a Max role of Maintainer, the member's role is not elevated to Maintainer.
 
 ### View the member's Max role
 

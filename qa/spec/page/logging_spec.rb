@@ -62,6 +62,20 @@ RSpec.describe QA::Support::Page::Logging do
       .to output(/finding :element with args {:class=>"active"}/).to_stdout_from_any_process
   end
 
+  it 'logs a warning if find_element is slow' do
+    starting = Time.now
+    ending = starting + 1.4
+    expected_msg = /Potentially Slow Code 'find_element element' took 1.4s/
+
+    # verify logs a warning message to indicate potentially slow code lookups
+    expect { subject.find_element(:element, starting_time: starting, ending_time: ending) }
+      .to output(expected_msg).to_stdout_from_any_process
+
+    # verify it doesn't log a warning message if within allowed limits
+    expect { subject.find_element(:element, starting_time: starting, ending_time: ending, log_slow_threshold: 1.5) }
+      .not_to output(expected_msg).to_stdout_from_any_process
+  end
+
   it 'logs click_element' do
     expect { subject.click_element(:element) }
       .to output(/clicking :element/).to_stdout_from_any_process
@@ -127,8 +141,6 @@ RSpec.describe QA::Support::Page::Logging do
   it 'logs finished_loading?' do
     expect { subject.finished_loading? }
       .to output(/waiting for loading to complete\.\.\./).to_stdout_from_any_process
-    expect { subject.finished_loading? }
-      .to output(/loading complete after .* seconds$/).to_stdout_from_any_process
   end
 
   it 'logs within_element' do

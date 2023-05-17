@@ -1,9 +1,17 @@
 import { GlAlert, GlFormInput, GlForm, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
+import issueSetTitleMutation from '~/boards/graphql/issue_set_title.mutation.graphql';
+import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
+import { updateIssueTitleResponse, updateEpicTitleResponse } from '../../mock_data';
+
+Vue.use(VueApollo);
 
 const TEST_TITLE = 'New item title';
 const TEST_ISSUE_A = {
@@ -21,26 +29,45 @@ const TEST_ISSUE_B = {
   webUrl: 'webUrl',
 };
 
-describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
+describe('BoardSidebarTitle', () => {
   let wrapper;
   let store;
+  let storeDispatch;
+  let mockApollo;
+
+  const issueSetTitleMutationHandlerSuccess = jest.fn().mockResolvedValue(updateIssueTitleResponse);
+  const updateEpicTitleMutationHandlerSuccess = jest
+    .fn()
+    .mockResolvedValue(updateEpicTitleResponse);
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
     store = null;
-    wrapper = null;
   });
 
-  const createWrapper = (item = TEST_ISSUE_A) => {
+  const createWrapper = ({ item = TEST_ISSUE_A, provide = {} } = {}) => {
     store = createStore();
     store.state.boardItems = { [item.id]: { ...item } };
     store.dispatch('setActiveId', { id: item.id });
+    mockApollo = createMockApollo([
+      [issueSetTitleMutation, issueSetTitleMutationHandlerSuccess],
+      [updateEpicTitleMutation, updateEpicTitleMutationHandlerSuccess],
+    ]);
+    storeDispatch = jest.spyOn(store, 'dispatch');
 
-    wrapper = shallowMount(BoardSidebarTitle, {
+    wrapper = shallowMountExtended(BoardSidebarTitle, {
       store,
+      apolloProvider: mockApollo,
       provide: {
         canUpdate: true,
+        fullPath: 'gitlab-org',
+        issuableType: 'issue',
+        isEpicBoard: false,
+        isApolloBoard: false,
+        ...provide,
+      },
+      propsData: {
+        activeItem: item,
       },
       stubs: {
         'board-editable-item': BoardEditableItem,
@@ -53,9 +80,9 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
   const findFormInput = () => wrapper.findComponent(GlFormInput);
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findEditableItem = () => wrapper.findComponent(BoardEditableItem);
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findTitle = () => wrapper.find('[data-testid="item-title"]');
-  const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findTitle = () => wrapper.findByTestId('item-title');
+  const findCollapsed = () => wrapper.findByTestId('collapsed-content');
 
   it('renders title and reference', () => {
     createWrapper();
@@ -80,24 +107,28 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        store.state.boardItems[TEST_ISSUE_A.id].title = TEST_TITLE;
-      });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
     });
 
-    it('collapses sidebar and renders new title', () => {
+    it('collapses sidebar and renders new title', async () => {
+      await waitForPromises();
       expect(findCollapsed().isVisible()).toBe(true);
-      expect(findTitle().text()).toContain(TEST_TITLE);
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveItemTitle).toHaveBeenCalledWith({
-        title: TEST_TITLE,
+      expect(storeDispatch).toHaveBeenCalledWith('setActiveItemTitle', {
         projectPath: 'h/b',
+        title: 'New item title',
       });
+    });
+
+    it('renders correct title', async () => {
+      createWrapper({ item: { ...TEST_ISSUE_A, title: TEST_TITLE } });
+      await waitForPromises();
+
+      expect(findTitle().text()).toContain(TEST_TITLE);
     });
   });
 
@@ -105,14 +136,13 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {});
       findFormInput().vm.$emit('input', '');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
+      expect(storeDispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -142,8 +172,8 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       createWrapper();
     });
 
-    it('sets title, expands item and shows alert', async () => {
-      expect(wrapper.vm.title).toBe(TEST_TITLE);
+    it('sets title, expands item and shows alert', () => {
+      expect(findFormInput().attributes('value')).toBe(TEST_TITLE);
       expect(findCollapsed().isVisible()).toBe(false);
       expect(findAlert().exists()).toBe(true);
     });
@@ -151,18 +181,15 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
 
   describe('when cancel button is clicked', () => {
     beforeEach(async () => {
-      createWrapper(TEST_ISSUE_B);
+      createWrapper({ item: TEST_ISSUE_B });
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        store.state.boardItems[TEST_ISSUE_B.id].title = TEST_TITLE;
-      });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findCancelButton().vm.$emit('click');
       await nextTick();
     });
 
     it('collapses sidebar and render former title', () => {
-      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
+      expect(storeDispatch).not.toHaveBeenCalled();
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toBe(TEST_ISSUE_B.title);
     });
@@ -170,12 +197,8 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
 
   describe('when the mutation fails', () => {
     beforeEach(async () => {
-      createWrapper(TEST_ISSUE_B);
+      createWrapper({ item: TEST_ISSUE_B });
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        throw new Error(['failed mutation']);
-      });
-      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findFormInput().vm.$emit('input', 'Invalid title');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
@@ -184,7 +207,38 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     it('collapses sidebar and renders former item title', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_ISSUE_B.title);
-      expect(wrapper.vm.setError).toHaveBeenCalled();
+      expect(storeDispatch).toHaveBeenCalledWith(
+        'setError',
+        expect.objectContaining({ message: 'An error occurred when updating the title' }),
+      );
     });
+  });
+
+  describe('Apollo boards', () => {
+    it.each`
+      issuableType | isEpicBoard | queryHandler                             | notCalledHandler
+      ${'issue'}   | ${false}    | ${issueSetTitleMutationHandlerSuccess}   | ${updateEpicTitleMutationHandlerSuccess}
+      ${'epic'}    | ${true}     | ${updateEpicTitleMutationHandlerSuccess} | ${issueSetTitleMutationHandlerSuccess}
+    `(
+      'updates $issuableType title',
+      async ({ issuableType, isEpicBoard, queryHandler, notCalledHandler }) => {
+        createWrapper({
+          provide: {
+            issuableType,
+            isEpicBoard,
+            isApolloBoard: true,
+          },
+        });
+
+        await nextTick();
+
+        findFormInput().vm.$emit('input', TEST_TITLE);
+        findForm().vm.$emit('submit', { preventDefault: () => {} });
+        await nextTick();
+
+        expect(queryHandler).toHaveBeenCalled();
+        expect(notCalledHandler).not.toHaveBeenCalled();
+      },
+    );
   });
 });

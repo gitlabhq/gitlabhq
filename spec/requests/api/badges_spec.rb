@@ -72,9 +72,9 @@ RSpec.describe API::Badges, feature_category: :projects do
 
       context 'when authenticated as a non-member' do
         %i[maintainer developer access_requester stranger].each do |type|
-          let(:badge) { source.badges.first }
-
           context "as a #{type}" do
+            let(:badge) { source.badges.first }
+
             it 'returns 200', :quarantine do
               user = public_send(type)
 

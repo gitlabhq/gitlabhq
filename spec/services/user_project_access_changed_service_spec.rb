@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserProjectAccessChangedService, feature_category: :authentication_and_authorization do
+RSpec.describe UserProjectAccessChangedService, feature_category: :system_access do
   describe '#execute' do
     it 'permits high-priority operation' do
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)

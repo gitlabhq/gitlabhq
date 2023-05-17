@@ -23,9 +23,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     set_index_vars
   end
 
-  def show
-    @created = get_created_session if Feature.disabled?('hash_oauth_secrets')
-  end
+  def show; end
 
   def create
     @application = Applications::CreateService.new(current_user, application_params).execute(request)
@@ -33,17 +31,23 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
 
-      if Feature.enabled?('hash_oauth_secrets')
-        @created = true
-        render :show
-      else
-        set_created_session
-
-        redirect_to oauth_application_url(@application)
-      end
+      @created = true
+      render :show
     else
       set_index_vars
       render :index
+    end
+  end
+
+  def renew
+    set_application
+
+    @application.renew_secret
+
+    if @application.save
+      render json: { secret: @application.plaintext_secret }
+    else
+      render json: { errors: @application.errors }, status: :unprocessable_entity
     end
   end
 

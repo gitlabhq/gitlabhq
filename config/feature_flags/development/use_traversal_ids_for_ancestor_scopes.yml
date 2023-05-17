@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67652
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340159
 milestone: '14.3'
 type: development
-group: group::workspace
-default_enabled: false
+group: group::tenant scale
+default_enabled: true

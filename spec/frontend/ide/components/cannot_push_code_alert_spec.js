@@ -10,10 +10,6 @@ const TEST_BUTTON_TEXT = 'Fork text';
 describe('ide/components/cannot_push_code_alert', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createComponent = (props = {}) => {
     wrapper = shallowMount(CannotPushCodeAlert, {
       propsData: {
@@ -49,7 +45,7 @@ describe('ide/components/cannot_push_code_alert', () => {
       createComponent();
     });
 
-    it('shows alert with message', () => {
+    it('shows an alert with message', () => {
       expect(findAlert().props()).toMatchObject({ dismissible: false });
       expect(findAlert().text()).toBe(TEST_MESSAGE);
     });

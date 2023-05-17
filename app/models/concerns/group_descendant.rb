@@ -60,10 +60,7 @@ module GroupDescendant
     end
 
     if parent && parent != hierarchy_top
-      expand_hierarchy_for_child(parent,
-                                 { parent => hierarchy },
-                                 hierarchy_top,
-                                 preloaded)
+      expand_hierarchy_for_child(parent, { parent => hierarchy }, hierarchy_top, preloaded)
     else
       hierarchy
     end

@@ -4,7 +4,7 @@ import Vue from 'vue';
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import initDeprecatedNotes from '~/init_deprecated_notes';
 import { initDiffStatsDropdown } from '~/init_diff_stats_dropdown';
 import axios from '~/lib/utils/axios_utils';
@@ -18,9 +18,7 @@ import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 import { initReportAbuse } from '~/projects/report_abuse';
 
-const hasPerfBar = document.querySelector('.with-performance-bar');
-const performanceHeight = hasPerfBar ? 35 : 0;
-initDiffStatsDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
+initDiffStatsDropdown();
 new ZenMode();
 new ShortcutsNavigation();
 

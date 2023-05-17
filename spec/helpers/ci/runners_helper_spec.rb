@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnersHelper do
+RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -35,6 +35,14 @@ RSpec.describe Ci::RunnersHelper do
       runner = create(:ci_runner, created_at: 4.months.ago)
       expect(helper.runner_status_icon(runner)).to include("is stale")
       expect(helper.runner_status_icon(runner)).to include("never contacted")
+    end
+  end
+
+  describe '#runner_short_name' do
+    it 'shows runner short name' do
+      runner = build_stubbed(:ci_runner, id: non_existing_record_id)
+
+      expect(helper.runner_short_name(runner)).to eq("##{runner.id} (#{runner.short_sha})")
     end
   end
 
@@ -77,7 +85,7 @@ RSpec.describe Ci::RunnersHelper do
   describe '#admin_runners_data_attributes' do
     let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:project_runner) { create(:ci_runner, :project ) }
+    let_it_be(:project_runner) { create(:ci_runner, :project) }
 
     before do
       allow(helper).to receive(:current_user).and_return(admin)
@@ -88,9 +96,7 @@ RSpec.describe Ci::RunnersHelper do
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238,
-        empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
-        empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+        stale_timeout_secs: 7889238
       )
     end
   end
@@ -98,6 +104,8 @@ RSpec.describe Ci::RunnersHelper do
   describe '#group_shared_runners_settings_data' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent, shared_runners_enabled: false) }
+    let_it_be(:group_with_project) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, group: group_with_project) }
 
     let(:runner_constants) do
       {
@@ -110,6 +118,8 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns group data for top level group' do
       result = {
         group_id: parent.id,
+        group_name: parent.name,
+        group_is_empty: 'false',
         shared_runners_setting: Namespace::SR_ENABLED,
         parent_shared_runners_setting: nil
       }.merge(runner_constants)
@@ -120,11 +130,25 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns group data for child group' do
       result = {
         group_id: group.id,
+        group_name: group.name,
+        group_is_empty: 'true',
         shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
         parent_shared_runners_setting: Namespace::SR_ENABLED
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group)).to eq result
+    end
+
+    it 'returns group data for child group with project' do
+      result = {
+        group_id: group_with_project.id,
+        group_name: group_with_project.name,
+        group_is_empty: 'false',
+        shared_runners_setting: Namespace::SR_ENABLED,
+        parent_shared_runners_setting: Namespace::SR_ENABLED
+      }.merge(runner_constants)
+
+      expect(helper.group_shared_runners_settings_data(group_with_project)).to eq result
     end
   end
 
@@ -142,9 +166,7 @@ RSpec.describe Ci::RunnersHelper do
           group_full_path: group.full_path,
           runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
           online_contact_timeout_secs: 7200,
-          stale_timeout_secs: 7889238,
-          empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
-          empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+          stale_timeout_secs: 7889238
         )
       end
     end

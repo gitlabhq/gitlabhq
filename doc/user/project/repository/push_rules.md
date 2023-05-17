@@ -13,7 +13,7 @@ can and can't be pushed to your repository. While GitLab offers
 
 - Evaluating the contents of a commit.
 - Confirming commit messages match expected formats.
-- Enforcing branch name rules.
+- Enforcing [branch name rules](branches/index.md#name-your-branch).
 - Evaluating the details of files.
 - Preventing Git tag removal.
 

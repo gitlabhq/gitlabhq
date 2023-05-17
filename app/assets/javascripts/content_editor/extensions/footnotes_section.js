@@ -9,6 +9,14 @@ export default Node.create({
 
   isolating: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   parseHTML() {
     return [
       { tag: 'section.footnotes', skip: true },
@@ -17,6 +25,12 @@ export default Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['ol', mergeAttributes(HTMLAttributes, { class: 'footnotes gl-font-sm' }), 0];
+    return [
+      'ol',
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+        class: 'footnotes gl-font-sm',
+      }),
+      0,
+    ];
   },
 });

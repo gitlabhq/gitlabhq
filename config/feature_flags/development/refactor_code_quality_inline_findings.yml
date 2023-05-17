@@ -1,8 +1,0 @@
----
-name: refactor_code_quality_inline_findings
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88576
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364198
-milestone: '15.1'
-type: development
-group: group::static analysis
-default_enabled: true

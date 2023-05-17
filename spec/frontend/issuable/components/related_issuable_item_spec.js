@@ -1,14 +1,18 @@
 import { GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { stubComponent } from 'helpers/stub_component';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import IssueAssignees from '~/issuable/components/issue_assignees.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import { mockWorkItemCommentNote } from 'jest/work_items/mock_data';
 import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -18,9 +22,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('RelatedIssuableItem', () => {
   let wrapper;
+  let showModalSpy;
 
   const defaultProps = {
     idKey: 1,
+    iid: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
     pathIdSeparator: '#',
     path: `${TEST_HOST}/path`,
@@ -40,22 +46,30 @@ describe('RelatedIssuableItem', () => {
   const findRemoveButton = () => wrapper.findComponent(GlButton);
   const findTitleLink = () => wrapper.findComponent(GlLink);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   function mountComponent({ data = {}, props = {} } = {}) {
+    showModalSpy = jest.fn();
     wrapper = shallowMount(RelatedIssuableItem, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        reportAbusePath: '/report/abuse/path',
+      },
+      stubs: {
+        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
+          methods: {
+            show: showModalSpy,
+          },
+        }),
       },
       data() {
         return data;
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('contains issuable-info-container class when canReorder is false', () => {
     mountComponent({ props: { canReorder: false } });
@@ -181,7 +195,7 @@ describe('RelatedIssuableItem', () => {
     });
 
     it('renders disabled button when removeDisabled', () => {
-      expect(findRemoveButton().attributes('disabled')).toBe('true');
+      expect(findRemoveButton().attributes('disabled')).toBeDefined();
     });
 
     it('triggers onRemoveRequest when clicked', () => {
@@ -208,12 +222,15 @@ describe('RelatedIssuableItem', () => {
   });
 
   describe('work item modal', () => {
-    const workItem = 'gid://gitlab/WorkItem/1';
+    const workItemId = 'gid://gitlab/WorkItem/1';
 
     it('renders', () => {
       mountComponent();
 
-      expect(findWorkItemDetailModal().props('workItemId')).toBe(workItem);
+      expect(findWorkItemDetailModal().props()).toMatchObject({
+        workItemId,
+        workItemIid: '1',
+      });
     });
 
     describe('when work item is issue and the related issue title is clicked', () => {
@@ -240,7 +257,7 @@ describe('RelatedIssuableItem', () => {
 
       it('updates the url params with the work item id', () => {
         expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?work_item_id=1`,
+          url: `${TEST_HOST}/?work_item_iid=1`,
           replace: true,
         });
       });
@@ -250,9 +267,9 @@ describe('RelatedIssuableItem', () => {
       it('emits "relatedIssueRemoveRequest" event', () => {
         mountComponent();
 
-        findWorkItemDetailModal().vm.$emit('workItemDeleted', workItem);
+        findWorkItemDetailModal().vm.$emit('workItemDeleted', workItemId);
 
-        expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItem]]);
+        expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItemId]]);
       });
     });
 
@@ -267,6 +284,32 @@ describe('RelatedIssuableItem', () => {
           replace: true,
         });
       });
+    });
+  });
+
+  describe('abuse category selector', () => {
+    beforeEach(() => {
+      mountComponent({ props: { workItemType: 'TASK' } });
+      findTitleLink().vm.$emit('click', { preventDefault: () => {} });
+    });
+
+    it('should not be visible by default', () => {
+      expect(showModalSpy).toHaveBeenCalled();
+      expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
+
+    it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
+      findWorkItemDetailModal().vm.$emit('openReportAbuse', mockWorkItemCommentNote);
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(true);
+
+      findAbuseCategorySelector().vm.$emit('close-drawer');
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(false);
     });
   });
 });

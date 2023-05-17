@@ -84,5 +84,16 @@ describe('locale', () => {
         expect(output).toBe('contains duplicated 15%');
       });
     });
+
+    describe('ignores special replacements in the input', () => {
+      it.each(['$$', '$&', '$`', `$'`])('replacement "%s" is ignored', (replacement) => {
+        const input = 'My odd %{replacement} is preserved';
+
+        const parameters = { replacement };
+
+        const output = sprintf(input, parameters, false);
+        expect(output).toBe(`My odd ${replacement} is preserved`);
+      });
+    });
   });
 });

@@ -6,8 +6,9 @@ import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.grap
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import { findHierarchyWidgetChildren } from '~/work_items/utils';
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export const config = {
   typeDefs,
@@ -81,6 +82,14 @@ export const config = {
               });
             },
           },
+          userPermissions: {
+            read(permission = {}) {
+              return {
+                ...permission,
+                setWorkItemMetadata: false,
+              };
+            },
+          },
         },
       },
       MemberInterfaceConnection: {
@@ -126,6 +135,33 @@ export const config = {
                 };
               },
             },
+            Group: {
+              fields: {
+                projects: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+                descendantGroups: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+              },
+            },
+            ProjectConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
+            GroupConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
+            Board: {
+              fields: {
+                epics: {
+                  keyArgs: ['boardId'],
+                },
+              },
+            },
             BoardEpicConnection: {
               merge(existing = { nodes: [] }, incoming, { args }) {
                 if (!args.after) {
@@ -146,7 +182,7 @@ export const config = {
 export const resolvers = {
   Mutation: {
     addHierarchyChild: (_, { id, workItem }, { cache }) => {
-      const queryArgs = { query: getWorkItemLinksQuery, variables: { id } };
+      const queryArgs = { query: workItemQuery, variables: { id } };
       const sourceData = cache.readQuery(queryArgs);
 
       const data = produce(sourceData, (draftState) => {
@@ -156,7 +192,7 @@ export const resolvers = {
       cache.writeQuery({ ...queryArgs, data });
     },
     removeHierarchyChild: (_, { id, workItem }, { cache }) => {
-      const queryArgs = { query: getWorkItemLinksQuery, variables: { id } };
+      const queryArgs = { query: workItemQuery, variables: { id } };
       const sourceData = cache.readQuery(queryArgs);
 
       const data = produce(sourceData, (draftState) => {
@@ -173,6 +209,29 @@ export const resolvers = {
         draftData.issueState = { issueType, isDirty };
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
+    },
+    setActiveBoardItem(_, { boardItem }, { cache }) {
+      cache.writeQuery({
+        query: activeBoardItemQuery,
+        data: { activeBoardItem: boardItem },
+      });
+      return boardItem;
+    },
+    clientToggleListCollapsed(_, { list = {}, collapsed = false }) {
+      return {
+        list: {
+          ...list,
+          collapsed,
+        },
+      };
+    },
+    clientToggleEpicListCollapsed(_, { list = {}, collapsed = false }) {
+      return {
+        list: {
+          ...list,
+          collapsed,
+        },
+      };
     },
   },
 };

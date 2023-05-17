@@ -226,12 +226,6 @@ export const OVERVIEW_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml';
  */
 export const OUT_OF_THE_BOX_DASHBOARDS_PATH_PREFIX = 'config/prometheus/';
 
-export const OPERATORS = {
-  greaterThan: '>',
-  equalTo: '==',
-  lessThan: '<',
-};
-
 /**
  * Dashboard yml files support custom user-defined variables that
  * are rendered as input elements in the monitoring dashboard.
@@ -261,19 +255,6 @@ export const VARIABLE_TYPES = {
  * before passing the data to the backend.
  */
 export const VARIABLE_PREFIX = 'var-';
-
-/**
- * All of the actions inside each panel dropdown can be accessed
- * via keyboard shortcuts than can be activated via mouse hovers
- * and or focus via tabs.
- */
-
-export const keyboardShortcutKeys = {
-  EXPAND: 'e',
-  SHOW_ALERT: 'a',
-  DOWNLOAD_CSV: 'd',
-  CHART_COPY: 'c',
-};
 
 export const thresholdModeTypes = {
   ABSOLUTE: 'absolute',

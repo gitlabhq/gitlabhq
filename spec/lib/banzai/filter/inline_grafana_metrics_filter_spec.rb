@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::InlineGrafanaMetricsFilter do
+RSpec.describe Banzai::Filter::InlineGrafanaMetricsFilter, feature_category: :metrics do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project) }
@@ -27,6 +27,10 @@ RSpec.describe Banzai::Filter::InlineGrafanaMetricsFilter do
       start: "2019-10-06T21:35:39Z",
       end: "2019-10-07T21:35:39Z"
     )
+  end
+
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   around do |example|

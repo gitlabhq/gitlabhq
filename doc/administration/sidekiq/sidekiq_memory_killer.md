@@ -56,9 +56,7 @@ Sidekiq memory limits are controlled using environment variables.
   If jobs do not finish during that time, all currently running jobs are interrupted with a `SIGTERM` signal
   sent to the Sidekiq process.
 
-- `GITLAB_MEMORY_WATCHDOG_ENABLED`: enabled by default. Set the `GITLAB_MEMORY_WATCHDOG_ENABLED` to false, to use legacy
-  Daemon Sidekiq Memory Killer implementation used prior GitLab 15.9. Support for setting `GITLAB_MEMORY_WATCHDOG_ENABLED`
-  will be removed in GitLab 16.0.
+- `GITLAB_MEMORY_WATCHDOG_ENABLED`: enabled by default. Set the `GITLAB_MEMORY_WATCHDOG_ENABLED` to false, to disable Watchdog from running.
 
 ### Monitor worker restarts
 

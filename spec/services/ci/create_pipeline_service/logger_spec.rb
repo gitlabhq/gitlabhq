@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
-               :yaml_processor_feature_flag_corectness,
-               feature_category: :continuous_integration do
+  :yaml_processor_feature_flag_corectness,
+  feature_category: :continuous_integration do
   describe 'pipeline logger' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }
@@ -142,7 +142,7 @@ RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
 
     describe 'pipeline includes count' do
       before do
-        stub_const('Gitlab::Ci::Config::External::Context::MAX_INCLUDES', 2)
+        stub_const('Gitlab::Ci::Config::External::Context::TEMP_MAX_INCLUDES', 2)
       end
 
       context 'when the includes count exceeds the maximum' do

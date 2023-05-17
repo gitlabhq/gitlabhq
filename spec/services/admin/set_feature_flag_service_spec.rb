@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::SetFeatureFlagService do
+RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }

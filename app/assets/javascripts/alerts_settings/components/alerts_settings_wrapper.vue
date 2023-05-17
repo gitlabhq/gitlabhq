@@ -2,7 +2,7 @@
 import { GlButton, GlAlert, GlTabs, GlTab } from '@gitlab/ui';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { typeSet, i18n, tabIndices } from '../constants';

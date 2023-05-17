@@ -41,7 +41,6 @@ describe('ServiceDeskRoot', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    wrapper.destroy();
     if (spy) {
       spy.mockRestore();
     }
@@ -79,7 +78,7 @@ describe('ServiceDeskRoot', () => {
       const alertBodyLink = alertEl.findComponent(GlLink);
       expect(alertBodyLink.exists()).toBe(true);
       expect(alertBodyLink.attributes('href')).toBe(
-        '/help/user/project/service_desk.html#using-a-custom-email-address',
+        '/help/user/project/service_desk.html#use-a-custom-email-address',
       );
       expect(alertBodyLink.text()).toBe('How do I create a custom email address?');
     });
@@ -148,7 +147,7 @@ describe('ServiceDeskRoot', () => {
           await waitForPromises();
         });
 
-        it('sends a request to update template', async () => {
+        it('sends a request to update template', () => {
           expect(spy).toHaveBeenCalledWith(provideData.endpoint, {
             issue_template_key: 'Bug',
             outgoing_name: 'GitLab Support Bot',

@@ -21,6 +21,7 @@ export default {
       data-testid="footnote-label"
       contenteditable="false"
       class="gl-display-inline-flex gl-mr-2"
+      dir="auto"
       >{{ node.attrs.label }}:</span
     >
     <node-view-content />

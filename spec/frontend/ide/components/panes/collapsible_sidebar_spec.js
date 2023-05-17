@@ -35,11 +35,6 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with a tab', () => {
     let fakeView;
     let extensionTabs;

@@ -11,10 +11,6 @@ function factory(propsData = {}) {
 }
 
 describe('~/vue_merge_request_widget/components/widget/action_buttons.vue', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('tertiaryButtons', () => {
     it('renders buttons', () => {
       factory({

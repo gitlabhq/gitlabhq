@@ -102,12 +102,12 @@ export default {
     },
     emailSuffixHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'configuring-a-custom-email-address-suffix',
+        anchor: 'configure-a-custom-email-address-suffix',
       });
     },
     customEmailAddressHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'using-a-custom-email-address',
+        anchor: 'use-a-custom-email-address',
       });
     },
   },
@@ -155,7 +155,7 @@ export default {
     <div v-if="isEnabled" class="row mt-3">
       <div class="col-md-9 mb-0">
         <gl-form-group
-          :label="__('Email address to use for Support Desk')"
+          :label="__('Email address to use for Service Desk')"
           label-for="incoming-email"
           data-testid="incoming-email-label"
         >

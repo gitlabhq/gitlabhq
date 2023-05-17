@@ -1,5 +1,5 @@
 - page_title _('Emails')
-- @content_class = "limit-container-width" unless fluid_layout
+- @force_desktop_expanded_sidebar = true
 
 .row.gl-mt-3.js-search-settings-section
   .col-lg-4.profile-settings-sidebar
@@ -56,7 +56,7 @@
                   %li= s_('Profiles|Public email')
                 - if email.email == current_user.notification_email_or_default
                   %li= s_('Profiles|Notification email')
-            .gl-display-flex.gl-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-wrap-reverse.gl-gap-3
+            .gl-display-flex.gl-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-reverse.gl-gap-3
               - unless email.confirmed?
                 - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
                 = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-default'

@@ -34,10 +34,6 @@ describe('Actions button component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButton = () => wrapper.findComponent(GlButton);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findDropdown = () => wrapper.findComponent(GlDropdown);

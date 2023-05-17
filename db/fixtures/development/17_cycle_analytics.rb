@@ -18,7 +18,8 @@ require 'active_support/testing/time_helpers'
 #
 # VSA_SEED_PROJECT_ID=10 FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu
 
-class Gitlab::Seeder::CycleAnalytics
+# rubocop:disable Rails/Output
+class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChildren
   include ActiveSupport::Testing::TimeHelpers
 
   attr_reader :project, :issues, :merge_requests, :developers
@@ -26,18 +27,21 @@ class Gitlab::Seeder::CycleAnalytics
   FLAG = 'SEED_VSA'
   PERF_TEST = 'VSA_PERF_TEST'
 
-  ISSUE_STAGE_MAX_DURATION_IN_HOURS = 72
-  PLAN_STAGE_MAX_DURATION_IN_HOURS = 48
-  CODE_STAGE_MAX_DURATION_IN_HOURS = 72
-  TEST_STAGE_MAX_DURATION_IN_HOURS = 5
-  REVIEW_STAGE_MAX_DURATION_IN_HOURS = 72
-  DEPLOYMENT_MAX_DURATION_IN_HOURS = 48
+  MAX_DURATIONS = { # in hours
+    issue: 72,
+    plan: 48,
+    code: 72,
+    test: 5,
+    review: 72,
+    deployment: 48,
+    lead_time: 32
+  }.freeze
 
   def self.seeder_based_on_env(project)
     if ENV[FLAG]
-      self.new(project: project)
+      new(project: project)
     elsif ENV[PERF_TEST]
-      self.new(project: project, perf: true)
+      new(project: project, perf: true)
     end
   end
 
@@ -54,8 +58,10 @@ class Gitlab::Seeder::CycleAnalytics
       puts
       puts 'WARNING'
       puts '======='
-      puts "Seeding #{self.class} is not possible because the given project (#{project.full_path}) doesn't have a repository."
-      puts 'Try specifying a project with working repository or omit the VSA_SEED_PROJECT_ID parameter so the seed script will automatically create one.'
+      puts "Seeding #{self.class} is not possible because the given project " \
+           "(#{project.full_path}) doesn't have a repository."
+      puts 'Try specifying a project with working repository or omit the VSA_SEED_PROJECT_ID parameter ' \
+           'so the seed script will automatically create one.'
       puts
 
       return
@@ -64,6 +70,7 @@ class Gitlab::Seeder::CycleAnalytics
     create_developers!
     create_issues!
 
+    seed_lead_time!
     seed_issue_stage!
     seed_plan_stage!
     seed_code_stage!
@@ -79,7 +86,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   def seed_issue_stage!
     issues.each do |issue|
-      time = within_end_time(issue.created_at + rand(ISSUE_STAGE_MAX_DURATION_IN_HOURS).hours)
+      time = within_end_time(issue.created_at + rand(MAX_DURATIONS[:issue]).hours)
 
       if issue.id.even?
         issue.metrics.update!(first_associated_with_milestone_at: time)
@@ -93,7 +100,7 @@ class Gitlab::Seeder::CycleAnalytics
     issues.each do |issue|
       plan_stage_start = issue.metrics.first_associated_with_milestone_at || issue.metrics.first_added_to_board_at
 
-      first_mentioned_in_commit_at = within_end_time(plan_stage_start + rand(PLAN_STAGE_MAX_DURATION_IN_HOURS).hours)
+      first_mentioned_in_commit_at = within_end_time(plan_stage_start + rand(MAX_DURATIONS[:plan]).hours)
       issue.metrics.update!(first_mentioned_in_commit_at: first_mentioned_in_commit_at)
     end
   end
@@ -107,7 +114,7 @@ class Gitlab::Seeder::CycleAnalytics
         source_branch: "#{issue.iid}-feature-branch",
         target_branch: 'master',
         author: developers.sample,
-        created_at: within_end_time(issue.metrics.first_mentioned_in_commit_at + rand(CODE_STAGE_MAX_DURATION_IN_HOURS).hours)
+        created_at: within_end_time(issue.metrics.first_mentioned_in_commit_at + rand(MAX_DURATIONS[:code]).hours)
       )
 
       @merge_requests << merge_request
@@ -118,16 +125,17 @@ class Gitlab::Seeder::CycleAnalytics
 
   def seed_test_stage!
     merge_requests.each do |merge_request|
-      pipeline = FactoryBot.create(:ci_pipeline, :success, project: project, partition_id: Ci::Pipeline.current_partition_value)
+      pipeline = FactoryBot.create(:ci_pipeline, :success, project: project,
+        partition_id: Ci::Pipeline.current_partition_value)
       build = FactoryBot.create(:ci_build, pipeline: pipeline, project: project, user: developers.sample)
 
       # Required because seeds run in a transaction and these are now
       # created in an `after_commit` hook.
-      merge_request.ensure_metrics
+      merge_request.ensure_metrics!
 
       merge_request.metrics.update!(
         latest_build_started_at: merge_request.created_at,
-        latest_build_finished_at: within_end_time(merge_request.created_at + TEST_STAGE_MAX_DURATION_IN_HOURS.hours),
+        latest_build_finished_at: within_end_time(merge_request.created_at + MAX_DURATIONS[:test].hours),
         pipeline_id: build.commit_id
       )
     end
@@ -135,13 +143,25 @@ class Gitlab::Seeder::CycleAnalytics
 
   def seed_review_stage!
     merge_requests.each do |merge_request|
-      merge_request.metrics.update!(merged_at: within_end_time(merge_request.created_at + REVIEW_STAGE_MAX_DURATION_IN_HOURS.hours))
+      merge_request.metrics.update!(
+        merged_at: within_end_time(merge_request.created_at + MAX_DURATIONS[:review].hours)
+      )
     end
   end
 
   def seed_staging_stage!
     merge_requests.each do |merge_request|
-      merge_request.metrics.update!(first_deployed_to_production_at: within_end_time(merge_request.metrics.merged_at + DEPLOYMENT_MAX_DURATION_IN_HOURS.hours))
+      first_deployed_to_production_at = merge_request.metrics.merged_at + MAX_DURATIONS[:deployment].hours
+      merge_request.metrics.update!(
+        first_deployed_to_production_at: within_end_time(first_deployed_to_production_at)
+      )
+    end
+  end
+
+  def seed_lead_time!
+    issues.each do |issue|
+      created_at = issue.created_at - MAX_DURATIONS[:lead_time].hours
+      issue.update!(created_at: created_at, closed_at: Time.now)
     end
   end
 
@@ -224,3 +244,4 @@ Gitlab::Seeder.quiet do
     puts "Skipped. Use the `#{Gitlab::Seeder::CycleAnalytics::FLAG}` environment variable to enable."
   end
 end
+# rubocop:enable Rails/Output

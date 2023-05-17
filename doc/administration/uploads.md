@@ -8,6 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
+NOTE:
+Attachments added to comments or descriptions are deleted **only** when the parent project or group
+is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
+request, epic) where they were uploaded is deleted.
+
 ## Using local storage
 
 This is the default configuration. To change the location where the uploads are
@@ -60,7 +65,7 @@ This configuration relies on valid AWS credentials to be configured already.
 ### Object Storage Settings
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format.
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
@@ -74,7 +79,7 @@ For source installations the following settings are nested under `uploads:` and 
 
 #### Connection settings
 
-See [the available connection settings for different providers](object_storage.md#connection-settings).
+See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
 **In Omnibus installations:**
 
@@ -114,7 +119,7 @@ _The uploads are stored by default in
 `/home/git/gitlab/public/uploads`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines, making sure to use the [appropriate ones for your provider](object_storage.md#connection-settings):
+   lines, making sure to use the [appropriate ones for your provider](object_storage.md#configure-the-connection-settings):
 
    ```yaml
    uploads:

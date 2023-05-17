@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Performance/StringInclude:
-  Details: grace period
-  Exclude:
-    - 'lib/gitlab/github_import/importer/repository_importer.rb'
-    - 'lib/gitlab/legacy_github_import/importer.rb'
-    - 'lib/gitlab/usage_data.rb'
-    - 'rubocop/cop/gitlab/json.rb'

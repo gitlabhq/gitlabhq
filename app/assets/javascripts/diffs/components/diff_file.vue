@@ -5,7 +5,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -209,7 +209,11 @@ export default {
 
     if (this.hasDiff) {
       this.postRender();
-    } else if (this.viewDiffsFileByFile && !this.isCollapsed) {
+    } else if (
+      this.viewDiffsFileByFile &&
+      !this.isCollapsed &&
+      !this.glFeatures.singleFileFileByFile
+    ) {
       this.requestDiff();
     }
 
@@ -246,11 +250,11 @@ export default {
     async postRender() {
       const eventsForThisFile = [];
 
-      if (this.isFirstFile) {
+      if (this.isFirstFile || this.viewDiffsFileByFile) {
         eventsForThisFile.push(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
       }
 
-      if (this.isLastFile) {
+      if (this.isLastFile || this.viewDiffsFileByFile) {
         eventsForThisFile.push(EVT_PERF_MARK_DIFF_FILES_END);
       }
 

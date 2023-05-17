@@ -45,7 +45,10 @@ RSpec.describe 'Getting Metrics Dashboard', feature_category: :metrics do
   end
 
   context 'for user with developer access' do
+    let(:remove_monitor_metrics) { false }
+
     before do
+      stub_feature_flags(remove_monitor_metrics: remove_monitor_metrics)
       project.add_developer(current_user)
       post_graphql(query, current_user: current_user)
     end
@@ -80,6 +83,18 @@ RSpec.describe 'Getting Metrics Dashboard', feature_category: :metrics do
           dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
 
           expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: should be an array of panel_groups objects"])
+        end
+      end
+
+      context 'metrics dashboard feature is unavailable' do
+        let(:remove_monitor_metrics) { true }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'returns nil' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+          expect(dashboard).to be_nil
         end
       end
     end

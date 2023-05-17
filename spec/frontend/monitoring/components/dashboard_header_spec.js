@@ -1,7 +1,7 @@
 import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -9,12 +9,7 @@ import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
-import {
-  environmentData,
-  dashboardGitResponse,
-  selfMonitoringDashboardGitResponse,
-  dashboardHeaderProps,
-} from '../mock_data';
+import { environmentData, dashboardGitResponse, dashboardHeaderProps } from '../mock_data';
 import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
 
 const mockProjectPath = 'https://path/to/project';
@@ -59,10 +54,6 @@ describe('Dashboard header', () => {
     store = createStore();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('dashboards dropdown', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
@@ -83,6 +74,7 @@ describe('Dashboard header', () => {
         display_name: 'A display name',
       });
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `${mockProjectPath}/-/metrics/.gitlab%2Fdashboards%2Fdashboard%26copy.yml`,
       );
@@ -94,6 +86,7 @@ describe('Dashboard header', () => {
         display_name: 'dashboard&copy.yml',
       });
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(`${mockProjectPath}/-/metrics/dashboard%26copy.yml`);
     });
   });
@@ -271,14 +264,8 @@ describe('Dashboard header', () => {
   });
 
   describe('actions menu', () => {
-    const ootbDashboards = [
-      dashboardGitResponse[0].path,
-      selfMonitoringDashboardGitResponse[0].path,
-    ];
-    const customDashboards = [
-      dashboardGitResponse[1].path,
-      selfMonitoringDashboardGitResponse[1].path,
-    ];
+    const ootbDashboards = [dashboardGitResponse[0].path];
+    const customDashboards = [dashboardGitResponse[1].path];
 
     it('is rendered', () => {
       createShallowWrapper();

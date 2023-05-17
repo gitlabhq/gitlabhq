@@ -51,9 +51,7 @@ module Projects
       end
 
       def download_links_for(oids)
-        response = Gitlab::HTTP.post(remote_uri,
-                                     body: request_body(oids),
-                                     headers: headers)
+        response = Gitlab::HTTP.post(remote_uri, body: request_body(oids), headers: headers)
 
         raise DownloadLinksRequestEntityTooLargeError if response.request_entity_too_large?
         raise DownloadLinksError, response.message unless response.success?
@@ -78,10 +76,12 @@ module Projects
 
           raise DownloadLinkNotFound unless link
 
-          link_list << LfsDownloadObject.new(oid: entry['oid'],
-                                             size: entry['size'],
-                                             headers: headers,
-                                             link: add_credentials(link))
+          link_list << LfsDownloadObject.new(
+            oid: entry['oid'],
+            size: entry['size'],
+            headers: headers,
+            link: add_credentials(link)
+          )
         rescue DownloadLinkNotFound, Addressable::URI::InvalidURIError
           log_error("Link for Lfs Object with oid #{entry['oid']} not found or invalid.")
         end

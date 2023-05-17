@@ -1,12 +1,12 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pivotal Tracker **(FREE)**
 
-This integration adds commit messages as comments to Pivotal Tracker stories.
+The Pivotal Tracker integration adds commit messages as comments to Pivotal Tracker stories.
 
 Once enabled, commit messages are checked for square brackets containing a hash mark followed by
 the story ID (for example, `[#555]`). Every story ID found gets the commit comment added to it.

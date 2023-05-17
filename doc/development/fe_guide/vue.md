@@ -16,11 +16,23 @@ What is described in the following sections can be found in these examples:
 - [Security products](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
 - [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
+## When to add Vue application
+
+Sometimes, HAML page is enough to satisfy requirements. This statement is correct primarily for the static pages or pages that have very little logic. How do we know it's worth adding a Vue application to the page? The answer is "when we need to maintain application state and synchronize the rendered page with it".
+
+To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain, we send the request and switch the toggle. However, if we add one more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to DOM event and reacting with modifying DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
+
+### What are some flags signaling that you might need Vue application?
+
+- when you need to define complex conditionals based on multiple factors and update them on user interaction;
+- when you have to maintain any form of application state and share it between tags/elements;
+- when you expect complex logic to be added in the future - it's easier to start with basic Vue application than having to rewrite JS/HAML to Vue on the next step.
+
 ## Vue architecture
 
-All new features built with Vue.js must follow a [Flux architecture](https://facebook.github.io/flux/).
+All new features built with Vue.js must follow a [Flux architecture](https://facebookarchive.github.io/flux/).
 The main goal we are trying to achieve is to have only one data flow, and only one data entry.
-To achieve this goal we use [Vuex](#vuex).
+To achieve this goal we use [Vuex](#vuex) or [Apollo Client](graphql.md#libraries)
 
 You can also read about this architecture in Vue documentation about
 [state management](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
@@ -76,7 +88,13 @@ component, is that you avoid creating a fixture or an HTML element in the unit t
 
 `initSimpleApp` is a helper function that streamlines the process of mounting a component in Vue.js. It accepts two arguments: a selector string representing the mount point in the HTML, and a Vue component.
 
-To use `initSimpleApp`, include the HTML element in the page with the appropriate selector and add a data-view-model attribute containing a JSON object. Then, import the desired Vue component and pass it along with the selector to `initSimpleApp`. This mounts the component at the specified location.
+To use `initSimpleApp`:
+
+1. Include an HTML element in the page with an ID or unique class.
+1. Add a data-view-model attribute containing a JSON object.
+1. Import the desired Vue component, and pass it along with a valid CSS selector string
+   that selects the HTML element to `initSimpleApp`. This string mounts the component
+   at the specified location.
 
 `initSimpleApp` automatically retrieves the content of the data-view-model attribute as a JSON object and passes it as props to the mounted Vue component. This can be used to pre-populate the component with data.
 
@@ -115,7 +133,7 @@ export default {
 ```javascript
 //index.js
 import MyComponent from './my_component.vue'
-import initSimpleApp from '~/helpers/init_simple_app_helper'
+import { initSimpleApp } from '~/helpers/init_simple_app_helper'
 
 initSimpleApp('#js-my-element', MyComponent)
 ```
@@ -138,6 +156,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       provide: {
@@ -198,6 +217,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {
@@ -252,6 +272,7 @@ export const initUserForm = () => {
 
   return new Vue({
     el,
+    name: 'UserFormRoot',
     render(h) {
       return h(UserForm, {
         props: {
@@ -305,6 +326,7 @@ initializing our Vue instance, and the data should be provided as `props` to the
 ```javascript
 return new Vue({
   el: '.js-vue-app',
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {
@@ -381,6 +403,87 @@ You can read more about components in Vue.js site, [Component System](https://v2
 
 Check this [page](vuex.md) for more details.
 
+### Vue Router
+
+To add [Vue Router](https://router.vuejs.org/) to a page:
+
+1. Add a catch-all route to the Rails route file using a wildcard named `*vueroute`:
+
+   ```ruby
+   # example from ee/config/routes/project.rb
+
+   resources :iteration_cadences, path: 'cadences(/*vueroute)', action: :index
+   ```
+
+   The above example serves the `index` page from `iteration_cadences` controller to any route
+   matching the start of the `path`, for example `groupname/projectname/-/cadences/123/456/`.
+1. Pass the base route (everything before `*vueroute`) to the frontend to use as the `base` parameter to initialize Vue Router:
+
+   ```haml
+   .js-my-app{ data: { base_path: project_iteration_cadences_path(project) } }
+   ```
+
+1. Initialize the router:
+
+   ```javascript
+   Vue.use(VueRouter);
+
+   export function createRouter(basePath) {
+     return new VueRouter({
+       routes: createRoutes(),
+       mode: 'history',
+       base: basePath,
+     });
+   }
+   ```
+
+1. Add a fallback for unrecognised routes with `path: '*'`. Either:
+   - Add a redirect to the end of your routes array:
+
+     ```javascript
+     const routes = [
+       {
+         path: '/',
+         name: 'list-page',
+         component: ListPage,
+       },
+       {
+         path: '*',
+         redirect: '/',
+       },
+     ];
+     ```
+
+   - Add a fallback component to the end of your routes array:
+
+     ```javascript
+     const routes = [
+       {
+         path: '/',
+         name: 'list-page',
+         component: ListPage,
+       },
+       {
+         path: '*',
+         component: NotFound,
+       },
+     ];
+     ```
+
+1. Optional. To also allow using the path helper for child routes, add `controller` and `action`
+   parameters to use the parent controller.
+
+   ```ruby
+   resources :iteration_cadences, path: 'cadences(/*vueroute)', action: :index do
+     resources :iterations, only: [:index, :new, :edit, :show], constraints: { id: /\d+/ }, controller: :iteration_cadences, action: :index
+   end
+   ```
+
+   This means routes like `/cadences/123/iterations/456/edit` can be validated on the backend,
+   for example to check group or project membership.
+   It also means we can use the `_path` helper, which means we can load the page in feature specs
+   without manually building the `*vueroute` part of the path..
+
 ### Mixing Vue and jQuery
 
 - Mixing Vue and jQuery is not recommended.
@@ -442,6 +545,22 @@ Composition API allows you to place the logic in the `<script>` section of the c
   }
 </script>
 ```
+
+### `v-bind` limitations
+
+Avoid using `v-bind="$attrs"` unless absolutely necessary. You might need this when
+developing a native control wrapper. (This is a good candidate for a `gitlab-ui` component.)
+In any other cases, always prefer using `props` and explicit data flow.
+
+Using `v-bind="$attrs"` leads to:
+
+1. A loss in component's contract. The `props` were designed specifically
+   to address this problem.
+1. High maintenance cost for each component in the tree. `v-bind="$attrs"` is specifically
+   hard to debug because you must scan the whole hierarchy of components to understand
+   the data flow.
+1. Problems during migration to Vue 3. `$attrs` in Vue 3 include event listeners which
+   could cause unexpected side-effects after Vue 3 migration is completed.
 
 ### Aim to have one API style per component
 
@@ -608,8 +727,7 @@ describe('~/todos/app.vue', () => {
   });
 
   afterEach(() => {
-    // IMPORTANT: Clean up the component instance and axios mock adapter
-    wrapper.destroy();
+    // IMPORTANT: Clean up the axios mock adapter
     mock.restore();
   });
 

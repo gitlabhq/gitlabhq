@@ -47,6 +47,7 @@ module RequireEmailVerification
   def override_devise_lockable?
     Feature.enabled?(:require_email_verification, self) &&
       !two_factor_enabled? &&
+      identities.none? &&
       Feature.disabled?(:skip_require_email_verification, self, type: :ops)
   end
   strong_memoize_attr :override_devise_lockable?

@@ -10,6 +10,7 @@ FactoryBot.define do
     confirmed_at { Time.now }
     confirmation_token { nil }
     can_create_group { true }
+    color_scheme_id { 1 }
 
     trait :admin do
       admin { true }
@@ -59,12 +60,20 @@ FactoryBot.define do
       user_type { :project_bot }
     end
 
+    trait :service_account do
+      user_type { :service_account }
+    end
+
     trait :migration_bot do
       user_type { :migration_bot }
     end
 
     trait :security_bot do
       user_type { :security_bot }
+    end
+
+    trait :llm_bot do
+      user_type { :llm_bot }
     end
 
     trait :external do
@@ -108,14 +117,6 @@ FactoryBot.define do
         user.otp_secret = User.generate_otp_secret(32)
         user.otp_grace_period_started_at = Time.now
         user.generate_otp_backup_codes!
-      end
-    end
-
-    trait :two_factor_via_u2f do
-      transient { registrations_count { 5 } }
-
-      after(:create) do |user, evaluator|
-        create_list(:u2f_registration, evaluator.registrations_count, user: user)
       end
     end
 

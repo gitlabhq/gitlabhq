@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupMilestonesResolver do
+RSpec.describe Resolvers::GroupMilestonesResolver, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
   describe '#resolve' do
     let_it_be(:current_user) { create(:user) }
 
-    def resolve_group_milestones(args = {}, context = { current_user: current_user })
-      resolve(described_class, obj: group, args: args, ctx: context, arg_style: :internal)
+    def resolve_group_milestones(args: {}, context: { current_user: current_user }, arg_style: :internal)
+      resolve(described_class, obj: group, args: args, ctx: context, arg_style: arg_style)
     end
 
     let_it_be(:now) { Time.now }
@@ -45,7 +45,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
     end
 
     context 'with parameters' do
-      it 'calls MilestonesFinder with correct parameters' do
+      it 'timeframe argument' do
         start_date = now
         end_date = start_date + 1.hour
 
@@ -53,18 +53,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
           .with(args(group_ids: group.id, state: 'closed', start_date: start_date, end_date: end_date))
           .and_call_original
 
-        resolve_group_milestones(start_date: start_date, end_date: end_date, state: 'closed')
-      end
-
-      it 'understands the timeframe argument' do
-        start_date = now
-        end_date = start_date + 1.hour
-
-        expect(MilestonesFinder).to receive(:new)
-          .with(args(group_ids: group.id, state: 'closed', start_date: start_date, end_date: end_date))
-          .and_call_original
-
-        resolve_group_milestones(timeframe: { start: start_date, end: end_date }, state: 'closed')
+        resolve_group_milestones(args: { timeframe: { start: start_date, end: end_date }, state: 'closed' })
       end
     end
 
@@ -76,7 +65,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
           .with(args(ids: [milestone.id.to_s], group_ids: group.id, state: 'all'))
           .and_call_original
 
-        resolve_group_milestones(ids: [milestone.to_global_id])
+        resolve_group_milestones(args: { ids: [milestone.to_global_id] })
       end
     end
 
@@ -86,12 +75,12 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
           .with(args(group_ids: group.id, state: 'all', sort: :due_date_desc))
           .and_call_original
 
-        resolve_group_milestones(sort: :due_date_desc)
+        resolve_group_milestones(args: { sort: :due_date_desc })
       end
 
       %i[expired_last_due_date_asc expired_last_due_date_desc].each do |sort_by|
         it "uses offset-pagination when sorting by #{sort_by}" do
-          resolved = resolve_group_milestones(sort: sort_by)
+          resolved = resolve_group_milestones(args: { sort: sort_by })
 
           expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
         end
@@ -99,28 +88,15 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
     end
 
     context 'by timeframe' do
-      context 'when start_date and end_date are present' do
-        context 'when start date is after end_date' do
-          it 'generates an error' do
-            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, "startDate is after endDate") do
-              resolve_group_milestones(start_date: now, end_date: now - 2.days)
+      context 'when timeframe start and end are present' do
+        context 'when start is after end' do
+          it 'raises error' do
+            expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError, 'start must be before end') do
+              resolve_group_milestones(
+                args: { timeframe: { start: now.to_date, end: now.to_date - 2.days } },
+                arg_style: :internal_prepared
+              )
             end
-          end
-        end
-      end
-
-      context 'when only start_date is present' do
-        it 'generates an error' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_group_milestones(start_date: now)
-          end
-        end
-      end
-
-      context 'when only end_date is present' do
-        it 'generates an error' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_group_milestones(end_date: now)
           end
         end
       end
@@ -143,7 +119,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         create(:milestone, group: inaccessible_group)
         create(:milestone, project: inaccessible_project)
 
-        expect(resolve_group_milestones(args)).to match_array([milestone1, milestone2, milestone3])
+        expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3])
       end
     end
 
@@ -169,7 +145,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         let(:args) { {} }
 
         it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args)).to match_array([milestone1])
+          expect(resolve_group_milestones(args: args)).to match_array([milestone1])
         end
       end
 
@@ -177,7 +153,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         let(:args) { { include_descendants: true } }
 
         it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args)).to match_array([milestone1, milestone2, milestone3])
+          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3])
         end
       end
 
@@ -185,7 +161,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         let(:args) { { include_ancestors: true } }
 
         it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args)).to match_array([milestone1, milestone6])
+          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone6])
         end
       end
 
@@ -193,7 +169,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         let(:args) { { include_descendants: true, include_ancestors: true } }
 
         it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args)).to match_array([milestone1, milestone2, milestone3, milestone6])
+          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3, milestone6])
         end
       end
     end

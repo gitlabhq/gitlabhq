@@ -25,13 +25,7 @@ module AuthenticatesWithTwoFactor
     session[:user_password_hash] = Digest::SHA256.hexdigest(user.encrypted_password)
 
     add_gon_variables
-    push_frontend_feature_flag(:webauthn)
-
-    if Feature.enabled?(:webauthn)
-      setup_webauthn_authentication(user)
-    else
-      setup_u2f_authentication(user)
-    end
+    setup_webauthn_authentication(user)
 
     render 'devise/sessions/two_factor'
   end
@@ -54,11 +48,7 @@ module AuthenticatesWithTwoFactor
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
     elsif user_params[:device_response].present? && session[:otp_user_id]
-      if user.two_factor_webauthn_enabled?
-        authenticate_with_two_factor_via_webauthn(user)
-      else
-        authenticate_with_two_factor_via_u2f(user)
-      end
+      authenticate_with_two_factor_via_webauthn(user)
     elsif user && user.valid_password?(user_params[:password])
       prompt_for_two_factor(user)
     end
@@ -96,15 +86,6 @@ module AuthenticatesWithTwoFactor
     end
   end
 
-  # Authenticate using the response from a U2F (universal 2nd factor) device
-  def authenticate_with_two_factor_via_u2f(user)
-    if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
-      handle_two_factor_success(user)
-    else
-      handle_two_factor_failure(user, 'U2F', _('Authentication via U2F device failed.'))
-    end
-  end
-
   def authenticate_with_two_factor_via_webauthn(user)
     if Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
       handle_two_factor_success(user)
@@ -113,31 +94,17 @@ module AuthenticatesWithTwoFactor
     end
   end
 
-  # Setup in preparation of communication with a U2F (universal 2nd factor) device
-  # Actual communication is performed using a Javascript API
   # rubocop: disable CodeReuse/ActiveRecord
-  def setup_u2f_authentication(user)
-    key_handles = user.u2f_registrations.pluck(:key_handle)
-    u2f = U2F::U2F.new(u2f_app_id)
-
-    if key_handles.present?
-      sign_requests = u2f.authentication_requests(key_handles)
-      session[:challenge] ||= u2f.challenge
-      gon.push(u2f: { challenge: session[:challenge], app_id: u2f_app_id,
-                      sign_requests: sign_requests })
-    end
-  end
-
   def setup_webauthn_authentication(user)
     if user.webauthn_registrations.present?
 
       webauthn_registration_ids = user.webauthn_registrations.pluck(:credential_xid)
 
-      get_options = WebAuthn::Credential.options_for_get(allow: webauthn_registration_ids,
-                                                         user_verification: 'discouraged',
-                                                         extensions: { appid: WebAuthn.configuration.origin })
-
-      session[:credentialRequestOptions] = get_options
+      get_options = WebAuthn::Credential.options_for_get(
+        allow: webauthn_registration_ids,
+        user_verification: 'discouraged',
+        extensions: { appid: WebAuthn.configuration.origin }
+      )
       session[:challenge] = get_options.challenge
       gon.push(webauthn: { options: Gitlab::Json.dump(get_options) })
     end

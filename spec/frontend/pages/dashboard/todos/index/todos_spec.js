@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlTodos from 'test_fixtures/todos/todos.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
@@ -18,7 +19,7 @@ describe('Todos', () => {
   let mock;
 
   beforeEach(() => {
-    loadHTMLFixture('todos/todos.html');
+    setHTMLFixture(htmlTodos);
     mock = new MockAdapter(axios);
 
     return new Todos();

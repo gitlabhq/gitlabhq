@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average do
     subject(:average_duration_in_seconds) { average.seconds }
 
     context 'when no results' do
-      let(:query) { Issue.none }
+      let(:query) { Issue.joins(:metrics).none }
 
       it { is_expected.to eq(nil) }
     end
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average do
     subject(:average_duration_in_days) { average.days }
 
     context 'when no results' do
-      let(:query) { Issue.none }
+      let(:query) { Issue.joins(:metrics).none }
 
       it { is_expected.to eq(nil) }
     end

@@ -1,5 +1,8 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
+
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
@@ -9,7 +12,7 @@ import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
 
-export default () => {
+export default ({ editorAiActions = [] } = {}) => {
   requestIdleCallback(
     () => {
       renderGFM(document.getElementById('diff-notes-app'));
@@ -22,6 +25,8 @@ export default () => {
     return;
   }
 
+  Vue.use(VueApollo);
+
   const notesFilterProps = getNotesFilterData(el);
   const notesDataset = el.dataset;
 
@@ -33,8 +38,12 @@ export default () => {
       NotesApp,
     },
     store,
+    apolloProvider,
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
+      newCommentTemplatePath: notesDataset.newCommentTemplatePath,
+      editorAiActions,
+      mrFilter: true,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::BuildService do
+RSpec.describe Notes::BuildService, feature_category: :team_planning do
   include AdminModeHelper
 
   let_it_be(:project) { create(:project, :repository) }
@@ -67,10 +67,12 @@ RSpec.describe Notes::BuildService do
 
       context 'personal snippet note' do
         def reply(note, user = other_user)
-          described_class.new(nil,
-                              user,
-                              note: 'Test',
-                              in_reply_to_discussion_id: note.discussion_id).execute
+          described_class.new(
+            nil,
+            user,
+            note: 'Test',
+            in_reply_to_discussion_id: note.discussion_id
+          ).execute
         end
 
         let_it_be(:snippet_author) { noteable_author }

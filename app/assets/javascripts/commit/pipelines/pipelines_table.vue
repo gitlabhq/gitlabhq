@@ -234,6 +234,7 @@ export default {
     <template v-else-if="shouldRenderEmptyState">
       <gl-empty-state
         :svg-path="emptyStateSvgPath"
+        :svg-height="150"
         :title="$options.i18n.emptyStateTitle"
         data-testid="pipeline-empty-state"
       >

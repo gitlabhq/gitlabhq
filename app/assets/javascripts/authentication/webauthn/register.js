@@ -2,6 +2,7 @@ import { __ } from '~/locale';
 import WebAuthnError from './error';
 import WebAuthnFlow from './flow';
 import { supported, isHTTPS, convertCreateParams, convertCreateResponse } from './util';
+import { WEBAUTHN_REGISTER } from './constants';
 
 // Register WebAuthn devices for users to authenticate with.
 //
@@ -40,7 +41,7 @@ export default class WebAuthnRegister {
         publicKey: this.webauthnOptions,
       })
       .then((cred) => this.renderRegistered(JSON.stringify(convertCreateResponse(cred))))
-      .catch((err) => this.flow.renderError(new WebAuthnError(err, 'register')));
+      .catch((err) => this.flow.renderError(new WebAuthnError(err, WEBAUTHN_REGISTER)));
   }
 
   renderSetup() {

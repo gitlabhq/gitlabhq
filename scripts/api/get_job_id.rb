@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'gitlab'
 require 'optparse'
-require_relative 'default_options'
+require_relative 'base'
 
-class JobFinder
+class JobFinder < Base
   DEFAULT_OPTIONS = API::DEFAULT_OPTIONS.merge(
     pipeline_query: {}.freeze,
     job_query: {}.freeze
@@ -13,22 +12,12 @@ class JobFinder
   MAX_PIPELINES_TO_ITERATE = 20
 
   def initialize(options)
-    @project = options.delete(:project)
+    super
     @pipeline_query = options.delete(:pipeline_query) || DEFAULT_OPTIONS[:pipeline_query]
     @job_query = options.delete(:job_query) || DEFAULT_OPTIONS[:job_query]
     @pipeline_id = options.delete(:pipeline_id)
     @job_name = options.delete(:job_name)
     @artifact_path = options.delete(:artifact_path)
-
-    # Force the token to be a string so that if api_token is nil, it's set to '', allowing unauthenticated requests (for forks).
-    api_token = options.delete(:api_token).to_s
-
-    warn "No API token given." if api_token.empty?
-
-    @client = Gitlab.client(
-      endpoint: options.delete(:endpoint) || DEFAULT_OPTIONS[:endpoint],
-      private_token: api_token
-    )
   end
 
   def execute
@@ -37,7 +26,7 @@ class JobFinder
 
   private
 
-  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name, :artifact_path, :client
+  attr_reader :pipeline_query, :job_query, :pipeline_id, :job_name, :artifact_path
 
   def find_job_with_artifact
     return if artifact_path.nil?

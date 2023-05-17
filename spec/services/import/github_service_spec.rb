@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GithubService do
+RSpec.describe Import::GithubService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
@@ -152,7 +152,8 @@ RSpec.describe Import::GithubService do
           {
             single_endpoint_issue_events_import: true,
             single_endpoint_notes_import: 'false',
-            attachments_import: false
+            attachments_import: false,
+            collaborators_import: true
           }
         end
 
@@ -291,7 +292,7 @@ RSpec.describe Import::GithubService do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: 'This namespace has already been taken. Choose a different one.'
+      message: 'You are not allowed to import projects in this namespace.'
     }
   end
 end

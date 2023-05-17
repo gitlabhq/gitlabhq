@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::PruneOldAnnotationsWorker do
+RSpec.describe Metrics::Dashboard::PruneOldAnnotationsWorker, feature_category: :metrics do
   let_it_be(:now) { DateTime.parse('2020-06-02T00:12:00Z') }
   let_it_be(:two_weeks_old_annotation) { create(:metrics_dashboard_annotation, starting_at: now.advance(weeks: -2)) }
   let_it_be(:one_day_old_annotation) { create(:metrics_dashboard_annotation, starting_at: now.advance(days: -1)) }

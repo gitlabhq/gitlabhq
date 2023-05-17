@@ -195,7 +195,7 @@ module API
         #
         # Discover user by ssh key, user id or username
         #
-        get '/discover', feature_category: :authentication_and_authorization do
+        get '/discover', feature_category: :system_access do
           present actor.user, with: Entities::UserSafe
         end
 
@@ -208,7 +208,7 @@ module API
           }
         end
 
-        post '/two_factor_recovery_codes', feature_category: :authentication_and_authorization do
+        post '/two_factor_recovery_codes', feature_category: :system_access do
           status 200
 
           actor.update_last_used_at!
@@ -237,7 +237,7 @@ module API
           { success: true, recovery_codes: codes }
         end
 
-        post '/personal_access_token', feature_category: :authentication_and_authorization do
+        post '/personal_access_token', feature_category: :system_access do
           status 200
 
           actor.update_last_used_at!
@@ -308,7 +308,7 @@ module API
         # decided to pursue a different approach, so it's currently not used.
         # We might revive the PAM module though as it provides better user
         # flow.
-        post '/two_factor_config', feature_category: :authentication_and_authorization do
+        post '/two_factor_config', feature_category: :system_access do
           status 200
 
           break { success: false } unless Feature.enabled?(:two_factor_for_cli)
@@ -330,13 +330,13 @@ module API
           end
         end
 
-        post '/two_factor_push_otp_check', feature_category: :authentication_and_authorization do
+        post '/two_factor_push_otp_check', feature_category: :system_access do
           status 200
 
           two_factor_push_otp_check
         end
 
-        post '/two_factor_manual_otp_check', feature_category: :authentication_and_authorization do
+        post '/two_factor_manual_otp_check', feature_category: :system_access do
           status 200
 
           two_factor_manual_otp_check

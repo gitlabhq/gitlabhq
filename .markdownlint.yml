@@ -52,6 +52,7 @@ proper-names:
     "Geo",
     "Git LFS",
     "git-annex",
+    "git-credential-oauth",
     "git-sizer",
     "Git",
     "Gitaly",

@@ -20,7 +20,6 @@ Layout/LineContinuationLeadingSpace:
     - 'ee/app/services/system_notes/epics_service.rb'
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
-    - 'ee/lib/slack/block_kit/app_home_opened.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/features/epic_boards/epic_boards_sidebar_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/seat_count_alert_spec.rb'

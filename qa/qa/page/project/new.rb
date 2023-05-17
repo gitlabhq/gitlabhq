@@ -48,11 +48,9 @@ module QA
         end
 
         def choose_namespace(namespace)
-          retry_on_exception do
-            click_element :select_namespace_dropdown
-            fill_element :select_namespace_dropdown_search_field, namespace
-            click_button namespace
-          end
+          click_element :select_namespace_dropdown
+          fill_element :select_namespace_dropdown_search_field, namespace
+          within_element(:select_namespace_dropdown) { click_button namespace }
         end
 
         def click_import_project
@@ -89,11 +87,15 @@ module QA
         end
 
         def click_github_link
-          click_link 'GitHub'
+          retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
+            click_link 'GitHub'
+          end
         end
 
         def click_repo_by_url_link
-          click_button 'Repository by URL'
+          retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
+            click_button 'Repository by URL'
+          end
         end
 
         def disable_initialize_with_readme

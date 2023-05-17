@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Branches::ValidateNewService do
+RSpec.describe Branches::ValidateNewService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
 
   subject(:service) { described_class.new(project) }

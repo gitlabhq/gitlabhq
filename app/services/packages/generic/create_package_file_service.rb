@@ -47,7 +47,11 @@ module Packages
       end
 
       def target_file_is_duplicate?(package)
-        package.package_files.with_file_name(params[:file_name]).exists?
+        package
+          .package_files
+          .with_file_name(params[:file_name])
+          .not_pending_destruction
+          .exists?
       end
     end
   end

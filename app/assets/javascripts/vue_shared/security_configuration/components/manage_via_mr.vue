@@ -1,13 +1,24 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { featureToMutationMap } from 'ee_else_ce/security_configuration/components/constants';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { parseErrorMessage } from '~/lib/utils/error_message';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { sprintf, s__ } from '~/locale';
 import apolloProvider from '../provider';
 
 function mutationSettingsForFeatureType(type) {
   return featureToMutationMap[type];
 }
+
+export const i18n = {
+  buttonLabel: s__('SecurityConfiguration|Configure with a merge request'),
+  noSuccessPathError: s__(
+    'SecurityConfiguration|%{featureName} merge request creation mutation failed',
+  ),
+  genericErrorText: s__(
+    `SecurityConfiguration|Something went wrong. Please refresh the page, or try again later.`,
+  ),
+};
 
 export default {
   apolloProvider,
@@ -55,15 +66,20 @@ export default {
           throw new Error(errors[0]);
         }
 
+        // Sending window.gon.uf_error_prefix prefixed messages should happen only in
+        // the backend. Hence the code below is an anti-pattern.
+        // The issue to refactor: https://gitlab.com/gitlab-org/gitlab/-/issues/397714
         if (!successPath) {
           throw new Error(
-            sprintf(this.$options.i18n.noSuccessPathError, { featureName: this.feature.name }),
+            `${window.gon.uf_error_prefix} ${sprintf(this.$options.i18n.noSuccessPathError, {
+              featureName: this.feature.name,
+            })}`,
           );
         }
 
-        redirectTo(successPath);
+        redirectTo(successPath); // eslint-disable-line import/no-deprecated
       } catch (e) {
-        this.$emit('error', e.message);
+        this.$emit('error', parseErrorMessage(e, this.$options.i18n.genericErrorText));
         this.isLoading = false;
       }
     },
@@ -84,12 +100,7 @@ export default {
       Boolean(mutationSettingsForFeatureType(type))
     );
   },
-  i18n: {
-    buttonLabel: s__('SecurityConfiguration|Configure with a merge request'),
-    noSuccessPathError: s__(
-      'SecurityConfiguration|%{featureName} merge request creation mutation failed',
-    ),
-  },
+  i18n,
 };
 </script>
 

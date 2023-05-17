@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';

@@ -19,10 +19,6 @@ describe('FormUrlApp', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAllRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findUrlMaskDisable = () => findAllRadioButtons().at(0);

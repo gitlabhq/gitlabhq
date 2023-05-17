@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlCollapsibleListbox } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -97,7 +97,7 @@ export default {
       :no-results-text="__('No matches found')"
       :searchable="true"
       :searching="loading"
-      toggle-class="gl-flex-direction-column gl-align-items-stretch!"
+      toggle-class="gl-flex-direction-column gl-align-items-stretch! gl-rounded-top-left-none! gl-rounded-bottom-left-none! gl-w-full!"
       :toggle-text="dropdownText"
       @search="searchNamespaces"
       @select="setNamespace"

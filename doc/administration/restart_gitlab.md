@@ -126,3 +126,17 @@ kubectl delete pods -l release=<helm release name>,app=<component name>
 ```
 
 The release name can be obtained from the output of the `helm list` command.
+
+## Docker installation
+
+If you change the configuration on your [Docker installation](../install/docker.md), for that change to take effect you must restart:
+
+- The main `gitlab` container.
+- Any separate component containers.
+
+For example, if you deployed Sidekiq on a separate container, to restart the containers, run:
+
+```shell
+sudo docker restart gitlab
+sudo docker restart sidekiq
+```

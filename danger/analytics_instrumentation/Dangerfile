@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+return if stable_branch.valid_stable_branch?
+
+analytics_instrumentation.check!
+
+analytics_instrumentation.check_affected_scopes!
+
+analytics_instrumentation.check_usage_data_insertions!

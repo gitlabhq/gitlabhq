@@ -9,13 +9,6 @@ describe('augmentFeatures', () => {
     },
   ];
 
-  const mockComplianceFeatures = [
-    {
-      name: 'LICENSE_COMPLIANCE',
-      type: 'LICENSE_COMPLIANCE',
-    },
-  ];
-
   const mockFeaturesWithSecondary = [
     {
       name: 'DAST',
@@ -51,30 +44,25 @@ describe('augmentFeatures', () => {
 
   const expectedOutputDefault = {
     augmentedSecurityFeatures: mockSecurityFeatures,
-    augmentedComplianceFeatures: mockComplianceFeatures,
   };
 
   const expectedOutputSecondary = {
     augmentedSecurityFeatures: mockSecurityFeatures,
-    augmentedComplianceFeatures: mockFeaturesWithSecondary,
   };
 
   const expectedOutputCustomFeature = {
     augmentedSecurityFeatures: mockValidCustomFeature,
-    augmentedComplianceFeatures: mockComplianceFeatures,
   };
 
-  describe('returns an object with augmentedSecurityFeatures and augmentedComplianceFeatures when', () => {
+  describe('returns an object with augmentedSecurityFeatures  when', () => {
     it('given an empty array', () => {
-      expect(augmentFeatures(mockSecurityFeatures, mockComplianceFeatures, [])).toEqual(
-        expectedOutputDefault,
-      );
+      expect(augmentFeatures(mockSecurityFeatures, [])).toEqual(expectedOutputDefault);
     });
 
     it('given an invalid populated array', () => {
-      expect(
-        augmentFeatures(mockSecurityFeatures, mockComplianceFeatures, mockInvalidCustomFeature),
-      ).toEqual(expectedOutputDefault);
+      expect(augmentFeatures(mockSecurityFeatures, mockInvalidCustomFeature)).toEqual(
+        expectedOutputDefault,
+      );
     });
 
     it('features have secondary key', () => {
@@ -84,21 +72,17 @@ describe('augmentFeatures', () => {
     });
 
     it('given a valid populated array', () => {
-      expect(
-        augmentFeatures(mockSecurityFeatures, mockComplianceFeatures, mockValidCustomFeature),
-      ).toEqual(expectedOutputCustomFeature);
+      expect(augmentFeatures(mockSecurityFeatures, mockValidCustomFeature)).toEqual(
+        expectedOutputCustomFeature,
+      );
     });
   });
 
   describe('returns an object with camelcased keys', () => {
     it('given a customfeature in snakecase', () => {
-      expect(
-        augmentFeatures(
-          mockSecurityFeatures,
-          mockComplianceFeatures,
-          mockValidCustomFeatureSnakeCase,
-        ),
-      ).toEqual(expectedOutputCustomFeature);
+      expect(augmentFeatures(mockSecurityFeatures, mockValidCustomFeatureSnakeCase)).toEqual(
+        expectedOutputCustomFeature,
+      );
     });
   });
 });

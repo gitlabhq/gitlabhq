@@ -23,10 +23,6 @@ describe('MemberActions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     memberType                    | member           | expectedComponent             | expectedComponentName
     ${MEMBER_TYPES.user}          | ${memberMock}    | ${UserActionDropdown}         | ${'UserActionDropdown'}

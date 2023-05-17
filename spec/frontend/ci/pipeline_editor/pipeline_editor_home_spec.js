@@ -41,6 +41,7 @@ describe('Pipeline editor home wrapper', () => {
           ...props,
         },
         provide: {
+          aiChatAvailable: false,
           projectFullPath: '',
           totalBranches: 19,
           glFeatures: {
@@ -67,7 +68,6 @@ describe('Pipeline editor home wrapper', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('renders', () => {

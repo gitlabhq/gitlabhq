@@ -20,6 +20,7 @@ import {
   IS_NOT_FOCUSED,
   IS_FOCUSED,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
+  DROPDOWN_CLOSE_TIMEOUT,
 } from '~/header_search/constants';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -42,6 +43,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('HeaderSearchApp', () => {
   let wrapper;
+
+  jest.useFakeTimers();
+  jest.spyOn(global, 'setTimeout');
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -79,10 +83,6 @@ describe('HeaderSearchApp', () => {
       SCOPE_TOKEN_MAX_LENGTH,
     );
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findHeaderSearchForm = () => wrapper.findByTestId('header-search-form');
   const findHeaderSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
@@ -135,7 +135,7 @@ describe('HeaderSearchApp', () => {
         beforeEach(() => {
           window.gon.current_username = username;
           createComponent();
-          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
+          findHeaderSearchInput().vm.$emit(showDropdown ? 'focusin' : '');
         });
 
         it(`should${showSearchDropdown ? '' : ' not'} render`, () => {
@@ -157,7 +157,7 @@ describe('HeaderSearchApp', () => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
           createComponent({ search }, {});
-          findHeaderSearchInput().vm.$emit('click');
+          findHeaderSearchInput().vm.$emit('focusin');
         });
 
         it(`should${showDefault ? '' : ' not'} render the Default Dropdown Items`, () => {
@@ -178,6 +178,7 @@ describe('HeaderSearchApp', () => {
 
         it(`should close the dropdown when press escape key`, async () => {
           findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: 27 }));
+          jest.runAllTimers();
           await nextTick();
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           expect(wrapper.emitted().expandSearchBar.length).toBe(1);
@@ -187,16 +188,16 @@ describe('HeaderSearchApp', () => {
 
     describe.each`
       username         | showDropdown | expectedDesc
-      ${null}          | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
-      ${null}          | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
-      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
-      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
+      ${null}          | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
+      ${null}          | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
+      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
+      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
     `('Search Input Description', ({ username, showDropdown, expectedDesc }) => {
       describe(`current_username is ${username} and showDropdown is ${showDropdown}`, () => {
         beforeEach(() => {
           window.gon.current_username = username;
           createComponent();
-          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
+          findHeaderSearchInput().vm.$emit(showDropdown ? 'focusin' : '');
         });
 
         it(`sets description to ${expectedDesc}`, () => {
@@ -212,7 +213,7 @@ describe('HeaderSearchApp', () => {
       ${MOCK_USERNAME} | ${true}      | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
       ${MOCK_USERNAME} | ${true}      | ${''}          | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
       ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}
-      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.searchResultsLoading}
+      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.SEARCH_RESULTS_LOADING}
     `(
       'Search Results Description',
       ({ username, showDropdown, search, loading, searchOptions, expectedDesc }) => {
@@ -228,7 +229,7 @@ describe('HeaderSearchApp', () => {
                 searchOptions: () => searchOptions,
               },
             );
-            findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
+            findHeaderSearchInput().vm.$emit(showDropdown ? 'focusin' : '');
           });
 
           it(`sets description to ${expectedDesc}`, () => {
@@ -257,7 +258,7 @@ describe('HeaderSearchApp', () => {
               searchOptions: () => searchOptions,
             },
           );
-          findHeaderSearchInput().vm.$emit('click');
+          findHeaderSearchInput().vm.$emit('focusin');
         });
 
         it(`${hasToken ? 'is' : 'is NOT'} rendered when data set has type "${
@@ -291,7 +292,7 @@ describe('HeaderSearchApp', () => {
           window.gon.current_username = MOCK_USERNAME;
           createComponent({ search, searchContext }, { searchOptions: () => searchOptions });
           if (isFocused) {
-            findHeaderSearchInput().vm.$emit('click');
+            findHeaderSearchInput().vm.$emit('focusin');
           }
         });
 
@@ -332,7 +333,7 @@ describe('HeaderSearchApp', () => {
             searchOptions: () => searchOptions,
           },
         );
-        findHeaderSearchInput().vm.$emit('click');
+        findHeaderSearchInput().vm.$emit('focusin');
       });
 
       it(`icon for data set type "${searchOptions[0]?.html_id}" ${
@@ -353,12 +354,12 @@ describe('HeaderSearchApp', () => {
   });
 
   describe('events', () => {
-    beforeEach(() => {
-      createComponent();
-      window.gon.current_username = MOCK_USERNAME;
-    });
-
     describe('Header Search Input', () => {
+      beforeEach(() => {
+        window.gon.current_username = MOCK_USERNAME;
+        createComponent();
+      });
+
       describe('when dropdown is closed', () => {
         let trackingSpy;
 
@@ -366,9 +367,9 @@ describe('HeaderSearchApp', () => {
           trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         });
 
-        it('onFocus opens dropdown and triggers snowplow event', async () => {
+        it('onFocusin opens dropdown and triggers snowplow event', async () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
-          findHeaderSearchInput().vm.$emit('focus');
+          findHeaderSearchInput().vm.$emit('focusin');
 
           await nextTick();
 
@@ -379,24 +380,18 @@ describe('HeaderSearchApp', () => {
           });
         });
 
-        it('onClick opens dropdown and triggers snowplow event', async () => {
+        it('onFocusout closes dropdown and triggers snowplow event', async () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
-          findHeaderSearchInput().vm.$emit('click');
 
+          findHeaderSearchInput().vm.$emit('focusout');
+          jest.runAllTimers();
           await nextTick();
 
-          expect(findHeaderSearchDropdown().exists()).toBe(true);
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
+          expect(findHeaderSearchDropdown().exists()).toBe(false);
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'blur_input', {
             label: 'global_search',
             property: 'navigation_top',
           });
-        });
-
-        it('onClick followed by onFocus only triggers a single snowplow event', async () => {
-          findHeaderSearchInput().vm.$emit('click');
-          findHeaderSearchInput().vm.$emit('focus');
-
-          expect(trackingSpy).toHaveBeenCalledTimes(1);
         });
       });
 
@@ -439,18 +434,18 @@ describe('HeaderSearchApp', () => {
       });
     });
 
-    describe('Dropdown Keyboard Navigation', () => {
+    describe('onFocusout dropdown', () => {
       beforeEach(() => {
-        findHeaderSearchInput().vm.$emit('click');
+        window.gon.current_username = MOCK_USERNAME;
+        createComponent({ search: 'tes' }, {});
+        findHeaderSearchInput().vm.$emit('focusin');
       });
 
-      it('closes dropdown when @tab is emitted', async () => {
-        expect(findHeaderSearchDropdown().exists()).toBe(true);
-        findDropdownKeyboardNavigation().vm.$emit('tab');
+      it('closes with timeout so click event gets emited', () => {
+        findHeaderSearchInput().vm.$emit('focusout');
 
-        await nextTick();
-
-        expect(findHeaderSearchDropdown().exists()).toBe(false);
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), DROPDOWN_CLOSE_TIMEOUT);
       });
     });
   });
@@ -463,9 +458,9 @@ describe('HeaderSearchApp', () => {
       ${2}                | ${'test1'}
     `('currentFocusedOption', ({ MOCK_INDEX, search }) => {
       beforeEach(() => {
-        createComponent({ search });
         window.gon.current_username = MOCK_USERNAME;
-        findHeaderSearchInput().vm.$emit('click');
+        createComponent({ search });
+        findHeaderSearchInput().vm.$emit('focusin');
       });
 
       it(`when currentFocusIndex changes to ${MOCK_INDEX} updates the data to searchOptions[${MOCK_INDEX}]`, () => {
@@ -504,12 +499,13 @@ describe('HeaderSearchApp', () => {
       const MOCK_INDEX = 1;
 
       beforeEach(() => {
-        createComponent();
         window.gon.current_username = MOCK_USERNAME;
-        findHeaderSearchInput().vm.$emit('click');
+        createComponent();
+        findHeaderSearchInput().vm.$emit('focusin');
       });
 
-      it('onKey-enter clicks the selected dropdown item rather than submitting a search', () => {
+      it('onKey-enter clicks the selected dropdown item rather than submitting a search', async () => {
+        await nextTick();
         findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
 
         findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));

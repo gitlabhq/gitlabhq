@@ -3,7 +3,7 @@
 require "spec_helper"
 
 # Based on https://github.com/rails/rails/pull/45115/files#diff-35ef6d1bd8b8d3b037ec819a704cd78db55db916a57abfc2859882826fc679b6
-RSpec.describe ContentSecurityPolicyPatch, feature_category: :not_owned do
+RSpec.describe ContentSecurityPolicyPatch, feature_category: :shared do
   include Rack::Test::Methods
 
   let(:routes) do

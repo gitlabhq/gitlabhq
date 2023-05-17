@@ -74,7 +74,7 @@ module QA
               show.simulate_pipeline
               expect(show.tab_alert_title).to have_content('Simulation completed successfully')
 
-              show.go_to_view_merged_yaml_tab
+              show.go_to_full_configuration_tab
               expect(show).to have_source_editor
             end
           end
@@ -101,7 +101,7 @@ module QA
 
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
 
-              show.go_to_view_merged_yaml_tab
+              show.go_to_full_configuration_tab
 
               # TODO: remove this retry when
               # https://gitlab.com/gitlab-org/gitlab/-/issues/378536 is resolved

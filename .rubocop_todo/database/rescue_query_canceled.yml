@@ -2,7 +2,6 @@
 Database/RescueQueryCanceled:
   Exclude:
     - 'app/services/issues/relative_position_rebalancing_service.rb'
-    - 'ee/app/workers/update_max_seats_used_for_gitlab_com_subscriptions_worker.rb'
     - 'lib/gitlab/background_migration/backfill_work_item_type_id_for_issues.rb'
     - 'lib/gitlab/database/batch_counter.rb'
     - 'lib/gitlab/issuables_count_for_state.rb'

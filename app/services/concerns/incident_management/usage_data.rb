@@ -5,15 +5,13 @@ module IncidentManagement
     include Gitlab::Utils::UsageData
 
     def track_incident_action(current_user, target, action)
-      return unless target.incident?
+      return unless target.incident_type_issue?
 
       event = "incident_management_#{action}"
       track_usage_event(event, current_user.id)
 
       namespace = target.try(:namespace)
       project = target.try(:project)
-
-      return unless Feature.enabled?(:route_hll_to_snowplow_phase2, target.try(:namespace))
 
       Gitlab::Tracking.event(
         self.class.to_s,

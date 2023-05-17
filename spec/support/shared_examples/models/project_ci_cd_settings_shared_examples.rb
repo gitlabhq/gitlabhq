@@ -19,7 +19,7 @@ RSpec.shared_examples 'ci_cd_settings delegation' do
   end
 end
 
-RSpec.shared_examples 'a ci_cd_settings predicate method' do |prefix: ''|
+RSpec.shared_examples 'a ci_cd_settings predicate method' do |prefix: '', default: false|
   using RSpec::Parameterized::TableSyntax
 
   context 'when ci_cd_settings is nil' do
@@ -28,7 +28,7 @@ RSpec.shared_examples 'a ci_cd_settings predicate method' do |prefix: ''|
     end
 
     it 'returns false' do
-      expect(project.send("#{prefix}#{delegated_method}")).to be(false)
+      expect(project.send("#{prefix}#{delegated_method}")).to be(default)
     end
   end
 

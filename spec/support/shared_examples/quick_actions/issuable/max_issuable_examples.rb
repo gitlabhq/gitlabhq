@@ -23,11 +23,11 @@ RSpec.shared_examples 'does not exceed the issuable size limit' do
       end
 
       note = described_class.new(project, user, opts.merge(
-                                                  note: note_text,
-                                                  noteable_type: noteable_type,
-                                                  noteable_id: issuable.id,
-                                                  confidential: false
-                                                )).execute
+        note: note_text,
+        noteable_type: noteable_type,
+        noteable_id: issuable.id,
+        confidential: false
+      )).execute
 
       expect(note.errors[:validation]).to match_array([validation_message])
     end
@@ -44,11 +44,11 @@ RSpec.shared_examples 'does not exceed the issuable size limit' do
       end
 
       note = described_class.new(project, user, opts.merge(
-                                                  note: note_text,
-                                                  noteable_type: noteable_type,
-                                                  noteable_id: issuable.id,
-                                                  confidential: false
-                                                )).execute
+        note: note_text,
+        noteable_type: noteable_type,
+        noteable_id: issuable.id,
+        confidential: false
+      )).execute
 
       expect(note.errors[:validation]).to be_empty
     end

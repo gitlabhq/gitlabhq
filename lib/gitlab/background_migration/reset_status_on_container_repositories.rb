@@ -36,8 +36,8 @@ module Gitlab
 
         included do
           has_one :route,
-                  as: :source,
-                  class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Route'
+            as: :source,
+            class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Route'
         end
 
         def full_path
@@ -67,7 +67,7 @@ module Gitlab
         self.inheritance_column = :_type_disabled
 
         belongs_to :parent,
-                   class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Namespace'
+          class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Namespace'
 
         def self.polymorphic_name
           'Namespace'
@@ -80,7 +80,7 @@ module Gitlab
         self.table_name = 'projects'
 
         belongs_to :namespace,
-                   class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Namespace'
+          class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Namespace'
 
         alias_method :parent, :namespace
         alias_attribute :parent_id, :namespace_id
@@ -92,7 +92,7 @@ module Gitlab
         self.table_name = 'container_repositories'
 
         belongs_to :project,
-                   class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Project'
+          class_name: '::Gitlab::BackgroundMigration::ResetStatusOnContainerRepositories::Project'
 
         def tags?
           result = ContainerRegistry.tags_for(path).any?

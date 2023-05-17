@@ -8,10 +8,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEnvironmentTiers,
   let!(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
 
   let(:migration) do
-    described_class.new(start_id: 1, end_id: 1000,
-                        batch_table: :environments, batch_column: :id,
-                        sub_batch_size: 10, pause_ms: 0,
-                        connection: ApplicationRecord.connection)
+    described_class.new(
+      start_id: 1, end_id: 1000,
+      batch_table: :environments, batch_column: :id,
+      sub_batch_size: 10, pause_ms: 0,
+      connection: ApplicationRecord.connection
+    )
   end
 
   describe '#perform' do

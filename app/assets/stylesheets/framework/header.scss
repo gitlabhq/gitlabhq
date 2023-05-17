@@ -8,7 +8,7 @@ $search-input-field-x-min-width: 200px;
   min-height: $header-height;
   border: 0;
   position: fixed;
-  top: 0;
+  top: $calc-application-bars-height;
   left: 0;
   right: 0;
   border-radius: 0;
@@ -312,23 +312,32 @@ $search-input-field-x-min-width: 200px;
   margin-top: $dropdown-vertical-offset;
 }
 
+.top-bar-container {
+  min-height: $top-bar-height;
+}
+
+.top-bar-fixed {
+  @include gl-inset-border-b-1-gray-100;
+  background-color: $body-bg;
+  left: var(--application-bar-left);
+  position: fixed;
+  right: var(--application-bar-right);
+  top: $calc-application-bars-height;
+  width: auto;
+  z-index: $top-bar-z-index;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
+  }
+
+  .breadcrumbs-list {
+    @include media-breakpoint-down(xs) {
+      flex-wrap: nowrap;
+    }
+  }
+}
+
 .breadcrumbs {
-  display: flex;
-  min-height: $breadcrumb-min-height;
-  color: $gl-text-color;
-}
-
-.breadcrumbs-container {
-  display: flex;
-  width: 100%;
-  position: relative;
-  padding-top: $gl-padding / 2;
-  padding-bottom: $gl-padding / 2;
-  align-items: center;
-  border-bottom: 1px solid $border-color;
-}
-
-.breadcrumbs-links {
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -350,16 +359,6 @@ $search-input-field-x-min-width: 200px;
       top: 1px;
     }
   }
-
-  .dropdown-menu li a .identicon {
-    width: 17px;
-    height: 17px;
-    font-size: $gl-font-size-xs;
-    vertical-align: middle;
-    text-indent: 0;
-    line-height: $gl-font-size-xs + 2px;
-    display: inline-block;
-  }
 }
 
 .breadcrumbs-list {
@@ -375,14 +374,11 @@ $search-input-field-x-min-width: 200px;
     display: flex;
     align-items: center;
     position: relative;
+    min-width: 0;
     padding: 2px 0;
 
     &:not(:last-child) {
       padding-right: 20px;
-
-      &:not(.dropdown) {
-        overflow: hidden;
-      }
     }
 
     &:last-child {
@@ -503,11 +499,6 @@ $search-input-field-x-min-width: 200px;
   visibility: visible;
 }
 
-.with-performance-bar .navbar-gitlab,
-.with-performance-bar .fixed-top {
-  top: $performance-bar-height;
-}
-
 .navbar-empty {
   justify-content: center;
   height: $header-height;
@@ -558,25 +549,16 @@ $search-input-field-x-min-width: 200px;
 }
 
 .toggle-mobile-nav {
-  display: none;
-  background-color: transparent;
-  border: 0;
-  padding: 6px 16px;
-  margin: 0 0 0 -15px;
-  height: 46px;
-  color: $gl-text-color;
+  @include gl-display-none;
 
   @include media-breakpoint-down(sm) {
-    display: flex;
-    align-items: center;
+    @include gl-display-block;
 
-    i {
-      font-size: 18px;
-    }
-
-    + .breadcrumbs-links {
-      padding-left: $gl-padding;
-      border-left: 1px solid $gl-text-color-quaternary;
+    + .breadcrumbs {
+      @include gl-pl-4;
+      @include gl-border-l-1;
+      @include gl-border-l-solid;
+      @include gl-border-gray-100;
     }
   }
 }

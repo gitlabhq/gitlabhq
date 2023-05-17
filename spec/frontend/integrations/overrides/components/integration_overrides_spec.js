@@ -47,7 +47,6 @@ describe('IntegrationOverrides', () => {
 
   afterEach(() => {
     mockAxios.restore();
-    wrapper.destroy();
   });
 
   const findGlTable = () => wrapper.findComponent(GlTable);

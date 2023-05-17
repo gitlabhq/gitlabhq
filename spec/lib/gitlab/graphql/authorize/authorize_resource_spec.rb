@@ -76,13 +76,17 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
   end
 
-  context 'when the class does not define #find_object' do
+  describe '#find_object' do
     let(:fake_class) do
       Class.new { include Gitlab::Graphql::Authorize::AuthorizeResource }
     end
 
-    it 'raises a comprehensive error message' do
-      expect { fake_class.new.find_object }.to raise_error(/Implement #find_object in #{fake_class.name}/)
+    let(:id) { "id" }
+    let(:return_value) { "return value" }
+
+    it 'calls GitlabSchema.find_by_gid' do
+      expect(GitlabSchema).to receive(:find_by_gid).with(id).and_return(return_value)
+      expect(fake_class.new.find_object(id: id)).to be return_value
     end
   end
 

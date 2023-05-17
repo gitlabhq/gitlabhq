@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::ReopenService do
+RSpec.describe Issues::ReopenService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, :closed, project: project) }
 
@@ -75,7 +75,6 @@ RSpec.describe Issues::ReopenService do
         it_behaves_like 'an incident management tracked event', :incident_management_incident_reopened
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:namespace) { issue.namespace }
           let(:category) { described_class.to_s }
           let(:action) { 'incident_management_incident_reopened' }
@@ -110,8 +109,8 @@ RSpec.describe Issues::ReopenService do
         end
 
         it 'executes issue hooks' do
-          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
           execute
         end
@@ -121,8 +120,9 @@ RSpec.describe Issues::ReopenService do
         let(:issue) { create(:issue, :confidential, :closed, project: project) }
 
         it 'executes confidential issue hooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+          issue_hooks = :confidential_issue_hooks
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), issue_hooks)
 
           execute
         end

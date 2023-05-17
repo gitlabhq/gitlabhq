@@ -3,14 +3,14 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import GrafanaIntegration from '~/grafana_integration/components/grafana_integration.vue';
 import { createStore } from '~/grafana_integration/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('grafana integration component', () => {
   let wrapper;
@@ -28,11 +28,8 @@ describe('grafana integration component', () => {
   });
 
   afterEach(() => {
-    if (wrapper.destroy) {
-      wrapper.destroy();
-      createAlert.mockReset();
-      refreshCurrentPage.mockReset();
-    }
+    createAlert.mockReset();
+    refreshCurrentPage.mockReset();
   });
 
   describe('default state', () => {
@@ -103,7 +100,7 @@ describe('grafana integration component', () => {
         expect(refreshCurrentPage).toHaveBeenCalled();
       });
 
-      it('creates flash banner on error', async () => {
+      it('creates alert banner on error', async () => {
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });
 

@@ -52,8 +52,8 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
         click_filtered_search_bar
         send_keys 'as'
 
-        # Expect Assignee and Release
-        expect_suggestion_count 2
+        # Expect Assignee, Release, Search for this text
+        expect_suggestion_count 3
       end
     end
 

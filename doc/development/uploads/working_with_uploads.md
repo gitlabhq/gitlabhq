@@ -95,7 +95,7 @@ They consist of:
 
 Example:
 
-```golang
+```go
 u.route("PUT", apiProjectPattern+`packages/nuget/`, mimeMultipartUploader),
 ```
 

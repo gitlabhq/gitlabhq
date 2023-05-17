@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BaseContainerService do
+RSpec.describe BaseContainerService, feature_category: :container_registry do
   let(:project) { Project.new }
   let(:user) { User.new }
 

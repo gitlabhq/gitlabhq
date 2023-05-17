@@ -29,9 +29,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to dashboard_todos_path,
-                    status: :found,
-                    notice: _('To-do item successfully marked as done.')
+        redirect_to dashboard_todos_path, status: :found, notice: _('To-do item successfully marked as done.')
       end
       format.js { head :ok }
       format.json { render json: todos_counts }

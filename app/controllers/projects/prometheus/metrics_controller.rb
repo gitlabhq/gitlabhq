@@ -68,7 +68,7 @@ module Projects
 
         if @metric.persisted?
           redirect_to edit_project_settings_integration_path(project, ::Integrations::Prometheus),
-                      notice: _('Metric was successfully added.')
+            notice: _('Metric was successfully added.')
         else
           render 'new'
         end
@@ -79,7 +79,7 @@ module Projects
 
         if @metric.update(metrics_params)
           redirect_to edit_project_settings_integration_path(project, ::Integrations::Prometheus),
-                      notice: _('Metric was successfully updated.')
+            notice: _('Metric was successfully updated.')
         else
           render 'edit'
         end

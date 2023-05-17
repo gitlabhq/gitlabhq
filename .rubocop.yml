@@ -19,6 +19,9 @@ inherit_from:
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
   - ./rubocop/rubocop-ruby30.yml
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
+  - ./rubocop/rubocop-ruby31.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -30,6 +33,7 @@ inherit_mode:
   merge:
     - Include
     - Exclude
+    - AllowedPatterns
 
 AllCops:
   # Target the current Ruby version. For example, "2.7" or "3.0".
@@ -50,6 +54,10 @@ AllCops:
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
+    # Adding this specifically for a large revert: !118368
+    <% File.readlines('.rubocop_revert_ignores.txt').map(&:chomp).each do |f| %>
+    - '<%= f %>'
+    <% end %>
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 1_000_000
@@ -97,12 +105,19 @@ InternalAffairs/DeprecateCopHelper:
   Include:
     - spec/rubocop/**/*.rb
 
+Layout/LineLength:
+  AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
+  Exclude:
+    - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
+    - 'ee/spec/lib/gitlab/auth/group_saml/sso_enforcer_spec.rb'
+
 Lint/LastKeywordArgument:
   Safe: false
 
 Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
+    - 'ee/db/embedding/seeds.rb'
     - 'ee/db/geo/seeds.rb'
 
 # This cop checks whether some constant value isn't a
@@ -137,6 +152,8 @@ RSpec/FilePath:
     - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
     - 'spec/fixtures/**/*'
+  CustomTransform:
+    HTTPartyBasicAuth: httparty_basic_auth
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
@@ -436,11 +453,18 @@ BackgroundMigration/FeatureCategory:
   Include:
     - 'lib/gitlab/background_migration/*.rb'
 
+BackgroundMigration/MissingDictionaryFile:
+  Enabled: true
+  EnforcedSince: 20230307160251
+  Include:
+    - 'db/post_migrate/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
+    - 'ee/spec/features/trials/saas/**/*'
 
 RSpec/DuplicateSpecLocation:
   Enabled: true
@@ -502,6 +526,12 @@ RSpec/AvoidTestProf:
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
+
+RSpec/AvoidConditionalStatements:
+  Enabled: true
+  Include:
+    - 'spec/features/**/*.rb'
+    - 'ee/spec/features/**/*.rb'
 
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
@@ -953,3 +983,27 @@ Cop/FeatureFlagUsage:
 Style/ArgumentsForwarding:
   Enabled: true
   AllowOnlyRestArgument: false
+
+Search/NamespacedClass:
+  Enabled: true
+  Exclude:
+    - 'config/**/*.rb'
+    - 'db/**/*.rb'
+    - 'ee/db/**/*.rb'
+    - 'ee/bin/**/*'
+    - 'ee/elastic/**/*.rb' # Advanced Search migrations issue: <>
+    - 'scripts/**/*'
+    - 'spec/migrations/**/*.rb'
+    - 'app/experiments/**/*_experiment.rb'
+    - 'ee/app/experiments/**/*_experiment.rb'
+    - 'lib/gitlab/instrumentation/**/*.rb'
+
+SidekiqLoadBalancing/WorkerDataConsistency:
+  Enabled: true
+  Include:
+    - 'app/workers/**/*'
+    - 'ee/app/workers/**/*'
+
+# This cop is disabled for Ruby 3.0+ anyway.
+Lint/NonDeterministicRequireOrder:
+  Enabled: false

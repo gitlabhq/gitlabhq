@@ -67,8 +67,6 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
   afterEach(() => {
     mockAxios.restore();
-
-    wrapper.destroy();
   });
 
   it('should render the dropdown', () => {

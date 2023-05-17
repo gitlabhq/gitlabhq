@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::SyncPackagesService do
+RSpec.describe Packages::Go::SyncPackagesService, feature_category: :package_registry do
   include_context 'basic Go module'
 
   let(:params) { { info: true, mod: true, zip: true } }

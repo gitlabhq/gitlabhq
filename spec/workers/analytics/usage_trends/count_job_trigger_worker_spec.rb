@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::UsageTrends::CountJobTriggerWorker do
+RSpec.describe Analytics::UsageTrends::CountJobTriggerWorker, feature_category: :devops_reports do
   it_behaves_like 'an idempotent worker'
 
   context 'triggers a job for each measurement identifiers' do

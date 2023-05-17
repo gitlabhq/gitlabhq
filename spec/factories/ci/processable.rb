@@ -26,13 +26,19 @@ FactoryBot.define do
     before(:create) do |processable, evaluator|
       next if processable.ci_stage
 
-      if ci_stage = processable.pipeline.stages.find_by(name: evaluator.stage)
-        processable.ci_stage = ci_stage
-      else
-        processable.ci_stage = create(:ci_stage, pipeline: processable.pipeline,
-                                 project: processable.project || evaluator.project,
-                                 name: evaluator.stage, position: evaluator.stage_idx, status: 'created')
-      end
+      processable.ci_stage =
+        if ci_stage = processable.pipeline.stages.find_by(name: evaluator.stage)
+          ci_stage
+        else
+          create(
+            :ci_stage,
+            pipeline: processable.pipeline,
+            project: processable.project || evaluator.project,
+            name: evaluator.stage,
+            position: evaluator.stage_idx,
+            status: 'created'
+          )
+        end
     end
 
     trait :waiting_for_resource do

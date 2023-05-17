@@ -1,0 +1,8 @@
+---
+name: pages_deploy_upload_file_outside_transaction
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114774
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396512
+milestone: '15.11'
+type: development
+group: group::knowledge
+default_enabled: true

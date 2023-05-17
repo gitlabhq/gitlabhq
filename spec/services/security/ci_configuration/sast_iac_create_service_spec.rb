@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SastIacCreateService, :snowplow do
+RSpec.describe Security::CiConfiguration::SastIacCreateService, :snowplow, feature_category: :static_application_security_testing do
   subject(:result) { described_class.new(project, user).execute }
 
   let(:branch_name) { 'set-sast-iac-config-1' }

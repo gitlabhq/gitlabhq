@@ -15,7 +15,7 @@ fragment RunnerDetailsShared on CiRunner {
   jobCount
   tagList
   createdAt
-  status(legacyMode: null)
+  status
   contactedAt
   tokenExpiresAt
   version

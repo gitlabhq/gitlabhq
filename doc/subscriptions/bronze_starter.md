@@ -18,7 +18,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - [Activate GitLab EE with a license](../user/admin_area/license.md)
 - [Add a help message to the sign-in page](../user/admin_area/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
-- [Code owners](../user/project/code_owners.md)
+- [Code owners](../user/project/codeowners/index.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../user/admin_area/email_from_gitlab.md)
@@ -71,7 +71,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md)
-  - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
+  - [Visual Reviews (deprecated)](../ci/review_apps/index.md#visual-reviews-deprecated)
 - Metrics and analytics:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)
@@ -106,7 +106,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Search:
   - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by approvers
   - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by "approved by"
-  - [Advanced Search (Elasticsearch)](../user/search/advanced_search.md)
+  - [Advanced search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk.md)
 - [Storage usage statistics](../user/usage_quotas.md#storage-usage-statistics)
 
@@ -128,7 +128,7 @@ Bronze-level subscribers:
   - [Group iterations API](../api/group_iterations.md)
   - Project milestones API: [Get all burndown chart events for a single milestone](../api/milestones.md#get-all-burndown-chart-events-for-a-single-milestone)
   - [Project iterations API](../api/iterations.md)
-  - Fields in the [Search API](../api/search.md) available only to [Advanced Search (Elasticsearch)](../integration/advanced_search/elasticsearch.md) users
+  - Fields in the [Search API](../api/search.md) available only to [advanced search (Elasticsearch)](../integration/advanced_search/elasticsearch.md) users
   - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/index.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)

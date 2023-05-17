@@ -146,9 +146,10 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
   def stub_request(status: 200, body: nil)
     body ||= %q({"status":"success"})
 
-    stub_full_request(buildkite_full_url)
-      .to_return(status: status,
-                 headers: { 'Content-Type' => 'application/json' },
-                 body: body)
+    stub_full_request(buildkite_full_url).to_return(
+      status: status,
+      headers: { 'Content-Type' => 'application/json' },
+      body: body
+    )
   end
 end

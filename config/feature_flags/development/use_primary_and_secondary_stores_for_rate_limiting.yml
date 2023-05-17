@@ -1,8 +1,0 @@
----
-name: use_primary_and_secondary_stores_for_rate_limiting
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106123"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/385681"
-milestone: '15.9'
-type: development
-group: group::scalability
-default_enabled: false

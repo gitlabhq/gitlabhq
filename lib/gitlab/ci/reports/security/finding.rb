@@ -29,12 +29,13 @@ module Gitlab
           attr_reader :signatures
           attr_reader :project_id
           attr_reader :original_data
+          attr_reader :found_by_pipeline
 
           delegate :file_path, :start_line, :end_line, to: :location
 
           alias_method :cve, :compare_key
 
-          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
+          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil) # rubocop:disable Metrics/ParameterLists
             @compare_key = compare_key
             @confidence = confidence
             @identifiers = identifiers
@@ -55,6 +56,7 @@ module Gitlab
             @signatures = signatures
             @project_id = project_id
             @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
+            @found_by_pipeline = found_by_pipeline
 
             @project_fingerprint = generate_project_fingerprint
           end
@@ -186,6 +188,10 @@ module Gitlab
 
           def assets
             original_data['assets'] || []
+          end
+
+          def raw_source_code_extract
+            original_data['raw_source_code_extract']
           end
 
           # Returns either the max priority signature hex

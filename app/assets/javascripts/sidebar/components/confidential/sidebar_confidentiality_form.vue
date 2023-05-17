@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '../../constants';

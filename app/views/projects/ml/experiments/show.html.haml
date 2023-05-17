@@ -1,17 +1,19 @@
 - add_to_breadcrumbs _("Experiments"), project_ml_experiments_path(@project)
 - breadcrumb_title @experiment.name
 - page_title @experiment.name
+- add_page_specific_style 'page_bundles/ml_experiment_tracking'
+
+- experiment = experiment_as_data(@experiment)
 - items = candidates_table_items(@candidates)
 - metrics = unique_logged_names(@candidates, &:latest_metrics)
 - params = unique_logged_names(@candidates, &:params)
 - page_info = formatted_page_info(@page_info)
 
-.page-title-holder.d-flex.align-items-center
-  %h1.page-title.gl-font-size-h-display= @experiment.name
-
 #js-show-ml-experiment{ data: {
+  experiment: experiment,
   candidates: items,
   metrics: metrics,
   params: params,
-  page_info: page_info
+  page_info: page_info,
+  empty_state_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'),
 } }

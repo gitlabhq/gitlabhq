@@ -64,7 +64,6 @@ describe('TopicsTokenSelector', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     div.remove();
     input.remove();
   });
@@ -84,7 +83,7 @@ describe('TopicsTokenSelector', () => {
       });
     });
 
-    it('passes topic title to the avatar', async () => {
+    it('passes topic title to the avatar', () => {
       createComponent();
       const avatars = findAllAvatars();
 

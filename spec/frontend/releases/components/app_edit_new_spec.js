@@ -16,6 +16,7 @@ import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { ValidationResult } from '~/lib/utils/ref_validator';
 
 const originalRelease = originalOneReleaseForEditingQueryResponse.data.project.release;
 const originalMilestones = originalRelease.milestones;
@@ -30,6 +31,8 @@ describe('Release edit/new component', () => {
   let actions;
   let getters;
   let state;
+  let refActions;
+  let refState;
   let mock;
 
   const factory = async ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
@@ -58,8 +61,23 @@ describe('Release edit/new component', () => {
         assets: {
           links: [],
         },
+        tagNameValidation: new ValidationResult(),
       }),
       formattedReleaseNotes: () => 'these notes are formatted',
+      isCreating: jest.fn(),
+      isSearching: jest.fn(),
+      isExistingTag: jest.fn(),
+      isNewTag: jest.fn(),
+    };
+
+    refState = {
+      matches: [],
+    };
+
+    refActions = {
+      setEnabledRefTypes: jest.fn(),
+      setProjectId: jest.fn(),
+      search: jest.fn(),
     };
 
     const store = new Vuex.Store(
@@ -71,6 +89,11 @@ describe('Release edit/new component', () => {
               actions,
               state,
               getters,
+            },
+            ref: {
+              namespaced: true,
+              actions: refActions,
+              state: refState,
             },
           },
         },
@@ -99,11 +122,6 @@ describe('Release edit/new component', () => {
     mock.onGet('/api/v4/projects/8/milestones').reply(HTTP_STATUS_OK, originalMilestones);
 
     release = convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse).data;
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   const findSubmitButton = () => wrapper.find('button[type=submit]');
@@ -291,7 +309,7 @@ describe('Release edit/new component', () => {
       });
 
       it('renders the submit button as disabled', () => {
-        expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+        expect(findSubmitButton().attributes('disabled')).toBeDefined();
       });
 
       it('does not allow the form to be submitted', () => {

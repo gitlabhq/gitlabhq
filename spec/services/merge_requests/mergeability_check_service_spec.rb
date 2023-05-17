@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_state do
+RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   shared_examples_for 'unmergeable merge request' do
     it 'updates or keeps merge status as cannot_be_merged' do
       subject
@@ -158,9 +158,11 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
           threads = execute_within_threads(amount: 3, retry_lease: false)
           results = threads.map { |t| [t.value.status, t.value.message] }
 
-          expect(results).to contain_exactly([:error, 'Failed to obtain a lock'],
-                                             [:error, 'Failed to obtain a lock'],
-                                             [:success, nil])
+          expect(results).to contain_exactly(
+            [:error, 'Failed to obtain a lock'],
+            [:error, 'Failed to obtain a lock'],
+            [:success, nil]
+          )
         end
       end
     end
@@ -183,11 +185,13 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when it cannot be merged on git' do
       let(:merge_request) do
-        create(:merge_request,
-               merge_status: :unchecked,
-               source_branch: 'conflict-resolvable',
-               source_project: project,
-               target_branch: 'conflict-start')
+        create(
+          :merge_request,
+          merge_status: :unchecked,
+          source_branch: 'conflict-resolvable',
+          source_project: project,
+          target_branch: 'conflict-start'
+        )
       end
 
       it 'returns ServiceResponse.error and keeps merge status as cannot_be_merged' do

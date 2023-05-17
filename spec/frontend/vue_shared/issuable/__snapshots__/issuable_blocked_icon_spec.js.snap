@@ -2,7 +2,7 @@
 
 exports[`IssuableBlockedIcon on mouseenter on blocked icon with more than three blocking issues matches the snapshot 1`] = `
 "<div class=\\"gl-display-inline\\"><svg data-testid=\\"issuable-blocked-icon\\" role=\\"img\\" aria-hidden=\\"true\\" class=\\"issuable-blocked-icon gl-mr-2 gl-cursor-pointer gl-text-red-500 gl-icon s16\\" id=\\"blocked-icon-uniqueId\\">
-    <use href=\\"#issue-block\\"></use>
+    <use href=\\"file-mock#issue-block\\"></use>
   </svg>
   <div class=\\"gl-popover\\">
     <ul class=\\"gl-list-style-none gl-p-0 gl-mb-0\\">

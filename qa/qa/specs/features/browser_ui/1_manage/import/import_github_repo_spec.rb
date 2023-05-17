@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :import, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391230',
-    type: :waiting_on
-  } do
+  RSpec.describe 'Manage', :requires_admin, product_group: :import_and_integrate do
     describe 'GitHub import' do
       include_context 'with github import'
 
@@ -32,6 +29,8 @@ module QA
         end
 
         before do
+          QA::Support::Helpers::ImportSource.enable('github')
+
           Flow::Login.sign_in(as: user)
           Page::Main::Menu.perform(&:go_to_create_project)
           Page::Project::New.perform do |project_page|
@@ -51,7 +50,7 @@ module QA
             import_page.import!(github_repo, group.full_path, imported_project.name)
 
             aggregate_failures do
-              expect(import_page).to have_imported_project(github_repo, wait: 240)
+              expect(import_page).to have_imported_project(github_repo, wait: import_wait_duration)
               # validate link is present instead of navigating to avoid dealing with multiple tabs
               # which makes the test more complicated
               expect(import_page).to have_go_to_project_link(github_repo)

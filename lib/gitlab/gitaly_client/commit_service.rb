@@ -146,7 +146,6 @@ module Gitlab
           message.entries.map do |gitaly_tree_entry|
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
-              root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
               name: File.basename(gitaly_tree_entry.path),
@@ -423,7 +422,8 @@ module Gitlab
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
-          trailers: options[:trailers]
+          trailers: options[:trailers],
+          include_referenced_by: options[:include_referenced_by]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
@@ -441,14 +441,14 @@ module Gitlab
       # revision exists, or `false` otherwise. This function accepts all revisions as specified by
       # gitrevisions(1).
       def object_existence_map(revisions, gitaly_repo: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          # This is a bug in Gitaly: revisions of the initial request are ignored. This will be fixed in v15.0 via
-          # https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4510, so we can merge initial request and the initial
-          # set of revisions starting with v15.1.
-          y.yield Gitaly::CheckObjectsExistRequest.new(repository: gitaly_repo)
+        return {} unless revisions.present?
 
-          revisions.each_slice(100) do |revisions_subset|
-            y.yield Gitaly::CheckObjectsExistRequest.new(revisions: revisions_subset)
+        enum = Enumerator.new do |y|
+          revisions.each_slice(100).with_index do |revisions_subset, i|
+            params = { revisions: revisions_subset }
+            params[:repository] = gitaly_repo if i == 0
+
+            y.yield Gitaly::CheckObjectsExistRequest.new(**params)
           end
         end
 

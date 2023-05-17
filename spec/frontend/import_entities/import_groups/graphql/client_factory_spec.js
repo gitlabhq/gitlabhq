@@ -16,7 +16,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { statusEndpointFixture } from './fixtures';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/import_entities/import_groups/graphql/services/local_storage_cache', () => ({
   LocalStorageCache: jest.fn().mockImplementation(function mock() {
     this.get = jest.fn();
@@ -48,7 +48,7 @@ describe('Bulk import resolvers', () => {
   };
 
   let results;
-  beforeEach(async () => {
+  beforeEach(() => {
     axiosMockAdapter = new MockAdapter(axios);
     client = createClient();
 

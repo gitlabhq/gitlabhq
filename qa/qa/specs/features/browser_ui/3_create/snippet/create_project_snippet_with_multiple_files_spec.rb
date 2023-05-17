@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable, product_group: :editor do
+  RSpec.describe 'Create', :reliable, product_group: :source_code do
     describe 'Multiple file snippet' do
       let(:snippet) do
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|

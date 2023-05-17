@@ -11,13 +11,7 @@ module AuthenticatesWithTwoFactorForAdminMode
     return handle_locked_user(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
-    push_frontend_feature_flag(:webauthn)
-
-    if user.two_factor_webauthn_enabled?
-      setup_webauthn_authentication(user)
-    else
-      setup_u2f_authentication(user)
-    end
+    setup_webauthn_authentication(user)
 
     render 'admin/sessions/two_factor', layout: 'application'
   end
@@ -30,11 +24,7 @@ module AuthenticatesWithTwoFactorForAdminMode
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       admin_mode_authenticate_with_two_factor_via_otp(user)
     elsif user_params[:device_response].present? && session[:otp_user_id]
-      if user.two_factor_webauthn_enabled?
-        admin_mode_authenticate_with_two_factor_via_webauthn(user)
-      else
-        admin_mode_authenticate_with_two_factor_via_u2f(user)
-      end
+      admin_mode_authenticate_with_two_factor_via_webauthn(user)
     elsif user && user.valid_password?(user_params[:password])
       admin_mode_prompt_for_two_factor(user)
     else
@@ -53,14 +43,6 @@ module AuthenticatesWithTwoFactorForAdminMode
       enable_admin_mode
     else
       admin_handle_two_factor_failure(user, 'OTP', _('Invalid two-factor code.'))
-    end
-  end
-
-  def admin_mode_authenticate_with_two_factor_via_u2f(user)
-    if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
-      admin_handle_two_factor_success
-    else
-      admin_handle_two_factor_failure(user, 'U2F', _('Authentication via U2F device failed.'))
     end
   end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::TimeoutHtmlPipelineFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
-  it_behaves_like 'filter timeout' do
+  it_behaves_like 'html filter timeout' do
     let(:text) { '<p>some text</p>' }
   end
 

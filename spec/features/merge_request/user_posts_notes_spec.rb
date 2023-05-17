@@ -62,7 +62,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
     before do
       page.within('.js-main-target-form') do
         fill_in 'note[note]', with: 'This is awesome!'
-        find('.js-md-preview-button').click
+        click_button("Preview")
         click_button 'Comment'
       end
     end
@@ -138,7 +138,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
 
     it 'hides the toolbar buttons when previewing a note' do
       wait_for_requests
-      find('.js-md-preview-button').click
+      click_button("Preview")
       page.within('.js-main-target-form') do
         expect(page).not_to have_css('.md-header-toolbar')
       end

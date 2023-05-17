@@ -20,8 +20,10 @@ RSpec.describe Gitlab::Patch::DrawRoute do
   it 'evaluates CE only route' do
     subject.draw(:help)
 
+    route_file_path = subject.route_path('config/routes/help.rb')
+
     expect(subject).to have_received(:instance_eval)
-      .with(File.read(subject.route_path('config/routes/help.rb')))
+      .with(File.read(route_file_path), route_file_path)
       .once
 
     expect(subject).to have_received(:instance_eval)

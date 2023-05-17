@@ -4,7 +4,8 @@ classes:
 - Namespace::RootStorageStatistics
 feature_categories:
 - application_instrumentation
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/bde41ee866d0fe0b1bb5ece1130fb6e24d95ad17
+- consumables_cost_management
+description: Stores usage data totals for all available consumable features across projects for a given namespace.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29570
 milestone: '12.1'
 gitlab_schema: gitlab_main

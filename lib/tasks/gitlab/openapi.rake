@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 if Rails.env.development?
   require 'grape-swagger/rake/oapi_tasks'
   GrapeSwagger::Rake::OapiTasks.new('::API::API')
 end
 
 namespace :gitlab do
+  require 'logger'
+
   namespace :openapi do
     task :validate do
       raise 'This task can only be run in the development environment' unless Rails.env.development?

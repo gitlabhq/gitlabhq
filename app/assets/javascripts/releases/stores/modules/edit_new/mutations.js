@@ -1,6 +1,7 @@
 import { uniqueId, cloneDeep } from 'lodash';
 import { DEFAULT_ASSET_LINK_TYPE } from '../../../constants';
 import * as types from './mutation_types';
+import { SEARCH, CREATE, EXISTING_TAG, NEW_TAG } from './constants';
 
 const findReleaseLink = (release, id) => {
   return release.assets.links.find((l) => l.id === id);
@@ -126,5 +127,18 @@ export default {
   },
   [types.UPDATE_RELEASED_AT](state, releasedAt) {
     state.release.releasedAt = releasedAt;
+  },
+
+  [types.SET_SEARCHING](state) {
+    state.step = SEARCH;
+  },
+  [types.SET_CREATING](state) {
+    state.step = CREATE;
+  },
+  [types.SET_EXISTING_TAG](state) {
+    state.tagStep = EXISTING_TAG;
+  },
+  [types.SET_NEW_TAG](state) {
+    state.tagStep = NEW_TAG;
   },
 };

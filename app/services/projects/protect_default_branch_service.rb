@@ -45,11 +45,7 @@ module Projects
     end
 
     def protected_branch_exists?
-      if Feature.enabled?(:group_protected_branches)
-        project.all_protected_branches.find_by_name(default_branch).present?
-      else
-        project.protected_branches.find_by_name(default_branch).present?
-      end
+      project.all_protected_branches.find_by_name(default_branch).present?
     end
 
     def default_branch

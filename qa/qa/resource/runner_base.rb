@@ -35,9 +35,9 @@ module QA
         @config = nil
         @run_untagged = nil
         @name = "qa-runner-#{SecureRandom.hex(4)}"
-        @image = 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v15.8.3'
         @executor = :shell
-        @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
+        @executor_image = "#{QA::Runtime::Env.container_registry_host}/
+          gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7"
       end
 
       # Initially we only support fabricate via API
@@ -50,11 +50,17 @@ module QA
       #
       def fabricate_via_api!
         api_get
-      rescue NoValueError
+      rescue NoValueError => e
+        Runtime::Logger.info("Runner api_get exception caught and handled: #{e}")
         # Start container on initial fabrication and populate all attributes once id is known
         # see: https://docs.gitlab.com/ee/api/runners.html#get-runners-details
         start_container_and_register
-        api_get
+        # Temporary workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/409089
+        Support::Retrier.retry_on_exception(max_attempts: 6, sleep_interval: 10,
+          message: "Retrying GET for runners/:id"
+        ) do
+          api_get
+        end
       end
 
       def remove_via_api!
@@ -95,6 +101,8 @@ module QA
 
       def start_container_and_register
         @docker_container ||= Service::DockerRun::GitlabRunner.new(name).tap do |runner|
+          runner.image = image if image
+
           Support::Retrier.retry_on_exception(sleep_interval: 5) do
             runner.pull
           end
@@ -102,7 +110,6 @@ module QA
           runner.token = token
           runner.address = Runtime::Scenario.gitlab_address
           runner.tags = tags if tags
-          runner.image = image
           runner.config = config if config
           runner.executor = executor
           runner.executor_image = executor_image if executor == :docker
@@ -118,6 +125,7 @@ module QA
       def populate_initial_id
         tag_list = tags ? { tag_list: tags.compact.join(',') } : {}
         runner = runner(**tag_list)
+        Runtime::Logger.debug("Details of the runner fetched using tag_list: #{runner}")
         @id = runner[:id]
       end
 

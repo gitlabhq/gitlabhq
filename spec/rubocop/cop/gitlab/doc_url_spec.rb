@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/doc_url'
 
-RSpec.describe RuboCop::Cop::Gitlab::DocUrl, feature_category: :not_owned do
+RSpec.describe RuboCop::Cop::Gitlab::DocUrl, feature_category: :shared do
   context 'when string literal is added with docs url prefix' do
     context 'when inlined' do
       it 'registers an offense' do

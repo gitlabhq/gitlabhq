@@ -60,7 +60,7 @@ RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
 
       it 'allows to disable new nav', :aggregate_failures do
         within '[data-testid="super-sidebar"] [data-testid="user-dropdown"]' do
-          find('button').click
+          click_button "#{user.name} user’s menu"
           expect(page).to have_content('Navigation redesign')
 
           toggle = page.find('.gl-toggle.is-checked')

@@ -47,22 +47,51 @@ In summary:
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
 
+### Predictive Tests Dashboards
+
+- <https://app.periscopedata.com/app/gitlab/1116767/Test-Intelligence-Accuracy>
+- <https://app.periscopedata.com/app/gitlab/899368/EP---Predictive-testing-analysis>
+
+### The `detect-tests` CI job
+
+Most CI/CD pipelines for `gitlab-org/gitlab` will run a [`detect-tests` CI job](https://gitlab.com/gitlab-org/gitlab/-/blob/0c6058def8f182b4a2410db5d08a9550b951b2d8/.gitlab/ci/setup.gitlab-ci.yml#L101-146) in the `prepare` stage to detect which backend/frontend tests should be run based on the files that changed in the given MR.
+
+The `detect-tests` job will create many files that will contain the backend/frontend tests that should be run. Those files will be read in subsequent jobs in the pipeline, and only those tests will be executed.
+
 ### RSpec predictive jobs
 
 #### Determining predictive RSpec test files in a merge request
 
-To identify the RSpec tests that are likely to fail in a merge request, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
+To identify the RSpec tests that are likely to fail in a merge request, we use *static mappings* and *dynamic mappings*.
 
-- dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
-  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
-- static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
-  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L12))
+##### Static mappings
+
+We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/5ab06422826c0d69c615655982a6f969a7f3c6ea/tooling/lib/tooling/find_tests.rb#L17)).
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
-In the `detect-tests` job, we use this mapping to identify the predictive tests needed for the current merge request.
+##### Dynamic mappings
 
-Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the predictive tests for the current merge request.
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
+  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_tests.rb#L20)).
+
+In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
+
+- [`FindChanges`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/find_changes.rb) ([!74003](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003))
+  - Automatically detect Jest tests to run upon backend changes (via frontend fixtures)
+- [`PartialToViewsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/partial_to_views_mappings.rb) ([#395016](https://gitlab.com/gitlab-org/gitlab/-/issues/395016))
+  - Run view specs when Rails partials included in those views are changed in an MR
+- [`JsToSystemSpecsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/js_to_system_specs_mappings.rb) ([#386754](https://gitlab.com/gitlab-org/gitlab/-/issues/386754))
+  - Run certain system specs if a JavaScript file was changed in an MR
+- [`GraphqlBaseTypeMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/graphql_base_type_mappings.rb) ([#386756](https://gitlab.com/gitlab-org/gitlab/-/issues/386756))
+  - If a GraphQL type class changed, we should try to identify the other GraphQL types that potentially include this type, and run their specs.
+- [`ViewToSystemSpecsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/view_to_system_specs_mappings.rb) ([#395017](https://gitlab.com/gitlab-org/gitlab/-/issues/395017))
+  - When a view gets changed, we try to find feature specs that would test that area of the code.
+- [`ViewToJsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/8d7dfb7c043adf931128088b9ffab3b4a39af6f5/tooling/lib/tooling/mappings/view_to_js_mappings.rb) ([#386719](https://gitlab.com/gitlab-org/gitlab/-/issues/386719))
+  - If a JS file is changed, we should try to identify the system specs that are covering this JS component.
+- [`FindFilesUsingFeatureFlags`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_files_using_feature_flags.rb) ([#407366](https://gitlab.com/gitlab-org/gitlab/-/issues/407366))
+  - If a feature flag was changed, we check which Ruby file is including that feature flag, and we add it to the list of changed files in the detect-tests CI job. The remainder of the job will then detect which frontend/backend tests should be run based on those changed files.
 
 #### Exceptional cases
 
@@ -73,6 +102,10 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+
+#### Have you encountered a problem with backend predictive tests?
+
+If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, please let `@gl-quality/eng-prod` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -95,17 +128,20 @@ In addition, there are a few circumstances where we would always run the full Je
 The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/42321b18b946c64d2f6f788c38844499a5ae9141/.gitlab/ci/rules.gitlab-ci.yml#L938-955).
 
+#### Have you encountered a problem with frontend predictive tests?
+
+If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues.
+
 ### Fork pipelines
 
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1170).
 
 ## Fail-fast job in merge request pipelines
 
-To provide faster feedback when a merge request breaks existing tests, we are experimenting with a
-fail-fast mechanism.
+To provide faster feedback when a merge request breaks existing tests, we implemented a fail-fast mechanism.
 
 An `rspec fail-fast` job is added in parallel to all other `rspec` jobs in a merge
 request pipeline. This job runs the tests that are directly related to the changes
@@ -150,8 +186,8 @@ This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST
 
 ## Re-run previously failed tests in merge request pipelines
 
-In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg12-rerun-previous-failed-tests`
-and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg13-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
@@ -159,7 +195,7 @@ This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/git
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
-1. The `rspec rspec-pg12-rerun-previous-failed-tests` and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs
+1. The `rspec rspec-pg13-rerun-previous-failed-tests` and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs
    will run the test files gathered by the `detect-previous-failed-tests` job.
 
 ```mermaid
@@ -169,12 +205,26 @@ graph LR
     end
 
     subgraph "test stage";
-        B["rspec rspec-pg12-rerun-previous-failed-tests"];
-        C["rspec rspec-ee-pg12-rerun-previous-failed-tests"];
+        B["rspec rspec-pg13-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg13-rerun-previous-failed-tests"];
     end
 
     A --"artifact: list of test files"--> B & C
 ```
+
+## Merge Trains
+
+### Why do we need to have a “stable” master branch to enable merge trains?
+
+If the master branch is unstable (i.e. CI/CD pipelines for the master branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **cancelled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+
+### How stable does the master branch have to be for us to enable merge trains?
+
+We don't have a specific number, but we need to have better numbers for flaky tests failures and infrastructure failures (see the [Master Broken Incidents RCA Dashboard](https://app.periscopedata.com/app/gitlab/1082465/Master-Broken-Incidents-Root-Cause-Analysis)).
+
+### Could we gradually move to merge trains in our CI/CD configuration?
+
+There was a proposal from a contributor, but the approach is not without some downsides: [see the original proposal and discussion](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/195#note_1117151994).
 
 ## Faster feedback for some merge requests
 
@@ -249,11 +299,20 @@ The intent is to ensure that a change doesn't introduce a failure after `gitlab-
 
 ### As-if-JH cross project downstream pipeline
 
+#### What it is
+
+This pipeline is also called [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html),
+and it's currently allowed to fail. When that happens, please follow
+[What to do when the validation pipeline fails](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html#what-to-do-when-the-validation-pipeline-failed).
+
+#### How we run it
+
 The `start-as-if-jh` job triggers a cross project downstream pipeline which
 runs the GitLab test suite "as if JiHu", meaning as if the pipeline would run
 in the context of [GitLab JH](../jh_features_review.md). These jobs are only
 created in the following cases:
 
+- when changes are made to feature flags
 - when the `pipeline:run-as-if-jh` label is set on the merge request
 
 This pipeline runs under the context of a generated branch in the
@@ -298,6 +357,9 @@ from the main mirror, rather than the validation project.
 
 The whole process looks like this:
 
+NOTE:
+We only run `sync-as-if-jh-branch` when there are dependencies changes.
+
 ```mermaid
 flowchart TD
   subgraph "JiHuLab.com"
@@ -306,7 +368,6 @@ flowchart TD
 
   subgraph "GitLab.com"
     Mirror["gitlab-org/gitlab-jh-mirrors/gitlab"]
-    Validation["gitlab-org-sandbox/gitlab-jh-validation"]
 
     subgraph MR["gitlab-org/gitlab merge request"]
       Add["add-jh-files job"]
@@ -314,10 +375,17 @@ flowchart TD
       Add --"download artifacts"--> Prepare
     end
 
-    Mirror --"pull mirror with master and main-jh"--> Validation
+    subgraph "gitlab-org-sandbox/gitlab-jh-validation"
+      Sync["(*optional) sync-as-if-jh-branch job on branch as-if-jh-code-sync"]
+      Start["start-as-if-jh job on as-if-jh/* branch"]
+      AsIfJH["as-if-jh pipeline"]
+    end
+
+    Mirror --"pull mirror with master and main-jh"--> gitlab-org-sandbox/gitlab-jh-validation
     Mirror --"download JiHu files with ADD_JH_FILES_TOKEN"--> Add
-    Prepare --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Validation
-    Validation --> Pipeline["as-if-jh pipeline"]
+    Prepare --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Sync
+    Sync --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Start
+    Start --> AsIfJH
   end
 
   JH --"pull mirror with corresponding JH branches"--> Mirror
@@ -338,10 +406,20 @@ job will create a new branch from the merge request branch, commit the
 changes, and finally push the branch to the
 [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation).
 
+Optionally, if the merge requests have changes to the dependencies, we have an
+additional step to run `sync-as-if-jh-branch` job to trigger a downstream
+pipeline on [`as-if-jh-code-sync` branch](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/blob/as-if-jh-code-sync/jh/.gitlab-ci.yml)
+in the validation project. This job will perform the same process as
+[JiHu code-sync](https://jihulab.com/gitlab-cn/code-sync/-/blob/main-jh/.gitlab-ci.yml), making sure the dependencies changes can be brought to the
+as-if-jh branch prior to run the validation pipeline.
+
+If there are no dependencies changes, we don't run this process.
+
 ##### How we trigger and run the as-if-JH pipeline
 
-After having the `as-if-jh/*` branch, `start-as-if-jh` job will trigger a pipeline
-in the [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
+After having the `as-if-jh/*` branch prepared and optionally synchronized,
+`start-as-if-jh` job will trigger a pipeline in the
+[validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
 to run the cross-project downstream pipeline.
 
 ##### How the GitLab JH mirror project is set up
@@ -360,7 +438,8 @@ No password is used from mirroring because GitLab JH is a public project.
 
 ##### How the GitLab JH validation project is set up
 
-This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, without any project variables.
+This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, with temporary
+project variables set.
 
 It's a pull mirror pulling from [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
 mirroring only protected branches, `master` and `main-jh`, overriding
@@ -382,6 +461,26 @@ running every day, updating cache.
 The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
 runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
 
+Additionally, a special branch
+[`as-if-jh-code-sync`](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/blob/as-if-jh-code-sync/jh/.gitlab-ci.yml)
+is set and protected. Maintainers can push and developers can merge for this
+branch. We need to set it so developers can merge because we need to let
+developers to trigger pipelines for this branch. This is a compromise
+before we resolve [Developer-level users no longer able to run pipelines on protected branches](https://gitlab.com/gitlab-org/gitlab/-/issues/230939).
+
+It's used to run `sync-as-if-jh-branch` to synchronize the dependencies
+when the merge requests changed the dependencies. See
+[How we generate the as-if-JH branch](#how-we-generate-the-as-if-jh-branch)
+for how it works.
+
+###### Temporary GitLab JH validation project variables
+
+- `BUNDLER_CHECKSUM_VERIFICATION_OPT_IN` is set to `false`
+  - We can remove this variable after JiHu has
+    [`jh/Gemfile.checksum`](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/Gemfile.checksum)
+    committed. More context can be found at:
+    [Setting it to `false` to skip it](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118938#note_1374688877)
+
 ### `rspec:undercoverage` job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
@@ -391,6 +490,8 @@ to detect, and fail if any changes introduced in the merge request has zero cove
 
 The `rspec:undercoverage` job obtains coverage data from the `rspec:coverage`
 job.
+
+If the `rspec:undercoverage` job detects missing coverage due to a CE method being overridden in EE, add the `pipeline:run-as-if-foss` label to the merge request and start a new pipeline.
 
 In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
@@ -437,12 +538,12 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 We used to skip tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection),
 but we stopped doing so since that could actually lead to actual broken `master`.
-Instead, we proactively quarantine any flaky test reported in `#master-broken` incidents
-so that they're ultimately fixed by their respective group.
+Instead, we introduced
+[a fast-quarantining process](../testing_guide/flaky_tests.md#fast-quarantine)
+to proactively quarantine any flaky test reported in `#master-broken` incidents.
 
-The automatic skipping of flaky tests can still be enabled by setting the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable to `true`.
-
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`
+variable to `false`.
 
 ### Automatic retry of failing tests in a separate process
 
@@ -451,7 +552,7 @@ RSpec process. The goal is to get rid of most side-effects from previous tests t
 
 We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1148).
 
 ## Compatibility testing
 
@@ -463,10 +564,9 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.0 for the merge requests and the default branch. However,
-we're still running Ruby 2.7 for GitLab.com and there are older versions that
-we need to maintain, so we also run our test suite against Ruby 2.7 on a
-dedicated 2-hourly scheduled pipelines.
+We're running Ruby 3.0 on GitLab.com, as well as for merge requests and the default branch.
+However, there are older versions for which we need to support Ruby 2.7, so we also run our
+test suite against Ruby 2.7 on a dedicated 2-hourly scheduled pipelines.
 
 For merge requests, you can add the `pipeline:run-in-ruby2` label to switch
 the Ruby version used for running the whole test suite to 2.7. When you do
@@ -481,22 +581,22 @@ This should let us:
 
 ### PostgreSQL versions testing
 
-Our test suite runs against PG12 as GitLab.com runs on PG12 and
-[Omnibus defaults to PG12 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
+Our test suite runs against PG13 as GitLab.com runs on PG13 and
+[Omnibus defaults to PG13 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We do run our test suite against PG11 and PG13 on nightly scheduled pipelines.
+We do run our test suite against PG13 on nightly scheduled pipelines.
 
-We also run our test suite against PG11 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
+We also run our test suite against PG13 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg13` job).
 
 #### Current versions testing
 
-| Where?                                                                                         | PostgreSQL version                              | Ruby version |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
-| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 2.7 |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 3.0 (default version) |
+| Where?                                                                                         | PostgreSQL version                              | Ruby version          |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
+| Merge requests                                                                                 | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                        | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 13 (default version), 12 for DB library changes | 2.7                   |
+| `nightly` scheduled pipelines for the `master` branch                                          | 13 (default version), 12, 14 | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
 pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
@@ -510,16 +610,6 @@ The `ruby2` branch must not have any changes. The branch is only there to set
 The `gitlab` job in the `ruby2-sync` branch uses a `gitlab-org/gitlab` project
 token with `write_repository` scope and `Maintainer` role with no expiration.
 The token is stored in the `RUBY2_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
-
-#### Long-term plan
-
-We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administration/package_information/postgresql_versions.md):
-
-| PostgreSQL version | 14.1 (July 2021)       | 14.2 (August 2021)     | 14.3 (September 2021)  | 14.4 (October 2021)    | 14.5 (November 2021)   | 14.6 (December 2021)   |
-| -------------------| ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
-| PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
-| PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 
 ### Redis versions testing
 
@@ -542,6 +632,13 @@ By default, all tests run with [multiple databases](../database/multiple_databas
 
 We also run tests with a single database in nightly scheduled pipelines, and in merge requests that touch database-related files.
 
+Single database tests run in two modes:
+
+1. **Single database with one connection**. Where GitLab connects to all the tables using one connection pool.
+This runs through all the jobs that end with `-single-db`
+1. **Single database with two connections**. Where GitLab connects to `gitlab_main`, `gitlab_ci` database tables
+using different database connections. This runs through all the jobs that end with `-single-db-ci-connection`.
+
 If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
 
 ## Monitoring
@@ -562,7 +659,7 @@ In general, pipelines for an MR fall into one of the following types (from short
 
 - [Documentation pipeline](#documentation-pipeline): For MRs that touch documentation.
 - [Backend pipeline](#backend-pipeline): For MRs that touch backend code.
-- [Frontend pipeline](#frontend-pipeline): For MRs that touch frontend code.
+- [Review app pipeline](#review-app-pipeline): For MRs that touch frontend code.
 - [End-to-end pipeline](#end-to-end-pipeline): For MRs that touch code in the `qa/` folder.
 
 A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
@@ -599,10 +696,10 @@ graph LR
 graph RL;
   classDef criticalPath fill:#f66;
 
-  1-3["compile-test-assets (6 minutes)"];
+  1-3["compile-test-assets (5.5 minutes)"];
   class 1-3 criticalPath;
   click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
-  1-6["setup-test-env (4 minutes)"];
+  1-6["setup-test-env (3.6 minutes)"];
   click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
   1-14["retrieve-tests-metadata"];
   click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
@@ -614,19 +711,19 @@ graph RL;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
 
-  3_2-1["rspec:coverage (5.35 minutes)"];
+  3_2-1["rspec:coverage (5 minutes)"];
   class 3_2-1 criticalPath;
   click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
   3_2-1 -.->|"(don't use needs<br/>because of limitations)"| 2_5-1;
 
-  4_3-1["rspec:undercoverage (3.5 minutes)"];
+  4_3-1["rspec:undercoverage (1.3 minutes)"];
   class 4_3-1 criticalPath;
   click 4_3-1 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=13446492&udv=1005715"
   4_3-1 --> 3_2-1;
 
 ```
 
-### Frontend pipeline
+### Review app pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/431913287).
 
@@ -636,15 +733,15 @@ graph RL;
 
   1-2["build-qa-image (2 minutes)"];
   click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (16 minutes)"];
+  1-5["compile-production-assets (12 minutes)"];
   class 1-5 criticalPath;
   click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
 
-  2_3-1["build-assets-image (1.3 minutes)"];
+  2_3-1["build-assets-image (1.1 minutes)"];
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_6-1["start-review-app-pipeline (49 minutes)"];
+  2_6-1["start-review-app-pipeline (52 minutes)"];
   class 2_6-1 criticalPath;
   click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_6-1 --> 2_3-1 & 1-2;
@@ -660,17 +757,17 @@ graph RL;
 
   1-2["build-qa-image (2 minutes)"];
   click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (16 minutes)"];
+  1-5["compile-production-assets (12 minutes)"];
   class 1-5 criticalPath;
   click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
   1-15["detect-tests"];
   click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
 
-  2_3-1["build-assets-image (1.3 minutes)"];
+  2_3-1["build-assets-image (1.1 minutes)"];
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["e2e:package-and-test (102 minutes)"];
+  2_4-1["e2e:package-and-test-ee (103 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

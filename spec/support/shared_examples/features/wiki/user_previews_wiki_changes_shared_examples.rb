@@ -78,7 +78,7 @@ RSpec.shared_examples 'User previews wiki changes' do
 
     it_behaves_like 'relative links' do
       before do
-        click_on 'Preview'
+        click_button("Preview")
       end
 
       let(:element) { preview }
@@ -88,7 +88,7 @@ RSpec.shared_examples 'User previews wiki changes' do
       # using two `\n` ensures we're sublist to it's own line due
       # to list auto-continue
       fill_in :wiki_content, with: "1. one\n\n  - sublist\n"
-      click_on "Preview"
+      click_button("Preview")
 
       # the above generates two separate lists (not embedded) in CommonMark
       expect(preview).to have_content("sublist")
@@ -102,7 +102,7 @@ RSpec.shared_examples 'User previews wiki changes' do
         [[also_do_not_linkify]]
         ```
       HEREDOC
-      click_on "Preview"
+      click_button("Preview")
 
       expect(preview).to have_content("do_not_linkify")
       expect(preview).to have_content('[[do_not_linkify]]')

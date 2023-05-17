@@ -451,7 +451,7 @@ RSpec.describe ApplicationHelper do
             find_file: nil,
             group: nil,
             project_id: project.id,
-            project: project.name,
+            project: project.path,
             namespace_id: project.namespace.id
           }
         )
@@ -469,7 +469,7 @@ RSpec.describe ApplicationHelper do
               find_file: nil,
               group: project.group.name,
               project_id: project.id,
-              project: project.name,
+              project: project.path,
               namespace_id: project.namespace.id
             }
           )
@@ -495,7 +495,7 @@ RSpec.describe ApplicationHelper do
                 find_file: nil,
                 group: nil,
                 project_id: issue.project.id,
-                project: issue.project.name,
+                project: issue.project.path,
                 namespace_id: issue.project.namespace.id
               }
             )
@@ -696,14 +696,84 @@ RSpec.describe ApplicationHelper do
   end
 
   describe 'stylesheet_link_tag_defer' do
-    it 'uses print stylesheet by default' do
+    it 'uses print stylesheet when feature flag disabled' do
+      stub_feature_flags(remove_startup_css: false)
+
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
+    end
+
+    it 'uses regular stylesheet when feature flag enabled' do
+      stub_feature_flags(remove_startup_css: true)
+
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
     end
 
     it 'uses regular stylesheet when no_startup_css param present' do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
+    end
+  end
+
+  describe 'sign_in_with_redirect?' do
+    context 'when on the sign-in page that redirects afterwards' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(true)
+        session[:user_return_to] = true
+      end
+
+      it 'returns true' do
+        expect(helper.sign_in_with_redirect?).to be_truthy
+      end
+    end
+
+    context 'when on a non sign-in page' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(helper.sign_in_with_redirect?).to be_falsey
+      end
+    end
+  end
+
+  describe 'collapsed_super_sidebar?' do
+    context 'when @force_desktop_expanded_sidebar is true' do
+      before do
+        helper.instance_variable_set(:@force_desktop_expanded_sidebar, true)
+      end
+
+      it 'returns false' do
+        expect(helper.collapsed_super_sidebar?).to eq(false)
+      end
+
+      it 'does not use the cookie value' do
+        expect(helper).not_to receive(:cookies)
+        helper.collapsed_super_sidebar?
+      end
+    end
+
+    context 'when @force_desktop_expanded_sidebar is not set (default)' do
+      context 'when super_sidebar_collapsed cookie is true' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'true'
+        end
+
+        it 'returns true' do
+          expect(helper.collapsed_super_sidebar?).to eq(true)
+        end
+      end
+
+      context 'when super_sidebar_collapsed cookie is false' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'false'
+        end
+
+        it 'returns false' do
+          expect(helper.collapsed_super_sidebar?).to eq(false)
+        end
+      end
     end
   end
 end

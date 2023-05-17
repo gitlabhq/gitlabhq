@@ -105,7 +105,7 @@ be configured already.
 ### Object Storage Settings
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format.
 
 For source installations, these settings are nested under `external_diffs:` and
@@ -121,7 +121,7 @@ then `object_store:`. On Omnibus installations, they are prefixed by
 
 #### S3 compatible connection settings
 
-See [the available connection settings for different providers](object_storage.md#connection-settings).
+See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
 **In Omnibus installations:**
 

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { fixTitle } from '~/tooltips';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -68,7 +69,7 @@ export default class ProjectLabelSubscription {
   }
 
   static setNewTitle($button, originalTitle, newStatus) {
-    const type = /group/.test(originalTitle) ? 'group' : 'project';
+    const type = /group/.test(originalTitle) ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     const newTitle = tooltipTitles[type][newStatus];
 
     $button.attr('title', newTitle);

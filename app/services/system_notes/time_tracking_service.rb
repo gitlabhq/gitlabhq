@@ -147,7 +147,7 @@ module SystemNotes
       readable_date = date_key.humanize.downcase
 
       if changed_date.nil?
-        "removed #{readable_date}"
+        "removed #{readable_date} #{changed_dates[date_key].first.to_s(:long)}"
       else
         "changed #{readable_date} to #{changed_date.to_s(:long)}"
       end

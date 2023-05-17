@@ -8,22 +8,13 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   background: transparent;
 }
 
-.design-checkbox {
-  position: absolute;
-  top: $gl-padding;
-  left: 30px;
-}
-
 .layout-page.design-detail-layout {
   max-height: 100vh;
 }
 
 .design-detail {
   background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
-
-  .with-performance-bar & {
-    top: 35px;
-  }
+  bottom: $calc-application-footer-height;
 
   .comment-indicator {
     border-radius: 50%;

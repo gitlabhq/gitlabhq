@@ -6,7 +6,7 @@ module Packages
       include ExclusiveLeaseGuard
       include Gitlab::Utils::StrongMemoize
 
-      SOURCE_FIELD_SPLIT_REGEX = /[ ()]/.freeze
+      SOURCE_FIELD_SPLIT_REGEX = /[ ()]/
       # used by ExclusiveLeaseGuard
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
@@ -41,7 +41,9 @@ module Packages
         raise ArgumentError, 'package file without Debian metadata' unless @package_file.debian_file_metadatum
         raise ArgumentError, 'already processed package file' unless @package_file.debian_file_metadatum.unknown?
 
-        return if file_metadata[:file_type] == :deb || file_metadata[:file_type] == :udeb
+        if file_metadata[:file_type] == :deb || file_metadata[:file_type] == :udeb || file_metadata[:file_type] == :ddeb
+          return
+        end
 
         raise ArgumentError, "invalid package file type: #{file_metadata[:file_type]}"
       end
@@ -52,14 +54,21 @@ module Packages
       strong_memoize_attr :file_metadata
 
       def package
-        package = temp_package.project
-                              .packages
-                              .debian
-                              .with_name(package_name)
-                              .with_version(package_version)
-                              .with_debian_codename_or_suite(@distribution_name)
-                              .not_pending_destruction
-                              .last
+        packages = temp_package.project
+                               .packages
+                               .existing_debian_packages_with(name: package_name, version: package_version)
+        package = packages.with_debian_codename_or_suite(@distribution_name)
+                          .first
+
+        unless package
+          package_in_other_distribution = packages.first
+
+          if package_in_other_distribution
+            raise ArgumentError, "Debian package #{package_name} #{package_version} exists " \
+                                 "in distribution #{package_in_other_distribution.debian_distribution.codename}"
+          end
+        end
+
         package || temp_package
       end
       strong_memoize_attr :package

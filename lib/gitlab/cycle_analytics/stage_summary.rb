@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def user_has_sufficient_access?
-        @project.team.member?(@current_user, Gitlab::Access::REPORTER)
+        @project.member?(@current_user, Gitlab::Access::REPORTER)
       end
 
       def serialize(summary_object, with_unit: false)

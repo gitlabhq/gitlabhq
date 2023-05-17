@@ -5,7 +5,6 @@ description: Distinct users triggering jobs in a month
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: continuous_integration
 value_type: number
 status: active
 time_frame: 28d

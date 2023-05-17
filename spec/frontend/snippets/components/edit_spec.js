@@ -9,7 +9,7 @@ import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
@@ -25,7 +25,7 @@ import UpdateSnippetMutation from '~/snippets/mutations/update_snippet.mutation.
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 import { testEntries, createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_UPLOADED_FILES = ['foo/bar.txt', 'alpha/beta.js'];
 const TEST_API_ERROR = new Error('TEST_API_ERROR');
@@ -94,7 +94,6 @@ describe('Snippet Edit app', () => {
   let mutateSpy;
 
   const relativeUrlRoot = '/foo/';
-  const originalRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -106,12 +105,6 @@ describe('Snippet Edit app', () => {
 
     gon.relative_url_root = relativeUrlRoot;
     jest.spyOn(urlUtils, 'redirectTo').mockImplementation();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   const findBlobActions = () => wrapper.findComponent(SnippetBlobActionsEdit);
@@ -132,10 +125,6 @@ describe('Snippet Edit app', () => {
     props = {},
     selectedLevel = VISIBILITY_LEVEL_PRIVATE_STRING,
   } = {}) => {
-    if (wrapper) {
-      throw new Error('wrapper already created');
-    }
-
     const requestHandlers = [
       [GetSnippetQuery, getSpy],
       // See `mutateSpy` declaration comment for why we send a key
@@ -267,7 +256,7 @@ describe('Snippet Edit app', () => {
       VISIBILITY_LEVEL_PRIVATE_STRING,
       VISIBILITY_LEVEL_INTERNAL_STRING,
       VISIBILITY_LEVEL_PUBLIC_STRING,
-    ])('marks %s visibility by default', async (visibility) => {
+    ])('marks %s visibility by default', (visibility) => {
       createComponent({
         props: { snippetGid: '' },
         selectedLevel: visibility,
@@ -339,7 +328,7 @@ describe('Snippet Edit app', () => {
       it('should redirect to snippet view on successful mutation', async () => {
         await createComponentAndSubmit();
 
-        expect(urlUtils.redirectTo).toHaveBeenCalledWith(TEST_WEB_URL);
+        expect(urlUtils.redirectTo).toHaveBeenCalledWith(TEST_WEB_URL); // eslint-disable-line import/no-deprecated
       });
 
       describe('when there are errors after creating a new snippet', () => {
@@ -347,7 +336,7 @@ describe('Snippet Edit app', () => {
           projectPath
           ${'project/path'}
           ${''}
-        `('should flash error (projectPath=$projectPath)', async ({ projectPath }) => {
+        `('should alert error (projectPath=$projectPath)', async ({ projectPath }) => {
           mutateSpy.mockResolvedValue(createMutationResponseWithErrors('createSnippet'));
 
           await createComponentAndLoad({
@@ -360,7 +349,7 @@ describe('Snippet Edit app', () => {
 
           await waitForPromises();
 
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
           expect(createAlert).toHaveBeenCalledWith({
             message: `Can't create snippet: ${TEST_MUTATION_ERROR}`,
           });
@@ -373,7 +362,7 @@ describe('Snippet Edit app', () => {
           ${'project/path'}
           ${''}
         `(
-          'should flash error with (snippet=$snippetGid, projectPath=$projectPath)',
+          'should alert error with (snippet=$snippetGid, projectPath=$projectPath)',
           async ({ projectPath }) => {
             mutateSpy.mockResolvedValue(createMutationResponseWithErrors('updateSnippet'));
 
@@ -384,7 +373,7 @@ describe('Snippet Edit app', () => {
               },
             });
 
-            expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+            expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
             expect(createAlert).toHaveBeenCalledWith({
               message: `Can't update snippet: ${TEST_MUTATION_ERROR}`,
             });
@@ -402,10 +391,10 @@ describe('Snippet Edit app', () => {
         });
 
         it('should not redirect', () => {
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
         });
 
-        it('should flash', () => {
+        it('should alert', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
           expect(createAlert).toHaveBeenCalledWith({
             message: `Can't update snippet: ${TEST_API_ERROR.message}`,

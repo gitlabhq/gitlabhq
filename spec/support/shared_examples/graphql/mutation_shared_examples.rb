@@ -15,7 +15,7 @@ RSpec.shared_examples 'a mutation that returns top-level errors' do |errors: []|
 
     expect(graphql_errors).to be_present
 
-    error_messages = graphql_errors.map { |e| e['message'] }
+    error_messages = graphql_errors.pluck('message')
 
     expect(error_messages).to match_errors
   end
@@ -25,7 +25,7 @@ end
 # the mutation.
 RSpec.shared_examples 'a mutation that returns a top-level access error' do
   include_examples 'a mutation that returns top-level errors',
-                   errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 end
 
 RSpec.shared_examples 'an invalid argument to the mutation' do |argument_name:|

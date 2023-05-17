@@ -1,11 +1,13 @@
 - page_title s_("UsageQuota|Usage")
+- add_page_specific_style 'page_bundles/projects_usage_quotas'
+- @force_desktop_expanded_sidebar = true
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
 = render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
   variant: :info,
   alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-display-none' }) do |c|
-  = c.body do
+  - c.with_body do
     = _('To view usage, refresh this page in a few minutes.')
 
 %h1.page-title.gl-font-size-h-display
@@ -17,10 +19,12 @@
     %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
       = s_('UsageQuota|Learn more about usage quotas') + '.'
 
-= gl_tabs_nav do
+= gl_tabs_nav({ id: 'js-project-usage-quotas-tabs' }) do
   = gl_tab_link_to '#storage-quota-tab', item_active: true do
     = s_('UsageQuota|Storage')
+  = render_if_exists 'projects/usage_quotas/transfer_tab_link'
 
 .tab-content
   .tab-pane.active#storage-quota-tab
     #js-project-storage-count-app{ data: { project_path: @project.full_path } }
+  = render_if_exists 'projects/usage_quotas/transfer_tab_content'

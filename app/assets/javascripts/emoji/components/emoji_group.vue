@@ -1,5 +1,10 @@
 <script>
+import { compatFunctionalMixin } from '~/lib/utils/vue3compat/compat_functional_mixin';
+
 export default {
+  // Temporary mixin for migration from Vue.js 2 to @vue/compat
+  mixins: [compatFunctionalMixin],
+
   props: {
     emojis: {
       type: Array,

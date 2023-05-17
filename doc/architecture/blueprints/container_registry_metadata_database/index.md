@@ -8,6 +8,8 @@ owning-stage: "~devops::package"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Container Registry Metadata Database
 
 ## Usage of the GitLab Container Registry

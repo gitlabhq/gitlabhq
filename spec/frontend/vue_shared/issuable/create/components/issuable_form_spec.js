@@ -36,10 +36,6 @@ describe('IssuableForm', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('methods', () => {
     describe('handleUpdateSelectedLabels', () => {
       it('sets provided `labels` param to prop `selectedLabels`', () => {

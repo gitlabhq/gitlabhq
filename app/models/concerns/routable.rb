@@ -99,39 +99,11 @@ module Routable
   end
 
   def full_name
-    # We have to test for persistence as the cache key uses #updated_at
-    return (route&.name || build_full_name) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
-
-    # Return the name as-is if the parent is missing
-    return name if route.nil? && parent.nil? && name.present?
-
-    # If the route is already preloaded, return directly, preventing an extra load
-    return route.name if route_loaded? && route.present?
-
-    # Similarly, we can allow the build if the parent is loaded
-    return build_full_name if parent_loaded?
-
-    Gitlab::Cache.fetch_once([cache_key, :full_name]) do
-      route&.name || build_full_name
-    end
+    full_attribute(:name)
   end
 
   def full_path
-    # We have to test for persistence as the cache key uses #updated_at
-    return (route&.path || build_full_path) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
-
-    # Return the path as-is if the parent is missing
-    return path if route.nil? && parent.nil? && path.present?
-
-    # If the route is already preloaded, return directly, preventing an extra load
-    return route.path if route_loaded? && route.present?
-
-    # Similarly, we can allow the build if the parent is loaded
-    return build_full_path if parent_loaded?
-
-    Gitlab::Cache.fetch_once([cache_key, :full_path]) do
-      route&.path || build_full_path
-    end
+    full_attribute(:path)
   end
 
   # Overriden in the Project model
@@ -162,6 +134,31 @@ module Routable
   end
 
   private
+
+  # rubocop: disable GitlabSecurity/PublicSend
+  def full_attribute(attribute)
+    attribute_from_route_or_self = ->(attribute) do
+      route&.public_send(attribute) || send("build_full_#{attribute}")
+    end
+
+    unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
+      return attribute_from_route_or_self.call(attribute)
+    end
+
+    # Return the attribute as-is if the parent is missing
+    return public_send(attribute) if route.nil? && parent.nil? && public_send(attribute).present?
+
+    # If the route is already preloaded, return directly, preventing an extra load
+    return route.public_send(attribute) if route_loaded? && route.present? && route.public_send(attribute)
+
+    # Similarly, we can allow the build if the parent is loaded
+    return send("build_full_#{attribute}") if parent_loaded?
+
+    Gitlab::Cache.fetch_once([cache_key, :"full_#{attribute}"]) do
+      attribute_from_route_or_self.call(attribute)
+    end
+  end
+  # rubocop: enable GitlabSecurity/PublicSend
 
   def set_path_errors
     route_path_errors = self.errors.delete(:"route.path")

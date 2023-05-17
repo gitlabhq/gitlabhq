@@ -10,6 +10,7 @@ module Gitlab
         @ee_hash = @hash.delete(:ee) || {}
 
         @hash[:tree] = normalize_tree(@hash[:tree])
+        @hash[:import_only_tree] = normalize_tree(@hash[:import_only_tree] || {})
         @ee_hash[:tree] = normalize_tree(@ee_hash[:tree] || {})
       end
 
@@ -51,7 +52,7 @@ module Gitlab
       end
 
       def parse_yaml
-        YAML.load_file(@config)
+        YAML.safe_load_file(@config, aliases: true, permitted_classes: [Symbol])
       end
     end
   end

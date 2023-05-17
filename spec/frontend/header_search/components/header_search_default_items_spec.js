@@ -29,10 +29,6 @@ describe('HeaderSearchDefaultItems', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownHeader = () => wrapper.findComponent(GlDropdownSectionHeader);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownItem = () => findDropdownItems().at(0);

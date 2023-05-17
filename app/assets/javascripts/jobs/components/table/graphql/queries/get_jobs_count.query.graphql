@@ -1,0 +1,8 @@
+query getJobsCount($fullPath: ID!, $statuses: [CiJobStatus!]) {
+  project(fullPath: $fullPath) {
+    id
+    jobs(statuses: $statuses) {
+      count
+    }
+  }
+}

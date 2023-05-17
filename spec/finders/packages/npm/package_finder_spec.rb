@@ -71,6 +71,14 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       context 'enabled' do
         it { is_expected.to contain_exactly(package2) }
       end
+
+      context 'with npm_allow_packages_in_multiple_projects disabled' do
+        before do
+          stub_feature_flags(npm_allow_packages_in_multiple_projects: false)
+        end
+
+        it { is_expected.to contain_exactly(package2) }
+      end
     end
 
     context 'with a project' do

@@ -13,10 +13,6 @@ module Gitlab
         for_migration_class(class_name).where('arguments = ?', arguments.to_json) # rubocop:disable Rails/WhereEquals
       end
 
-      scope :for_partitioning_migration, -> (class_name, table_name) do
-        for_migration_class(class_name).where('arguments ->> 2 = ?', table_name)
-      end
-
       enum status: {
         pending: 0,
         succeeded: 1

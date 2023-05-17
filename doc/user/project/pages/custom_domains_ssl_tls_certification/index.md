@@ -1,11 +1,10 @@
 ---
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom domains and SSL/TLS certificates **(FREE)**
+# GitLab Pages custom domains **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
@@ -13,7 +12,7 @@ You can use custom domains:
 
 - With GitLab Pages.
 - To [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
-  When using custom domains this way, you use the GitLab Pages feature but can skip the [requirements](#requirements).
+  When using custom domains this way, you use the GitLab Pages feature but can skip the [prerequisites](#prerequisites).
 
 To use one or more custom domain names:
 
@@ -24,7 +23,7 @@ To use one or more custom domain names:
 
 To set up Pages with a custom domain name, read the requirements and steps below.
 
-### Requirements
+### Prerequisites
 
 - A GitLab Pages website up and running, served under the default Pages domain
   (`*.gitlab.io`, for GitLab.com).
@@ -34,7 +33,7 @@ To set up Pages with a custom domain name, read the requirements and steps below
     there are multiple DNS records on that name, you must use an `ALIAS` record.
   - A DNS `TXT` record to verify your domain's ownership.
 - Set either `external_http` or `external_https` in `/etc/gitlab/gitlab.rb` to the IP and port of
-  your [Pages Daemon](../../../../administration/pages/index.md#overview).
+  your [Pages daemon](../../../../administration/pages/index.md#the-gitlab-pages-daemon).
   If you don't have IPv6, you can omit the IPv6 address.
 
   Example:
@@ -197,38 +196,6 @@ from the GitLab project.
   in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
 
-##### Troubleshoot domain verification
-
-To manually verify that you have properly configured the domain verification
-`TXT` DNS entry, you can run the following command in your terminal:
-
-```shell
-dig _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN> TXT
-```
-
-Expect the output:
-
-```plaintext
-;; ANSWER SECTION:
-_gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN>. 300 IN TXT "gitlab-pages-verification-code=<YOUR-VERIFICATION-CODE>"
-```
-
-In some cases it can help to add the verification code with the same domain name as you are trying to register.
-
-For a root domain:
-
-| From                                              | DNS Record | To                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-| `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-
-For a subdomain:
-
-| From                                              | DNS Record | To                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
-| `www.example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-| `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-
 ### Add more domain aliases
 
 You can add more than one alias (custom domains and subdomains) to the same project.
@@ -352,14 +319,36 @@ To enable this setting:
 If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to
 `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Domain verification
 
-Each scenario can be a third-level heading, for example, `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+To manually verify that you have properly configured the domain verification
+`TXT` DNS entry, you can run the following command in your terminal:
+
+```shell
+dig _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN> TXT
+```
+
+Expect the output:
+
+```plaintext
+;; ANSWER SECTION:
+_gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN>. 300 IN TXT "gitlab-pages-verification-code=<YOUR-VERIFICATION-CODE>"
+```
+
+In some cases it can help to add the verification code with the same domain name as you are trying to register.
+
+For a root domain:
+
+| From                                              | DNS Record | To                     |
+| ------------------------------------------------- | ---------- | ---------------------- |
+| `example.com`                                     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+
+For a subdomain:
+
+| From                                              | DNS Record | To                     |
+| ------------------------------------------------- | ---------- | ---------------------- |
+| `www.example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |

@@ -69,7 +69,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
     let(:member) { create(:"#{entity_type}_member", :invited) }
 
     it "calls NotificationService.decline_#{entity_type}_invite" do
-      expect(notification_service).to receive(:"decline_#{entity_type}_invite").with(member)
+      expect(notification_service).to receive(:decline_invite).with(member)
 
       member.decline_invite!
     end

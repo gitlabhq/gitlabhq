@@ -163,6 +163,12 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  def public_packages?
+    return false unless Gitlab.config.packages.enabled
+
+    package_registry_access_level == PUBLIC || project.public?
+  end
+
   private
 
   def set_pages_access_level
@@ -200,7 +206,7 @@ class ProjectFeature < ApplicationRecord
 
   override :resource_member?
   def resource_member?(user, feature)
-    project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
+    project.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end
 end
 

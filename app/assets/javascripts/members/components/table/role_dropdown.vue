@@ -81,19 +81,18 @@ export default {
         return;
       }
 
-      this.updateMemberRole({
-        memberId: this.member.id,
-        accessLevel: { integerValue: newRoleValue, stringValue: newRoleName },
-      })
-        .then(() => {
-          this.$toast.show(s__('Members|Role updated successfully.'));
-        })
-        .catch((error) => {
-          Sentry.captureException(error);
-        })
-        .finally(() => {
-          this.busy = false;
+      try {
+        await this.updateMemberRole({
+          memberId: this.member.id,
+          accessLevel: { integerValue: newRoleValue, stringValue: newRoleName },
         });
+
+        this.$toast.show(s__('Members|Role updated successfully.'));
+      } catch (error) {
+        Sentry.captureException(error);
+      } finally {
+        this.busy = false;
+      }
     },
   },
 };

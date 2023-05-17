@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can configure an external Sidekiq instance by using the Sidekiq that's bundled in the GitLab package. Sidekiq requires connection to the Redis,
 PostgreSQL, and Gitaly instances.
 
-## Configure TCP access for PostgreSQL, Gitaly, and Redis
+## Configure TCP access for PostgreSQL, Gitaly, and Redis on the GitLab instance
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
@@ -32,12 +32,20 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
    ## Gitaly
 
-   # Make Gitaly accept connections on all network interfaces
-   gitaly['listen_addr'] = "0.0.0.0:8075"
-   ## Set up the Gitaly token as a form of authentication since you are accessing Gitaly over the network
-   ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
-   gitaly['auth_token'] = 'abc123secret'
-   praefect['auth_token'] = 'abc123secret'
+   gitaly['configuration'] = {
+      # ...
+      #
+      # Make Gitaly accept connections on all network interfaces
+      listen_addr: '0.0.0.0:8075',
+      auth: {
+         ## Set up the Gitaly token as a form of authentication since you are accessing Gitaly over the network
+         ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
+         token: 'abc123secret',
+      },
+   }
+
+   gitaly['auth_token'] = ''
+   praefect['configuration'][:auth][:token] = 'abc123secret'
    gitlab_rails['gitaly_token'] = 'abc123secret'
 
    ## Redis configuration
@@ -48,7 +56,6 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    redis['password'] = 'redis-password-goes-here'
    gitlab_rails['redis_password'] = 'redis-password-goes-here'
 
-   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Run `reconfigure`:
@@ -61,18 +68,6 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
    ```shell
    sudo gitlab-ctl restart postgresql
-   ```
-
-1. After the restart, set `auto_migrate` to `true` or comment to use the default settings:
-
-   ```ruby
-   gitlab_rails['auto_migrate'] = true
-   ```
-
-1. Run `reconfigure` again:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
    ```
 
 ## Set up Sidekiq instance
@@ -170,7 +165,7 @@ Updates to example must be made at:
 
    # Replace <database_host> and <database_password>
    gitlab_rails['db_host'] = '<database_host>'
-   gitlab_rails['db_port'] = '5432'
+   gitlab_rails['db_port'] = 5432
    gitlab_rails['db_password'] = '<database_password>'
    ## Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -257,7 +252,7 @@ To configure the metrics server:
    ```ruby
    sidekiq['metrics_enabled'] = true
    sidekiq['listen_address'] = "localhost"
-   sidekiq['listen_port'] = "8082"
+   sidekiq['listen_port'] = 8082
 
    # Optionally log all the metrics server logs to log/sidekiq_exporter.log
    sidekiq['exporter_log_enabled'] = true
@@ -299,7 +294,7 @@ To make health checks available from `localhost:8092`:
    ```ruby
    sidekiq['health_checks_enabled'] = true
    sidekiq['health_checks_listen_address'] = "localhost"
-   sidekiq['health_checks_listen_port'] = "8092"
+   sidekiq['health_checks_listen_port'] = 8092
    ```
 
 1. Reconfigure GitLab:
@@ -325,7 +320,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+   ```ruby
    gitlab_rails['ldap_enabled'] = true
    gitlab_rails['prevent_ldap_sign_in'] = false
    gitlab_rails['ldap_servers'] = {

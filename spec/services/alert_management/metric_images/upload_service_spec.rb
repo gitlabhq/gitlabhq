@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AlertManagement::MetricImages::UploadService do
+RSpec.describe AlertManagement::MetricImages::UploadService, feature_category: :metrics do
   subject(:service) { described_class.new(alert, current_user, params) }
 
   let_it_be_with_refind(:project) { create(:project) }

@@ -3,7 +3,6 @@ stage: Govern
 group: Compliance
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, concepts
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html'
 ---
 
 # External status checks **(ULTIMATE)**
@@ -11,6 +10,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/statu
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 > - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
+
+Status checks are API calls to external systems that request the status of an external requirement.
 
 You can create a status check that sends merge request data to third-party tools.
 When users create, change, or close merge requests, GitLab sends a notification. The users or automated workflows
@@ -70,7 +71,7 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 ## View the status checks on a project
 
-Within each project's settings, you can see a list of status checks added to the project:
+Within each project's settings, you can see a list of status check services added to the project:
 
 1. In your project, go to **Settings > Merge requests** section.
 1. Scroll down to **Status checks**.
@@ -80,9 +81,9 @@ Within each project's settings, you can see a list of status checks added to the
 This list shows the service name, API URL, and targeted branch.
 It also provides actions to allow you to create, edit, or remove status checks.
 
-## Add or update a status check
+## Add or update a status check service
 
-### Add a status check
+### Add a status check service
 
 Within the **Status checks** sub-section, select the **Add status check** button.
 The **Add status check** form is then shown.
@@ -91,7 +92,7 @@ The **Add status check** form is then shown.
 
 Filling in the form and selecting the **Add status check** button creates a new status check.
 
-### Update a status check
+### Update a status check service
 
 Within the **Status checks** sub-section, select the **Edit** button
 next to the status check you want to edit.
@@ -134,7 +135,7 @@ for doesn't appear immediately. The search box requires
 If you want the status check to be applied to **all** merge requests,
 you can select the **All branches** option.
 
-## Delete a status check
+## Delete a status check service
 
 Within the **Status checks** sub-section, select the **Remove...** button
 next to the status check you want to delete.
@@ -151,11 +152,14 @@ the status check and it **is not** recoverable.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
 > - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
 > - Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
+> - Widget [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111763) to poll for updates when there are pending status checks in GitLab 15.11.
 
 The status checks widget displays in merge requests and displays the following statuses:
 
 - **pending** (**{status-neutral}**), while GitLab waits for a response from an external status check.
 - **success** (**{status-success}**) or **failed** (**{status-failed}**), when GitLab receives a response from an external status check.
+
+When there are pending status checks, the widget polls for updates every few seconds until it receives a **success** or **failed** response.
 
 To retry a failed status check:
 

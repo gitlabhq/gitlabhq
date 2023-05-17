@@ -10,8 +10,8 @@ import ProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
 import initSettingsPanels from '~/settings_panels';
 
 export default () => {
-  new ProtectedTagCreate();
-  new ProtectedTagEditList();
+  new ProtectedTagCreate({ hasLicense: false });
+  new ProtectedTagEditList({ hasLicense: false });
   initDeployKeys();
   initSettingsPanels();
   new ProtectedBranchCreate({ hasLicense: false });

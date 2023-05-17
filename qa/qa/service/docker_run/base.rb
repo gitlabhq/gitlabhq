@@ -85,6 +85,10 @@ module QA
 
           shell "docker restart #{@name}"
         end
+
+        def health
+          shell("docker inspect --format='{{json .State.Health.Status}}' #{@name}").delete('"')
+        end
       end
     end
   end

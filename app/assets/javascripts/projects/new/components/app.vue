@@ -9,6 +9,7 @@ import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue'
 import NewProjectPushTipPopover from './new_project_push_tip_popover.vue';
 
 const CI_CD_PANEL = 'cicd_for_external_repo';
+const IMPORT_PROJECT_PANEL = 'import_project';
 const PANELS = [
   {
     key: 'blank',
@@ -32,7 +33,7 @@ const PANELS = [
   },
   {
     key: 'import',
-    name: 'import_project',
+    name: IMPORT_PROJECT_PANEL,
     selector: '#import-project-pane',
     title: s__('ProjectsNew|Import project'),
     description: s__(
@@ -59,6 +60,24 @@ export default {
     SafeHtml,
   },
   props: {
+    rootPath: {
+      type: String,
+      required: true,
+    },
+    projectsUrl: {
+      type: String,
+      required: true,
+    },
+    parentGroupUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    parentGroupName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     hasErrors: {
       type: Boolean,
       required: false,
@@ -74,11 +93,40 @@ export default {
       required: false,
       default: '',
     },
+    canImportProjects: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   computed: {
+    initialBreadcrumbs() {
+      const breadcrumbs = this.parentGroupUrl
+        ? [{ text: this.parentGroupName, href: this.parentGroupUrl }]
+        : [
+            { text: s__('Navigation|Your work'), href: this.rootPath },
+            { text: s__('ProjectsNew|Projects'), href: this.projectsUrl },
+          ];
+      breadcrumbs.push({ text: s__('ProjectsNew|New project'), href: '#' });
+      return breadcrumbs;
+    },
     availablePanels() {
-      return this.isCiCdAvailable ? PANELS : PANELS.filter((p) => p.name !== CI_CD_PANEL);
+      if (this.isCiCdAvailable && this.canImportProjects) {
+        return PANELS;
+      }
+
+      return PANELS.filter((panel) => {
+        if (!this.canImportProjects && panel.name === IMPORT_PROJECT_PANEL) {
+          return false;
+        }
+
+        if (!this.isCiCdAvailable && panel.name === CI_CD_PANEL) {
+          return false;
+        }
+
+        return true;
+      });
     },
   },
 
@@ -95,7 +143,7 @@ export default {
 
 <template>
   <new-namespace-page
-    :initial-breadcrumb="__('New project')"
+    :initial-breadcrumbs="initialBreadcrumbs"
     :panels="availablePanels"
     :jump-to-last-persisted-panel="hasErrors"
     :title="s__('ProjectsNew|Create new project')"

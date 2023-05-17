@@ -275,6 +275,18 @@ RSpec.describe Groups::ChildrenController, feature_category: :subgroups do
         allow(Kaminari.config).to receive(:default_per_page).and_return(per_page)
       end
 
+      it 'rejects negative per_page parameter' do
+        get :index, params: { group_id: group.to_param, per_page: -1 }, format: :json
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'rejects non-numeric per_page parameter' do
+        get :index, params: { group_id: group.to_param, per_page: 'abc' }, format: :json
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
       context 'with only projects' do
         let!(:other_project) { create(:project, :public, namespace: group) }
         let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group) }

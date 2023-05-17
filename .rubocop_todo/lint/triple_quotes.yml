@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/TripleQuotes:
-  Details: grace period
-  Exclude:
-    - 'spec/lib/gitlab/database/with_lock_retries_outside_transaction_spec.rb'
-    - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'

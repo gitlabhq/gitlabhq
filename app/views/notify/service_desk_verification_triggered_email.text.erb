@@ -1,0 +1,10 @@
+<% user_name = '@' + @triggerer.username %>
+<% project_name = @service_desk_setting.project.human_name %>
+<% email_address = @service_desk_setting.custom_email %>
+<% smtp_host = @smtp_address %>
+
+<%= s_('Notify|%{strong_open}%{user_name}%{strong_close} updated the custom email address credentials for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} and triggered the verification process.') % { user_name: user_name, project_link_start: '', project_name: project_name, project_link_end: '', strong_open: '', strong_close: '' } %>
+
+<%= s_('Notify|The provided custom email address is %{strong_open}%{email_address}%{strong_close} and uses the SMTP host %{strong_open}%{smtp_host}%{strong_close}.') % { email_address: email_address, smtp_host: smtp_host, strong_open: '', strong_close: '' } %>
+
+<%= s_('Notify|If this was a mistake you can change these settings or deactivate the custom email address in the project settings.') %>

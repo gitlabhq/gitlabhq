@@ -10,10 +10,6 @@ module Subscriptions
               required: true,
               description: 'ID of the issuable.'
 
-    def subscribe(issuable_id:)
-      nil
-    end
-
     def authorized?(issuable_id:)
       issuable = force(GitlabSchema.find_by_gid(issuable_id))
 

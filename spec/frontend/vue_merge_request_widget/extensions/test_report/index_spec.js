@@ -73,7 +73,6 @@ describe('Test report extension', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

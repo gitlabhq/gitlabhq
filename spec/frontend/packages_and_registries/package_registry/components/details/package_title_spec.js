@@ -38,7 +38,7 @@ describe('PackageTitle', () => {
       },
       provide,
       directives: {
-        GlResizeObserver: createMockDirective(),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
     await nextTick();
@@ -55,21 +55,17 @@ describe('PackageTitle', () => {
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
   const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders', () => {
     it('without tags', async () => {
       await createComponent({ ...packageData(), packageFiles: { nodes: packageFiles() } });
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findPackageTags().exists()).toBe(false);
     });
 
     it('with tags', async () => {
       await createComponent();
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findPackageTags().exists()).toBe(true);
     });
 
     it('with tags on mobile', async () => {

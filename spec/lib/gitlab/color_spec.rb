@@ -125,12 +125,12 @@ RSpec.describe Gitlab::Color do
       expect(described_class.new('#fff')).to be_light
     end
 
-    specify '#a7a7a7 is light' do
-      expect(described_class.new('#a7a7a7')).to be_light
+    specify '#c2c2c2 is light' do
+      expect(described_class.new('#c2c2c2')).to be_light
     end
 
-    specify '#a6a7a7 is dark' do
-      expect(described_class.new('#a6a7a7')).not_to be_light
+    specify '#868686 is dark' do
+      expect(described_class.new('#868686')).not_to be_light
     end
 
     specify '#000 is dark' do
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Color do
   describe '#contrast' do
     context 'with light colors' do
       it 'is dark' do
-        %w[#fff #fefefe #a7a7a7].each do |hex|
+        %w[#fff #fefefe #c2c2c2].each do |hex|
           expect(described_class.new(hex)).to have_attributes(
             contrast: described_class::Constants::DARK,
             luminosity: :light

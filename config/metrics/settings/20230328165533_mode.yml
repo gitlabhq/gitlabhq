@@ -1,0 +1,23 @@
+---
+key_path: database.mode
+description: What PostgreSQL database mode is used. Possible values are
+  "single-database", "single-database-ci-connection", or "multiple-databases"
+product_section: enablement
+product_stage: enablement
+product_group: database
+product_category: database
+value_type: string
+status: active
+milestone: "15.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115900
+time_frame: none
+instrumentation_class: DatabaseMode
+data_source: system
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

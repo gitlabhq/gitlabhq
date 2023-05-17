@@ -5,14 +5,15 @@ require 'spec_helper'
 RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
   let(:client) { double }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
-
-  subject(:user) { described_class.new(client, octocat) }
-
-  before do
-    allow(client).to receive(:user).and_return(octocat)
-  end
+  let(:gitea_ghost) { { id: -1, login: 'Ghost', email: '' } }
 
   describe '#gitlab_id' do
+    subject(:user) { described_class.new(client, octocat) }
+
+    before do
+      allow(client).to receive(:user).and_return(octocat)
+    end
+
     context 'when GitHub user is a GitLab user' do
       it 'return GitLab user id when user associated their account with GitHub' do
         gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
@@ -49,6 +50,18 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
 
     it 'returns nil when GitHub user is not a GitLab user' do
       expect(user.gitlab_id).to be_nil
+    end
+  end
+
+  describe '.email' do
+    subject(:user) { described_class.new(client, gitea_ghost) }
+
+    before do
+      allow(client).to receive(:user).and_return(gitea_ghost)
+    end
+
+    it 'assigns a dummy email address when user is a Ghost gitea user' do
+      expect(subject.send(:email)).to eq described_class::GITEA_GHOST_EMAIL
     end
   end
 end

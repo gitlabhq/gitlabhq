@@ -11,7 +11,9 @@ module Gitlab
           p :seats_used
           p :seats_owed
           table :subscription_users
+          div :pending_members_alert
           button :remove_user
+          button :view_pending_approvals, text: /View pending approvals/
 
           # Pipelines section
           link :pipelines_tab
@@ -23,18 +25,22 @@ module Gitlab
           # Storage section
           link :storage_tab
           link :purchase_more_storage
-          div :used_storage_message
+          div :namespace_usage_total
           div :group_usage_message
           div :dependency_proxy_usage
           span :dependency_proxy_size
           div :container_registry_usage
-          div :project_storage_used
           div :project
           div :storage_type_legend
           span :container_registry_size
           div :purchased_usage_total
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
           div :additional_storage_alert, text: /purchase additional storage/
+
+          # Pending members
+          div :pending_members
+          button :approve_member
+          button :confirm_member_approval, text: /^OK$/
 
           def plan_ci_limits
             plan_ci_minutes[/(\d+){2}/]

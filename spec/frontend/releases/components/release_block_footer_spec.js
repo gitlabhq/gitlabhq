@@ -33,11 +33,6 @@ describe('Release block footer', () => {
     release = cloneDeep(originalRelease);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const commitInfoSection = () => wrapper.find('.js-commit-info');
   const commitInfoSectionLink = () => commitInfoSection().findComponent(GlLink);
   const tagInfoSection = () => wrapper.find('.js-tag-info');

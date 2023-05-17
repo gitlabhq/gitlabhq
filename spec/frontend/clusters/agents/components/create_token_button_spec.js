@@ -21,17 +21,13 @@ describe('CreateTokenButton', () => {
         ...provideData,
       },
       directives: {
-        GlModalDirective: createMockDirective(),
+        GlModalDirective: createMockDirective('gl-modal-directive'),
       },
       stubs: {
         GlTooltip,
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when user can create token', () => {
     beforeEach(() => {
@@ -59,7 +55,7 @@ describe('CreateTokenButton', () => {
     });
 
     it('disabled the button', () => {
-      expect(findButton().attributes('disabled')).toBe('true');
+      expect(findButton().attributes('disabled')).toBeDefined();
     });
 
     it('shows a disabled tooltip', () => {

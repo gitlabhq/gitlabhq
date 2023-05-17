@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::TestFailureHistoryWorker do
+RSpec.describe ::Ci::TestFailureHistoryWorker, feature_category: :static_application_security_testing do
   describe '#perform' do
     subject(:perform) { described_class.new.perform(pipeline_id) }
 

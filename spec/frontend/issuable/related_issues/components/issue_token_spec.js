@@ -24,13 +24,6 @@ describe('IssueToken', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findLink = () => wrapper.findComponent({ ref: 'link' });
   const findReference = () => wrapper.findComponent({ ref: 'reference' });
   const findReferenceIcon = () => wrapper.find('[data-testid="referenceIcon"]');

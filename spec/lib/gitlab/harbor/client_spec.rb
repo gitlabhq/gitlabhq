@@ -265,18 +265,20 @@ RSpec.describe Gitlab::Harbor::Client do
     end
   end
 
-  describe '#ping' do
+  describe '#check_project_availability' do
     before do
-      stub_request(:get, "https://demo.goharbor.io/api/v2.0/ping")
+      stub_request(:head, "https://demo.goharbor.io/api/v2.0/projects?project_name=testproject")
         .with(
           headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
             'Content-Type': 'application/json'
           })
-        .to_return(status: 200, body: 'pong')
+        .to_return(status: 200, body: '', headers: {})
     end
 
-    it "calls api/v2.0/ping successfully" do
-      expect(client.ping).to eq(success: true)
+    it "calls api/v2.0/projects successfully" do
+      expect(client.check_project_availability).to eq(success: true)
     end
   end
 

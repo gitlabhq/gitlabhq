@@ -14,6 +14,10 @@ module QA
           end
 
           def click_gitlab
+            retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
+              has_element?(:gitlab_import_button)
+            end
+
             click_element(:gitlab_import_button)
           end
         end

@@ -206,7 +206,8 @@ class Commit
 
   def self.link_reference_pattern
     @link_reference_pattern ||=
-      super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/o)
+      compose_link_reference_pattern('commit',
+        /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/o)
   end
 
   def to_reference(from = nil, full: false)
@@ -387,8 +388,6 @@ class Commit
         Gitlab::X509::Commit.new(self).signature
       when :SSH
         Gitlab::Ssh::Commit.new(self).signature
-      else
-        nil
       end
     end
   end
@@ -573,7 +572,42 @@ class Commit
     }
   end
 
+  def tipping_branches(limit: 0)
+    tipping_refs(Gitlab::Git::BRANCH_REF_PREFIX, limit: limit)
+  end
+
+  def tipping_tags(limit: 0)
+    tipping_refs(Gitlab::Git::TAG_REF_PREFIX, limit: limit)
+  end
+
+  def branches_containing(limit: 0, exclude_tipped: false)
+    # WARNING: This argument can be confusing, if there is a limit.
+    # for example set the limit to 5 and in the 5 out a total of 25 refs there is 2 tipped refs,
+    # then the method will only 3 refs, even though there is more.
+    excluded = exclude_tipped ? tipping_branches : []
+
+    refs = repository.branch_names_contains(id, limit: limit) || []
+    refs - excluded
+  end
+
+  def tags_containing(limit: 0, exclude_tipped: false)
+    # WARNING: This argument can be confusing, if there is a limit.
+    # for example set the limit to 5 and in the 5 out a total of 25 refs there is 2 tipped refs,
+    # then the method will only 3 refs, even though there is more.
+    excluded = exclude_tipped ? tipping_tags : []
+
+    refs = repository.tag_names_contains(id, limit: limit) || []
+    refs - excluded
+  end
+
   private
+
+  def tipping_refs(ref_prefix, limit: 0)
+    strong_memoize_with(:tipping_tags, ref_prefix, limit) do
+      refs = repository.refs_by_oid(oid: id, ref_patterns: [ref_prefix], limit: limit)
+      refs.map { |n| n.delete_prefix(ref_prefix) }
+    end
+  end
 
   def expire_note_etag_cache_for_related_mrs
     MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:expire_note_etag_cache)

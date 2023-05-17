@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 
+import { DATE_TIME_FORMATS, DEFAULT_DATE_TIME_FORMAT } from '~/lib/utils/datetime_utility';
 import timeagoMixin from '../mixins/timeago';
-import '~/lib/utils/datetime_utility';
 
 /**
  * Port of ruby helper time_ago_with_tooltip
@@ -15,7 +15,7 @@ export default {
   mixins: [timeagoMixin],
   props: {
     time: {
-      type: [String, Number],
+      type: [String, Number, Date],
       required: true,
     },
     tooltipPlacement: {
@@ -28,10 +28,16 @@ export default {
       required: false,
       default: '',
     },
+    dateTimeFormat: {
+      type: String,
+      required: false,
+      default: DEFAULT_DATE_TIME_FORMAT,
+      validator: (timeFormat) => DATE_TIME_FORMATS.includes(timeFormat),
+    },
   },
   computed: {
     timeAgo() {
-      return this.timeFormatted(this.time);
+      return this.timeFormatted(this.time, this.dateTimeFormat);
     },
   },
 };

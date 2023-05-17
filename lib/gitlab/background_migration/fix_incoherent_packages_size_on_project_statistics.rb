@@ -69,14 +69,14 @@ module Gitlab
         self.table_name = 'packages_packages'
 
         has_many :package_files,
-                 class_name: '::Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectStatistics::PackageFile' # rubocop:disable Layout/LineLength
+          class_name: '::Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectStatistics::PackageFile'
       end
 
       class PackageFile < ::ApplicationRecord
         self.table_name = 'packages_package_files'
 
         belongs_to :package,
-                   class_name: '::Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectStatistics::Package' # rubocop:disable Layout/LineLength
+          class_name: '::Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectStatistics::Package'
 
         def self.sum_query
           packages = FixIncoherentPackagesSizeOnProjectStatistics::Package.arel_table

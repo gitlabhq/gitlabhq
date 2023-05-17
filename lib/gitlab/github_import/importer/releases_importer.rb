@@ -73,6 +73,13 @@ module Gitlab
         def model
           Release
         end
+
+        def github_identifiers(release)
+          {
+            tag: release[:tag_name],
+            object_type: object_type
+          }
+        end
       end
     end
   end

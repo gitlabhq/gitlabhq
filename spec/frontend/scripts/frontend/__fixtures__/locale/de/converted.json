@@ -1,0 +1,21 @@
+{
+  "domain": "app",
+  "locale_data": {
+    "app": {
+      "": {
+        "domain": "app",
+        "lang": "de"
+      },
+      " %{start} to %{end}": [
+        " %{start} bis %{end}"
+      ],
+      "%d Alert:": [
+        "%d Warnung:",
+        "%d Warnungen:"
+      ],
+      "Example": [
+        ""
+      ]
+    }
+  }
+}

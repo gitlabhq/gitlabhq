@@ -2,12 +2,12 @@
 
 require "spec_helper"
 
-RSpec.describe EmailReceiverWorker, :mailer do
+RSpec.describe EmailReceiverWorker, :mailer, feature_category: :team_planning do
   let(:raw_message) { fixture_file('emails/valid_reply.eml') }
 
   context "when reply by email is enabled" do
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
     end
 
     it "calls the email receiver" do
@@ -67,7 +67,7 @@ RSpec.describe EmailReceiverWorker, :mailer do
 
   context "when reply by email is disabled" do
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(false)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(false)
     end
 
     it "doesn't call the email receiver" do

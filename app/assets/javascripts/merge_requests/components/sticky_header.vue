@@ -10,8 +10,31 @@ import StatusBox from '~/issuable/components/status_box.vue';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import titleSubscription from '../queries/title.subscription.graphql';
 
 export default {
+  apollo: {
+    $subscribe: {
+      title: {
+        query() {
+          return titleSubscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return !this.issuableId || !this.glFeatures.realtimeMrStatusChange;
+        },
+        result({ data: { mergeRequestMergeStatusUpdated } }) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.titleHtml = mergeRequestMergeStatusUpdated.titleHtml;
+          }
+        },
+      },
+    },
+  },
   components: {
     GlIntersectionObserver,
     GlLink,
@@ -36,6 +59,7 @@ export default {
     return {
       isStickyHeaderVisible: false,
       discussionCounter: 0,
+      titleHtml: this.title,
     };
   },
   computed: {
@@ -82,17 +106,17 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-pt-3 gl-display-none gl-md-display-block"
+      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-display-none gl-md-display-flex gl-flex-direction-column gl-justify-content-end gl-border-b"
       :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div
-        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5"
+        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5 gl-w-full"
         :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-center">
           <status-box :initial-state="getNoteableData.state" issuable-type="merge_request" />
           <p
-            v-safe-html:[$options.safeHtmlConfig]="title"
+            v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4"
           ></p>
           <div class="gl-display-flex gl-align-items-center">

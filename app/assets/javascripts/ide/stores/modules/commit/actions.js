@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { addNumericSuffix } from '~/ide/utils';
 import { sprintf, __ } from '~/locale';
 import { leftSidebarViews } from '../../../constants';

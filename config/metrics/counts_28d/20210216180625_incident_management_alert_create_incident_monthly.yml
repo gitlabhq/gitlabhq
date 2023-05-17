@@ -6,7 +6,6 @@ description: Count of unique users per month to create an incident corresponding
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category: incident_management
 value_type: number
 status: active
 time_frame: 28d

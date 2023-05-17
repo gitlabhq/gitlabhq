@@ -13,7 +13,6 @@ Rails/NegateInclude:
     - 'app/models/merge_request.rb'
     - 'app/models/milestone.rb'
     - 'app/services/todo_service.rb'
-    - 'app/services/work_items/parent_links/create_service.rb'
     - 'config/application.rb'
     - 'config/initializers/1_settings.rb'
     - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'

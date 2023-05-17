@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis guidelines
+# Redis development guidelines
 
 ## Redis instances
 
@@ -56,7 +56,7 @@ the entry, instead of relying on the key changing.
 
 ### Multi-key commands
 
-We don't use Redis Cluster, but support for it is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/118820).
+GitLab supports Redis Cluster only for the Redis [rate-limiting](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/rate_limiting.rb) type, introduced in [epic 823](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/823).
 
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for
@@ -76,6 +76,10 @@ Currently, we validate this in the development and test environments
 with the [`RedisClusterValidator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/instrumentation/redis_cluster_validator.rb),
 which is enabled for the `cache` and `shared_state`
 [Redis instances](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances)..
+
+Developers are highly encouraged to use [hash-tags](https://redis.io/docs/reference/cluster-spec/#hash-tags)
+where appropriate to facilitate future adoption of Redis Cluster in more Redis types. For example, the Namespace model uses hash-tags
+for its [config cache keys](https://gitlab.com/gitlab-org/gitlab/-/blob/1a12337058f260d38405886d82da5e8bb5d8da0b/app/models/namespace.rb#L786).
 
 ## Redis in structured logging
 
@@ -185,6 +189,26 @@ it 'avoids N+1 Redis calls to forks_count key' do
   control = RedisCommands::Recorder.new(pattern: 'forks_count') { visit_page }
 
   expect(control.count).to eq(1)
+end
+```
+
+You also can use special matchers `exceed_redis_calls_limit` and
+`exceed_redis_command_calls_limit` to define an upper limit for
+a number of Redis calls:
+
+```ruby
+it 'avoids N+1 Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_calls_limit(1)
+end
+```
+
+```ruby
+it 'avoids N+1 sadd Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_command_calls_limit(:sadd, 1)
 end
 ```
 

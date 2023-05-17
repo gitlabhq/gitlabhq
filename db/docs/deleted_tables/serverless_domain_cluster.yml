@@ -1,0 +1,10 @@
+---
+table_name: serverless_domain_cluster
+feature_categories:
+- deployment_management
+description: "(Deprecated) A custom domain for a GitLab managed Knative installation"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19835
+milestone: '12.6'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119543
+removed_in_milestone: '16.0'

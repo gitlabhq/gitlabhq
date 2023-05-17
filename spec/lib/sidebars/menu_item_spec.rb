@@ -18,4 +18,14 @@ RSpec.describe Sidebars::MenuItem do
       expect(menu_item.container_html_options).to eq html_options
     end
   end
+
+  describe "#serialize_for_super_sidebar" do
+    let(:html_options) { { class: 'custom-class' } }
+
+    subject { menu_item.serialize_for_super_sidebar }
+
+    it 'includes custom CSS classes' do
+      expect(subject[:link_classes]).to be('custom-class')
+    end
+  end
 end

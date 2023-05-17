@@ -41,10 +41,6 @@ describe('IssuableShowRoot', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     const {
       statusIcon,

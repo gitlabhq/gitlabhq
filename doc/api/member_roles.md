@@ -63,6 +63,8 @@ Adds a member role to a group.
 POST /groups/:id/member_roles
 ```
 
+To add a member role to a group, the group must be at root-level (have no parent group).
+
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |

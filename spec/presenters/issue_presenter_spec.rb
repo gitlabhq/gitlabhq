@@ -29,25 +29,15 @@ RSpec.describe IssuePresenter do
 
   describe '#web_url' do
     it 'returns correct path' do
-      expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+      expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/issues/#{presented_issue.iid}")
     end
 
     context 'when issue type is task' do
       let(:presented_issue) { task }
 
-      context 'when use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'returns a work item url for the task' do
-          expect(presenter.web_url).to eq(project_work_items_url(project, work_items_path: presented_issue.id))
-        end
-      end
-
       it 'returns a work item url using iid for the task' do
         expect(presenter.web_url).to eq(
-          project_work_items_url(project, work_items_path: presented_issue.iid, iid_path: true)
+          project_work_items_url(project, work_items_path: presented_issue.iid)
         )
       end
     end
@@ -69,25 +59,15 @@ RSpec.describe IssuePresenter do
 
   describe '#issue_path' do
     it 'returns correct path' do
-      expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+      expect(presenter.issue_path).to eq("/#{project.full_path}/-/issues/#{presented_issue.iid}")
     end
 
     context 'when issue type is task' do
       let(:presented_issue) { task }
 
-      context 'when use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'returns a work item path for the task' do
-          expect(presenter.issue_path).to eq(project_work_items_path(project, work_items_path: presented_issue.id))
-        end
-      end
-
       it 'returns a work item path using iid for the task' do
         expect(presenter.issue_path).to eq(
-          project_work_items_path(project, work_items_path: presented_issue.iid, iid_path: true)
+          project_work_items_path(project, work_items_path: presented_issue.iid)
         )
       end
     end

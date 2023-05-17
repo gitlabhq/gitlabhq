@@ -27,6 +27,9 @@ RSpec.describe Taskable, feature_category: :team_planning do
 
         + [ ] Narrow no-break space (U+202F)
         + [ ] Thin space (U+2009)
+
+        1. [ ] Numbered 1
+        2) [x] Numbered 2
       MARKDOWN
     end
 
@@ -35,7 +38,9 @@ RSpec.describe Taskable, feature_category: :team_planning do
         TaskList::Item.new('- [ ]', 'First item'),
         TaskList::Item.new('- [x]', 'Second item'),
         TaskList::Item.new('* [x]', 'First item'),
-        TaskList::Item.new('* [ ]', 'Second item')
+        TaskList::Item.new('* [ ]', 'Second item'),
+        TaskList::Item.new('1. [ ]', 'Numbered 1'),
+        TaskList::Item.new('2) [x]', 'Numbered 2')
       ]
     end
 

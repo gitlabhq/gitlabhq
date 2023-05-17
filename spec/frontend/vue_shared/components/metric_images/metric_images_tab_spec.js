@@ -45,13 +45,6 @@ describe('Metric images tab', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findImages = () => wrapper.findAllComponents(MetricImagesTable);
   const findModal = () => wrapper.findComponent(GlModal);

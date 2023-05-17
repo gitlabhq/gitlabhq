@@ -26,7 +26,7 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
       'tree'           | nil     | lazy { project_tree_path(project, id) }
       'tree'           | 'heads' | lazy { project_tree_path(project, id) }
       'blob'           | nil     | lazy { project_blob_path(project, id) }
-      'blob'           | 'heads' | lazy { project_blob_path(project, id, ref_type: 'heads') }
+      'blob'           | 'heads' | lazy { project_blob_path(project, id) }
       'graph'          | nil     | lazy { project_network_path(project, id) }
       'graph'          | 'heads' | lazy { project_network_path(project, id, ref_type: 'heads') }
       'graphs'         | nil     | lazy { project_graph_path(project, id) }
@@ -54,14 +54,9 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
     let(:path) { 'foo/bar/baz.html' }
 
     def default_get(format = :html)
-      get :logs_tree,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: 'master',
-            path: path
-          },
-          format: format
+      get :logs_tree, params: {
+        namespace_id: project.namespace.to_param, project_id: project, id: 'master', path: path
+      }, format: format
     end
 
     def xhr_get(format = :html, params = {})

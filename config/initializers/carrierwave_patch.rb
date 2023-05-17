@@ -22,7 +22,7 @@ module CarrierWave
           # multithreaded uploads (https://github.com/fog/fog-aws/pull/579).
           # Multithreaded uploads are essential for copying large amounts of data
           # within the request timeout.
-          if ::Feature.enabled?(:s3_multithreaded_uploads) && fog_provider == 'AWS'
+          if ::Feature.enabled?(:s3_multithreaded_uploads, type: :ops) && fog_provider == 'AWS'
             # AWS SDK uses 10 threads by default and a multipart chunk size of 10 MB
             file.concurrency = 10
             file.multipart_chunk_size = 10485760
@@ -43,7 +43,7 @@ module CarrierWave
         end
 
         def authenticated_url(options = {})
-          if %w[AWS Google Rackspace OpenStack AzureRM].include?(@uploader.fog_credentials[:provider])
+          if %w[AWS Google AzureRM].include?(@uploader.fog_credentials[:provider])
             # avoid a get by using local references
             local_directory = connection.directories.new(key: @uploader.fog_directory)
             local_file = local_directory.files.new(key: path)
@@ -51,10 +51,6 @@ module CarrierWave
             case @uploader.fog_credentials[:provider]
             when 'AWS', 'Google', 'AzureRM'
               local_file.url(expire_at, options)
-            when 'Rackspace'
-              connection.get_object_https_url(@uploader.fog_directory, path, expire_at, options)
-            when 'OpenStack'
-              connection.get_object_https_url(@uploader.fog_directory, path, expire_at)
             else
               local_file.url(expire_at)
             end

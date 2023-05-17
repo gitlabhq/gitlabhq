@@ -53,13 +53,15 @@ func SafeContentHeaders(data []byte, contentDisposition string) (string, string)
 
 	// Some browsers will render XML inline unless a filename directive is provided with a non-xml file extension
 	// This overrides the filename directive in the case of XML data
-	for _, element := range htmlRenderingTypes {
-		if isType(detectedContentType, element) {
-			disposition, directives, err := mime.ParseMediaType(contentDisposition)
-			if err == nil {
-				directives["filename"] = dummyFilename
-				contentDisposition = mime.FormatMediaType(disposition, directives)
-				break
+	if !attachmentRegex.MatchString(contentDisposition) {
+		for _, element := range htmlRenderingTypes {
+			if isType(detectedContentType, element) {
+				disposition, directives, err := mime.ParseMediaType(contentDisposition)
+				if err == nil {
+					directives["filename"] = dummyFilename
+					contentDisposition = mime.FormatMediaType(disposition, directives)
+					break
+				}
 			}
 		}
 	}

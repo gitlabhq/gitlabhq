@@ -2,7 +2,7 @@ import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { sprintf } from '~/locale';
 import InviteGroupNotification from '~/invite_members/components/invite_group_notification.vue';
-import { GROUP_MODAL_ALERT_BODY } from '~/invite_members/constants';
+import { GROUP_MODAL_TO_GROUP_ALERT_BODY } from '~/invite_members/constants';
 
 describe('InviteGroupNotification', () => {
   let wrapper;
@@ -13,7 +13,11 @@ describe('InviteGroupNotification', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(InviteGroupNotification, {
       provide: { freeUsersLimit: 5 },
-      propsData: { name: 'name' },
+      propsData: {
+        name: 'name',
+        notificationLink: '_notification_link_',
+        notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
+      },
       stubs: { GlSprintf },
     });
   };
@@ -28,15 +32,13 @@ describe('InviteGroupNotification', () => {
     });
 
     it('shows the correct message', () => {
-      const message = sprintf(GROUP_MODAL_ALERT_BODY, { count: 5 });
+      const message = sprintf(GROUP_MODAL_TO_GROUP_ALERT_BODY, { count: 5 });
 
       expect(findAlert().text()).toMatchInterpolatedText(message);
     });
 
     it('has a help link', () => {
-      expect(findLink().attributes('href')).toEqual(
-        'https://docs.gitlab.com/ee/user/group/manage.html#share-a-group-with-another-group',
-      );
+      expect(findLink().attributes('href')).toEqual('_notification_link_');
     });
   });
 });

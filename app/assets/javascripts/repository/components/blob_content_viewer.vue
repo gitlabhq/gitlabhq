@@ -4,11 +4,11 @@ import { uniqueId } from 'lodash';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo, getLocationHash } from '~/lib/utils/url_utility';
+import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -34,12 +34,14 @@ export default {
     ForkSuggestion,
     WebIdeLink,
     CodeIntelligence,
+    AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
     originalBranch: {
       default: '',
     },
+    explainCodeAvailable: { default: false },
   },
   apollo: {
     projectInfo: {
@@ -303,7 +305,7 @@ export default {
       }
 
       const { ideEditPath, editBlobPath } = this.blobInfo;
-      redirectTo(target === 'ide' ? ideEditPath : editBlobPath);
+      redirectTo(target === 'ide' ? ideEditPath : editBlobPath); // eslint-disable-line import/no-deprecated
     },
     setForkTarget(target) {
       this.forkTarget = target;
@@ -316,9 +318,9 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-relative">
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" class="file-holder">
+    <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"
@@ -393,5 +395,11 @@ export default {
         :wrap-text-nodes="glFeatures.highlightJs"
       />
     </div>
+    <ai-genie
+      v-if="explainCodeAvailable"
+      container-id="fileHolder"
+      :file-path="path"
+      class="gl-ml-7"
+    />
   </div>
 </template>

@@ -11,9 +11,11 @@ module Analytics
       end
 
       def summary
-        @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(project,
-                                                                options: options,
-                                                                current_user: options[:current_user]).data
+        @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(
+          project,
+          options: options,
+          current_user: options[:current_user]
+        ).data
       end
 
       def permissions(user:)

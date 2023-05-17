@@ -31,7 +31,6 @@ describe('DeleteApplication', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

@@ -1,7 +1,5 @@
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -13,7 +11,7 @@ import {
 } from 'jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workItem.widgets.find(
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItems.nodes[0].widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
@@ -21,9 +19,6 @@ describe('Work Item Discussion', () => {
   let wrapper;
   const mockWorkItemId = 'gid://gitlab/WorkItem/625';
 
-  const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
-  const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
-  const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findAllThreads = () => wrapper.findAllComponents(WorkItemNote);
   const findThreadAtIndex = (index) => findAllThreads().at(index);
@@ -33,19 +28,19 @@ describe('Work Item Discussion', () => {
   const createComponent = ({
     discussion = [mockWorkItemCommentNote],
     workItemId = mockWorkItemId,
-    queryVariables = { id: workItemId },
-    fetchByIid = false,
-    fullPath = 'gitlab-org',
     workItemType = 'Task',
   } = {}) => {
     wrapper = shallowMount(WorkItemDiscussion, {
+      provide: {
+        fullPath: 'gitlab-org',
+      },
       propsData: {
         discussion,
         workItemId,
-        queryVariables,
-        fetchByIid,
-        fullPath,
+        workItemIid: '1',
         workItemType,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
     });
   };
@@ -53,19 +48,6 @@ describe('Work Item Discussion', () => {
   describe('Default', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('Should be wrapped inside the timeline entry item', () => {
-      expect(findTimelineEntryItem().exists()).toBe(true);
-    });
-
-    it('should have the author avatar of the work item note', () => {
-      expect(findAvatarLink().exists()).toBe(true);
-      expect(findAvatarLink().attributes('href')).toBe(mockWorkItemCommentNote.author.webUrl);
-
-      expect(findAvatar().exists()).toBe(true);
-      expect(findAvatar().props('src')).toBe(mockWorkItemCommentNote.author.avatarUrl);
-      expect(findAvatar().props('entityName')).toBe(mockWorkItemCommentNote.author.username);
     });
 
     it('should not show the the toggle replies widget wrapper when no replies', () => {
@@ -88,12 +70,16 @@ describe('Work Item Discussion', () => {
       expect(findToggleRepliesWidget().exists()).toBe(true);
     });
 
-    it('the number of threads should be equal to the response length', async () => {
-      findToggleRepliesWidget().vm.$emit('toggle');
-      await nextTick();
+    it('the number of threads should be equal to the response length', () => {
       expect(findAllThreads()).toHaveLength(
         mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.length,
       );
+    });
+
+    it('should collapse when we click on toggle replies widget', async () => {
+      findToggleRepliesWidget().vm.$emit('toggle');
+      await nextTick();
+      expect(findAllThreads()).toHaveLength(1);
     });
 
     it('should autofocus when we click expand replies', async () => {
@@ -118,7 +104,7 @@ describe('Work Item Discussion', () => {
       await findWorkItemAddNote().vm.$emit('replying', 'reply text');
     });
 
-    it('should show optimistic behavior when replying', async () => {
+    it('should show optimistic behavior when replying', () => {
       expect(findAllThreads()).toHaveLength(2);
       expect(findWorkItemNoteReplying().exists()).toBe(true);
     });

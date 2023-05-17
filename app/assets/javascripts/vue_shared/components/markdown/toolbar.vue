@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlLink, GlLoadingIcon, GlSprintf, GlIcon } from '@gitlab/ui';
-import EditorModeDropdown from './editor_mode_dropdown.vue';
 
 export default {
   components: {
@@ -9,7 +8,6 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlIcon,
-    EditorModeDropdown,
   },
   props: {
     markdownDocsPath: {
@@ -31,30 +29,21 @@ export default {
       required: false,
       default: true,
     },
-    showContentEditorSwitcher: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     hasQuickActionsDocsPath() {
       return this.quickActionsDocsPath !== '';
     },
   },
-  methods: {
-    handleEditorModeChanged(mode) {
-      if (mode === 'richText') {
-        this.$emit('enableContentEditor');
-      }
-    },
-  },
 };
 </script>
 
 <template>
-  <div v-if="showCommentToolBar" class="comment-toolbar clearfix">
-    <div class="toolbar-text">
+  <div
+    v-if="showCommentToolBar"
+    class="comment-toolbar gl-mx-2 gl-mb-2 gl-px-4 gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base clearfix"
+  >
+    <div class="toolbar-text gl-font-sm">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
         <gl-sprintf
           :message="
@@ -62,7 +51,9 @@ export default {
           "
         >
           <template #markdownDocsLink="{ content }">
-            <gl-link :href="markdownDocsPath" target="_blank">{{ content }}</gl-link>
+            <gl-link :href="markdownDocsPath" target="_blank" class="gl-font-sm">{{
+              content
+            }}</gl-link>
           </template>
         </gl-sprintf>
       </template>
@@ -75,18 +66,22 @@ export default {
           "
         >
           <template #markdownDocsLink="{ content }">
-            <gl-link :href="markdownDocsPath" target="_blank">{{ content }}</gl-link>
+            <gl-link :href="markdownDocsPath" target="_blank" class="gl-font-sm">{{
+              content
+            }}</gl-link>
           </template>
           <template #keyboard="{ content }">
             <kbd>{{ content }}</kbd>
           </template>
           <template #quickActionsDocsLink="{ content }">
-            <gl-link :href="quickActionsDocsPath" target="_blank">{{ content }}</gl-link>
+            <gl-link :href="quickActionsDocsPath" target="_blank" class="gl-font-sm">{{
+              content
+            }}</gl-link>
           </template>
         </gl-sprintf>
       </template>
     </div>
-    <span v-if="canAttachFile" class="uploading-container gl-line-height-32">
+    <span v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32">
       <span class="uploading-progress-container hide">
         <gl-icon name="paperclip" />
         <span class="attaching-file-message"></span>
@@ -111,7 +106,7 @@ export default {
             <gl-button
               variant="link"
               category="primary"
-              class="retry-uploading-link gl-vertical-align-baseline"
+              class="retry-uploading-link gl-vertical-align-baseline gl-font-sm!"
             >
               {{ content }}
             </gl-button>
@@ -120,7 +115,7 @@ export default {
             <gl-button
               variant="link"
               category="primary"
-              class="markdown-selector attach-new-file gl-vertical-align-baseline"
+              class="markdown-selector attach-new-file gl-vertical-align-baseline gl-font-sm!"
             >
               {{ content }}
             </gl-button>
@@ -130,17 +125,10 @@ export default {
       <gl-button
         variant="link"
         category="primary"
-        class="button-cancel-uploading-files gl-vertical-align-baseline hide"
+        class="button-cancel-uploading-files gl-vertical-align-baseline hide gl-font-sm!"
       >
         {{ __('Cancel') }}
       </gl-button>
     </span>
-    <editor-mode-dropdown
-      v-if="showContentEditorSwitcher"
-      size="small"
-      class="gl-float-right gl-line-height-28 gl-display-block"
-      value="markdown"
-      @input="handleEditorModeChanged"
-    />
   </div>
 </template>

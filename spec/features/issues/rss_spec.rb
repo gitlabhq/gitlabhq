@@ -23,24 +23,20 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit path
+      click_button 'Actions'
     end
 
-    it "shows the RSS button with current_user's feed token" do
-      expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=#{user.feed_token}/
-    end
-
+    it_behaves_like "it has an RSS link with current_user's feed token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
   context 'when signed out' do
     before do
       visit path
+      click_button 'Actions'
     end
 
-    it "shows the RSS button without a feed token" do
-      expect(page).not_to have_link 'Subscribe to RSS feed', href: /feed_token/
-    end
-
+    it_behaves_like "it has an RSS link without a feed token"
     it_behaves_like "an autodiscoverable RSS feed without a feed token"
   end
 

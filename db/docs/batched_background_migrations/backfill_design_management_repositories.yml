@@ -1,0 +1,6 @@
+---
+migration_job_name: BackfillDesignManagementRepositories
+description: Backfills the new table with project ids
+feature_category: geo_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116975
+milestone: 15.11

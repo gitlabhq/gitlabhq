@@ -135,5 +135,3 @@ export const convertOneReleaseGraphQLResponse = (response) => {
 
   return { data: release };
 };
-
-export const deleteReleaseSessionKey = (projectPath) => `deleteRelease:${projectPath}`;

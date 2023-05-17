@@ -1,13 +1,13 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jobs artifacts administration **(FREE SELF)**
 
 This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
-see the [job artifacts configuration documentation](../ci/pipelines/job_artifacts.md).
+see the [job artifacts configuration documentation](../ci/jobs/job_artifacts.md).
 
 An artifact is a list of files and directories attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations.
@@ -174,7 +174,7 @@ In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
 
@@ -233,7 +233,7 @@ processing is done in a background worker and requires **no downtime**.
 
       ::EndTabs
 
-   1. Verify that all packages migrated to object storage with the following
+   1. Verify that all artifacts migrated to object storage with the following
       SQL query. The number of `objectstg` should be the same as `total`:
 
       ```shell
@@ -276,7 +276,7 @@ to clean up orphaned artifacts.
 ### Migrating from object storage to local storage
 
 To migrate back to local storage, you must
-[selectively disable the artifacts storage](object_storage.md#selectively-disabling-object-storage).
+[selectively disable the artifacts storage](object_storage.md#disable-object-storage-for-specific-features).
 
 ## Expiring artifacts
 
@@ -419,6 +419,8 @@ reasons are:
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#artifacts-housekeeping-disabled-in-gitlab-146-to-152),
   and you might need to enable a feature flag to used the updated system.
+- The [keep latest artifacts from most recent success jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+  feature is enabled.
 
 In these and other cases, identify the projects most responsible
 for disk space usage, figure out what types of artifacts are using the most
@@ -461,7 +463,7 @@ To check if the feature flags are enabled:
    ```
 
 These changes include switching artifacts from `unlocked` to `locked` if
-they [should be retained](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+they [should be retained](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 Artifacts created before this feature was introduced have a status of `unknown`. After they expire,
 these artifacts are not processed by the new housekeeping jobs.
@@ -673,7 +675,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE:
    This step also erases artifacts that users have chosen to
-   ["keep"](../ci/pipelines/job_artifacts.md#download-job-artifacts).
+   ["keep"](../ci/jobs/job_artifacts.md#download-job-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
@@ -779,7 +781,7 @@ In both cases, you might need to add `region` to the job artifact [object storag
 
 ### Job artifact upload fails with `500 Internal Server Error (Missing file)`
 
-Bucket names that include folder paths are not supported with [consolidated object storage](object_storage.md#consolidated-object-storage-configuration).
+Bucket names that include folder paths are not supported with [consolidated object storage](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 For example, `bucket/path`. If a bucket name has a path in it, you might receive an error similar to:
 
 ```plaintext
@@ -807,3 +809,18 @@ To work around this issue, you can try:
 - For older kernels, using the `nolease` mount option to disable file leasing.
 
 For more information, [see the investigation details](https://gitlab.com/gitlab-org/gitlab/-/issues/389995).
+
+### Usage quota shows incorrect artifact storage usage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238536) in GitLab 14.10.
+
+Sometimes the [artifacts storage usage](../user/usage_quotas.md) displays an incorrect
+value for the total storage space used by artifacts. To recalculate the artifact
+usage statistics for all projects in the instance, you can run this background script:
+
+```shell
+bin/rake 'gitlab:refresh_project_statistics_build_artifacts_size[file.csv]'
+```
+
+The artifact usage value can fluctuate to `0` while the script is running. After
+recalculation, usage should display as expected again.

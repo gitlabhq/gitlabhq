@@ -10,7 +10,7 @@ module Gitlab
 
           attr_reader :attributes
 
-          expose_attribute :merge_request_id, :users
+          expose_attribute :merge_request_id, :merge_request_iid, :users
 
           class << self
             # Builds a list of requested reviewers from a GitHub API response.
@@ -24,6 +24,7 @@ module Gitlab
 
               new(
                 merge_request_id: review_requests[:merge_request_id],
+                merge_request_iid: review_requests[:merge_request_iid],
                 users: users
               )
             end
@@ -37,7 +38,10 @@ module Gitlab
           end
 
           def github_identifiers
-            { merge_request_id: merge_request_id }
+            {
+              merge_request_iid: merge_request_iid,
+              requested_reviewers: users.pluck(:login) # rubocop: disable CodeReuse/ActiveRecord
+            }
           end
         end
       end

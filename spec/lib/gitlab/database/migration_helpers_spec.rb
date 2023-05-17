@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers do
+RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database do
   include Database::TableSchemaHelpers
   include Database::TriggerHelpers
 
@@ -14,8 +14,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     allow(model).to receive(:puts)
   end
 
+  it { expect(model.singleton_class.ancestors).to include(described_class::WraparoundVacuumHelpers) }
+
   describe 'overridden dynamic model helpers' do
-    let(:test_table) { '_test_batching_table' }
+    let(:test_table) { :_test_batching_table }
 
     before do
       model.connection.execute(<<~SQL)
@@ -117,157 +119,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect do
         model.add_timestamps_with_timezone(:foo, columns: [:bar])
       end.to raise_error %r/Illegal timestamp column name/
-    end
-  end
-
-  describe '#create_table_with_constraints' do
-    let(:table_name) { :test_table }
-    let(:column_attributes) do
-      [
-        { name: 'id',         sql_type: 'bigint',                   null: false, default: nil    },
-        { name: 'created_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
-        { name: 'updated_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
-        { name: 'some_id',    sql_type: 'integer',                  null: false, default: nil    },
-        { name: 'active',     sql_type: 'boolean',                  null: false, default: 'true' },
-        { name: 'name',       sql_type: 'text',                     null: true,  default: nil    }
-      ]
-    end
-
-    before do
-      allow(model).to receive(:transaction_open?).and_return(true)
-    end
-
-    context 'when no check constraints are defined' do
-      it 'creates the table as expected' do
-        model.create_table_with_constraints table_name do |t|
-          t.timestamps_with_timezone
-          t.integer :some_id, null: false
-          t.boolean :active, null: false, default: true
-          t.text :name
-        end
-
-        expect_table_columns_to_match(column_attributes, table_name)
-      end
-    end
-
-    context 'when check constraints are defined' do
-      context 'when the text_limit is explicity named' do
-        it 'creates the table as expected' do
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255, name: 'check_name_length'
-            t.check_constraint :some_id_is_positive, 'some_id > 0'
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_name_length', 'char_length(name) <= 255')
-          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
-        end
-      end
-
-      context 'when the text_limit is not named' do
-        it 'creates the table as expected, naming the text limit' do
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255
-            t.check_constraint :some_id_is_positive, 'some_id > 0'
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
-          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
-        end
-      end
-
-      it 'runs the change within a with_lock_retries' do
-        expect(model).to receive(:with_lock_retries).ordered.and_yield
-        expect(model).to receive(:create_table).ordered.and_call_original
-        expect(model).to receive(:execute).with(<<~SQL).ordered
-          ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
-        SQL
-
-        model.create_table_with_constraints table_name do |t|
-          t.text :name
-          t.text_limit :name, 255
-        end
-      end
-
-      context 'when with_lock_retries re-runs the block' do
-        it 'only creates constraint for unique definitions' do
-          expected_sql = <<~SQL
-            ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
-          SQL
-
-          expect(model).to receive(:create_table).twice.and_call_original
-
-          expect(model).to receive(:execute).with(expected_sql).and_raise(ActiveRecord::LockWaitTimeout)
-          expect(model).to receive(:execute).with(expected_sql).and_call_original
-
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
-        end
-      end
-
-      context 'when constraints are given invalid names' do
-        let(:expected_max_length) { described_class::MAX_IDENTIFIER_NAME_LENGTH }
-        let(:expected_error_message) { "The maximum allowed constraint name is #{expected_max_length} characters" }
-
-        context 'when the explicit text limit name is not valid' do
-          it 'raises an error' do
-            too_long_length = expected_max_length + 1
-
-            expect do
-              model.create_table_with_constraints table_name do |t|
-                t.timestamps_with_timezone
-                t.integer :some_id, null: false
-                t.boolean :active, null: false, default: true
-                t.text :name
-
-                t.text_limit :name, 255, name: ('a' * too_long_length)
-                t.check_constraint :some_id_is_positive, 'some_id > 0'
-              end
-            end.to raise_error(expected_error_message)
-          end
-        end
-
-        context 'when a check constraint name is not valid' do
-          it 'raises an error' do
-            too_long_length = expected_max_length + 1
-
-            expect do
-              model.create_table_with_constraints table_name do |t|
-                t.timestamps_with_timezone
-                t.integer :some_id, null: false
-                t.boolean :active, null: false, default: true
-                t.text :name
-
-                t.text_limit :name, 255
-                t.check_constraint ('a' * too_long_length), 'some_id > 0'
-              end
-            end.to raise_error(expected_error_message)
-          end
-        end
-      end
     end
   end
 
@@ -392,7 +243,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       context 'when targeting a partition table' do
         let(:schema) { 'public' }
-        let(:name) { '_test_partition_01' }
+        let(:name) { :_test_partition_01 }
         let(:identifier) { "#{schema}.#{name}" }
 
         before do
@@ -471,10 +322,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         context 'when targeting a partition table' do
           let(:schema) { 'public' }
-          let(:partition_table_name) { '_test_partition_01' }
+          let(:partition_table_name) { :_test_partition_01 }
           let(:identifier) { "#{schema}.#{partition_table_name}" }
-          let(:index_name) { '_test_partitioned_index' }
-          let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+          let(:index_name) { :_test_partitioned_index }
+          let(:partition_index_name) { :_test_partition_01_partition_id_idx }
           let(:column_name) { 'partition_id' }
 
           before do
@@ -544,10 +395,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
           context 'when targeting a partition table' do
             let(:schema) { 'public' }
-            let(:partition_table_name) { '_test_partition_01' }
+            let(:partition_table_name) { :_test_partition_01 }
             let(:identifier) { "#{schema}.#{partition_table_name}" }
-            let(:index_name) { '_test_partitioned_index' }
-            let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+            let(:index_name) { :_test_partitioned_index }
+            let(:partition_index_name) { :_test_partition_01_partition_id_idx }
 
             before do
               model.execute(<<~SQL)
@@ -928,13 +779,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         it 'references the custom target columns when provided', :aggregate_failures do
           expect(model).to receive(:with_lock_retries).and_yield
           expect(model).to receive(:execute).with(
-            "ALTER TABLE projects\n" \
-            "ADD CONSTRAINT fk_multiple_columns\n" \
-            "FOREIGN KEY \(partition_number, user_id\)\n" \
-            "REFERENCES users \(partition_number, id\)\n" \
-            "ON UPDATE CASCADE\n" \
-            "ON DELETE CASCADE\n" \
-            "NOT VALID;\n"
+            "ALTER TABLE projects " \
+            "ADD CONSTRAINT fk_multiple_columns " \
+            "FOREIGN KEY \(partition_number, user_id\) " \
+            "REFERENCES users \(partition_number, id\) " \
+            "ON UPDATE CASCADE " \
+            "ON DELETE CASCADE " \
+            "NOT VALID;"
           )
 
           model.add_concurrent_foreign_key(
@@ -976,6 +827,80 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               validate: false,
               name: :fk_multiple_columns
             )
+          end
+        end
+      end
+
+      context 'when creating foreign key on a partitioned table' do
+        let(:source) { :_test_source_partitioned_table }
+        let(:dest) { :_test_dest_partitioned_table }
+        let(:args) { [source, dest] }
+        let(:options) { { column: [:partition_id, :owner_id], target_column: [:partition_id, :id] } }
+
+        before do
+          model.execute(<<~SQL)
+            CREATE TABLE public.#{source} (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              owner_id bigint NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            ) PARTITION BY LIST(partition_id);
+
+            CREATE TABLE #{source}_1
+              PARTITION OF public.#{source}
+              FOR VALUES IN (1);
+
+            CREATE TABLE public.#{dest} (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            );
+          SQL
+        end
+
+        it 'creates the FK without using NOT VALID', :aggregate_failures do
+          allow(model).to receive(:execute).and_call_original
+
+          expect(model).to receive(:with_lock_retries).and_yield
+
+          expect(model).to receive(:execute).with(
+            "ALTER TABLE #{source} " \
+            "ADD CONSTRAINT fk_multiple_columns " \
+            "FOREIGN KEY \(partition_id, owner_id\) " \
+            "REFERENCES #{dest} \(partition_id, id\) " \
+            "ON UPDATE CASCADE ON DELETE CASCADE ;"
+          )
+
+          model.add_concurrent_foreign_key(
+            *args,
+            name: :fk_multiple_columns,
+            on_update: :cascade,
+            allow_partitioned: true,
+            **options
+          )
+        end
+
+        it 'raises an error if allow_partitioned is not set' do
+          expect(model).not_to receive(:with_lock_retries).and_yield
+          expect(model).not_to receive(:execute).with(/FOREIGN KEY/)
+
+          expect { model.add_concurrent_foreign_key(*args, **options) }
+            .to raise_error ArgumentError, /use add_concurrent_partitioned_foreign_key/
+        end
+
+        context 'when the reverse_lock_order flag is set' do
+          it 'explicitly locks the tables in target-source order', :aggregate_failures do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with("LOCK TABLE #{dest}, #{source} IN ACCESS EXCLUSIVE MODE")
+            expect(model).to receive(:execute).with(/REFERENCES #{dest} \(partition_id, id\)/)
+
+            model.add_concurrent_foreign_key(*args, reverse_lock_order: true, allow_partitioned: true, **options)
           end
         end
       end
@@ -1047,8 +972,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#foreign_key_exists?' do
-    let(:referenced_table_name) { '_test_gitlab_main_referenced' }
-    let(:referencing_table_name) { '_test_gitlab_main_referencing' }
+    let(:referenced_table_name) { :_test_gitlab_main_referenced }
+    let(:referencing_table_name) { :_test_gitlab_main_referencing }
+    let(:schema) { 'public' }
+    let(:identifier) { "#{schema}.#{referencing_table_name}" }
 
     before do
       model.connection.execute(<<~SQL)
@@ -1085,6 +1012,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model.foreign_key_exists?(referencing_table_name, target_table)).to be_truthy
       end
 
+      it 'finds existing foreign_keys by identifier' do
+        expect(model.foreign_key_exists?(identifier, target_table)).to be_truthy
+      end
+
       it 'compares by column name if given' do
         expect(model.foreign_key_exists?(referencing_table_name, target_table, column: :user_id)).to be_falsey
       end
@@ -1119,6 +1050,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it_behaves_like 'foreign key checks'
     end
 
+    context 'if the schema cache does not include the constrained_columns column' do
+      let(:target_table) { nil }
+
+      around do |ex|
+        model.transaction do
+          require_migration!('add_columns_to_postgres_foreign_keys')
+          AddColumnsToPostgresForeignKeys.new.down
+          Gitlab::Database::PostgresForeignKey.reset_column_information
+          Gitlab::Database::PostgresForeignKey.columns_hash # Force populate the column hash in the old schema
+          AddColumnsToPostgresForeignKeys.new.up
+
+          # Rolling back reverts the schema cache information, so we need to run the example here before the rollback.
+          ex.run
+
+          raise ActiveRecord::Rollback
+        end
+
+        # make sure that we're resetting the schema cache here so that we don't leak the change to other tests.
+        Gitlab::Database::PostgresForeignKey.reset_column_information
+        # Double-check that the column information is back to normal
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).to include('constrained_columns')
+      end
+
+      # This test verifies that the situation we're trying to set up for the shared examples is actually being
+      # set up correctly
+      it 'correctly sets up the test without the column in the columns_hash' do
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).not_to include('constrained_columns')
+      end
+
+      it_behaves_like 'foreign key checks'
+    end
+
     it 'compares by target table if no column given' do
       expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end
@@ -1129,8 +1092,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     context 'with foreign key using multiple columns' do
-      let(:p_referenced_table_name) { '_test_gitlab_main_p_referenced' }
-      let(:p_referencing_table_name) { '_test_gitlab_main_p_referencing' }
+      let(:p_referenced_table_name) { :_test_gitlab_main_p_referenced }
+      let(:p_referencing_table_name) { :_test_gitlab_main_p_referencing }
 
       before do
         model.connection.execute(<<~SQL)
@@ -1254,7 +1217,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       context 'when the table is write-locked' do
-        let(:test_table) { '_test_table' }
+        let(:test_table) { :_test_table }
         let(:lock_writes_manager) do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
@@ -1436,7 +1399,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       context 'when the table in the other database is write-locked' do
-        let(:test_table) { '_test_table' }
+        let(:test_table) { :_test_table }
         let(:lock_writes_manager) do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
@@ -2129,7 +2092,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#create_temporary_columns_and_triggers' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:mappings) do
       {
@@ -2223,7 +2186,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#initialize_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:tmp_column) { model.convert_to_bigint_column(column) }
 
@@ -2308,7 +2271,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#restore_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:tmp_column) { model.convert_to_bigint_column(column) }
 
@@ -2363,7 +2326,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
 
     before do
       model.create_table table, id: false do |t|
@@ -2794,39 +2757,39 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#add_primary_key_using_index' do
     it "executes the statement to add the primary key" do
-      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
+      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
 
-      model.add_primary_key_using_index(:test_table, :old_name, :new_name)
+      model.add_primary_key_using_index(:_test_table, :old_name, :new_name)
     end
   end
 
   context 'when changing the primary key of a given table' do
     before do
-      model.create_table(:test_table, primary_key: :id) do |t|
+      model.create_table(:_test_table, primary_key: :id) do |t|
         t.integer :partition_number, default: 1
       end
 
-      model.add_index(:test_table, :id, unique: true, name: :old_index_name)
-      model.add_index(:test_table, [:id, :partition_number], unique: true, name: :new_index_name)
+      model.add_index(:_test_table, :id, unique: true, name: :old_index_name)
+      model.add_index(:_test_table, [:id, :partition_number], unique: true, name: :new_index_name)
     end
 
     describe '#swap_primary_key' do
       it 'executes statements to swap primary key', :aggregate_failures do
         expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).and_call_original
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" DROP CONSTRAINT "_test_table_pkey" CASCADE/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ADD CONSTRAINT "_test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
 
-        model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+        model.swap_primary_key(:_test_table, :_test_table_pkey, :new_index_name)
       end
 
       context 'when new index does not exist' do
         before do
-          model.remove_index(:test_table, column: [:id, :partition_number])
+          model.remove_index(:_test_table, column: [:id, :partition_number])
         end
 
         it 'raises ActiveRecord::StatementInvalid' do
           expect do
-            model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+            model.swap_primary_key(:_test_table, :_test_table_pkey, :new_index_name)
           end.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
@@ -2835,27 +2798,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     describe '#unswap_primary_key' do
       it 'executes statements to unswap primary key' do
         expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).ordered.and_call_original
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" DROP CONSTRAINT "_test_table_pkey" CASCADE/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ADD CONSTRAINT "_test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
 
-        model.unswap_primary_key(:test_table, :test_table_pkey, :old_index_name)
+        model.unswap_primary_key(:_test_table, :_test_table_pkey, :old_index_name)
       end
     end
   end
 
   describe '#drop_sequence' do
     it "executes the statement to drop the sequence" do
-      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "test_table_id_seq"/
+      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "_test_table_id_seq"/
 
-      model.drop_sequence(:test_table, :test_column, :test_table_id_seq)
+      model.drop_sequence(:_test_table, :test_column, :_test_table_id_seq)
     end
   end
 
   describe '#add_sequence' do
     it "executes the statement to add the sequence" do
-      expect(model).to receive(:execute).with "CREATE SEQUENCE \"test_table_id_seq\" START 1;\nALTER TABLE \"test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'test_table_id_seq\')\n"
+      expect(model).to receive(:execute).with "CREATE SEQUENCE \"_test_table_id_seq\" START 1;\nALTER TABLE \"_test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'_test_table_id_seq\')\n"
 
-      model.add_sequence(:test_table, :test_column, :test_table_id_seq, 1)
+      model.add_sequence(:_test_table, :test_column, :_test_table_id_seq, 1)
     end
   end
 
@@ -2886,6 +2849,20 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context "when a partition table does not exist" do
       let(:table_name) { 'partition_does_not_exist' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "#table_partitioned?" do
+    subject { model.table_partitioned?(table_name) }
+
+    let(:table_name) { 'p_ci_builds_metadata' }
+
+    it { is_expected.to be_truthy }
+
+    context 'with a non-partitioned table' do
+      let(:table_name) { 'users' }
 
       it { is_expected.to be_falsey }
     end

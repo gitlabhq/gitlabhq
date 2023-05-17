@@ -16,8 +16,6 @@ class MergeRequestsFinder
           User.find_by_id(params[:reviewer_id])
         elsif reviewer_username?
           User.find_by_username(params[:reviewer_username])
-        else
-          nil
         end
       end
     end

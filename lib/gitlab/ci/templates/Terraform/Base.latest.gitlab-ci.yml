@@ -24,7 +24,6 @@ cache:
 .terraform:fmt: &terraform_fmt
   stage: validate
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform fmt
   allow_failure: true
   rules:
@@ -36,7 +35,6 @@ cache:
 .terraform:validate: &terraform_validate
   stage: validate
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform validate
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -47,11 +45,13 @@ cache:
 .terraform:build: &terraform_build
   stage: build
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform plan
     - gitlab-terraform plan-json
   resource_group: ${TF_STATE_NAME}
   artifacts:
+    # The next line, which disables public access to pipeline artifacts, may not be available everywhere.
+    # See: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic
+    public: false
     paths:
       - ${TF_ROOT}/plan.cache
     reports:
@@ -65,7 +65,6 @@ cache:
 .terraform:deploy: &terraform_deploy
   stage: deploy
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform apply
   resource_group: ${TF_STATE_NAME}
   rules:
@@ -76,7 +75,6 @@ cache:
 .terraform:destroy: &terraform_destroy
   stage: cleanup
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform destroy
   resource_group: ${TF_STATE_NAME}
   when: manual

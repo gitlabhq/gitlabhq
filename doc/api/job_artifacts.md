@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -64,7 +64,7 @@ Possible response status codes:
 
 > The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
-Download the artifacts zipped archive from the latest successful pipeline for
+Download the artifacts zipped archive from the latest **successful** pipeline for
 the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
@@ -167,8 +167,8 @@ Possible response status codes:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23538) in GitLab 11.5.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55042) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10.
 
-Download a single artifact file for a specific job of the latest successful
-pipeline for the given reference name from inside the job's artifacts archive.
+Download a single artifact file for a specific job of the latest **successful** pipeline
+for the given reference name from inside the job's artifacts archive.
 The file is extracted from the archive and streamed to the client.
 
 The artifact file provides more detail than what is available in the
@@ -295,7 +295,7 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 
 Delete artifacts of a project that can be deleted.
 
-By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 ```plaintext
 DELETE /projects/:id/artifacts

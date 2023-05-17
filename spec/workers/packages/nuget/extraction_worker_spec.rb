@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
+RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_category: :package_registry do
   describe '#perform' do
     let!(:package) { create(:nuget_package) }
     let(:package_file) { package.package_files.first }
@@ -73,13 +73,15 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
       ]
 
       invalid_names.each do |invalid_name|
-        before do
-          allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
-            allow(service).to receive(:package_name).and_return(invalid_name)
+        context "with #{invalid_name}" do
+          before do
+            allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
+              allow(service).to receive(:package_name).and_return(invalid_name)
+            end
           end
-        end
 
-        it_behaves_like 'handling the metadata error'
+          it_behaves_like 'handling the metadata error'
+        end
       end
     end
 
@@ -87,20 +89,21 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
       invalid_versions = [
         '',
         '555',
-        '1.2',
         '1./2.3',
         '../../../../../1.2.3',
         '%2e%2e%2f1.2.3'
       ]
 
       invalid_versions.each do |invalid_version|
-        before do
-          allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
-            allow(service).to receive(:package_version).and_return(invalid_version)
+        context "with #{invalid_version}" do
+          before do
+            allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
+              allow(service).to receive(:package_version).and_return(invalid_version)
+            end
           end
-        end
 
-        it_behaves_like 'handling the metadata error'
+          it_behaves_like 'handling the metadata error'
+        end
       end
     end
 

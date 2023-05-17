@@ -10,6 +10,7 @@ module DeployKeys
     expose :destroyed_when_orphaned?, as: :destroyed_when_orphaned
     expose :almost_orphaned?, as: :almost_orphaned
     expose :created_at
+    expose :expires_at
     expose :updated_at
     expose :can_edit
     expose :user, as: :owner, using: ::API::Entities::UserBasic, if: -> (_, opts) { can_read_owner?(opts) }

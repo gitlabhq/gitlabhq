@@ -34,11 +34,6 @@ describe('~/releases/components/issuable_stats.vue', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('matches snapshot', () => {
     createComponent();
 

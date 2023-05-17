@@ -32,8 +32,11 @@ const translations = {
   readRegistryHelp: s__('DeployTokens|Allows read-only access to registry images.'),
   writeRegistryHelp: s__('DeployTokens|Allows read and write access to registry images.'),
   readPackageRegistryHelp: s__('DeployTokens|Allows read-only access to the package registry.'),
-  writePackageRegistryHelp: s__(
+  groupWritePackageRegistryHelp: s__(
     'DeployTokens|Allows read and write access to the package registry.',
+  ),
+  projectWritePackageRegistryHelp: s__(
+    'DeployTokens|Allows read, write and delete access to the package registry.',
   ),
   createTokenFailedAlert: s__('DeployTokens|Failed to create a new deployment token'),
 };

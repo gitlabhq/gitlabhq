@@ -39,6 +39,16 @@ RSpec.describe 'Jira authorization requests', feature_category: :integrations do
       expect(oauth_response_access_token).not_to eql(jira_response_access_token)
     end
 
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject do
+        post '/login/oauth/access_token', params: {
+          client_id: client_id,
+          client_secret: client_secret,
+          code: generate_access_grant.token
+        }
+      end
+    end
+
     context 'when authorization fails' do
       before do
         post '/login/oauth/access_token', params: {

@@ -1,4 +1,4 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Actions from '~/admin/users/components/actions';
 import Delete from '~/admin/users/components/actions/delete.vue';
@@ -12,7 +12,7 @@ import { paths, userDeletionObstacles } from '../../mock_data';
 describe('Action components', () => {
   let wrapper;
 
-  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   const initComponent = ({ component, props } = {}) => {
     wrapper = shallowMount(component, {
@@ -21,11 +21,6 @@ describe('Action components', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('CONFIRMATION_ACTIONS', () => {
     it.each(CONFIRMATION_ACTIONS)('renders a dropdown item for "%s"', (action) => {
@@ -37,7 +32,7 @@ describe('Action components', () => {
         },
       });
 
-      expect(findDropdownItem().exists()).toBe(true);
+      expect(findDisclosureDropdownItem().exists()).toBe(true);
     });
   });
 
@@ -57,7 +52,7 @@ describe('Action components', () => {
         },
       });
 
-      await findDropdownItem().vm.$emit('click');
+      await findDisclosureDropdownItem().vm.$emit('action');
 
       expect(eventHub.$emit).toHaveBeenCalledWith(
         EVENT_OPEN_DELETE_USER_MODAL,

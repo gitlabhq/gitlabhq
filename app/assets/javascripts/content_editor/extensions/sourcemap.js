@@ -31,6 +31,8 @@ import TableOfContents from './table_of_contents';
 import Video from './video';
 
 export default Extension.create({
+  name: 'sourcemap',
+
   addGlobalAttributes() {
     return [
       {

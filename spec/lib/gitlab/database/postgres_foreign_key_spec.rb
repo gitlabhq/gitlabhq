@@ -70,10 +70,26 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
   end
 
   describe '#by_constrained_table_name' do
-    it 'finds the foreign keys for the constrained table' do
-      expected = described_class.where(name: %w[fk_constrained_to_referenced fk_constrained_to_other_referenced]).to_a
+    let(:expected) { described_class.where(name: %w[fk_constrained_to_referenced fk_constrained_to_other_referenced]).to_a }
 
+    it 'finds the foreign keys for the constrained table' do
       expect(described_class.by_constrained_table_name(table_name("constrained_table"))).to match_array(expected)
+    end
+  end
+
+  describe '#by_constrained_table_name_or_identifier' do
+    let(:expected) { described_class.where(name: %w[fk_constrained_to_referenced fk_constrained_to_other_referenced]).to_a }
+
+    context 'when using table name' do
+      it 'finds the foreign keys for the constrained table' do
+        expect(described_class.by_constrained_table_name_or_identifier(table_name("constrained_table"))).to match_array(expected)
+      end
+    end
+
+    context 'when using identifier' do
+      it 'finds the foreign keys for the constrained table' do
+        expect(described_class.by_constrained_table_name_or_identifier(schema_table_name('constrained_table'))).to match_array(expected)
+      end
     end
   end
 
@@ -187,10 +203,8 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
     end
   end
 
-  context 'when supporting foreign keys to inherited tables in postgres 12' do
+  context 'when supporting foreign keys on partitioned tables' do
     before do
-      skip('not supported before postgres 12') if ApplicationRecord.database.version.to_f < 12
-
       ApplicationRecord.connection.execute(<<~SQL)
         create table #{schema_table_name('parent')} (
           id bigserial primary key not null
@@ -228,6 +242,40 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
       it 'lists all non-inherited foreign keys' do
         expect(fks.pluck(:referenced_table_name)).to contain_exactly(table_name('parent'), table_name('child'))
         expect(fks.not_inherited.pluck(:referenced_table_name)).to contain_exactly(table_name('parent'))
+      end
+    end
+  end
+
+  context 'with two tables both partitioned' do
+    before do
+      ApplicationRecord.connection.execute(<<~SQL)
+        create table #{table_name('parent')} (
+          id bigserial primary key not null
+        ) partition by hash(id);
+
+        create table #{table_name('child')}
+        partition of #{table_name('parent')} for values with (remainder 1, modulus 2);
+
+        create table #{table_name('ref_parent')} (
+            id bigserial primary key not null
+        ) partition by hash(id);
+
+        create table #{table_name('ref_child_1')}
+        partition of #{table_name('ref_parent')} for values with (remainder 1, modulus 3);
+
+        create table #{table_name('ref_child_2')}
+        partition of #{table_name('ref_parent')} for values with (remainder 2, modulus 3);
+
+        alter table #{table_name('parent')} add constraint fk foreign key (id) references #{table_name('ref_parent')} (id);
+      SQL
+    end
+
+    describe '#child_foreign_keys' do
+      it 'is the child foreign keys of the partitioned parent fk' do
+        fk = described_class.by_constrained_table_name(table_name('parent')).first
+        children = fk.child_foreign_keys
+        expect(children.count).to eq(1)
+        expect(children.first.constrained_table_name).to eq(table_name('child'))
       end
     end
   end

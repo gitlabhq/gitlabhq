@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::ApproveService do
+RSpec.describe Users::ApproveService, feature_category: :user_management do
   let_it_be(:current_user) { create(:admin) }
 
   let(:user) { create(:user, :blocked_pending_approval) }
@@ -73,6 +73,24 @@ RSpec.describe Users::ApproveService do
         it 'emails the user on approval' do
           expect(DeviseMailer).to receive(:user_admin_approval).with(user).and_call_original
           expect { subject }.to have_enqueued_mail(DeviseMailer, :user_admin_approval)
+        end
+
+        context 'when the user was created via sign up' do
+          it 'does not send a password reset email' do
+            expect { subject }.not_to have_enqueued_mail(Notify, :new_user_email)
+          end
+        end
+
+        context 'when the user was created by an admin' do
+          let(:user) { create(:user, :blocked_pending_approval, created_by_id: current_user.id) }
+
+          it 'sends a password reset email' do
+            allow(user).to receive(:generate_reset_token).and_return(:reset_token)
+
+            expect(Notify).to receive(:new_user_email).with(user.id, :reset_token).and_call_original
+
+            expect { subject }.to have_enqueued_mail(Notify, :new_user_email)
+          end
         end
 
         context 'email confirmation status' do

@@ -39,11 +39,11 @@ The default theme is Indigo. You can choose between 10 themes:
 
 ## Dark mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) release.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/alpha-beta-support.md#experiment) release.
 
-GitLab has started work on dark mode! The dark mode Alpha release is available in the
+GitLab has started work on dark mode! The dark mode Experiment release is available in the
 spirit of iteration and the lower expectations of
-[Alpha versions](../../policy/alpha-beta-support.md#alpha-features).
+[Experiment features](../../policy/alpha-beta-support.md#experiment).
 
 Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 See the epic for:
@@ -63,7 +63,9 @@ Dark theme only works with the **Dark** syntax highlighting theme.
 
 ## Syntax highlighting theme
 
-GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
+> Changing the default syntax highlighting theme for new users and users who are not signed in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.10.
+
+GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge)
 for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
 uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided
 [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
@@ -73,21 +75,13 @@ the respective libraries.
 Changing this setting allows you to customize the color theme when viewing any
 syntax highlighted code on GitLab.
 
-The default syntax theme is White, and you can choose among 5 different themes:
-
-<!-- vale gitlab.Spelling = NO -->
-
-- White
-- Dark
-- Solarized light
-- Solarized dark
-- Monokai
-
-<!-- vale gitlab.Spelling = YES -->
-
-![Profile preferences syntax highlighting themes](img/profile-preferences-syntax-themes.png)
+![Profile preferences syntax highlighting themes](img/profile-preferences-syntax-themes_v15_11.png)
 
 Introduced in GitLab 13.6, the themes [Solarized](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) also apply to the [Web IDE](../project/web_ide/index.md) and [Snippets](../snippets.md).
+
+You can use an API call to change the default syntax highlighting theme for new users and users
+who are not signed in. For more information, see the `default_syntax_highlighting_theme`
+in the [list of settings that can be accessed through API calls](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
 ## Diff colors
 
@@ -116,12 +110,9 @@ between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
 NOTE:
 While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
-### Dashboard
+### Homepage
 
-For users who have access to a large number of projects but only keep up with a
-select few, the amount of activity on the your dashboard can be
-overwhelming. From the **Dashboard** dropdown list, select what you'd like displayed on your
-personal dashboard.
+This setting changes the behavior of the tanuki icon in the upper-left corner of GitLab.
 
 ### Group overview content
 
@@ -190,22 +181,6 @@ To set your time preference:
 NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
 Open an issue if you notice that using absolute times breaks a layout.
-
-## Web IDE
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370139) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
-
-The [Web IDE Beta](../project/web_ide_beta/index.md) is
-the default editing environment when the `vscode_web_ide` feature
-flag is enabled.
-
-To stop using the Web IDE Beta:
-
-1. In the **Web IDE** section, select the **Opt out of the Web IDE Beta** checkbox.
-1. Select **Save changes**.
 
 ## Integrations
 

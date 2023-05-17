@@ -114,11 +114,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
 
-    @commits =
-      set_commits_for_rendering(
-        @merge_request.recent_commits.with_latest_pipeline(@merge_request.source_branch),
-          commits_count: @merge_request.commits_count
-      )
+    @commits = set_commits_for_rendering(
+      @merge_request.recent_commits.with_latest_pipeline(@merge_request.source_branch),
+      commits_count: @merge_request.commits_count
+    )
 
     @commit = @merge_request.diff_head_commit
 

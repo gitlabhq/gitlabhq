@@ -1,8 +1,8 @@
 ---
 name: refactor_security_extension
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84896
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365320
 milestone: '14.10'
 type: development
 group: group::threat insights
-default_enabled: false
+default_enabled: true

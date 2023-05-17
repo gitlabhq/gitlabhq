@@ -19,12 +19,7 @@ module Analytics
       accepts_nested_attributes_for :stages, allow_destroy: true
 
       scope :preload_associated_models, -> {
-        includes(:namespace,
-                 stages: [
-                   :namespace,
-                   :end_event_label,
-                   :start_event_label
-                 ])
+        includes(:namespace, stages: [:namespace, :end_event_label, :start_event_label])
       }
 
       after_save :ensure_aggregation_record_presence

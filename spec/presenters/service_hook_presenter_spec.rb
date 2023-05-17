@@ -12,7 +12,7 @@ RSpec.describe ServiceHookPresenter do
     subject { service_hook.present.logs_details_path(web_hook_log) }
 
     let(:expected_path) do
-      "/#{project.namespace.path}/#{project.name}/-/settings/integrations/#{integration.to_param}/hook_logs/#{web_hook_log.id}"
+      "/#{project.full_path}/-/settings/integrations/#{integration.to_param}/hook_logs/#{web_hook_log.id}"
     end
 
     it { is_expected.to eq(expected_path) }
@@ -22,7 +22,7 @@ RSpec.describe ServiceHookPresenter do
     subject { service_hook.present.logs_retry_path(web_hook_log) }
 
     let(:expected_path) do
-      "/#{project.namespace.path}/#{project.name}/-/settings/integrations/#{integration.to_param}/hook_logs/#{web_hook_log.id}/retry"
+      "/#{project.full_path}/-/settings/integrations/#{integration.to_param}/hook_logs/#{web_hook_log.id}/retry"
     end
 
     it { is_expected.to eq(expected_path) }

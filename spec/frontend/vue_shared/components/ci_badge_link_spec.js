@@ -82,10 +82,6 @@ describe('CI Badge Link Component', () => {
     wrapper = shallowMount(CiBadgeLink, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each(Object.keys(statuses))('should render badge for status: %s', (status) => {
     createComponent({ status: statuses[status] });
 

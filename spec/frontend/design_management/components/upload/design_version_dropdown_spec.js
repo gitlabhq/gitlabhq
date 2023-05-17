@@ -1,9 +1,14 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlAvatar, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import DesignVersionDropdown from '~/design_management/components/upload/design_version_dropdown.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import mockAllVersions from './mock_data/all_versions';
+import mockAllVersions from '../../mock_data/all_versions';
+import { getDesignListQueryResponse } from '../../mock_data/apollo_mock';
 
 const LATEST_VERSION_ID = 1;
 const PREVIOUS_VERSION_ID = 2;
@@ -20,11 +25,20 @@ const MOCK_ROUTE = {
   query: {},
 };
 
+Vue.use(VueApollo);
+
 describe('Design management design version dropdown component', () => {
   let wrapper;
 
   function createComponent({ maxVersions = -1, $route = MOCK_ROUTE } = {}) {
+    const designVersions =
+      maxVersions > -1 ? mockAllVersions.slice(0, maxVersions) : mockAllVersions;
+    const designListHandler = jest
+      .fn()
+      .mockResolvedValue(getDesignListQueryResponse({ versions: designVersions }));
+
     wrapper = shallowMount(DesignVersionDropdown, {
+      apolloProvider: createMockApollo([[getDesignListQuery, designListHandler]]),
       propsData: {
         projectPath: '',
         issueIid: '',
@@ -34,17 +48,7 @@ describe('Design management design version dropdown component', () => {
       },
       stubs: { GlAvatar: true, GlCollapsibleListbox },
     });
-
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({
-      allVersions: maxVersions > -1 ? mockAllVersions.slice(0, maxVersions) : mockAllVersions,
-    });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAllListboxItems = () => wrapper.findAllComponents(GlListboxItem);
@@ -56,7 +60,7 @@ describe('Design management design version dropdown component', () => {
 
     beforeEach(async () => {
       createComponent();
-      await nextTick();
+      await waitForPromises();
       listItem = findAllListboxItems().at(0);
     });
 
@@ -78,7 +82,8 @@ describe('Design management design version dropdown component', () => {
     it('has "latest" on most recent version item', async () => {
       createComponent();
 
-      await nextTick();
+      await waitForPromises();
+
       expect(findVersionLink(0).text()).toContain('latest');
     });
   });
@@ -87,7 +92,7 @@ describe('Design management design version dropdown component', () => {
     it('displays latest version text by default', async () => {
       createComponent();
 
-      await nextTick();
+      await waitForPromises();
 
       expect(findListbox().props('toggleText')).toBe('Showing latest version');
     });
@@ -95,35 +100,39 @@ describe('Design management design version dropdown component', () => {
     it('displays latest version text when only 1 version is present', async () => {
       createComponent({ maxVersions: 1 });
 
-      await nextTick();
+      await waitForPromises();
+
       expect(findListbox().props('toggleText')).toBe('Showing latest version');
     });
 
     it('displays version text when the current version is not the latest', async () => {
       createComponent({ $route: designRouteFactory(PREVIOUS_VERSION_ID) });
 
-      await nextTick();
+      await waitForPromises();
+
       expect(findListbox().props('toggleText')).toBe(`Showing version #1`);
     });
 
     it('displays latest version text when the current version is the latest', async () => {
       createComponent({ $route: designRouteFactory(LATEST_VERSION_ID) });
 
-      await nextTick();
+      await waitForPromises();
+
       expect(findListbox().props('toggleText')).toBe('Showing latest version');
     });
 
     it('should have the same length as apollo query', async () => {
       createComponent();
 
-      await nextTick();
+      await waitForPromises();
+
       expect(findAllListboxItems()).toHaveLength(wrapper.vm.allVersions.length);
     });
 
     it('should render TimeAgo', async () => {
       createComponent();
 
-      await nextTick();
+      await waitForPromises();
 
       expect(wrapper.findAllComponents(TimeAgo)).toHaveLength(wrapper.vm.allVersions.length);
     });

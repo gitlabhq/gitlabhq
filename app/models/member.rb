@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  extend ::Gitlab::Utils::Override
   include EachBatch
   include AfterCommitQueue
   include Sortable
@@ -320,6 +321,12 @@ class Member < ApplicationRecord
       end
     end
 
+    def filter_by_user_type(value)
+      return unless ::User.user_types.key?(value)
+
+      left_join_users.merge(::User.where(user_type: value))
+    end
+
     def sort_by_attribute(method)
       case method.to_s
       when 'access_level_asc' then reorder(access_level: :asc)
@@ -352,6 +359,10 @@ class Member < ApplicationRecord
 
     def valid_email?(email)
       Devise.email_regexp.match?(email)
+    end
+
+    def pluck_user_ids
+      pluck(:user_id)
     end
   end
 
@@ -566,7 +577,7 @@ class Member < ApplicationRecord
   end
 
   def after_decline_invite
-    # override in subclass
+    notification_service.decline_invite(self)
   end
 
   def after_accept_request

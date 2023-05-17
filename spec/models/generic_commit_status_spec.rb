@@ -8,8 +8,7 @@ RSpec.describe GenericCommitStatus do
   let(:external_url) { 'http://example.gitlab.com/status' }
 
   let(:generic_commit_status) do
-    create(:generic_commit_status, pipeline: pipeline,
-                                   target_url: external_url)
+    create(:generic_commit_status, pipeline: pipeline, target_url: external_url)
   end
 
   describe 'validations' do

@@ -6,6 +6,7 @@ import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
 import { AJAX_USERS_SELECT_PARAMS_MAP } from 'ee_else_ce/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
 import axios from '~/lib/utils/axios_utils';
@@ -466,6 +467,8 @@ function UsersSelect(currentUser, els, options = {}) {
           // display:block overrides the hide-collapse rule
           $value.css('display', '');
         }
+
+        $('.dropdown-input-field', $block).val('');
       },
       multiSelect: $dropdown.hasClass('js-multiselect'),
       inputMeta: $dropdown.data('inputMeta'),
@@ -647,7 +650,7 @@ UsersSelect.prototype.users = function (query, options, callback) {
     ...getAjaxUsersSelectParams(options, AJAX_USERS_SELECT_PARAMS_MAP),
   };
 
-  const isMergeRequest = options.issuableType === 'merge_request';
+  const isMergeRequest = options.issuableType === TYPE_MERGE_REQUEST;
   const isEditMergeRequest = !options.issuableType && options.iid && options.targetBranch;
   const isNewMergeRequest = !options.issuableType && !options.iid && options.targetBranch;
 
@@ -684,7 +687,7 @@ UsersSelect.prototype.renderRow = function (
   img,
   elsClassName,
 ) {
-  const tooltip = issuableType === 'merge_request' && !user.can_merge ? __('Cannot merge') : '';
+  const tooltip = issuableType === TYPE_MERGE_REQUEST && !user.can_merge ? __('Cannot merge') : '';
   const tooltipClass = tooltip ? `has-tooltip` : '';
   const selectedClass = selected === true ? 'is-active' : '';
   const linkClasses = `${selectedClass} ${tooltipClass}`;
@@ -693,17 +696,18 @@ UsersSelect.prototype.renderRow = function (
     : '';
   const dataUserSuggested = user.suggested ? `data-user-suggested=${user.suggested}` : '';
 
-  const name =
+  const busyBadge =
     user?.availability && isUserBusy(user.availability)
-      ? sprintf(__('%{name} (Busy)'), { name: user.name })
-      : user.name;
+      ? `<span class="badge badge-warning badge-pill gl-badge sm">${__('Busy')}</span>`
+      : '';
   return `
     <li data-user-id=${user.id} ${dataUserSuggested}>
       <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
-            ${escape(name)}
+            ${escape(user.name)}
+            ${busyBadge}
           </strong>
           ${
             username
@@ -725,7 +729,7 @@ UsersSelect.prototype.renderRowAvatar = function (issuableType, user, img) {
   }
 
   const mergeIcon =
-    issuableType === 'merge_request' && !user.can_merge
+    issuableType === TYPE_MERGE_REQUEST && !user.can_merge
       ? spriteIcon('warning-solid', 's12 merge-icon')
       : '';
 

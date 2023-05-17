@@ -123,11 +123,7 @@ module API
       end
 
       def present_groups_with_pagination_strategies(params, groups)
-        # Prevent Rails from optimizing the count query and inadvertadly creating a poor performing databse query.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/368969
-        if Feature.enabled?(:present_groups_select_all)
-          groups = groups.select(groups.arel_table[Arel.star])
-        end
+        groups = groups.select(groups.arel_table[Arel.star])
 
         return present_groups(params, groups) if current_user.present?
 

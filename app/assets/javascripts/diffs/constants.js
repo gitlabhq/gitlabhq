@@ -6,10 +6,8 @@ export const OLD_NO_NEW_LINE_TYPE = 'old-nonewline';
 export const NEW_NO_NEW_LINE_TYPE = 'new-nonewline';
 export const CONTEXT_LINE_TYPE = 'context';
 export const EMPTY_CELL_TYPE = 'empty-cell';
-export const COMMENT_FORM_TYPE = 'commentForm';
 export const DIFF_NOTE_TYPE = 'DiffNote';
 export const LEGACY_DIFF_NOTE_TYPE = 'LegacyDiffNote';
-export const NOTE_TYPE = 'Note';
 export const NEW_LINE_TYPE = 'new';
 export const OLD_LINE_TYPE = 'old';
 export const TEXT_DIFF_POSITION_TYPE = 'text';
@@ -17,14 +15,10 @@ export const IMAGE_DIFF_POSITION_TYPE = 'image';
 
 export const LINE_POSITION_LEFT = 'left';
 export const LINE_POSITION_RIGHT = 'right';
-export const LINE_SIDE_LEFT = 'left-side';
-export const LINE_SIDE_RIGHT = 'right-side';
 
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
 export const DIFF_WHITESPACE_COOKIE_NAME = 'diff_whitespace';
 export const LINE_HOVER_CLASS_NAME = 'is-over';
-export const LINE_UNFOLD_CLASS_NAME = 'unfold js-unfold';
-export const CONTEXT_LINE_CLASS_NAME = 'diff-expanded';
 
 export const UNFOLD_COUNT = 20;
 export const COUNT_OF_AVATARS_IN_GUTTER = 3;
@@ -46,14 +40,12 @@ export const TREE_HIDE_STATS_WIDTH = 260;
 export const OLD_LINE_KEY = 'old_line';
 export const NEW_LINE_KEY = 'new_line';
 export const TYPE_KEY = 'type';
-export const LEFT_LINE_KEY = 'left';
 
 export const MAX_RENDERING_DIFF_LINES = 500;
 export const MAX_RENDERING_BULK_ROWS = 30;
 export const MIN_RENDERING_MS = 2;
 export const START_RENDERING_INDEX = 200;
 export const INLINE_DIFF_LINES_KEY = 'highlighted_diff_lines';
-export const PARALLEL_DIFF_LINES_KEY = 'parallel_diff_lines';
 
 export const DIFF_COMPARE_BASE_VERSION_INDEX = -1;
 export const DIFF_COMPARE_HEAD_VERSION_INDEX = -2;
@@ -87,6 +79,7 @@ export const RENAMED_DIFF_TRANSITIONS = {
 };
 
 // MR Diffs known events
+export const EVT_MR_PREPARED = 'mr:asyncPreparationFinished';
 export const EVT_EXPAND_ALL_FILES = 'mr:diffs:expandAllFiles';
 export const EVT_PERF_MARK_FILE_TREE_START = 'mr:diffs:perf:fileTreeStart';
 export const EVT_PERF_MARK_FILE_TREE_END = 'mr:diffs:perf:fileTreeEnd';
@@ -120,3 +113,6 @@ export const TRACKING_WHITESPACE_HIDE = 'i_code_review_diff_hide_whitespace';
 export const TRACKING_CLICK_SINGLE_FILE_SETTING = 'i_code_review_click_single_file_mode_setting';
 export const TRACKING_SINGLE_FILE_MODE = 'i_code_review_diff_single_file';
 export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';
+
+// UI
+export const ZERO_CHANGES_ALT_DISPLAY = '-';

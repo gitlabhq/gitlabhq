@@ -48,10 +48,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
     wrapper.find(`[data-input-target="${target}"]`).find('input');
 
   describe('display', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('shows the steps', () => {
       createComponent();
 
@@ -86,7 +82,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       expect(wrapper.findByTestId('editor-header').text()).toBe(expectedMessage);
     });
 
-    it('shows the editor header with a custom filename', async () => {
+    it('shows the editor header with a custom filename', () => {
       const filename = 'my-file.yml';
       createComponent({
         filename,
@@ -145,12 +141,8 @@ describe('Pipeline Wizard - wrapper.vue', () => {
           }
         });
 
-        afterEach(() => {
-          wrapper.destroy();
-        });
-
         if (expectCommitStepShown) {
-          it('does not show the step wrapper', async () => {
+          it('does not show the step wrapper', () => {
             expect(wrapper.findComponent(WizardStep).isVisible()).toBe(false);
           });
 
@@ -158,7 +150,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
             expect(wrapper.findComponent(CommitStep).isVisible()).toBe(true);
           });
         } else {
-          it('passes the correct step config to the step component', async () => {
+          it('passes the correct step config to the step component', () => {
             expect(getStepWrapper().props('inputs')).toMatchObject(expectStepDef.inputs);
           });
 
@@ -186,10 +178,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   describe('editor overlay', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('initially shows a placeholder', async () => {
@@ -223,10 +211,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       createComponent();
     });
 
-    afterAll(() => {
-      wrapper.destroy();
-    });
-
     it('editor reflects changes', async () => {
       const newCompiledDoc = new Document({ faa: 'bur' });
       await getStepWrapper().vm.$emit('update:compiled', newCompiledDoc);
@@ -238,10 +222,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   describe('line highlights', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('highlight requests by the step get passed on to the editor', async () => {
@@ -266,7 +246,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   });
 
   describe('integration test', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({}, mountExtended);
     });
 
@@ -309,7 +289,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       });
 
       afterEach(() => {
-        wrapper.destroy();
         inputField = undefined;
       });
 
@@ -329,10 +308,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   describe('when commit step done', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('emits done', () => {

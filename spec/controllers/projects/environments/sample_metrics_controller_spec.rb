@@ -46,7 +46,7 @@ RSpec.describe Projects::Environments::SampleMetricsController do
     {
       id: environment.id.to_s,
       namespace_id: project.namespace.full_path,
-      project_id: project.name,
+      project_id: project.path,
       identifier: 'sample_metric_query_result',
       start: '2019-12-02T23:31:45.000Z',
       end: '2019-12-03T00:01:45.000Z'

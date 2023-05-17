@@ -21,7 +21,11 @@ module Packages
 
         return result unless @last_of_each_version
 
-        result.last_of_each_version
+        if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+          Packages::Package.id_in(result.last_of_each_version_ids)
+        else
+          result.last_of_each_version
+        end
       end
 
       private

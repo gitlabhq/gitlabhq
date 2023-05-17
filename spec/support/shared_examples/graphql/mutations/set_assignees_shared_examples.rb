@@ -16,10 +16,12 @@ RSpec.shared_examples 'an assignable resource' do
     let(:mode) { described_class.arguments['operationMode'].default_value }
 
     subject do
-      mutation.resolve(project_path: resource.project.full_path,
-                       iid: resource.iid,
-                       operation_mode: mode,
-                       assignee_usernames: assignee_usernames)
+      mutation.resolve(
+        project_path: resource.project.full_path,
+        iid: resource.iid,
+        operation_mode: mode,
+        assignee_usernames: assignee_usernames
+      )
     end
 
     it 'raises an error if the resource is not accessible to the user' do

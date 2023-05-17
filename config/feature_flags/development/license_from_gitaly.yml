@@ -1,8 +1,0 @@
----
-name: license_from_gitaly
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77041
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/374300
-milestone: '15.5'
-type: development
-group: group::gitaly
-default_enabled: false

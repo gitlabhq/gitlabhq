@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::DestroyService do
+RSpec.describe Projects::ContainerRepository::DestroyService, feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:params) { {} }

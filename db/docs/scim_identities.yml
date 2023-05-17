@@ -3,7 +3,7 @@ table_name: scim_identities
 classes:
 - ScimIdentity
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26124
 milestone: '12.9'

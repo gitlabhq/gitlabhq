@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class Board < ApplicationRecord
+  include EachBatch
+
   RECENT_BOARDS_SIZE = 4
 
   belongs_to :group
   belongs_to :project
 
-  has_many :lists, -> { ordered }, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-  has_many :destroyable_lists, -> { destroyable.ordered }, class_name: "List"
+  has_many :lists, -> { ordered }, dependent: :delete_all, inverse_of: :board # rubocop:disable Cop/ActiveRecordDependent
+  has_many :destroyable_lists, -> { destroyable.ordered }, class_name: "List", inverse_of: :board
 
   validates :name, presence: true
   validates :project, presence: true, if: :project_needed?

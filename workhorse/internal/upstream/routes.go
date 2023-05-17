@@ -325,6 +325,9 @@ func configureRoutes(u *upstream) {
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, mimeMultipartUploader),
 
+		// Work items Import via UI upload acceleration
+		u.route("POST", projectPattern+`work_items/import_csv`, mimeMultipartUploader),
+
 		// Uploads via API
 		u.route("POST", apiProjectPattern+`/uploads\z`, mimeMultipartUploader),
 
@@ -403,6 +406,8 @@ func configureRoutes(u *upstream) {
 		u.route("", "^/api/v4/geo_replication", defaultUpstream),
 		u.route("", "^/api/v4/geo/proxy_git_ssh", defaultUpstream),
 		u.route("", "^/api/v4/geo/graphql", defaultUpstream),
+		u.route("", "^/api/v4/geo_nodes/current/failures", defaultUpstream),
+		u.route("", "^/api/v4/geo_sites/current/failures", defaultUpstream),
 
 		// Internal API routes
 		u.route("", "^/api/v4/internal", defaultUpstream),

@@ -24,14 +24,6 @@ describe('~/feature_flags/strategies/parameter_form_group.vue', () => {
     slot = wrapper.find('[data-testid="slot"]');
   });
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-
-    wrapper = null;
-  });
-
   it('should display the default slot', () => {
     expect(slot.exists()).toBe(true);
   });

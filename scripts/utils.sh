@@ -1,10 +1,19 @@
 function retry() {
+  retry_times_sleep 2 3 "$@"
+}
+
+function retry_times_sleep() {
+  number_of_retries="$1"
+  shift
+  sleep_seconds="$1"
+  shift
+
   if eval "$@"; then
     return 0
   fi
 
-  for i in 2 1; do
-    sleep 3s
+  for i in $(seq "${number_of_retries}" -1 1); do
+    sleep "$sleep_seconds"s
     echo "[$(date '+%H:%M:%S')] Retrying $i..."
     if eval "$@"; then
       return 0
@@ -32,6 +41,7 @@ function retry_exponential() {
       return 0
     fi
   done
+
   return 1
 }
 
@@ -53,6 +63,19 @@ function test_url() {
   fi
 }
 
+function section_start () {
+  local section_title="${1}"
+  local section_description="${2:-$section_title}"
+
+  echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+}
+
+function section_end () {
+  local section_title="${1}"
+
+  echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+}
+
 function bundle_install_script() {
   local extra_install_args="${1}"
 
@@ -62,11 +85,11 @@ function bundle_install_script() {
     exit 1;
   fi;
 
-  echo -e "section_start:`date +%s`:bundle-install[collapsed=true]\r\e[0KInstalling gems"
+  section_start "bundle-install" "Installing gems"
 
   gem --version
   bundle --version
-  gem install bundler --no-document --conservative --version 2.3.15
+  gem install bundler --no-document --conservative --version 2.4.11
   test -d jh && bundle config set --local gemfile 'jh/Gemfile'
   bundle config set path "$(pwd)/vendor"
   bundle config set clean 'true'
@@ -83,23 +106,23 @@ function bundle_install_script() {
     run_timed_command "bundle pristine pg"
   fi
 
-  echo -e "section_end:`date +%s`:bundle-install\r\e[0K"
+  section_end "bundle-install"
 }
 
 function yarn_install_script() {
-  echo -e "section_start:`date +%s`:yarn-install[collapsed=true]\r\e[0KInstalling Yarn packages"
+  section_start "yarn-install" "Installing Yarn packages"
 
   retry yarn install --frozen-lockfile
 
-  echo -e "section_end:`date +%s`:yarn-install\r\e[0K"
+  section_end "yarn-install"
 }
 
 function assets_compile_script() {
-  echo -e "section_start:`date +%s`:assets-compile[collapsed=true]\r\e[0KCompiling frontend assets"
+  section_start "assets-compile" "Compiling frontend assets"
 
   bin/rake gitlab:assets:compile
 
-  echo -e "section_end:`date +%s`:assets-compile\r\e[0K"
+  section_end "assets-compile"
 }
 
 function setup_db_user_only() {
@@ -111,9 +134,13 @@ function setup_db_praefect() {
 }
 
 function setup_db() {
-  run_timed_command "setup_db_user_only"
+  section_start "setup-db" "Setting up DBs"
+
+  setup_db_user_only
   run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate gitlab:db:lock_writes" "setup_db"
-  run_timed_command "setup_db_praefect"
+  setup_db_praefect
+
+  section_end "setup-db"
 }
 
 function install_gitlab_gem() {
@@ -126,7 +153,7 @@ function install_tff_gem() {
 }
 
 function install_activesupport_gem() {
-  run_timed_command "gem install activesupport --no-document --version 6.1.7.1"
+  run_timed_command "gem install activesupport --no-document --version 6.1.7.2"
 }
 
 function install_junit_merge_gem() {

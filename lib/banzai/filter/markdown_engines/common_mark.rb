@@ -9,7 +9,7 @@
 module Banzai
   module Filter
     module MarkdownEngines
-      class CommonMark
+      class CommonMark < Base
         EXTENSIONS = [
           :autolink,      # provides support for automatically converting URLs to anchor tags.
           :strikethrough, # provides support for strikethroughs.
@@ -29,9 +29,7 @@ module Banzai
           :UNSAFE            # allow raw/custom HTML and unsafe links.
         ].freeze
 
-        def initialize(context)
-          @context = context
-        end
+        RENDER_OPTIONS_SOURCEPOS = RENDER_OPTIONS + [:SOURCEPOS].freeze
 
         def render(text)
           CommonMarker.render_html(text, render_options, EXTENSIONS)
@@ -40,17 +38,7 @@ module Banzai
         private
 
         def render_options
-          @context[:no_sourcepos] ? render_options_no_sourcepos : render_options_sourcepos
-        end
-
-        def render_options_no_sourcepos
-          RENDER_OPTIONS
-        end
-
-        def render_options_sourcepos
-          render_options_no_sourcepos + [
-            :SOURCEPOS # enable embedding of source position information
-          ].freeze
+          sourcepos_disabled? ? RENDER_OPTIONS : RENDER_OPTIONS_SOURCEPOS
         end
       end
     end

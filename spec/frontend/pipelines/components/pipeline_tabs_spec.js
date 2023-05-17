@@ -19,7 +19,6 @@ describe('The Pipeline Tabs', () => {
   const defaultProvide = {
     defaultTabValue: '',
     failedJobsCount: 1,
-    failedJobsSummary: [],
     totalJobCount: 10,
     testsCount: 123,
   };
@@ -38,10 +37,6 @@ describe('The Pipeline Tabs', () => {
       }),
     );
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('Tabs', () => {
     it.each`

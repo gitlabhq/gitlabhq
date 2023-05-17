@@ -12,6 +12,12 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
+import {
+  GROUP_MODAL_TO_GROUP_ALERT_BODY,
+  GROUP_MODAL_TO_GROUP_ALERT_LINK,
+  GROUP_MODAL_TO_PROJECT_ALERT_BODY,
+  GROUP_MODAL_TO_PROJECT_ALERT_LINK,
+} from '~/invite_members/constants';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
@@ -44,11 +50,6 @@ describe('InviteGroupsModal', () => {
     createComponent({ isProject: false });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findModal = () => wrapper.findComponent(GlModal);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
   const findInviteGroupAlert = () => wrapper.findComponent(InviteGroupNotification);
@@ -58,11 +59,13 @@ describe('InviteGroupsModal', () => {
     findMembersFormGroup().attributes('invalid-feedback');
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const triggerGroupSelect = (val) => findGroupSelect().vm.$emit('input', val);
-  const emitEventFromModal = (eventName) => () =>
-    findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
-  const hideModal = emitEventFromModal('hidden');
-  const clickInviteButton = emitEventFromModal('primary');
-  const clickCancelButton = emitEventFromModal('cancel');
+  const hideModal = () => findModal().vm.$emit('hidden', { preventDefault: jest.fn() });
+
+  const emitClickFromModal = (testId) => () =>
+    wrapper.findByTestId(testId).vm.$emit('click', { preventDefault: jest.fn() });
+
+  const clickInviteButton = emitClickFromModal('invite-modal-submit');
+  const clickCancelButton = emitClickFromModal('invite-modal-cancel');
 
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
@@ -93,6 +96,26 @@ describe('InviteGroupsModal', () => {
       createComponent();
 
       expect(findInviteGroupAlert().exists()).toBe(false);
+    });
+
+    it('shows the user limit notification alert with correct link and text for group', () => {
+      createComponent({ freeUserCapEnabled: true });
+
+      expect(findInviteGroupAlert().props()).toMatchObject({
+        name: propsData.name,
+        notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
+        notificationLink: GROUP_MODAL_TO_GROUP_ALERT_LINK,
+      });
+    });
+
+    it('shows the user limit notification alert with correct link and text for project', () => {
+      createComponent({ freeUserCapEnabled: true, isProject: true });
+
+      expect(findInviteGroupAlert().props()).toMatchObject({
+        name: propsData.name,
+        notificationText: GROUP_MODAL_TO_PROJECT_ALERT_BODY,
+        notificationLink: GROUP_MODAL_TO_PROJECT_ALERT_LINK,
+      });
     });
   });
 

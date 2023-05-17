@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
+RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_category: :system_access do
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.namespace.owner }
@@ -10,9 +10,7 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
   let(:end_user_id) { start_user_id }
   let(:execute_worker) { subject.perform(start_user_id, end_user_id) }
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
   describe '#perform' do
     context 'checks if project authorization update is required' do

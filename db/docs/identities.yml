@@ -3,7 +3,7 @@ table_name: identities
 classes:
 - Identity
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1a80d13a3990937580c97e2b0ba8fb98f69bc055
 milestone: '7.6'

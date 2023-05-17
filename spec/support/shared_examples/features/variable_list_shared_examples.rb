@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'variable list' do |is_admin|
+RSpec.shared_examples 'variable list' do
   it 'shows a list of variables' do
     page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq(variable.key)
@@ -254,14 +254,6 @@ RSpec.shared_examples 'variable list' do |is_admin|
 
         page.within('#add-ci-variable') do
           expect(find('[data-testid="ci-variable-protected-checkbox"]')).to be_checked
-        end
-      end
-
-      it 'shows a message regarding the changed default' do
-        if is_admin
-          expect(page).to have_content 'Environment variables on this GitLab instance are configured to be protected by default'
-        else
-          expect(page).to have_content 'Environment variables are configured by your administrator to be protected by default'
         end
       end
     end

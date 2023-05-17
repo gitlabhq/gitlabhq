@@ -27,8 +27,6 @@ module Subscribable
   def lazy_subscription(user, project = nil)
     return unless user
 
-    # handle project and group labels as well as issuable subscriptions
-    subscribable_type = self.class.ancestors.include?(Label) ? 'Label' : self.class.name
     BatchLoader.for(id: id, subscribable_type: subscribable_type, project_id: project&.id).batch do |items, loader|
       values = items.each_with_object({ ids: Set.new, subscribable_types: Set.new, project_ids: Set.new }) do |item, result|
         result[:ids] << item[:id]
@@ -120,5 +118,16 @@ module Subscribable
 
     subscriptions
       .where(t[:project_id].eq(nil).or(t[:project_id].eq(project.try(:id))))
+  end
+
+  def subscribable_type
+    # handle project and group labels as well as issuable subscriptions
+    if self.class.ancestors.include?(Label)
+      'Label'
+    elsif self.class.ancestors.include?(Issue)
+      'Issue'
+    else
+      self.class.name
+    end
   end
 end

@@ -137,11 +137,13 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
 
     context 'when ref switch' do
       def switch_ref_to(ref_name)
-        first('[data-testid="branches-select"]').click
+        find('.ref-selector').click
+        wait_for_requests
 
-        page.within '.project-refs-form' do
-          click_link ref_name
+        page.within('.ref-selector') do
+          fill_in 'Search by Git revision', with: ref_name
           wait_for_requests
+          find('li', text: ref_name, match: :prefer_exact).click
         end
       end
 
@@ -193,10 +195,11 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
         end
       end
 
-      it 'successfully changes ref when the ref name matches the project name' do
-        project.repository.create_branch(project.name)
+      # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/330947
+      it 'successfully changes ref when the ref name matches the project path' do
+        project.repository.create_branch(project.path)
 
-        visit_blob('files/js/application.js', ref: project.name)
+        visit_blob('files/js/application.js', ref: project.path)
         switch_ref_to('master')
 
         aggregate_failures do
@@ -577,7 +580,11 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
     end
 
     describe '.gitlab/dashboards/custom-dashboard.yml' do
+      let(:remove_monitor_metrics) { false }
+
       before do
+        stub_feature_flags(remove_monitor_metrics: remove_monitor_metrics)
+
         project.add_maintainer(project.creator)
 
         Files::CreateService.new(
@@ -603,6 +610,15 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
 
             # shows a learn more link
             expect(page).to have_link('Learn more')
+          end
+        end
+
+        context 'when metrics dashboard feature is unavailable' do
+          let(:remove_monitor_metrics) { true }
+
+          it 'displays the blob without an auxiliary viewer' do
+            expect(page).to have_content('Environment metrics')
+            expect(page).not_to have_content('Metrics Dashboard YAML definition', wait: 0)
           end
         end
       end

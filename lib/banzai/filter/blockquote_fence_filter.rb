@@ -2,7 +2,7 @@
 
 module Banzai
   module Filter
-    class BlockquoteFenceFilter < HTML::Pipeline::TextFilter
+    class BlockquoteFenceFilter < TimeoutTextPipelineFilter
       REGEX = %r{
           #{::Gitlab::Regex.markdown_code_or_html_blocks}
         |
@@ -39,7 +39,7 @@ module Banzai
         @text = @text.delete("\r")
       end
 
-      def call
+      def call_with_timeout
         @text.gsub(REGEX) do
           if $~[:blockquote]
             # keep the same number of source lines/positions by replacing the

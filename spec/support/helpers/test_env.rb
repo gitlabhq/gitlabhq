@@ -2,6 +2,7 @@
 
 require 'parallel'
 require_relative 'gitaly_setup'
+require_relative '../../../lib/gitlab/setup_helper'
 
 module TestEnv
   extend self
@@ -233,7 +234,7 @@ module TestEnv
   end
 
   def workhorse_dir
-    @workhorse_path ||= File.join('tmp', 'tests', 'gitlab-workhorse')
+    @workhorse_path ||= Rails.root.join('tmp', 'tests', 'gitlab-workhorse')
   end
 
   def with_workhorse(host, port, upstream, &blk)
@@ -371,6 +372,7 @@ module TestEnv
   def seed_db
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
+    FactoryBot.create(:organization, :default)
   end
 
   private

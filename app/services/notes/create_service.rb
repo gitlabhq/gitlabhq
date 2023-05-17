@@ -4,7 +4,7 @@ module Notes
   class CreateService < ::Notes::BaseService
     include IncidentManagement::UsageData
 
-    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
+    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false, skip_set_reviewed: false)
       note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
@@ -38,7 +38,8 @@ module Notes
           when_saved(
             note,
             skip_capture_diff_note_position: skip_capture_diff_note_position,
-            skip_merge_status_trigger: skip_merge_status_trigger
+            skip_merge_status_trigger: skip_merge_status_trigger,
+            skip_set_reviewed: skip_set_reviewed
           )
         end
       end
@@ -54,6 +55,7 @@ module Notes
       content, update_params, message, command_names = quick_actions_service.execute(note, quick_action_options)
       only_commands = content.empty?
       note.note = content
+      note.command_names = command_names
 
       yield(only_commands)
 
@@ -78,7 +80,9 @@ module Notes
       end
     end
 
-    def when_saved(note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
+    def when_saved(
+      note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false,
+      skip_set_reviewed: false)
       todo_service.new_note(note, current_user)
       clear_noteable_diffs_cache(note)
       Suggestions::CreateService.new(note).execute
@@ -86,6 +90,8 @@ module Notes
       track_event(note, current_user)
 
       if note.for_merge_request? && note.start_of_discussion?
+        set_reviewed(note) unless skip_set_reviewed
+
         if !skip_capture_diff_note_position && note.diff_note?
           Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
         end
@@ -161,24 +167,19 @@ module Notes
       track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
       track_incident_action(user, note.noteable, 'incident_comment') if note.for_issue?
       track_note_creation_in_ipynb(note)
+      track_note_creation_visual_review(note)
 
-      if Feature.enabled?(:notes_create_service_tracking, project)
-        Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
-      end
+      metric_key_path = 'counts.commit_comment'
 
-      if Feature.enabled?(:route_hll_to_snowplow_phase4, project&.namespace) && note.for_commit?
-        metric_key_path = 'counts.commit_comment'
-
-        Gitlab::Tracking.event(
-          'Notes::CreateService',
-          'create_commit_comment',
-          project: project,
-          namespace: project&.namespace,
-          user: user,
-          label: metric_key_path,
-          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
-        )
-      end
+      Gitlab::Tracking.event(
+        'Notes::CreateService',
+        'create_commit_comment',
+        project: project,
+        namespace: project&.namespace,
+        user: user,
+        label: metric_key_path,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
+      )
     end
 
     def tracking_data_for(note)
@@ -191,8 +192,10 @@ module Notes
     end
 
     def track_note_creation_usage_for_issues(note)
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_added_action(author: note.author,
-                                                                                             project: project)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_added_action(
+        author: note.author,
+        project: project
+      )
     end
 
     def track_note_creation_usage_for_merge_requests(note)
@@ -207,6 +210,15 @@ module Notes
       return unless should_track_ipynb_notes?(note)
 
       Gitlab::UsageDataCounters::IpynbDiffActivityCounter.note_created(note)
+    end
+
+    def track_note_creation_visual_review(note)
+      Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
+    end
+
+    def set_reviewed(note)
+      ::MergeRequests::MarkReviewerReviewedService.new(project: project, current_user: current_user)
+        .execute(note.noteable)
     end
   end
 end

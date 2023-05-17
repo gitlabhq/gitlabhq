@@ -23,12 +23,17 @@ module Resolvers
               required: false,
               description: 'Filter jobs by when they are executed.'
 
-      def resolve(statuses: nil, security_report_types: [], retried: nil, when_executed: nil)
+      argument :job_kind, ::Types::Ci::JobKindEnum,
+              required: false,
+              description: 'Filter jobs by kind.'
+
+      def resolve(statuses: nil, security_report_types: [], retried: nil, when_executed: nil, job_kind: nil)
         jobs = init_collection(security_report_types)
         jobs = jobs.with_status(statuses) if statuses.present?
         jobs = jobs.retried if retried
         jobs = jobs.with_when_executed(when_executed) if when_executed.present?
         jobs = jobs.latest if retried == false
+        jobs = jobs.with_type(job_kind) if job_kind
 
         jobs
       end

@@ -35,6 +35,27 @@ module Gitlab
         end
       end
 
+      # Works the same way as "strong_memoize" but takes
+      # a second argument - expire_in. This allows invalidate
+      # the data after specified number of seconds
+      def strong_memoize_with_expiration(name, expire_in)
+        key = ivar(name)
+        expiration_key = "#{key}_expired_at"
+
+        if instance_variable_defined?(expiration_key)
+          expire_at = instance_variable_get(expiration_key)
+          clear_memoization(name) if Time.current > expire_at
+        end
+
+        if instance_variable_defined?(key)
+          instance_variable_get(key)
+        else
+          value = instance_variable_set(key, yield)
+          instance_variable_set(expiration_key, Time.current + expire_in)
+          value
+        end
+      end
+
       def strong_memoize_with(name, *args)
         container = strong_memoize(name) { {} }
 

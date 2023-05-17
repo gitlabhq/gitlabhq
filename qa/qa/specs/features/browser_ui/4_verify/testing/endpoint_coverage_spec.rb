@@ -9,7 +9,7 @@ module QA
   # pipeline created (Sidekiq read/write) ->
   # runner picks up pipeline (API read/write) ->
   # User views pipeline succeeds (Web read)
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_insights do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
     context 'Endpoint Coverage' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -40,8 +40,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360837'
       ) do
         # create a CI variable via UI
-        Page::Project::Show.perform(&:go_to_ci_cd_settings)
-
+        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
         Page::Project::Settings::CiCd.perform do |ci_cd|
           ci_cd.expand_ci_variables do |vars|
             vars.click_add_variable

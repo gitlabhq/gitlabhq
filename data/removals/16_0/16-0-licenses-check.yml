@@ -1,0 +1,10 @@
+- title: "License-Check and the Policies tab on the License Compliance page"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: sam.white
+  stage: govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390417
+  tiers: [Ultimate]
+  body: |
+    The License Check Policies feature has been removed. Additionally, the Policies tab on the License Compliance page and all APIs related to the License Check feature have been removed. To enforce approvals based on detected licenses, use the [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) feature instead.

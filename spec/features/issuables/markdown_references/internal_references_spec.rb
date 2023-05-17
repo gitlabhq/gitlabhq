@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe "Internal references", :js, feature_category: :team_planning do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   let(:private_project_user) { private_project.first_owner }
   let(:private_project) { create(:project, :private, :repository) }

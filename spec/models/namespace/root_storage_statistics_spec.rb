@@ -22,14 +22,12 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
   end
 
   describe '#recalculate!' do
-    let(:namespace) { create(:group) }
+    let_it_be(:namespace) { create(:group) }
+
     let(:root_storage_statistics) { create(:namespace_root_storage_statistics, namespace: namespace) }
 
     let(:project1) { create(:project, namespace: namespace) }
     let(:project2) { create(:project, namespace: namespace) }
-
-    let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
-    let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
 
     shared_examples 'project data refresh' do
       it 'aggregates project statistics' do
@@ -96,8 +94,13 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       end
     end
 
-    it_behaves_like 'project data refresh'
-    it_behaves_like 'does not include personal snippets'
+    context 'with project statistics' do
+      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
+      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+
+      it_behaves_like 'project data refresh'
+      it_behaves_like 'does not include personal snippets'
+    end
 
     context 'with subgroups' do
       let(:subgroup1) { create(:group, parent: namespace) }
@@ -105,6 +108,9 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
       let(:project1) { create(:project, namespace: subgroup1) }
       let(:project2) { create(:project, namespace: subgroup2) }
+
+      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
+      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
 
       it_behaves_like 'project data refresh'
       it_behaves_like 'does not include personal snippets'
@@ -121,6 +127,9 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       let_it_be(:subgroup1_namespace_stat) { create(:namespace_statistics, namespace: subgroup1, storage_size: 300, dependency_proxy_size: 100) }
 
       let(:namespace) { root_group }
+
+      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
+      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
 
       it 'aggregates namespace statistics' do
         # This group is not a descendant of the root_group so it shouldn't be included in the final stats.
@@ -168,6 +177,9 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
       let(:namespace) { user.namespace }
 
+      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
+      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+
       it_behaves_like 'project data refresh'
 
       it 'does not aggregate namespace statistics' do
@@ -210,5 +222,143 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         end
       end
     end
+
+    context 'with forks of projects' do
+      it 'aggregates total private forks size' do
+        project = create_project(visibility_level: :private, size_multiplier: 150)
+        project_fork = create_fork(project, size_multiplier: 100)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+      end
+
+      it 'aggregates total public forks size' do
+        project = create_project(visibility_level: :public, size_multiplier: 250)
+        project_fork = create_fork(project, size_multiplier: 200)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.public_forks_storage_size).to eq(project_fork.statistics.storage_size)
+      end
+
+      it 'aggregates total internal forks size' do
+        project = create_project(visibility_level: :internal, size_multiplier: 70)
+        project_fork = create_fork(project, size_multiplier: 50)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.internal_forks_storage_size).to eq(project_fork.statistics.storage_size)
+      end
+
+      it 'aggregates multiple forks' do
+        project = create_project(size_multiplier: 175)
+        fork_a = create_fork(project, size_multiplier: 50)
+        fork_b = create_fork(project, size_multiplier: 60)
+
+        root_storage_statistics.recalculate!
+
+        total_size = fork_a.statistics.storage_size + fork_b.statistics.storage_size
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(total_size)
+      end
+
+      it 'aggregates only forks in the namespace' do
+        other_namespace = create(:group)
+        project = create_project(size_multiplier: 175)
+        fork_a = create_fork(project, size_multiplier: 50)
+        create_fork(project, size_multiplier: 50, namespace: other_namespace)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(fork_a.statistics.storage_size)
+      end
+
+      it 'aggregates forks in subgroups' do
+        subgroup = create(:group, parent: namespace)
+        project = create_project(size_multiplier: 100)
+        project_fork = create_fork(project, namespace: subgroup, size_multiplier: 300)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+      end
+
+      it 'aggregates forks along with total storage size' do
+        project = create_project(size_multiplier: 240)
+        project_fork = create_fork(project, size_multiplier: 100)
+
+        root_storage_statistics.recalculate!
+
+        root_storage_statistics.reload
+        expect(root_storage_statistics.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.storage_size).to eq(project.statistics.storage_size + project_fork.statistics.storage_size)
+      end
+
+      it 'sets the public forks storage size back to zero' do
+        root_storage_statistics.update!(public_forks_storage_size: 200)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.public_forks_storage_size).to eq(0)
+      end
+
+      it 'sets the private forks storage size back to zero' do
+        root_storage_statistics.update!(private_forks_storage_size: 100)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(0)
+      end
+
+      it 'sets the internal forks storage size back to zero' do
+        root_storage_statistics.update!(internal_forks_storage_size: 50)
+
+        root_storage_statistics.recalculate!
+
+        expect(root_storage_statistics.reload.internal_forks_storage_size).to eq(0)
+      end
+
+      context 'when the feature flag is off' do
+        before do
+          stub_feature_flags(root_storage_statistics_calculate_forks: false)
+        end
+
+        it 'does not aggregate fork storage sizes' do
+          project = create_project(size_multiplier: 150)
+          create_fork(project, size_multiplier: 100)
+
+          root_storage_statistics.recalculate!
+
+          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(0)
+        end
+
+        it 'aggregates fork sizes for enabled namespaces' do
+          stub_feature_flags(root_storage_statistics_calculate_forks: namespace)
+          project = create_project(size_multiplier: 150)
+          project_fork = create_fork(project, size_multiplier: 100)
+
+          root_storage_statistics.recalculate!
+
+          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        end
+      end
+    end
+  end
+
+  def create_project(size_multiplier:, visibility_level: :private)
+    project = create(:project, visibility_level, namespace: namespace)
+    create(:project_statistics, project: project, with_data: true, size_multiplier: size_multiplier)
+
+    project
+  end
+
+  def create_fork(project, size_multiplier:, namespace: nil)
+    fork_namespace = namespace || project.namespace
+    project_fork = create(:project, namespace: fork_namespace, visibility_level: project.visibility_level)
+    create(:project_statistics, project: project_fork, with_data: true, size_multiplier: size_multiplier)
+    fork_network = project.fork_network || (create(:fork_network, root_project: project) && project.reload.fork_network)
+    create(:fork_network_member, project: project_fork, fork_network: fork_network)
+
+    project_fork
   end
 end

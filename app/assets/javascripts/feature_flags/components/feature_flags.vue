@@ -187,7 +187,7 @@ export default {
             data-testid="feature-flags-tab-title"
             class="page-title gl-font-size-h-display gl-my-0"
           >
-            {{ s__('FeatureFlags|Feature Flags') }}
+            {{ s__('FeatureFlags|Feature flags') }}
           </h2>
           <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
         </div>

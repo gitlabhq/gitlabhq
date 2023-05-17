@@ -45,11 +45,6 @@ describe('UsageTrendsCountChart', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findLoader = () => wrapper.findComponent(ChartSkeletonLoader);
   const findChart = () => wrapper.findComponent(GlLineChart);
   const findAlert = () => wrapper.findComponent(GlAlert);

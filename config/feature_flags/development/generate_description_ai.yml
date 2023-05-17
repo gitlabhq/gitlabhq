@@ -1,0 +1,8 @@
+---
+name: generate_description_ai
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118712
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409369
+milestone: '16.0'
+type: development
+group: group::project management
+default_enabled: false

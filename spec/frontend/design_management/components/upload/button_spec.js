@@ -14,10 +14,6 @@ describe('Design management upload button component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders upload design button', () => {
     createComponent();
 

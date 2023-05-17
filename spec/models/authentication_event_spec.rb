@@ -71,4 +71,19 @@ RSpec.describe AuthenticationEvent do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.most_used_ip_address_for_user' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:most_used_ip_address) { '::1' }
+    let_it_be(:another_ip_address) { '127.0.0.1' }
+
+    subject { described_class.most_used_ip_address_for_user(user) }
+
+    before do
+      create_list(:authentication_event, 2, user: user, ip_address: most_used_ip_address)
+      create(:authentication_event, user: user, ip_address: another_ip_address)
+    end
+
+    it { is_expected.to eq(most_used_ip_address) }
+  end
 end

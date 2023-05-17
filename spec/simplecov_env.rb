@@ -10,6 +10,7 @@ module SimpleCovEnv
 
   def start!
     return if !ENV.key?('SIMPLECOV') || ENV['SIMPLECOV'] == '0'
+    return if SimpleCov.running
 
     configure_profile
     configure_job

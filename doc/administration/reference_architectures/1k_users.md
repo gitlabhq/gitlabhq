@@ -78,9 +78,9 @@ You can also optionally configure GitLab to use an [external PostgreSQL service]
 or an [external object storage service](../object_storage.md) for added
 performance and reliability at an increased complexity cost.
 
-## Configure Advanced Search **(PREMIUM SELF)**
+## Configure advanced search **(PREMIUM SELF)**
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
+You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific

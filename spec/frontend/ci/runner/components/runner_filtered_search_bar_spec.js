@@ -1,5 +1,6 @@
 import { GlFilteredSearch, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { assertProps } from 'helpers/assert_props';
 import RunnerFilteredSearchBar from '~/ci/runner/components/runner_filtered_search_bar.vue';
 import { statusTokenConfig } from '~/ci/runner/components/search_tokens/status_token_config';
 import TagToken from '~/ci/runner/components/search_tokens/tag_token.vue';
@@ -43,12 +44,12 @@ describe('RunnerList', () => {
     expect(inputs[inputs.length - 1][0]).toEqual(value);
   };
 
+  const defaultProps = { namespace: 'runners', tokens: [], value: mockSearch };
+
   const createComponent = ({ props = {}, options = {} } = {}) => {
     wrapper = shallowMountExtended(RunnerFilteredSearchBar, {
       propsData: {
-        namespace: 'runners',
-        tokens: [],
-        value: mockSearch,
+        ...defaultProps,
         ...props,
       },
       stubs: {
@@ -63,10 +64,6 @@ describe('RunnerList', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('binds a namespace to the filtered search', () => {
@@ -113,11 +110,14 @@ describe('RunnerList', () => {
 
   it('fails validation for v-model with the wrong shape', () => {
     expect(() => {
-      createComponent({ props: { value: { filters: 'wrong_filters', sort: 'sort' } } });
+      assertProps(RunnerFilteredSearchBar, {
+        ...defaultProps,
+        value: { filters: 'wrong_filters', sort: 'sort' },
+      });
     }).toThrow('Invalid prop: custom validator check failed');
 
     expect(() => {
-      createComponent({ props: { value: { sort: 'sort' } } });
+      assertProps(RunnerFilteredSearchBar, { ...defaultProps, value: { sort: 'sort' } });
     }).toThrow('Invalid prop: custom validator check failed');
   });
 

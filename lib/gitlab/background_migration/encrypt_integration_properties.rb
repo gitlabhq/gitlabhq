@@ -18,14 +18,14 @@ module Gitlab
         scope :for_batch, ->(range) { where(id: range) }
 
         attr_encrypted :encrypted_properties_tmp,
-                       attribute: :encrypted_properties,
-                       mode: :per_attribute_iv,
-                       key: ::Settings.attr_encrypted_db_key_base_32,
-                       algorithm: ALGORITHM,
-                       marshal: true,
-                       marshaler: ::Gitlab::Json,
-                       encode: false,
-                       encode_iv: false
+          attribute: :encrypted_properties,
+          mode: :per_attribute_iv,
+          key: ::Settings.attr_encrypted_db_key_base_32,
+          algorithm: ALGORITHM,
+          marshal: true,
+          marshaler: ::Gitlab::Json,
+          encode: false,
+          encode_iv: false
 
         # See 'Integration#reencrypt_properties'
         def encrypt_properties

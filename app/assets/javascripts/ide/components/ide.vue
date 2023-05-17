@@ -82,7 +82,7 @@ export default {
     eventHub.$on('skip-beforeunload', this.handleSkipBeforeUnload);
 
     if (this.themeName)
-      document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
+      document.querySelector('.navbar-gitlab')?.classList.add(`theme-${this.themeName}`);
   },
   destroyed() {
     eventHub.$off('skip-beforeunload', this.handleSkipBeforeUnload);

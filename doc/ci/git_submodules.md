@@ -14,9 +14,13 @@ repository into your project and keep your commits separate.
 ## Configure the `.gitmodules` file
 
 When you use Git submodules, your project should have a file named `.gitmodules`.
-You might need to modify it to work in a GitLab CI/CD job.
+You have multiple options to configure it to work in a GitLab CI/CD job.
 
-For example, your `.gitmodules` configuration might look like the following if:
+### Using absolute URLs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+
+For example, your generated `.gitmodules` configuration might look like the following if:
 
 - Your project is located at `https://gitlab.com/secret-group/my-project`.
 - Your project depends on `https://gitlab.com/group/project`, which you want
@@ -26,19 +30,43 @@ For example, your `.gitmodules` configuration might look like the following if:
 ```ini
 [submodule "project"]
   path = project
-  url = ../../group/project.git
+  url = git@gitlab.com:secret-group/project.git
 ```
 
-When your submodule is on the same GitLab server, you should use relative URLs in
-your `.gitmodules` file. Then you can clone with HTTPS in all your CI/CD jobs. You
-can also use SSH for all your local checkouts.
+In this case, use the [`GIT_SUBMODULE_FORCE_HTTPS`](runners/configure_runners.md#rewrite-submodule-urls-to-https) variable
+to instruct GitLab Runner to convert the URL to HTTPS before it clones the submodules.
+
+Alternatively, if you also use HTTPS locally, you can configure an HTTPS URL:
+
+```ini
+[submodule "project"]
+  path = project
+  url = https://gitlab.com/secret-group/project.git
+```
+
+You do not need to configure additional variables in this case, but you need to use a
+[personal access token](../user/profile/personal_access_tokens.md) to clone it locally.
+
+### Using relative URLs
+
+WARNING:
+If you use relative URLs, submodules may resolve incorrectly in forking workflows.
+Use absolute URLs instead if you expect your project to have forks.
+
+When your submodule is on the same GitLab server, you can also use relative URLs in
+your `.gitmodules` file:
+
+```ini
+[submodule "project"]
+  path = project
+  url = ../../project.git
+```
 
 The above configuration instructs Git to automatically deduce the URL to
-use when cloning sources. Git uses the same configuration for both HTTPS and SSH.
-GitLab CI/CD uses HTTPS for cloning your sources, and you can continue to use SSH
-to clone locally.
+use when cloning sources. You can clone with HTTPS in all your CI/CD jobs, and you
+can continue to use SSH to clone locally.
 
-For submodules not located on the same GitLab server, use the full URL:
+For submodules not located on the same GitLab server, always use the full URL:
 
 ```ini
 [submodule "project-x"]
@@ -50,8 +78,6 @@ For submodules not located on the same GitLab server, use the full URL:
 
 To make submodules work correctly in CI/CD jobs:
 
-1. Make sure you use [relative URLs](#configure-the-gitmodules-file)
-   for submodules located in the same GitLab server.
 1. You can set the `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive`
    to tell the runner to [fetch your submodules before the job](runners/configure_runners.md#git-submodule-strategy):
 
@@ -59,6 +85,9 @@ To make submodules work correctly in CI/CD jobs:
    variables:
      GIT_SUBMODULE_STRATEGY: recursive
    ```
+
+1. For submodules located on the same GitLab server and configured with a Git or SSH URL, make sure
+   you set the [`GIT_SUBMODULE_FORCE_HTTPS`](runners/configure_runners.md#rewrite-submodule-urls-to-https) variable.
 
 1. Use `GIT_SUBMODULE_DEPTH` to configure the cloning depth of submodules independently of the [`GIT_DEPTH`](runners/configure_runners.md#shallow-cloning) variable:
 

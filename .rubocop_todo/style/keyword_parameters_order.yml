@@ -8,7 +8,6 @@ Style/KeywordParametersOrder:
     - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/lib/gitlab/insights/executors/dora_executor.rb'
     - 'ee/lib/gitlab/insights/executors/issuable_executor.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/drop_invalid_remediations_spec.rb'
     - 'ee/spec/requests/api/deployments_spec.rb'
     - 'lib/gitlab/background_migration/batched_migration_job.rb'
     - 'lib/gitlab/checks/timed_logger.rb'

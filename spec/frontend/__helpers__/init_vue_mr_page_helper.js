@@ -6,9 +6,17 @@ import { getDiffFileMock } from '../diffs/mock_data/diff_file';
 import { userDataMock, notesDataMock, noteableDataMock } from '../notes/mock_data';
 
 export default function initVueMRPage() {
+  const contentWrapperEl = document.createElement('div');
+  contentWrapperEl.className = 'content-wrapper';
+  document.body.appendChild(contentWrapperEl);
+
+  const containerEl = document.createElement('div');
+  containerEl.className = 'container-fluid';
+  contentWrapperEl.appendChild(containerEl);
+
   const mrTestEl = document.createElement('div');
   mrTestEl.className = 'js-merge-request-test';
-  document.body.appendChild(mrTestEl);
+  containerEl.appendChild(mrTestEl);
 
   const diffsAppEndpoint = '/diffs/app/endpoint';
   const diffsAppProjectPath = 'testproject';

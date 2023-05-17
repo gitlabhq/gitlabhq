@@ -1,0 +1,23 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_blocked_by_weekly
+name: quickactions_blocked_by_weekly
+description: Count of MAU using the `/blocked_by` quick action
+product_section: dev
+product_stage: plan
+product_group: product_planning
+value_type: number
+status: active
+milestone: "16.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120006
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_blocked_by
+performance_indicator_type: []
+distribution:
+- ee
+tier:
+- starter

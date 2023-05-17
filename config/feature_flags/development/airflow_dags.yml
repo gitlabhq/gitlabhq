@@ -1,8 +1,0 @@
----
-name: airflow_dags
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108900
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387529
-milestone: '15.9'
-type: development
-group: group::incubation
-default_enabled: false

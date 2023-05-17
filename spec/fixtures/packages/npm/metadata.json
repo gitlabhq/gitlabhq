@@ -1,0 +1,20 @@
+{
+  "name": "@root/npm-test",
+  "dist-tags": {
+    "latest": "1.0.1"
+  },
+  "versions": {
+    "1.0.1": {
+      "name": "@root/npm-test",
+      "version": "1.0.1",
+      "main": "app.js",
+      "dependencies": {
+        "express": "^4.16.4"
+      },
+      "dist": {
+        "shasum": "f572d396fae9206628714fb2ce00f72e94f2258f",
+        "tarball": "http://localhost/npm/package.tgz"
+      }
+    }
+  }
+}

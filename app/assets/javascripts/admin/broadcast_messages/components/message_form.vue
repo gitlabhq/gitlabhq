@@ -3,6 +3,7 @@ import {
   GlButton,
   GlBroadcastMessage,
   GlForm,
+  GlFormGroup,
   GlFormCheckbox,
   GlFormCheckboxGroup,
   GlFormInput,
@@ -12,32 +13,45 @@ import {
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { createAlert, VARIANT_DANGER } from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { BROADCAST_MESSAGES_PATH, THEMES, TYPES, TYPE_BANNER } from '../constants';
-import MessageFormGroup from './message_form_group.vue';
+import { createAlert, VARIANT_DANGER } from '~/alert';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { THEMES, TYPES, TYPE_BANNER } from '../constants';
 import DatetimePicker from './datetime_picker.vue';
 
 const FORM_HEADERS = { headers: { 'Content-Type': 'application/json; charset=utf-8' } };
 
 export default {
+  DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
   name: 'MessageForm',
   components: {
     DatetimePicker,
     GlButton,
     GlBroadcastMessage,
     GlForm,
+    GlFormGroup,
     GlFormCheckbox,
     GlFormCheckboxGroup,
     GlFormInput,
     GlFormSelect,
     GlFormText,
     GlFormTextarea,
-    MessageFormGroup,
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['targetAccessLevelOptions'],
+  directives: {
+    SafeHtml,
+  },
+  inject: {
+    targetAccessLevelOptions: {
+      default: [[]],
+    },
+    messagesPath: {
+      default: '',
+    },
+    previewPath: {
+      default: '',
+    },
+  },
   i18n: {
     message: s__('BroadcastMessages|Message'),
     messagePlaceholder: s__('BroadcastMessages|Your message here'),
@@ -81,6 +95,7 @@ export default {
       })),
       startsAt: new Date(this.broadcastMessage.startsAt.getTime()),
       endsAt: new Date(this.broadcastMessage.endsAt.getTime()),
+      renderedMessage: '',
     };
   },
   computed: {
@@ -91,15 +106,15 @@ export default {
       return this.message.trim() === '';
     },
     messagePreview() {
-      return this.messageBlank ? this.$options.i18n.messagePlaceholder : this.message;
+      return this.messageBlank ? this.$options.i18n.messagePlaceholder : this.renderedMessage;
     },
     isAddForm() {
       return !this.broadcastMessage.id;
     },
     formPath() {
       return this.isAddForm
-        ? BROADCAST_MESSAGES_PATH
-        : `${BROADCAST_MESSAGES_PATH}/${this.broadcastMessage.id}`;
+        ? this.messagesPath
+        : `${this.messagesPath}/${this.broadcastMessage.id}`;
     },
     formPayload() {
       return JSON.stringify({
@@ -114,13 +129,21 @@ export default {
       });
     },
   },
+  watch: {
+    message: {
+      handler() {
+        this.renderPreview();
+      },
+      immediate: true,
+    },
+  },
   methods: {
     async onSubmit() {
       this.loading = true;
 
       const success = await this.submitForm();
       if (success) {
-        redirectTo(BROADCAST_MESSAGES_PATH);
+        redirectTo(this.messagesPath); // eslint-disable-line import/no-deprecated
       } else {
         this.loading = false;
       }
@@ -140,39 +163,59 @@ export default {
       }
       return true;
     },
+
+    async renderPreview() {
+      try {
+        const res = await axios.post(this.previewPath, this.formPayload, FORM_HEADERS);
+        this.renderedMessage = res.data;
+      } catch (e) {
+        this.renderedMessage = '';
+      }
+    },
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'],
   },
 };
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <gl-broadcast-message class="gl-my-6" :type="type" :theme="theme" :dismissible="dismissable">
-      {{ messagePreview }}
+    <gl-broadcast-message
+      class="gl-my-6"
+      :type="type"
+      :theme="theme"
+      :dismissible="dismissable"
+      data-testid="preview-broadcast-message"
+    >
+      <div v-safe-html:[$options.safeHtmlConfig]="messagePreview"></div>
     </gl-broadcast-message>
 
-    <message-form-group :label="$options.i18n.message" label-for="message-textarea">
+    <gl-form-group :label="$options.i18n.message" label-for="message-textarea">
       <gl-form-textarea
         id="message-textarea"
         v-model="message"
         size="sm"
+        :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
+        data-testid="message-input"
       />
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.type" label-for="type-select">
+    <gl-form-group :label="$options.i18n.type" label-for="type-select">
       <gl-form-select id="type-select" v-model="type" :options="$options.messageTypes" />
-    </message-form-group>
+    </gl-form-group>
 
     <template v-if="isBanner">
-      <message-form-group :label="$options.i18n.theme" label-for="theme-select">
+      <gl-form-group :label="$options.i18n.theme" label-for="theme-select">
         <gl-form-select
           id="theme-select"
           v-model="theme"
           :options="$options.messageThemes"
           data-testid="theme-select"
         />
-      </message-form-group>
+      </gl-form-group>
 
-      <message-form-group :label="$options.i18n.dismissable" label-for="dismissable-checkbox">
+      <gl-form-group :label="$options.i18n.dismissable" label-for="dismissable-checkbox">
         <gl-form-checkbox
           id="dismissable-checkbox"
           v-model="dismissable"
@@ -181,36 +224,32 @@ export default {
         >
           <span>{{ $options.i18n.dismissableDescription }}</span>
         </gl-form-checkbox>
-      </message-form-group>
+      </gl-form-group>
     </template>
 
-    <message-form-group
-      v-if="glFeatures.roleTargetedBroadcastMessages"
-      :label="$options.i18n.targetRoles"
-      data-testid="target-roles-checkboxes"
-    >
+    <gl-form-group :label="$options.i18n.targetRoles" data-testid="target-roles-checkboxes">
       <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
       <gl-form-text>
         {{ $options.i18n.targetRolesDescription }}
       </gl-form-text>
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.targetPath" label-for="target-path-input">
+    <gl-form-group :label="$options.i18n.targetPath" label-for="target-path-input">
       <gl-form-input id="target-path-input" v-model="targetPath" />
       <gl-form-text>
         {{ $options.i18n.targetPathDescription }}
       </gl-form-text>
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.startsAt">
+    <gl-form-group :label="$options.i18n.startsAt">
       <datetime-picker v-model="startsAt" />
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.endsAt">
+    <gl-form-group :label="$options.i18n.endsAt">
       <datetime-picker v-model="endsAt" />
-    </message-form-group>
+    </gl-form-group>
 
-    <div class="form-actions gl-mb-3">
+    <div class="gl-my-5">
       <gl-button
         type="submit"
         variant="confirm"

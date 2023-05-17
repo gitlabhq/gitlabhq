@@ -1,12 +1,12 @@
 - title: "PipelineSecurityReportFinding projectFingerprint GraphQL field"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.1"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: matt_wilson  # (required) GitLab username of the person reporting the deprecation
   stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343475  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 16.0.
+    The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 17.0.
 # The following items are not published on the docs page, but may be used in the future.
   tiers: Ultimate  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url:  # (optional) This is a link to the current documentation page

@@ -39,6 +39,7 @@ describe('OverviewTabs', () => {
     newProjectPath: 'projects/new',
     newSubgroupIllustration: '',
     newProjectIllustration: '',
+    emptyProjectsIllustration: '',
     emptySubgroupIllustration: '',
     canCreateSubgroups: false,
     canCreateProjects: false,
@@ -76,7 +77,6 @@ describe('OverviewTabs', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 

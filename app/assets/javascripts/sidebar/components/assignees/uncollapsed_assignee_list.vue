@@ -1,6 +1,6 @@
 <script>
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
@@ -53,7 +53,7 @@ export default {
       return `@${this.firstUser.username}`;
     },
     isMergeRequest() {
-      return this.issuableType === IssuableType.MergeRequest;
+      return this.issuableType === TYPE_MERGE_REQUEST;
     },
   },
   methods: {
@@ -61,7 +61,7 @@ export default {
       this.showLess = !this.showLess;
     },
     userAvailability(u) {
-      if (this.issuableType === IssuableType.MergeRequest) {
+      if (this.issuableType === TYPE_MERGE_REQUEST) {
         return u?.availability || '';
       }
       return u?.status?.availability || '';

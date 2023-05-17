@@ -92,7 +92,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
       let(:record) { user }
 
       it "uses a gravatar" do
-        expect(rendered_component).to match /gravatar\.com/
+        expect(rendered_content).to match /gravatar\.com/
       end
     end
   end

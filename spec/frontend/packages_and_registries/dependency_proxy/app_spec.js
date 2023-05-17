@@ -5,7 +5,6 @@ import {
   GlFormInputGroup,
   GlFormGroup,
   GlModal,
-  GlSkeletonLoader,
   GlSprintf,
   GlEmptyState,
 } from '@gitlab/ui';
@@ -13,6 +12,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
@@ -31,11 +31,6 @@ import { proxyDetailsQuery, proxyData, pagination, proxyManifests } from './mock
 const dummyApiVersion = 'v3000';
 const dummyGrouptId = 1;
 const dummyUrlRoot = '/gitlab';
-const dummyGon = {
-  api_version: dummyApiVersion,
-  relative_url_root: dummyUrlRoot,
-};
-let originalGon;
 const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${dummyGrouptId}/dependency_proxy/cache`;
 
 Vue.use(VueApollo);
@@ -51,6 +46,7 @@ describe('DependencyProxyApp', () => {
     groupId: dummyGrouptId,
     noManifestsIllustration: 'noManifestsIllustration',
     canClearCache: true,
+    settingsPath: 'path',
   };
 
   function createComponent({ provide = provideDefaults } = {}) {
@@ -71,55 +67,45 @@ describe('DependencyProxyApp', () => {
         GlSprintf,
         TitleArea,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   }
 
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findMainArea = () => wrapper.findByTestId('main-area');
   const findProxyCountText = () => wrapper.findByTestId('proxy-count');
   const findManifestList = () => wrapper.findComponent(ManifestsList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findClearCacheDropdownList = () => wrapper.findComponent(GlDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
+  const findSettingsLink = () => wrapper.findByTestId('settings-link');
 
   beforeEach(() => {
     resolver = jest.fn().mockResolvedValue(proxyDetailsQuery());
 
-    originalGon = window.gon;
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: dummyApiVersion,
+      relative_url_root: dummyUrlRoot,
+    };
 
     mock = new MockAdapter(axios);
     mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED, {});
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    window.gon = originalGon;
     mock.restore();
   });
 
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
-      it('renders the skeleton loader', () => {
-        createComponent();
-
-        expect(findSkeletonLoader().exists()).toBe(true);
-      });
-
       it('does not render a form group with label', () => {
         createComponent();
 
         expect(findFormGroup().exists()).toBe(false);
-      });
-
-      it('does not show the main section', () => {
-        createComponent();
-
-        expect(findMainArea().exists()).toBe(false);
       });
     });
 
@@ -128,10 +114,6 @@ describe('DependencyProxyApp', () => {
         beforeEach(() => {
           createComponent();
           return waitForPromises();
-        });
-
-        it('renders the main area', () => {
-          expect(findMainArea().exists()).toBe(true);
         });
 
         it('renders a form group with a label', () => {
@@ -155,6 +137,29 @@ describe('DependencyProxyApp', () => {
 
         it('form group has a description with proxy count', () => {
           expect(findProxyCountText().text()).toBe('Contains 2 blobs of images (1024 Bytes)');
+        });
+
+        describe('link to settings', () => {
+          it('is rendered', () => {
+            expect(findSettingsLink().exists()).toBe(true);
+          });
+
+          it('has the right icon', () => {
+            expect(findSettingsLink().props('icon')).toBe('settings');
+          });
+
+          it('has the right attributes', () => {
+            expect(findSettingsLink().attributes()).toMatchObject({
+              'aria-label': DependencyProxyApp.i18n.settingsText,
+              href: 'path',
+            });
+          });
+
+          it('sets tooltip with right label', () => {
+            const tooltip = getBinding(findSettingsLink().element, 'gl-tooltip');
+
+            expect(tooltip.value).toBe(DependencyProxyApp.i18n.settingsText);
+          });
         });
 
         describe('manifest lists', () => {
@@ -189,6 +194,7 @@ describe('DependencyProxyApp', () => {
 
             it('shows list', () => {
               expect(findManifestList().props()).toMatchObject({
+                dependencyProxyImagePrefix: proxyData().dependencyProxyImagePrefix,
                 manifests: proxyManifests(),
                 pagination: pagination(),
               });
@@ -218,13 +224,6 @@ describe('DependencyProxyApp', () => {
             });
 
             describe('triggering page event on list', () => {
-              it('re-renders the skeleton loader', async () => {
-                findManifestList().vm.$emit('next-page');
-                await nextTick();
-
-                expect(findSkeletonLoader().exists()).toBe(true);
-              });
-
               it('renders form group with label', async () => {
                 findManifestList().vm.$emit('next-page');
                 await nextTick();
@@ -232,13 +231,6 @@ describe('DependencyProxyApp', () => {
                 expect(findFormGroup().attributes('label')).toEqual(
                   expect.stringMatching(DependencyProxyApp.i18n.proxyImagePrefix),
                 );
-              });
-
-              it('does not show the main section', async () => {
-                findManifestList().vm.$emit('next-page');
-                await nextTick();
-
-                expect(findMainArea().exists()).toBe(false);
               });
             });
 
@@ -274,9 +266,7 @@ describe('DependencyProxyApp', () => {
               beforeEach(() => {
                 createComponent({
                   provide: {
-                    groupPath: 'gitlab-org',
-                    groupId: dummyGrouptId,
-                    noManifestsIllustration: 'noManifestsIllustration',
+                    ...provideDefaults,
                     canClearCache: false,
                   },
                 });
@@ -284,6 +274,10 @@ describe('DependencyProxyApp', () => {
 
               it('does not show the clear cache dropdown list', () => {
                 expect(findClearCacheDropdownList().exists()).toBe(false);
+              });
+
+              it('does not show link to settings', () => {
+                expect(findSettingsLink().exists()).toBe(false);
               });
             });
           });

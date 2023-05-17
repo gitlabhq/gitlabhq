@@ -76,7 +76,7 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
             method: method
           )
         ) do |c|
-          c.label { label }
+          c.with_label { label }
         end
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
             label: label
           )
         ) do |c|
-          c.help_text { help_text }
+          c.with_help_text { help_text }
         end
       end
     end
@@ -112,8 +112,8 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
             method: method
           )
         ) do |c|
-          c.label { label }
-          c.help_text { help_text }
+          c.with_label { label }
+          c.with_help_text { help_text }
         end
       end
     end

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+# The endpoints by default return `404` in preparation for their removal
+# (also see comment above `#reversible_end_of_life!`).
+# https://gitlab.com/gitlab-org/gitlab/-/issues/362168
+#
 # These endpoints partially mimic Github API behavior in order to successfully
 # integrate with Jira Development Panel.
-# Endpoints returning an empty list were temporarily added to avoid 404's
-# during Jira's DVCS integration.
-#
 module API
   module V3
     class Github < ::API::Base
@@ -28,6 +29,8 @@ module API
       feature_category :integrations
 
       before do
+        reversible_end_of_life!
+
         authorize_jira_user_agent!(request)
         authenticate!
       end
@@ -36,6 +39,17 @@ module API
         params :project_full_path do
           requires :namespace, type: String
           requires :project, type: String
+        end
+
+        # The endpoints in this class have been deprecated since 15.1.
+        #
+        # Due to uncertainty about the impact of a full removal in 16.0, all endpoints return `404`
+        # by default but we allow customers to toggle a flag to reverse this breaking change.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/362168#note_1347692683.
+        #
+        # TODO Make the breaking change irreversible https://gitlab.com/gitlab-org/gitlab/-/issues/408148.
+        def reversible_end_of_life!
+          not_found! unless Feature.enabled?(:jira_dvcs_end_of_life_amnesty)
         end
 
         def authorize_jira_user_agent!(request)

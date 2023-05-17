@@ -12,7 +12,7 @@ Follow these guidelines when contributing or reviewing design and user interface
 advice and best practices for code review in general.
 
 The basis for most of these guidelines is [Pajamas](https://design.gitlab.com/),
-GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contribute/)
+GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contributing/)
 with additions and improvements.
 
 ## Merge request reviews
@@ -73,7 +73,7 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
   guidelines.
 - _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
 
- [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is in [alpha](../../policy/alpha-beta-support.md#alpha-features). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+ [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is an [Experiment](../../policy/alpha-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 
@@ -127,7 +127,7 @@ At any moment, but usually _during_ or _after_ the design's implementation:
 
 - Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contributing#contribute-an-issue)
   for additions or enhancements to the design system.
-- Create issues with the [`~UX debt`](issue_workflow.md#technical-and-ux-debt)
+- Create issues with the [`~UX debt`](../labels/index.md#technical-and-ux-debt)
   label for intentional deviations from the agreed-upon UX requirements due to
   time or feasibility challenges, linking back to the corresponding issues or
   merge requests.

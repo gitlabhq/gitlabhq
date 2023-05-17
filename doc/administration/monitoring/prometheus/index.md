@@ -22,7 +22,7 @@ Prometheus services are on by default.
 Prometheus and its exporters don't authenticate users, and are available to anyone who can access
 them.
 
-## Overview
+## How Prometheus works
 
 Prometheus works by periodically connecting to data sources and collecting their
 performance metrics through the [various exporters](#bundled-software-metrics). To view
@@ -201,7 +201,10 @@ To use an external Prometheus server:
    postgres_exporter['listen_address'] = '0.0.0.0:9187'
 
    # Gitaly nodes
-   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+   gitaly['configuration'] = {
+      # ...
+      prometheus_listen_addr: '0.0.0.0:9236',
+   }
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).

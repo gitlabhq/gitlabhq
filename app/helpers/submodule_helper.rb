@@ -151,8 +151,6 @@ module SubmoduleHelper
 
     if uri.scheme.in?(VALID_SUBMODULE_PROTOCOLS)
       uri.to_s
-    else
-      nil
     end
   rescue URI::InvalidURIError
     nil

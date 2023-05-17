@@ -26,8 +26,8 @@ class ActiveSession
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
   attr_accessor :ip_address, :browser, :os,
-                :device_name, :device_type,
-                :is_impersonated, :session_id, :session_private_id
+    :device_name, :device_type,
+    :is_impersonated, :session_id, :session_private_id
 
   attr_reader :created_at, :updated_at
 
@@ -91,13 +91,6 @@ class ActiveSession
             active_user_session.dump
           )
 
-          # Deprecated legacy format - temporary to support mixed deployments
-          pipeline.setex(
-            key_name_v1(user.id, session_private_id),
-            expiry,
-            Marshal.dump(active_user_session)
-          )
-
           pipeline.sadd?(
             lookup_key_name(user.id),
             session_private_id
@@ -105,6 +98,19 @@ class ActiveSession
         end
       end
     end
+  end
+
+  # set marketing cookie when user has active session
+  def self.set_active_user_cookie(auth)
+    auth.cookies[:about_gitlab_active_user] =
+      {
+        value: true,
+        domain: Gitlab.config.gitlab.host
+      }
+  end
+
+  def self.unset_active_user_cookie(auth)
+    auth.cookies.delete :about_gitlab_active_user
   end
 
   def self.list(user)

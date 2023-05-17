@@ -45,6 +45,13 @@ describe('WebIDE', () => {
 
   const callOnBeforeUnload = (e = {}) => window.onbeforeunload(e);
 
+  beforeAll(() => {
+    // HACK: Workaround readonly property in Jest
+    Object.defineProperty(window, 'onbeforeunload', {
+      writable: true,
+    });
+  });
+
   beforeEach(() => {
     stubPerformanceWebAPI();
 
@@ -52,8 +59,6 @@ describe('WebIDE', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     window.onbeforeunload = null;
   });
 
@@ -66,7 +71,7 @@ describe('WebIDE', () => {
       });
     });
 
-    it('renders "New file" button in empty repo', async () => {
+    it('renders "New file" button in empty repo', () => {
       expect(wrapper.find('[title="New file"]').exists()).toBe(true);
     });
   });
@@ -171,7 +176,7 @@ describe('WebIDE', () => {
     });
   });
 
-  it('when user cannot push code, shows alert', () => {
+  it('when user cannot push code, shows an alert', () => {
     store.state.links = {
       forkInfo: {
         ide_path: TEST_FORK_IDE_PATH,

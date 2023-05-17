@@ -1,0 +1,8 @@
+---
+name: cloudseed_aws
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114245
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395777
+milestone: '15.10'
+type: development
+group: group::incubation
+default_enabled: false

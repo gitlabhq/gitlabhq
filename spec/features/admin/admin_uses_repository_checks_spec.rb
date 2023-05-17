@@ -19,7 +19,7 @@ RSpec.describe 'Admin uses repository checks', :request_store, feature_category:
       visit_admin_project_page(project)
 
       expect(page).not_to have_css('.repository-check')
-      expect(page).to have_content('Enter Admin Mode')
+      expect(page).to have_content('Enter admin mode')
     end
   end
 

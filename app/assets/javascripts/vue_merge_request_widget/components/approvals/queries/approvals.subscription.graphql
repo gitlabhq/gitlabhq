@@ -1,0 +1,17 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+subscription mergeRequestApprovalStateUpdated($issuableId: IssuableID!) {
+  mergeRequestApprovalStateUpdated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      id
+      approvedBy {
+        nodes {
+          ...User
+        }
+      }
+      userPermissions {
+        canApprove
+      }
+    }
+  }
+}

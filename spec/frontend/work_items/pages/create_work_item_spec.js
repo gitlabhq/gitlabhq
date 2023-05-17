@@ -37,7 +37,6 @@ describe('Create work item component', () => {
     props = {},
     queryHandler = querySuccessHandler,
     mutationHandler = createWorkItemSuccessHandler,
-    fetchByIid = false,
   } = {}) => {
     fakeApollo = createMockApollo(
       [
@@ -66,15 +65,11 @@ describe('Create work item component', () => {
       },
       provide: {
         fullPath: 'full-path',
-        glFeatures: {
-          useIidInWorkItemsPath: fetchByIid,
-        },
       },
     });
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 
@@ -109,9 +104,7 @@ describe('Create work item component', () => {
 
       expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
         name: 'workItem',
-        params: {
-          id: '1',
-        },
+        params: { id: '1' },
       });
     });
 
@@ -149,7 +142,7 @@ describe('Create work item component', () => {
     });
 
     it('displays a list of work item types', () => {
-      expect(findSelect().attributes('options').split(',')).toHaveLength(4);
+      expect(findSelect().attributes('options').split(',')).toHaveLength(6);
     });
 
     it('selects a work item type on click', async () => {
@@ -209,19 +202,5 @@ describe('Create work item component', () => {
     expect(findAlert().text()).toBe(
       'Something went wrong when creating work item. Please try again.',
     );
-  });
-
-  it('performs a correct redirect when `useIidInWorkItemsPath` feature flag is enabled', async () => {
-    createComponent({ fetchByIid: true });
-    findTitleInput().vm.$emit('title-input', 'Test title');
-
-    wrapper.find('form').trigger('submit');
-    await waitForPromises();
-
-    expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
-      name: 'workItem',
-      params: { id: '1' },
-      query: { iid_path: 'true' },
-    });
   });
 });

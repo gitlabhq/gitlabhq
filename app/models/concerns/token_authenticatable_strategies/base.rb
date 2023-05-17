@@ -31,9 +31,13 @@ module TokenAuthenticatableStrategies
       result
     end
 
-    # Default implementation returns the token as-is
+    # If a `format_with_prefix` option is provided, it applies and returns the formatted token.
+    # Otherwise, default implementation returns the token as-is
     def format_token(instance, token)
-      instance.send("format_#{@token_field}", token) # rubocop:disable GitlabSecurity/PublicSend
+      prefix = prefix_for(instance)
+      prefixed_token = prefix ? "#{prefix}#{token}" : token
+
+      instance.send("format_#{@token_field}", prefixed_token) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def ensure_token(instance)
@@ -87,6 +91,17 @@ module TokenAuthenticatableStrategies
     end
 
     protected
+
+    def prefix_for(instance)
+      case prefix_option = options[:format_with_prefix]
+      when nil
+        nil
+      when Symbol
+        instance.send(prefix_option) # rubocop:disable GitlabSecurity/PublicSend
+      else
+        raise NotImplementedError
+      end
+    end
 
     def write_new_token(instance)
       new_token = generate_available_token

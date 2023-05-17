@@ -1,32 +1,28 @@
 import Vue from 'vue';
-import MlExperiment from '~/ml/experiment_tracking/components/ml_experiment.vue';
+import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 const initShowExperiment = () => {
   const element = document.querySelector('#js-show-ml-experiment');
   if (!element) {
-    return;
+    return undefined;
   }
 
-  const container = document.createElement('div');
-  element.appendChild(container);
+  const { experiment, candidates, metrics, params, pageInfo, emptyStateSvgPath } = element.dataset;
 
-  const candidates = JSON.parse(element.dataset.candidates);
-  const metricNames = JSON.parse(element.dataset.metrics);
-  const paramNames = JSON.parse(element.dataset.params);
-  const pageInfo = convertObjectPropsToCamelCase(JSON.parse(element.dataset.pageInfo));
+  const props = {
+    experiment: JSON.parse(experiment),
+    candidates: JSON.parse(candidates),
+    metricNames: JSON.parse(metrics),
+    paramNames: JSON.parse(params),
+    pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+    emptyStateSvgPath,
+  };
 
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: container,
-    provide: {
-      candidates,
-      metricNames,
-      paramNames,
-      pageInfo,
-    },
+  return new Vue({
+    el: element,
     render(h) {
-      return h(MlExperiment);
+      return h(MlExperimentsShow, { props });
     },
   });
 };

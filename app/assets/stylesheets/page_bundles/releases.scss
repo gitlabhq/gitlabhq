@@ -10,3 +10,17 @@
     min-height: 46px;
   }
 }
+
+.release-tag-selector {
+  .popover-body {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    min-width: $gl-dropdown-width;
+    max-width: $gl-dropdown-width;
+  }
+
+  .release-tag-list {
+    max-height: $dropdown-max-height;
+  }
+}

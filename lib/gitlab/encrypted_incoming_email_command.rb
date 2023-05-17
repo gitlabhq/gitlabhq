@@ -8,7 +8,7 @@ module Gitlab
 
     class << self
       def encrypted_secrets
-        Gitlab::IncomingEmail.encrypted_secrets
+        Gitlab::Email::IncomingEmail.encrypted_secrets
       end
 
       def encrypted_file_template

@@ -1,10 +1,9 @@
 - page_title _('DevOps Reports')
-- add_page_specific_style 'page_bundles/dev_ops_report'
+- add_page_specific_style 'page_bundles/dev_ops_reports'
 
-.container
-  .gl-mt-3
-    - if show_adoption?
-      = render_if_exists 'admin/dev_ops_report/devops_tabs'
-    - else
-      = render 'score'
+.gl-mt-3
+  - if show_adoption?
+    = render_if_exists 'admin/dev_ops_report/devops_tabs'
+  - else
+    = render 'score'
 

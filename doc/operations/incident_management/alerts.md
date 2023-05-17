@@ -205,3 +205,28 @@ You can manually create a [to-do item](../../user/todos.md) for yourself
 from an alert, and view it later on your **To-Do List**.
 
 To add a to-do item, on the right sidebar, select **Add a to do**.
+
+### Trigger actions from alerts **(ULTIMATE)**
+
+> - Introduced in GitLab 13.1: incidents are not created automatically by default.
+> - Mapping common severity values from the alert payload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9.
+
+Turn on creating [incidents](incidents.md) automatically whenever an alert is triggered.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To configure the actions:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Monitor**.
+1. Expand the **Alerts** section, then select the **Alert settings** tab.
+1. Select the **Create an incident** checkbox.
+1. Optional. To customize the incident, from the **Incident template**, select a template to be
+   appended to the [incident summary](incidents.md#summary).
+   If the dropdown list is empty,
+   [create an issue template](../../user/project/description_templates.md#create-an-issue-template) first.
+1. Optional. To send [an email notification](paging.md#email-notifications-for-alerts), select the
+   **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
+1. Select **Save changes**.

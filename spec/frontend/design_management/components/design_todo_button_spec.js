@@ -51,8 +51,6 @@ describe('Design management design todo button', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     jest.clearAllMocks();
   });
 
@@ -83,7 +81,7 @@ describe('Design management design todo button', () => {
         await nextTick();
       });
 
-      it('calls `$apollo.mutate` with the `todoMarkDone` mutation and variables containing `id`', async () => {
+      it('calls `$apollo.mutate` with the `todoMarkDone` mutation and variables containing `id`', () => {
         const todoMarkDoneMutationVariables = {
           mutation: todoMarkDoneMutation,
           update: expect.anything(),
@@ -129,7 +127,7 @@ describe('Design management design todo button', () => {
         await nextTick();
       });
 
-      it('calls `$apollo.mutate` with the `createDesignTodoMutation` mutation and variables containing `issuable_id`, `issue_id`, & `projectPath`', async () => {
+      it('calls `$apollo.mutate` with the `createDesignTodoMutation` mutation and variables containing `issuable_id`, `issue_id`, & `projectPath`', () => {
         const createDesignTodoMutationVariables = {
           mutation: createDesignTodoMutation,
           update: expect.anything(),

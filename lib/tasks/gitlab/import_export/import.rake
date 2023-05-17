@@ -30,10 +30,12 @@ namespace :gitlab do
         end
 
         task = Gitlab::ImportExport::Project::ImportTask.new(
-          namespace_path: args.namespace_path,
-          project_path: args.project_path,
-          username: args.username,
-          file_path: args.archive_path,
+          {
+            namespace_path: args.namespace_path,
+            project_path: args.project_path,
+            username: args.username,
+            file_path: args.archive_path
+          },
           logger: logger
         )
 

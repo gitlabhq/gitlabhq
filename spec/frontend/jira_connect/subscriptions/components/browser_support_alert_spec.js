@@ -12,10 +12,6 @@ describe('BrowserSupportAlert', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLink = () => wrapper.findComponent(GlLink);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays a non-dismissible alert', () => {
     createComponent();
 

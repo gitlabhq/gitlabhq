@@ -136,12 +136,9 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
       allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
       expect(::Gitlab::GitalyClient).not_to receive(:call).with(anything, :commit_service, :find_commit, anything, anything)
 
-      get(:show,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: id
-          })
+      get :show, params: {
+        namespace_id: project.namespace.to_param, project_id: project, id: id
+      }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -151,12 +148,9 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
     render_views
 
     before do
-      get(:show,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: id
-          })
+      get :show, params: {
+        namespace_id: project.namespace.to_param, project_id: project, id: id
+      }
     end
 
     context 'redirect to blob' do
@@ -164,8 +158,7 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
 
       it 'redirects' do
         redirect_url = "/#{project.full_path}/-/blob/master/README.md"
-        expect(subject)
-          .to redirect_to(redirect_url)
+        expect(subject).to redirect_to(redirect_url)
       end
     end
   end
@@ -174,15 +167,14 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
     render_views
 
     before do
-      post(:create_dir,
-           params: {
-             namespace_id: project.namespace.to_param,
-             project_id: project,
-             id: 'master',
-             dir_name: path,
-             branch_name: branch_name,
-             commit_message: 'Test commit message'
-           })
+      post :create_dir, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: 'master',
+        dir_name: path,
+        branch_name: branch_name,
+        commit_message: 'Test commit message'
+      }
     end
 
     context 'successful creation' do

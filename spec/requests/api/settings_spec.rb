@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, feature_category: :not_owned do
+RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, feature_category: :shared do
   let(:user) { create(:user) }
 
   let_it_be(:admin) { create(:admin) }
@@ -66,6 +66,16 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['jira_connect_application_key']).to eq(nil)
       expect(json_response['jira_connect_proxy_url']).to eq(nil)
       expect(json_response['user_defaults_to_private_profile']).to eq(false)
+      expect(json_response['default_syntax_highlighting_theme']).to eq(1)
+      expect(json_response['projects_api_rate_limit_unauthenticated']).to eq(400)
+      expect(json_response['silent_mode_enabled']).to be(false)
+      expect(json_response['slack_app_enabled']).to be(false)
+      expect(json_response['slack_app_id']).to be_nil
+      expect(json_response['slack_app_secret']).to be_nil
+      expect(json_response['slack_app_signing_secret']).to be_nil
+      expect(json_response['slack_app_verification_token']).to be_nil
+      expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
+      expect(json_response['ci_max_includes']).to eq(150)
     end
   end
 
@@ -169,7 +179,16 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
             allow_runner_registration_token: true,
-            user_defaults_to_private_profile: true
+            user_defaults_to_private_profile: true,
+            default_syntax_highlighting_theme: 2,
+            projects_api_rate_limit_unauthenticated: 100,
+            silent_mode_enabled: true,
+            slack_app_enabled: true,
+            slack_app_id: 'SLACK_APP_ID',
+            slack_app_secret: 'SLACK_APP_SECRET',
+            slack_app_signing_secret: 'SLACK_APP_SIGNING_SECRET',
+            slack_app_verification_token: 'SLACK_APP_VERIFICATION_TOKEN',
+            valid_runner_registrars: ['group']
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -237,6 +256,15 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['bulk_import_enabled']).to be(false)
         expect(json_response['allow_runner_registration_token']).to be(true)
         expect(json_response['user_defaults_to_private_profile']).to be(true)
+        expect(json_response['default_syntax_highlighting_theme']).to eq(2)
+        expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
+        expect(json_response['silent_mode_enabled']).to be(true)
+        expect(json_response['slack_app_enabled']).to be(true)
+        expect(json_response['slack_app_id']).to eq('SLACK_APP_ID')
+        expect(json_response['slack_app_secret']).to eq('SLACK_APP_SECRET')
+        expect(json_response['slack_app_signing_secret']).to eq('SLACK_APP_SIGNING_SECRET')
+        expect(json_response['slack_app_verification_token']).to eq('SLACK_APP_VERIFICATION_TOKEN')
+        expect(json_response['valid_runner_registrars']).to eq(['group'])
       end
     end
 
@@ -803,6 +831,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['pipeline_limit_per_project_user_sha'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with ci_max_includes' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: 200
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_max_includes' => 200
+        )
+      end
+
+      it 'allows a zero value' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_max_includes' => 0
+        )
+      end
+
+      it 'does not allow a nil value' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_max_includes'])
           .to include(a_string_matching('is not a number'))
       end
     end

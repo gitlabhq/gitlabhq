@@ -26,10 +26,6 @@ describe('CustomMetricsForm', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Computed', () => {
     it('Form button and title text indicate the custom metric is being edited', () => {
       mountComponent({ metricPersisted: true });

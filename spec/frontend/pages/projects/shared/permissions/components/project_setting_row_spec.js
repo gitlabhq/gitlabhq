@@ -15,10 +15,6 @@ describe('Project Setting Row', () => {
     wrapper = mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should show the label if it is set', async () => {
     wrapper.setProps({ label: 'Test label' });
 

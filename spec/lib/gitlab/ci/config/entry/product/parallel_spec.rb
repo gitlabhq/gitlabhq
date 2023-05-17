@@ -27,10 +27,10 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
       it_behaves_like 'invalid config', /should be an integer or a hash/
     end
 
-    context 'when it is lower than two' do
-      let(:config) { 1 }
+    context 'when it is lower than one' do
+      let(:config) { 0 }
 
-      it_behaves_like 'invalid config', /must be greater than or equal to 2/
+      it_behaves_like 'invalid config', /must be greater than or equal to 1/
     end
 
     context 'when it is bigger than 200' do

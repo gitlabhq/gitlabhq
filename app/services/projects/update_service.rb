@@ -10,6 +10,8 @@ module Projects
     def execute
       build_topics
       remove_unallowed_params
+      add_pages_unique_domain
+
       validate!
 
       ensure_wiki_exists if enabling_wiki?
@@ -47,6 +49,24 @@ module Projects
     end
 
     private
+
+    def add_pages_unique_domain
+      if Feature.disabled?(:pages_unique_domain, project)
+        params[:project_setting_attributes]&.delete(:pages_unique_domain_enabled)
+
+        return
+      end
+
+      return unless params.dig(:project_setting_attributes, :pages_unique_domain_enabled)
+
+      # If the project used a unique domain once, it'll always use the same
+      return if project.project_setting.pages_unique_domain_in_database.present?
+
+      params[:project_setting_attributes][:pages_unique_domain] = Gitlab::Pages::RandomDomain.generate(
+        project_path: project.path,
+        namespace_path: project.parent.full_path
+      )
+    end
 
     def validate!
       unless valid_visibility_level_change?(project, project.visibility_attribute_value(params))
@@ -100,6 +120,8 @@ module Projects
 
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
+
+      params.delete(:runner_registration_enabled) if Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
     end
 
     def after_update

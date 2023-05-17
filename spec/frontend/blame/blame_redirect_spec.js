@@ -1,12 +1,11 @@
 import redirectToCorrectPage from '~/blame/blame_redirect';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Blame page redirect', () => {
   beforeEach(() => {
-    global.window = Object.create(window);
     const url = 'https://gitlab.com/flightjs/Flight/-/blame/master/file.json';
     Object.defineProperty(window, 'location', {
       writable: true,

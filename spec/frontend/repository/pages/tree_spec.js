@@ -12,8 +12,6 @@ describe('Repository tree page component', () => {
   }
 
   afterEach(() => {
-    wrapper.destroy();
-
     updateElementsVisibility.mockClear();
   });
 

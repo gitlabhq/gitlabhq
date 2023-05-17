@@ -11,7 +11,7 @@ RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
     create(:ci_runner_version, version: 'abc123', status: :unavailable)
   end
 
-  it { is_expected.to have_many(:runner_machines).with_foreign_key(:version) }
+  it { is_expected.to have_many(:runner_managers).with_foreign_key(:version) }
 
   it_behaves_like 'having unique enum values'
 
@@ -38,5 +38,16 @@ RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
 
   describe 'validation' do
     it { is_expected.to validate_length_of(:version).is_at_most(2048) }
+  end
+
+  describe '#status' do
+    context 'when is not processed' do
+      subject(:ci_runner_version) { create(:ci_runner_version, version: 'abc124', status: :not_processed) }
+
+      let(:attr) { :status }
+      let(:attr_value) { :not_processed }
+
+      it_behaves_like 'having enum with nil value'
+    end
   end
 end

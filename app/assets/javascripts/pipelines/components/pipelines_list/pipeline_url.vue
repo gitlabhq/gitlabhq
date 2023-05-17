@@ -144,14 +144,16 @@ export default {
         <tooltip-on-truncate :title="commitTitle" class="gl-flex-grow-1 gl-text-truncate">
           <gl-link
             :href="commitUrl"
-            class="commit-row-message gl-text-gray-900"
+            class="commit-row-message gl-font-weight-bold gl-text-gray-900"
             data-testid="commit-title"
             @click="trackClick('click_commit_title')"
             >{{ commitTitle }}</gl-link
           >
         </tooltip-on-truncate>
       </span>
-      <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
+      <span v-else class="gl-text-gray-500">{{
+        __("Can't find HEAD commit for this branch")
+      }}</span>
     </div>
     <div class="gl-mb-2">
       <gl-link

@@ -5,7 +5,6 @@ description: Count of imported groups
 product_section: dev
 product_stage: manage
 product_group: import
-product_category: importers
 value_type: number
 status: removed
 time_frame: 28d

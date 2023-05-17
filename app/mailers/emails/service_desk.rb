@@ -20,15 +20,24 @@ module Emails
         sender_name: @service_desk_setting&.outgoing_name,
         sender_email: service_desk_sender_email_address
       )
-      options = service_desk_options(email_sender, 'thank_you', @issue.external_author)
-                  .merge(subject: "Re: #{subject_base}")
 
-      inject_service_desk_custom_email(mail_new_thread(@issue, options))
+      options = {
+        from: email_sender,
+        to: @issue.external_author,
+        subject: "Re: #{subject_base}",
+        **service_desk_template_content_options('thank_you')
+      }
+
+      mail_new_thread(@issue, options)
+      inject_service_desk_custom_email
     end
 
     def service_desk_new_note_email(issue_id, note_id, recipient)
       @note = Note.find(note_id)
+
       setup_service_desk_mail(issue_id)
+      # Prepare uploads for text replacement in markdown content
+      setup_service_desk_attachments
 
       email_sender = sender(
         @note.author_id,
@@ -36,11 +45,74 @@ module Emails
         sender_email: service_desk_sender_email_address
       )
 
-      add_uploads_as_attachments if Feature.enabled?(:service_desk_new_note_email_native_attachments, @note.project)
-      options = service_desk_options(email_sender, 'new_note', recipient)
-                  .merge(subject: subject_base)
+      options = {
+        from: email_sender,
+        to: recipient,
+        subject: subject_base,
+        **service_desk_template_content_options('new_note')
+      }
 
-      inject_service_desk_custom_email(mail_answer_thread(@issue, options))
+      mail_answer_thread(@issue, options)
+      # Add attachments after email init to guide ActiveMailer
+      # to choose the correct multipart content types
+      add_uploads_as_attachments
+      inject_service_desk_custom_email
+    end
+
+    def service_desk_custom_email_verification_email(service_desk_setting)
+      @service_desk_setting = service_desk_setting
+
+      email_sender = sender(
+        User.support_bot.id,
+        send_from_user_email: false,
+        sender_name: @service_desk_setting.outgoing_name,
+        sender_email: @service_desk_setting.custom_email
+      )
+
+      @verification_token = @service_desk_setting.custom_email_verification.token
+
+      subject = format(s_("Notify|Verify custom email address %{email} for %{project_name}"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      options = {
+        from: email_sender,
+        to: @service_desk_setting.custom_email_address_for_verification,
+        subject: subject,
+        content_type: "text/plain; charset=UTF-8"
+      }
+      # Outgoing emails from GitLab usually have this set to true.
+      # Service Desk email ingestion ignores auto generated emails.
+      headers["Auto-Submitted"] = "no"
+
+      mail_with_locale(options)
+      inject_service_desk_custom_email(force: true)
+    end
+
+    def service_desk_verification_triggered_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @triggerer = @service_desk_setting.custom_email_verification.triggerer
+      @smtp_address = @service_desk_setting.custom_email_credential.smtp_address
+
+      subject = format(s_("Notify|Verification for custom email %{email} for %{project_name} triggered"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
+    end
+
+    def service_desk_verification_result_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @verification = @service_desk_setting.custom_email_verification
+
+      subject = format(s_("Notify|Verification result for custom email %{email} for %{project_name}"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
     end
 
     private
@@ -55,22 +127,20 @@ module Emails
       @sent_notification = SentNotification.record(@issue, @support_bot.id, reply_key)
     end
 
-    def service_desk_options(email_sender, email_type, recipient)
-      {
-        from: email_sender,
-        to: recipient
-      }.tap do |options|
-        next unless template_body = template_content(email_type)
+    def service_desk_template_content_options(email_type)
+      return {} unless template_body = template_content(email_type)
 
-        options[:body] = template_body
-        options[:content_type] = 'text/html' unless attachments.present?
-      end
+      {
+        body: template_body,
+        content_type: 'text/html; charset=UTF-8'
+      }
     end
 
-    def inject_service_desk_custom_email(mail)
-      return mail unless service_desk_custom_email_enabled?
+    def inject_service_desk_custom_email(force: false)
+      return mail if !service_desk_custom_email_enabled? && !force
+      return mail unless @service_desk_setting.custom_email_credential.present?
 
-      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_delivery_options)
+      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end
 
     def service_desk_custom_email_enabled?
@@ -101,6 +171,7 @@ module Emails
         .gsub(/%\{\s*ISSUE_ID\s*\}/, issue_id)
         .gsub(/%\{\s*ISSUE_PATH\s*\}/, issue_path)
         .gsub(/%\{\s*NOTE_TEXT\s*\}/, note_text)
+        .gsub(/%\{\s*ISSUE_DESCRIPTION\s*\}/, issue_description)
         .gsub(/%\{\s*SYSTEM_HEADER\s*\}/, text_header_message.to_s)
         .gsub(/%\{\s*SYSTEM_FOOTER\s*\}/, text_footer_message.to_s)
         .gsub(/%\{\s*UNSUBSCRIBE_URL\s*\}/, unsubscribe_sent_notification_url(@sent_notification))
@@ -119,21 +190,37 @@ module Emails
       @note&.note.to_s
     end
 
+    def issue_description
+      @issue.description_html.to_s
+    end
+
     def subject_base
       "#{@issue.title} (##{@issue.iid})"
     end
 
-    def add_uploads_as_attachments
+    def setup_service_desk_attachments
+      @uploads_to_attach = []
+      # Filepaths we should replace in markdown content
+      @uploads_as_attachments = []
+
+      return unless Feature.enabled?(:service_desk_new_note_email_native_attachments, @note.project)
+
       uploaders = find_uploaders_for(@note)
-      return unless uploaders.present?
+      return if uploaders.nil?
       return if uploaders.sum(&:size) > EMAIL_ATTACHMENTS_SIZE_LIMIT
 
-      @uploads_as_attachments = []
       uploaders.each do |uploader|
-        attachments[uploader.filename] = uploader.read
+        @uploads_to_attach << { filename: uploader.filename, content: uploader.read }
         @uploads_as_attachments << "#{uploader.secret}/#{uploader.filename}"
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, project_id: @note.project.id)
+      end
+    end
+
+    def add_uploads_as_attachments
+      # We read the uploads before in setup_service_desk_attachments, so let's just add them
+      @uploads_to_attach.each do |upload|
+        mail.add_file(filename: upload[:filename], content: upload[:content])
       end
     end
 

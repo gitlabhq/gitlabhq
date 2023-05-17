@@ -10,3 +10,13 @@ RSpec.shared_examples 'having unique enum values' do
     end
   end
 end
+
+RSpec.shared_examples 'having enum with nil value' do
+  it 'has enum with nil value' do
+    subject.public_send("#{attr_value}!")
+
+    expect(subject.public_send("#{attr}_for_database")).to be_nil
+    expect(subject.public_send("#{attr}?")).to eq(true)
+    expect(subject.class.public_send(attr_value)).to eq([subject])
+  end
+end

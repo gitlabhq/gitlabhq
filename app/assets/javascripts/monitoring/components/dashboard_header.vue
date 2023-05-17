@@ -13,7 +13,7 @@ import {
 import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import invalidUrl from '~/lib/utils/invalid_url';
-import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
+import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
@@ -137,13 +137,13 @@ export default {
       const dashboardPath = encodeURIComponent(
         dashboard.out_of_the_box_dashboard ? dashboard.path : dashboard.display_name,
       );
-      redirectTo(`${baseURL}/${dashboardPath}`);
+      redirectTo(`${baseURL}/${dashboardPath}`); // eslint-disable-line import/no-deprecated
     },
     debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
       this.filterEnvironments(searchTerm);
     }, 500),
     onDateTimePickerInput(timeRange) {
-      redirectTo(timeRangeToUrl(timeRange));
+      redirectTo(timeRangeToUrl(timeRange)); // eslint-disable-line import/no-deprecated
     },
     onDateTimePickerInvalid() {
       this.$emit('dateTimePickerInvalid');

@@ -9,6 +9,8 @@ module Import
 
         if project.import_in_progress?
           project.import_state.cancel
+          metrics.track_canceled_import
+
           success(project: project)
         else
           error(cannot_cancel_error_message, :bad_request)
@@ -30,6 +32,10 @@ module Import
           _('The import cannot be canceled because it is %{project_status}'),
           project_status: project.import_state.status
         )
+      end
+
+      def metrics
+        @metrics ||= Gitlab::Import::Metrics.new(:github_importer, project)
       end
     end
   end

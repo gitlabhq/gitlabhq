@@ -1,11 +1,14 @@
-.form-group.row
-  .col-form-label.col-sm-2
+.gl-form-group
+  %div
     = f.label :start_date, _('Start Date')
-  .col-sm-4
-    = f.gitlab_ui_datepicker :start_date, data: { qa_selector: "start_date_field" }, placeholder: _('Select start date'), autocomplete: 'off'
-    %a.inline.float-right.gl-mt-2.js-clear-start-date{ href: "#" }= _('Clear start date')
-  .col-form-label.col-sm-2
+  %div
+    .issuable-form-select-holder
+      = f.gitlab_ui_datepicker :start_date, data: { qa_selector: "start_date_field" }, placeholder: _('Select start date'), autocomplete: 'off'
+    %a.gl-white-space-nowrap.gl-pl-4.js-clear-start-date{ href: "#" }= _('Clear start date')
+.gl-form-group
+  %div
     = f.label :due_date, _('Due Date')
-  .col-sm-4
-    = f.gitlab_ui_datepicker :due_date, data: { qa_selector: "due_date_field" }, placeholder: _('Select due date'), autocomplete: 'off'
-    %a.inline.float-right.gl-mt-2.js-clear-due-date{ href: "#" }= _('Clear due date')
+  %div
+    .issuable-form-select-holder
+      = f.gitlab_ui_datepicker :due_date, data: { qa_selector: "due_date_field" }, placeholder: _('Select due date'), autocomplete: 'off'
+    %a.gl-white-space-nowrap.gl-pl-4.js-clear-due-date{ href: "#" }= _('Clear due date')

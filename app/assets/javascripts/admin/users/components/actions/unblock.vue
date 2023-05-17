@@ -1,12 +1,12 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
 import { I18N_USER_ACTIONS } from '../../constants';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   props: {
     username: {
@@ -32,7 +32,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.unblock,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
         },
       });
@@ -42,7 +42,9 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item @click="onClick">
-    <slot></slot>
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item @action="onClick">
+    <template #list-item>
+      <slot></slot>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

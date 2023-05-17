@@ -1,8 +1,0 @@
----
-name: import_project_from_remote_file_s3
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77259
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350571
-milestone: '14.9'
-type: development
-group: group::import
-default_enabled: false

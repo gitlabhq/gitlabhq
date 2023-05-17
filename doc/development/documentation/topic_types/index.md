@@ -16,22 +16,52 @@ Each topic on a page should be one of the following topic types:
 Even if a page is short, the page usually starts with a concept and then
 includes a task or reference topic.
 
-The tech writing team sometimes uses the acronym `CTRT` to refer to our topic types.
+The tech writing team sometimes uses the acronym `CTRT` to refer to the topic types.
 The acronym refers to the first letter of each topic type.
 
-In addition to the four primary topic types, we also have a page type for
-[Tutorials](tutorial.md) and [Get started](#get-started).
+## Other page and topic types
+
+In addition to the four primary topic types, you can use the following:
+
+- Page types: [Tutorials](tutorial.md) and [Get started](#get-started)
+- Topic type: [Related topics](#related-topics)
+- Page or topic type: [Glossaries](glossary.md)
+
+## Pages and topics to avoid
+
+You should avoid:
+
+- Pages that are exclusively links to other pages. The only exception are
+  top-level pages that aid with navigation.
+- Topics that have one or two sentences only. In these cases:
+  - Incorporate the information in another topic.
+  - If the sentence links to another page, use a [Related topics](#related-topics) link instead.
+
+## Topic title guidelines
+
+In general, for topic titles:
+
+- Be clear and direct. Make every word count.
+- Use articles and prepositions.
+- Follow [capitalization](../styleguide/index.md#capitalization) guidelines.
+- Do not repeat text from earlier topic titles. For example, if the page is about merge requests,
+  instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
+
+See also [guidelines for heading levels in Markdown](../styleguide/index.md#heading-levels-in-markdown).
 
 ## Related topics
 
 If inline links are not sufficient, you can create a topic called **Related topics**
 and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
+Links in this section should be brief and scannable. They are usually not
+full sentences, and so should not end in a period.
+
 ```markdown
 ## Related topics
 
-- [Configure your pipeline](link-to-topic).
-- [Trigger a pipeline manually](link-to-topic).
+- [CI/CD variables](link-to-topic)
+- [Environment variables](link-to-topic)
 ```
 
 ## Get started
@@ -57,22 +87,3 @@ consider using subsections for each distinct task.
 
 In the left nav, use `Get started` as the text. On the page itself, spell out
 the full name. For example, `Get started with application security`.
-
-## Topics and resources
-
-Some pages are solely a list of links to other documentation.
-
-We do not encourage this page type. Lists of links can get out-of-date quickly
-and offer little value to users, who prefer to search to find information.
-
-## Topic title guidelines
-
-In general, for topic titles:
-
-- Be clear and direct. Make every word count.
-- Use articles and prepositions.
-- Follow [capitalization](../styleguide/index.md#capitalization) guidelines.
-- Do not repeat text from earlier topic titles. For example, if the page is about merge requests,
-  instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
-
-See also [guidelines for heading levels in Markdown](../styleguide/index.md#heading-levels-in-markdown).

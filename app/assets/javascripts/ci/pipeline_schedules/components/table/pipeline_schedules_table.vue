@@ -59,12 +59,21 @@ export default {
       type: Array,
       required: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
 
 <template>
-  <gl-table-lite :fields="$options.fields" :items="schedules" stacked="md">
+  <gl-table-lite
+    :fields="$options.fields"
+    :items="schedules"
+    :tbody-tr-attr="{ 'data-testid': 'pipeline-schedule-table-row' }"
+    stacked="md"
+  >
     <template #table-colgroup="{ fields }">
       <col v-for="field in fields" :key="field.key" :class="field.columnClass" />
     </template>
@@ -94,6 +103,7 @@ export default {
     <template #cell(actions)="{ item }">
       <pipeline-schedule-actions
         :schedule="item"
+        :current-user="currentUser"
         @showTakeOwnershipModal="$emit('showTakeOwnershipModal', $event)"
         @showDeleteModal="$emit('showDeleteModal', $event)"
         @playPipelineSchedule="$emit('playPipelineSchedule', $event)"

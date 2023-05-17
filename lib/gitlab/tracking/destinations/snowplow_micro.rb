@@ -53,7 +53,7 @@ module Gitlab
           url = Gitlab.config.snowplow_micro.address
           scheme = Gitlab.config.gitlab.https ? 'https' : 'http'
           "#{scheme}://#{url}"
-        rescue Settingslogic::MissingSetting
+        rescue GitlabSettings::MissingSetting
           DEFAULT_URI
         end
       end

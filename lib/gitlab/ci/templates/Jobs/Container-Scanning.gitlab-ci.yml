@@ -22,7 +22,8 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:5"
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:6"
+  CS_SCHEMA_MODEL: 15
 
 container_scanning:
   image: "$CS_ANALYZER_IMAGE$CS_IMAGE_SUFFIX"
@@ -39,12 +40,12 @@ container_scanning:
     reports:
       container_scanning: gl-container-scanning-report.json
       dependency_scanning: gl-dependency-scanning-report.json
-    paths: [gl-container-scanning-report.json, gl-dependency-scanning-report.json]
+    paths: [gl-container-scanning-report.json, gl-dependency-scanning-report.json, "**/gl-sbom-*.cdx.json"]
   dependencies: []
   script:
     - gtcs scan
   rules:
-    - if: $CONTAINER_SCANNING_DISABLED
+    - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_GITLAB_FIPS_MODE == "true" &&

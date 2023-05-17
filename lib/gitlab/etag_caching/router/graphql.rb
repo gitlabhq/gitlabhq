@@ -16,12 +16,17 @@ module Gitlab
           [
             %r(\Apipelines/sha/\w{7,40}\z),
             'ci_editor',
-            'pipeline_authoring'
+            'pipeline_composition'
           ],
           [
             %r(\Aon_demand_scan/counts/),
             'on_demand_scans',
             'dynamic_application_security_testing'
+          ],
+          [
+            %r(\A/projects/.+/-/environments.json\z),
+            'environment_details',
+            'continuous_delivery'
           ]
         ].map { |attrs| build_graphql_route(*attrs) }.freeze
 

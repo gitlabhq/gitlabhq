@@ -62,7 +62,7 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
         expect(ref_input.value).to eq 'master'
         expect(find('.gl-button-text')).to have_content 'master'
         find('.ref-selector').click
-        expect(find('.gl-new-dropdown-inner')).to have_content 'test'
+        expect(find('.gl-new-dropdown-inner')).to have_content 'spooky-stuff'
       end
     end
   end

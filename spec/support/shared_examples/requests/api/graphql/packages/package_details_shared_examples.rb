@@ -38,7 +38,7 @@ RSpec.shared_examples 'a package with files' do
   context 'with package files pending destruction' do
     let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
 
-    let(:response_package_file_ids) { package_files_response.map { |pf| pf['id'] } }
+    let(:response_package_file_ids) { package_files_response.pluck('id') }
 
     it 'does not return them' do
       expect(package.reload.package_files).to include(package_file_pending_destruction)

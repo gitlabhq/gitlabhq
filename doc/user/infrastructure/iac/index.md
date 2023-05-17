@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -100,7 +100,7 @@ For GitLab-curated template recipes, see [Terraform template recipes](terraform_
 ## Related topics
 
 - View [the images that contain the `gitlab-terraform` shell script](https://gitlab.com/gitlab-org/terraform-images).
-- Use GitLab as a [Terraform module registry](../../packages/terraform_module_registry/index.md).
+- Use GitLab as a [Terraform Module Registry](../../packages/terraform_module_registry/index.md).
 - To store state files in local storage or in a remote store, use the [GitLab-managed Terraform state](terraform_state.md).
 - To collaborate on Terraform code changes and Infrastructure-as-Code workflows, use the
   [Terraform integration in merge requests](mr_integration.md).

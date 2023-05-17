@@ -13,8 +13,6 @@ controlled by an external service that permits access based on project
 classification and user access. GitLab provides a way to check project
 authorization with your own defined service.
 
-## Overview
-
 After the external service is configured and enabled, when a project is
 accessed, a request is made to the external service with the user information
 and project classification label assigned to the project. When the service
@@ -39,12 +37,9 @@ the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/logs
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
 using Omnibus, learn to install a custom CA in the
-[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
+[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
-
-When external authorization is enabled, [deploy tokens](../../project/deploy_tokens/index.md)
- and [deploy keys](../../project/deploy_keys/index.md) can't be used for Git operations.
 
 ## Configuration
 
@@ -55,6 +50,30 @@ The external authorization service can be enabled by an administrator:
 1. Expand **External authorization**.
 1. Complete the fields.
 1. Select **Save changes**.
+
+### Allow external authorization with deploy tokens and deploy keys
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
+> - Deploy tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+
+You can set your instance to allow external authorization for Git operations with
+[deploy tokens](../../project/deploy_tokens/index.md) or [deploy keys](../../project/deploy_keys/index.md).
+
+Prerequisites:
+
+- You must be using classification labels without a service URL for external authorization.
+
+To allow authorization with deploy tokens and keys:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **External authorization**, and:
+   - Leave the service URL field empty.
+   - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
+1. Select **Save changes**.
+
+WARNING:
+If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
 
 ## How it works
 
@@ -106,7 +125,7 @@ You can use your own classification label in the project's
 label" box. When no classification label is specified on a project, the default
 label defined in the [global settings](#configuration) is used.
 
-The label is shown on all project pages in the upper right corner.
+On all project pages, in the upper-right corner, the label appears.
 
 ![classification label on project page](img/classification_label_on_project_page_v14_8.png)
 

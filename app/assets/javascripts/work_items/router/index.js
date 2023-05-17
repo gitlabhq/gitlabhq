@@ -11,6 +11,6 @@ export function createRouter(fullPath) {
   return new VueRouter({
     routes: routes(),
     mode: 'history',
-    base: joinPaths(fullPath, '-', 'work_items'),
+    base: joinPaths(gon?.relative_url_root, fullPath, '-', 'work_items'),
   });
 }

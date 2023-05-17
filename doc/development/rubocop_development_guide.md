@@ -5,7 +5,7 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# RuboCop rule development guide
+# RuboCop rule development guidelines
 
 Our codebase style is defined and enforced by [RuboCop](https://github.com/rubocop-hq/rubocop).
 
@@ -43,7 +43,7 @@ Before adding a new cop to enforce a given style, make sure to discuss it with y
 We maintain cops across several Ruby code bases, and not all of them are
 specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
-to add it to our [`gitlab-styles`](https://gitlab.com/gitlab-org/gitlab-styles) gem.
+to add it to our [`gitlab-styles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles) gem.
 If the cop targets rules that only apply to the main GitLab application,
 it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
 
@@ -60,7 +60,7 @@ A grace period can safely be lifted as soon as there are no warnings for 2 weeks
 1. Enable the new cop in `.rubocop.yml` (if not already done via [`gitlab-styles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles)).
 1. [Generate TODOs for the new cop](rake_tasks.md#generate-initial-rubocop-todo-list).
 1. [Set the new cop to `grace period`](#cop-grace-period).
-1. Create an issue to fix TODOs and encourage community contributions (via ~"good for new contributors" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=good%20for%20new%20contributors&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
+1. Create an issue to fix TODOs and encourage community contributions (via ~"quick win" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=quick%20wins&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
 1. Create an issue to remove `grace period` after 2 weeks of silence in the `#f_rubocop` Slack channel. [See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).
 
 ## Silenced offenses

@@ -17,18 +17,18 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let(:extracted_data) do
-    BulkImports::Pipeline::ExtractedData.new(data: {
-      'id' => 'gid://gitlab/Project/1234567',
-      'name' => 'My Project',
-      'path' => 'my-project',
-      'full_path' => 'group/my-project'
-    })
-  end
-
   subject { described_class.new(context) }
 
   describe '#run' do
+    let(:extracted_data) do
+      BulkImports::Pipeline::ExtractedData.new(data: {
+        'id' => 'gid://gitlab/Project/1234567',
+        'name' => 'My Project',
+        'path' => 'my-project',
+        'full_path' => 'group/my-project'
+      })
+    end
+
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(extracted_data)

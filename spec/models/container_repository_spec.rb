@@ -13,9 +13,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   before do
-    stub_container_registry_config(enabled: true,
-                                   api_url: 'http://registry.gitlab',
-                                   host_port: 'registry.gitlab')
+    stub_container_registry_config(
+      enabled: true, api_url: 'http://registry.gitlab', host_port: 'registry.gitlab'
+    )
 
     stub_request(:get, "http://registry.gitlab/v2/group/test/my_image/tags/list?n=#{::ContainerRegistry::Client::DEFAULT_TAGS_PAGE_SIZE}")
       .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
@@ -92,7 +92,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'transitioning to pre_importing', skip_pre_import_success: true do
+    shared_examples 'transitioning to pre_importing' do
       before do
         repository.update_column(:migration_pre_import_done_at, Time.zone.now)
       end
@@ -145,7 +145,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'transitioning to importing', skip_import_success: true do
+    shared_examples 'transitioning to importing' do
       before do
         repository.update_columns(migration_import_done_at: Time.zone.now)
       end
@@ -219,9 +219,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.start_pre_import }
 
       before do |example|
-        unless example.metadata[:skip_pre_import_success]
-          allow(repository).to receive(:migration_pre_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_pre_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
@@ -234,9 +232,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.retry_pre_import }
 
       before do |example|
-        unless example.metadata[:skip_pre_import_success]
-          allow(repository).to receive(:migration_pre_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_pre_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
@@ -264,9 +260,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.start_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_import_done pre_importing importing import_aborted]
@@ -279,9 +273,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.retry_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
@@ -374,9 +366,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.finish_pre_import_and_start_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
@@ -528,6 +518,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#each_tags_page' do
     let(:page_size) { 100 }
 
+    before do
+      allow(repository).to receive(:migrated?).and_return(true)
+    end
+
     shared_examples 'iterating through a page' do |expected_tags: true|
       it 'iterates through one page' do
         expect(repository.gitlab_api_client).to receive(:tags)
@@ -660,7 +654,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     context 'calling on a non migrated repository' do
       before do
-        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+        allow(repository).to receive(:migrated?).and_return(false)
       end
 
       it 'raises an Argument error' do
@@ -695,9 +689,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
   describe '#delete_tags!' do
     let(:repository) do
-      create(:container_repository, name: 'my_image',
-                                    tags: { latest: '123', rc1: '234' },
-                                    project: project)
+      create(
+        :container_repository,
+        name: 'my_image',
+        tags: { latest: '123', rc1: '234' },
+        project: project
+      )
     end
 
     context 'when action succeeds' do
@@ -725,9 +722,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
   describe '#delete_tag_by_name' do
     let(:repository) do
-      create(:container_repository, name: 'my_image',
-                                    tags: { latest: '123', rc1: '234' },
-                                    project: project)
+      create(
+        :container_repository,
+        name: 'my_image',
+        tags: { latest: '123', rc1: '234' },
+        project: project
+      )
     end
 
     context 'when action succeeds' do
@@ -756,9 +756,11 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#location' do
     context 'when registry is running on a custom port' do
       before do
-        stub_container_registry_config(enabled: true,
-                                       api_url: 'http://registry.gitlab:5000',
-                                       host_port: 'registry.gitlab:5000')
+        stub_container_registry_config(
+          enabled: true,
+          api_url: 'http://registry.gitlab:5000',
+          host_port: 'registry.gitlab:5000'
+        )
       end
 
       it 'returns a full location of the repository' do
@@ -795,6 +797,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       freeze_time do
         expect { subject }
           .to change { repository.expiration_policy_started_at }.from(nil).to(Time.zone.now)
+          .and change { repository.expiration_policy_cleanup_status }.from('cleanup_unscheduled').to('cleanup_ongoing')
           .and change { repository.last_cleanup_deleted_tags_count }.from(10).to(nil)
       end
     end
@@ -1236,6 +1239,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
 
       before do
+        allow(group).to receive(:first_project_with_container_registry_tags).and_return(nil)
+
         group.parent = test_group
         group.save!
       end
@@ -1561,22 +1566,20 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#migrated?' do
     subject { repository.migrated? }
 
-    it { is_expected.to eq(true) }
-
-    context 'with a created_at older than phase 1 ends' do
+    context 'on gitlab.com' do
       before do
-        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+        allow(::Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'not on gitlab.com' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
       end
 
       it { is_expected.to eq(false) }
-
-      context 'with migration state set to import_done' do
-        before do
-          repository.update!(migration_state: 'import_done')
-        end
-
-        it { is_expected.to eq(true) }
-      end
     end
   end
 
@@ -1716,5 +1719,20 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     subject { described_class.with_stale_migration(5.minutes.ago) }
 
     it { is_expected.to contain_exactly(*stale_migrations) }
+  end
+
+  describe '#registry' do
+    it 'caches the client' do
+      registry = repository.registry
+      registry1 = repository.registry
+      registry2 = nil
+
+      travel_to(Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes) do
+        registry2 = repository.registry
+      end
+
+      expect(registry1.object_id).to be(registry.object_id)
+      expect(registry2.object_id).not_to be(registry.object_id)
+    end
   end
 end

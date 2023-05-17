@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -40,7 +40,7 @@ function prometheusMetricQueryParams(timeRange) {
  * Extract error messages from API or HTTP request errors.
  *
  * - API errors are in `error.response.data.message`
- * - HTTP (axios) errors are in `error.messsage`
+ * - HTTP (axios) errors are in `error.message`
  *
  * @param {Object} error
  * @returns {String} User friendly error message

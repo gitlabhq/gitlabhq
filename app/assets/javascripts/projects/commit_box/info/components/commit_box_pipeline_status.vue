@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlLink } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,

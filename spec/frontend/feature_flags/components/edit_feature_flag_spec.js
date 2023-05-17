@@ -24,10 +24,6 @@ describe('Edit feature flag form', () => {
   });
 
   const factory = (provide = { searchPath: '/search' }) => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     wrapper = shallowMount(EditFeatureFlag, {
       store,
       provide,
@@ -53,7 +49,6 @@ describe('Edit feature flag form', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

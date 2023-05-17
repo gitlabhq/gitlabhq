@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Search, feature_category: :global_search do
+RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
@@ -10,8 +10,6 @@ RSpec.describe API::Search, feature_category: :global_search do
 
   before do
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
   end
 
   shared_examples 'response is correct' do |schema:, size: 1|
@@ -141,7 +139,7 @@ RSpec.describe API::Search, feature_category: :global_search do
       end
     end
 
-    context 'when DB timeouts occur from global searches', :aggregate_errors do
+    context 'when DB timeouts occur from global searches', :aggregate_failures do
       %w(
         issues
         merge_requests
@@ -169,6 +167,23 @@ RSpec.describe API::Search, feature_category: :global_search do
     context 'when scope is missing' do
       it 'returns 400 error' do
         get api(endpoint, user), params: { search: 'awesome' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when there is a search error' do
+      let(:results) { instance_double('Gitlab::SearchResults', failed?: true, error: 'failed to parse query') }
+
+      before do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_objects).and_return([])
+          allow(service).to receive(:search_results).and_return(results)
+        end
+      end
+
+      it 'returns 400 error' do
+        get api(endpoint, user), params: { scope: 'issues', search: 'expected to fail' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end

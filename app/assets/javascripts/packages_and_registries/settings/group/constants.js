@@ -17,6 +17,9 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
   'PackageRegistry|Publish packages if their name or version matches this regex.',
 );
 
+export const PACKAGE_FORWARDING_SECURITY_DESCRIPTION = s__(
+  'PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled. %{docLinkStart}What are the risks?%{docLinkEnd}',
+);
 export const PACKAGE_FORWARDING_SETTINGS_HEADER = s__('PackageRegistry|Package forwarding');
 export const PACKAGE_FORWARDING_SETTINGS_DESCRIPTION = s__(
   'PackageRegistry|Forward package requests to a public registry if the packages are not found in the GitLab package registry.',
@@ -78,8 +81,8 @@ export const MAVEN_FORWARDING_FIELDS = {
 
 // Parameters
 
-export const PACKAGES_DOCS_PATH = helpPagePath('user/packages/index');
-export const MAVEN_DUPLICATES_ALLOWED = 'mavenDuplicatesAllowed';
-export const MAVEN_DUPLICATE_EXCEPTION_REGEX = 'mavenDuplicateExceptionRegex';
-
 export const DEPENDENCY_PROXY_DOCS_PATH = helpPagePath('user/packages/dependency_proxy/index');
+export const REQUEST_FORWARDING_HELP_PAGE_PATH = helpPagePath(
+  'user/packages/package_registry/supported_functionality',
+  { anchor: 'deleting-packages' },
+);

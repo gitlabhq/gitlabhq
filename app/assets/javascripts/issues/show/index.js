@@ -2,14 +2,16 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { TYPE_INCIDENT } from '~/issues/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
-import { INCIDENT_TYPE, issueState } from './constants';
+import { issueState } from './constants';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
+import createRouter from './components/incidents/router';
 
 const bootstrapApollo = (state = {}) => {
   return apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -35,23 +37,28 @@ export function initIncidentApp(issueData = {}, store) {
     canUpdateTimelineEvent,
     iid,
     issuableId,
+    currentPath,
+    currentTab,
     projectNamespace,
     projectPath,
     projectId,
+    hasLinkedAlerts,
     slaFeatureAvailable,
     uploadMetricsFeatureAvailable,
     state,
   } = issueData;
 
   const fullPath = `${projectNamespace}/${projectPath}`;
+  const router = createRouter(currentPath, currentTab);
 
   return new Vue({
     el,
     name: 'DescriptionRoot',
     apolloProvider,
     store,
+    router,
     provide: {
-      issueType: INCIDENT_TYPE,
+      issueType: TYPE_INCIDENT,
       canCreateIncident,
       canUpdateTimelineEvent,
       canUpdate,
@@ -59,6 +66,7 @@ export function initIncidentApp(issueData = {}, store) {
       iid,
       issuableId,
       projectId,
+      hasLinkedAlerts: parseBoolean(hasLinkedAlerts),
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
       uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
       contentEditorOnIssues: gon.features.contentEditorOnIssues,
@@ -125,7 +133,6 @@ export function initIssueApp(issueData, store) {
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
           issueId: this.getNoteableData?.id,
-          issueIid: this.getNoteableData?.iid,
         },
       });
     },
@@ -142,7 +149,7 @@ export function initHeaderActions(store, type = '') {
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
   const canCreate =
-    type === INCIDENT_TYPE ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
+    type === TYPE_INCIDENT ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
 
   return new Vue({
     el,
@@ -157,6 +164,7 @@ export function initHeaderActions(store, type = '') {
       canReportSpam: parseBoolean(el.dataset.canReportSpam),
       canUpdateIssue: parseBoolean(el.dataset.canUpdateIssue),
       iid: el.dataset.iid,
+      issuableId: el.dataset.issuableId,
       isIssueAuthor: parseBoolean(el.dataset.isIssueAuthor),
       issuePath: el.dataset.issuePath,
       issueType: el.dataset.issueType,
@@ -167,6 +175,8 @@ export function initHeaderActions(store, type = '') {
       reportedUserId: parseInt(el.dataset.reportedUserId, 10),
       reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
+      issuableEmailAddress: el.dataset.issuableEmailAddress,
+      fullPath: el.dataset.projectPath,
     },
     render: (createElement) => createElement(HeaderActions),
   });

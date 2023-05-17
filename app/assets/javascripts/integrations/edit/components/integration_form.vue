@@ -59,9 +59,6 @@ export default {
       return this.propsSource.editable;
     },
     hasSections() {
-      if (this.hasSlackNotificationsDisabled) {
-        return false;
-      }
       return this.customState.sections.length !== 0;
     },
     fieldsWithoutSection() {
@@ -70,16 +67,10 @@ export default {
         : this.propsSource.fields;
     },
     hasFieldsWithoutSection() {
-      if (this.hasSlackNotificationsDisabled) {
-        return false;
-      }
       return this.fieldsWithoutSection.length;
     },
     isSlackIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_SLACK;
-    },
-    hasSlackNotificationsDisabled() {
-      return this.isSlackIntegration && !this.glFeatures.integrationSlackAppNotifications;
     },
     showHelpHtml() {
       if (this.isSlackIntegration) {
@@ -90,7 +81,6 @@ export default {
     shouldUpgradeSlack() {
       return (
         this.isSlackIntegration &&
-        this.glFeatures.integrationSlackAppNotifications &&
         this.customState.shouldUpgradeSlack &&
         (this.hasFieldsWithoutSection || this.hasSections)
       );

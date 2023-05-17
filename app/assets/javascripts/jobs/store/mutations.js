@@ -33,8 +33,7 @@ export default {
       // the job log response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
-
-      state.jobLog = log.lines ? logLinesParser(log.lines) : state.jobLog;
+      state.jobLog = log.lines ? logLinesParser(log.lines, [], window.location.hash) : state.jobLog;
 
       state.jobLogSize = log.size || state.jobLogSize;
     }

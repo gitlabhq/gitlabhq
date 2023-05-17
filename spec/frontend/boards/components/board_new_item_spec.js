@@ -35,10 +35,6 @@ describe('BoardNewItem', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     describe('when the user provides a valid input', () => {
       it('finds an enabled create button', async () => {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::UpdateService do
+RSpec.describe Projects::UpdateService, feature_category: :projects do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
@@ -227,48 +227,16 @@ RSpec.describe Projects::UpdateService do
       let(:user) { project.first_owner }
       let(:forked_project) { fork_project(project) }
 
-      context 'and unlink forks feature flag is off' do
-        before do
-          stub_feature_flags(unlink_fork_network_upon_visibility_decrease: false)
-        end
+      it 'does not change visibility of forks' do
+        opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
 
-        it 'updates forks visibility level when parent set to more restrictive' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
+        expect(project).to be_internal
+        expect(forked_project).to be_internal
 
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
+        expect(update_project(project, user, opts)).to eq({ status: :success })
 
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_private
-          expect(forked_project.reload).to be_private
-        end
-
-        it 'does not update forks visibility level when parent set to less restrictive' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
-
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
-
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_public
-          expect(forked_project.reload).to be_internal
-        end
-      end
-
-      context 'and unlink forks feature flag is on' do
-        it 'does not change visibility of forks' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
-
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
-
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_private
-          expect(forked_project.reload).to be_internal
-        end
+        expect(project).to be_private
+        expect(forked_project.reload).to be_internal
       end
     end
 
@@ -358,7 +326,9 @@ RSpec.describe Projects::UpdateService do
       it 'logs an error and creates a metric when wiki can not be created' do
         project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
 
-        expect_any_instance_of(ProjectWiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        expect_next_instance_of(ProjectWiki) do |project_wiki|
+          expect(project_wiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        end
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
 
         counter = double(:counter)
@@ -387,24 +357,26 @@ RSpec.describe Projects::UpdateService do
       # Using some sample features for testing.
       # Not using all the features because some of them must be enabled/disabled together
       %w[issues wiki forking].each do |feature_name|
-        let(:feature) { "#{feature_name}_access_level" }
-        let(:params) do
-          { project_feature_attributes: { feature => ProjectFeature::ENABLED } }
-        end
+        context "with feature_name:#{feature_name}" do
+          let(:feature) { "#{feature_name}_access_level" }
+          let(:params) do
+            { project_feature_attributes: { feature => ProjectFeature::ENABLED } }
+          end
 
-        before do
-          project.project_feature.update!(feature => ProjectFeature::DISABLED)
-        end
+          before do
+            project.project_feature.update!(feature => ProjectFeature::DISABLED)
+          end
 
-        it 'publishes Projects::ProjectFeaturesChangedEvent' do
-          expect { update_project(project, user, params) }
-            .to publish_event(Projects::ProjectFeaturesChangedEvent)
-            .with(
-              project_id: project.id,
-              namespace_id: project.namespace_id,
-              root_namespace_id: project.root_namespace.id,
-              features: ["updated_at", feature]
-            )
+          it 'publishes Projects::ProjectFeaturesChangedEvent' do
+            expect { update_project(project, user, params) }
+              .to publish_event(Projects::ProjectFeaturesChangedEvent)
+              .with(
+                project_id: project.id,
+                namespace_id: project.namespace_id,
+                root_namespace_id: project.root_namespace.id,
+                features: array_including(feature, "updated_at")
+              )
+          end
         end
       end
     end
@@ -548,6 +520,25 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    context 'when updating #runner_registration_enabled' do
+      it 'updates the attribute' do
+        expect { update_project(project, user, runner_registration_enabled: false) }
+          .to change { project.runner_registration_enabled }
+          .to(false)
+      end
+
+      context 'when runner registration is disabled for all projects' do
+        before do
+          stub_application_setting(valid_runner_registrars: [])
+        end
+
+        it 'restricts updating the attribute' do
+          expect { update_project(project, user, runner_registration_enabled: false) }
+            .not_to change { project.runner_registration_enabled }
+        end
+      end
+    end
+
     context 'when updating runners settings' do
       let(:settings) do
         { instance_runners_enabled: true, namespace_traversal_ids: [123] }
@@ -653,17 +644,19 @@ RSpec.describe Projects::UpdateService do
     context 'when updating nested attributes for prometheus integration' do
       context 'prometheus integration exists' do
         let(:prometheus_integration_attributes) do
-          attributes_for(:prometheus_integration,
-                         project: project,
-                         properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-                        )
+          attributes_for(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         let!(:prometheus_integration) do
-          create(:prometheus_integration,
-                 project: project,
-                 properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-                )
+          create(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         it 'updates existing record' do
@@ -677,10 +670,11 @@ RSpec.describe Projects::UpdateService do
       context 'prometheus integration does not exist' do
         context 'valid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
+            )
           end
 
           it 'creates new record' do
@@ -693,10 +687,11 @@ RSpec.describe Projects::UpdateService do
 
         context 'invalid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: nil, manual_configuration: "1" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: nil, manual_configuration: "1" }
+            )
           end
 
           it 'does not create new record' do
@@ -792,6 +787,112 @@ RSpec.describe Projects::UpdateService do
 
         expect(result[:status]).to eq(:success)
         expect(project.topic_list).to eq(%w[tag_list])
+      end
+    end
+
+    describe 'when updating pages unique domain', feature_category: :pages do
+      let(:group) { create(:group, path: 'group') }
+      let(:project) { create(:project, path: 'project', group: group) }
+
+      context 'with pages_unique_domain feature flag disabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: false)
+        end
+
+        it 'does not change pages unique domain' do
+          expect(project)
+            .to receive(:update)
+            .with({ project_setting_attributes: { has_confluence: true } })
+            .and_call_original
+
+          expect do
+            update_project(project, user, project_setting_attributes: {
+              has_confluence: true,
+              pages_unique_domain_enabled: true
+            })
+          end.not_to change { project.project_setting.pages_unique_domain_enabled }
+        end
+
+        it 'does not remove other attributes' do
+          expect(project)
+            .to receive(:update)
+            .with({ name: 'True' })
+            .and_call_original
+
+          update_project(project, user, name: 'True')
+        end
+      end
+
+      context 'with pages_unique_domain feature flag enabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: true)
+        end
+
+        it 'updates project pages unique domain' do
+          expect do
+            update_project(project, user, project_setting_attributes: {
+              pages_unique_domain_enabled: true
+            })
+          end.to change { project.project_setting.pages_unique_domain_enabled }
+
+          expect(project.project_setting.pages_unique_domain_enabled).to eq true
+          expect(project.project_setting.pages_unique_domain).to match %r{project-group-\w+}
+        end
+
+        it 'does not changes unique domain when it already exists' do
+          project.project_setting.update!(
+            pages_unique_domain_enabled: false,
+            pages_unique_domain: 'unique-domain'
+          )
+
+          expect do
+            update_project(project, user, project_setting_attributes: {
+              pages_unique_domain_enabled: true
+            })
+          end.to change { project.project_setting.pages_unique_domain_enabled }
+
+          expect(project.project_setting.pages_unique_domain_enabled).to eq true
+          expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
+        end
+
+        it 'does not changes unique domain when it disabling unique domain' do
+          project.project_setting.update!(
+            pages_unique_domain_enabled: true,
+            pages_unique_domain: 'unique-domain'
+          )
+
+          expect do
+            update_project(project, user, project_setting_attributes: {
+              pages_unique_domain_enabled: false
+            })
+          end.not_to change { project.project_setting.pages_unique_domain }
+
+          expect(project.project_setting.pages_unique_domain_enabled).to eq false
+          expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
+        end
+
+        context 'when there is another project with the unique domain' do
+          it 'fails pages unique domain already exists' do
+            create(
+              :project_setting,
+              pages_unique_domain_enabled: true,
+              pages_unique_domain: 'unique-domain'
+            )
+
+            allow(Gitlab::Pages::RandomDomain)
+              .to receive(:generate)
+              .and_return('unique-domain')
+
+            result = update_project(project, user, project_setting_attributes: {
+              pages_unique_domain_enabled: true
+            })
+
+            expect(result).to eq(
+              status: :error,
+              message: 'Project setting pages unique domain has already been taken'
+            )
+          end
+        end
       end
     end
   end

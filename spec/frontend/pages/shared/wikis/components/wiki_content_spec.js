@@ -31,11 +31,6 @@ describe('pages/shared/wikis/components/wiki_content', () => {
     mock = new MockAdapter(axios);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findContent = () => wrapper.find('[data-testid="wiki-page-content"]');

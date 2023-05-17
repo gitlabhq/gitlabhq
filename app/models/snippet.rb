@@ -19,6 +19,7 @@ class Snippet < ApplicationRecord
   include AfterCommitQueue
   extend ::Gitlab::Utils::Override
   include CreatedAtFilterable
+  include EachBatch
 
   MAX_FILE_COUNT = 10
 
@@ -156,7 +157,7 @@ class Snippet < ApplicationRecord
     def for_project_with_user(project, user = nil)
       return none unless project.snippets_visible?(user)
 
-      if user && project.team.member?(user)
+      if project.member?(user)
         project.snippets
       else
         project.snippets.public_to_user(user)
@@ -183,7 +184,7 @@ class Snippet < ApplicationRecord
     end
 
     def link_reference_pattern
-      @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+      @link_reference_pattern ||= compose_link_reference_pattern('snippets', /(?<snippet>\d+)/)
     end
 
     def find_by_id_and_project(id:, project:)
@@ -203,14 +204,7 @@ class Snippet < ApplicationRecord
   end
 
   def initialize(attributes = {})
-    # We can't use default_value_for because the database has a default
-    # value of 0 for visibility_level. If someone attempts to create a
-    # private snippet, default_value_for will assume that the
-    # visibility_level hasn't changed and will use the application
-    # setting default, which could be internal or public.
-    #
-    # To fix the problem, we assign the actual snippet default if no
-    # explicit visibility has been initialized.
+    # We assign the actual snippet default if no explicit visibility has been initialized.
     attributes ||= {}
 
     unless visibility_attribute_present?(attributes)

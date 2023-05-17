@@ -38,7 +38,6 @@ describe('PipelineTourSuccessModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     unmockTracking();
     Cookies.remove(modalProps.commitCookie);
   });

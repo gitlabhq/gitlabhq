@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Compare do
+RSpec.describe Compare, feature_category: :source_code_management do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -10,10 +10,11 @@ RSpec.describe Compare do
 
   let(:start_commit) { sample_image_commit }
   let(:head_commit) { sample_commit }
+  let(:straight) { false }
 
   let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, start_commit.id, head_commit.id) }
 
-  subject(:compare) { described_class.new(raw_compare, project) }
+  subject(:compare) { described_class.new(raw_compare, project, straight: straight) }
 
   describe '#cache_key' do
     subject { compare.cache_key }
@@ -144,6 +145,35 @@ RSpec.describe Compare do
 
       it 'returns empty array' do
         expect(subject.modified_paths).to eq([])
+      end
+    end
+  end
+
+  describe '#to_param' do
+    subject { compare.to_param }
+
+    let(:start_commit) { another_sample_commit }
+    let(:base_commit) { head_commit }
+
+    it 'returns the range between base and head commits' do
+      is_expected.to eq(from: base_commit.id, to: head_commit.id)
+    end
+
+    context 'when straight mode is on' do
+      let(:straight) { true }
+
+      it 'returns the range between start and head commits' do
+        is_expected.to eq(from: start_commit.id, to: head_commit.id)
+      end
+    end
+
+    context 'when there are no merge base between commits' do
+      before do
+        allow(project).to receive(:merge_base_commit).and_return(nil)
+      end
+
+      it 'returns the range between start and head commits' do
+        is_expected.to eq(from: start_commit.id, to: head_commit.id)
       end
     end
   end

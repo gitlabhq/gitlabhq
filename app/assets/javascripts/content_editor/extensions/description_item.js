@@ -5,6 +5,14 @@ export default Node.create({
   content: 'block+',
   defining: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   addAttributes() {
     return {
       isTerm: {
@@ -21,7 +29,9 @@ export default Node.create({
   renderHTML({ HTMLAttributes: { isTerm, ...HTMLAttributes } }) {
     return [
       'li',
-      mergeAttributes(HTMLAttributes, { class: isTerm ? 'dl-term' : 'dl-description' }),
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+        class: isTerm ? 'dl-term' : 'dl-description',
+      }),
       0,
     ];
   },

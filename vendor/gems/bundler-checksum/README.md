@@ -7,7 +7,7 @@ Bundler patch for verifying local gem checksums
 Add the following to your Gemfile:
 
 ```
-if ENV['BUNDLER_CHECKSUM_VERIFICATION_OPT_IN'] # this verification is still experimental
+if ENV.fetch('BUNDLER_CHECKSUM_VERIFICATION_OPT_IN', 'false') != 'false' # this verification is still experimental
   require 'bundler-checksum'
   BundlerChecksum.patch!
 end

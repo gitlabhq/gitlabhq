@@ -11,17 +11,13 @@ describe('RunnerEditButton', () => {
     wrapper = mountFn(RunnerEditButton, {
       attrs,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Displays Edit text', () => {

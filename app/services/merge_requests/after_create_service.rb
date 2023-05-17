@@ -7,6 +7,7 @@ module MergeRequests
     def execute(merge_request)
       merge_request.ensure_merge_request_diff
 
+      execute_hooks(merge_request)
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
 
@@ -39,8 +40,6 @@ module MergeRequests
 
       Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
       link_lfs_objects(merge_request)
-
-      delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
     end
 
     def link_lfs_objects(merge_request)

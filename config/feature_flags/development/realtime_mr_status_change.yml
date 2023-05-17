@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385077
 milestone: '15.7'
 type: development
 group: group::code review
-default_enabled: false
+default_enabled: true

@@ -4,14 +4,14 @@ import Api from '~/api';
 import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
 import getInitialState from '~/deploy_freeze/store/state';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { freezePeriodsFixture } from '../helpers';
 import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 jest.mock('~/api.js');
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 
 describe('deploy freeze store actions', () => {
   const freezePeriodFixture = freezePeriodsFixture[0];

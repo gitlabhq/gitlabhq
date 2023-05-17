@@ -10,10 +10,12 @@ import {
   EVENT_LABEL,
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
+  groupString,
   instanceString,
+  projectString,
   variableOptions,
 } from '~/ci/ci_variable_list/constants';
-import { mockVariablesWithScopes } from '../mocks';
+import { mockEnvs, mockVariablesWithScopes, mockVariablesWithUniqueScopes } from '../mocks';
 import ModalStub from '../stubs';
 
 describe('Ci variable modal', () => {
@@ -42,12 +44,13 @@ describe('Ci variable modal', () => {
   };
 
   const defaultProps = {
+    areEnvironmentsLoading: false,
     areScopedVariablesAvailable: true,
     environments: [],
     hideEnvironmentScope: false,
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
-    variable: [],
+    variables: [],
   };
 
   const createComponent = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
@@ -85,10 +88,6 @@ describe('Ci variable modal', () => {
   const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
   const findEnvironmentScopeText = () => wrapper.findByText('Environment scope');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Adding a variable', () => {
     describe('when no key/value pair are present', () => {
       beforeEach(() => {
@@ -96,7 +95,7 @@ describe('Ci variable modal', () => {
       });
 
       it('shows the submit button as disabled', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
+        expect(findAddorUpdateButton().attributes('disabled')).toBeDefined();
       });
     });
 
@@ -115,7 +114,6 @@ describe('Ci variable modal', () => {
 
       beforeEach(() => {
         createComponent({ props: { selectedVariable: currentVariable } });
-        jest.spyOn(wrapper.vm, '$emit');
       });
 
       it('Dispatches `add-variable` action on submit', () => {
@@ -156,7 +154,7 @@ describe('Ci variable modal', () => {
         findModal().vm.$emit('shown');
       });
 
-      it('keeps the value as false', async () => {
+      it('keeps the value as false', () => {
         expect(
           findProtectedVariableCheckbox().attributes('data-is-protected-checked'),
         ).toBeUndefined();
@@ -241,7 +239,6 @@ describe('Ci variable modal', () => {
 
       it('defaults to expanded and raw:false when adding a variable', () => {
         createComponent({ props: { selectedVariable: variable } });
-        jest.spyOn(wrapper.vm, '$emit');
 
         findModal().vm.$emit('shown');
 
@@ -266,7 +263,6 @@ describe('Ci variable modal', () => {
             mode: EDIT_VARIABLE_ACTION,
           },
         });
-        jest.spyOn(wrapper.vm, '$emit');
 
         findModal().vm.$emit('shown');
         await findExpandedVariableCheckbox().vm.$emit('change');
@@ -305,7 +301,6 @@ describe('Ci variable modal', () => {
 
     beforeEach(() => {
       createComponent({ props: { selectedVariable: variable, mode: EDIT_VARIABLE_ACTION } });
-      jest.spyOn(wrapper.vm, '$emit');
     });
 
     it('button text is Update variable when updating', () => {
@@ -352,6 +347,42 @@ describe('Ci variable modal', () => {
 
           expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
           expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
+        });
+
+        describe('when feature flag is enabled', () => {
+          beforeEach(() => {
+            createComponent({
+              props: {
+                environments: mockEnvs,
+                variables: mockVariablesWithUniqueScopes(projectString),
+              },
+              provide: { glFeatures: { ciLimitEnvironmentScope: true } },
+            });
+          });
+
+          it('does not merge environment scope sources', () => {
+            const expectedLength = mockEnvs.length;
+
+            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
+          });
+        });
+
+        describe('when feature flag is disabled', () => {
+          const mockGroupVariables = mockVariablesWithUniqueScopes(groupString);
+          beforeEach(() => {
+            createComponent({
+              props: {
+                environments: mockEnvs,
+                variables: mockGroupVariables,
+              },
+            });
+          });
+
+          it('merges environment scope sources', () => {
+            const expectedLength = mockGroupVariables.length + mockEnvs.length;
+
+            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
+          });
         });
       });
 
@@ -476,7 +507,7 @@ describe('Ci variable modal', () => {
       });
 
       it('disables the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBe('disabled');
+        expect(findAddorUpdateButton().attributes('disabled')).toBeDefined();
       });
 
       it('shows the correct error text', () => {

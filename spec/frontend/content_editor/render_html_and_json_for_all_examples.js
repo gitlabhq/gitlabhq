@@ -1,4 +1,4 @@
-import { DOMSerializer } from 'prosemirror-model';
+import { DOMSerializer } from '@tiptap/pm/model';
 import createMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTiptapEditor } from 'jest/content_editor/test_utils';
 

@@ -21,10 +21,6 @@ describe('Blob Header Filepath', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('rendering', () => {

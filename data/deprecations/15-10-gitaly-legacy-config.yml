@@ -1,0 +1,35 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Legacy Gitaly configuration method"
+  announcement_milestone: "15.10"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: mjwood
+  stage: Systems
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393574
+  body: |
+    Gitaly configuration within Omnibus GitLab has been updated such that all Gitaly related configuration keys are in a single
+    configuration structure that matches the standard Gitaly configuration. As such, the previous configuration structure is deprecated.
+
+    The single configuration structure is available from GitLab 15.10, though backwards compatibility is maintained. Once removed, Gitaly must be configured using the single
+    configuration structure. You should update the configuration of Gitaly at your earliest convenience.
+
+    The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
+
+    You should update to the new configuration structure as soon as possible using
+    [the upgrade instructions](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

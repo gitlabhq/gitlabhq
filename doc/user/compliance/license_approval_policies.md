@@ -5,11 +5,24 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License Approval Policies **(ULTIMATE)**
+# License approval policies **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `license_scanning_policies`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `license_scanning_policies`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
 
-License Approval Policies allow you to specify multiple types of criteria that define when approval is required before a merge request can be merged in.
+License approval policies allow you to specify multiple types of criteria that define when approval is required before a merge request can be merged in.
+
+NOTE:
+License approval policies are applicable only to [protected](../project/protected_branches.md) target branches.
+
+The following video provides an overview of these policies.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=34qBQ9t8qO8">Overview of GitLab License Approval Policies</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/34qBQ9t8qO8" frameborder="0" allowfullscreen> </iframe>
+</figure>
 
 ## Create a new license approval policy
 

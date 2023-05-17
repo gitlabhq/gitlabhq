@@ -1,8 +1,0 @@
----
-name: git_abuse_rate_limit_feature_flag
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87872
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364782
-milestone: '15.1'
-type: development
-group: group::anti-abuse
-default_enabled: false

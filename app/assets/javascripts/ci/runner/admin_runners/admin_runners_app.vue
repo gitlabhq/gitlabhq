@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -54,7 +54,6 @@ export default {
     RunnerJobStatusBadge,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
     newRunnerPath: {
       type: String,
@@ -128,8 +127,8 @@ export default {
       return isSearchFiltered(this.search);
     },
     shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow feature flag
-      return this.glFeatures.createRunnerWorkflow;
+      // create_runner_workflow_for_admin feature flag
+      return this.glFeatures.createRunnerWorkflowForAdmin;
     },
   },
   watch: {
@@ -193,16 +192,17 @@ export default {
         nav-class="gl-border-none!"
       />
 
-      <gl-button v-if="shouldShowCreateRunnerWorkflow" :href="newRunnerPath" variant="confirm">
-        {{ s__('Runners|New instance runner') }}
-      </gl-button>
-      <registration-dropdown
-        v-else
-        class="gl-w-full gl-sm-w-auto gl-mr-auto"
-        :registration-token="registrationToken"
-        :type="$options.INSTANCE_TYPE"
-        right
-      />
+      <div class="gl-w-full gl-md-w-auto gl-display-flex">
+        <gl-button v-if="shouldShowCreateRunnerWorkflow" :href="newRunnerPath" variant="confirm">
+          {{ s__('Runners|New instance runner') }}
+        </gl-button>
+        <registration-dropdown
+          class="gl-ml-3"
+          :registration-token="registrationToken"
+          :type="$options.INSTANCE_TYPE"
+          right
+        />
+      </div>
     </div>
 
     <runner-filtered-search-bar
@@ -219,8 +219,6 @@ export default {
       :registration-token="registrationToken"
       :is-search-filtered="isSearchFiltered"
       :new-runner-path="newRunnerPath"
-      :svg-path="emptyStateSvgPath"
-      :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
       <runner-list

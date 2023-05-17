@@ -32,8 +32,7 @@ RSpec.describe DiscussionDiffFileEntity do
     end
 
     it 'exposes no diff lines' do
-      expect(subject).not_to include(:highlighted_diff_lines,
-                                     :parallel_diff_lines)
+      expect(subject).not_to include(:highlighted_diff_lines, :parallel_diff_lines)
     end
   end
 end

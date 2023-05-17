@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow do
+RSpec.describe 'Merge request > User sees discussions navigation',
+  :js, feature_category: :code_review_workflow,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410678' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { project.creator }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -42,7 +44,7 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
 
     shared_examples 'a page with a thread navigation' do
       context 'with active threads' do
-        it 'navigates to the first thread' do
+        it 'navigates to the first thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410144' do
           goto_next_thread
           expect(page).to have_selector(first_discussion_selector, obscured: false)
         end
@@ -52,7 +54,7 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
           expect(page).to have_selector(second_discussion_selector, obscured: false)
         end
 
-        it 'navigates through active threads' do
+        it 'navigates through active threads', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391912' do
           goto_next_thread
           goto_next_thread
           expect(page).to have_selector(second_discussion_selector, obscured: false)

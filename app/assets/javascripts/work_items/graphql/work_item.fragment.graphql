@@ -27,6 +27,8 @@ fragment WorkItem on WorkItem {
   userPermissions {
     deleteWorkItem
     updateWorkItem
+    setWorkItemMetadata @client
+    adminParentLink
   }
   widgets {
     ...WorkItemWidgets

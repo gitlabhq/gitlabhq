@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::MergeRequestsCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Milestones::MergeRequestsCountService, :use_clean_rails_memory_store_caching,
+  feature_category: :team_planning do
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 

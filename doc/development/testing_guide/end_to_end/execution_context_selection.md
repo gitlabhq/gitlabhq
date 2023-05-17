@@ -34,7 +34,8 @@ Matches use:
 
 - Regex for environments.
 - String matching for pipelines.
-- Regex or string matching for jobs.
+- Regex or string matching for jobs
+- Lambda or truthy/falsey value for generic condition
 
 | Test execution context                   | Key | Matches |
 | ----------------                         | --- | ---------------                                                            |
@@ -47,6 +48,7 @@ Matches use:
 | The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 | The `ee:instance` job | `only: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
 | Any `quarantine` job | `only: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
+| Any run where condition evaluates to a truthy value | `only: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is set to true
 
 ```ruby
 RSpec.describe 'Area' do
@@ -62,6 +64,8 @@ RSpec.describe 'Area' do
   it 'runs only in nightly pipeline', only: { pipeline: :nightly } do; end
 
   it 'runs in nightly and canary pipelines', only: { pipeline: [:nightly, :canary] } do; end
+
+  it 'runs in specific environment matching condition', only: { condition: -> { ENV['TEST_ENV'] == 'true' } } do; end
 end
 ```
 
@@ -73,7 +77,8 @@ Matches use:
 
 - Regex for environments.
 - String matching for pipelines.
-- Regex or string matching for jobs.
+- Regex or string matching for jobs
+- Lambda or truthy/falsey value for generic condition
 
 | Test execution context                   | Key | Matches |
 | ----------------                         | --- | ---------------                                                            |
@@ -86,6 +91,7 @@ Matches use:
 | The `nightly` and `canary` pipelines | `except: { pipeline: [:nightly, :canary] }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 | The `ee:instance` job | `except: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
 | Any `quarantine` job | `except: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
+| Any run except where condition evaluates to a truthy value | `except: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is not set to true
 
 ```ruby
 RSpec.describe 'Area' do
@@ -96,6 +102,8 @@ RSpec.describe 'Area' do
   it 'runs in any execution context except the nightly pipeline', except: { pipeline: :nightly } do; end
 
   it 'runs in any execution context except the ee:instance job', except: { job: 'ee:instance' } do; end
+
+  it 'runs in specific environment not matching condition', except: { condition: -> { ENV['TEST_ENV'] == 'true' } } do; end
 end
 ```
 

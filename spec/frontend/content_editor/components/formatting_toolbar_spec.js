@@ -1,3 +1,4 @@
+import { GlTabs, GlTab } from '@gitlab/ui';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
@@ -5,21 +6,24 @@ import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
+import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
-describe('content_editor/components/top_toolbar', () => {
+describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
   let trackingSpy;
 
   const buildWrapper = () => {
-    wrapper = shallowMountExtended(FormattingToolbar);
+    wrapper = shallowMountExtended(FormattingToolbar, {
+      stubs: {
+        GlTabs,
+        GlTab,
+        EditorModeSwitcher,
+      },
+    });
   };
 
   beforeEach(() => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe.each`
@@ -27,13 +31,14 @@ describe('content_editor/components/top_toolbar', () => {
     ${'text-styles'}  | ${{}}
     ${'bold'}         | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold text', editorCommand: 'toggleBold' }}
     ${'italic'}       | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic' }}
+    ${'strike'}       | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike' }}
     ${'blockquote'}   | ${{ contentType: 'blockquote', iconName: 'quote', label: 'Insert a quote', editorCommand: 'toggleBlockquote' }}
     ${'code'}         | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
     ${'link'}         | ${{}}
     ${'bullet-list'}  | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
     ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
     ${'task-list'}    | ${{ contentType: 'taskList', iconName: 'list-task', label: 'Add a checklist', editorCommand: 'toggleTaskList' }}
-    ${'image'}        | ${{}}
+    ${'attachment'}   | ${{}}
     ${'table'}        | ${{}}
     ${'more'}         | ${{}}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
@@ -61,5 +66,11 @@ describe('content_editor/components/top_toolbar', () => {
         value,
       });
     });
+  });
+
+  it('renders an editor mode dropdown', () => {
+    buildWrapper();
+
+    expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
   });
 });

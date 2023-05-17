@@ -1,7 +1,7 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
 import { mapActions } from 'vuex';
-import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -22,7 +22,8 @@ import {
   TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { AssigneeFilterType } from '~/boards/constants';
+import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
+import { TYPENAME_ITERATION } from '~/graphql_shared/constants';
 import eventHub from '../eventhub';
 
 export default {
@@ -30,8 +31,13 @@ export default {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams'],
+  inject: ['initialFilterParams', 'isApolloBoard'],
   props: {
+    isSwimlanesOn: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tokens: {
       type: Array,
       required: true,
@@ -320,6 +326,7 @@ export default {
           release_tag: releaseTag,
           confidential,
           health_status: healthStatus,
+          group_by: this.isSwimlanesOn ? GroupByParamType.epic : undefined,
         },
         (value) => {
           if (value || value === false) {
@@ -334,11 +341,23 @@ export default {
         },
       );
     },
+    formattedFilterParams() {
+      const filtersCopy = { ...this.filterParams };
+      if (this.filterParams?.iterationId) {
+        filtersCopy.iterationId = convertToGraphQLId(
+          TYPENAME_ITERATION,
+          this.filterParams.iterationId,
+        );
+      }
+
+      return filtersCopy;
+    },
   },
   created() {
     eventHub.$on('updateTokens', this.updateTokens);
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
+      this.$emit('setFilters', this.formattedFilterParams);
     }
   },
   beforeDestroy() {
@@ -349,6 +368,7 @@ export default {
     updateTokens() {
       const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
       this.filterParams = convertObjectPropsToCamelCase(rawFilterParams, {});
+      this.$emit('setFilters', this.formattedFilterParams);
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {
@@ -360,7 +380,11 @@ export default {
         replace: true,
       });
 
-      this.performSearch();
+      if (this.isApolloBoard) {
+        this.$emit('setFilters', this.formattedFilterParams);
+      } else {
+        this.performSearch();
+      }
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');
@@ -373,7 +397,6 @@ export default {
     generateParams(filters = []) {
       const filterParams = {};
       const labels = [];
-      const plainText = [];
 
       filters.forEach((filter) => {
         switch (filter.type) {
@@ -415,7 +438,9 @@ export default {
             filterParams.confidential = filter.value.data;
             break;
           case FILTERED_SEARCH_TERM:
-            if (filter.value.data) plainText.push(filter.value.data);
+            if (filter.value.data) {
+              filterParams.search = filter.value.data;
+            }
             break;
           case TOKEN_TYPE_HEALTH:
             filterParams.healthStatus = filter.value.data;
@@ -429,10 +454,6 @@ export default {
         filterParams.labelName = labels;
       }
 
-      if (plainText.length) {
-        filterParams.search = plainText.join(' ');
-      }
-
       return filterParams;
     },
   },
@@ -444,6 +465,7 @@ export default {
     :key="filteredSearchKey"
     class="gl-w-full"
     namespace=""
+    terms-as-tokens
     :tokens="tokens"
     :search-input-placeholder="$options.i18n.search"
     :initial-filter-value="getFilteredSearchValue"

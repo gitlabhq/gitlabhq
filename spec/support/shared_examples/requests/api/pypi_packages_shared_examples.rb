@@ -254,6 +254,13 @@ RSpec.shared_examples 'pypi simple API endpoint' do
     with_them do
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:snowplow_gitlab_standard_context) do
+        if user_role == :anonymous || (visibility_level == :public && !user_token)
+          snowplow_context
+        else
+          snowplow_context.merge(user: user)
+        end
+      end
 
       before do
         project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
@@ -269,7 +276,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
 
     let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
     let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, property: 'i_package_pypi_user' } }
+    let(:snowplow_gitlab_standard_context) { snowplow_context.merge({ project: project, user: user }) }
 
     it_behaves_like 'PyPI package versions', :developer, :success
   end

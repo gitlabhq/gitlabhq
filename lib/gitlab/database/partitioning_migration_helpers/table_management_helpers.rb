@@ -6,19 +6,16 @@ module Gitlab
       module TableManagementHelpers
         include ::Gitlab::Database::SchemaHelpers
         include ::Gitlab::Database::MigrationHelpers
+        include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
         ALLOWED_TABLES = %w[audit_events web_hook_logs].freeze
         ERROR_SCOPE = 'table partitioning'
 
         MIGRATION_CLASS_NAME = "::#{module_parent_name}::BackfillPartitionedTable"
+        MIGRATION = "BackfillPartitionedTable"
         BATCH_INTERVAL = 2.minutes.freeze
         BATCH_SIZE = 50_000
-
-        JobArguments = Struct.new(:start_id, :stop_id, :source_table_name, :partitioned_table_name, :source_column) do
-          def self.from_array(arguments)
-            self.new(*arguments)
-          end
-        end
+        SUB_BATCH_SIZE = 2_500
 
         # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a timestamp column.
         # One partition is created per month between the given `min_date` and `max_date`. Also installs a trigger on
@@ -107,12 +104,21 @@ module Gitlab
 
           partitioned_table_name = make_partitioned_table_name(table_name)
           primary_key = connection.primary_key(table_name)
-          enqueue_background_migration(table_name, partitioned_table_name, primary_key)
+
+          queue_batched_background_migration(
+            MIGRATION,
+            table_name,
+            primary_key,
+            partitioned_table_name,
+            batch_size: BATCH_SIZE,
+            sub_batch_size: SUB_BATCH_SIZE,
+            job_interval: BATCH_INTERVAL
+          )
         end
 
         # Cleanup a previously enqueued background migration to copy data into a partitioned table. This will not
         # prevent the enqueued jobs from executing, but instead cleans up information in the database used to track the
-        # state of the background migration. It should be safe to also remove the partitioned table even if the
+        # state of the batched background migration. It should be safe to also remove the partitioned table even if the
         # background jobs are still in-progress, as the absence of the table will cause them to safely exit.
         #
         # Example:
@@ -122,7 +128,10 @@ module Gitlab
         def cleanup_partitioning_data_migration(table_name)
           assert_table_is_allowed(table_name)
 
-          cleanup_migration_jobs(table_name)
+          partitioned_table_name = make_partitioned_table_name(table_name)
+          primary_key = connection.primary_key(table_name)
+
+          delete_batched_background_migration(MIGRATION, table_name, primary_key, [partitioned_table_name])
         end
 
         def create_hash_partitions(table_name, number_of_partitions)
@@ -142,14 +151,11 @@ module Gitlab
           end
         end
 
-        # Executes cleanup tasks from a previous BackgroundMigration to backfill a partitioned table by finishing
-        # pending jobs and performing a final data synchronization.
-        # This performs two steps:
-        #   1. Wait to finish any pending BackgroundMigration jobs that have not succeeded
-        #   2. Inline copy any missed rows from the original table to the partitioned table
+        # Executes jobs from previous BatchedBackgroundMigration to backfill the partitioned table by finishing
+        # pending jobs.
         #
         # **NOTE** Migrations using this method cannot be scheduled in the same release as the migration that
-        # schedules the background migration using the `enqueue_background_migration` helper, or else the
+        # schedules the background migration using the `enqueue_partitioning_data_migration` helper, or else the
         # background migration jobs will be force-executed.
         #
         # Example:
@@ -157,23 +163,21 @@ module Gitlab
         #   finalize_backfilling_partitioned_table :audit_events
         #
         def finalize_backfilling_partitioned_table(table_name)
-          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
-
           assert_table_is_allowed(table_name)
-          assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
           partitioned_table_name = make_partitioned_table_name(table_name)
+
           unless table_exists?(partitioned_table_name)
             raise "could not find partitioned table for #{table_name}, " \
               "this could indicate the previous partitioning migration has been rolled back."
           end
 
-          Gitlab::BackgroundMigration.steal(MIGRATION_CLASS_NAME) do |background_job|
-            JobArguments.from_array(background_job.args.second).source_table_name == table_name.to_s
-          end
-
-          primary_key = connection.primary_key(table_name)
-          copy_missed_records(table_name, partitioned_table_name, primary_key)
+          ensure_batched_background_migration_is_finished(
+            job_class_name: MIGRATION,
+            table_name: table_name,
+            column_name: connection.primary_key(table_name),
+            job_arguments: [partitioned_table_name]
+          )
 
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
             disable_statement_timeout do
@@ -251,22 +255,22 @@ module Gitlab
           create_sync_trigger(source_table_name, trigger_name, function_name)
         end
 
-        def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
+        def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, async: false)
           validate_not_in_transaction!(:prepare_constraint_for_list_partitioning)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
                  partitioning_column: partitioning_column,
                  zero_partition_value: initial_partitioning_value
-                ).prepare_for_partitioning
+                ).prepare_for_partitioning(async: async)
         end
 
         def revert_preparing_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
           validate_not_in_transaction!(:revert_preparing_constraint_for_list_partitioning)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -278,7 +282,7 @@ module Gitlab
         def convert_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, lock_tables: [])
           validate_not_in_transaction!(:convert_table_to_first_list_partition)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -291,7 +295,7 @@ module Gitlab
         def revert_converting_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
           validate_not_in_transaction!(:revert_converting_table_to_first_list_partition)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -442,45 +446,6 @@ module Gitlab
           end
 
           create_trigger(table_name, trigger_name, function_name, fires: 'AFTER INSERT OR UPDATE OR DELETE')
-        end
-
-        def enqueue_background_migration(source_table_name, partitioned_table_name, source_column)
-          source_model = define_batchable_model(source_table_name)
-
-          queue_background_migration_jobs_by_range_at_intervals(
-            source_model,
-            MIGRATION_CLASS_NAME,
-            BATCH_INTERVAL,
-            batch_size: BATCH_SIZE,
-            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_column],
-            track_jobs: true)
-        end
-
-        def cleanup_migration_jobs(table_name)
-          ::Gitlab::Database::BackgroundMigrationJob.for_partitioning_migration(MIGRATION_CLASS_NAME, table_name).delete_all
-        end
-
-        def copy_missed_records(source_table_name, partitioned_table_name, source_column)
-          backfill_table = BackfillPartitionedTable.new(connection: connection)
-
-          relation = ::Gitlab::Database::BackgroundMigrationJob.pending
-            .for_partitioning_migration(MIGRATION_CLASS_NAME, source_table_name)
-
-          relation.each_batch do |batch|
-            batch.each do |pending_migration_job|
-              job_arguments = JobArguments.from_array(pending_migration_job.arguments)
-              start_id = job_arguments.start_id
-              stop_id = job_arguments.stop_id
-
-              say("Backfilling data into partitioned table for ids from #{start_id} to #{stop_id}")
-              job_updated_count = backfill_table.perform(start_id, stop_id, source_table_name,
-                partitioned_table_name, source_column)
-
-              unless job_updated_count > 0
-                raise "failed to update tracking record for ids from #{start_id} to #{stop_id}"
-              end
-            end
-          end
         end
 
         def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name)

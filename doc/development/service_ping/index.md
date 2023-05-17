@@ -1,10 +1,10 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Ping Guide
+# Service Ping development guidelines
 
 > - Introduced in GitLab Ultimate 11.2, more statistics.
 > - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.
@@ -91,23 +91,23 @@ sequenceDiagram
    the required URL is <https://version.gitlab.com/>.
 1. In case of an error, it will be reported to the Version application along with following pieces of information:
 
-    - `uuid` - GitLab instance unique identifier
-    - `hostname` - GitLab instance hostname
-    - `version` - GitLab instance current versions
-    - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
-    - `message` - Error message
+   - `uuid` - GitLab instance unique identifier
+   - `hostname` - GitLab instance hostname
+   - `version` - GitLab instance current versions
+   - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
+   - `message` - Error message
 
-    <pre>
-    <code>
-    {
-      "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
-      "hostname"=>"127.0.0.1",
-      "version"=>"14.7.0-pre",
-      "elapsed"=>0.006946,
-      "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
-    }
-    </code>
-    </pre>
+   <pre>
+   <code>
+   {
+     "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+     "hostname"=>"127.0.0.1",
+     "version"=>"14.7.0-pre",
+     "elapsed"=>0.006946,
+     "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+   }
+   </code>
+   </pre>
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 
@@ -135,7 +135,7 @@ sequenceDiagram
         ]
       }
     }
-    ```
+```
 
 ### On a Geo secondary site
 
@@ -177,7 +177,7 @@ The following is example content of the Service Ping payload.
   "recorded_at": "2020-04-17T07:43:54.162+00:00",
   "edition": "EEU",
   "license_md5": "00000000000000000000000000000000",
-  "license_sha256: "0000000000000000000000000000000000000000000000000000000000000000",
+  "license_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "license_id": null,
   "historical_max_users": 999,
   "licensee": {
@@ -405,8 +405,8 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 #### Trigger Service Ping with Teleport
 
-1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
-1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
+1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
+1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
 1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
 
 #### Trigger Service Ping with a detached screen session
@@ -450,7 +450,7 @@ Search in Google Console logs for `time_elapsed`. [Query example](https://cloudl
 
 #### Verify with Teleport
 
-1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
+1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
 

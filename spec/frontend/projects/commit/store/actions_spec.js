@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { PROJECT_BRANCHES_ERROR } from '~/projects/commit/constants';
 import * as actions from '~/projects/commit/store/actions';
@@ -8,7 +8,7 @@ import * as types from '~/projects/commit/store/mutation_types';
 import getInitialState from '~/projects/commit/store/state';
 import mockData from '../mock_data';
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 
 describe('Commit form modal store actions', () => {
   let axiosMock;
@@ -63,7 +63,7 @@ describe('Commit form modal store actions', () => {
       );
     });
 
-    it('should show flash error and set error in state on fetchBranches failure', async () => {
+    it('should show an alert and set error in state on fetchBranches failure', async () => {
       jest.spyOn(axios, 'get').mockRejectedValue();
 
       await testAction(actions.fetchBranches, {}, state, [], [{ type: 'requestBranches' }]);

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectPool::JoinWorker do
+RSpec.describe ObjectPool::JoinWorker, feature_category: :shared do
   let(:pool) { create(:pool_repository, :ready) }
   let(:project) { pool.source_project }
   let(:repository) { project.repository }

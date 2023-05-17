@@ -6,7 +6,7 @@ class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: [:index, :new, :tag_list, :runner_setup_scripts]
 
   before_action only: [:index] do
-    push_frontend_feature_flag(:create_runner_workflow, current_user)
+    push_frontend_feature_flag(:create_runner_workflow_for_admin, current_user)
   end
 
   feature_category :runner
@@ -23,7 +23,12 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def new
-    render_404 unless Feature.enabled?(:create_runner_workflow, current_user)
+    render_404 unless Feature.enabled?(:create_runner_workflow_for_admin, current_user)
+  end
+
+  def register
+    render_404 unless Feature.enabled?(:create_runner_workflow_for_admin, current_user) &&
+      runner.registration_available?
   end
 
   def update

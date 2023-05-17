@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PreviewMarkdownService do
+RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -115,6 +115,16 @@ RSpec.describe PreviewMarkdownService do
       result = service.execute
 
       expect(result[:text]).to eq 'Please do it'
+    end
+
+    context 'when render_quick_actions' do
+      it 'keeps quick actions' do
+        params[:render_quick_actions] = true
+
+        result = service.execute
+
+        expect(result[:text]).to eq "Please do it\n\n/assign #{user.to_reference}"
+      end
     end
 
     it 'explains quick actions effect' do

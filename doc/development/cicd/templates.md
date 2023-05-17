@@ -436,7 +436,6 @@ To add a metric definition for a new template:
    ```yaml
    - name: p_ci_templates_my_template_name
      category: ci_templates
-     redis_slot: ci_templates
      aggregation: weekly
    ```
 

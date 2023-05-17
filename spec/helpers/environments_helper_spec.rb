@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentsHelper do
+RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
 
-  describe '#metrics_data' do
+  describe '#metrics_data', feature_category: :metrics do
     before do
+      stub_feature_flags(remove_monitor_metrics: false)
+
       # This is so that this spec also passes in EE.
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).and_return(true)
@@ -103,9 +105,19 @@ RSpec.describe EnvironmentsHelper do
         end
       end
     end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'does not return data' do
+        expect(metrics_data).to be_empty
+      end
+    end
   end
 
-  describe '#custom_metrics_available?' do
+  describe '#custom_metrics_available?', feature_category: :metrics do
     subject { helper.custom_metrics_available?(project) }
 
     before do

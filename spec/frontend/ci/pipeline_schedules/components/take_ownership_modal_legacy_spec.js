@@ -25,14 +25,12 @@ describe('Take ownership modal', () => {
     const actionPrimary = findModal().props('actionPrimary');
 
     expect(actionPrimary.attributes).toEqual(
-      expect.objectContaining([
-        {
-          category: 'primary',
-          variant: 'confirm',
-          href: url,
-          'data-method': 'post',
-        },
-      ]),
+      expect.objectContaining({
+        category: 'primary',
+        variant: 'confirm',
+        href: url,
+        'data-method': 'post',
+      }),
     );
   });
 

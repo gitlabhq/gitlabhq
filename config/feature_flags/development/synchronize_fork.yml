@@ -1,0 +1,8 @@
+---
+name: synchronize_fork
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114299
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395793
+milestone: '15.10'
+type: development
+group: group::source code
+default_enabled: true

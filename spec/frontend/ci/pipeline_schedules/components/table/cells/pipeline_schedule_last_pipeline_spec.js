@@ -21,10 +21,6 @@ describe('Pipeline schedule last pipeline', () => {
   const findCIBadgeLink = () => wrapper.findComponent(CiBadgeLink);
   const findStatusText = () => wrapper.findByTestId('pipeline-schedule-status-text');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays pipeline status', () => {
     createComponent();
 

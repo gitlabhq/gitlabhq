@@ -37,7 +37,6 @@ export const EVENT_DETAILS = {
 };
 
 export const DEFAULT_ICON = 'token';
-export const TOKEN_STATUS_ACTIVE = 'ACTIVE';
 
 export const CREATE_TOKEN_MODAL = 'create-token';
 export const EVENT_LABEL_MODAL = 'agent_token_creation_modal';

@@ -6,6 +6,18 @@ module ObjectStorage
     AZURE_PROVIDER = 'AzureRM'
     GOOGLE_PROVIDER = 'Google'
 
+    LOCATIONS = {
+      artifacts: Gitlab.config.artifacts,
+      ci_secure_files: Gitlab.config.ci_secure_files,
+      dependency_proxy: Gitlab.config.dependency_proxy,
+      external_diffs: Gitlab.config.external_diffs,
+      lfs: Gitlab.config.lfs,
+      packages: Gitlab.config.packages,
+      pages: Gitlab.config.pages,
+      terraform_state: Gitlab.config.terraform_state,
+      uploads: Gitlab.config.uploads
+    }.freeze
+
     attr_reader :options
 
     def initialize(options)
@@ -13,7 +25,7 @@ module ObjectStorage
     end
 
     def credentials
-      @credentials ||= options[:connection] || {}
+      @credentials ||= connection_params
     end
 
     def storage_options
@@ -85,6 +97,16 @@ module ObjectStorage
     end
 
     private
+
+    def connection_params
+      base_params = options[:connection] || {}
+
+      return base_params unless base_params[:provider].to_s == AWS_PROVIDER
+      return base_params unless ::Gitlab::FIPS.enabled?
+
+      # In fog-aws, this disables the use of Content-Md5: https://github.com/fog/fog-aws/pull/668
+      base_params.merge({ disable_content_md5_validation: true })
+    end
 
     # This returns a Hash of HTTP encryption headers to send along to S3.
     #

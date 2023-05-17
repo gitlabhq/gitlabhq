@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
@@ -14,7 +14,7 @@ import InfrastructureSearch from '~/packages_and_registries/infrastructure_regis
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 jest.mock('~/lib/utils/common_utils');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(Vuex);
 
@@ -70,10 +70,6 @@ describe('packages_list_app', () => {
     createStore();
     jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue({});
     mountComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders', () => {
@@ -217,7 +213,7 @@ describe('packages_list_app', () => {
       setWindowLocation(originalLocation);
     });
 
-    it(`creates a flash if the query string contains ${SHOW_DELETE_SUCCESS_ALERT}`, () => {
+    it(`creates an alert if the query string contains ${SHOW_DELETE_SUCCESS_ALERT}`, () => {
       mountComponent();
 
       expect(createAlert).toHaveBeenCalledWith({

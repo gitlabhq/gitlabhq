@@ -1,0 +1,50 @@
+query getK8sWorkloads($configuration: LocalConfiguration, $namespace: String) {
+  k8sWorkloads(configuration: $configuration, namespace: $namespace) @client {
+    DeploymentList {
+      status {
+        conditions
+      }
+    }
+    DaemonSetList {
+      status {
+        numberMisscheduled
+        numberReady
+        desiredNumberScheduled
+      }
+    }
+    StatefulSetList {
+      status {
+        readyReplicas
+      }
+      spec {
+        replicas
+      }
+    }
+    ReplicaSetList {
+      status {
+        readyReplicas
+      }
+      spec {
+        replicas
+      }
+    }
+    JobList {
+      status {
+        failed
+        succeeded
+      }
+      spec {
+        completions
+      }
+    }
+    CronJobList {
+      status {
+        active
+        lastScheduleTime
+      }
+      spec {
+        suspend
+      }
+    }
+  }
+}

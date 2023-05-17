@@ -1,9 +1,10 @@
 - page_title _("Snippets")
-- header_title _("Snippets"), snippets_path
+- header_title _("Your work"), root_path
+- add_to_breadcrumbs _("Snippets"), dashboard_snippets_path
 - snippets_upload_path = snippets_upload_path(@snippet, current_user)
+- @left_sidebar = true
 
 - if current_user
-  - @left_sidebar = true
   - nav "your_work"
 
 - content_for :page_specific_javascripts do

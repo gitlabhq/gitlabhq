@@ -14,7 +14,6 @@ RSpec.describe RspecFlaky::Config, :aggregate_failures do
     stub_env('FLAKY_RSPEC_SUITE_REPORT_PATH', nil)
     stub_env('FLAKY_RSPEC_REPORT_PATH', nil)
     stub_env('NEW_FLAKY_RSPEC_REPORT_PATH', nil)
-    stub_env('SKIPPED_FLAKY_TESTS_REPORT_PATH', nil)
     # Ensure the behavior is the same locally and on CI (where Rails is defined since we run this test as part of the whole suite), i.e. Rails isn't defined
     allow(described_class).to receive(:rails_path).and_wrap_original do |method, path|
       path
@@ -101,24 +100,6 @@ RSpec.describe RspecFlaky::Config, :aggregate_failures do
 
       it 'returns the value of the env variable' do
         expect(described_class.new_flaky_examples_report_path).to eq('foo/new-report.json')
-      end
-    end
-  end
-
-  describe '.skipped_flaky_tests_report_path' do
-    context "when ENV['SKIPPED_FLAKY_TESTS_REPORT_PATH'] is not set" do
-      it 'returns the default path' do
-        expect(described_class.skipped_flaky_tests_report_path).to eq('rspec/flaky/skipped_flaky_tests_report.txt')
-      end
-    end
-
-    context "when ENV['SKIPPED_FLAKY_TESTS_REPORT_PATH'] is set" do
-      before do
-        stub_env('SKIPPED_FLAKY_TESTS_REPORT_PATH', 'foo/skipped_flaky_tests_report.txt')
-      end
-
-      it 'returns the value of the env variable' do
-        expect(described_class.skipped_flaky_tests_report_path).to eq('foo/skipped_flaky_tests_report.txt')
       end
     end
   end

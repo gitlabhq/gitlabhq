@@ -4,10 +4,13 @@ class ProtectedBranch < ApplicationRecord
   include ProtectedRef
   include Gitlab::SQL::Pattern
   include FromUnion
+  include EachBatch
 
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 
   validate :validate_either_project_or_top_group
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: [:project_id, :namespace_id] }, if: :name_changed?
 
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
@@ -26,7 +29,7 @@ class ProtectedBranch < ApplicationRecord
     # Maintainers, owners and admins are allowed to create the default branch
 
     if project.empty_repo? && project.default_branch_protected?
-      return true if user.admin? || project.team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
+      return true if user.admin? || user.can?(:admin_project, project)
     end
 
     super
@@ -37,38 +40,13 @@ class ProtectedBranch < ApplicationRecord
     return true if project.empty_repo? && project.default_branch_protected?
     return false if ref_name.blank?
 
-    dry_run = Feature.disabled?(:rely_on_protected_branches_cache, project)
-
-    new_cache_result = new_cache(project, ref_name, dry_run: dry_run)
-
-    return new_cache_result unless new_cache_result.nil?
-
-    deprecated_cache(project, ref_name)
-  end
-
-  def self.new_cache(project, ref_name, dry_run: true)
-    ProtectedBranches::CacheService.new(project).fetch(ref_name, dry_run: dry_run) do # rubocop: disable CodeReuse/ServiceClass
+    ProtectedBranches::CacheService.new(project).fetch(ref_name) do # rubocop: disable CodeReuse/ServiceClass
       self.matching(ref_name, protected_refs: protected_refs(project)).present?
     end
   end
-
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/370608
-  # ----------------------------------------------------------------
-  CACHE_EXPIRE_IN = 1.hour
-
-  def self.deprecated_cache(project, ref_name)
-    Rails.cache.fetch(protected_ref_cache_key(project, ref_name), expires_in: CACHE_EXPIRE_IN) do
-      self.matching(ref_name, protected_refs: protected_refs(project)).present?
-    end
-  end
-
-  def self.protected_ref_cache_key(project, ref_name)
-    "protected_ref-#{project.cache_key}-#{Digest::SHA1.hexdigest(ref_name)}"
-  end
-  # End of deprecation --------------------------------------------
 
   def self.allow_force_push?(project, ref_name)
-    if Feature.enabled?(:group_protected_branches)
+    if allow_protected_branches_for_group?(project.group)
       protected_branches = project.all_protected_branches.matching(ref_name)
 
       project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
@@ -83,6 +61,10 @@ class ProtectedBranch < ApplicationRecord
     end
   end
 
+  def self.allow_protected_branches_for_group?(group)
+    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
+  end
+
   def self.any_protected?(project, ref_names)
     protected_refs(project).any? do |protected_ref|
       ref_names.any? do |ref_name|
@@ -92,11 +74,7 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.protected_refs(project)
-    if Feature.enabled?(:group_protected_branches)
-      project.all_protected_branches
-    else
-      project.protected_branches
-    end
+    project.all_protected_branches
   end
 
   # overridden in EE

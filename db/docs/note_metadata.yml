@@ -1,0 +1,14 @@
+---
+table_name: note_metadata
+classes:
+- Notes::NoteMetadata
+feature_categories:
+- code_review_workflow
+- portfolio_management
+- service_desk
+- source_code_management
+- team_planning
+description: Store any extra metadata for notes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117149
+milestone: '16.0'
+gitlab_schema: gitlab_main

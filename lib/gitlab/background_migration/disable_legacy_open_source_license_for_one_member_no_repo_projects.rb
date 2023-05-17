@@ -23,8 +23,9 @@ module Gitlab
               .joins('LEFT OUTER JOIN project_statistics ON project_statistics.project_id = projects.id')
               .joins('LEFT OUTER JOIN project_settings ON project_settings.project_id = projects.id')
               .joins('LEFT OUTER JOIN project_authorizations ON project_authorizations.project_id = projects.id')
-              .where('project_statistics.repository_size' => 0,
-                     'project_settings.legacy_open_source_license_available' => true)
+              .where(
+                'project_statistics.repository_size' => 0,
+                'project_settings.legacy_open_source_license_available' => true)
               .group('projects.id')
               .having('COUNT(project_authorizations.user_id) = 1')
 

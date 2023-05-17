@@ -67,7 +67,10 @@ module BroadcastMessagesHelper
       {
         id: message.id,
         status: broadcast_message_status(message),
-        preview: broadcast_message(message, preview: true),
+        message: message.message,
+        theme: message.theme,
+        broadcast_type: message.broadcast_type,
+        dismissable: message.dismissable,
         starts_at: message.starts_at.iso8601,
         ends_at: message.ends_at.iso8601,
         target_roles: target_access_levels_display(message.target_access_levels),
@@ -79,10 +82,26 @@ module BroadcastMessagesHelper
     end.to_json
   end
 
+  def broadcast_message_data(broadcast_message)
+    {
+      id: broadcast_message.id,
+      message: broadcast_message.message,
+      broadcast_type: broadcast_message.broadcast_type,
+      theme: broadcast_message.theme,
+      dismissable: broadcast_message.dismissable.to_s,
+      target_access_levels: broadcast_message.target_access_levels,
+      messages_path: admin_broadcast_messages_path,
+      preview_path: preview_admin_broadcast_messages_path,
+      target_path: broadcast_message.target_path,
+      starts_at: broadcast_message.starts_at.iso8601,
+      ends_at: broadcast_message.ends_at.iso8601,
+      target_access_level_options: target_access_level_options.to_json
+    }
+  end
+
   private
 
   def current_user_access_level_for_project_or_group
-    return if Feature.disabled?(:role_targeted_broadcast_messages)
     return unless current_user.present?
 
     strong_memoize(:current_user_access_level_for_project_or_group) do

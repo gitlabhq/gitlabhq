@@ -10,13 +10,17 @@
 # the top of the original BaseService.
 class BaseContainerService
   include BaseServiceUtility
+  include ::Gitlab::Utils::StrongMemoize
 
+  attr_accessor :project, :group
   attr_reader :container, :current_user, :params
 
   def initialize(container:, current_user: nil, params: {})
     @container = container
     @current_user = current_user
     @params = params.dup
+
+    handle_container_type(container)
   end
 
   def project_container?
@@ -29,5 +33,23 @@ class BaseContainerService
 
   def namespace_container?
     container.is_a?(::Namespace)
+  end
+
+  def project_group
+    project&.group
+  end
+  strong_memoize_attr :project_group
+
+  private
+
+  def handle_container_type(container)
+    case container
+    when Project
+      @project = container
+    when Group
+      @group = container
+    when Namespaces::ProjectNamespace
+      @project = container.project
+    end
   end
 end

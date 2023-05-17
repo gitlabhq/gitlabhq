@@ -21,6 +21,8 @@ module AuthHelper
   LDAP_PROVIDER = /\Aldap/.freeze
   POPULAR_PROVIDERS = %w(google_oauth2 github).freeze
 
+  delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
+
   def ldap_enabled?
     Gitlab::Auth::Ldap::Config.enabled?
   end
@@ -45,9 +47,11 @@ module AuthHelper
     provider_has_builtin_icon?(name) || provider_has_custom_icon?(name)
   end
 
-  def qa_class_for_provider(provider)
+  def qa_selector_for_provider(provider)
     {
-      saml: 'qa-saml-login-button'
+      saml: 'saml_login_button',
+      openid_connect: 'oidc_login_button',
+      github: 'github_login_button'
     }[provider.to_sym]
   end
 

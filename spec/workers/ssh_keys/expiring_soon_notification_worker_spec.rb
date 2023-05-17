@@ -2,12 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe SshKeys::ExpiringSoonNotificationWorker, type: :worker do
+RSpec.describe SshKeys::ExpiringSoonNotificationWorker, type: :worker, feature_category: :compliance_management do
   subject(:worker) { described_class.new }
 
   it 'uses a cronjob queue' do
     expect(worker.sidekiq_options_hash).to include(
-      'queue' => 'cronjob:ssh_keys_expiring_soon_notification',
       'queue_namespace' => :cronjob
     )
   end

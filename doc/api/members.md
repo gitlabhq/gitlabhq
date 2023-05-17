@@ -316,9 +316,8 @@ This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and
-`sort` parameters allow you to search for billable group members by name and sort the results,
-respectively.
+[In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/262875), use the `search` parameter
+to search for billable group members by name and `sort` to sort the results.
 
 ```plaintext
 GET /groups/:id/billable_members

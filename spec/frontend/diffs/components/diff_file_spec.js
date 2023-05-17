@@ -129,8 +129,6 @@ describe('DiffFile', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     axiosMock.restore();
   });
 
@@ -168,6 +166,23 @@ describe('DiffFile', () => {
           });
         },
       );
+
+      it('emits the "first file shown" and "files end" events when in File-by-File mode', async () => {
+        ({ wrapper, store } = createComponent({
+          file: getReadableFile(),
+          first: false,
+          last: false,
+          props: {
+            viewDiffsFileByFile: true,
+          },
+        }));
+
+        await nextTick();
+
+        expect(eventHub.$emit).toHaveBeenCalledTimes(2);
+        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
+        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_DIFF_FILES_END);
+      });
     });
 
     describe('after loading the diff', () => {
@@ -222,20 +237,9 @@ describe('DiffFile', () => {
 
   describe('computed', () => {
     describe('showLocalFileReviews', () => {
-      let gon;
-
       function setLoggedIn(bool) {
         window.gon.current_user_id = bool;
       }
-
-      beforeAll(() => {
-        gon = window.gon;
-        window.gon = {};
-      });
-
-      afterEach(() => {
-        window.gon = gon;
-      });
 
       it.each`
         loggedIn | bool
@@ -319,7 +323,7 @@ describe('DiffFile', () => {
         markFileToBeRendered(store);
       });
 
-      it('should have the file content', async () => {
+      it('should have the file content', () => {
         expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
       });
 
@@ -329,7 +333,7 @@ describe('DiffFile', () => {
     });
 
     describe('toggle', () => {
-      it('should update store state', async () => {
+      it('should update store state', () => {
         jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
 
         toggleFile(wrapper);
@@ -507,8 +511,6 @@ describe('DiffFile', () => {
   });
 
   it('loads collapsed file on mounted when single file mode is enabled', async () => {
-    wrapper.destroy();
-
     const file = {
       ...getReadableFile(),
       load_collapsed_diff_url: '/diff_for_path',
@@ -527,10 +529,6 @@ describe('DiffFile', () => {
   });
 
   describe('merge conflicts', () => {
-    beforeEach(() => {
-      wrapper.destroy();
-    });
-
     it('does not render conflict alert', () => {
       const file = {
         ...getReadableFile(),

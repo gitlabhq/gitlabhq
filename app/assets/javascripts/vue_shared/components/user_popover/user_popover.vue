@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlPopover,
   GlLink,
   GlSkeletonLoader,
@@ -10,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
@@ -35,6 +36,7 @@ export default {
   I18N_USER_LEARN,
   USER_POPOVER_DELAY,
   components: {
+    GlBadge,
     GlIcon,
     GlLink,
     GlPopover,
@@ -226,9 +228,9 @@ export default {
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >
-          <span v-if="isBusy" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-p-1"
-            >({{ $options.I18N_USER_BUSY }})</span
-          >
+          <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-1">
+            {{ $options.I18N_USER_BUSY }}
+          </gl-badge>
         </template>
       </gl-avatar-labeled>
     </div>
@@ -269,7 +271,7 @@ export default {
             <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
-            <gl-icon name="question" />
+            <gl-icon name="question-o" />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
               <gl-sprintf :message="$options.I18N_USER_LEARN">
                 <template #name>{{ user.name }}</template>

@@ -8,6 +8,7 @@ import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
+import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Emoji from '~/content_editor/extensions/emoji';
 import Figure from '~/content_editor/extensions/figure';
 import FigureCaption from '~/content_editor/extensions/figure_caption';
@@ -57,6 +58,7 @@ const {
     div,
     descriptionItem,
     descriptionList,
+    drawioDiagram,
     emoji,
     footnoteDefinition,
     footnoteReference,
@@ -96,6 +98,7 @@ const {
     detailsContent: { nodeType: DetailsContent.name },
     descriptionItem: { nodeType: DescriptionItem.name },
     descriptionList: { nodeType: DescriptionList.name },
+    drawioDiagram: { nodeType: DrawioDiagram.name },
     emoji: { markType: Emoji.name },
     figure: { nodeType: Figure.name },
     figureCaption: { nodeType: FigureCaption.name },
@@ -183,6 +186,19 @@ comment -->
     );
   });
 
+  it('correctly renders a comment with markdown in it without adding any slashes', () => {
+    expect(serialize(paragraph('hi'), comment('this is a list\n- a\n- b\n- c'))).toBe(
+      `
+hi
+
+<!--this is a list
+- a
+- b
+- c-->
+      `.trim(),
+    );
+  });
+
   it('correctly serializes a line break', () => {
     expect(serialize(paragraph('hello', hardBreak(), 'world'))).toBe('hello\\\nworld');
   });
@@ -263,6 +279,20 @@ comment -->
         ),
       ),
     ).toBe('![GitLab][gitlab-url]');
+  });
+
+  it.each`
+    src
+    ${'data:image/png;base64,iVBORw0KGgoAAAAN'}
+    ${'blob:https://gitlab.com/1234-5678-9012-3456'}
+  `('omits images with data/blob urls when serializing', ({ src }) => {
+    expect(serialize(paragraph(image({ src, alt: 'image' })))).toBe('');
+  });
+
+  it('does not escape url in an image', () => {
+    expect(
+      serialize(paragraph(image({ src: 'https://example.com/image__1_.png', alt: 'image' }))),
+    ).toBe('![image](https://example.com/image__1_.png)');
   });
 
   it('correctly serializes strikethrough', () => {
@@ -395,6 +425,12 @@ this is not really json:table but just trying out whether this case works or not
     expect(serialize(paragraph(image({ src: 'img.jpg', alt: 'foo bar' })))).toBe(
       '![foo bar](img.jpg)',
     );
+  });
+
+  it('correctly serializes a drawio_diagram', () => {
+    expect(
+      serialize(paragraph(drawioDiagram({ src: 'diagram.drawio.svg', alt: 'Draw.io Diagram' }))),
+    ).toBe('![Draw.io Diagram](diagram.drawio.svg)');
   });
 
   it.each`
@@ -876,6 +912,59 @@ _An elephant at sunset_
     );
   });
 
+  it('correctly renders a table with checkboxes', () => {
+    expect(
+      serialize(
+        table(
+          // each table cell must contain at least one paragraph
+          tableRow(
+            tableHeader(paragraph('')),
+            tableHeader(paragraph('Item')),
+            tableHeader(paragraph('Description')),
+          ),
+          tableRow(
+            tableCell(taskList(taskItem(paragraph('')))),
+            tableCell(paragraph('Item 1')),
+            tableCell(paragraph('Description 1')),
+          ),
+          tableRow(
+            tableCell(taskList(taskItem(paragraph('some text')))),
+            tableCell(paragraph('Item 2')),
+            tableCell(paragraph('Description 2')),
+          ),
+        ),
+      ).trim(),
+    ).toBe(
+      `
+<table>
+<tr>
+<th>
+
+</th>
+<th>Item</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>
+
+* [ ] &nbsp;
+</td>
+<td>Item 1</td>
+<td>Description 1</td>
+</tr>
+<tr>
+<td>
+
+* [ ] some text
+</td>
+<td>Item 2</td>
+<td>Description 2</td>
+</tr>
+</table>
+    `.trim(),
+    );
+  });
+
   it('correctly serializes a table with line breaks', () => {
     expect(
       serialize(
@@ -1300,6 +1389,25 @@ paragraph
       .run();
   };
 
+  const editNonInclusiveMarkAction = (initialContent) => {
+    tiptapEditor.commands.setContent(initialContent.toJSON());
+    tiptapEditor.commands.selectTextblockEnd();
+
+    let { from } = tiptapEditor.state.selection;
+    tiptapEditor.commands.setTextSelection({
+      from: from - 1,
+      to: from - 1,
+    });
+
+    const sel = tiptapEditor.state.doc.textBetween(from - 1, from, ' ');
+    tiptapEditor.commands.insertContent(`${sel} modified`);
+
+    tiptapEditor.commands.selectTextblockEnd();
+    from = tiptapEditor.state.selection.from;
+
+    tiptapEditor.commands.deleteRange({ from: from - 1, to: from });
+  };
+
   it.each`
     mark                   | markdown                                        | modifiedMarkdown                                         | editAction
     ${'bold'}              | ${'**bold**'}                                   | ${'**bold modified**'}                                   | ${defaultEditAction}
@@ -1310,8 +1418,8 @@ paragraph
     ${'italic'}            | ${'*italic*'}                                   | ${'*italic modified*'}                                   | ${defaultEditAction}
     ${'italic'}            | ${'<em>italic</em>'}                            | ${'<em>italic modified</em>'}                            | ${defaultEditAction}
     ${'italic'}            | ${'<i>italic</i>'}                              | ${'<i>italic modified</i>'}                              | ${defaultEditAction}
-    ${'link'}              | ${'[gitlab](https://gitlab.com)'}               | ${'[gitlab modified](https://gitlab.com)'}               | ${defaultEditAction}
-    ${'link'}              | ${'<a href="https://gitlab.com">link</a>'}      | ${'<a href="https://gitlab.com">link modified</a>'}      | ${defaultEditAction}
+    ${'link'}              | ${'[gitlab](https://gitlab.com)'}               | ${'[gitlab modified](https://gitlab.com)'}               | ${editNonInclusiveMarkAction}
+    ${'link'}              | ${'<a href="https://gitlab.com">link</a>'}      | ${'<a href="https://gitlab.com">link modified</a>'}      | ${editNonInclusiveMarkAction}
     ${'link'}              | ${'link www.gitlab.com'}                        | ${'modified link www.gitlab.com'}                        | ${prependContentEditAction}
     ${'link'}              | ${'link https://www.gitlab.com'}                | ${'modified link https://www.gitlab.com'}                | ${prependContentEditAction}
     ${'link'}              | ${'link(https://www.gitlab.com)'}               | ${'modified link(https://www.gitlab.com)'}               | ${prependContentEditAction}

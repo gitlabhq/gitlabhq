@@ -31,6 +31,7 @@ class NotesFinder
     notes = since_fetch_at(notes)
     notes = notes.with_notes_filter(@params[:notes_filter]) if notes_filter?
     notes = redact_internal(notes)
+    notes = notes.without_hidden if without_hidden_notes?
     sort(notes)
   end
 
@@ -188,6 +189,13 @@ class NotesFinder
     return notes if Ability.allowed?(@current_user, :read_internal_note, subject)
 
     notes.not_internal
+  end
+
+  def without_hidden_notes?
+    return false unless Feature.enabled?(:hidden_notes)
+    return false if @current_user&.can_admin_all_resources?
+
+    true
   end
 end
 

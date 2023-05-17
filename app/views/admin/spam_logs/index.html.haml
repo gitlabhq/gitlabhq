@@ -17,6 +17,6 @@
           %th= _('Primary Action')
           %th
       = render @spam_logs
-  = paginate @spam_logs, theme: 'gitlab'
+  = paginate_collection @spam_logs
 - else
   %h4= _('There are no Spam Logs')

@@ -26,7 +26,7 @@ by Distribution:
 
 ## Supporting multiple Go versions
 
-Individual Golang projects need to support multiple Go versions because:
+Individual Go projects need to support multiple Go versions because:
 
 - When a new version of Go is released, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
 - We must support the [official Omnibus GitLab Go version](#updating-go-version), which may be behind the latest minor release.
@@ -150,6 +150,7 @@ if you need help finding the correct person or labels:
 | [Alertmanager](https://github.com/prometheus/alertmanager) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
 | Docker Distribution Pruner    | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner) |
 | Gitaly                        | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues) |
+| GitLab CLI (`glab`).          | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues)
 | GitLab Compose Kit            | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues) |
 | GitLab Container Registry     | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry) |
 | GitLab Elasticsearch Indexer  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues) |

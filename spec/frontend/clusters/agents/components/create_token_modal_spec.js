@@ -9,7 +9,6 @@ import {
   EVENT_LABEL_MODAL,
   EVENT_ACTIONS_OPEN,
   TOKEN_NAME_LIMIT,
-  TOKEN_STATUS_ACTIVE,
   MAX_LIST_COUNT,
   CREATE_TOKEN_MODAL,
 } from '~/clusters/agents/constants';
@@ -62,7 +61,7 @@ describe('CreateTokenModal', () => {
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
-      expect(element.attributes('disabled')).toBe('true');
+      expect(element.attributes('disabled')).toBeDefined();
     } else {
       expect(element.attributes('disabled')).toBeUndefined();
     }
@@ -81,7 +80,6 @@ describe('CreateTokenModal', () => {
       variables: {
         agentName,
         projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...cursor,
       },
     });
@@ -119,7 +117,6 @@ describe('CreateTokenModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     createResponse = null;
   });
@@ -214,7 +211,7 @@ describe('CreateTokenModal', () => {
       await mockCreatedResponse(createAgentTokenErrorResponse);
     });
 
-    it('displays the error message', async () => {
+    it('displays the error message', () => {
       expect(findAlert().text()).toBe(
         createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
       );

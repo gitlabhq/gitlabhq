@@ -6,12 +6,24 @@ export default Node.create({
   group: 'block list',
   content: 'descriptionItem+',
 
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   parseHTML() {
     return [{ tag: 'dl' }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['ul', mergeAttributes(HTMLAttributes, { class: 'dl-content' }), 0];
+    return [
+      'ul',
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { class: 'dl-content' }),
+      0,
+    ];
   },
 
   addInputRules() {

@@ -232,7 +232,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
           expect(page).to have_link('New issue')
         end
 
-        it 'links to issues/new with the title and description filled in' do
+        it 'links to issues/new with the title and description filled in', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408222' do
           button_title = "Job Failed ##{job.id}"
           job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
@@ -269,13 +269,15 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
       let(:resource_group) { create(:ci_resource_group, project: project) }
 
       before do
+        resource_group.assign_resource_to(create(:ci_build))
+
         visit project_job_path(project, job)
         wait_for_requests
       end
 
       it 'shows correct UI components' do
         expect(page).to have_content("This job is waiting for resource: #{resource_group.key}")
-        expect(page).to have_link("Cancel this job")
+        expect(page).to have_link("View job currently using resource")
       end
     end
 
@@ -1065,16 +1067,19 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
     end
 
     context "Build from other project" do
+      let(:other_job_download_path) { download_project_job_artifacts_path(project, job2) }
+
       before do
         create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
-      it do
-        requests = inspect_requests do
-          visit download_project_job_artifacts_path(project, job2)
-        end
+      it 'receive 404 from download request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391632' do
+        requests = inspect_requests { visit other_job_download_path }
 
-        expect(requests.first.status_code).to eq(404)
+        request = requests.find { |request| request.url == other_job_download_path }
+
+        expect(request).to be_present
+        expect(request.status_code).to eq(404)
       end
     end
   end

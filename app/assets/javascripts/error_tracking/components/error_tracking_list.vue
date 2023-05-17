@@ -23,7 +23,12 @@ import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { sanitizeUrl } from '~/lib/utils/url_utility';
-import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
+import {
+  trackErrorListViewsOptions,
+  trackErrorStatusUpdateOptions,
+  trackErrorStatusFilterOptions,
+  trackErrorSortedByField,
+} from '../events_tracking';
 import { I18N_ERROR_TRACKING_LIST } from '../constants';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 
@@ -237,7 +242,14 @@ export default {
     },
     filterErrors(status, label) {
       this.filterValue = label;
+      const { category, action } = trackErrorStatusFilterOptions(status);
+      Tracking.event(category, action);
       return this.filterByStatus(status);
+    },
+    sortErrorsByField(field) {
+      const { category, action } = trackErrorSortedByField(field);
+      Tracking.event(category, action);
+      return this.sortByField(field);
     },
     updateErrosStatus({ errorId, status }) {
       // eslint-disable-next-line promise/catch-or-return
@@ -371,7 +383,7 @@ export default {
           <gl-dropdown-item
             v-for="(label, field) in $options.sortFields"
             :key="field"
-            @click="sortByField(field)"
+            @click="sortErrorsByField(field)"
           >
             <span class="d-flex">
               <gl-icon

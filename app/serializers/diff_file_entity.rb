@@ -55,7 +55,19 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   # Used for inline diffs
-  expose :diff_lines_for_serializer, as: :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options) && diff_file.text? }
+  expose :diff_lines_for_serializer, as: :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { display_highlighted_diffs?(diff_file, options) }
+
+  expose :viewer do |diff_file, options|
+    whitespace_only = if !display_highlighted_diffs?(diff_file, options)
+                        nil
+                      elsif whitespace_only_change?(diff_file)
+                        true
+                      else
+                        false
+                      end
+
+    DiffViewerEntity.represent diff_file.viewer, options.merge(whitespace_only: whitespace_only)
+  end
 
   expose :fully_expanded?, as: :is_fully_expanded
 
@@ -67,6 +79,19 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   private
+
+  def whitespace_only_change?(diff_file)
+    !diff_file.collapsed? &&
+      diff_file.diff_lines_for_serializer.nil? &&
+      (
+        diff_file.added_lines != 0 ||
+        diff_file.removed_lines != 0
+      )
+  end
+
+  def display_highlighted_diffs?(diff_file, options)
+    inline_diff_view?(options) && diff_file.text?
+  end
 
   def parallel_diff_view?(options)
     diff_view(options) == :parallel

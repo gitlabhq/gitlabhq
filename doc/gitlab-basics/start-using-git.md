@@ -15,7 +15,7 @@ You can do many Git operations directly in GitLab. However, the command line is 
 like fixing complex merge conflicts or rolling back commits.
 
 If you're new to Git and want to learn by working in your own project,
-[learn how to make your first commit](../tutorials/make_your_first_git_commit.md).
+[learn how to make your first commit](../tutorials/make_first_git_commit/index.md).
 
 For a quick reference of Git commands, download a [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
@@ -98,12 +98,12 @@ access on GitLab.com or any other GitLab instance.
 To use the repository in the examples on this page:
 
 1. Go to [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
-1. In the upper right, select **Fork**.
+1. In the upper-right corner, select **Fork**.
 1. Choose a namespace for your fork.
 
 The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.
 
-You can [fork](../user/project/repository/forking_workflow.md#creating-a-fork) any project you have access to.
+You can [fork](../user/project/repository/forking_workflow.md#create-a-fork) any project you have access to.
 
 ## Clone a repository
 
@@ -152,7 +152,7 @@ between your computer and GitLab.
    If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
 
    - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager).
+   - Install an [OAuth credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
    If you have not enabled 2FA, use your account password.
 
@@ -275,8 +275,10 @@ To create a feature branch:
 git checkout -b <name-of-branch>
 ```
 
-Branch names cannot contain empty spaces and special characters. Use only lowercase letters, numbers,
-hyphens (`-`), and underscores (`_`).
+GitLab enforces [branch naming rules](../user/project/repository/branches/index.md#name-your-branch)
+to prevent problems, and provides 
+[branch naming patterns](../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+to streamline merge request creation.
 
 ### Switch to a branch
 

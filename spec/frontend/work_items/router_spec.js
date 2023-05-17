@@ -3,17 +3,19 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
+  currentUserResponse,
   workItemAssigneesSubscriptionResponse,
   workItemDatesSubscriptionResponse,
-  workItemResponseFactory,
+  workItemByIidResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemLabelsSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
   workItemDescriptionSubscriptionResponse,
 } from 'jest/work_items/mock_data';
+import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import App from '~/work_items/components/app.vue';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
@@ -30,7 +32,8 @@ describe('Work items router', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
+  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const currentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
   const assigneesSubscriptionHandler = jest
@@ -51,7 +54,8 @@ describe('Work items router', () => {
     }
 
     const handlers = [
-      [workItemQuery, workItemQueryHandler],
+      [workItemByIidQuery, workItemQueryHandler],
+      [currentUserQuery, currentUserQueryHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
       [workItemTitleSubscription, titleSubscriptionHandler],
       [workItemAssigneesSubscription, assigneesSubscriptionHandler],
@@ -70,11 +74,13 @@ describe('Work items router', () => {
         hasIterationsFeature: false,
         hasOkrsFeature: false,
         hasIssuableHealthStatusFeature: false,
+        reportAbusePath: '/report/abuse/path',
       },
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
+        WorkItemNotes: true,
       },
     });
   };
@@ -88,7 +94,6 @@ describe('Work items router', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.location.hash = '';
   });
 

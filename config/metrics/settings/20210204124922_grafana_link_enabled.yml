@@ -5,7 +5,6 @@ description: Whether Grafana is enabled
 product_section: ops
 product_stage: monitor
 product_group: respond
-product_category: collection
 value_type: boolean
 status: active
 time_frame: none

@@ -2,8 +2,8 @@
 # Ruby 3.0.
 #
 # After the transition has been completed:
-# * Move all configuration which enable cops to .rubocop.yml.
-# * Remove all reminaing configuration.
+# * Move all configuration which enabled or tweaked cops to .rubocop.yml.
+# * Remove all remaining configuration.
 
 # These cops are disabled in Ruby 2.7 (rubocop-27.yml).
 Style/MutableConstant:

@@ -30,6 +30,10 @@ class CommitCollection
     User.by_any_email(emails)
   end
 
+  def committer_user_ids
+    committers.pluck(:id)
+  end
+
   def without_merge_commits
     strong_memoize(:without_merge_commits) do
       # `#enrich!` the collection to ensure all commits contain
@@ -117,5 +121,22 @@ class CommitCollection
 
   def next_page
     @pagination.next_page
+  end
+
+  def load_tags
+    oids = commits.map(&:id)
+    references = repository.list_refs([Gitlab::Git::TAG_REF_PREFIX], pointing_at_oids: oids, peel_tags: true)
+    oid_to_references = references.group_by { |reference| reference.peeled_target.presence || reference.target }
+
+    return self if oid_to_references.empty?
+
+    commits.each do |commit|
+      grouped_references = oid_to_references[commit.id]
+      next unless grouped_references
+
+      commit.referenced_by = grouped_references.map(&:name)
+    end
+
+    self
   end
 end

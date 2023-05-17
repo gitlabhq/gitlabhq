@@ -62,8 +62,6 @@ Lint/AmbiguousRegexpLiteral:
     - 'spec/lib/gitlab/database/partitioning_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/prevent_cross_database_modification_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/with_feature_flag_actors_spec.rb'
-    - 'spec/lib/gitlab/kubernetes/helm/v2/base_command_spec.rb'
-    - 'spec/lib/gitlab/kubernetes/helm/v3/base_command_spec.rb'
     - 'spec/lib/gitlab/pagination/keyset/in_operator_optimization/array_scope_columns_spec.rb'
     - 'spec/lib/gitlab/pagination/keyset/in_operator_optimization/query_builder_spec.rb'
     - 'spec/lib/gitlab/pagination/keyset/iterator_spec.rb'

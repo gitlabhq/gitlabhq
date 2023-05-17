@@ -82,7 +82,9 @@ module QA
     "jetbrains" => "JetBrains",
     "vscode" => "VSCode",
     "registry_with_cdn" => "RegistryWithCDN",
-    "fips" => "FIPS"
+    "fips" => "FIPS",
+    "ci_cd_settings" => "CICDSettings",
+    "cli" => "CLI"
   )
 
   loader.setup

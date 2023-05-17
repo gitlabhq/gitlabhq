@@ -24,6 +24,7 @@ module API
       expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
+      expose(:valid_runner_registrars) { |setting, _options| setting.valid_runner_registrars }
 
       expose(*::ApplicationSettingsHelper.external_authorization_service_attributes)
 

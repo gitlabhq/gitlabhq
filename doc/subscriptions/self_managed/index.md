@@ -7,39 +7,22 @@ type: index, reference
 
 # GitLab self-managed subscription **(PREMIUM SELF)**
 
-You can install, administer, and maintain your own GitLab instance.
+After you subscribe to GitLab, you can manage the details of your self-managed subscription.
 
-This page covers the details of your GitLab self-managed subscription.
+## Obtain a self-managed subscription
 
-GitLab subscription management requires access to the Customers Portal.
+To subscribe to GitLab for a GitLab self-managed installation:
 
-## Customers Portal
+1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
+1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
+   You must [add this code to your GitLab instance](../../user/admin_area/license.md).
 
-GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
-manage your subscriptions and your account details.
+NOTE:
+If you're purchasing a subscription for an existing **Free** GitLab self-managed
+instance, ensure you're purchasing enough seats to
+[cover your users](../../user/admin_area/index.md#administering-users).
 
-Customers are required to use their GitLab.com account to register for a new Customers Portal account.
-
-If you have a legacy Customers Portal account that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using an email and password. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](../index.md#change-the-linked-account) to ensure continued access to the Customers Portal.
-
-Customers of resellers do not have access to this portal and should contact their reseller for any
-changes to their subscription.
-
-## Subscription
-
-The cost of a GitLab self-managed subscription is determined by the following:
-
-- [GitLab tier](https://about.gitlab.com/pricing/)
-- [Subscription seats](#subscription-seats)
-
-## Choose a GitLab tier
-
-Pricing is [tier-based](https://about.gitlab.com/pricing/), so you can choose
-the features that fit your budget. For information on the features available
-for each tier, see the
-[GitLab self-managed feature comparison](https://about.gitlab.com/pricing/feature-comparison/).
-
-## Subscription seats
+### Subscription seats
 
 A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
 according to the [maximum number](#maximum-users) of users enabled during the subscription period.
@@ -49,7 +32,7 @@ simultaneous users in the GitLab self-managed installation is checked each quart
 If an instance is unable to generate a quarterly usage report, the existing [true up model](#users-over-subscription) is used.
 Prorated charges are not possible without a quarterly usage report.
 
-### View user totals
+## View user totals
 
 You can view users for your license and determine if you've gone over your subscription.
 
@@ -58,7 +41,7 @@ You can view users for your license and determine if you've gone over your subsc
 
 The lists of users are displayed.
 
-#### Billable users
+### Billable users
 
 A _billable user_ counts against the number of subscription seats. Every user is considered a
 billable user, with the following exceptions:
@@ -67,7 +50,8 @@ billable user, with the following exceptions:
   [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
 - Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
-- Members with the [Guest role on an Ultimate subscription](#free-guest-users).
+- Users with only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
+- Users with only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
 - Users without project or group memberships on an Ultimate subscription.
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
@@ -75,14 +59,15 @@ billable user, with the following exceptions:
     - [Support Bot](../../user/project/service_desk.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
+    - Other [internal users](../../development/internal_users.md#internal-users).
 
 **Billable users** as reported in the `/admin` section is updated once per day.
 
-#### Maximum users
+### Maximum users
 
 The number of _maximum users_ reflects the highest number of billable users for the current license period.
 
-#### Users over subscription
+### Users over subscription
 
 The number of _users over subscription_ shows how many users are in excess of the number allowed by the subscription. This number reflects the current subscription period.
 
@@ -101,7 +86,7 @@ If you add more users to your GitLab instance than you are licensed for, payment
 
 If you do not add these users during the renewal process, your license key will not work.
 
-#### Free Guest users **(ULTIMATE)**
+### Free Guest users **(ULTIMATE)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance.
@@ -117,7 +102,7 @@ If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
 as [external](../../user/admin_area/external_users.md).
 
-### Tips for managing users and subscription seats
+## Tips for managing users and subscription seats
 
 Managing the number of users against the number of subscription seats can be a challenge:
 
@@ -237,19 +222,6 @@ You can manually synchronize your subscription details at any time.
 
 A job is queued. When the job finishes, the subscription details are updated.
 
-## Obtain a subscription
-
-To subscribe to GitLab through a GitLab self-managed installation:
-
-1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
-1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
-   You must [add this code to your GitLab instance](../../user/admin_area/license.md).
-
-NOTE:
-If you're purchasing a subscription for an existing **Free** GitLab self-managed
-instance, ensure you're purchasing enough seats to
-[cover your users](../../user/admin_area/index.md#administering-users).
-
 ## View your subscription
 
 If you are an administrator, you can view the status of your subscription:
@@ -280,7 +252,7 @@ If you are an administrator, you can export your license usage into a CSV:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
-1. In the upper right, select **Export license usage file**.
+1. In the upper-right corner, select **Export license usage file**.
 
 This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.
 
@@ -404,7 +376,7 @@ Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
 You can view and download your renewal invoice on the Customers Portal
-[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
+[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
 
 #### Email notifications
 
@@ -419,7 +391,7 @@ You can view and download your renewal invoice on the Customers Portal
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Resume subscription** button is displayed, your subscription was canceled
+- If a **Turn on auto-renew** button is displayed, your subscription was canceled
   previously. Select it to resume automatic renewal.
 - If a **Cancel subscription** button is displayed, your subscription is set to automatically
   renew at the end of the subscription period. Select it to cancel automatic renewal.

@@ -393,24 +393,26 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
     subject { object.blocked? }
 
     %w[ci_pipeline ci_stage ci_build generic_commit_status].each do |type|
-      let(:object) { build(type, status: status) }
+      context "when #{type}" do
+        let(:object) { build(type, status: status) }
 
-      context 'when status is scheduled' do
-        let(:status) { :scheduled }
+        context 'when status is scheduled' do
+          let(:status) { :scheduled }
 
-        it { is_expected.to be_truthy }
-      end
+          it { is_expected.to be_truthy }
+        end
 
-      context 'when status is manual' do
-        let(:status) { :manual }
+        context 'when status is manual' do
+          let(:status) { :manual }
 
-        it { is_expected.to be_truthy }
-      end
+          it { is_expected.to be_truthy }
+        end
 
-      context 'when status is created' do
-        let(:status) { :created }
+        context 'when status is created' do
+          let(:status) { :created }
 
-        it { is_expected.to be_falsy }
+          it { is_expected.to be_falsy }
+        end
       end
     end
   end

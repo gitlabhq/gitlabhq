@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DropPipelineService do
+RSpec.describe Ci::DropPipelineService, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
 
   let(:failure_reason) { :user_blocked }

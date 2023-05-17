@@ -67,10 +67,10 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def preload_associations(records)
           # using preloader instead of includes to avoid AR generating a large column list
-          ActiveRecord::Associations::Preloader.new.preload(
-            records,
-            MAPPINGS.fetch(subject_class).fetch(:includes_for_query)
-          )
+          ActiveRecord::Associations::Preloader.new(
+            records: records,
+            associations: MAPPINGS.fetch(subject_class).fetch(:includes_for_query)
+          ).call
 
           records
         end

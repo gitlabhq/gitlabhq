@@ -152,29 +152,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         end
       end
     end
-
-    describe 'require_verification_for_namespace_creation experiment', :experiment do
-      before do
-        sign_in(owner)
-        stub_experiments(require_verification_for_namespace_creation: :candidate)
-      end
-
-      it 'tracks a "start_create_group" event' do
-        expect(experiment(:require_verification_for_namespace_creation)).to track(
-          :start_create_group
-        ).on_next_instance.with_context(user: owner)
-
-        get :new
-      end
-
-      context 'when creating a sub-group' do
-        it 'does not track a "start_create_group" event' do
-          expect(experiment(:require_verification_for_namespace_creation)).not_to track(:start_create_group)
-
-          get :new, params: { parent_id: group.id }
-        end
-      end
-    end
   end
 
   describe 'GET #activity' do

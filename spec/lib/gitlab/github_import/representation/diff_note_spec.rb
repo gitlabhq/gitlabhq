@@ -131,7 +131,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
       describe '#github_identifiers' do
         it 'returns a hash with needed identifiers' do
           expect(note.github_identifiers).to eq(
-            noteable_id: 42,
+            noteable_iid: 42,
             noteable_type: 'MergeRequest',
             note_id: 1
           )

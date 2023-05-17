@@ -35,6 +35,14 @@ module Sidebars
         def active_routes
           { controller: :snippets }
         end
+
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.deep_merge({
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
+            item_id: :project_snippets
+          })
+        end
       end
     end
   end

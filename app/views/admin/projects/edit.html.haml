@@ -1,0 +1,4 @@
+- page_title _("Edit"), @project.name, _("Projects")
+%h1.page-title.gl-font-size-h-display= _('Edit project: %{project_name}') % { project_name: @project.name }
+%hr
+= render 'form'

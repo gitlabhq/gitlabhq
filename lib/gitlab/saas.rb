@@ -49,6 +49,10 @@ module Gitlab
       "https://about.gitlab.com/pricing#faq"
     end
 
+    def self.about_feature_comparison_url
+      "https://about.gitlab.com/pricing/gitlab-com/feature-comparison"
+    end
+
     def self.doc_url
       'https://docs.gitlab.com'
     end

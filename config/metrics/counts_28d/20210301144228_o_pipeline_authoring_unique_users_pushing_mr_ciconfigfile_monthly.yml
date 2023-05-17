@@ -5,7 +5,6 @@ description: Monthly unique user count having merge requests which contains the 
 product_section: ops
 product_stage: verify
 product_group: pipeline_authoring
-product_category: pipeline_authoring
 value_type: number
 status: active
 milestone: "13.10"

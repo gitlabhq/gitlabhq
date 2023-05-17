@@ -40,10 +40,6 @@ describe('~/vue_shared/components/segmented_control_button_group.vue', () => {
       disabled,
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

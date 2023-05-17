@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { STATUS_CLOSED } from '~/issues/constants';
 import { EXTENSION_ICONS } from '../constants';
 import issuesCollapsedQuery from './issues_collapsed.query.graphql';
 import issuesQuery from './issues.query.graphql';
@@ -82,7 +83,7 @@ export default {
             // Icon to get rendered on the side of each row
             icon: {
               // Required: Name maps to an icon in GitLabs SVG
-              name: issue.state === 'closed' ? EXTENSION_ICONS.error : EXTENSION_ICONS.success,
+              name: issue.state === STATUS_CLOSED ? EXTENSION_ICONS.error : EXTENSION_ICONS.success,
             },
             // Badges get rendered next to the text on each row
             // badge: issue.state === 'closed' && {

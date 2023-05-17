@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Api from '~/api';
 import { __ } from '~/locale';
 import state from '../state';

@@ -7,6 +7,8 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
   let(:group) { create(:group) }
 
   before do
+    stub_application_setting(import_sources: ['manifest'])
+
     sign_in(user)
 
     group.add_owner(user)

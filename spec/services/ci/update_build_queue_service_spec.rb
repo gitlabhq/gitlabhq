@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UpdateBuildQueueService do
+RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }

@@ -2,12 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe ::JiraConnect::SyncFeatureFlagsWorker do
+RSpec.describe ::JiraConnect::SyncFeatureFlagsWorker, feature_category: :integrations do
   include AfterNextHelpers
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
   describe '#perform' do
     let_it_be(:feature_flag) { create(:operations_feature_flag) }

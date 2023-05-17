@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Json::NdjsonReader do
+RSpec.describe Gitlab::ImportExport::Json::NdjsonReader, feature_category: :importers do
   include ImportExport::CommonUtil
 
   let(:fixture) { 'spec/fixtures/lib/gitlab/import_export/light/tree' }
@@ -26,14 +26,6 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonReader do
     end
   end
 
-  describe '#legacy?' do
-    let(:dir_path) { fixture }
-
-    subject { ndjson_reader.legacy? }
-
-    it { is_expected.to be false }
-  end
-
   describe '#consume_attributes' do
     let(:dir_path) { fixture }
 
@@ -41,6 +33,20 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonReader do
 
     it 'returns the whole root tree from parsed JSON' do
       expect(subject).to eq(root_tree)
+    end
+
+    context 'when project.json is symlink' do
+      it 'raises error an error' do
+        Dir.mktmpdir do |tmpdir|
+          FileUtils.touch(File.join(tmpdir, 'passwd'))
+          File.symlink(File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project.json'))
+
+          ndjson_reader = described_class.new(tmpdir)
+
+          expect { ndjson_reader.consume_attributes(importable_path) }
+            .to raise_error(Gitlab::ImportExport::Error, 'Invalid file')
+        end
+      end
     end
   end
 
@@ -88,6 +94,22 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonReader do
 
         it 'yields nothing to the Enumerator' do
           expect(subject.to_a).to eq([])
+        end
+      end
+
+      context 'when relation file is a symlink' do
+        it 'yields nothing to the Enumerator' do
+          Dir.mktmpdir do |tmpdir|
+            Dir.mkdir(File.join(tmpdir, 'project'))
+            File.write(File.join(tmpdir, 'passwd'), "{}\n{}")
+            File.symlink(File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project', 'issues.ndjson'))
+
+            ndjson_reader = described_class.new(tmpdir)
+
+            result = ndjson_reader.consume_relation(importable_path, 'issues')
+
+            expect(result.to_a).to eq([])
+          end
         end
       end
 

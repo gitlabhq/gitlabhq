@@ -1,11 +1,11 @@
 - title: "Package pipelines in API payload is paginated"  # The name of the feature to be deprecated
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # The milestone when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
 
-    In milestone 16.0, we will remove the `pipelines` attribute from the API response.
+    In milestone 17.0, we will remove the `pipelines` attribute from the API response.
   stage: package
   tiers: Free
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/289956

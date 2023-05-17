@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ResolveTodosService do
+RSpec.describe MergeRequests::ResolveTodosService, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:user) { create(:user) }
 

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';

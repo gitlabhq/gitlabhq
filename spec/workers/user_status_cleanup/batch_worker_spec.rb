@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserStatusCleanup::BatchWorker do
+RSpec.describe UserStatusCleanup::BatchWorker, feature_category: :user_profile do
   include_examples 'an idempotent worker' do
     subject do
       perform_multiple([], worker: described_class.new)

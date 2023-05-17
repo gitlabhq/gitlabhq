@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Search group member', :js, feature_category: :subgroups do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
 
   let(:user) { create :user }
   let(:member) { create :user }

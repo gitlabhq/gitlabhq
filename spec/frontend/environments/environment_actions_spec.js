@@ -1,14 +1,8 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
-import eventHub from '~/environments/event_hub';
-import actionMutation from '~/environments/graphql/mutations/action.mutation.graphql';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import createMockApollo from 'helpers/mock_apollo_helper';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
@@ -29,15 +23,9 @@ const expiredJobAction = {
 describe('EnvironmentActions Component', () => {
   let wrapper;
 
-  const findEnvironmentActionsButton = () =>
-    wrapper.find('[data-testid="environment-actions-button"]');
-
-  function createComponent(props, { mountFn = shallowMount, options = {} } = {}) {
-    wrapper = mountFn(EnvironmentActions, {
+  function createComponent(props, { options = {} } = {}) {
+    wrapper = mount(EnvironmentActions, {
       propsData: { actions: [], ...props },
-      directives: {
-        GlTooltip: createMockDirective(),
-      },
       ...options,
     });
   }
@@ -46,30 +34,26 @@ describe('EnvironmentActions Component', () => {
     return createComponent({ actions: [scheduledJobAction, expiredJobAction] }, opts);
   }
 
+  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItem = (action) => {
-    const buttons = wrapper.findAllComponents(GlDropdownItem);
-    return buttons.filter((button) => button.text().startsWith(action.name)).at(0);
+    const items = findDropdownItems();
+    return items.filter((item) => item.text().startsWith(action.name)).at(0);
   };
 
   afterEach(() => {
-    wrapper.destroy();
     confirmAction.mockReset();
   });
 
   it('should render a dropdown button with 2 icons', () => {
-    createComponent({}, { mountFn: mount });
-    expect(wrapper.findComponent(GlDropdown).findAllComponents(GlIcon).length).toBe(2);
+    createComponent();
+    expect(wrapper.findComponent(GlDisclosureDropdown).findAllComponents(GlIcon).length).toBe(2);
   });
 
   it('should render a dropdown button with aria-label description', () => {
     createComponent();
-    expect(wrapper.findComponent(GlDropdown).attributes('aria-label')).toBe('Deploy to...');
-  });
-
-  it('should render a tooltip', () => {
-    createComponent();
-    const tooltip = getBinding(findEnvironmentActionsButton().element, 'gl-tooltip');
-    expect(tooltip).toBeDefined();
+    expect(wrapper.findComponent(GlDisclosureDropdown).attributes('aria-label')).toBe(
+      'Deploy to...',
+    );
   });
 
   describe('manual actions', () => {
@@ -94,96 +78,31 @@ describe('EnvironmentActions Component', () => {
     });
 
     it('should render a dropdown with the provided list of actions', () => {
-      expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(actions.length);
+      expect(findDropdownItems()).toHaveLength(actions.length);
     });
 
     it("should render a disabled action when it's not playable", () => {
-      const dropdownItems = wrapper.findAllComponents(GlDropdownItem);
+      const dropdownItems = findDropdownItems();
       const lastDropdownItem = dropdownItems.at(dropdownItems.length - 1);
-      expect(lastDropdownItem.attributes('disabled')).toBe('true');
+      expect(lastDropdownItem.find('button').attributes('disabled')).toBeDefined();
     });
   });
 
   describe('scheduled jobs', () => {
-    let emitSpy;
-
-    const clickAndConfirm = async ({ confirm = true } = {}) => {
-      confirmAction.mockResolvedValueOnce(confirm);
-
-      findDropdownItem(scheduledJobAction).vm.$emit('click');
-      await nextTick();
-    };
-
     beforeEach(() => {
-      emitSpy = jest.fn();
-      eventHub.$on('postAction', emitSpy);
       jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
     });
 
-    describe('when postAction event is confirmed', () => {
-      beforeEach(async () => {
-        createComponentWithScheduledJobs({ mountFn: mount });
-        clickAndConfirm();
-      });
-
-      it('emits postAction event', () => {
-        expect(confirmAction).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith({ endpoint: scheduledJobAction.playPath });
-      });
-
-      it('should render a dropdown button with a loading icon', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(true);
-      });
-    });
-
-    describe('when postAction event is denied', () => {
-      beforeEach(async () => {
-        createComponentWithScheduledJobs({ mountFn: mount });
-        clickAndConfirm({ confirm: false });
-      });
-
-      it('does not emit postAction event if confirmation is cancelled', () => {
-        expect(confirmAction).toHaveBeenCalled();
-        expect(emitSpy).not.toHaveBeenCalled();
-      });
-    });
-
     it('displays the remaining time in the dropdown', () => {
+      confirmAction.mockResolvedValueOnce(true);
       createComponentWithScheduledJobs();
       expect(findDropdownItem(scheduledJobAction).text()).toContain('24:00:00');
     });
 
     it('displays 00:00:00 for expired jobs in the dropdown', () => {
+      confirmAction.mockResolvedValueOnce(true);
       createComponentWithScheduledJobs();
       expect(findDropdownItem(expiredJobAction).text()).toContain('00:00:00');
-    });
-  });
-
-  describe('graphql', () => {
-    Vue.use(VueApollo);
-
-    const action = {
-      name: 'bar',
-      play_path: 'https://gitlab.com/play',
-    };
-
-    let mockApollo;
-
-    beforeEach(() => {
-      mockApollo = createMockApollo();
-      createComponent(
-        { actions: [action], graphql: true },
-        { options: { apolloProvider: mockApollo } },
-      );
-    });
-
-    it('should trigger a graphql mutation on click', () => {
-      jest.spyOn(mockApollo.defaultClient, 'mutate');
-      findDropdownItem(action).vm.$emit('click');
-      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
-        mutation: actionMutation,
-        variables: { action },
-      });
     });
   });
 });

@@ -28,9 +28,9 @@ the general user and IP rate limits for requests to deprecated endpoints. You ca
 and IP rate limits already in place, and increase or decrease the rate limits
 for deprecated API endpoints. No other new features are provided by this override.
 
-Prerequisites:
+Prerequisite:
 
-- You must have administrator access for your instance.
+- You must have administrator access to the instance.
 
 To override the general user and IP rate limits for requests to deprecated API endpoints:
 

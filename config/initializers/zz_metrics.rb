@@ -2,19 +2,7 @@
 
 # This file was prefixed with zz_ because we want to load it the last!
 # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/55611
-
-# With prometheus enabled by default this breaks all specs
-# that stubs methods using `any_instance_of` for the models reloaded here.
-#
-# We should deprecate the usage of `any_instance_of` in the future
-# check: https://github.com/rspec/rspec-mocks#settings-mocks-or-stubs-on-any-instance-of-a-class
-#
-# Related issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/33587
-#
-# In development mode, we turn off eager loading when we're running
-# `rails generate migration` because eager loading short-circuits the
-# loading of our custom migration templates.
-if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && defined?(Rails::Generators))
+if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
   require 'pathname'
   require 'connection_pool'
 

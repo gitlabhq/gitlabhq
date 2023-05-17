@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include AfterNextHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
@@ -27,7 +28,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       before do
         project.add_maintainer(user)
         project.add_developer(user2)
-        allow(service).to receive(:execute_hooks)
       end
 
       it 'creates an MR' do
@@ -38,13 +38,18 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
-      it 'executes hooks with default action' do
-        expect(service).to have_received(:execute_hooks).with(merge_request)
+      it 'does not execute hooks' do
+        expect(project).not_to receive(:execute_hooks)
+
+        service.execute
       end
 
       it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do
-        expect { service.execute }
-          .to change { project.open_merge_requests_count }.from(0).to(1)
+        expect do
+          service.execute
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
       it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do
@@ -245,10 +250,13 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
           context "when branch pipeline was created before a merge request pipline has been created" do
             before do
-              create(:ci_pipeline, project: merge_request.source_project,
-                                   sha: merge_request.diff_head_sha,
-                                   ref: merge_request.source_branch,
-                                   tag: false)
+              create(
+                :ci_pipeline,
+                project: merge_request.source_project,
+                sha: merge_request.diff_head_sha,
+                ref: merge_request.source_branch,
+                tag: false
+              )
 
               merge_request
             end
@@ -330,6 +338,19 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             end
             expect(merge_request.valid?).to be false
           end
+        end
+      end
+
+      context 'with a milestone' do
+        let(:milestone) { create(:milestone, project: project) }
+
+        let(:opts) { { title: 'Awesome merge_request', source_branch: 'feature', target_branch: 'master', milestone_id: milestone.id } }
+
+        it 'deletes the cache key for milestone merge request counter' do
+          expect_next(Milestones::MergeRequestsCountService, milestone)
+            .to receive(:delete_cache).and_call_original
+
+          expect(merge_request).to be_persisted
         end
       end
 
@@ -428,19 +449,29 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             }
           end
 
-          it 'invalidates open merge request counter for assignees when merge request is assigned' do
+          before do
             project.add_maintainer(user2)
+          end
 
+          it 'invalidates open merge request counter for assignees when merge request is assigned' do
             described_class.new(project: project, current_user: user, params: opts).execute
 
             expect(user2.assigned_open_merge_requests_count).to eq 1
+          end
+
+          it 'records the assignee assignment event', :sidekiq_inline do
+            mr = described_class.new(project: project, current_user: user, params: opts).execute.reload
+
+            expect(mr.assignment_events).to match([have_attributes(user_id: user2.id, action: 'add')])
           end
         end
 
         context "when issuable feature is private" do
           before do
-            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE,
-                                            merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(
+              issues_access_level: ProjectFeature::PRIVATE,
+              merge_requests_access_level: ProjectFeature::PRIVATE
+            )
           end
 
           levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]

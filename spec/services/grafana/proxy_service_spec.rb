@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Grafana::ProxyService do
+RSpec.describe Grafana::ProxyService, feature_category: :metrics do
   include ReactiveCachingHelpers
 
   let_it_be(:project) { create(:project) }

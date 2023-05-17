@@ -3,7 +3,7 @@ import { range } from 'lodash';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '~/ide/constants';
 import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
@@ -30,7 +30,7 @@ const createMergeRequestChangesCount = (n) =>
 
 const testGetUrlForPath = (path) => `${TEST_HOST}/test/${path}`;
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('IDE store merge request actions', () => {
   let store;
@@ -135,7 +135,7 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).networkError();
       });
 
-      it('flashes message, if error', () => {
+      it('shows an alert, if error', () => {
         return store
           .dispatch('getMergeRequestsForBranch', {
             projectId: TEST_PROJECT,
@@ -519,7 +519,7 @@ describe('IDE store merge request actions', () => {
       );
     });
 
-    it('flashes message, if error', () => {
+    it('shows an alert, if error', () => {
       store.dispatch.mockRejectedValue();
 
       return openMergeRequest(store, mr).catch(() => {

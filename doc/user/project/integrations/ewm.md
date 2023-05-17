@@ -1,12 +1,12 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Engineering Workflow Management (EWM) **(FREE)**
 
-This integration allows you to go from GitLab to EWM work items mentioned in merge request
+The EWM integration allows you to go from GitLab to EWM work items mentioned in merge request
 descriptions and commit messages.
 Each work item reference is automatically converted to a link to the work item.
 

@@ -5,9 +5,9 @@ task 'db:obsolete_ignored_columns' => :environment do
   list = Gitlab::Database::ObsoleteIgnoredColumns.new.execute
 
   if list.empty?
-    puts 'No obsolete `ignored_columns` found.'
+    puts 'No obsolete `ignored_columns` definitions found.'
   else
-    puts 'The following `ignored_columns` are obsolete and can be removed:'
+    puts 'The following `ignored_columns` definitions are obsolete and can be removed:'
 
     list.each do |name, ignored_columns|
       puts "#{name}:"

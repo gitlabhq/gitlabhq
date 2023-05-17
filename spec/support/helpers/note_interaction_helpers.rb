@@ -7,6 +7,6 @@ module NoteInteractionHelpers
     note_element = find_by_scrolling("#note_#{note.id}")
 
     note_element.find('.more-actions-toggle').click
-    note_element.find('.more-actions .dropdown-menu li', match: :first)
+    note_element.find('.more-actions li', match: :first)
   end
 end

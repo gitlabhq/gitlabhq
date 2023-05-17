@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -176,6 +176,8 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/issues/30/metric_images`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv/`, true},
+		{"POST", `/my/project/-/work_items/import_csv`, true},
+		{"POST", `/my/project/-/work_items/import_csv/`, true},
 		{"POST", "/api/v4/projects/2412/packages/helm/api/stable/charts", true},
 		{"POST", "/api/v4/projects/group%2Fproject/packages/helm/api/stable/charts", true},
 		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/helm/api/stable/charts", true},

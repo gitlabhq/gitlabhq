@@ -77,6 +77,35 @@ module Gitlab
           async_index
         end
 
+        def prepare_async_index_from_sql(definition)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
+          return unless async_index_creation_available?
+
+          table_name, index_name = extract_table_and_index_names_from_concurrent_index!(definition)
+
+          if index_name_exists?(table_name, index_name)
+            Gitlab::AppLogger.warn(
+              message: 'Index not prepared because it already exists',
+              table_name: table_name,
+              index_name: index_name)
+
+            return
+          end
+
+          async_index = Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
+            rec.table_name = table_name
+            rec.definition = definition
+          end
+
+          Gitlab::AppLogger.info(
+            message: 'Prepared index for async creation',
+            table_name: async_index.table_name,
+            index_name: async_index.name)
+
+          async_index
+        end
+
         # Prepares an index for asynchronous destruction.
         #
         # Stores the index information in the postgres_async_indexes table to be removed later. The
@@ -110,7 +139,30 @@ module Gitlab
         end
 
         def async_index_creation_available?
-          connection.table_exists?(:postgres_async_indexes)
+          table_exists?(:postgres_async_indexes)
+        end
+
+        private
+
+        delegate :table_exists?, to: :connection, private: true
+
+        def extract_table_and_index_names_from_concurrent_index!(definition)
+          statement = index_statement_from!(definition)
+
+          raise 'Index statement not found!' unless statement
+          raise 'Index must be created concurrently!' unless statement.concurrent
+          raise 'Table does not exist!' unless table_exists?(statement.relation.relname)
+
+          [statement.relation.relname, statement.idxname]
+        end
+
+        # This raises `PgQuery::ParseError` if the given statement
+        # is syntactically incorrect, therefore, validates that the
+        # index definition is correct.
+        def index_statement_from!(definition)
+          parsed_query = PgQuery.parse(definition)
+
+          parsed_query.tree.stmts[0].stmt.index_stmt
         end
       end
     end

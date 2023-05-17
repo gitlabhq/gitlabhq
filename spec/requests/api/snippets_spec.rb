@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_code_management do
+RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, feature_category: :source_code_management do
   include SnippetHelpers
 
   let_it_be(:admin)            { create(:user, :admin) }
@@ -448,7 +448,7 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
     end
 
     context "when admin" do
-      let_it_be(:token) { create(:personal_access_token, user: admin, scopes: [:sudo]) }
+      let_it_be(:token) { create(:personal_access_token, :admin_mode, user: admin, scopes: [:sudo]) }
 
       subject do
         put api("/snippets/#{snippet.id}", personal_access_token: token), params: { visibility: 'private', sudo: user.id }
@@ -499,23 +499,19 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
   end
 
   describe "GET /snippets/:id/user_agent_detail" do
-    let(:snippet) { public_snippet }
+    let(:path) { "/snippets/#{public_snippet.id}/user_agent_detail" }
+
+    let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: public_snippet) }
+
+    it_behaves_like 'GET request permissions for admin mode'
 
     it 'exposes known attributes' do
-      user_agent_detail = create(:user_agent_detail, subject: snippet)
-
-      get api("/snippets/#{snippet.id}/user_agent_detail", admin)
+      get api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
-    end
-
-    it "returns unauthorized for non-admin users" do
-      get api("/snippets/#{snippet.id}/user_agent_detail", user)
-
-      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -37,7 +37,7 @@ If you need to link to the schema directly, it
 is at:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
+https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json
 ```
 
 To see the full list of custom tags covered by the CI/CD schema, check the
@@ -74,7 +74,8 @@ and [templates](examples/index.md#cicd-templates).
 
 ### Documentation for pipeline types
 
-Some pipeline types have their own detailed usage guides that you should read
+Branch pipelines are the most basic type.
+Other pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
 - [Multi-project pipelines](pipelines/downstream_pipelines.md#multi-project-pipelines): Have your pipeline trigger
@@ -269,6 +270,7 @@ This message is shown if the [merge request pipeline](pipelines/merge_request_pi
 [merged results pipeline](pipelines/merged_results_pipelines.md),
 or [merge train pipeline](pipelines/merge_trains.md)
 has failed or been canceled.
+This does not happen when a basic branch pipeline fails.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:
 
@@ -311,7 +313,7 @@ likely to hit the default memory limit.
 To reduce the configuration size, you can:
 
 - Check the length of the expanded CI/CD configuration in the pipeline editor's
-  [merged YAML](pipeline_editor/index.md#view-expanded-configuration) tab. Look for
+  [Full configuration](pipeline_editor/index.md#view-full-configuration) tab. Look for
   duplicated configuration that can be removed or simplified.
 - Move long or repeated `script` sections into standalone scripts in the project.
 - Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some

@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
   end
 
   before do
-    skip_if_multiple_databases_not_setup unless database == :main
+    skip_if_shared_database(database)
 
     stub_const('Gitlab::Database::Migrations::Runner::BASE_RESULT_DIR', base_result_dir)
     allow(ActiveRecord::Migrator).to receive(:new) do |dir, _all_migrations, _schema_migration_class, version_to_migrate|

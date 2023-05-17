@@ -175,7 +175,6 @@ describe('Blob content viewer component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mockAxios.reset();
   });
 
@@ -482,11 +481,6 @@ describe('Blob content viewer component', () => {
         repository: { empty },
       } = projectMock;
 
-      afterEach(() => {
-        delete gon.current_user_id;
-        delete gon.current_username;
-      });
-
       it('renders component', async () => {
         window.gon.current_user_id = 1;
         window.gon.current_username = 'root';
@@ -557,12 +551,12 @@ describe('Blob content viewer component', () => {
 
     it('simple edit redirects to the simple editor', () => {
       findWebIdeLink().vm.$emit('edit', 'simple');
-      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.editBlobPath);
+      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.editBlobPath); // eslint-disable-line import/no-deprecated
     });
 
     it('IDE edit redirects to the IDE editor', () => {
       findWebIdeLink().vm.$emit('edit', 'ide');
-      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.ideEditPath);
+      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.ideEditPath); // eslint-disable-line import/no-deprecated
     });
 
     it.each`

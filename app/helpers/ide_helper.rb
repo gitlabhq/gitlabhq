@@ -1,28 +1,30 @@
 # frozen_string_literal: true
 
 module IdeHelper
-  def ide_data(project:, branch:, path:, merge_request:, fork_info:)
-    {
-      'can-use-new-web-ide' => can_use_new_web_ide?.to_s,
+  # Overridden in EE
+  def ide_data(project:, fork_info:, params:)
+    base_data = {
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
+      'sign-in-path' => new_session_path(current_user),
       'user-preferences-path' => profile_preferences_path,
-      'branch-name' => branch,
-      'file-path' => path,
-      'fork-info' => fork_info&.to_json,
       'editor-font-src-url' => font_url('jetbrains-mono/JetBrainsMono.woff2'),
       'editor-font-family' => 'JetBrains Mono',
-      'editor-font-format' => 'woff2',
-      'merge-request' => merge_request
+      'editor-font-format' => 'woff2'
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
-  end
 
-  def can_use_new_web_ide?
-    Feature.enabled?(:vscode_web_ide, current_user)
+    return base_data unless project
+
+    base_data.merge(
+      'fork-info' => fork_info&.to_json,
+      'branch-name' => params[:branch],
+      'file-path' => params[:path],
+      'merge-request' => params[:merge_request_id]
+    )
   end
 
   def use_new_web_ide?
-    can_use_new_web_ide? && !current_user.use_legacy_web_ide
+    Feature.enabled?(:vscode_web_ide, current_user)
   end
 
   private
@@ -41,7 +43,7 @@ module IdeHelper
       'empty-state-svg-path' => image_path('illustrations/multi_file_editor_empty.svg'),
       'no-changes-state-svg-path' => image_path('illustrations/multi-editor_no_changes_empty.svg'),
       'committed-state-svg-path' => image_path('illustrations/multi-editor_all_changes_committed_empty.svg'),
-      'pipelines-empty-state-svg-path': image_path('illustrations/pipelines_empty.svg'),
+      'pipelines-empty-state-svg-path': image_path('illustrations/empty-state/empty-pipeline-md.svg'),
       'switch-editor-svg-path': image_path('illustrations/rocket-launch-md.svg'),
       'promotion-svg-path': image_path('illustrations/web-ide_promotion.svg'),
       'ci-help-page-path' => help_page_path('ci/quick_start/index'),

@@ -1,0 +1,19 @@
+---
+key_path: gitlab_dedicated
+description: Is the instance a Gitlab Dedicated instance
+product_section: analytics
+product_stage: analytics
+product_group: product_intelligence
+value_type: boolean
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114717
+time_frame: none
+data_source: database
+data_category: optional
+instrumentation_class: GitlabDedicatedMetric
+performance_indicator_type: []
+distribution:
+- ee
+tier:
+- ultimate

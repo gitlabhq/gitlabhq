@@ -25,7 +25,7 @@ You can add files to a repository:
 - When you create a project.
 - After you create a project:
   - By using [the web editor](web_editor.md).
-  - [From the command line](../../../gitlab-basics/command-line-commands.md).
+  - From the command line.
 
 ## Commit changes to a repository
 
@@ -235,9 +235,9 @@ The size can differ slightly from one instance to another due to compression, ho
 Administrators can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md).
 [GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
-## Repository contributor graph
+## Repository contributor statistics
 
-All code contributors are displayed under your project's **Repository > Contributors**.
+All code contributors are displayed under your project's **Repository > Contributor statistics**.
 
 The graph shows the contributor with the most commits to the fewest.
 
@@ -277,15 +277,15 @@ to fetch configuration from a project that is renamed or moved.
 
 ## Related topics
 
-- [GitLab Workflow VS Code extension](vscode.md).
-- To lock files and prevent change conflicts, use [file locking](../file_lock.md).
-- [Repository API](../../../api/repositories.md).
-- [Find files](file_finder.md) in a repository.
-- [Branches](branches/index.md).
-- [Create a directory](web_editor.md#create-a-directory).
-- [Find file history](git_history.md).
-- [Identify changes by line (Git blame)](git_blame.md).
-- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md).
+- [GitLab Workflow VS Code extension](vscode.md)
+- [Lock files and prevent change conflicts](../file_lock.md)
+- [Repository API](../../../api/repositories.md)
+- [Find files](file_finder.md)
+- [Branches](branches/index.md)
+- [Create a directory](web_editor.md#create-a-directory)
+- [Find file history](git_history.md)
+- [Identify changes by line (Git blame)](git_blame.md)
+- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md)
 
 ## Troubleshooting
 

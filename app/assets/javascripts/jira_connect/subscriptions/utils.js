@@ -1,5 +1,4 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import { objectToQuery } from '~/lib/utils/url_utility';
 import { ALERT_LOCALSTORAGE_KEY, BASE_URL_LOCALSTORAGE_KEY } from './constants';
 
 const isFunction = (fn) => typeof fn === 'function';
@@ -76,18 +75,6 @@ export const getJwt = () => {
   });
 };
 
-export const getLocation = () => {
-  return new Promise((resolve) => {
-    if (isFunction(AP?.getLocation)) {
-      AP.getLocation((location) => {
-        resolve(location);
-      });
-    } else {
-      resolve();
-    }
-  });
-};
-
 export const reloadPage = () => {
   if (isFunction(AP?.navigator?.reload)) {
     AP.navigator.reload();
@@ -100,18 +87,4 @@ export const sizeToParent = () => {
   if (isFunction(AP?.sizeToParent)) {
     AP.sizeToParent();
   }
-};
-
-export const getGitlabSignInURL = async (signInURL) => {
-  const location = await getLocation();
-
-  if (location) {
-    const queryParams = {
-      return_to: location,
-    };
-
-    return `${signInURL}?${objectToQuery(queryParams)}`;
-  }
-
-  return signInURL;
 };

@@ -8,21 +8,18 @@
       = _('Only project members can comment.')
 
 .md-area.position-relative
-  .md-header
-    = gl_tabs_nav({ class: 'clearfix nav-links'}) do
-      %li.md-header-tab.active
-        %button.js-md-write-button{ class: 'gl-py-3!' }
-          = _("Write")
-      %li.md-header-tab
-        %button.js-md-preview-button{ class: 'gl-py-3!' }
-          = _("Preview")
-
-      %li.md-header-toolbar.active.gl-py-2
-        = render 'shared/blob/markdown_buttons', show_fullscreen_button: true
+  .md-header.gl-bg-gray-50.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
+    .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-justify-content-space-between
+      .md-header-toolbar.gl-display-flex.gl-py-2.gl-flex-wrap
+        = render 'shared/blob/markdown_buttons'
+      .switch-preview.gl-py-2.gl-display-flex.gl-align-items-center.gl-ml-auto
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'js-md-preview-button', value: 'preview' }) do
+          = _('Preview')
+        = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, size: :small, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter gl-ml-2', data: { container: 'body' } })
 
   .md-write-holder
     = yield
-  .md.md-preview-holder.js-md-preview.hide{ data: { url: url } }
+  .md.md-preview-holder.gl-px-5.js-md-preview.hide{ data: { url: url } }
   .referenced-commands.hide
 
   - if referenced_users

@@ -17,10 +17,6 @@ describe('Demo job pill', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the jobName', () => {
     expect(wrapper.text()).toContain(jobName);
   });

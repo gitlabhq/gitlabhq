@@ -1,12 +1,12 @@
 ---
 type: reference
 description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages integration with Let's Encrypt **(FREE)**
+# GitLab Pages Let's Encrypt certificates **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
 
@@ -21,7 +21,7 @@ open source Certificate Authority.
 WARNING:
 This feature covers only certificates for **custom domains**, not the wildcard certificate required to run [Pages daemon](../../../../administration/pages/index.md) **(FREE SELF)**. Wildcard certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
 
-## Requirements
+## Prerequisites
 
 Before you can enable automatic provisioning of an SSL certificate for your domain, make sure you have:
 

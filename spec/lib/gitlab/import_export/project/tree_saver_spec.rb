@@ -2,35 +2,28 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
+RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_category: :importers do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { setup_project }
 
-  shared_examples 'saves project tree successfully' do |ndjson_enabled|
+  shared_examples 'saves project tree successfully' do
     include ImportExport::CommonUtil
 
-    subject { get_json(full_path, exportable_path, relation_name, ndjson_enabled) }
+    subject { get_json(full_path, exportable_path, relation_name) }
 
     describe 'saves project tree attributes' do
       let_it_be(:shared) { project.import_export_shared }
 
       let(:relation_name) { :projects }
 
-      let_it_be(:full_path) do
-        if ndjson_enabled
-          File.join(shared.export_path, 'tree')
-        else
-          File.join(shared.export_path, Gitlab::ImportExport.project_filename)
-        end
-      end
+      let_it_be(:full_path) { File.join(shared.export_path, 'tree') }
 
       before_all do
         RSpec::Mocks.with_temporary_scope do
           stub_all_feature_flags
-          stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
 
           project.add_maintainer(user)
 
@@ -223,20 +216,29 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
           expect(subject.dig(0, 'stages')).not_to be_empty
         end
 
-        it 'has pipeline statuses' do
-          expect(subject.dig(0, 'stages', 0, 'statuses')).not_to be_empty
-        end
-
         it 'has pipeline builds' do
-          builds_count = subject.dig(0, 'stages', 0, 'statuses')
-                           .count { |hash| hash['type'] == 'Ci::Build' }
+          count = subject.dig(0, 'stages', 0, 'builds').count
 
-          expect(builds_count).to eq(1)
+          expect(count).to eq(1)
         end
 
-        it 'has ci pipeline notes' do
-          expect(subject.first['notes']).not_to be_empty
+        it 'has pipeline generic_commit_statuses' do
+          count = subject.dig(0, 'stages', 0, 'generic_commit_statuses').count
+
+          expect(count).to eq(1)
         end
+
+        it 'has pipeline bridges' do
+          count = subject.dig(0, 'stages', 0, 'bridges').count
+
+          expect(count).to eq(1)
+        end
+      end
+
+      context 'with commit_notes' do
+        let(:relation_name) { :commit_notes }
+
+        it { is_expected.not_to be_empty }
       end
 
       context 'with labels' do
@@ -291,13 +293,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
       let_it_be(:group) { create(:group) }
 
       let(:project) { setup_project }
-      let(:full_path) do
-        if ndjson_enabled
-          File.join(shared.export_path, 'tree')
-        else
-          File.join(shared.export_path, Gitlab::ImportExport.project_filename)
-        end
-      end
+      let(:full_path) { File.join(shared.export_path, 'tree') }
 
       let(:shared) { project.import_export_shared }
       let(:params) { {} }
@@ -305,7 +301,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
       let(:project_tree_saver ) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
 
       before do
-        stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
         project.add_maintainer(user)
 
         FileUtils.rm_rf(export_path)
@@ -416,13 +411,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
     end
   end
 
-  context 'with JSON' do
-    it_behaves_like "saves project tree successfully", false
-  end
-
-  context 'with NDJSON' do
-    it_behaves_like "saves project tree successfully", true
-  end
+  it_behaves_like "saves project tree successfully"
 
   context 'when streaming has to retry', :aggregate_failures do
     let(:shared) { double('shared', export_path: exportable_path) }
@@ -468,6 +457,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
     end
   end
 
+  # rubocop: disable Metrics/AbcSize
   def setup_project
     release = create(:release)
 
@@ -496,6 +486,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update!(project: project)
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
+    create(:generic_commit_status, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
+    create(:ci_bridge, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
 
     create(:milestone, project: project)
     discussion_note = create(:discussion_note, noteable: issue, project: project)
@@ -528,4 +520,5 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
 
     project
   end
+  # rubocop: enable Metrics/AbcSize
 end

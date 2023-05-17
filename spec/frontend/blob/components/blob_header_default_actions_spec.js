@@ -34,10 +34,6 @@ describe('Blob Header Default Actions', () => {
     buttons = wrapper.findAllComponents(GlButton);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders', () => {
     const findCopyButton = () => wrapper.findByTestId('copyContentsButton');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
@@ -49,7 +45,7 @@ describe('Blob Header Default Actions', () => {
     it('exactly 3 buttons with predefined actions', () => {
       expect(buttons.length).toBe(3);
       [BTN_COPY_CONTENTS_TITLE, BTN_RAW_TITLE, BTN_DOWNLOAD_TITLE].forEach((title, i) => {
-        expect(buttons.at(i).vm.$el.title).toBe(title);
+        expect(buttons.at(i).attributes('title')).toBe(title);
       });
     });
 
@@ -71,7 +67,7 @@ describe('Blob Header Default Actions', () => {
       });
       buttons = wrapper.findAllComponents(GlButton);
 
-      expect(buttons.at(0).attributes('disabled')).toBe('true');
+      expect(buttons.at(0).attributes('disabled')).toBeDefined();
     });
 
     it('does not render the copy button if a rendering error is set', () => {
@@ -91,10 +87,9 @@ describe('Blob Header Default Actions', () => {
 
     it('emits a copy event if overrideCopy is set to true', () => {
       createComponent({ overrideCopy: true });
-      jest.spyOn(wrapper.vm, '$emit');
       findCopyButton().vm.$emit('click');
 
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('copy');
+      expect(wrapper.emitted('copy')).toHaveLength(1);
     });
   });
 

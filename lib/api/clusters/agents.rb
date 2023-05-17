@@ -7,7 +7,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :kubernetes_management
+      feature_category :deployment_management
       urgency :low
 
       params do
@@ -23,7 +23,7 @@ module API
           use :pagination
         end
         get ':id/cluster_agents' do
-          not_found!('ClusterAgents') unless can?(current_user, :read_cluster, user_project)
+          not_found!('ClusterAgents') unless can?(current_user, :read_cluster_agent, user_project)
 
           agents = ::Clusters::AgentsFinder.new(user_project, current_user).execute
 

@@ -18,6 +18,8 @@ export const initWorkItemsRoot = () => {
     hasIterationsFeature,
     hasOkrsFeature,
     hasIssuableHealthStatusFeature,
+    newCommentTemplatePath,
+    reportAbusePath,
   } = el.dataset;
 
   return new Vue({
@@ -27,7 +29,6 @@ export const initWorkItemsRoot = () => {
     apolloProvider,
     provide: {
       fullPath,
-      projectPath: fullPath,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       issuesListPath,
@@ -35,6 +36,8 @@ export const initWorkItemsRoot = () => {
       signInPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      newCommentTemplatePath,
+      reportAbusePath,
     },
     render(createElement) {
       return createElement(App);

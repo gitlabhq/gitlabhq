@@ -567,8 +567,8 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
       it 'does not throttle the requests' do
         (1 + requests_per_period).times do
           post registry_endpoint,
-                params: { events: events }.to_json,
-                headers: registry_headers.merge('Authorization' => secret_token)
+            params: { events: events }.to_json,
+            headers: registry_headers.merge('Authorization' => secret_token)
 
           expect(response).to have_gitlab_http_status(:ok)
         end

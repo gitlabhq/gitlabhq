@@ -1,4 +1,4 @@
-- runner_name = "##{@runner.id} (#{@runner.short_sha})"
+- runner_name = runner_short_name(@runner)
 - breadcrumb_title _('Edit')
 - page_title _('Edit'), runner_name
 - add_to_breadcrumbs _('Runners'), admin_runners_path
@@ -23,7 +23,7 @@
               = render Pajamas::AlertComponent.new(variant: :danger,
                 dismissible: false,
                 title: project.full_name) do |c|
-                = c.actions do
+                - c.with_actions do
                   = render Pajamas::ButtonComponent.new(variant: :confirm, href: admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete) do
                     = _('Disable')
 

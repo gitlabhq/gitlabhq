@@ -1,0 +1,12 @@
+---
+table_name: geo_job_artifact_deleted_events
+classes:
+- Geo::JobArtifactDeletedEvent
+feature_categories:
+- geo_replication
+description:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3935
+milestone: '10.4'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85219
+removed_in_milestone: '15.0'

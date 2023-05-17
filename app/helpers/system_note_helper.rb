@@ -2,13 +2,13 @@
 
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
-    'approved' => 'approval',
+    'approved' => 'check',
     'unapproved' => 'unapproval',
     'cherry_pick' => 'cherry-pick-commit',
     'commit' => 'commit',
     'description' => 'pencil',
-    'merge' => 'git-merge',
-    'merged' => 'git-merge',
+    'merged' => 'merge',
+    'merge' => 'merge',
     'opened' => 'issues',
     'closed' => 'issue-close',
     'time_tracking' => 'timer',
@@ -42,8 +42,6 @@ module SystemNoteHelper
     'severity' => 'information-o',
     'cloned' => 'documents',
     'issue_type' => 'pencil',
-    'attention_requested' => 'user',
-    'attention_request_removed' => 'user',
     'contact' => 'users',
     'timeline_event' => 'clock',
     'relate_to_child' => 'link',
@@ -53,7 +51,13 @@ module SystemNoteHelper
   }.freeze
 
   def system_note_icon_name(note)
-    ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
+    if note.system_note_metadata&.action == 'closed' && note.for_merge_request?
+      'merge-request-close'
+    elsif note.system_note_metadata&.action == 'merge' && note.for_merge_request?
+      'mr-system-note-empty'
+    else
+      ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
+    end
   end
 
   def icon_for_system_note(note)

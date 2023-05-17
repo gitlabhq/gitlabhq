@@ -5,7 +5,6 @@ description: Count of GitLab Managed Terraform States
 product_section: ops
 product_stage: configure
 product_group: configure
-product_category: infrastructure_as_code
 value_type: number
 status: active
 time_frame: all

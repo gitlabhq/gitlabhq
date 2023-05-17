@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Maven::Metadata::CreateVersionsXmlService do
+RSpec.describe ::Packages::Maven::Metadata::CreateVersionsXmlService, feature_category: :package_registry do
   let_it_be(:package) { create(:maven_package, version: nil) }
 
   let(:versions_in_database) { %w[1.3 2.0-SNAPSHOT 1.6 1.4 1.5-SNAPSHOT] }

@@ -2,7 +2,7 @@
 import { GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { getWorkItemQuery } from '../utils';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 export default {
   components: {
@@ -10,22 +10,9 @@ export default {
     GlSprintf,
     TimeAgoTooltip,
   },
+  inject: ['fullPath'],
   props: {
-    fetchByIid: {
-      type: Boolean,
-      required: true,
-    },
-    workItemId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    fullPath: {
       type: String,
       required: false,
       default: null,
@@ -44,31 +31,21 @@ export default {
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
-    queryVariables() {
-      return this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid: this.workItemIid,
-          }
-        : {
-            id: this.workItemId,
-          };
-    },
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
-        return this.queryVariables;
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
       },
       skip() {
-        return !this.workItemId && !this.workItemIid;
+        return !this.workItemIid;
       },
       update(data) {
-        const workItem = this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
-        return workItem ?? {};
+        return data.workspace.workItems.nodes[0] ?? {};
       },
     },
   },

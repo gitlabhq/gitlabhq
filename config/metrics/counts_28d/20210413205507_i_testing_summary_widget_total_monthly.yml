@@ -4,12 +4,13 @@ key_path: redis_hll_counters.testing.i_testing_summary_widget_total_monthly
 description: Unique users that expand the test summary merge request widget by month
 product_section: ops
 product_stage: verify
-product_group: pipeline_insights
-product_category: testing
+product_group: pipeline_execution
 value_type: number
-status: active
+status: removed
 milestone: "13.11"
+milestone_removed: "15.11"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59316
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114018
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

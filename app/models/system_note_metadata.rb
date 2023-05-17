@@ -26,8 +26,7 @@ class SystemNoteMetadata < ApplicationRecord
     title time_tracking branch milestone discussion task moved cloned
     opened closed merged duplicate locked unlocked outdated reviewer
     tag due_date start_date_or_due_date pinned_embed cherry_pick health_status approved unapproved
-    status alert_issue_added relate unrelate new_alert_added severity
-    attention_requested attention_request_removed contact timeline_event
+    status alert_issue_added relate unrelate new_alert_added severity contact timeline_event
     issue_type relate_to_child unrelate_from_child relate_to_parent unrelate_from_parent
   ].freeze
 

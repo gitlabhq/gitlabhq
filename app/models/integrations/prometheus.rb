@@ -30,12 +30,9 @@ module Integrations
       help: -> { s_('PrometheusService|The contents of the credentials.json file of your service account.') },
       required: false
 
-    # We need to allow the self-monitoring project to connect to the internal
-    # Prometheus instance.
     # Since the internal Prometheus instance is usually a localhost URL, we need
     # to allow localhost URLs when the following conditions are true:
-    # 1. project is the self-monitoring project.
-    # 2. api_url is the internal Prometheus URL.
+    # 1. api_url is the internal Prometheus URL.
     with_options presence: true do
       validates :api_url, public_url: true, if: ->(object) { object.manual_configuration? && !object.allow_local_api_url? }
       validates :api_url, url: true, if: ->(object) { object.manual_configuration? && object.allow_local_api_url? }
@@ -99,8 +96,7 @@ module Integrations
     end
 
     def allow_local_api_url?
-      allow_local_requests_from_web_hooks_and_services? ||
-      (self_monitoring_project? && internal_prometheus_url?)
+      allow_local_requests_from_web_hooks_and_services? || internal_prometheus_url?
     end
 
     def configured?
@@ -126,10 +122,6 @@ module Integrations
     private
 
     delegate :allow_local_requests_from_web_hooks_and_services?, to: :current_settings, private: true
-
-    def self_monitoring_project?
-      project && project.id == current_settings.self_monitoring_project_id
-    end
 
     def internal_prometheus_url?
       api_url.present? && api_url == ::Gitlab::Prometheus::Internal.uri

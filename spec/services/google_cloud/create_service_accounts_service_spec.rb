@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::CreateServiceAccountsService do
+RSpec.describe GoogleCloud::CreateServiceAccountsService, feature_category: :deployment_management do
   describe '#execute' do
     before do
       mock_google_oauth2_creds = Struct.new(:app_id, :app_secret)

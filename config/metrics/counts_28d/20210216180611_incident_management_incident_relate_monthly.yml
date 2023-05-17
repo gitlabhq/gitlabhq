@@ -6,7 +6,6 @@ description: Count of unique users adding issues per month that are related to a
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category:
 value_type: number
 status: active
 time_frame: 28d

@@ -8,10 +8,6 @@ describe('Issue type info popover', () => {
     wrapper = shallowMount(TypePopover);
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders', () => {
     createComponent();
 

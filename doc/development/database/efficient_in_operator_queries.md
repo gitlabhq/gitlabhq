@@ -433,7 +433,7 @@ construct the following table:
 For the `issue_types` query we can construct a value list without querying a table:
 
 ```ruby
-value_list = Arel::Nodes::ValuesList.new([[Issue.issue_types[:incident]],[Issue.issue_types[:test_case]]])
+value_list = Arel::Nodes::ValuesList.new([[WorkItems::Type.base_types[:incident]],[WorkItems::Type.base_types[:test_case]]])
 issue_type_values = Arel::Nodes::Grouping.new(value_list).as('issue_type_values (value)').to_sql
 
 array_scope = Group

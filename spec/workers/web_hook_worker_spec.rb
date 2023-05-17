@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe WebHookWorker do
+RSpec.describe WebHookWorker, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project_hook) { create(:project_hook) }
@@ -28,8 +28,6 @@ RSpec.describe WebHookWorker do
         .to change { Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid }.to(uuid)
     end
 
-    it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+    it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
   end
 end

@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`RunnerDockerInstructions renders contents 1`] = `"To install Runner in a container follow the instructions described in the GitLab documentation View installation instructions Close"`;

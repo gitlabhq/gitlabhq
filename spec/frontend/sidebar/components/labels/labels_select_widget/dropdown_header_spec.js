@@ -28,10 +28,6 @@ describe('DropdownHeader', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findGoBackButton = () => wrapper.findByTestId('go-back-button');
   const findDropdownTitle = () => wrapper.findByTestId('dropdown-header-title');
@@ -49,7 +45,7 @@ describe('DropdownHeader', () => {
       expect(findGoBackButton().exists()).toBe(true);
     });
 
-    it('does not render search input field', async () => {
+    it('does not render search input field', () => {
       expect(findSearchInput().exists()).toBe(false);
     });
   });
@@ -85,7 +81,7 @@ describe('DropdownHeader', () => {
       expect(findSearchInput().exists()).toBe(true);
     });
 
-    it('does not render title', async () => {
+    it('does not render title', () => {
       expect(findDropdownTitle().exists()).toBe(false);
     });
   });

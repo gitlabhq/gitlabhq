@@ -43,8 +43,7 @@ RSpec.describe GroupChildEntity do
 
   describe 'for a project' do
     let(:object) do
-      create(:project, :with_avatar,
-             description: 'Awesomeness')
+      create(:project, :with_avatar, description: 'Awesomeness')
     end
 
     before do
@@ -73,8 +72,7 @@ RSpec.describe GroupChildEntity do
   describe 'for a group' do
     let(:description) { 'Awesomeness' }
     let(:object) do
-      create(:group, :nested, :with_avatar,
-             description: description)
+      create(:group, :nested, :with_avatar, description: description)
     end
 
     before do
@@ -171,8 +169,7 @@ RSpec.describe GroupChildEntity do
 
   describe 'for a project with external authorization enabled' do
     let(:object) do
-      create(:project, :with_avatar,
-             description: 'Awesomeness')
+      create(:project, :with_avatar, description: 'Awesomeness')
     end
 
     before do

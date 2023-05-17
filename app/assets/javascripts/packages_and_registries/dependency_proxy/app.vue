@@ -1,6 +1,7 @@
 <script>
 import {
   GlAlert,
+  GlButton,
   GlDropdown,
   GlDropdownItem,
   GlEmptyState,
@@ -8,8 +9,8 @@ import {
   GlFormInputGroup,
   GlModal,
   GlModalDirective,
-  GlSkeletonLoader,
   GlSprintf,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { __, s__, n__, sprintf } from '~/locale';
 import Api from '~/api';
@@ -24,13 +25,13 @@ import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency
 export default {
   components: {
     GlAlert,
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlEmptyState,
     GlFormGroup,
     GlFormInputGroup,
     GlModal,
-    GlSkeletonLoader,
     GlSprintf,
     ClipboardButton,
     TitleArea,
@@ -38,8 +39,9 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
-  inject: ['groupPath', 'groupId', 'noManifestsIllustration', 'canClearCache'],
+  inject: ['groupPath', 'groupId', 'noManifestsIllustration', 'canClearCache', 'settingsPath'],
   i18n: {
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
@@ -50,12 +52,13 @@ export default {
       'DependencyProxy|All items in the cache are scheduled for removal.',
     ),
     clearCache: s__('DependencyProxy|Clear cache'),
+    settingsText: s__('DependencyProxy|Configure in settings'),
   },
   confirmClearCacheModal: 'confirm-clear-cache-modal',
   modalButtons: {
     primary: {
       text: s__('DependencyProxy|Clear cache'),
-      attributes: [{ variant: 'danger' }],
+      attributes: { variant: 'danger' },
     },
     secondary: {
       text: __('Cancel'),
@@ -114,10 +117,13 @@ export default {
       );
     },
     showDeleteDropdown() {
-      return this.group.dependencyProxyManifests?.nodes.length > 0 && this.canClearCache;
+      return this.manifests?.length > 0 && this.canClearCache;
+    },
+    dependencyProxyImagePrefix() {
+      return this.group.dependencyProxyImagePrefix;
     },
     showDependencyProxyImagePrefix() {
-      return this.group.dependencyProxyImagePrefix?.length > 0;
+      return this.dependencyProxyImagePrefix?.length > 0;
     },
   },
   methods: {
@@ -167,8 +173,9 @@ export default {
       {{ deleteCacheAlertMessage }}
     </gl-alert>
     <title-area :title="$options.i18n.pageTitle">
-      <template v-if="showDeleteDropdown" #right-actions>
+      <template #right-actions>
         <gl-dropdown
+          v-if="showDeleteDropdown"
           icon="ellipsis_v"
           text="More actions"
           :text-sr-only="true"
@@ -181,6 +188,14 @@ export default {
             >{{ $options.i18n.clearCache }}</gl-dropdown-item
           >
         </gl-dropdown>
+        <gl-button
+          v-if="canClearCache"
+          v-gl-tooltip="$options.i18n.settingsText"
+          icon="settings"
+          data-testid="settings-link"
+          :href="settingsPath"
+          :aria-label="$options.i18n.settingsText"
+        />
       </template>
     </title-area>
 
@@ -208,23 +223,21 @@ export default {
       </template>
     </gl-form-group>
 
-    <gl-skeleton-loader v-if="$apollo.queries.group.loading" />
+    <manifests-list
+      v-if="manifests && manifests.length"
+      :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
+      :loading="$apollo.queries.group.loading"
+      :manifests="manifests"
+      :pagination="pageInfo"
+      @prev-page="fetchPreviousPage"
+      @next-page="fetchNextPage"
+    />
 
-    <div v-else data-testid="main-area">
-      <manifests-list
-        v-if="manifests && manifests.length"
-        :manifests="manifests"
-        :pagination="pageInfo"
-        @prev-page="fetchPreviousPage"
-        @next-page="fetchNextPage"
-      />
-
-      <gl-empty-state
-        v-else
-        :svg-path="noManifestsIllustration"
-        :title="$options.i18n.noManifestTitle"
-      />
-    </div>
+    <gl-empty-state
+      v-else
+      :svg-path="noManifestsIllustration"
+      :title="$options.i18n.noManifestTitle"
+    />
 
     <gl-modal
       :modal-id="$options.confirmClearCacheModal"

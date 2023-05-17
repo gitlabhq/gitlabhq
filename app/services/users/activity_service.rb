@@ -41,8 +41,6 @@ module Users
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event('unique_active_user', values: user.id)
 
-      return unless Feature.enabled?(:route_hll_to_snowplow_phase3)
-
       Gitlab::Tracking.event(
         'Users::ActivityService',
         'perform_action',

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMMIT_REF=${1:-$CI_COMMIT_REF_SLUG}
+COMMIT_REF=${1:-$CI_COMMIT_SHA}
 RSPEC_ARGS=$2
 
 if [ -z "${COMMIT_REF}" ]; then
@@ -36,5 +36,4 @@ cd qa
 bundle install --jobs=$(nproc) --retry=3 --quiet
 
 # Run the tests
-bundle exec rake "knapsack:download[test]"
-bundle exec bin/qa Test::Instance::All http://gdk.test:3000 -- $RSPEC_ARGS || true
+bundle exec bin/qa Test::Instance::All http://gdk.test:3000 -- $RSPEC_ARGS

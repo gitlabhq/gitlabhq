@@ -1,7 +1,6 @@
 <script>
 import {
   GlAlert,
-  GlButton,
   GlDropdown,
   GlDropdownItem,
   GlEmptyState,
@@ -15,7 +14,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__, __, n__, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -25,7 +24,7 @@ import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { STATUSES } from '../../constants';
@@ -50,7 +49,6 @@ const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 export default {
   components: {
     GlAlert,
-    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlEmptyState,
@@ -106,7 +104,7 @@ export default {
       reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
-      helpUrl: helpPagePath('ee/user/group/import', {
+      helpUrl: helpPagePath('user/group/import/index', {
         anchor: 'visibility-rules',
       }),
     };
@@ -120,7 +118,7 @@ export default {
       },
     },
     availableNamespaces: {
-      query: searchNamespacesWhereUserCanCreateProjectsQuery,
+      query: searchNamespacesWhereUserCanImportProjectsQuery,
       update(data) {
         return data.currentUser.groups.nodes;
       },
@@ -165,10 +163,6 @@ export default {
   ],
 
   computed: {
-    isProjectsImportEnabled() {
-      return Boolean(this.glFeatures.bulkImportProjects);
-    },
-
     groups() {
       return this.bulkImportSourceGroups?.nodes ?? [];
     },
@@ -707,11 +701,11 @@ export default {
             </gl-sprintf>
           </span>
           <gl-dropdown
-            v-if="isProjectsImportEnabled"
             :text="s__('BulkImport|Import with projects')"
             :disabled="!hasSelectedGroups"
             variant="confirm"
             category="primary"
+            data-testid="import-selected-groups-dropdown"
             class="gl-ml-4"
             split
             @click="importSelectedGroups({ migrateProjects: true })"
@@ -720,15 +714,6 @@ export default {
               {{ s__('BulkImport|Import without projects') }}
             </gl-dropdown-item>
           </gl-dropdown>
-          <gl-button
-            v-else
-            category="primary"
-            variant="confirm"
-            class="gl-ml-4"
-            :disabled="!hasSelectedGroups"
-            @click="importSelectedGroups"
-            >{{ s__('BulkImport|Import selected') }}</gl-button
-          >
           <span class="gl-ml-3">
             <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
             <gl-sprintf
@@ -804,7 +789,6 @@ export default {
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
-              :is-projects-import-enabled="isProjectsImportEnabled"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"

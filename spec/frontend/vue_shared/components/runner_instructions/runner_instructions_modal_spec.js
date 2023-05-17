@@ -1,10 +1,10 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { shallowMount } from '@vue/test-utils';
+import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
@@ -14,6 +14,8 @@ import RunnerKubernetesInstructions from '~/vue_shared/components/runner_instruc
 import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
 
 import { mockRunnerPlatforms } from './mock_data';
+
+const mockPlatformList = mockRunnerPlatforms.data.runnerPlatforms.nodes;
 
 Vue.use(VueApollo);
 
@@ -41,28 +43,36 @@ describe('RunnerInstructionsModal component', () => {
   let runnerPlatformsHandler;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlert = (variant = 'danger') => {
+    const { wrappers } = wrapper
+      .findAllComponents(GlAlert)
+      .filter((w) => w.props('variant') === variant);
+    return wrappers[0] || new ErrorWrapper();
+  };
   const findModal = () => wrapper.findComponent(GlModal);
   const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findRunnerCliInstructions = () => wrapper.findComponent(RunnerCliInstructions);
 
-  const createComponent = ({ props, shown = true, ...options } = {}) => {
+  const createComponent = ({
+    props,
+    shown = true,
+    mountFn = shallowMountExtended,
+    ...options
+  } = {}) => {
     const requestHandlers = [[getRunnerPlatformsQuery, runnerPlatformsHandler]];
 
     fakeApollo = createMockApollo(requestHandlers);
 
-    wrapper = extendedWrapper(
-      shallowMount(RunnerInstructionsModal, {
-        propsData: {
-          modalId: 'runner-instructions-modal',
-          registrationToken: 'MY_TOKEN',
-          ...props,
-        },
-        apolloProvider: fakeApollo,
-        ...options,
-      }),
-    );
+    wrapper = mountFn(RunnerInstructionsModal, {
+      propsData: {
+        modalId: 'runner-instructions-modal',
+        registrationToken: 'MY_TOKEN',
+        ...props,
+      },
+      apolloProvider: fakeApollo,
+      ...options,
+    });
 
     // trigger open modal
     if (shown) {
@@ -74,18 +84,18 @@ describe('RunnerInstructionsModal component', () => {
     runnerPlatformsHandler = jest.fn().mockResolvedValue(mockRunnerPlatforms);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the modal is shown', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
     });
 
-    it('should not show alert', async () => {
+    it('should not show alert', () => {
       expect(findAlert().exists()).toBe(false);
+    });
+
+    it('should not show deprecation alert', () => {
+      expect(findAlert('warning').exists()).toBe(false);
     });
 
     it('should contain a number of platforms buttons', () => {
@@ -93,15 +103,28 @@ describe('RunnerInstructionsModal component', () => {
 
       const buttons = findPlatformButtons();
 
-      expect(buttons).toHaveLength(mockRunnerPlatforms.data.runnerPlatforms.nodes.length);
+      expect(buttons).toHaveLength(mockPlatformList.length);
     });
 
     it('should display architecture options', () => {
       const { architectures } = findRunnerCliInstructions().props('platform');
 
-      expect(architectures).toEqual(
-        mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes,
-      );
+      expect(architectures).toEqual(mockPlatformList[0].architectures.nodes);
+    });
+
+    describe.each`
+      glFeatures                                    | deprecationAlertExists
+      ${{}}                                         | ${false}
+      ${{ createRunnerWorkflowForAdmin: true }}     | ${true}
+      ${{ createRunnerWorkflowForNamespace: true }} | ${true}
+    `('with features $glFeatures', ({ glFeatures, deprecationAlertExists }) => {
+      beforeEach(() => {
+        createComponent({ provide: { glFeatures } });
+      });
+
+      it(`alert is ${deprecationAlertExists ? 'shown' : 'not shown'}`, () => {
+        expect(findAlert('warning').exists()).toBe(deprecationAlertExists);
+      });
     });
 
     describe('when the modal resizes', () => {
@@ -118,6 +141,14 @@ describe('RunnerInstructionsModal component', () => {
 
         expect(findPlatformButtonGroup().props('vertical')).toBeUndefined();
       });
+    });
+
+    it('should focus platform button', async () => {
+      createComponent({ shown: true, mountFn: mountExtended, attachTo: document.body });
+      wrapper.vm.show();
+      await waitForPromises();
+
+      expect(document.activeElement.textContent.trim()).toBe(mockPlatformList[0].humanReadableName);
     });
   });
 
@@ -206,7 +237,7 @@ describe('RunnerInstructionsModal component', () => {
       expect(findAlert().exists()).toBe(true);
     });
 
-    it('should show alert when instructions cannot be loaded', async () => {
+    it('should show an alert when instructions cannot be loaded', async () => {
       createComponent();
       await waitForPromises();
 

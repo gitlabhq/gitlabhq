@@ -39,13 +39,6 @@ describe('Metrics upload item', () => {
     );
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findImageLink = () => wrapper.findComponent(GlLink);
   const findLabelTextSpan = () => wrapper.find('[data-testid="metric-image-label-span"]');
   const findCollapseButton = () => wrapper.find('[data-testid="collapse-button"]');

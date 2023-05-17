@@ -158,6 +158,17 @@ To delete a task:
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
 
+## Reorder tasks
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+By default, tasks are ordered by creation date.
+To reorder them, drag them around.
+
 ## Assign users to a task
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
@@ -165,7 +176,7 @@ To delete a task:
 To show who is responsible for a task, you can assign users to it.
 
 Users on GitLab Free can assign one user per task.
-Users on GitLab Premium and higher can assign multiple users to a single task.
+Users on GitLab Premium and Ultimate can assign multiple users to a single task.
 See also [multiple assignees for issues](project/issues/multiple_assignees_for_issues.md).
 
 Prerequisites:
@@ -289,3 +300,19 @@ To add a task to an iteration:
    The task window opens.
 1. Next to **Iteration**, select **Add to iteration**.
 1. From the dropdown list, select the iteration to be associated with the task.
+
+## View task system notes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
+> - Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
+> - Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
+
+You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
+You can always change the sorting order to **Newest first**, which is remembered across sessions.
+You can also filter activity by **Comments only** and **History only** in addition to the default **All activity** which is remembered across sessions.
+
+## Comments and threads
+
+You can add [comments](discussions/index.md) and reply to threads in tasks.

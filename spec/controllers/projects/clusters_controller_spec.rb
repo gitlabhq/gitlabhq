@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ClustersController, feature_category: :kubernetes_management do
+RSpec.describe Projects::ClustersController, feature_category: :deployment_management do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers
@@ -123,7 +123,7 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
         {
           id: proxyable.id.to_s,
           namespace_id: project.namespace.full_path,
-          project_id: project.name
+          project_id: project.path
         }
       end
 
@@ -171,7 +171,7 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
       {
         id: cluster.id,
         namespace_id: project.namespace.full_path,
-        project_id: project.name
+        project_id: project.path
       }
     end
   end
@@ -358,12 +358,6 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
       end
-
-      it 'invokes schedule_status_update on each application' do
-        expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
-
-        go
-      end
     end
 
     describe 'security' do
@@ -403,20 +397,37 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
     end
 
     describe 'functionality' do
-      render_views
+      context 'when remove_monitor_metrics FF is disabled' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: false)
+        end
 
-      it "renders view" do
-        go
+        render_views
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:cluster)).to eq(cluster)
+        it "renders view" do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:cluster)).to eq(cluster)
+        end
+
+        it 'renders integration tab view' do
+          go(tab: 'integrations')
+
+          expect(response).to render_template('clusters/clusters/_integrations')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
-      it 'renders integration tab view' do
-        go(tab: 'integrations')
+      context 'when remove_monitor_metrics FF is enabled' do
+        render_views
 
-        expect(response).to render_template('clusters/clusters/_integrations')
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'renders details tab view', :aggregate_failures do
+          go(tab: 'integrations')
+
+          expect(response).to render_template('clusters/clusters/_details')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 
@@ -441,11 +452,12 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
 
   describe 'PUT update' do
     def go(format: :html)
-      put :update, params: params.merge(namespace_id: project.namespace.to_param,
-                                        project_id: project.to_param,
-                                        id: cluster,
-                                        format: format
-                                       )
+      put :update, params: params.merge(
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        id: cluster,
+        format: format
+      )
     end
 
     before do

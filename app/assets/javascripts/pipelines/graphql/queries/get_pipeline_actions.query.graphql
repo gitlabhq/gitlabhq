@@ -1,0 +1,24 @@
+query getPipelineActions($fullPath: ID!, $iid: ID!, $limit: Int) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      jobs(
+        first: $limit
+        whenExecuted: ["manual", "delayed"]
+        retried: false
+        statuses: [MANUAL, SCHEDULED, SUCCESS, FAILED, SKIPPED, CANCELED]
+      ) {
+        nodes {
+          id
+          name
+          canPlayJob
+          manualJob
+          scheduledAt
+          scheduled
+          playPath
+        }
+      }
+    }
+  }
+}

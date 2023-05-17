@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -125,7 +125,7 @@ For example:
 ### Builds not triggered
 
 If builds are not triggered, ensure you entered the right GitLab IP address in
-Bamboo under **Trigger IP addresses**. Also check [service hook logs](index.md#troubleshooting-integrations) for request failures.
+Bamboo under **Trigger IP addresses**. Also check [integration webhook logs](index.md#troubleshooting) for request failures.
 
 ### Advanced Atlassian Bamboo features not available in GitLab UI
 

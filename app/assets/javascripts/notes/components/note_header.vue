@@ -68,6 +68,16 @@ export default {
       required: false,
       default: false,
     },
+    noteUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    emailParticipant: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -85,10 +95,17 @@ export default {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     noteTimestampLink() {
-      return this.noteId ? `#note_${this.noteId}` : undefined;
+      if (this.noteUrl) return this.noteUrl;
+
+      return this.noteId ? `#note_${getIdFromGraphQLId(this.noteId)}` : undefined;
     },
     hasAuthor() {
       return this.author && Object.keys(this.author).length;
+    },
+    isServiceDeskEmailParticipant() {
+      return (
+        !this.isInternalNote && this.author.username === 'support-bot' && this.emailParticipant
+      );
     },
     authorLinkClasses() {
       return {
@@ -101,7 +118,7 @@ export default {
       };
     },
     authorName() {
-      return this.author.name;
+      return this.isServiceDeskEmailParticipant ? this.emailParticipant : this.author.name;
     },
     internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
@@ -152,22 +169,31 @@ export default {
       </button>
     </div>
     <template v-if="hasAuthor">
+      <span
+        v-if="emailParticipant"
+        class="note-header-author-name gl-font-weight-bold"
+        data-testid="author-name"
+        v-text="authorName"
+      ></span>
       <a
+        v-else
         ref="authorNameLink"
         :href="authorHref"
         :class="authorLinkClasses"
         :data-user-id="authorId"
         :data-username="author.username"
       >
-        <span class="note-header-author-name gl-font-weight-bold">
-          {{ authorName }}
-        </span>
+        <span
+          class="note-header-author-name gl-font-weight-bold"
+          data-testid="author-name"
+          v-text="authorName"
+        ></span>
       </a>
-      <span v-if="!isSystemNote" class="text-nowrap author-username">
+      <span v-if="!isSystemNote && !emailParticipant" class="text-nowrap author-username">
         <a
           ref="authorUsernameLink"
           class="author-username-link"
-          :href="author.path"
+          :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
           ><span class="note-headline-light">@{{ author.username }}</span>
@@ -175,6 +201,9 @@ export default {
         <slot name="note-header-info"></slot>
         <gitlab-team-member-badge v-if="author && author.is_gitlab_employee" />
       </span>
+      <span v-if="emailParticipant" class="note-headline-light">{{
+        __('(external participant)')
+      }}</span>
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">

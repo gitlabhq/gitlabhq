@@ -51,36 +51,24 @@ exports[`Alert integration settings form default state should match the default 
         </gl-link-stub>
       </label>
        
-      <gl-dropdown-stub
+      <gl-collapsible-listbox-stub
         block="true"
         category="primary"
-        clearalltext="Clear all"
-        clearalltextclass="gl-px-5"
         data-qa-selector="incident_templates_dropdown"
         headertext=""
-        hideheaderborder="true"
-        highlighteditemstitle="Selected"
-        highlighteditemstitleclass="gl-px-5"
+        icon=""
         id="alert-integration-settings-issue-template"
+        items="[object Object]"
+        noresultstext="No results found"
+        placement="left"
+        popperoptions="[object Object]"
+        resetbuttonlabel=""
+        searchplaceholder="Search"
+        selected="selecte_tmpl"
         size="medium"
-        text="selecte_tmpl"
+        toggletext=""
         variant="default"
-      >
-        <gl-dropdown-item-stub
-          avatarurl=""
-          data-qa-selector="incident_templates_item"
-          iconcolor=""
-          iconname=""
-          iconrightarialabel=""
-          iconrightname=""
-          ischeckitem="true"
-          secondarytext=""
-        >
-          
-          No template selected
-        
-        </gl-dropdown-item-stub>
-      </gl-dropdown-stub>
+      />
     </gl-form-group-stub>
      
     <gl-form-group-stub

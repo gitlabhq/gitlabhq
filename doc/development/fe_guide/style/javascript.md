@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_js.html'
 ---
 
 # JavaScript style guide
@@ -329,3 +328,26 @@ Only export the constants as a collection (array, or object) when there is a nee
   // good, if the constants need to be iterated over
   export const VARIANTS = [VARIANT_WARNING, VARIANT_ERROR];
   ```
+
+## Error handling
+
+When catching a server-side error, you should use the error message
+utility function contained in `app/assets/javascripts/lib/utils/error_message.js`.
+This utility accepts two parameters: the error object received from the server response and a
+default error message. The utility examines the message in the error object for a prefix that
+indicates whether the message is meant to be user-facing or not. If the message is intended
+to be user-facing, the utility returns it as is. Otherwise, it returns the default error
+message passed as a parameter.
+
+```javascript
+import { parseErrorMessage } from '~/lib/utils/error_message';
+
+onError(error) {
+  const errorMessage = parseErrorMessage(error, genericErrorText);
+}
+```
+
+To benefit from this parsing mechanism, the utility user should ensure that the server-side
+code is aware of this utility's usage and prefixes the error messages where appropriate
+before sending them back to the user. See
+[Error handling for API](../../api_styleguide.md#error-handling) for more information.

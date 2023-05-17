@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::AssignIssuesService do
+RSpec.describe MergeRequests::AssignIssuesService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }
@@ -37,12 +37,14 @@ RSpec.describe MergeRequests::AssignIssuesService do
 
   it 'accepts precomputed data for closes_issues' do
     issue2 = create(:issue, project: project)
-    service2 = described_class.new(project: project,
-                                   current_user: user,
-                                   params: {
-                                     merge_request: merge_request,
-                                     closes_issues: [issue, issue2]
-                                   })
+    service2 = described_class.new(
+      project: project,
+      current_user: user,
+      params: {
+        merge_request: merge_request,
+        closes_issues: [issue, issue2]
+      }
+    )
 
     expect(service2.assignable_issues.count).to eq 2
   end

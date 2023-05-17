@@ -16,14 +16,21 @@ const getComponentEventName = (tiptapEventName) => tiptapToComponentMap[tiptapEv
 
 export default {
   inject: ['tiptapEditor', 'eventHub'],
+  props: {
+    debounce: {
+      type: Number,
+      required: false,
+      default: 100,
+    },
+  },
   created() {
     this.disposables = [];
 
     Object.keys(tiptapToComponentMap).forEach((tiptapEvent) => {
-      const eventHandler = debounce(
-        (params) => this.bubbleEvent(getComponentEventName(tiptapEvent), params),
-        100,
-      );
+      let eventHandler = (params) => this.bubbleEvent(getComponentEventName(tiptapEvent), params);
+      if (this.debounce) {
+        eventHandler = debounce(eventHandler, this.debounce);
+      }
 
       this.tiptapEditor?.on(tiptapEvent, eventHandler);
 

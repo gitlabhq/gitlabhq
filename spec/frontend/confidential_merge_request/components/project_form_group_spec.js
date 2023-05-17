@@ -46,7 +46,6 @@ function factory(projects = mockData) {
 describe('Confidential merge request project form group component', () => {
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   it('renders fork dropdown', async () => {

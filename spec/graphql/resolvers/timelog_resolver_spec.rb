@@ -214,7 +214,11 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let_it_be(:timelog3) { create(:merge_request_timelog, merge_request: merge_request, user: current_user) }
 
     it 'blah' do
-      expect(timelogs).to contain_exactly(timelog1, timelog3)
+      if user_found
+        expect(timelogs).to contain_exactly(timelog1, timelog3)
+      else
+        expect(timelogs).to be_empty
+      end
     end
   end
 
@@ -250,16 +254,28 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let(:object) { current_user }
     let(:extra_args) { {} }
     let(:args) { {} }
+    let(:user_found) { true }
 
     it_behaves_like 'with a user'
   end
 
   context 'with a user filter' do
     let(:object) { nil }
-    let(:extra_args) { { username: current_user.username } }
     let(:args) { {} }
 
-    it_behaves_like 'with a user'
+    context 'when the user has timelogs' do
+      let(:extra_args) { { username: current_user.username } }
+      let(:user_found) { true }
+
+      it_behaves_like 'with a user'
+    end
+
+    context 'when the user doest not have timelogs' do
+      let(:extra_args) { { username: 'not_existing_user' } }
+      let(:user_found) { false }
+
+      it_behaves_like 'with a user'
+    end
   end
 
   context 'when no object or arguments provided' do

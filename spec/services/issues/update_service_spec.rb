@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::UpdateService, :mailer do
+RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
@@ -191,7 +191,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
 
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
             let(:namespace) { issue.namespace }
             let(:category) { described_class.to_s }
             let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
@@ -260,7 +259,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           it 'creates system note about issue type' do
             update_issue(issue_type: 'incident')
 
-            note = find_note('changed issue type to incident')
+            note = find_note('changed type from issue to incident')
 
             expect(note).not_to eq(nil)
           end
@@ -593,8 +592,8 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
 
       it 'executes confidential issue hooks' do
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         update_issue(confidential: true)
       end
@@ -696,7 +695,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           it_behaves_like 'an incident management tracked event', :incident_management_incident_assigned
 
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
             let(:namespace) { issue.namespace }
             let(:category) { described_class.to_s }
             let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
@@ -1109,19 +1107,37 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     context 'updating asssignee_id' do
+      it 'changes assignee' do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:reassigned_issue).with(issue, user, [user3])
+        end
+
+        update_issue(assignee_ids: [user2.id])
+
+        expect(issue.reload.assignees).to eq([user2])
+      end
+
       it 'does not update assignee when assignee_id is invalid' do
+        expect(NotificationService).not_to receive(:new)
+
         update_issue(assignee_ids: [-1])
 
         expect(issue.reload.assignees).to eq([user3])
       end
 
       it 'unassigns assignee when user id is 0' do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:reassigned_issue).with(issue, user, [user3])
+        end
+
         update_issue(assignee_ids: [0])
 
         expect(issue.reload.assignees).to be_empty
       end
 
       it 'does not update assignee_id when user cannot read issue' do
+        expect(NotificationService).not_to receive(:new)
+
         update_issue(assignee_ids: [create(:user).id])
 
         expect(issue.reload.assignees).to eq([user3])
@@ -1132,6 +1148,8 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         levels.each do |level|
           it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            expect(NotificationService).not_to receive(:new)
+
             assignee = create(:user)
             project.update!(visibility_level: level)
             feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
@@ -1140,6 +1158,39 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect { update_issue(assignee_ids: [assignee.id]) }.not_to change { issue.assignees }
           end
         end
+      end
+
+      it 'tracks the assignment events' do
+        original_assignee = issue.assignees.first!
+
+        update_issue(assignee_ids: [user2.id])
+        update_issue(assignee_ids: [])
+        update_issue(assignee_ids: [user3.id])
+
+        expected_events = [
+          have_attributes({
+            issue_id: issue.id,
+            user_id: original_assignee.id,
+            action: 'remove'
+          }),
+          have_attributes({
+            issue_id: issue.id,
+            user_id: user2.id,
+            action: 'add'
+          }),
+          have_attributes({
+            issue_id: issue.id,
+            user_id: user2.id,
+            action: 'remove'
+          }),
+          have_attributes({
+            issue_id: issue.id,
+            user_id: user3.id,
+            action: 'add'
+          })
+        ]
+
+        expect(issue.assignment_events).to match_array(expected_events)
       end
     end
 
@@ -1166,9 +1217,9 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'triggers webhooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
 
           update_issue(opts)
         end
@@ -1280,9 +1331,9 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'triggers webhooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
 
           update_issue(opts)
         end
@@ -1474,32 +1525,6 @@ RSpec.describe Issues::UpdateService, :mailer do
     it_behaves_like 'issuable record that supports quick actions' do
       let(:existing_issue) { create(:issue, project: project) }
       let(:issuable) { described_class.new(container: project, current_user: user, params: params).execute(existing_issue) }
-    end
-
-    context 'with quick actions' do
-      context 'as work item' do
-        let(:opts) { { description: "/shrug" } }
-
-        context 'when work item type is not the default Issue' do
-          let(:issue) { create(:work_item, :task, description: "") }
-
-          it 'does not apply the quick action' do
-            expect do
-              update_issue(opts)
-            end.to change(issue, :description).to("/shrug")
-          end
-        end
-
-        context 'when work item type is the default Issue' do
-          let(:issue) { create(:work_item, :issue, description: "") }
-
-          it 'does not apply the quick action' do
-            expect do
-              update_issue(opts)
-            end.to change(issue, :description).to(" ¯\\＿(ツ)＿/¯")
-          end
-        end
-      end
     end
   end
 end

@@ -34,10 +34,6 @@ describe('IDE branch item', () => {
     router = createRouter(store);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('if not active', () => {
     beforeEach(() => {
       createComponent();

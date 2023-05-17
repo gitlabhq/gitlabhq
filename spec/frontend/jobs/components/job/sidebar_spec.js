@@ -48,10 +48,6 @@ describe('Sidebar details block', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without terminal path', () => {
     it('does not render terminal link', async () => {
       createWrapper();
@@ -143,7 +139,7 @@ describe('Sidebar details block', () => {
         return store.dispatch('receiveJobsForStageSuccess', jobsInStage.latest_statuses);
       });
 
-      it('renders list of jobs', async () => {
+      it('renders list of jobs', () => {
         expect(findJobsContainer().exists()).toBe(true);
       });
     });
@@ -151,7 +147,7 @@ describe('Sidebar details block', () => {
     describe('when job data changes', () => {
       const stageArg = job.pipeline.details.stages.find((stage) => stage.name === job.stage);
 
-      beforeEach(async () => {
+      beforeEach(() => {
         jest.spyOn(store, 'dispatch');
       });
 

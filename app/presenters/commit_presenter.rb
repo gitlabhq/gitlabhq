@@ -25,6 +25,10 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
     commit.pipelines.any?
   end
 
+  def tags_for_display
+    commit.referenced_by&.map { |tag_name| Gitlab::Git.ref_name(tag_name) }
+  end
+
   def signature_html
     return unless commit.has_signature?
 

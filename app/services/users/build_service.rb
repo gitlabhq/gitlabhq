@@ -2,6 +2,8 @@
 
 module Users
   class BuildService < BaseService
+    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot].freeze
+
     delegate :user_default_internal_regex_enabled?,
              :user_default_internal_regex_instance,
              to: :'Gitlab::CurrentSettings.current_application_settings'
@@ -70,7 +72,7 @@ module Users
       @user_params[:created_by_id] = current_user&.id
       @user_params[:external] = user_external? if set_external_param?
 
-      @user_params.delete(:user_type) unless project_bot?
+      @user_params.delete(:user_type) unless allowed_user_type?
     end
 
     def set_external_param?
@@ -81,8 +83,8 @@ module Users
       user_default_internal_regex_instance.match(params[:email]).nil?
     end
 
-    def project_bot?
-      user_params[:user_type]&.to_sym == :project_bot
+    def allowed_user_type?
+      ALLOWED_USER_TYPES.include?(user_params[:user_type]&.to_sym)
     end
 
     def password_reset

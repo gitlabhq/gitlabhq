@@ -8,6 +8,7 @@ const {
   setGlobalDateToRealDate,
 } = require('./__helpers__/fake_date/fake_date');
 const { TEST_HOST } = require('./__helpers__/test_constants');
+const { createGon } = require('./__helpers__/gon_helper');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
@@ -20,8 +21,17 @@ class CustomEnvironment extends TestEnvironment {
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39496#note_503084332
     setGlobalDateToFakeDate();
 
+    const { error: originalErrorFn } = context.console;
     Object.assign(context.console, {
       error(...args) {
+        if (
+          args?.[0]?.includes('[Vue warn]: Missing required prop') ||
+          args?.[0]?.includes('[Vue warn]: Invalid prop')
+        ) {
+          originalErrorFn.apply(context.console, args);
+          return;
+        }
+
         throw new ErrorWithStack(
           `Unexpected call of console.error() with:\n\n${args.join(', ')}`,
           this.error,
@@ -29,7 +39,7 @@ class CustomEnvironment extends TestEnvironment {
       },
 
       warn(...args) {
-        if (args[0].includes('The updateQuery callback for fetchMore is deprecated')) {
+        if (args?.[0]?.includes('The updateQuery callback for fetchMore is deprecated')) {
           return;
         }
         throw new ErrorWithStack(
@@ -40,10 +50,11 @@ class CustomEnvironment extends TestEnvironment {
     });
 
     const { IS_EE } = projectConfig.testEnvironmentOptions;
-    this.global.gon = {
-      ee: IS_EE,
-    };
+
     this.global.IS_EE = IS_EE;
+
+    // Set up global `gon` object
+    this.global.gon = createGon(IS_EE);
 
     // Set up global `gl` object
     this.global.gl = {};

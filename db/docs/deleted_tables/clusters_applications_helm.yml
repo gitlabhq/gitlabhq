@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_helm
+feature_categories:
+- deployment_management
+description: "(Deprecated) A GitLab managed Helm installation in a Kubernetes cluster"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/64be8d70ae20928df351e495a3442bb6036bc3e7
+milestone: '10.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119380
+removed_in_milestone: '16.0'

@@ -7,9 +7,8 @@ type: reference, howto
 
 # PlantUML **(FREE)**
 
-When the [PlantUML](https://plantuml.com) integration is enabled and configured in
-GitLab, you can create diagrams in snippets, wikis, and repositories. This integration
-is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
+With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
+This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
 
 To set up the integration on a self-managed instance, you must:
 
@@ -117,7 +116,7 @@ services:
     image: 'gitlab/gitlab-ee:12.2.5-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'
@@ -148,7 +147,7 @@ using Tomcat:
    ```
 
 The Tomcat service should restart. After the restart is complete, the
-PlantUML service is ready and listening for requests on port 8080:
+PlantUML integration is ready and listening for requests on port 8080:
 `http://localhost:8080/plantuml`
 
 To change these defaults, edit the `/etc/tomcat8/server.xml` file.
@@ -169,7 +168,7 @@ following:
 - `http://plantuml:8080/`
 - `http://localhost:8080/plantuml/`
 
-If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl.html)
+If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
 Newer browsers such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408)
 don't load insecure HTTP resources on pages served over HTTPS.
@@ -180,10 +179,10 @@ To enable this redirection:
 
    ```ruby
    # Docker deployment
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
    # Built from source
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/(plantuml.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
    ```
 
 1. To activate the changes, run the following command:

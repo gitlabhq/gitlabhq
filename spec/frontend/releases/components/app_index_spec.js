@@ -6,9 +6,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
-import { sprintf, __ } from '~/locale';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
@@ -16,11 +15,11 @@ import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
-import { deleteReleaseSessionKey } from '~/releases/util';
+import { deleteReleaseSessionKey } from '~/releases/release_notification_service';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 let mockQueryParams;
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -114,7 +113,7 @@ describe('app_index.vue', () => {
     const toDescription = (bool) => (bool ? 'does' : 'does not');
 
     describe.each`
-      description                                                       | singleResponseFn                  | fullResponseFn                  | loadingIndicator | emptyState | flashMessage | releaseCount | pagination
+      description                                                       | singleResponseFn                  | fullResponseFn                  | loadingIndicator | emptyState | alertMessage | releaseCount | pagination
       ${'both requests loading'}                                        | ${getInProgressResponse}          | ${getInProgressResponse}        | ${true}          | ${false}   | ${false}     | ${0}         | ${false}
       ${'both requests failed'}                                         | ${getErrorResponse}               | ${getErrorResponse}             | ${false}         | ${false}   | ${true}      | ${0}         | ${false}
       ${'both requests loaded'}                                         | ${getSingleRequestLoadedResponse} | ${getFullRequestLoadedResponse} | ${false}         | ${false}   | ${false}     | ${2}         | ${true}
@@ -134,7 +133,7 @@ describe('app_index.vue', () => {
         fullResponseFn,
         loadingIndicator,
         emptyState,
-        flashMessage,
+        alertMessage,
         releaseCount,
         pagination,
       }) => {
@@ -154,9 +153,9 @@ describe('app_index.vue', () => {
           expect(findEmptyState().exists()).toBe(emptyState);
         });
 
-        it(`${toDescription(flashMessage)} show a flash message`, async () => {
+        it(`${toDescription(alertMessage)} show a flash message`, async () => {
           await waitForPromises();
-          if (flashMessage) {
+          if (alertMessage) {
             expect(createAlert).toHaveBeenCalledWith({
               message: ReleasesIndexApp.i18n.errorMessage,
               captureError: true,
@@ -412,15 +411,15 @@ describe('app_index.vue', () => {
       await createComponent();
     });
 
-    it('shows a toast', async () => {
-      expect(toast).toHaveBeenCalledWith(
-        sprintf(__('Release %{release} has been successfully deleted.'), {
-          release,
-        }),
-      );
+    it('shows a toast', () => {
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: `Release ${release} has been successfully deleted.`,
+        variant: VARIANT_SUCCESS,
+      });
     });
 
-    it('clears session storage', async () => {
+    it('clears session storage', () => {
       expect(window.sessionStorage.getItem(key)).toBe(null);
     });
   });

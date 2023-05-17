@@ -19,11 +19,6 @@ describe('packages_filter', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('binds all of his attrs to filtered search token', () => {
     mountComponent({ attrs: { foo: 'bar' } });
 

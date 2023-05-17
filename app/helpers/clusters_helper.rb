@@ -37,7 +37,6 @@ module ClustersHelper
       editable: can_edit.to_s,
       environment_scope: cluster.environment_scope,
       base_domain: cluster.base_domain,
-      application_ingress_external_ip: cluster.application_ingress_external_ip,
       auto_devops_help_path: help_page_path('topics/autodevops/index'),
       external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
     }
@@ -57,11 +56,19 @@ module ClustersHelper
     when 'environments'
       render_if_exists 'clusters/clusters/environments'
     when 'health'
-      render_if_exists 'clusters/clusters/health'
+      if Feature.enabled?(:remove_monitor_metrics)
+        render('details', expanded: expanded)
+      else
+        render_if_exists 'clusters/clusters/health'
+      end
     when 'apps'
       render 'applications'
     when 'integrations'
-      render 'integrations'
+      if Feature.enabled?(:remove_monitor_metrics)
+        render('details', expanded: expanded)
+      else
+        render 'integrations'
+      end
     when 'settings'
       render 'advanced_settings_container'
     else

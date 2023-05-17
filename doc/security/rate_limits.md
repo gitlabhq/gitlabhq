@@ -44,6 +44,7 @@ You can set these rate limits in the Admin Area of your instance:
 - [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
 - [Pipeline rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md)
 - [Incident management rate limits](../user/admin_area/settings/incident_management_rate_limits.md)
+- [Unauthenticated access to Projects List API rate limits](../user/admin_area/settings/rate_limit_on_projects_api.md)
 
 You can set these rate limits using the Rails console:
 
@@ -137,16 +138,17 @@ The **rate limit** is 20 calls per minute per IP address.
 
 ### Project Jobs API endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104912) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`.
-The feature is not ready for production use.
-
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
 The **rate limit** is 600 calls per minute per authenticated user.
+
+### AI action
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
+
+There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
+
+The **rate limit** is 160 calls per 8 hours per authenticated user.
 
 ## Troubleshooting
 
@@ -193,7 +195,7 @@ To remove a blocked IP:
    keys *rack::attack*
    ```
 
-  By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis.html#renamed-commands).
+By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis.html#renamed-commands).
 
 1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-rack-attack)
    to prevent it being denylisted again.

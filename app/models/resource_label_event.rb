@@ -29,9 +29,8 @@ class ResourceLabelEvent < ResourceEvent
     labels = events.map(&:label).compact
     project_labels, group_labels = labels.partition { |label| label.is_a? ProjectLabel }
 
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(project_labels, { project: :project_feature })
-    preloader.preload(group_labels, :group)
+    ActiveRecord::Associations::Preloader.new(records: project_labels, associations: { project: :project_feature }).call
+    ActiveRecord::Associations::Preloader.new(records: group_labels, associations: :group).call
   end
 
   def issuable

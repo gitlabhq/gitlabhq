@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::RequestReviewService do
+RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_review_workflow do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, reviewers: [user]) }

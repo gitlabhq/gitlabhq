@@ -1,3 +1,6 @@
+- add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
+- add_to_breadcrumbs @merge_request.to_reference, project_merge_request_path(@project, @merge_request)
+- breadcrumb_title _("Merge conflicts")
 - page_title _("Merge Conflicts"), "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge requests")
 - add_page_specific_style 'page_bundles/merge_conflicts'
 

@@ -17,11 +17,6 @@ describe('Title field component', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders form control with formState title', () => {
     expect(findInput().element.value).toBe('test');
   });

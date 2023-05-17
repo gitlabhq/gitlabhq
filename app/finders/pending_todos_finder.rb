@@ -13,22 +13,34 @@
 class PendingTodosFinder
   attr_reader :users, :params
 
-  # users - The list of users to retrieve the todos for.
+  # users - The list of users to retrieve the todos for. If nil is passed, it won't filter todos based on users
   # params - A Hash containing columns and values to use for filtering todos.
-  def initialize(users, params = {})
-    @users = users
+  def initialize(params = {})
     @params = params
+
+    # To prevent N+1 queries when fetching the users of the PendingTodos.
+    @preload_user_association = params.fetch(:preload_user_association, false)
   end
 
   def execute
-    todos = Todo.for_user(users)
-    todos = todos.pending
+    todos = Todo.pending
+    todos = by_users(todos)
     todos = by_project(todos)
     todos = by_target_id(todos)
     todos = by_target_type(todos)
+    todos = by_author_id(todos)
     todos = by_discussion(todos)
     todos = by_commit_id(todos)
+
+    todos = todos.with_preloaded_user if @preload_user_association
+
     by_action(todos)
+  end
+
+  def by_users(todos)
+    return todos unless params[:users].present?
+
+    todos.for_user(params[:users])
   end
 
   def by_project(todos)
@@ -53,6 +65,12 @@ class PendingTodosFinder
     else
       todos
     end
+  end
+
+  def by_author_id(todos)
+    return todos unless params[:author_id]
+
+    todos.for_author(params[:author_id])
   end
 
   def by_commit_id(todos)

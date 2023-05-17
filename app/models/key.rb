@@ -92,7 +92,7 @@ class Key < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def update_last_used_at
-    Keys::LastUsedService.new(self).execute
+    Keys::LastUsedService.new(self).execute_async
   end
   # rubocop: enable CodeReuse/ServiceClass
 

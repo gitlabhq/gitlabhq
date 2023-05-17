@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import Api from '~/api';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 

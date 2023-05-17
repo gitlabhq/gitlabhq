@@ -11,7 +11,6 @@ describe('Chunk component', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(Chunk, {
       propsData: { ...CHUNK_1, ...props },
-      provide: { glFeatures: { fileLineBlame: true } },
     });
   };
 
@@ -23,8 +22,6 @@ describe('Chunk component', () => {
     idleCallbackSpy = jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
     createComponent();
   });
-
-  afterEach(() => wrapper.destroy());
 
   describe('Intersection observer', () => {
     it('renders an Intersection observer component', () => {

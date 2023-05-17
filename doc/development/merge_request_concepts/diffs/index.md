@@ -17,7 +17,7 @@ We rely on different sources to present diffs. These include:
 <!-- vale gitlab.Spelling = NO -->
 
 In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only:
-`https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab Diffs and Commenting on Diffs
+`https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on GitLab Diffs and Commenting on Diffs
 functionality to share domain-specific knowledge with anyone who may work in this part of the
 codebase in the future:
 

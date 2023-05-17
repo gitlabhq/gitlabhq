@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Dependencies API **(ULTIMATE)**
 
 WARNING:
-This API is in an [Alpha](../policy/alpha-beta-support.md#alpha-features) stage and considered unstable.
+This API is in an [Experiment](../policy/alpha-beta-support.md#experiment) and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 
@@ -34,7 +34,7 @@ GET /projects/:id/dependencies?package_manager=yarn,bundler
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                            |
-| `package_manager` | string array   | no       | Returns dependencies belonging to specified package manager. Valid values: `bundler`, `composer`, `conan`, `go`, `gradle`, `maven`, `npm`, `nuget`, `pip`, `pipenv`, `yarn`, `sbt`, or `setuptools`. |
+| `package_manager` | string array   | no       | Returns dependencies belonging to specified package manager. Valid values: `bundler`, `composer`, `conan`, `go`, `gradle`, `maven`, `npm`, `nuget`, `pip`, `pipenv`, `pnpm`, `yarn`, `sbt`, or `setuptools`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/dependencies"

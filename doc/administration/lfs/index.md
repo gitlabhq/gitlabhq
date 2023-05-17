@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
 # GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
@@ -157,14 +156,14 @@ You can store LFS objects in remote object storage. This allows you
 to reduce reads and writes to the local disk, and free up disk space significantly.
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
 
 You can migrate the LFS objects from local storage to object storage. The
 processing is done in the background and requires **no downtime**.
 
-1. [Configure the object storage](../object_storage.md#consolidated-object-storage-configuration).
+1. [Configure the object storage](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Migrate the LFS objects:
 
    ::Tabs
@@ -272,7 +271,7 @@ To migrate back to local storage:
    ```
 
 1. Edit `/etc/gitlab/gitlab.rb` and
-   [disable object storage](../object_storage.md#selectively-disabling-object-storage)
+   [disable object storage](../object_storage.md#disable-object-storage-for-specific-features)
    for LFS objects:
 
    ```ruby
@@ -420,6 +419,18 @@ To check an installed Git LFS client's version, run this command:
 ```shell
 git lfs version
 ```
+
+### `Connection refused` errors
+
+If you push or mirror LFS objects and receive errors like the following:
+
+- `dial tcp <IP>:443: connect: connection refused`
+- `Connection refused - connect(2) for \"<target-or-proxy-IP>\" port 443`
+
+a firewall or proxy rule may be terminating the connection.
+
+If connection checks with standard Unix tools or manual Git pushes are successful,
+the rule may be related to the size of the request.
 
 ## Error viewing a PDF file
 

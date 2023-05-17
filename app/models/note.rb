@@ -60,6 +60,9 @@ class Note < ApplicationRecord
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_writer :commands_changes
 
+  # Attribute used to store the quick action command names.
+  attr_accessor :command_names
+
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 
@@ -84,6 +87,7 @@ class Note < ApplicationRecord
     inverse_of: :note, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
+  has_one :note_metadata, inverse_of: :note, class_name: 'Notes::NoteMetadata'
   has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
   has_many :diff_note_positions
 
@@ -91,6 +95,8 @@ class Note < ApplicationRecord
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
   delegate :title, to: :noteable, allow_nil: true
+
+  accepts_nested_attributes_for :note_metadata
 
   validates :note, presence: true
   validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
@@ -165,11 +171,20 @@ class Note < ApplicationRecord
 
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
-    includes(:author, :noteable, :updated_by,
-             project: [:project_members, :namespace, { group: [:group_members] }])
+    includes(
+      :author, :noteable, :updated_by,
+      project: [:project_members, :namespace, { group: [:group_members] }]
+    )
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
-  scope :with_web_entity_associations, -> { preload(:project, :author, :noteable) }
+
+  scope :without_hidden, -> {
+    if Feature.enabled?(:hidden_notes)
+      where_not_exists(Users::BannedUser.where('notes.author_id = banned_users.user_id'))
+    else
+      all
+    end
+  }
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
@@ -288,6 +303,10 @@ class Note < ApplicationRecord
     def cherry_picked_merge_requests(shas)
       where(noteable_type: 'MergeRequest', commit_id: shas).select(:noteable_id)
     end
+
+    def with_web_entity_associations
+      preload(:project, :author, :noteable)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -328,6 +347,10 @@ class Note < ApplicationRecord
 
   def for_issue?
     noteable_type == "Issue"
+  end
+
+  def for_work_item?
+    noteable.is_a?(WorkItem)
   end
 
   def for_merge_request?
@@ -382,8 +405,6 @@ class Note < ApplicationRecord
       project.merge_requests.by_commit_sha(commit_id)
     elsif for_merge_request?
       MergeRequest.id_in(noteable_id)
-    else
-      nil
     end
   end
 

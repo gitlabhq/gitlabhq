@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ResolvedDiscussionNotificationService do
+RSpec.describe MergeRequests::ResolvedDiscussionNotificationService, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
   let(:project) { merge_request.project }

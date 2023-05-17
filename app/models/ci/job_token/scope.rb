@@ -58,8 +58,7 @@ module Ci
       end
 
       def inbound_accessible?(accessed_project)
-        # if the flag or setting is disabled any project is considered to be in scope.
-        return true unless Feature.enabled?(:ci_inbound_job_token_scope, accessed_project)
+        # if the setting is disabled any project is considered to be in scope.
         return true unless accessed_project.ci_inbound_job_token_scope_enabled?
 
         inbound_linked_as_accessible?(accessed_project)

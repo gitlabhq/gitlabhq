@@ -159,7 +159,7 @@ a manual installation.
 
 If for some reason you don't use the official repositories, you can
 download the package and install it manually. This method can be used to either
-install GitLab for the first time or update it.
+install GitLab for the first time or upgrade it.
 
 To download and install GitLab:
 
@@ -169,7 +169,7 @@ To download and install GitLab:
    and architecture. Next to the filename is a label indicating the distribution,
    as the filenames may be the same.
 1. Find the package version you wish to install, and select the filename from the list.
-1. Select **Download** in the upper right corner to download the package.
+1. In the upper-right corner, select **Download**.
 1. After the package is downloaded, install it by using one of the
    following commands and replacing `<package_name>` with the package name
    you downloaded:
@@ -294,7 +294,7 @@ To fix this issue:
 
 ### Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
 
-See [GitLab Pages troubleshooting](../../administration/pages/index.md#failed-to-connect-to-the-internal-gitlab-api).
+See [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 ### Error `An error occurred during the signature verification` when running `apt-get update`
 

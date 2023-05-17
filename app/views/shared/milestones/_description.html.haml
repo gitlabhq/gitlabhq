@@ -1,4 +1,4 @@
-.detail-page-description.milestone-detail
+.detail-page-description.milestone-detail.gl-py-4
   %h2.gl-m-0{ data: { qa_selector: "milestone_title_content" } }
     = markdown_field(milestone, :title)
     .gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'milestone_id_content' }, itemprop: 'identifier' }
@@ -9,5 +9,5 @@
 
   - if milestone.try(:description).present?
     %div{ data: { qa_selector: "milestone_description_content" } }
-      .description.md.gl-px-0.gl-pt-4.gl-border-1.gl-border-t-solid.gl-border-gray-100
+      .description.md.gl-px-0.gl-pt-4
         = markdown_field(milestone, :description)

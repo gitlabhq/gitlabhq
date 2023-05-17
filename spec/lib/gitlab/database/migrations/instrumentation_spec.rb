@@ -18,7 +18,9 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     let(:migration_name) { 'test' }
     let(:migration_version) { '12345' }
     let(:migration_meta) { { 'max_batch_size' => 1, 'total_tuple_count' => 10, 'interval' => 60 } }
-    let(:expected_json_keys) { %w[version name walltime success total_database_size_change query_statistics] }
+    let(:expected_json_keys) do
+      %w[version name walltime success total_database_size_change query_statistics error_message]
+    end
 
     it 'executes the given block' do
       expect do |b|
@@ -90,16 +92,14 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'upon failure' do
-      where(exception: ['something went wrong', SystemStackError, Interrupt])
+      where(:exception, :error_message) do
+        [[StandardError, 'something went wrong'], [ActiveRecord::StatementTimeout, 'timeout']]
+      end
 
       with_them do
         subject(:observe) do
           instrumentation.observe(version: migration_version, name: migration_name,
-                                  connection: connection, meta: migration_meta) { raise exception }
-        end
-
-        it 'raises the exception' do
-          expect { observe }.to raise_error(exception)
+                                  connection: connection, meta: migration_meta) { raise exception, error_message }
         end
 
         context 'retrieving observations' do
@@ -107,10 +107,6 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
           before do
             observe
-            # rubocop:disable Lint/RescueException
-          rescue Exception
-            # rubocop:enable Lint/RescueException
-            # ignore (we expect this exception)
           end
 
           it 'records a valid observation', :aggregate_failures do
@@ -118,6 +114,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
             expect(subject['success']).to be_falsey
             expect(subject['version']).to eq(migration_version)
             expect(subject['name']).to eq(migration_name)
+            expect(subject['error_message']).to eq(error_message)
           end
 
           it 'transforms observation to expected json' do

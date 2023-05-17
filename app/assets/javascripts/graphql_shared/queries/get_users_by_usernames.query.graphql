@@ -1,9 +1,0 @@
-#import "../fragments/user.fragment.graphql"
-
-query getUsersByUsernames($usernames: [String!]) {
-  users(usernames: $usernames) {
-    nodes {
-      ...User
-    }
-  }
-}

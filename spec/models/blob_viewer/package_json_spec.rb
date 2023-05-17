@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobViewer::PackageJson do
+RSpec.describe BlobViewer::PackageJson, feature_category: :source_code_management do
   include FakeBlobHelpers
 
   let(:project) { build_stubbed(:project) }
@@ -57,6 +57,17 @@ RSpec.describe BlobViewer::PackageJson do
         expect(subject).to receive(:prepare!)
 
         expect(subject.manager_url).to eq("https://yarnpkg.com/")
+      end
+    end
+
+    context 'when json is an array' do
+      let(:data) { '[]' }
+
+      it 'does not raise an error', :aggregate_failures do
+        expect(subject).to receive(:prepare!)
+
+        expect { subject.yarn? }.not_to raise_error
+        expect(subject.yarn?).to be_falsey
       end
     end
   end

@@ -1,0 +1,8 @@
+---
+name: free_user_cap_clear_over_limit_notification_flags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111312
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398150
+milestone: '15.11'
+type: development
+group: group::acquisition
+default_enabled: false

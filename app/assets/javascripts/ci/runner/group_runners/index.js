@@ -18,12 +18,11 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
   const {
     registrationToken,
     runnerInstallHelpPage,
+    newRunnerPath,
     groupId,
     groupFullPath,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
-    emptyStateSvgPath,
-    emptyStateFilteredSvgPath,
   } = el.dataset;
 
   const { cacheConfig, typeDefs, localMutations } = createLocalState();
@@ -41,14 +40,13 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
       groupId,
       onlineContactTimeoutSecs: parseInt(onlineContactTimeoutSecs, 10),
       staleTimeoutSecs: parseInt(staleTimeoutSecs, 10),
-      emptyStateSvgPath,
-      emptyStateFilteredSvgPath,
     },
     render(h) {
       return h(GroupRunnersApp, {
         props: {
           registrationToken,
           groupFullPath,
+          newRunnerPath,
         },
       });
     },

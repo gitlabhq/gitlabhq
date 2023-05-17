@@ -1,7 +1,6 @@
-- page_title    _("Dashboard")
-- header_title  _("Dashboard"), root_path unless header_title
+- header_title _("Your work"), root_path
 
 - @left_sidebar = true
-- nav "your_work"
+- nav (@parent_group ? "group" : "your_work")
 
 = render template: "layouts/application"

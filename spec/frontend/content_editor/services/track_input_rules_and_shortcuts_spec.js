@@ -43,7 +43,7 @@ describe('content_editor/services/track_input_rules_and_shortcuts', () => {
     });
 
     describe('when creating a heading using an keyboard shortcut', () => {
-      it('sends a tracking event indicating that a heading was created using an input rule', async () => {
+      it('sends a tracking event indicating that a heading was created using an input rule', () => {
         const shortcuts = Heading.parent.config.addKeyboardShortcuts.call(Heading);
         const [firstShortcut] = Object.keys(shortcuts);
         const nodeName = Heading.name;
@@ -68,7 +68,7 @@ describe('content_editor/services/track_input_rules_and_shortcuts', () => {
     });
 
     describe('when creating a heading using an input rule', () => {
-      it('sends a tracking event indicating that a heading was created using an input rule', async () => {
+      it('sends a tracking event indicating that a heading was created using an input rule', () => {
         const nodeName = Heading.name;
         triggerNodeInputRule({ tiptapEditor: editor, inputRuleText: '## ' });
         expect(trackingSpy).toHaveBeenCalledWith(undefined, INPUT_RULE_TRACKING_ACTION, {

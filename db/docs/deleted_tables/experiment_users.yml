@@ -1,0 +1,12 @@
+---
+table_name: experiment_users
+classes:
+  - ExperimentUser
+feature_categories:
+  - experimentation_conversion
+description:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38397
+milestone: '13.3'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102337
+removed_in_milestone: '15.6'

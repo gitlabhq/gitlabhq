@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Audit::Auditor do
+RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
   let(:name) { 'audit_operation' }
   let(:author) { create(:user, :with_sign_ins) }
   let(:group) { create(:group) }
@@ -22,9 +22,9 @@ RSpec.describe Gitlab::Audit::Auditor do
   subject(:auditor) { described_class }
 
   describe '.audit' do
-    context 'when authentication event' do
-      let(:audit!) { auditor.audit(context) }
+    let(:audit!) { auditor.audit(context) }
 
+    context 'when authentication event' do
       it 'creates an authentication event' do
         expect(AuthenticationEvent).to receive(:new).with(
           {
@@ -210,19 +210,38 @@ RSpec.describe Gitlab::Audit::Auditor do
     end
 
     context 'when authentication event is false' do
+      let(:target) { group }
       let(:context) do
         { name: name, author: author, scope: group,
-          target: group, authentication_event: false, message: "sample message" }
+          target: target, authentication_event: false, message: "sample message" }
       end
 
       it 'does not create an authentication event' do
         expect { auditor.audit(context) }.not_to change(AuthenticationEvent, :count)
       end
+
+      context 'with permitted target' do
+        { feature_flag: :operations_feature_flag }.each do |target_type, factory_name|
+          context "with #{target_type}" do
+            let(:target) { build_stubbed factory_name }
+
+            it 'logs audit events to database', :aggregate_failures, :freeze_time do
+              audit!
+              audit_event = AuditEvent.last
+
+              expect(audit_event.author_id).to eq(author.id)
+              expect(audit_event.entity_id).to eq(group.id)
+              expect(audit_event.entity_type).to eq(group.class.name)
+              expect(audit_event.created_at).to eq(Time.zone.now)
+              expect(audit_event.details[:target_id]).to eq(target.id)
+              expect(audit_event.details[:target_type]).to eq(target.class.name)
+            end
+          end
+        end
+      end
     end
 
     context 'when authentication event is invalid' do
-      let(:audit!) { auditor.audit(context) }
-
       before do
         allow(AuthenticationEvent).to receive(:new).and_raise(ActiveRecord::RecordInvalid)
         allow(Gitlab::ErrorTracking).to receive(:track_exception)
@@ -243,8 +262,6 @@ RSpec.describe Gitlab::Audit::Auditor do
     end
 
     context 'when audit events are invalid' do
-      let(:audit!) { auditor.audit(context) }
-
       before do
         expect_next_instance_of(AuditEvent) do |instance|
           allow(instance).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)

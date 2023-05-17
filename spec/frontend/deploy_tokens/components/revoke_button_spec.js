@@ -52,10 +52,6 @@ describe('RevokeButton', () => {
     );
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findRevokeButton = () => wrapper.findByTestId('revoke-button');
   const findModal = () => wrapper.findComponent(GlModal);
   const findPrimaryModalButton = () => wrapper.findByTestId('primary-revoke-btn');

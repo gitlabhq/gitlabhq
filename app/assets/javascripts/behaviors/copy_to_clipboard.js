@@ -10,10 +10,10 @@ const CLIPBOARD_ERROR_EVENT = 'clipboard-error';
 const I18N_ERROR_MESSAGE = __('Copy failed. Please manually copy the value.');
 
 function showTooltip(target, title) {
-  const { title: originalTitle } = target.dataset;
+  const { originalTitle } = target.dataset;
 
   once('hidden', (tooltip) => {
-    if (tooltip.target === target) {
+    if (originalTitle && tooltip.target === target) {
       target.setAttribute('title', originalTitle);
       target.setAttribute('aria-label', originalTitle);
       fixTitle(target);

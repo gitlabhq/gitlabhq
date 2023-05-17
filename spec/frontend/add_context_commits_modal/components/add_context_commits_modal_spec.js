@@ -1,4 +1,4 @@
-import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
+import { GlModal, GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -49,14 +49,10 @@ describe('AddContextCommitsModal', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
+  const findSearch = () => wrapper.findComponent(GlFilteredSearch);
 
   beforeEach(() => {
     wrapper = createWrapper();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders modal with 2 tabs', () => {
@@ -72,12 +68,29 @@ describe('AddContextCommitsModal', () => {
       expect(findSearch().exists()).toBe(true);
     });
 
-    it('when user starts entering text in search box, it calls action "searchCommits" after waiting for 500s', () => {
-      const searchText = 'abcd';
-      findSearch().vm.$emit('input', searchText);
-      expect(searchCommits).not.toHaveBeenCalled();
-      jest.advanceTimersByTime(500);
-      expect(searchCommits).toHaveBeenCalledWith(expect.anything(), searchText);
+    it('when user submits after entering filters in search box, then it calls action "searchCommits"', () => {
+      const search = [
+        'abcd',
+        {
+          type: 'author',
+          value: { operator: '=', data: 'abhi' },
+        },
+        {
+          type: 'committed-before-date',
+          value: { operator: '=', data: '2022-10-31' },
+        },
+        {
+          type: 'committed-after-date',
+          value: { operator: '=', data: '2022-10-28' },
+        },
+      ];
+      findSearch().vm.$emit('submit', search);
+      expect(searchCommits).toHaveBeenCalledWith(expect.anything(), {
+        searchText: 'abcd',
+        author: 'abhi',
+        committed_before: '2022-10-31',
+        committed_after: '2022-10-28',
+      });
     });
 
     it('disabled ok button when no row is selected', () => {

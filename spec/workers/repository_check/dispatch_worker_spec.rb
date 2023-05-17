@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryCheck::DispatchWorker do
+RSpec.describe RepositoryCheck::DispatchWorker, feature_category: :source_code_management do
   subject { described_class.new }
 
   it 'does nothing when repository checks are disabled' do

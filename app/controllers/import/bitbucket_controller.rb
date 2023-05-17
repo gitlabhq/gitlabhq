@@ -57,7 +57,7 @@ class Import::BitbucketController < Import::BaseController
       extra: { user_role: user_role(current_user, target_namespace), import_type: 'bitbucket' }
     )
 
-    if current_user.can?(:create_projects, target_namespace)
+    if current_user.can?(:import_projects, target_namespace)
       # The token in a session can be expired, we need to get most recent one because
       # Bitbucket::Connection class refreshes it.
       session[:bitbucket_token] = bitbucket_client.connection.token
@@ -70,7 +70,7 @@ class Import::BitbucketController < Import::BaseController
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
-      render json: { errors: _('This namespace has already been taken! Please choose another one.') }, status: :unprocessable_entity
+      render json: { errors: _('You are not allowed to import projects in this namespace.') }, status: :unprocessable_entity
     end
   end
 

@@ -1,6 +1,6 @@
 import { getTag } from '~/rest_api';
-import { createAlert } from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
 import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
@@ -8,11 +8,8 @@ import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
-import {
-  gqClient,
-  convertOneReleaseGraphQLResponse,
-  deleteReleaseSessionKey,
-} from '~/releases/util';
+import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import { putDeleteReleaseNotification } from '~/releases/release_notification_service';
 
 import * as types from './mutation_types';
 
@@ -98,7 +95,7 @@ export const removeAssetLink = ({ commit }, linkIdToRemove) => {
 
 export const receiveSaveReleaseSuccess = ({ commit }, urlToRedirectTo) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
-  redirectTo(urlToRedirectTo);
+  redirectTo(urlToRedirectTo); // eslint-disable-line import/no-deprecated
 };
 
 export const saveRelease = ({ commit, dispatch, state }) => {
@@ -261,10 +258,7 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
     })
     .then((response) => checkForErrorsAsData(response, 'releaseDelete'))
     .then(() => {
-      window.sessionStorage.setItem(
-        deleteReleaseSessionKey(state.projectPath),
-        state.originalRelease.name,
-      );
+      putDeleteReleaseNotification(state.projectPath, state.originalRelease.name);
       return dispatch('receiveSaveReleaseSuccess', state.releasesPagePath);
     })
     .catch((error) => {
@@ -274,3 +268,9 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
       });
     });
 };
+
+export const setSearching = ({ commit }) => commit(types.SET_SEARCHING);
+export const setCreating = ({ commit }) => commit(types.SET_CREATING);
+
+export const setExistingTag = ({ commit }) => commit(types.SET_EXISTING_TAG);
+export const setNewTag = ({ commit }) => commit(types.SET_NEW_TAG);

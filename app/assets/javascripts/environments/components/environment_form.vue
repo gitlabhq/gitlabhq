@@ -17,7 +17,7 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['protectedEnvironmentSettingsPath'],
+  inject: { protectedEnvironmentSettingsPath: { default: '' } },
   props: {
     environment: {
       required: true,

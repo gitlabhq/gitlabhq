@@ -1,5 +1,5 @@
 import { isScopedLabel, scopedLabelKey } from '~/lib/utils/common_utils';
-import { DropdownVariant } from '../constants';
+import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 import * as types from './mutation_types';
 
 const transformLabels = (labels, selectedLabels) =>
@@ -43,7 +43,7 @@ export default {
   },
 
   [types.TOGGLE_DROPDOWN_CONTENTS](state) {
-    if (state.variant === DropdownVariant.Sidebar) {
+    if (state.variant === VARIANT_SIDEBAR) {
       state.showDropdownButton = !state.showDropdownButton;
     }
     state.showDropdownContents = !state.showDropdownContents;

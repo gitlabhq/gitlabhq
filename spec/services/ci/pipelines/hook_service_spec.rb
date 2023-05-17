@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Pipelines::HookService do
+RSpec.describe Ci::Pipelines::HookService, feature_category: :continuous_integration do
   describe '#execute_hooks' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }

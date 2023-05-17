@@ -5,7 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge when pipeline succeeds **(FREE)**
+# Auto-merge **(FREE)**
+
+> **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
+
+NOTE:
+[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** become **Set to auto-merge**.
 
 If you review a merge request and it's ready to merge, but the pipeline hasn't
 completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't
@@ -147,3 +152,11 @@ merge-request-pipeline-job:
 Instead, use branch (`push`) pipelines or merge request pipelines, when possible.
 For details on avoiding two pipelines for a single merge request, read the
 [`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines).
+
+### Merged results pipeline allows merge, despite a failed branch pipeline
+
+When [the **Pipelines must succeed** setting](#require-a-successful-pipeline-for-merge)
+is combined with
+[the **Merged results pipelines** feature](../../../ci/pipelines/merged_results_pipelines.md),
+failed branch pipeline may be ignored.
+[Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.

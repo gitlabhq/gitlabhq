@@ -16,11 +16,7 @@
           = s_('SetStatusModal|Edit status')
         - else
           = s_('SetStatusModal|Set status')
-  - if current_user_menu?(:start_trial)
-    %li
-      %a.trial-link{ href: trials_link_url }
-        = s_("CurrentUser|Start an Ultimate trial")
-        = emoji_icon('rocket')
+  = dispensable_render_if_exists 'layouts/header/start_trial'
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Edit profile"), profile_path, data: { qa_selector: 'edit_profile_link', track_action: "click_link", track_label: "user_edit_profile", track_property: "navigation_top" }
@@ -48,7 +44,7 @@
 
   - if Feature.enabled?(:super_sidebar_nav, current_user)
     %li.divider
-    .js-new-nav-toggle{ data: { enabled: current_user.use_new_navigation.to_s, endpoint: profile_preferences_url} }
+    .js-new-nav-toggle{ data: { enabled: show_super_sidebar?.to_s, endpoint: profile_preferences_url} }
 
   - if current_user_menu?(:sign_out)
     %li.divider

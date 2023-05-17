@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresPartition, type: :model do
+RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_category: :database do
+  let(:current_schema) { ActiveRecord::Base.connection.select_value("SELECT current_schema()") }
   let(:schema) { 'gitlab_partitions_dynamic' }
   let(:name) { '_test_partition_01' }
   let(:identifier) { "#{schema}.#{name}" }
@@ -56,8 +57,19 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model do
       expect(partitions.pluck(:name)).to eq([name, second_name])
     end
 
+    it 'returns the partitions if the parent table schema is included in the table name' do
+      partitions = described_class.for_parent_table("#{current_schema}._test_partitioned_table")
+
+      expect(partitions.count).to eq(2)
+      expect(partitions.pluck(:name)).to eq([name, second_name])
+    end
+
     it 'does not return partitions for tables not in the current schema' do
       expect(described_class.for_parent_table('_test_other_table').count).to eq(0)
+    end
+
+    it 'does not return partitions for tables if the schema is not the current' do
+      expect(described_class.for_parent_table('foo_bar._test_partitioned_table').count).to eq(0)
     end
   end
 

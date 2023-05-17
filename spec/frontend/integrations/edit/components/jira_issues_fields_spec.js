@@ -31,18 +31,13 @@ describe('JiraIssuesFields', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findEnableCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findEnableCheckboxDisabled = () =>
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
   const findProjectKey = () => wrapper.findComponent(GlFormInput);
   const findProjectKeyFormGroup = () => wrapper.findByTestId('project-key-form-group');
   const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
-  const setEnableCheckbox = async (isEnabled = true) =>
-    findEnableCheckbox().vm.$emit('input', isEnabled);
+  const setEnableCheckbox = (isEnabled = true) => findEnableCheckbox().vm.$emit('input', isEnabled);
 
   const assertProjectKeyState = (expectedStateValue) => {
     expect(findProjectKey().attributes('state')).toBe(expectedStateValue);
@@ -182,7 +177,7 @@ describe('JiraIssuesFields', () => {
         });
 
         describe('with no project key', () => {
-          it('sets Project Key `state` attribute to `undefined`', async () => {
+          it('sets Project Key `state` attribute to `undefined`', () => {
             assertProjectKeyState(undefined);
           });
         });

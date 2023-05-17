@@ -4,10 +4,12 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
 import LastCommit from '~/repository/components/last_commit.vue';
+import SignatureBadge from '~/commit/components/signature_badge.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
+import { FORK_UPDATED_EVENT } from '~/repository/constants';
 import { refMock } from '../mock_data';
 
 let wrapper;
@@ -20,7 +22,7 @@ const findUserAvatarLink = () => wrapper.findComponent(UserAvatarLink);
 const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findCommitRowDescription = () => wrapper.find('.commit-row-description');
-const findStatusBox = () => wrapper.find('.signature-badge');
+const findStatusBox = () => wrapper.findComponent(SignatureBadge);
 const findItemTitle = () => wrapper.find('.item-title');
 
 const defaultPipelineEdges = [
@@ -56,7 +58,7 @@ const createCommitData = ({
   pipelineEdges = defaultPipelineEdges,
   author = defaultAuthor,
   descriptionHtml = '',
-  signatureHtml = null,
+  signature = null,
   message = defaultMessage,
 }) => {
   return {
@@ -84,7 +86,7 @@ const createCommitData = ({
                   authorName: 'Test',
                   authorGravatar: 'https://test.com',
                   author,
-                  signatureHtml,
+                  signature,
                   pipelines: {
                     __typename: 'PipelineConnection',
                     edges: pipelineEdges,
@@ -99,7 +101,7 @@ const createCommitData = ({
   };
 };
 
-const createComponent = async (data = {}) => {
+const createComponent = (data = {}) => {
   Vue.use(VueApollo);
 
   const currentPath = 'path';
@@ -110,11 +112,13 @@ const createComponent = async (data = {}) => {
     apolloProvider: createMockApollo([[pathLastCommitQuery, mockResolver]]),
     propsData: { currentPath },
     mixins: [{ data: () => ({ ref: refMock }) }],
+    stubs: {
+      SignatureBadge,
+    },
   });
 };
 
 afterEach(() => {
-  wrapper.destroy();
   mockResolver = null;
 });
 
@@ -177,6 +181,25 @@ describe('Repository last commit component', () => {
     expect(findCommitRowDescription().exists()).toBe(false);
   });
 
+  describe('created', () => {
+    it('binds `epicsListScrolled` event listener via eventHub', () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
+      createComponent();
+
+      expect(eventHub.$on).toHaveBeenCalledWith(FORK_UPDATED_EVENT, expect.any(Function));
+    });
+  });
+
+  describe('beforeDestroy', () => {
+    it('unbinds `epicsListScrolled` event listener via eventHub', () => {
+      jest.spyOn(eventHub, '$off').mockImplementation(() => {});
+      createComponent();
+      wrapper.destroy();
+
+      expect(eventHub.$off).toHaveBeenCalledWith(FORK_UPDATED_EVENT, expect.any(Function));
+    });
+  });
+
   describe('when the description is present', () => {
     beforeEach(async () => {
       createComponent({ descriptionHtml: '&#x000A;Update ADOPTERS.md' });
@@ -204,23 +227,19 @@ describe('Repository last commit component', () => {
   });
 
   it('renders the signature HTML as returned by the backend', async () => {
+    const signatureResponse = {
+      __typename: 'GpgSignature',
+      gpgKeyPrimaryKeyid: 'xxx',
+      verificationStatus: 'VERIFIED',
+    };
     createComponent({
-      signatureHtml: `<a
-      class="btn signature-badge"
-      data-content="signature-content"
-      data-html="true"
-      data-placement="top"
-      data-title="signature-title"
-      data-toggle="popover"
-      role="button"
-      tabindex="0"
-      ><span class="gl-badge badge badge-pill badge-success md">Verified</span></a>`,
+      signature: {
+        ...signatureResponse,
+      },
     });
     await waitForPromises();
 
-    expect(findStatusBox().html()).toBe(
-      `<a class="btn signature-badge" data-content="signature-content" data-html="true" data-placement="top" data-title="signature-title" data-toggle="popover" role="button" tabindex="0"><span class="gl-badge badge badge-pill badge-success md">Verified</span></a>`,
-    );
+    expect(findStatusBox().props()).toMatchObject({ signature: signatureResponse });
   });
 
   it('sets correct CSS class if the commit message is empty', async () => {

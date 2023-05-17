@@ -89,8 +89,9 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
   />
    
   <code-instruction-stub
+    class="gl-w-20 gl-mt-5"
     copytext="Copy Maven command"
-    instruction="mvn dependency:get -Dartifact=appGroup:appName:appVersion"
+    instruction="mvn install"
     label="Maven Command"
     trackingaction="copy_maven_command"
     trackinglabel="code_instruction"

@@ -86,45 +86,50 @@ export default {
 </script>
 
 <template>
-  <section class="search-page-form gl-lg-display-flex gl-flex-direction-column">
-    <div class="gl-lg-display-flex gl-flex-direction-row gl-align-items-flex-end">
-      <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
-        <div
-          class="gl-sm-display-flex gl-flex-direction-row gl-justify-content-space-between gl-mb-4 gl-md-mb-0"
-        >
-          <label>{{ $options.i18n.searchLabel }}</label>
-          <template v-if="showSyntaxOptions">
-            <gl-button
-              category="tertiary"
-              variant="link"
-              size="small"
-              button-text-classes="gl-font-sm!"
-              @click="onToggleDrawer"
-              >{{ $options.i18n.syntaxOptionsLabel }}
-            </gl-button>
-            <markdown-drawer
-              ref="markdownDrawer"
-              :document-path="$options.SYNTAX_OPTIONS_DOCUMENT"
-            />
-          </template>
+  <section class="gl-p-5 gl-bg-gray-10 gl-border-b gl-border-t">
+    <div class="search-page-form gl-lg-display-flex gl-flex-direction-column">
+      <div class="gl-lg-display-flex gl-flex-direction-row gl-align-items-flex-end">
+        <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
+          <div
+            class="gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-mb-0 gl-md-mb-4"
+          >
+            <label class="gl-mb-1 gl-md-pb-2">{{ $options.i18n.searchLabel }}</label>
+            <template v-if="showSyntaxOptions">
+              <gl-button
+                category="tertiary"
+                variant="link"
+                size="small"
+                button-text-classes="gl-font-sm!"
+                @click="onToggleDrawer"
+                >{{ $options.i18n.syntaxOptionsLabel }}
+              </gl-button>
+              <markdown-drawer
+                ref="markdownDrawer"
+                :document-path="$options.SYNTAX_OPTIONS_DOCUMENT"
+              />
+            </template>
+          </div>
+          <gl-search-box-by-click
+            id="dashboard_search"
+            v-model="search"
+            name="search"
+            :placeholder="$options.i18n.searchPlaceholder"
+            @submit="applyQuery"
+          />
         </div>
-        <gl-search-box-by-click
-          id="dashboard_search"
-          v-model="search"
-          name="search"
-          :placeholder="$options.i18n.searchPlaceholder"
-          @submit="applyQuery"
-        />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-3">
-        <label class="gl-display-block">{{ $options.i18n.groupFieldLabel }}</label>
-        <group-filter :initial-data="groupInitialJson" />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-ml-3">
-        <label class="gl-display-block">{{ $options.i18n.projectFieldLabel }}</label>
-        <project-filter :initial-data="projectInitialJson" />
+        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-3">
+          <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
+            $options.i18n.groupFieldLabel
+          }}</label>
+          <group-filter :initial-data="groupInitialJson" />
+        </div>
+        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-ml-3">
+          <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
+            $options.i18n.projectFieldLabel
+          }}</label>
+          <project-filter :initial-data="projectInitialJson" />
+        </div>
       </div>
     </div>
-    <hr class="gl-mt-5 gl-mb-0 gl-border-gray-100" />
   </section>
 </template>

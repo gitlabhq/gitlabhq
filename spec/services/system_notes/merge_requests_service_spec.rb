@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::SystemNotes::MergeRequestsService do
+RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_review_workflow do
   include Gitlab::Routing
 
   let_it_be(:group) { create(:group) }

@@ -167,7 +167,7 @@ you must set `attribute_statements` in the SAML configuration to
 
 This error suggests you are signed in as a GitLab user but have already linked your SAML identity to a different GitLab user. Sign out and then try to sign in again using SAML, which should log you into GitLab with the linked user account.
 
-If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](index.md#unlinking-accounts).
+If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](index.md#unlink-accounts).
 
 ### Message: "SAML authentication failed: User has already been taken"
 
@@ -176,7 +176,7 @@ Here are possible causes and solutions:
 
 | Cause                                                                                          | Solution                                                                                                                                                                   |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](index.md#unlinking-accounts) from this GitLab account before attempting to sign in again. |
+| You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](index.md#unlink-accounts) from this GitLab account before attempting to sign in again. |
 | The `NameID` changes every time the user requests SSO identification | [Check the `NameID`](#verify-nameid) is not set with `Transient` format, or the `NameID` is not changing on subsequent requests.|
 
 ### Message: "SAML authentication failed: Email has already been taken"
@@ -196,7 +196,7 @@ User accounts are created in one of the following ways:
 
 Getting both of these errors at the same time suggests the `NameID` capitalization provided by the identity provider didn't exactly match the previous value for that user.
 
-This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlinking-accounts).
+This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlink-accounts).
 
 ### Message: "Request to link SAML account must be authorized"
 
@@ -209,7 +209,7 @@ initiated by the service provider and not only the identity provider.
 
 ### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account" **(PREMIUM SAAS)**
 
-A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account).
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 
 To resolve this problem, the user should check they are using the correct GitLab password to sign in. The user first needs
 to [reset their password](https://gitlab.com/users/password/new) if both:
@@ -233,7 +233,7 @@ This can then be compared to the `NameID` being sent by the identity provider by
 
 Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for self-managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
 
-For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
+For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 
 ### Users receive a 404 **(PREMIUM SAAS)**
 
@@ -244,8 +244,8 @@ If all users are receiving a `404` when attempting to sign in using SAML, confir
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).
 
-If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#configure-your-identity-provider), they may see a 404.
-As outlined in the [user access section](index.md#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
+If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#set-up-your-identity-provider), they may see a 404.
+As outlined in the [user access section](index.md#link-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
 If all users are receiving a `404` after signing in to the identity provider (IdP):
 
@@ -317,4 +317,4 @@ This error appears when you try to invite a user to a GitLab.com group (or subgr
 If you see this message after trying to invite a user to a group:
 
 1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
-1. Ask the user to [link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.
+1. Ask the user to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.

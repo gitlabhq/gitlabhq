@@ -41,11 +41,6 @@ export default {
       required: false,
       default: false,
     },
-    isRevert: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     primaryActionEventName: {
       type: String,
       required: false,
@@ -57,16 +52,16 @@ export default {
       checked: true,
       actionPrimary: {
         text: this.i18n.actionPrimaryText,
-        attributes: [
-          { variant: 'confirm' },
-          { category: 'primary' },
-          { 'data-testid': 'submit-commit' },
-          { 'data-qa-selector': 'submit_commit_button' },
-        ],
+        attributes: {
+          variant: 'confirm',
+          category: 'primary',
+          'data-testid': 'submit-commit',
+          'data-qa-selector': 'submit_commit_button',
+        },
       },
       actionCancel: {
         text: this.i18n.actionCancelText,
-        attributes: [{ 'data-testid': 'cancel-commit' }],
+        attributes: { 'data-testid': 'cancel-commit' },
       },
     };
   },
@@ -85,7 +80,6 @@ export default {
     ]),
   },
   mounted() {
-    this.setSelectedProject(this.targetProjectId);
     eventHub.$on(this.openModal, this.show);
   },
   methods: {
@@ -141,7 +135,7 @@ export default {
           :value="targetProjectId"
         />
 
-        <projects-dropdown :value="targetProjectName" @selectProject="setSelectedProject" />
+        <projects-dropdown :value="targetProjectName" @input="setSelectedProject" />
       </gl-form-group>
 
       <gl-form-group
@@ -151,7 +145,7 @@ export default {
       >
         <input id="start_branch" type="hidden" name="start_branch" :value="branch" />
 
-        <branches-dropdown :value="branch" :blanked="isRevert" @input="setBranch" />
+        <branches-dropdown :value="branch" @input="setBranch" />
       </gl-form-group>
 
       <gl-form-checkbox

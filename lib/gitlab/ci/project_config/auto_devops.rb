@@ -13,6 +13,10 @@ module Gitlab
           end
         end
 
+        def internal_include_prepended?
+          true
+        end
+
         def source
           :auto_devops_source
         end

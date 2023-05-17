@@ -16,6 +16,7 @@ module Gitlab
     DEVELOPER      = 30
     MAINTAINER     = 40
     OWNER          = 50
+    ADMIN          = 60
 
     # Branch protection settings
     PROTECTION_NONE          = 0

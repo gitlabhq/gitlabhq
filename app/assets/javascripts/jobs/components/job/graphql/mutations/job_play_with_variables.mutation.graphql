@@ -1,0 +1,11 @@
+#import "~/jobs/components/job/graphql/fragments/ci_job.fragment.graphql"
+
+mutation playJobWithVariables($id: CiBuildID!, $variables: [CiVariableInput!]) {
+  jobPlay(input: { id: $id, variables: $variables }) {
+    job {
+      ...BaseCiJob
+      webPath
+    }
+    errors
+  }
+}

@@ -11,17 +11,17 @@
         = preserve(markdown(commit.description, pipeline: :single_line))
 
 .info-well
-  .well-segment.pipeline-info{ class: "gl-align-items-baseline!" }
-    .icon-container
-      = sprite_icon('clock', css_class: 'gl-top-0!')
-    - jobs = n_('%d job', '%d jobs', @pipeline.total_size) % @pipeline.total_size
-    - if @pipeline.duration
-      = s_('Pipelines|%{jobs} %{ref_text} in %{duration}').html_safe % { jobs: jobs, ref_text: @pipeline.ref_text, duration: time_interval_in_words(@pipeline.duration) }
-    - else
-      = jobs
+  .well-segment.pipeline-info{ class: "gl-align-items-baseline! gl-flex-direction-column" }
+    %div
+      .icon-container
+        = sprite_icon('clock', css_class: 'gl-top-0!')
+      = n_('%d job', '%d jobs', @pipeline.total_size) % @pipeline.total_size
       = @pipeline.ref_text
-    - if @pipeline.queued_duration
-      = s_("Pipelines|(queued for %{queued_duration})") % { queued_duration: time_interval_in_words(@pipeline.queued_duration)}
+    - if @pipeline.finished_at
+      - duration = time_interval_in_words(@pipeline.duration)
+      - queued_duration = time_interval_in_words(@pipeline.queued_duration)
+      %span.gl-pl-7{ 'data-testid': 'pipeline-stats-text' }
+        = render_if_exists 'projects/pipelines/pipeline_stats_text', duration: duration, pipeline: @pipeline, queued_duration: queued_duration
 
   - if has_pipeline_badges?(@pipeline)
     .well-segment

@@ -3,7 +3,7 @@
 #
 # Usage:
 #   describe "..." do
-#   include Spec::Support::Helpers::Features::ResponsiveTableHelpers
+#   include Features::ResponsiveTableHelpers
 #     ...
 #
 #     expect(first_row.text).to include("John Doe")
@@ -13,20 +13,14 @@
 #   index starts at 1 as index 0 is expected to be the table header
 #
 #
-module Spec
-  module Support
-    module Helpers
-      module Features
-        module ResponsiveTableHelpers
-          def first_row
-            page.all('.gl-responsive-table-row')[1]
-          end
+module Features
+  module ResponsiveTableHelpers
+    def first_row
+      page.all('.gl-responsive-table-row')[1]
+    end
 
-          def second_row
-            page.all('.gl-responsive-table-row')[2]
-          end
-        end
-      end
+    def second_row
+      page.all('.gl-responsive-table-row')[2]
     end
   end
 end

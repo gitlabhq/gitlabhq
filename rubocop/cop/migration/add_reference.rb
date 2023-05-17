@@ -41,7 +41,7 @@ module RuboCop
         private
 
         def existing_table?(new_tables, table)
-          !new_tables.include?(table)
+          !new_tables.include?(table) # rubocop:disable Rails/NegateInclude
         end
 
         def create_table?(node)

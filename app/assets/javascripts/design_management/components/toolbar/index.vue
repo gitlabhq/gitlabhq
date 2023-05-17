@@ -60,7 +60,8 @@ export default {
     },
     image: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     isLoading: {
       type: Boolean,

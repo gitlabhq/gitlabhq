@@ -131,9 +131,9 @@ FactoryBot.define do
 
       trait(:source) do
         file_name { 'sample_1.2.3~alpha2.tar.xz' }
-        file_md5 { 'd5ca476e4229d135a88f9c729c7606c9' }
-        file_sha1 { 'c5cfc111ea924842a89a06d5673f07dfd07de8ca' }
-        file_sha256 { '40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da' }
+        file_md5 { 'adc69e57cda38d9bb7c8d59cacfb6869' }
+        file_sha1 { '4a9cb2a7c77a68dc0fe54ba8ecef133a7c949e9d' }
+        file_sha256 { 'c9d05185ca158bb804977fa9d7b922e8a0f644a2da41f99d2787dd61b1e2e2c5' }
 
         transient do
           file_metadatum_trait { :source }
@@ -142,9 +142,9 @@ FactoryBot.define do
 
       trait(:dsc) do
         file_name { 'sample_1.2.3~alpha2.dsc' }
-        file_md5 { 'ceccb6bb3e45ce6550b24234d4023e0f' }
-        file_sha1 { '375ba20ea1789e1e90d469c3454ce49a431d0442' }
-        file_sha256 { '81fc156ba937cdb6215362cc4bf6b8dc47be9b4253ba0f1a4ab10c7ea0c4c4e5' }
+        file_md5 { '629921cfc477bfa84adfd2ccaba89783' }
+        file_sha1 { '443c98a4cf4acd21e2259ae8f2d60fc9932de353' }
+        file_sha256 { 'f91070524a59bbb3a1f05a78409e92cb9ee86470b34018bc0b93bd5b2dd3868c' }
 
         transient do
           file_metadatum_trait { :dsc }
@@ -184,11 +184,22 @@ FactoryBot.define do
         end
       end
 
+      trait(:ddeb) do
+        file_name { 'sample-ddeb_1.2.3~alpha2_amd64.ddeb' }
+        file_md5 { '90d1107471eed48c73ad78b19ac83639' }
+        file_sha1 { '9c5af97cf8dfbe8126c807f540c88757f382b307' }
+        file_sha256 { 'a6bcc8a4b010f99ce0ea566ac69088e1910e754593c77f2b4942e3473e784e4d' }
+
+        transient do
+          file_metadatum_trait { :ddeb }
+        end
+      end
+
       trait(:buildinfo) do
         file_name { 'sample_1.2.3~alpha2_amd64.buildinfo' }
-        file_md5 { '12a5ac4f16ad75f8741327ac23b4c0d7' }
-        file_sha1 { '661f7507efa6fdd3763c95581d0baadb978b7ef5' }
-        file_sha256 { 'd0c169e9caa5b303a914b27b5adf69768fe6687d4925905b7d0cd9c0f9d4e56c' }
+        file_md5 { 'cc07ff4d741aec132816f9bd67c6875d' }
+        file_sha1 { 'bcc4ca85f17a31066b726cd4e04485ab24a682c6' }
+        file_sha256 { '5a3dac17c4ff0d49fa5f47baa973902b59ad2ee05147062b8ed8f19d196731d1' }
 
         transient do
           file_metadatum_trait { :buildinfo }
@@ -204,6 +215,7 @@ FactoryBot.define do
       end
 
       trait(:keep) do
+        # do not override attributes
       end
     end
 

@@ -29,11 +29,6 @@ describe('IdeSidebar', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders a sidebar', () => {
     wrapper = createComponent();
 

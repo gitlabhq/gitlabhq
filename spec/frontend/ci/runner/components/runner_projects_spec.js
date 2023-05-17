@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sprintf } from '~/locale';
 import {
   I18N_ASSIGNED_PROJECTS,
@@ -22,7 +22,7 @@ import runnerProjectsQuery from '~/ci/runner/graphql/show/runner_projects.query.
 
 import { runnerData, runnerProjectsData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;
@@ -56,7 +56,6 @@ describe('RunnerProjects', () => {
 
   afterEach(() => {
     mockRunnerProjectsQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('Requests runner projects', async () => {
@@ -90,7 +89,7 @@ describe('RunnerProjects', () => {
       await waitForPromises();
     });
 
-    it('Shows a heading', async () => {
+    it('Shows a heading', () => {
       const expected = sprintf(I18N_ASSIGNED_PROJECTS, { projectCount: mockProjects.length });
 
       expect(findHeading().text()).toBe(expected);
@@ -195,7 +194,7 @@ describe('RunnerProjects', () => {
       expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(false);
       expect(findRunnerAssignedItems().length).toBe(0);
 
-      expect(findRunnerPagination().attributes('disabled')).toBe('true');
+      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
       expect(findGlSearchBoxByType().props('isLoading')).toBe(true);
     });
   });

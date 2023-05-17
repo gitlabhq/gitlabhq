@@ -16,10 +16,6 @@ describe('BoardConfigurationOptions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const backlogListCheckbox = () => wrapper.find('[data-testid="backlog-list-checkbox"]');
   const closedListCheckbox = () => wrapper.find('[data-testid="closed-list-checkbox"]');
 
@@ -66,8 +62,8 @@ describe('BoardConfigurationOptions', () => {
   it('renders checkboxes disabled when user does not have edit rights', () => {
     createComponent({ readonly: true });
 
-    expect(closedListCheckbox().attributes('disabled')).toBe('true');
-    expect(backlogListCheckbox().attributes('disabled')).toBe('true');
+    expect(closedListCheckbox().attributes('disabled')).toBeDefined();
+    expect(backlogListCheckbox().attributes('disabled')).toBeDefined();
   });
 
   it('renders checkboxes enabled when user has edit rights', () => {

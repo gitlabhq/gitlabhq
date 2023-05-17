@@ -55,11 +55,11 @@ module Gitlab
       def repository_for(container)
         return unless container
 
-        repository_resolver.call(container)
+        repository_resolver.call(select_container(container))
       end
 
       def project_for(container)
-        return container unless project_resolver
+        return select_container(container) unless project_resolver
 
         project_resolver.call(container)
       end
@@ -73,6 +73,10 @@ module Gitlab
       end
 
       private
+
+      def select_container(container)
+        container.is_a?(::DesignManagement::Repository) ? container.project : container
+      end
 
       def default_container_class
         Project

@@ -12,6 +12,8 @@ class RemoveClustersApplicationsJobInstances < Gitlab::Database::Migration[2.0]
     ClusterWaitForIngressIpAddressWorker
   ]
 
+  disable_ddl_transaction!
+
   def up
     sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
   end

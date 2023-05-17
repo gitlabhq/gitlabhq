@@ -13,7 +13,6 @@ identifiers:
 product_section:
 product_stage:
 product_group:
-product_category:
 milestone: "<%= milestone %>"
 introduced_by_url:
 distributions:

@@ -25,7 +25,7 @@ RSpec.describe 'Project Merge Requests RSS', feature_category: :code_review_work
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's feed token"
+    it_behaves_like "it has an RSS link with current_user's feed token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
@@ -34,7 +34,7 @@ RSpec.describe 'Project Merge Requests RSS', feature_category: :code_review_work
       visit path
     end
 
-    it_behaves_like "it has an RSS button without a feed token"
+    it_behaves_like "it has an RSS link without a feed token"
     it_behaves_like "an autodiscoverable RSS feed without a feed token"
   end
 

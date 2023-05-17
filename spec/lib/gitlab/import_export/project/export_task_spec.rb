@@ -10,14 +10,14 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout do
   let(:measurement_enabled) { false }
   let(:file_path) { 'spec/fixtures/gitlab/import_export/test_project_export.tar.gz' }
   let(:project) { create(:project, creator: user, namespace: user.namespace) }
-  let(:project_name) { project.name }
+  let(:project_path) { project.path }
   let(:rake_task) { described_class.new(task_params) }
 
   let(:task_params) do
     {
       username: username,
       namespace_path: namespace_path,
-      project_path: project_name,
+      project_path: project_path,
       file_path: file_path,
       measurement_enabled: measurement_enabled
     }
@@ -48,10 +48,10 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout do
   end
 
   context 'when project is not found' do
-    let(:project_name) { 'invalid project name' }
+    let(:project_path) { 'invalid project path' }
 
     it 'logs an error' do
-      expect { subject }.to output(/Project with path: #{project_name} was not found. Please provide correct project path/).to_stdout
+      expect { subject }.to output(/Project with path: #{project_path} was not found. Please provide correct project path/).to_stdout
     end
 
     it 'returns false' do

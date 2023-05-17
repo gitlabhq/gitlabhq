@@ -82,9 +82,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to project_labels_path(@project),
-                status: :found,
-                notice: 'Label was removed'
+    redirect_to project_labels_path(@project), status: :found, notice: 'Label was removed'
   end
 
   def remove_priority
@@ -138,8 +136,9 @@ class Projects::LabelsController < Projects::ApplicationController
 
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project),
-                      notice: _('Failed to promote label due to internal error. Please contact administrators.'))
+          redirect_to(
+            project_labels_path(@project),
+            notice: _('Failed to promote label due to internal error. Please contact administrators.'))
         end
         format.js
       end
@@ -165,13 +164,14 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def find_labels
-    @available_labels ||=
-      LabelsFinder.new(current_user,
-                       project_id: @project.id,
-                       include_ancestor_groups: true,
-                       search: params[:search],
-                       subscribed: params[:subscribed],
-                       sort: sort).execute
+    @available_labels ||= LabelsFinder.new(
+      current_user,
+      project_id: @project.id,
+      include_ancestor_groups: true,
+      search: params[:search],
+      subscribed: params[:subscribed],
+      sort: sort
+    ).execute
   end
 
   def sort

@@ -74,10 +74,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       createComponent();
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('shows a commit message input with the correct label', () => {
       expect(wrapper.findByTestId('commit_message').exists()).toBe(true);
       expect(wrapper.find('label[for="commit_message"]').text()).toBe(i18n.commitMessageLabel);
@@ -121,10 +117,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       expect(wrapper.findByTestId('load-error').exists()).toBe(true);
       expect(wrapper.findByTestId('load-error').text()).toBe(i18n.errors.loadError);
     });
-
-    afterEach(() => {
-      wrapper.destroy();
-    });
   });
 
   describe('commit result handling', () => {
@@ -136,7 +128,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         await waitForPromises();
       });
 
-      it('will not show an error', async () => {
+      it('will not show an error', () => {
         expect(wrapper.findByTestId('commit-error').exists()).not.toBe(true);
       });
 
@@ -151,7 +143,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       afterEach(() => {
-        wrapper.destroy();
         jest.clearAllMocks();
       });
     });
@@ -164,7 +155,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         await waitForPromises();
       });
 
-      it('will show an error', async () => {
+      it('will show an error', () => {
         expect(wrapper.findByTestId('commit-error').exists()).toBe(true);
         expect(wrapper.findByTestId('commit-error').text()).toBe(i18n.errors.commitError);
       });
@@ -178,7 +169,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       afterEach(() => {
-        wrapper.destroy();
         jest.clearAllMocks();
       });
     });
@@ -246,15 +236,11 @@ describe('Pipeline Wizard - Commit Page', () => {
           await waitForPromises();
         });
 
-        afterEach(() => {
-          wrapper.destroy();
-        });
-
-        it('sets up without error', async () => {
+        it('sets up without error', () => {
           expect(consoleSpy).not.toHaveBeenCalled();
         });
 
-        it('does not show a load error', async () => {
+        it('does not show a load error', () => {
           expect(wrapper.findByTestId('load-error').exists()).not.toBe(true);
         });
 

@@ -55,6 +55,12 @@ For macOS users, use the user's `$HOME/gitlab` directory:
 export GITLAB_HOME=$HOME/gitlab
 ```
 
+The `GITLAB_HOME` environment variable should be appended to your shell's profile so it is
+applied on all future terminal sessions:
+
+- Bash: `~/.bash_profile`
+- ZSH: `~/.zshrc`
+
 The GitLab container uses host mounted volumes to store persistent data:
 
 | Local location       | Container location | Usage                                       |
@@ -305,7 +311,7 @@ point to a valid URL.
 To receive emails from GitLab you have to configure the
 [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html) because the GitLab Docker image doesn't
 have an SMTP server installed. You may also be interested in
-[enabling HTTPS](https://docs.gitlab.com/omnibus/settings/ssl.html).
+[enabling HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 After you make all the changes you want, you will need to restart the container to reconfigure GitLab:
 
@@ -456,6 +462,31 @@ web browser under `<hostIP>:8929` and push using SSH under the port `2289`.
 A `docker-compose.yml` example that uses different ports can be found in the
 [Docker compose](#install-gitlab-using-docker-compose) section.
 
+### Configure multiple database connections
+
+In [GitLab 16.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6850),
+GitLab defaults to using two database connections that point to the same PostgreSQL database.
+
+If, for any reason, you wish to switch back to single database connection:
+
+1. Edit `/etc/gitlab/gitlab.rb` inside the container:
+
+   ```shell
+   sudo docker exec -it gitlab editor /etc/gitlab/gitlab.rb
+   ```
+
+1. Add the following line:
+
+   ```ruby
+   gitlab_rails['databases']['ci']['enable'] = false
+   ```
+
+1. Restart the container:
+
+```shell
+sudo docker restart gitlab
+```
+
 ## Upgrade
 
 In most cases, upgrading GitLab is as easy as downloading the newest Docker
@@ -484,6 +515,12 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
 
    ```shell
    sudo docker pull gitlab/gitlab-ee:latest
+   ```
+
+1. Ensure that the `GITLAB_HOME` environment variable is [defined](#set-up-the-volumes-location):
+
+   ```shell
+   echo $GITLAB_HOME
    ```
 
 1. Create the container once again with the

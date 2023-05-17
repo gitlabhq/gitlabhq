@@ -1,6 +1,5 @@
 import { __ } from '~/locale';
 
-export const INCIDENT_TYPE = 'incident';
 export const INCIDENT_TYPE_PATH = 'issues/incident';
 export const ISSUE_STATE_EVENT_CLOSE = 'CLOSE';
 export const ISSUE_STATE_EVENT_REOPEN = 'REOPEN';
@@ -18,3 +17,5 @@ export const issueState = {
   issueType: undefined,
   isDirty: false,
 };
+
+export const NEW_ACTIONS_POPOVER_KEY = 'new-actions-popover-viewed';

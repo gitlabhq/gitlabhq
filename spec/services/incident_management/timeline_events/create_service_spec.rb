@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEvents::CreateService do
+RSpec.describe IncidentManagement::TimelineEvents::CreateService, feature_category: :incident_management do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
   let_it_be(:project) { create(:project) }
@@ -57,7 +57,6 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:namespace) { project.namespace.reload }
         let(:category) { described_class.to_s }
         let(:user) { current_user }
@@ -286,7 +285,6 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:namespace) { project.namespace.reload }
         let(:category) { described_class.to_s }
         let(:user) { current_user }

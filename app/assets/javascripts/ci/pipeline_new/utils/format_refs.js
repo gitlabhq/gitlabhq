@@ -5,6 +5,10 @@ function convertToListBoxItems(items) {
   return items.map(({ shortName, fullName }) => ({ text: shortName, value: fullName }));
 }
 
+export function formatToShortName(ref) {
+  return ref.replace(/^refs\/(tags|heads)\//, '');
+}
+
 export function formatRefs(refs, type) {
   let fullName;
 

@@ -29,11 +29,6 @@ describe('CI Templates', () => {
   const findTemplateName = () => wrapper.findByTestId('template-name');
   const findTemplateLogo = () => wrapper.findByTestId('template-logo');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('renders template list', () => {
     beforeEach(() => {
       createWrapper();

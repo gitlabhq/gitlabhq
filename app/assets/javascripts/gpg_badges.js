@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';

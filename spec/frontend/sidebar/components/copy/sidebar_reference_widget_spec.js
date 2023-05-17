@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import SidebarReferenceWidget from '~/sidebar/components/copy/sidebar_reference_widget.vue';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
@@ -39,10 +39,6 @@ describe('Sidebar Reference Widget', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when reference is loading', () => {
     it('sets CopyableField `is-loading` prop to `true`', () => {
       createComponent({ referenceQueryHandler: jest.fn().mockReturnValue(new Promise(() => {})) });
@@ -52,7 +48,7 @@ describe('Sidebar Reference Widget', () => {
 
   describe.each([
     [TYPE_ISSUE, issueReferenceQuery],
-    [IssuableType.MergeRequest, mergeRequestReferenceQuery],
+    [TYPE_MERGE_REQUEST, mergeRequestReferenceQuery],
   ])('when issuableType is %s', (issuableType, referenceQuery) => {
     it('sets CopyableField `value` prop to reference value', async () => {
       createComponent({

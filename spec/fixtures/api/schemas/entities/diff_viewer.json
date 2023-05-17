@@ -25,6 +25,12 @@
       "type": [
         "boolean"
       ]
+    },
+    "whitespace_only": {
+      "type": [
+        "boolean",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

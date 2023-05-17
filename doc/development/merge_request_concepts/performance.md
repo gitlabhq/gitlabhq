@@ -158,7 +158,7 @@ query. This in turn makes it much harder for this code to overload a database.
 
 ## Use read replicas when possible
 
-In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../../administration/postgresql/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
+In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../database/load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
 
 By default, queries use read-only replicas, but due to
 [primary sticking](../../administration/postgresql/database_load_balancing.md#primary-sticking), GitLab uses the
@@ -211,7 +211,7 @@ By default, this `Gitlab::SQL::CTE` class forces materialization through adding 
 (this behavior is implemented using a custom Arel node `Gitlab::Database::AsWithMaterialized` under the surface).
 
 WARNING:
-Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.
+Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 ## Cached Queries
 
@@ -260,7 +260,7 @@ It re-instantiates project object for each build, instead of using the same in-m
 In this particular case the workaround is fairly easy:
 
 ```ruby
-ActiveRecord::Associations::Preloader.new.preload(pipeline, [builds: :project])
+ActiveRecord::Associations::Preloader.new(records: pipeline, associations: [builds: :project]).call
 
 pipeline.builds.each do |build|
   build.to_json(only: [:name], include: [project: { only: [:name]}])

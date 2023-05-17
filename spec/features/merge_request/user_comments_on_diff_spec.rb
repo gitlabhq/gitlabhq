@@ -44,7 +44,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
 
       context 'in multiple files' do
-        it 'toggles comments' do
+        it 'toggles comments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393518' do
           first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
           first_root_element = first_line_element.ancestor('[data-path]')
           click_diff_line(first_line_element)
@@ -248,7 +248,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       page.within('.diff-file:nth-of-type(1) .discussion .note') do
         find('.more-actions').click
-        find('.more-actions .dropdown-menu li', match: :first)
+        find('.more-actions li', match: :first)
         find('.js-note-delete').click
       end
 

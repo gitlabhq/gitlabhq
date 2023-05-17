@@ -14,8 +14,8 @@ class IssuePolicy < IssuablePolicy
 
   desc "Project belongs to a group, crm is enabled and user can read contacts in the root group"
   condition(:can_read_crm_contacts, scope: :subject) do
-    subject.project.group&.crm_enabled? &&
-      (@user&.can?(:read_crm_contact, @subject.project.root_ancestor) || @user&.support_bot?)
+    subject_container&.crm_enabled? &&
+      (@user&.can?(:read_crm_contact, subject_container.root_ancestor) || @user&.support_bot?)
   end
 
   desc "Issue is confidential"
@@ -43,6 +43,7 @@ class IssuePolicy < IssuablePolicy
 
   rule { confidential & ~can_read_confidential }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
+    prevent(*create_read_update_admin_destroy(:work_item))
     prevent :read_issue_iid
   end
 
@@ -59,6 +60,7 @@ class IssuePolicy < IssuablePolicy
   rule { ~can?(:read_issue) }.policy do
     prevent :read_design
     prevent :create_design
+    prevent :update_design
     prevent :destroy_design
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::CreateActivityEventService do
+RSpec.describe Clusters::Agents::CreateActivityEventService, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
   let_it_be(:token) { create(:cluster_agent_token, agent: agent) }
   let_it_be(:user) { create(:user) }
@@ -39,6 +39,17 @@ RSpec.describe Clusters::Agents::CreateActivityEventService do
         .with(1.hour.from_now.change(min: agent.id % 60), agent.id)
 
       subject
+    end
+
+    context 'when activity event creation fails' do
+      let(:params) { {} }
+
+      it 'tracks the exception without raising' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(ActiveRecord::RecordInvalid), agent_id: agent.id)
+
+        subject
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 ---
 stage: Analytics
-group: Product Intelligence
+group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -27,7 +27,7 @@ There are several other benefits to enabling Service Ping:
 
 - Analyze the users' activities over time of your GitLab installation.
 - A [DevOps Score](../analytics/dev_ops_reports.md#devops-score) to give you an overview of your entire instance's adoption of concurrent DevOps from planning to monitoring.
-- More proactive support (assuming that our [Customer Success Managers (CSMs)](https://about.gitlab.com/job-families/sales/customer-success-management/) and support organization used the data to deliver more value).
+- More proactive support (assuming that our [Customer Success Managers (CSMs)](https://handbook.gitlab.com/job-families/sales/customer-success-management/) and support organization used the data to deliver more value).
 - Insight and advice into how to get the most value out of your investment in GitLab.
 - Reports that show how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Participation in our [Registration Features Program](#registration-features-program) to receive free paid features.
@@ -49,6 +49,14 @@ tier. Users can continue to access the features in a paid tier without sharing u
 
 - [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit).
 - [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-group-access-by-ip-address).
+
+### Features available in 16.0 and later
+
+- [View description change history](../../../user/discussions/index.md#view-description-change-history).
+- [Maintenance mode](../../../administration/maintenance_mode/index.md).
+- [Configurable issue boards](../../project/issue_board.md#configurable-issue-boards).
+- [Coverage-guided fuzz testing](../../application_security/coverage_fuzzing/index.md).
+- [Password complexity requirements](../../../user/admin_area/settings/sign_up_restrictions.md#password-complexity-requirements).
 
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.
@@ -118,6 +126,11 @@ To enable or disable Service Ping and version check:
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
 1. Select **Save changes**.
+
+NOTE:
+Service Ping settings only control whether the data is being shared with GitLab, or used only internally.
+Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
+The payload is available in the [Service Usage data](#manually-upload-service-ping-payload) admin section.
 
 ## Disable usage statistics with the configuration file
 
@@ -194,6 +207,11 @@ To upload the payload manually:
 The uploaded file is encrypted and sent using secure HTTPS protocol. HTTPS creates a secure
 communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
 
+If there are problems with the manual upload:
+
+1. Open a confidential issue in the [security fork of version app project](https://gitlab.com/gitlab-org/security/version.gitlab.com).
+1. Attach the JSON payload if possible.
+1. Tag `@gitlab-org/analytics-section/product-intelligence` who will triage the issue.
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

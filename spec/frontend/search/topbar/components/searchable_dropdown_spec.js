@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
@@ -39,10 +39,6 @@ describe('Global Search Searchable Dropdown', () => {
       }),
     );
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownSearch = () => findGlDropdown().findComponent(GlSearchBoxByType);
@@ -133,9 +129,7 @@ describe('Global Search Searchable Dropdown', () => {
       describe(`when search is ${searchText} and frequentItems length is ${frequentItems.length}`, () => {
         beforeEach(() => {
           createComponent({}, { frequentItems });
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({ searchText });
+          findGlDropdownSearch().vm.$emit('input', searchText);
         });
 
         it(`should${length ? '' : ' not'} render frequent dropdown items`, () => {
@@ -191,28 +185,33 @@ describe('Global Search Searchable Dropdown', () => {
     });
 
     describe('opening the dropdown', () => {
-      describe('for the first time', () => {
-        beforeEach(() => {
-          findGlDropdown().vm.$emit('show');
-        });
-
-        it('$emits @search and @first-open', () => {
-          expect(wrapper.emitted('search')[0]).toStrictEqual([wrapper.vm.searchText]);
-          expect(wrapper.emitted('first-open')[0]).toStrictEqual([]);
-        });
+      beforeEach(() => {
+        findGlDropdown().vm.$emit('show');
       });
 
-      describe('not for the first time', () => {
-        beforeEach(() => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({ hasBeenOpened: true });
-          findGlDropdown().vm.$emit('show');
+      it('$emits @search and @first-open on the first open', () => {
+        expect(wrapper.emitted('search')[0]).toStrictEqual(['']);
+        expect(wrapper.emitted('first-open')[0]).toStrictEqual([]);
+      });
+
+      describe('when the dropdown has been opened', () => {
+        it('$emits @search with the searchText', async () => {
+          const searchText = 'foo';
+
+          findGlDropdownSearch().vm.$emit('input', searchText);
+          await nextTick();
+
+          expect(wrapper.emitted('search')[1]).toStrictEqual([searchText]);
+          expect(wrapper.emitted('first-open')).toHaveLength(1);
         });
 
-        it('$emits @search and not @first-open', () => {
-          expect(wrapper.emitted('search')[0]).toStrictEqual([wrapper.vm.searchText]);
-          expect(wrapper.emitted('first-open')).toBeUndefined();
+        it('does not emit @first-open again', async () => {
+          expect(wrapper.emitted('first-open')).toHaveLength(1);
+
+          findGlDropdownSearch().vm.$emit('input');
+          await nextTick();
+
+          expect(wrapper.emitted('first-open')).toHaveLength(1);
         });
       });
     });

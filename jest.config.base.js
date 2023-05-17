@@ -1,6 +1,15 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
+
+const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
+  throw new Error(
+    `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
+  );
+}
+const USE_VUE_3 = EXPLICIT_VUE_VERSION === '3';
+
 const { TEST_HOST } = require('./spec/frontend/__helpers__/test_constants');
 
 module.exports = (path, options = {}) => {
@@ -11,6 +20,45 @@ module.exports = (path, options = {}) => {
   } = options;
 
   const reporters = ['default'];
+  const VUE_JEST_TRANSFORMER = USE_VUE_3 ? '@vue/vue3-jest' : '@vue/vue2-jest';
+  const setupFilesAfterEnv = [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'];
+  const vueModuleNameMappers = {};
+  const globals = {};
+
+  if (EXPLICIT_VUE_VERSION) {
+    Object.assign(vueModuleNameMappers, {
+      '^@gitlab/ui/dist/([^.]*)$': [
+        '<rootDir>/node_modules/@gitlab/ui/src/$1.vue',
+        '<rootDir>/node_modules/@gitlab/ui/src/$1.js',
+      ],
+      '^@gitlab/ui$': '<rootDir>/node_modules/@gitlab/ui/src/index.js',
+    });
+  }
+
+  if (USE_VUE_3) {
+    setupFilesAfterEnv.unshift(`<rootDir>/${path}/vue_compat_test_setup.js`);
+    Object.assign(vueModuleNameMappers, {
+      '^vue$': '@vue/compat',
+      '^@vue/test-utils$': '@vue/test-utils-vue3',
+
+      // Library wrappers
+      '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
+      '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
+      '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
+    });
+    Object.assign(globals, {
+      'vue-jest': {
+        experimentalCSSCompile: false,
+        compiler: require.resolve('./config/vue3migration/compiler'),
+        compilerOptions: {
+          whitespace: 'preserve',
+          compatConfig: {
+            MODE: 2,
+          },
+        },
+      },
+    });
+  }
 
   // To have consistent date time parsing both in local and CI environments we set
   // the timezone of the Node process. https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27738
@@ -42,6 +90,10 @@ module.exports = (path, options = {}) => {
   }
 
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';
+  const TEST_FIXTURES_HOME = '/tmp/tests/frontend/fixtures';
+  const TEST_FIXTURES_HOME_EE = '/tmp/tests/frontend/fixtures-ee';
+  const TEST_FIXTURES_STATIC_HOME = '/spec/frontend/fixtures/static';
+  const TEST_FIXTURES_RAW_LOADER_PATTERN = `(${TEST_FIXTURES_HOME}|${TEST_FIXTURES_STATIC_HOME}).*\\.html$`;
 
   const moduleNameMapper = {
     '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
@@ -57,8 +109,8 @@ module.exports = (path, options = {}) => {
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
-    [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
-    '^test_fixtures_static(/.*)$': '<rootDir>/spec/frontend/fixtures/static$1',
+    [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME}$1`,
+    '^test_fixtures_static(/.*)$': `<rootDir>${TEST_FIXTURES_STATIC_HOME}$1`,
     '\\.(jpg|jpeg|png|svg|css)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '\\.svg\\?url$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '^public(/.*)$': '<rootDir>/public$1',
@@ -68,7 +120,9 @@ module.exports = (path, options = {}) => {
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
     '^@sentry/browser$': '<rootDir>/app/assets/javascripts/sentry/sentry_browser_wrapper.js',
+    '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     ...extModuleNameMapper,
+    ...vueModuleNameMappers,
   };
 
   const collectCoverageFrom = ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'];
@@ -84,7 +138,7 @@ module.exports = (path, options = {}) => {
       '^ee_else_ce_jest/(.*)$': specDirEE,
       '^any_else_ce(/.*)$': rootDirEE,
       '^jh_else_ee(/.*)$': rootDirEE,
-      [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
+      [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME_EE}$1`,
       ...extModuleNameMapperEE,
     });
 
@@ -143,8 +197,10 @@ module.exports = (path, options = {}) => {
   ];
 
   const transformIgnoreNodeModules = [
+    'vue-test-utils-compat',
     '@gitlab/ui',
     '@gitlab/favicon-overlay',
+    '@gitlab/cluster-client',
     'bootstrap-vue',
     'three',
     'monaco-editor',
@@ -159,13 +215,15 @@ module.exports = (path, options = {}) => {
     'lowlight',
     'vscode-languageserver-types',
     'yaml',
+    'dexie',
     ...gfmParserDependencies,
   ];
 
   return {
+    globals,
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml', 'yml'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml', 'yml', 'html'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -176,17 +234,18 @@ module.exports = (path, options = {}) => {
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,
     resolver: './jest_resolver.js',
-    setupFilesAfterEnv: [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'],
+    setupFilesAfterEnv,
     restoreMocks: true,
     slowTestThreshold: process.env.CI ? 6000 : 500,
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
-      '^.+\\.vue$': '@vue/vue2-jest',
+      '^.+\\.vue$': VUE_JEST_TRANSFORMER,
       'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
         './spec/frontend/__helpers__/yaml_transformer.js',
-      '^.+\\.(md|zip|png|yml|yaml)$': './spec/frontend/__helpers__/raw_transformer.js',
+      '^.+\\.(md|zip|png|yml|yaml|sh|ps1)$': './spec/frontend/__helpers__/raw_transformer.js',
+      [TEST_FIXTURES_RAW_LOADER_PATTERN]: './spec/frontend/__helpers__/raw_transformer.js',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     fakeTimers: {

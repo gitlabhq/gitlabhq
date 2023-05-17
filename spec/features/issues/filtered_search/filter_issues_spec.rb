@@ -61,7 +61,7 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
   it 'filters by all available tokens' do
     search_term = 'issue'
     select_tokens 'Assignee', '=', user.username, 'Author', '=', user.username, 'Label', '=', caps_sensitive_label.title, 'Milestone', '=', milestone.title
-    send_keys search_term, :enter
+    send_keys search_term, :enter, :enter
 
     expect_assignee_token(user.name)
     expect_author_token(user.name)
@@ -261,7 +261,7 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search_term = 'bug'
         select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '=', milestone.title
-        send_keys search_term, :enter
+        send_keys search_term, :enter, :enter
 
         expect_label_token(bug_label.title)
         expect_label_token(caps_sensitive_label.title)
@@ -275,7 +275,7 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
       it 'filters issues by searched label, label2, author, assignee, not included in a milestone' do
         search_term = 'bug'
         select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '!=', milestone.title
-        send_keys search_term, :enter
+        send_keys search_term, :enter, :enter
 
         expect_label_token(bug_label.title)
         expect_label_token(caps_sensitive_label.title)
@@ -488,13 +488,13 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
     context 'searched text with other filters' do
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
         click_filtered_search_bar
-        send_keys 'bug '
+        send_keys 'bug', :enter
         select_tokens 'Author', '=', user.username
-        send_keys 'report '
+        send_keys 'report', :enter
         select_tokens 'Label', '=', bug_label.title
         select_tokens 'Label', '=', caps_sensitive_label.title
         select_tokens 'Milestone', '=', milestone.title
-        send_keys 'foo', :enter
+        send_keys 'foo', :enter, :enter
 
         expect_issues_list_count(1)
         expect_search_term('bug report foo')

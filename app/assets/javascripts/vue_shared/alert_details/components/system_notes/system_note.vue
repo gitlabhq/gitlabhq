@@ -33,7 +33,11 @@ export default {
 </script>
 
 <template>
-  <li :id="noteAnchorId" class="timeline-entry note system-note note-wrapper gl-p-0!">
+  <li
+    :id="noteAnchorId"
+    class="timeline-entry note system-note note-wrapper gl-p-0!"
+    data-qa-selector="alert_system_note_container"
+  >
     <div class="gl-display-inline-flex gl-align-items-center gl-relative">
       <div
         class="gl-display-inline gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-box-sizing-content-box gl-p-3 gl-mt-n2 gl-mr-6"

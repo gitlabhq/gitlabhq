@@ -32,11 +32,6 @@ describe('ExpirationDropdown', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('structure', () => {
     it('has a form-select component', () => {
       mountComponent();

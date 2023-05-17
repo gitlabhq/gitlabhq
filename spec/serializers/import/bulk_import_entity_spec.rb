@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImportEntity do
+RSpec.describe Import::BulkImportEntity, feature_category: :importers do
   let(:importable_data) do
     {
       'id' => 1,

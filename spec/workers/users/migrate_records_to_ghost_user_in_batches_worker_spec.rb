@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker do
+RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker, feature_category: :seat_cost_management do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }

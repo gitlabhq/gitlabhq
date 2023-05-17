@@ -16,10 +16,6 @@ module Metrics
           ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
         ].freeze,
 
-        ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
-          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
-        ].freeze,
-
         ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH => [
           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
         ].freeze

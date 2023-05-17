@@ -42,7 +42,7 @@ class Badge < ApplicationRecord
   private
 
   def build_rendered_url(url, project = nil)
-    return url unless valid? && project
+    return url unless project
 
     Gitlab::StringPlaceholderReplacer.replace_string_placeholders(url, PLACEHOLDERS_REGEX) do |arg|
       replace_placeholder_action(PLACEHOLDERS[arg], project)

@@ -59,10 +59,6 @@ describe('IDE TerminalView', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders empty state', async () => {
     await factory();
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_category: :importers do
   subject(:worker) { described_class.new }
 
   let(:project) { create(:project) }

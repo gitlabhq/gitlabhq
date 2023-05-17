@@ -22,11 +22,13 @@ resource :profile, only: [:show, :update] do
     end
 
     resource :notifications, only: [:show, :update] do
-      scope(path: 'groups/*id',
-            id: Gitlab::PathRegex.full_namespace_route_regex,
-            as: :group,
-            controller: :groups,
-            constraints: { format: /(html|json)/ }) do
+      scope(
+        path: 'groups/*id',
+        id: Gitlab::PathRegex.full_namespace_route_regex,
+        as: :group,
+        controller: :groups,
+        constraints: { format: /(html|json)/ }
+      ) do
         patch '/', action: :update
         put '/', action: :update
       end
@@ -39,7 +41,7 @@ resource :profile, only: [:show, :update] do
     end
     resource :preferences, only: [:show, :update]
 
-    resources :saved_replies, only: [:index], action: :index
+    resources :comment_templates, only: [:index, :show], action: :index
 
     resources :keys, only: [:index, :show, :create, :destroy] do
       member do
@@ -75,14 +77,12 @@ resource :profile, only: [:show, :update] do
 
     resource :two_factor_auth, only: [:show, :create, :destroy] do
       member do
-        post :create_u2f
         post :codes
         patch :skip
         post :create_webauthn
       end
     end
 
-    resources :u2f_registrations, only: [:destroy]
     resources :webauthn_registrations, only: [:destroy]
   end
 end

@@ -16,15 +16,6 @@ export const setApiBaseURL = (baseURL = null) => {
   axiosInstance.defaults.baseURL = baseURL;
 };
 
-export const addSubscription = async (addPath, namespace) => {
-  const jwt = await getJwt();
-
-  return axiosInstance.post(addPath, {
-    jwt,
-    namespace_path: namespace,
-  });
-};
-
 export const removeSubscription = async (removePath) => {
   const jwt = await getJwt();
 

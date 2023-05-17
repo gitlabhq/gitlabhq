@@ -1,0 +1,8 @@
+---
+name: review_apps_redeploy_mr_widget
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118260
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407456
+milestone: '15.11'
+type: development
+group: group::pipeline execution
+default_enabled: false

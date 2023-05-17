@@ -4,8 +4,9 @@ import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 export default TaskItem.extend({
   addOptions() {
     return {
+      ...this.parent?.(),
       nested: true,
-      HTMLAttributes: {},
+      HTMLAttributes: { dir: 'auto' },
     };
   },
 

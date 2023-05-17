@@ -14,7 +14,7 @@ variables:
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
-  DS_MAJOR_VERSION: 3
+  DS_MAJOR_VERSION: 4
   DS_SCHEMA_MODEL: 15
 
 dependency_scanning:
@@ -56,15 +56,16 @@ dependency_scanning:
 
 .gemnasium-shared-rule:
   exists:
-    - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
-    - '{composer.lock,*/composer.lock,*/*/composer.lock}'
-    - '{gems.locked,*/gems.locked,*/*/gems.locked}'
-    - '{go.sum,*/go.sum,*/*/go.sum}'
-    - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
-    - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
-    - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
-    - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
-    - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+    - '**/Gemfile.lock'
+    - '**/composer.lock'
+    - '**/gems.locked'
+    - '**/go.sum'
+    - '**/npm-shrinkwrap.json'
+    - '**/package-lock.json'
+    - '**/yarn.lock'
+    - '**/pnpm-lock.yaml'
+    - '**/packages.lock.json'
+    - '**/conan.lock'
 
 gemnasium-dependency_scanning:
   extends:
@@ -74,7 +75,7 @@ gemnasium-dependency_scanning:
     DS_ANALYZER_NAME: "gemnasium"
     GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/
       when: never
@@ -109,10 +110,10 @@ gemnasium-dependency_scanning:
 
 .gemnasium-maven-shared-rule:
   exists:
-    - '{build.gradle,*/build.gradle,*/*/build.gradle}'
-    - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
-    - '{build.sbt,*/build.sbt,*/*/build.sbt}'
-    - '{pom.xml,*/pom.xml,*/*/pom.xml}'
+    - '**/build.gradle'
+    - '**/build.gradle.kts'
+    - '**/build.sbt'
+    - '**/pom.xml'
 
 gemnasium-maven-dependency_scanning:
   extends:
@@ -121,7 +122,7 @@ gemnasium-maven-dependency_scanning:
   variables:
     DS_ANALYZER_NAME: "gemnasium-maven"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-maven/
       when: never
@@ -155,12 +156,13 @@ gemnasium-maven-dependency_scanning:
 
 .gemnasium-python-shared-rule:
   exists:
-    - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
-    - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
-    - '{Pipfile,*/Pipfile,*/*/Pipfile}'
-    - '{requires.txt,*/requires.txt,*/*/requires.txt}'
-    - '{setup.py,*/setup.py,*/*/setup.py}'
-    - '{poetry.lock,*/poetry.lock,*/*/poetry.lock}'
+    - '**/requirements.txt'
+    - '**/requirements.pip'
+    - '**/Pipfile'
+    - '**/Pipfile.lock'
+    - '**/requires.txt'
+    - '**/setup.py'
+    - '**/poetry.lock'
 
 gemnasium-python-dependency_scanning:
   extends:
@@ -169,7 +171,7 @@ gemnasium-python-dependency_scanning:
   variables:
     DS_ANALYZER_NAME: "gemnasium-python"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/
       when: never

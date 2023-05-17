@@ -40,7 +40,7 @@ easier to measure the impact of both separately.
 
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the
-[Feature Flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
+[Feature flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
 For an up to date list of feature flag commands please see
@@ -84,6 +84,8 @@ When a feature has successfully been
 environment and verified as safe and working, you can roll out the
 change to GitLab.com (production).
 
+If a feature is [deprecated](../../update/deprecations.md), do not enable the flag.
+
 #### Communicate the change
 
 Some feature flag changes on GitLab.com should be communicated with
@@ -113,13 +115,13 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
-Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature Flags and the Change Management Process](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
 
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.
 
 When you begin to enable the feature, please link to the relevant
-Feature Flag Rollout Issue within a Slack thread of the first `/chatops`
+feature flag rollout issue within a Slack thread of the first `/chatops`
 command you make so people can understand the change if they need to.
 
 To enable a feature for 25% of the time, run the following in Slack:
@@ -356,7 +358,7 @@ After turning on the feature flag, you need to [monitor the relevant graphs](htt
 
 In this illustration, you can see that the Apdex score started to decline after the feature flag was enabled at `09:46`. The feature flag was then deactivated at `10:31`, and the service returned to the original value:
 
-![Feature Flag Metrics](../img/feature-flag-metrics.png)
+![Feature flag metrics](../img/feature-flag-metrics.png)
 
 ### Feature flag change logging
 
@@ -408,8 +410,8 @@ take one of the following actions:
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
 1. Add the ~"feature flag" label so release managers are aware of the removal.
-1. If the merge request has to be picked into a stable branch, add the
-   appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
+1. If the merge request has to be backported into the current version, follow the
+   [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md) process.
    See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
    for further details.
 1. Remove all references to the feature flag from the codebase, including tests.

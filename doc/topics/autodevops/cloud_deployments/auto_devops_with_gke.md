@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -221,7 +221,7 @@ you to common environment tasks:
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
   [Retrying and rolling back](../../../ci/environments/index.md#retry-or-roll-back-a-deployment)
 - **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../../ci/environments/index.md#stop-an-environment)
+  [Stopping an environment](../../../ci/environments/index.md#stopping-an-environment)
 
 GitLab displays the [deploy board](../../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your
@@ -274,7 +274,7 @@ bin/rails test test/controllers/welcome_controller_test.rb:4
 To fix the broken test:
 
 1. Return to your merge request.
-1. In the upper right corner, select **Code**, then select **Open in Gitpod**.
+1. In the upper-right corner, select **Code**, then select **Open in Gitpod**.
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`

@@ -237,7 +237,7 @@ Next, we must associate the **public** subnets to the route table:
 
 We also must create two private route tables so that instances in each private subnet can reach the internet via the NAT gateway in the corresponding public subnet in the same availability zone.
 
-1. Follow the same steps as above to create two private route tables. Name them `gitlab-private-a` and `gitlab-private-b` respectively.
+1. Follow the same steps as above to create two private route tables. Name them `gitlab-private-a` and `gitlab-private-b`.
 1. Next, add a new route to each of the private route tables where the destination is `0.0.0.0/0` and the target is one of the NAT gateways we created earlier.
    1. Add the NAT gateway we created in `gitlab-public-10.0.0.0` as the target for the new route in the `gitlab-private-a` route table.
    1. Similarly, add the NAT gateway in `gitlab-public-10.0.2.0` as the target for the new route in the `gitlab-private-b`.
@@ -336,7 +336,13 @@ Now, it's time to create the database:
 1. Select **Standard Create** for the database creation method.
 1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../../install/requirements.md#postgresql-requirements).
 1. Because this is a production server, let's choose **Production** from the **Templates** section.
-1. Under **Settings**, set a DB instance identifier, a master username, and a master password. We use `gitlab-db-ha`, `gitlab`, and a very secure password respectively. Make a note of these as we need them later.
+1. Under **Settings**, use:
+   - `gitlab-db-ha` for the DB instance identifier.
+   - `gitlab` for a master username.
+   - A very secure password for the master password.
+
+   Make a note of these as we need them later.
+
 1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown list. We use a `db.m4.large` instance.
 1. Under **Storage**, configure the following:
    1. Select **Provisioned IOPS (SSD)** from the storage type dropdown list. Provisioned IOPS (SSD) storage is best suited for this use (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
@@ -483,7 +489,7 @@ Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwardi
 
 #### Disable Let's Encrypt
 
-Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#enable-the-lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we must explicitly disable it:
+Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we must explicitly disable it:
 
 1. Open `/etc/gitlab/gitlab.rb` and disable it:
 
@@ -605,7 +611,7 @@ Now that we have our EC2 instance ready, follow the [documentation to install Gi
 
 #### Add Support for Proxied SSL
 
-As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination) to configure this in `/etc/gitlab/gitlab.rb`.
+As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination) to configure this in `/etc/gitlab/gitlab.rb`.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 
@@ -845,6 +851,6 @@ If you see this page when trying to set a password via the web interface, make s
 
 ### Some job logs are not uploaded to object storage
 
-When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#other-alternatives-to-file-system-storage) for CI to use object storage.
+When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#alternatives-to-file-system-storage) for CI to use object storage.
 
 Enable [incremental logging](../../administration/job_logs.md#enable-or-disable-incremental-logging) if it has not already been enabled.

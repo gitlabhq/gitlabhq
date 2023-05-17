@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Ansi2json do
+RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration do
   subject { described_class }
 
   describe 'lines' do

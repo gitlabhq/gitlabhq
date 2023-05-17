@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'IDE', :js, feature_category: :web_ide do
-  include WebIdeSpecHelpers
+  include Features::WebIdeSpecHelpers
 
   let_it_be(:ide_iframe_selector) { '#ide iframe' }
   let_it_be(:normal_project) { create(:project, :repository) }
@@ -41,17 +41,6 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
   end
 
   context 'with vscode feature flag off' do
-    before do
-      ide_visit(project)
-    end
-
-    it_behaves_like 'legacy Web IDE'
-  end
-
-  context 'with vscode feature flag on and use_legacy_web_ide=true' do
-    let(:vscode_ff) { true }
-    let(:user) { create(:user, use_legacy_web_ide: true) }
-
     before do
       ide_visit(project)
     end

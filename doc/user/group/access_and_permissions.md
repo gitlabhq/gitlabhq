@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -37,12 +37,8 @@ The group's new subgroups have push rules set for them based on either:
 
 ## Restrict Git access protocols
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
-[enable the feature flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. On GitLab.com,
-this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
 
 You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
 is disabled when the [instance setting](../admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
@@ -64,7 +60,7 @@ To change the permitted Git access protocols for a group:
 To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
 address. This group-level setting applies to:
 
-- The GitLab UI, including subgroups, projects, and issues.
+- The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
 - In self-managed installations of GitLab 15.1 and later, you can also configure
 [globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
@@ -90,8 +86,8 @@ To restrict group access by IP address:
 
 Keep in mind that restricting group access by IP address has the following implications:
 
-- Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
-  - Group owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
+- Administrators and group Owners can access group settings from any IP address, regardless of IP restriction. However:
+  - Group Owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
     Access to projects includes cloning code from them.
   - Users can still see group and project names and hierarchies. Only the following are restricted:
@@ -102,8 +98,9 @@ Keep in mind that restricting group access by IP address has the following impli
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
   push, merge, issue, or comment events.
-- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
-  IP access restrictions applied to self-managed instances block SSH completely.
+- IP access restrictions for Git operations via SSH are supported on GitLab SaaS.
+  IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
+  with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
 
 ## Restrict group access by domain **(PREMIUM)**
 
@@ -181,12 +178,12 @@ prevent a project from being shared with other groups:
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
 
-This setting applies to all subgroups unless overridden by a group owner. Groups already
+This setting applies to all subgroups unless overridden by a group Owner. Groups already
 added to a project lose access when the setting is enabled.
 
 ## Prevent users from requesting access to a group
 
-As a group owner, you can prevent non-members from requesting access to
+As a group Owner, you can prevent non-members from requesting access to
 your group.
 
 1. On the top bar, **Main menu > Groups** and find your group.
@@ -202,7 +199,7 @@ your group.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects in a group can be forked.
-Optionally, on [GitLab Premium](https://about.gitlab.com/pricing/) or higher tiers,
+Optionally, on [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
 This setting is removed from the SAML setting page, and migrated to the
@@ -221,13 +218,13 @@ Existing forks are not removed.
 
 ## Prevent members from being added to projects in a group **(PREMIUM)**
 
-As a group owner, you can prevent any new project membership for all
+As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
 For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you can guarantee that project membership cannot be modified during the audit.
 
-If group membership lock is enabled, the group owner can still:
+If group membership lock is enabled, the group Owner can still:
 
 - Invite groups or add members to groups to give them access to projects in the **locked** group.
 - Change the role of group members.
@@ -286,7 +283,15 @@ To create group links via filter:
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, select **Group information > Members**. If LDAP synchronization
+   has granted a user a role with:
+   - More permissions than the parent group membership, that user is displayed as having
+     [direct membership](../project/members/index.md#display-direct-members) of the group.
+   - The same or fewer permissions than the parent group membership, that user is displayed as having
+     [inherited membership](../project/members/index.md#display-inherited-members) of the group.
+1. Optional. If the user you want to edit is displayed as having inherited membership,
+   [filter the subgroup to show direct members](manage.md#filter-a-group) before
+   overriding LDAP user permissions.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select **Edit permissions** in the modal.
 
@@ -302,3 +307,17 @@ If a user sees a 404 when they would usually expect access, and the problem is l
 - `json.allowed`: `false`
 
 In viewing the log entries, compare `remote.ip` with the list of [allowed IP addresses](#restrict-group-access-by-ip-address) for the group.
+
+### Cannot update permissions for a group member
+
+If a group Owner cannot update permissions for a group member, check which memberships
+are listed. Group Owners can only update direct memberships.
+
+If a parent group membership has the same or higher role than a subgroup, the
+[inherited membership](../project/members/index.md#inherited-membership) is
+listed on the subgroup members page, even if a [direct membership](../project/members/index.md#membership-types)
+on the group exists.
+
+To view and update direct memberships, [filter the group to show direct members](manage.md#filter-a-group).
+
+The need to filter members by type through a redesigned members page that lists both direct and inherited memberships is proposed in [issue 337539](https://gitlab.com/gitlab-org/gitlab/-/issues/337539#note_1277786161).

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure',
-                 only: { subdomain: %i[staging staging-canary] }, product_group: :configure do
+    only: { pipeline: %i[staging staging-canary canary production] }, product_group: :configure do
     describe 'Auto DevOps with a Kubernetes Agent' do
       let!(:app_project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -45,7 +45,7 @@ module QA
 
         app_project.visit!
 
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
         Page::Project::Pipeline::New.perform(&:click_run_pipeline_button)
 

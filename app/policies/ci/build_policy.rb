@@ -71,13 +71,17 @@ module Ci
       can?(:developer_access, @subject.project)
     end
 
+    # Use admin_ci_minutes for detailed quota and usage reporting
+    # this is limited to total usage and total quota for a builds namespace
+    rule { can_read_project_build }.enable :read_ci_minutes_limited_summary
+
     rule { can_read_project_build }.enable :read_build_trace
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment) }.policy do
+    rule { ~can?(:jailbreak) & (archived | (protected_ref & ~admin) | protected_environment) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build

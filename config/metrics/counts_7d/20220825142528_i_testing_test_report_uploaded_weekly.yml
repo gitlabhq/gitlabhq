@@ -3,8 +3,7 @@ key_path: redis_hll_counters.testing.i_testing_test_report_uploaded_weekly
 description: "MAU of junit test reports uploaded by customers per pipeline"
 product_section: ops
 product_stage: verify
-product_group: pipeline_insights
-product_category: testing
+product_group: pipeline_execution
 value_type: number
 status: active
 milestone: "15.4"

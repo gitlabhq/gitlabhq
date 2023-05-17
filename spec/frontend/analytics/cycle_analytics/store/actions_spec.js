@@ -13,21 +13,13 @@ import {
   createdBefore,
   initialPaginationState,
   reviewEvents,
+  projectNamespace as namespace,
 } from '../mock_data';
 
-const { id: groupId, path: groupPath } = currentGroup;
-const mockMilestonesPath = 'mock-milestones.json';
-const mockLabelsPath = 'mock-labels.json';
-const mockRequestPath = 'some/cool/path';
+const { path: groupPath } = currentGroup;
+const mockMilestonesPath = `/${namespace.fullPath}/-/milestones.json`;
+const mockLabelsPath = `/${namespace.fullPath}/-/labels.json`;
 const mockFullPath = '/namespace/-/analytics/value_stream_analytics/value_streams';
-const mockEndpoints = {
-  fullPath: mockFullPath,
-  requestPath: mockRequestPath,
-  labelsPath: mockLabelsPath,
-  milestonesPath: mockMilestonesPath,
-  groupId,
-  groupPath,
-};
 const mockSetDateActionCommit = {
   payload: { createdAfter, createdBefore },
   type: 'SET_DATE_RANGE',
@@ -35,6 +27,7 @@ const mockSetDateActionCommit = {
 
 const defaultState = {
   ...getters,
+  namespace,
   selectedValueStream,
   createdAfter,
   createdBefore,
@@ -81,7 +74,8 @@ describe('Project Value Stream Analytics actions', () => {
     const selectedAssigneeList = ['Assignee 1', 'Assignee 2'];
     const selectedLabelList = ['Label 1', 'Label 2'];
     const payload = {
-      endpoints: mockEndpoints,
+      namespace,
+      groupPath,
       selectedAuthor,
       selectedMilestone,
       selectedAssigneeList,
@@ -92,7 +86,7 @@ describe('Project Value Stream Analytics actions', () => {
       groupEndpoint: 'foo',
       labelsEndpoint: mockLabelsPath,
       milestonesEndpoint: mockMilestonesPath,
-      projectEndpoint: '/namespace/-/analytics/value_stream_analytics/value_streams',
+      projectEndpoint: namespace.fullPath,
     };
 
     it('will dispatch fetchValueStreams actions and commit SET_LOADING and INITIALIZE_VSA', () => {
@@ -193,7 +187,6 @@ describe('Project Value Stream Analytics actions', () => {
     beforeEach(() => {
       state = {
         ...defaultState,
-        endpoints: mockEndpoints,
         selectedStage,
       };
       mock = new MockAdapter(axios);
@@ -219,7 +212,6 @@ describe('Project Value Stream Analytics actions', () => {
       beforeEach(() => {
         state = {
           ...defaultState,
-          endpoints: mockEndpoints,
           selectedStage,
         };
         mock = new MockAdapter(axios);
@@ -243,7 +235,6 @@ describe('Project Value Stream Analytics actions', () => {
       beforeEach(() => {
         state = {
           ...defaultState,
-          endpoints: mockEndpoints,
           selectedStage,
         };
         mock = new MockAdapter(axios);
@@ -265,9 +256,7 @@ describe('Project Value Stream Analytics actions', () => {
     const mockValueStreamPath = /\/analytics\/value_stream_analytics\/value_streams/;
 
     beforeEach(() => {
-      state = {
-        endpoints: mockEndpoints,
-      };
+      state = { namespace };
       mock = new MockAdapter(axios);
       mock.onGet(mockValueStreamPath).reply(HTTP_STATUS_OK);
     });
@@ -333,7 +322,7 @@ describe('Project Value Stream Analytics actions', () => {
 
     beforeEach(() => {
       state = {
-        endpoints: mockEndpoints,
+        namespace,
         selectedValueStream,
       };
       mock = new MockAdapter(axios);

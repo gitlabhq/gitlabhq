@@ -278,6 +278,7 @@ module Trigger
     def extra_variables
       {
         "BRANCH_#{project_slug.upcase}" => ENV['CI_COMMIT_REF_NAME'],
+        "MERGE_REQUEST_IID_#{project_slug.upcase}" => ENV['CI_MERGE_REQUEST_IID'],
         "REVIEW_SLUG" => review_slug
       }
     end

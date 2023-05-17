@@ -21,6 +21,11 @@ export default {
       required: false,
       default: 'top',
     },
+    boundary: {
+      type: String,
+      required: false,
+      default: '',
+    },
     truncateTarget: {
       type: [String, Function],
       required: false,
@@ -44,6 +49,8 @@ export default {
         title: this.title,
         placement: this.placement,
         disabled: this.tooltipDisabled,
+        // Only set the tooltip boundary if it's truthy
+        ...(this.boundary && { boundary: this.boundary }),
       };
     },
   },

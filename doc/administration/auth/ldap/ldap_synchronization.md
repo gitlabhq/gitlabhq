@@ -7,11 +7,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # LDAP synchronization **(PREMIUM SELF)**
 
 If you have [configured LDAP to work with GitLab](index.md), GitLab can automatically synchronize
-users and groups. This process updates user and group information.
+users and groups.
+
+LDAP synchronization updates user and group information for existing GitLab users that have an LDAP identity assigned. It does not create new GitLab users through LDAP.
 
 You can change when synchronization occurs.
 
 ## User sync
+
+> Preventing LDAP username synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -33,16 +37,131 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 
 <!-- vale gitlab.Spelling = YES -->
 
-The user is set to an `ldap_blocked` state in GitLab if the previous conditions
-fail. This means the user cannot sign in or push or pull code.
-
 The process also updates the following user information:
 
 - Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
-  [**Prevent users from changing their profile name**](../../../user/admin_area/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled.
+  [**Prevent users from changing their profile name**](../../../user/admin_area/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
+
+### Synchronize LDAP username
+
+By default, GitLab synchronizes the LDAP username field.
+
+To prevent this synchronization, you can set `sync_name` to `false`.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_servers'] = {
+     'main' => {
+       'sync_name' => false,
+       }
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       ldap:
+         servers:
+           main:
+             sync_name: false
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_servers'] = {
+             'main' => {
+               'sync_name' => false,
+               }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ldap:
+       servers:
+         main:
+           sync_name: false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
+### Blocked users
+
+A user is blocked if either the:
+
+- [Access check fails](#user-sync) and that user is set to an `ldap_blocked` state in GitLab.
+- LDAP server is not available when that user signs in.
+
+If a user is blocked, that user cannot sign in or push or pull code.
+
+A blocked user is unblocked when they sign in with LDAP if all of the following are true:
+
+- All the access check conditions are true.
+- The LDAP server is available when the user signs in.
+
+**All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
+
+NOTE:
+If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
+a subsequent LDAP user synchronization does not automatically unblock those users.
 
 ### Adjust LDAP user sync schedule
 
@@ -387,6 +506,23 @@ To enable global group memberships lock:
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
+### Change LDAP group synchronization settings management
+
+By default, group members with the Owner role can manage [LDAP group synchronization settings](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+
+GitLab administrators can remove this permission from group Owners:
+
+1. [Configure LDAP](index.md#configure-ldap).
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
+
+When **Allow group owners to manage LDAP-related settings** is disabled:
+
+- Group Owners cannot change LDAP synchronization settings for either top-level groups and subgroups.
+- Instance administrators can manage LDAP group synchronization settings on all groups on an instance.
+
 ### Adjust LDAP group sync schedule
 
 By default, GitLab runs a group sync process every hour, on the hour.
@@ -411,7 +547,7 @@ sync to run once every two hours at the top of the hour.
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
+   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
 1. Save the file and reconfigure GitLab:
@@ -454,7 +590,7 @@ sync to run once every two hours at the top of the hour.
      gitlab:
        environment:
          GITLAB_OMNIBUS_CONFIG: |
-           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
+           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
 1. Save the file and restart GitLab:

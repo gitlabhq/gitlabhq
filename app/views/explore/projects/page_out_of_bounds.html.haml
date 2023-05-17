@@ -1,19 +1,9 @@
-- @hide_top_links = true
-- page_title    _("Projects")
-- header_title  _("Projects"), dashboard_projects_path
-
-= render_dashboard_ultimate_trial(current_user)
-
-- if current_user
-  = render 'dashboard/projects_head', project_tab_filter: :explore
-- else
-  = render 'explore/head'
-
+= render 'explore/projects/head'
 = render 'explore/projects/nav'
 
 .nothing-here-block
   .svg-content
-    = image_tag 'illustrations/profile-page/personal-project.svg', size: '75'
+    = image_tag 'illustrations/empty-state/empty-projects-md.svg', size: '75'
     .text-content
       %h5= _("Maximum page reached")
       %p= _("Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further.")

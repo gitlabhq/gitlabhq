@@ -20,7 +20,7 @@ describe('content_editor/services/create_content_editor', () => {
         preserveUnchangedMarkdown: false,
       },
     };
-    editor = createContentEditor({ renderMarkdown, uploadsPath });
+    editor = createContentEditor({ renderMarkdown, uploadsPath, drawioEnabled: true });
   });
 
   describe('when preserveUnchangedMarkdown feature is on', () => {
@@ -45,15 +45,15 @@ describe('content_editor/services/create_content_editor', () => {
     });
   });
 
-  it('sets gl-outline-0! class selector to the tiptapEditor instance', () => {
+  it('sets gl-shadow-none! class selector to the tiptapEditor instance', () => {
     expect(editor.tiptapEditor.options.editorProps).toMatchObject({
       attributes: {
-        class: 'gl-outline-0!',
+        class: 'gl-shadow-none!',
       },
     });
   });
 
-  it('allows providing external content editor extensions', async () => {
+  it('allows providing external content editor extensions', () => {
     const labelReference = 'this is a ~group::editor';
     const { tiptapExtension, serializer } = createTestContentEditorExtension();
 
@@ -77,6 +77,16 @@ describe('content_editor/services/create_content_editor', () => {
   it('provides uploadsPath and renderMarkdown function to Attachment extension', () => {
     expect(
       editor.tiptapEditor.extensionManager.extensions.find((e) => e.name === 'attachment').options,
+    ).toMatchObject({
+      uploadsPath,
+      renderMarkdown,
+    });
+  });
+
+  it('provides uploadsPath and renderMarkdown function to DrawioDiagram extension', () => {
+    expect(
+      editor.tiptapEditor.extensionManager.extensions.find((e) => e.name === 'drawioDiagram')
+        .options,
     ).toMatchObject({
       uploadsPath,
       renderMarkdown,

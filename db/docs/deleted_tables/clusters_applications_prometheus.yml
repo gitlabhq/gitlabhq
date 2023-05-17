@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_prometheus
+feature_categories:
+- deployment_management
+description: Information about installed instance of Prometheus in the cluster
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0d4548026f3060ca0a8f7aa8d8fc89838bc66130
+milestone: '10.4'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119533
+removed_in_milestone: '16.0'

@@ -106,10 +106,6 @@ describe('Dashboard Panel', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('renders the chart title', () => {
       expect(findTitle().text()).toBe(graphDataEmpty.title);
     });
@@ -134,10 +130,6 @@ describe('Dashboard Panel', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('renders no chart title', () => {
       expect(findTitle().text()).toBe('');
     });
@@ -158,10 +150,6 @@ describe('Dashboard Panel', () => {
   describe('When graphData is available', () => {
     beforeEach(() => {
       createWrapper();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders the chart title', () => {
@@ -375,10 +363,6 @@ describe('Dashboard Panel', () => {
         store,
       });
       await nextTick();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     describe('csvText', () => {

@@ -126,7 +126,7 @@ Read more about [import/export rate limits](../user/admin_area/settings/import_e
 
 Limit the maximum daily member invitations allowed per group hierarchy.
 
-- GitLab.com: Free members may invite 20 members per day.
+- GitLab.com: Free members may invite 20 members per day, Premium trial and Ultimate trial members may invite 50 members per day.
 - Self-managed: Invites are not limited.
 
 ### Webhook rate limit
@@ -157,16 +157,17 @@ Set the limit to `0` to disable it.
 ### Search rate limit
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) to include issue, merge request, and epic searches to the rate limit in GitLab 15.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/index.md#global-search-scopes) for authenticated requests.
 
 This setting limits search requests as follows:
 
 | Limit                   | Default (requests per minute) |
 |-------------------------|-------------------------------|
-| Authenticated user      | 30 |
-| Unauthenticated user    | 10 |
+| Authenticated user      | 300 |
+| Unauthenticated user    | 100 |
 
-Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Search requests that exceed the search rate limit per minute return the following error:
+Search requests that exceed the search rate limit per minute return the following error:
 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
@@ -290,7 +291,7 @@ Plan.default.actual_limits.update!(group_hooks: 100)
 
 Set the limit to `0` to disable it.
 
-The default maximum number of webhooks is `100` per project, `50` per group.
+The default maximum number of webhooks is `100` per project and `50` per group. Webhooks in a child group do not count towards the webhook limit of their parent group.
 
 For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index.md#webhooks).
 
@@ -430,38 +431,6 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 Set the limit to `0` to disable it.
 
-### Number of pipelines running concurrently
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32823) in GitLab 12.5.
-
-The total number of pipelines running concurrently can be limited per project.
-When enabled, the limit is checked each time a new pipeline is created.
-Without a concurrent pipelines limit, a sudden flood of triggered pipelines could
-overwhelm the instance resources.
-
-If a new pipeline would cause the total number of pipelines to exceed the limit,
-the pipeline fails with a `The pipeline activity limit was exceeded.` error.
-
-On [GitLab Premium](https://about.gitlab.com/pricing/) self-managed or
-higher installations, this limit is defined under a `default` plan that affects all
-projects. This limit is disabled (`0`) by default. GitLab SaaS subscribers have different
-limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd), and they affect
-all projects under that plan.
-
-To set this limit for a self-managed installation, enable the **Maximum number of active pipelines per project**
-[setting in the Admin Area](../user/admin_area/settings/continuous_integration.md#set-cicd-limits).
-
-Alternatively, you can run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
-Plan.default.actual_limits.update!(ci_active_pipelines: 100)
-```
-
-Set the limit to `0` to disable it.
-
 ### Maximum time jobs can run
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16777) in GitLab 12.3.
@@ -509,10 +478,10 @@ checked each time a new subscription is created.
 If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription is considered invalid.
 
-- GitLab SaaS subscribers have different limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
+- On GitLab SaaS: Limits are [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
   and they affect all projects under that plan.
-- On [GitLab Premium](https://about.gitlab.com/pricing/) self-managed
-  or higher installations, this limit is defined under a `default` plan that
+- On self-managed: On [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/),
+  this limit is defined under a `default` plan that
   affects all projects. By default, there is a limit of `2` subscriptions.
 
 To set this limit for a self-managed installation, run the following in the
@@ -632,6 +601,42 @@ To update this limit to a new value on a self-managed installation, run the foll
 Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 ```
 
+### Number of group level variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+
+The total number of group level CI/CD variables is limited at the instance level.
+This limit is checked each time a new group level variable is created. If a new variable
+would cause the total number of variables to exceed the limit, the new variable is not created.
+
+On self-managed instances this limit is defined for the `default` plan. By default,
+this limit is set to `30000`.
+
+To update this limit to a new value on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(group_ci_variables: 40000)
+```
+
+### Number of project level variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+
+The total number of project level CI/CD variables is limited at the instance level.
+This limit is checked each time a new project level variable is created. If a new variable
+would cause the total number of variables to exceed the limit, the new variable is not created.
+
+On self-managed instances this limit is defined for the `default` plan. By default,
+this limit is set to `8000`.
+
+To update this limit to a new value on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(project_ci_variables: 10000)
+```
+
 ### Maximum file size per type of artifact
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
@@ -723,22 +728,23 @@ GitLab checks these limits against runners that have been active in the last 3 m
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
 If the limit value is set to zero, the limit is disabled.
 
-- GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
-- Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
+GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
 
-    | Runner scope                                | Default value |
-    |---------------------------------------------|---------------|
-    | `ci_registered_group_runners`               | 1000          |
-    | `ci_registered_project_runners`             | 1000          |
+Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
 
-    To update these limits, run the following in the
-    [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+| Runner scope                                | Default value |
+|---------------------------------------------|---------------|
+| `ci_registered_group_runners`               | 1000          |
+| `ci_registered_project_runners`             | 1000          |
 
-    ```ruby
-    # Use ci_registered_group_runners or ci_registered_project_runners
-    # depending on desired scope
-    Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
-    ```
+To update these limits, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# Use ci_registered_group_runners or ci_registered_project_runners
+# depending on desired scope
+Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
+```
 
 ### Maximum file size for job logs
 
@@ -789,7 +795,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
   The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
   but rather the memory allocated for the relevant objects.
 
-- To update the maximum YAML depth, update `max_yaml_depth` with the new value in megabytes:
+- To update the maximum YAML depth, update `max_yaml_depth` with the new value in number of lines:
 
   ```ruby
   ApplicationSetting.update(max_yaml_depth: 125)
@@ -922,7 +928,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
 - [Unit test reports](../ci/testing/unit_test_reports.md)
 
-## Advanced Search limits
+## Advanced search limits
 
 ### Maximum file size indexed
 
@@ -945,7 +951,7 @@ is pre-allocated during indexing.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
 
-You can set a limit on the content of text fields indexed for Advanced Search.
+You can set a limit on the content of text fields indexed for advanced search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
 text field exceeds this limit, then the text is truncated to this number of
 characters. The rest of the text is not indexed, and not searchable.

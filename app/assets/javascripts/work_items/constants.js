@@ -1,5 +1,6 @@
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { ASC, DESC } from '~/notes/constants';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
@@ -13,6 +14,9 @@ export const TASK_TYPE_NAME = 'Task';
 
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
+export const WIDGET_TYPE_AWARD_EMOJI = 'AWARD_EMOJI';
+export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
+export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
@@ -58,6 +62,9 @@ export const I18N_WORK_ITEM_ERROR_CREATING = s__(
 );
 export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
   'WorkItem|Something went wrong while updating the %{workItemType}. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_CONVERTING = s__(
+  'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
 );
 export const I18N_WORK_ITEM_ERROR_DELETING = s__(
   'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
@@ -176,3 +183,53 @@ export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
+
+export const WORK_ITEM_NOTES_FILTER_ALL_NOTES = 'ALL_NOTES';
+export const WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS = 'ONLY_COMMENTS';
+export const WORK_ITEM_NOTES_FILTER_ONLY_HISTORY = 'ONLY_HISTORY';
+
+export const WORK_ITEM_NOTES_FILTER_KEY = 'filter_key_work_item';
+
+export const WORK_ITEM_ACTIVITY_FILTER_OPTIONS = [
+  {
+    key: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    text: s__('WorkItem|All activity'),
+  },
+  {
+    key: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+    text: s__('WorkItem|Comments only'),
+    testid: 'comments-activity',
+  },
+  {
+    key: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+    text: s__('WorkItem|History only'),
+    testid: 'history-activity',
+  },
+];
+
+export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
+  { key: DESC, text: __('Newest first'), testid: 'newest-first' },
+  { key: ASC, text: __('Oldest first') },
+];
+
+export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
+export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action';
+export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
+export const TEST_ID_DELETE_ACTION = 'delete-action';
+export const TEST_ID_PROMOTE_ACTION = 'promote-action';
+
+export const ADD = 'ADD';
+export const MARK_AS_DONE = 'MARK_AS_DONE';
+export const TODO_ADD_ICON = 'todo-add';
+export const TODO_DONE_ICON = 'todo-done';
+export const TODO_TYPENAME = 'Todo';
+export const TODO_EDGE_TYPENAME = 'TodoEdge';
+export const TODO_CONNECTION_TYPENAME = 'TodoConnection';
+export const CURRENT_USER_TODOS_TYPENAME = 'WorkItemWidgetCurrentUserTodos';
+export const WORK_ITEM_TYPENAME = 'WorkItem';
+export const WORK_ITEM_UPDATE_PAYLOAD_TYPENAME = 'WorkItemUpdatePayload';
+
+export const EMOJI_ACTION_ADD = 'ADD';
+export const EMOJI_ACTION_REMOVE = 'REMOVE';
+export const EMOJI_THUMBSUP = 'thumbsup';
+export const EMOJI_THUMBSDOWN = 'thumbsdown';

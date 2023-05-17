@@ -2,7 +2,7 @@
 table_name: project_access_tokens
 classes: []
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33272
 milestone: '13.1'

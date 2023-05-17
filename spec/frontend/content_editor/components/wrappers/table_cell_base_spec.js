@@ -1,24 +1,32 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
-import { selectedRect as getSelectedRect } from '@_ueberdosis/prosemirror-tables';
+import { selectedRect as getSelectedRect } from '@tiptap/pm/tables';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
 
-jest.mock('@_ueberdosis/prosemirror-tables');
+jest.mock('@tiptap/pm/tables');
 
 describe('content/components/wrappers/table_cell_base', () => {
   let wrapper;
   let editor;
   let node;
 
-  const createWrapper = async (propsData = { cellType: 'td' }) => {
+  const createWrapper = (propsData = { cellType: 'td' }) => {
     wrapper = shallowMountExtended(TableCellBaseWrapper, {
       propsData: {
         editor,
         node,
         ...propsData,
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown, {
+          methods: {
+            hide: jest.fn(),
+          },
+        }),
       },
     });
   };
@@ -38,22 +46,10 @@ describe('content/components/wrappers/table_cell_base', () => {
 
     jest.spyOn($cursor, 'node').mockReturnValue(node);
   };
-  const mockDropdownHide = () => {
-    /*
-     * TODO: Replace this method with using the scoped hide function
-     * provided by BootstrapVue https://bootstrap-vue.org/docs/components/dropdown.
-     * GitLab UI is not exposing it in the default scope
-     */
-    findDropdown().vm.hide = jest.fn();
-  };
 
   beforeEach(() => {
     node = {};
     editor = createTestEditor({});
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders a td node-view-wrapper with relative position', () => {
@@ -100,8 +96,6 @@ describe('content/components/wrappers/table_cell_base', () => {
 
       createWrapper();
       await nextTick();
-
-      mockDropdownHide();
     });
 
     it.each`
@@ -122,7 +116,7 @@ describe('content/components/wrappers/table_cell_base', () => {
       },
     );
 
-    it('does not allow deleting rows and columns', async () => {
+    it('does not allow deleting rows and columns', () => {
       expect(findDropdownItemWithLabelExists('Delete row')).toBe(false);
       expect(findDropdownItemWithLabelExists('Delete column')).toBe(false);
     });
@@ -177,7 +171,7 @@ describe('content/components/wrappers/table_cell_base', () => {
         await nextTick();
       });
 
-      it('does not allow adding a row before the header', async () => {
+      it('does not allow adding a row before the header', () => {
         expect(findDropdownItemWithLabelExists('Insert row before')).toBe(false);
       });
 

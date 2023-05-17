@@ -60,6 +60,10 @@ module Gitlab
       store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::ExecuteApprovalHooksWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::MergeRequests::SetReviewerReviewedWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker,
+        to: ::Packages::PackageCreatedEvent,
+        if: -> (event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
     end
     private_class_method :configure!
   end

@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ActionsCell from '~/jobs/components/table/cells/actions_cell.vue';
 import eventHub from '~/jobs/components/table/event_hub';
 import JobPlayMutation from '~/jobs/components/table/graphql/mutations/job_play.mutation.graphql';
@@ -122,7 +122,7 @@ describe('Job actions cell', () => {
     ${findPlayButton}   | ${'play'}   | ${playableJob}   | ${JobPlayMutation}   | ${playMutationHandler}   | ${playableJob.id}
     ${findRetryButton}  | ${'retry'}  | ${retryableJob}  | ${JobRetryMutation}  | ${retryMutationHandler}  | ${retryableJob.id}
     ${findCancelButton} | ${'cancel'} | ${cancelableJob} | ${JobCancelMutation} | ${cancelMutationHandler} | ${cancelableJob.id}
-  `('performs the $action mutation', async ({ button, jobType, mutationFile, handler, jobId }) => {
+  `('performs the $action mutation', ({ button, jobType, mutationFile, handler, jobId }) => {
     createComponent(jobType, [[mutationFile, handler]]);
 
     button().vm.$emit('click');
@@ -146,7 +146,7 @@ describe('Job actions cell', () => {
       await waitForPromises();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('jobActionPerformed');
-      expect(redirectTo).not.toHaveBeenCalled();
+      expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
     },
   );
 
@@ -165,7 +165,7 @@ describe('Job actions cell', () => {
 
       await waitForPromises();
 
-      expect(redirectTo).toHaveBeenCalledWith(redirectLink);
+      expect(redirectTo).toHaveBeenCalledWith(redirectLink); // eslint-disable-line import/no-deprecated
       expect(eventHub.$emit).not.toHaveBeenCalled();
     },
   );

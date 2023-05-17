@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def email_class
-        ::Gitlab::ServiceDeskEmail
+        ::Gitlab::Email::ServiceDeskEmail
       end
     end
   end

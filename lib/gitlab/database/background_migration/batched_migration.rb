@@ -25,6 +25,7 @@ module Gitlab
 
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { with_statuses(:active, :paused) }
+        scope :finalizing, -> { with_status(:finalizing) }
         scope :ordered_by_created_at_desc, -> { order(created_at: :desc) }
 
         # on_hold_until is a temporary runtime status which puts execution "on hold"
@@ -82,8 +83,6 @@ module Gitlab
             migration.started_at = Time.current if migration.respond_to?(:started_at)
           end
         end
-
-        attribute :pause_ms, :integer, default: 100
 
         def self.valid_status
           state_machine.states.map(&:name)
@@ -221,7 +220,7 @@ module Gitlab
         end
 
         def health_context
-          HealthStatus::Context.new(connection, [table_name])
+          HealthStatus::Context.new(connection, [table_name], gitlab_schema.to_sym)
         end
 
         def hold!(until_time: 10.minutes.from_now)

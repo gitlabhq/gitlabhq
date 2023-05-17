@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -15,7 +15,7 @@ working in Slack, you can use Slack slash commands.
 To use Slack slash commands, you must configure both Slack and GitLab.
 
 GitLab can also send events (for example, `issue created`) to Slack as notifications.
-The [Slack notifications service](slack.md) is configured separately.
+The [Slack notifications integration](slack.md) is configured separately.
 
 ## Configure GitLab and Slack
 

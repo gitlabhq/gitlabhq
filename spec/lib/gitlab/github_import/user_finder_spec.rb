@@ -259,6 +259,41 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
         expect(finder.email_for_github_username('kittens')).to be_nil
       end
+
+      context 'when a username does not exist on GitHub' do
+        context 'when github username inexistence is not cached' do
+          it 'caches github username inexistence' do
+            expect(client)
+              .to receive(:user)
+              .with('kittens')
+              .and_raise(::Octokit::NotFound)
+
+            expect(Gitlab::Cache::Import::Caching)
+              .to receive(:write).with(
+                described_class::INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % 'kittens', true
+              )
+
+            expect(finder.email_for_github_username('kittens')).to be_nil
+          end
+        end
+
+        context 'when github username inexistence is already cached' do
+          it 'does not make request to the client' do
+            expect(Gitlab::Cache::Import::Caching)
+              .to receive(:read).with(described_class::EMAIL_FOR_USERNAME_CACHE_KEY % 'kittens')
+
+            expect(Gitlab::Cache::Import::Caching)
+              .to receive(:read).with(
+                described_class::INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % 'kittens'
+              ).and_return('true')
+
+            expect(client)
+              .not_to receive(:user)
+
+            expect(finder.email_for_github_username('kittens')).to be_nil
+          end
+        end
+      end
     end
   end
 

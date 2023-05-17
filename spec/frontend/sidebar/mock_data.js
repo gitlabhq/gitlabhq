@@ -243,6 +243,18 @@ export const issuableDueDateResponse = (dueDate = null) => ({
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/4',
         dueDate,
+        dueDateFixed: dueDate,
+      },
+    },
+  },
+});
+
+export const issueDueDateSubscriptionResponse = () => ({
+  data: {
+    issuableDatesUpdated: {
+      issue: {
+        id: 'gid://gitlab/Issue/4',
+        dueDate: '2022-12-31',
       },
     },
   },

@@ -44,13 +44,20 @@ module Sidebars
           'doc-text'
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
+        end
+
         private
 
         def files_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Files'),
+            title: context.is_super_sidebar ? _('Repository') : _('Files'),
             link: project_tree_path(context.project, context.current_ref),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[tree blob blame edit_tree new_tree find_file] },
+            container_html_options: { class: 'shortcuts-tree' },
             item_id: :files
           )
         end
@@ -61,9 +68,10 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Commits'),
             link: link,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w(commit commits) },
             item_id: :commits,
-            container_html_options: { id: 'js-onboarding-commits-link' }
+            container_html_options: { id: 'js-onboarding-commits-link', class: 'shortcuts-commits' }
           )
         end
 
@@ -71,6 +79,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Branches'),
             link: project_branches_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :branches },
             item_id: :branches,
             container_html_options: { id: 'js-onboarding-branches-link' }
@@ -81,6 +90,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Tags'),
             link: project_tags_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             item_id: :tags,
             active_routes: { controller: :tags }
           )
@@ -92,8 +102,9 @@ module Sidebars
           link = project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
-            title: _('Contributors'),
+            title: _('Contributor statistics'),
             link: link,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { path: 'graphs#show' },
             item_id: :contributors
           )
@@ -103,16 +114,19 @@ module Sidebars
           link = project_network_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
-            title: _('Graph'),
+            title: context.is_super_sidebar ? _('Repository graph') : _('Graph'),
             link: link,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :network },
+            container_html_options: { class: 'shortcuts-network' },
             item_id: :graphs
           )
         end
 
         def compare_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Compare'),
+            title: _('Compare revisions'),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             link: project_compare_index_path(context.project, from: context.project.repository.root_ref, to: context.current_ref),
             active_routes: { controller: :compare },
             item_id: :compare

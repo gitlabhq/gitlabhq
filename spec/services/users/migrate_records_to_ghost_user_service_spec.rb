@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::MigrateRecordsToGhostUserService do
+RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_management do
   include BatchDestroyDependentAssociationsHelper
 
   let!(:user) { create(:user) }

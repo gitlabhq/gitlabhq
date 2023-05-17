@@ -14,6 +14,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'ensures runners_token is prefixed', :project
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -25,6 +27,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
     it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many(:incident_management_issuable_escalation_statuses).through(:issues).inverse_of(:project).class_name('IncidentManagement::IssuableEscalationStatus') }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
@@ -40,7 +43,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:protected_branches) }
     it { is_expected.to have_many(:exported_protected_branches) }
     it { is_expected.to have_one(:wiki_repository).class_name('Projects::WikiRepository').inverse_of(:project) }
+    it { is_expected.to have_one(:design_management_repository).class_name('DesignManagement::Repository').inverse_of(:project) }
     it { is_expected.to have_one(:slack_integration) }
+    it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
@@ -50,6 +55,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:packagist_integration) }
     it { is_expected.to have_one(:pushover_integration) }
     it { is_expected.to have_one(:apple_app_store_integration) }
+    it { is_expected.to have_one(:google_play_integration) }
     it { is_expected.to have_one(:asana_integration) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_integration) }
@@ -88,6 +94,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:alerting_setting).class_name('Alerting::ProjectAlertingSetting') }
     it { is_expected.to have_one(:mock_ci_integration) }
     it { is_expected.to have_one(:mock_monitoring_integration) }
+    it { is_expected.to have_one(:service_desk_custom_email_verification).class_name('ServiceDesk::CustomEmailVerification') }
+    it { is_expected.to have_one(:container_registry_data_repair_detail).class_name('ContainerRegistry::DataRepairDetail') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
@@ -135,7 +143,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
+    it { is_expected.to have_many(:rpm_repository_files).class_name('Packages::Rpm::RepositoryFile').inverse_of(:project).dependent(:destroy) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
+    it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
     it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
@@ -780,7 +790,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       let(:new_project) do
         build(:project,
-              name: project_pending_deletion.name,
+              path: project_pending_deletion.path,
               namespace: project_pending_deletion.namespace)
       end
 
@@ -874,46 +884,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe '#has_packages?' do
-    let_it_be(:project) { create(:project, :public) }
-
-    subject { project.has_packages?(package_type) }
-
-    shared_examples 'returning true examples' do
-      let!(:package) { create("#{package_type}_package", project: project) }
-
-      it { is_expected.to be true }
-    end
-
-    shared_examples 'returning false examples' do
-      it { is_expected.to be false }
-    end
-
-    context 'with maven packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :maven }
-      end
-    end
-
-    context 'with npm packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :npm }
-      end
-    end
-
-    context 'with conan packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :conan }
-      end
-    end
-
-    context 'with no package type' do
-      it_behaves_like 'returning false examples' do
-        let(:package_type) { nil }
-      end
-    end
-  end
-
   describe '#ci_pipelines' do
     let_it_be(:project) { create(:project) }
 
@@ -936,6 +906,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
         expect(project.ci_pipelines.size).to eq(1)
       end
+    end
+  end
+
+  describe '#commit_notes' do
+    let_it_be(:project) { create(:project) }
+
+    it "returns project's commit notes" do
+      note_1 = create(:note_on_commit, project: project, commit_id: 'commit_id_1')
+      note_2 = create(:note_on_commit, project: project, commit_id: 'commit_id_2')
+
+      expect(project.commit_notes).to match_array([note_1, note_2])
     end
   end
 
@@ -1115,7 +1096,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           'restrict_user_defined_variables' => '',
           'runner_token_expiration_interval' => '',
           'separated_caches' => 'ci_',
-          'opt_in_jwt' => 'ci_',
           'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
           'inbound_job_token_scope_enabled' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_'
@@ -1151,7 +1131,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
 
     describe '#ci_inbound_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
         let(:delegated_method) { :inbound_job_token_scope_enabled? }
       end
     end
@@ -1376,6 +1356,60 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         it 'returns name of the project' do
           expect(project.to_human_reference(another_project)).to eq 'Sample project'
         end
+      end
+    end
+  end
+
+  describe '#to_reference_base' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:another_group) { create(:group) }
+
+    let_it_be(:project1) { create(:project, namespace: group) }
+    let_it_be(:project_namespace) { project1.project_namespace }
+
+    # different project same group
+    let_it_be(:project2) { create(:project, namespace: group) }
+    let_it_be(:project_namespace2) { project2.project_namespace }
+
+    # different project from different group
+    let_it_be(:project3) { create(:project) }
+    let_it_be(:project_namespace3) { project3.project_namespace }
+
+    # testing references with namespace being: group, project namespace and user namespace
+    where(:project, :full, :from, :result) do
+      ref(:project1) | false | nil                       | nil
+      ref(:project1) | true  | nil                       | lazy { project.full_path }
+      ref(:project1) | false | ref(:group)               | lazy { project.path }
+      ref(:project1) | true  | ref(:group)               | lazy { project.full_path }
+      ref(:project1) | false | ref(:parent)              | lazy { project.full_path }
+      ref(:project1) | true  | ref(:parent)              | lazy { project.full_path }
+      ref(:project1) | false | ref(:project1)            | nil
+      ref(:project1) | true  | ref(:project1)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace)   | nil
+      ref(:project1) | true  | ref(:project_namespace)   | lazy { project.full_path }
+      ref(:project1) | false | ref(:project2)            | lazy { project.path }
+      ref(:project1) | true  | ref(:project2)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace2)  | lazy { project.path }
+      ref(:project1) | true  | ref(:project_namespace2)  | lazy { project.full_path }
+      ref(:project1) | false | ref(:another_group)       | lazy { project.full_path }
+      ref(:project1) | true  | ref(:another_group)       | lazy { project.full_path }
+      ref(:project1) | false | ref(:project3)            | lazy { project.full_path }
+      ref(:project1) | true  | ref(:project3)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace3)  | lazy { project.full_path }
+      ref(:project1) | true  | ref(:project_namespace3)  | lazy { project.full_path }
+      ref(:project1) | false | ref(:user_namespace)      | lazy { project.full_path }
+      ref(:project1) | true  | ref(:user_namespace)      | lazy { project.full_path }
+    end
+
+    with_them do
+      it 'returns correct path' do
+        expect(project.to_reference_base(from, full: full)).to eq(result)
       end
     end
   end
@@ -1619,7 +1653,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'with namespace' do
       before do
         @group = create(:group, name: 'gitlab')
-        @project = create(:project, name: 'gitlabhq', namespace: @group)
+        @project = create(:project, path: 'gitlabhq', namespace: @group)
       end
 
       it { expect(@project.to_param).to eq('gitlabhq') }
@@ -2213,8 +2247,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
 
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
     end
 
     it 'is enabled' do
@@ -2254,7 +2288,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     context 'when service_desk_email is disabled' do
       before do
-        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(false)
       end
 
       it_behaves_like 'with incoming email address'
@@ -2263,7 +2297,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when service_desk_email is enabled' do
       before do
         config = double(enabled: true, address: 'foo+%{key}@bar.com')
-        allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
       context 'when project_key is set' do
@@ -2666,7 +2700,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#pages_url', feature_category: :pages do
+    let(:group_name) { 'group' }
+    let(:project_name) { 'project' }
+
     let(:group) { create(:group, name: group_name) }
+    let(:nested_group) { create(:group, parent: group) }
 
     let(:project_path) { project_name.downcase }
     let(:project) do
@@ -2689,98 +2727,165 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         .and_return(['http://example.com', port].compact.join(':'))
     end
 
-    context 'group page' do
-      let(:group_name) { 'Group' }
+    context 'when not using pages_unique_domain' do
+      subject { project.pages_url(with_unique_domain: false) }
+
+      context 'when pages_unique_domain feature flag is disabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: false)
+        end
+
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
+
+      context 'when pages_unique_domain feature flag is enabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: true)
+
+          project.project_setting.update!(
+            pages_unique_domain_enabled: pages_unique_domain_enabled,
+            pages_unique_domain: 'unique-domain'
+          )
+        end
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:pages_unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:pages_unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+      end
+    end
+
+    context 'when using pages_unique_domain' do
+      subject { project.pages_url(with_unique_domain: true) }
+
+      context 'when pages_unique_domain feature flag is disabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: false)
+        end
+
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
+
+      context 'when pages_unique_domain feature flag is enabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: true)
+
+          project.project_setting.update!(
+            pages_unique_domain_enabled: pages_unique_domain_enabled,
+            pages_unique_domain: 'unique-domain'
+          )
+        end
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:pages_unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:pages_unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://unique-domain.example.com') }
+        end
+      end
+    end
+
+    context 'with nested group' do
+      let(:project) { create(:project, namespace: nested_group, name: project_name) }
+      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
+
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+    end
+
+    context 'when the project matches its namespace url' do
       let(:project_name) { 'group.example.com' }
 
-      it { is_expected.to eq("http://group.example.com") }
+      it { is_expected.to eq('http://group.example.com') }
 
-      context 'mixed case path' do
+      context 'with different group name capitalization' do
+        let(:group_name) { 'Group' }
+
+        it { is_expected.to eq("http://group.example.com") }
+      end
+
+      context 'with different project path capitalization' do
         let(:project_path) { 'Group.example.com' }
 
         it { is_expected.to eq("http://group.example.com") }
       end
-    end
 
-    context 'project page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'Project' }
+      context 'with different project name capitalization' do
+        let(:project_name) { 'Project' }
 
-      it { is_expected.to eq("http://group.example.com/project") }
-
-      context 'mixed case path' do
-        let(:project_path) { 'Project' }
-
-        it { is_expected.to eq("http://group.example.com/Project") }
+        it { is_expected.to eq("http://group.example.com/project") }
       end
-    end
 
-    context 'when there is an explicit port' do
-      let(:port) { 3000 }
+      context 'when there is an explicit port' do
+        let(:port) { 3000 }
 
-      context 'when not in dev mode' do
-        before do
-          stub_rails_env('production')
-        end
-
-        context 'group page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'group.example.com' }
+        context 'when not in dev mode' do
+          before do
+            stub_rails_env('production')
+          end
 
           it { is_expected.to eq('http://group.example.com:3000/group.example.com') }
+        end
 
-          context 'mixed case path' do
-            let(:project_path) { 'Group.example.com' }
-
-            it { is_expected.to eq('http://group.example.com:3000/Group.example.com') }
+        context 'when in dev mode' do
+          before do
+            stub_rails_env('development')
           end
-        end
-
-        context 'project page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'Project' }
-
-          it { is_expected.to eq("http://group.example.com:3000/project") }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Project' }
-
-            it { is_expected.to eq("http://group.example.com:3000/Project") }
-          end
-        end
-      end
-
-      context 'when in dev mode' do
-        before do
-          stub_rails_env('development')
-        end
-
-        context 'group page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'group.example.com' }
 
           it { is_expected.to eq('http://group.example.com:3000') }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Group.example.com' }
-
-            it { is_expected.to eq('http://group.example.com:3000') }
-          end
-        end
-
-        context 'project page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'Project' }
-
-          it { is_expected.to eq("http://group.example.com:3000/project") }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Project' }
-
-            it { is_expected.to eq("http://group.example.com:3000/Project") }
-          end
         end
       end
+    end
+  end
+
+  describe '#pages_unique_url', feature_category: :pages do
+    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
+    let(:project) { build(:project, project_setting: project_settings) }
+    let(:domain) { 'example.com' }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
+    end
+
+    it 'returns the pages unique url' do
+      expect(project.pages_unique_url).to eq('http://unique-domain.example.com')
+    end
+  end
+
+  describe '#pages_unique_host', feature_category: :pages do
+    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
+    let(:project) { build(:project, project_setting: project_settings) }
+    let(:domain) { 'example.com' }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
+    end
+
+    it 'returns the pages unique url' do
+      expect(project.pages_unique_host).to eq('unique-domain.example.com')
     end
   end
 
@@ -3029,6 +3134,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         expect(project.repository).to receive(:create_repository) { raise 'Fail in test' }
         expect(project.create_repository).to eq(false)
         expect(project.errors).not_to be_empty
+      end
+
+      it 'passes through default branch' do
+        expect(project.repository).to receive(:create_repository).with('pineapple')
+
+        expect(project.create_repository(default_branch: 'pineapple')).to eq(true)
       end
     end
 
@@ -3565,6 +3676,44 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#beautified_import_status_name' do
+    context 'when import not finished' do
+      it 'returns the right beautified import status' do
+        project = create(:project, :import_started)
+
+        expect(project.beautified_import_status_name).to eq('started')
+      end
+    end
+
+    context 'when import is finished' do
+      context 'when import is partially completed' do
+        it 'returns partially completed' do
+          project = create(:project)
+
+          create(:import_state, project: project, status: 'finished', checksums: {
+            'fetched' => { 'labels' => 10 },
+            'imported' => { 'labels' => 9 }
+          })
+
+          expect(project.beautified_import_status_name).to eq('partially completed')
+        end
+      end
+
+      context 'when import is fully completed' do
+        it 'returns completed' do
+          project = create(:project)
+
+          create(:import_state, project: project, status: 'finished', checksums: {
+            'fetched' => { 'labels' => 10 },
+            'imported' => { 'labels' => 10 }
+          })
+
+          expect(project.beautified_import_status_name).to eq('completed')
+        end
+      end
+    end
+  end
+
   describe '#add_import_job' do
     let(:import_jid) { '123' }
 
@@ -3843,21 +3992,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#ancestors' do
-    context 'with linear_project_ancestors feature flag enabled' do
-      before do
-        stub_feature_flags(linear_project_ancestors: true)
-      end
-
-      include_examples '#ancestors'
-    end
-
-    context 'with linear_project_ancestors feature flag disabled' do
-      before do
-        stub_feature_flags(linear_project_ancestors: false)
-      end
-
-      include_examples '#ancestors'
-    end
+    include_examples '#ancestors'
   end
 
   describe '#ancestors_upto' do
@@ -4639,52 +4774,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when not forked' do
       it 'can not target the upstream project' do
         expect(project.mr_can_target_upstream?).to be_falsey
-      end
-    end
-  end
-
-  describe '#pages_url' do
-    let(:group) { create(:group, name: 'Group') }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:domain) { 'Example.com' }
-
-    subject { project.pages_url }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
-    end
-
-    context 'top-level group' do
-      let(:project) { create(:project, namespace: group, name: project_name) }
-
-      context 'group page' do
-        let(:project_name) { 'group.example.com' }
-
-        it { is_expected.to eq("http://group.example.com") }
-      end
-
-      context 'project page' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq("http://group.example.com/project") }
-      end
-    end
-
-    context 'nested group' do
-      let(:project) { create(:project, namespace: nested_group, name: project_name) }
-      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
-
-      context 'group page' do
-        let(:project_name) { 'group.example.com' }
-
-        it { is_expected.to eq(expected_url) }
-      end
-
-      context 'project page' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq(expected_url) }
       end
     end
   end
@@ -5740,8 +5829,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     let_it_be(:project) { create(:project) }
 
     it 'exposes API v4 URL' do
-      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
-      expect(project.api_variables.first[:value]).to include '/api/v4'
+      v4_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_V4_URL" }
+
+      expect(v4_variable).not_to be_nil
+      expect(v4_variable[:key]).to eq 'CI_API_V4_URL'
+      expect(v4_variable[:value]).to end_with '/api/v4'
+    end
+
+    it 'exposes API GraphQL URL' do
+      graphql_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_GRAPHQL_URL" }
+
+      expect(graphql_variable).not_to be_nil
+      expect(graphql_variable[:key]).to eq 'CI_API_GRAPHQL_URL'
+      expect(graphql_variable[:value]).to end_with '/api/graphql'
     end
 
     it 'contains a URL variable for every supported API version' do
@@ -5756,7 +5856,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
 
       expect(project.api_variables.map { |variable| variable[:key] })
-        .to contain_exactly(*required_variables)
+        .to include(*required_variables)
     end
   end
 
@@ -5854,7 +5954,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
       expect(project).to receive(:set_full_path)
@@ -6049,7 +6149,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it 'executes hooks which were backed off and are no longer backed off' do
       project = create(:project)
       hook = create(:project_hook, project: project, push_events: true)
-      WebHook::FAILURE_THRESHOLD.succ.times { hook.backoff! }
+      WebHooks::AutoDisabling::FAILURE_THRESHOLD.succ.times { hook.backoff! }
 
       expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
@@ -6701,6 +6801,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '.pending_data_repair_analysis' do
+    it 'returns projects that are not in ContainerRegistry::DataRepairDetail' do
+      project_1 = create(:project)
+      project_2 = create(:project)
+
+      expect(described_class.pending_data_repair_analysis).to match_array([project_1, project_2])
+
+      create(:container_registry_data_repair_detail, project: project_1)
+
+      expect(described_class.pending_data_repair_analysis).to match_array([project_2])
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 
@@ -7305,20 +7418,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe 'with integrations and chat names' do
-    subject { create(:project) }
-
-    let(:integration) { create(:integration, project: subject) }
-
-    before do
-      create_list(:chat_name, 5, integration: integration)
-    end
-
-    it 'does not remove chat names on removal' do
-      expect { subject.destroy! }.not_to change { ChatName.count }
-    end
-  end
-
   describe 'with_issues_or_mrs_available_for_user' do
     before do
       Project.delete_all
@@ -7380,6 +7479,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` enabled' do
       before do
         stub_feature_flags(group_protected_branches: true)
+        stub_feature_flags(allow_protected_branches_for_group: true)
       end
 
       it 'return all protected branches' do
@@ -7390,6 +7490,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` disabled' do
       before do
         stub_feature_flags(group_protected_branches: false)
+        stub_feature_flags(allow_protected_branches_for_group: false)
       end
 
       it 'return only project-level protected branches' do
@@ -7460,24 +7561,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       it 'the integration is marked as inactive' do
         expect(subject).to be_falsey
       end
-    end
-  end
-
-  describe '#self_monitoring?' do
-    let_it_be(:project) { create(:project) }
-
-    subject { project.self_monitoring? }
-
-    context 'when the project is instance self-monitoring' do
-      before do
-        stub_application_setting(self_monitoring_project_id: project.id)
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when the project is not self-monitoring' do
-      it { is_expected.to be false }
     end
   end
 
@@ -7575,48 +7658,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
 
       it { expect(project.export_status).to eq :regeneration_in_progress }
-    end
-  end
-
-  describe '#has_packages?' do
-    let(:project) { create(:project, :public) }
-
-    subject { project.has_packages?(package_type) }
-
-    shared_examples 'has_package' do
-      context 'package of package_type exists' do
-        let!(:package) { create("#{package_type}_package", project: project) }
-
-        it { is_expected.to be true }
-      end
-
-      context 'package of package_type does not exist' do
-        it { is_expected.to be false }
-      end
-    end
-
-    context 'with maven packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :maven }
-      end
-    end
-
-    context 'with npm packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :npm }
-      end
-    end
-
-    context 'with conan packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :conan }
-      end
-    end
-
-    context 'calling has_package? with nil' do
-      let(:package_type) { nil }
-
-      it { is_expected.to be false }
     end
   end
 
@@ -7737,6 +7778,29 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       it 'includes self, ancestors and linked groups' do
         expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
       end
+    end
+  end
+
+  describe '#has_namespaced_npm_packages?' do
+    let_it_be(:namespace) { create(:namespace, path: 'test') }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+
+    subject { project.has_namespaced_npm_packages? }
+
+    context 'with scope of the namespace path' do
+      let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+
+      it { is_expected.to be true }
+    end
+
+    context 'without scope of the namespace path' do
+      let_it_be(:package) { create(:npm_package, project: project, name: "@someotherscope/foo") }
+
+      it { is_expected.to be false }
+    end
+
+    context 'without packages' do
+      it { is_expected.to be false }
     end
   end
 
@@ -7913,7 +7977,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     describe '#activity_path' do
       it 'returns the project activity_path' do
-        expected_path = "/#{project.namespace.path}/#{project.name}/activity"
+        expected_path = "/#{project.full_path}/activity"
 
         expect(project.activity_path).to eq(expected_path)
       end
@@ -7952,8 +8016,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       using RSpec::Parameterized::TableSyntax
 
       where(:topic_list, :expected_result) do
-        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
-        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray
+        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray
         ['   topicC  ', ' topicD    ']    | %w[topicC topicD]
         ['topicE', 'topicF', 'topicE']    | %w[topicE topicF] # rubocop:disable Style/WordArray
         ['topicE  ', 'topicF', ' topicE'] | %w[topicE topicF]
@@ -8028,7 +8092,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       using RSpec::Parameterized::TableSyntax
 
-      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:initial_visibility, :new_visibility, :new_topic_list, :expected_count_changes) do
         ref(:private)  | nil            | 't2, t3' | [0, 0, 0]
         ref(:internal) | nil            | 't2, t3' | [-1, 0, 1]
@@ -8052,7 +8115,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         ref(:public)   | ref(:internal) | 't2, t3' | [-1, 0, 1]
         ref(:public)   | ref(:private)  | 't2, t3' | [-1, -1, 0]
       end
-      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'increments or decrements counters of topics' do
@@ -8519,6 +8581,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#content_editor_on_issues_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
+      let(:feature_flag) { :content_editor_on_issues }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe '#work_items_mvc_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -8839,6 +8911,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     def create_hook
       create(:project_hook, project: object)
+    end
+  end
+
+  describe 'deprecated project attributes' do
+    where(:project_attr, :project_method, :project_feature_attr) do
+      :wiki_enabled | :wiki_enabled? | :wiki_access_level
+      :builds_enabled | :builds_enabled? | :builds_access_level
+      :merge_requests_enabled | :merge_requests_enabled? | :merge_requests_access_level
+      :issues_enabled | :issues_enabled? | :issues_access_level
+      :snippets_enabled | :snippets_enabled? | :snippets_access_level
+    end
+
+    with_them do
+      it 'delegates the attributes to project feature' do
+        project = Project.new(project_attr => false)
+
+        expect(project.public_send(project_method)).to eq(false)
+        expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::DISABLED)
+      end
+
+      it 'sets the default value' do
+        project = Project.new
+
+        expect(project.public_send(project_method)).to eq(true)
+        expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::ENABLED)
+      end
     end
   end
 

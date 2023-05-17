@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab can check your applications for security vulnerabilities.
 
 - [Get started](get-started-security.md)
-- [Security Configuration](configuration/index.md)
+- [Security configuration](configuration/index.md)
 - [Container Scanning](container_scanning/index.md)
 - [Dependency Scanning](dependency_scanning/index.md)
 - [Static Application Security Testing](sast/index.md)

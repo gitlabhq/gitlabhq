@@ -91,15 +91,17 @@ RSpec.describe UserDetail do
 
   describe '#save' do
     let(:user_detail) do
-      create(:user_detail,
-             bio: 'bio',
-             discord: '1234567890123456789',
-             linkedin: 'linkedin',
-             location: 'location',
-             organization: 'organization',
-             skype: 'skype',
-             twitter: 'twitter',
-             website_url: 'https://example.com')
+      create(
+        :user_detail,
+        bio: 'bio',
+        discord: '1234567890123456789',
+        linkedin: 'linkedin',
+        location: 'location',
+        organization: 'organization',
+        skype: 'skype',
+        twitter: 'twitter',
+        website_url: 'https://example.com'
+      )
     end
 
     shared_examples 'prevents `nil` value' do |attr|

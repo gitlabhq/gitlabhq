@@ -15,21 +15,17 @@ Using these metrics helps improve DevOps efficiency and communicate performance 
 
 DORA includes four key metrics, divided into two core areas of DevOps:
 
-- [Deployment Frequency](#deployment-frequency) and [Lead Time for Change](#lead-time-for-changes) measure team velocity.
-- [Change Failure Rate](#change-failure-rate) and [Time to Restore Service](#time-to-restore-service) measure stability.
+- [Deployment frequency](#deployment-frequency) and [Lead time for changes](#lead-time-for-changes) measure team velocity.
+- [Change failure rate](#change-failure-rate) and [Time to restore service](#time-to-restore-service) measure stability.
 
 For software leaders, tracking velocity alongside quality metrics ensures they're not sacrificing quality for speed.
 
-<div class="video-fallback">
-  For an overview, see <a href="https://www.youtube.com/watch?v=1BrcMV6rCDw">GitLab Speed Run: DORA metrics in GitLab One DevOps Platform</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/1BrcMV6rCDw" frameborder="0" allowfullscreen> </iframe>
-</figure>
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=lM_FbVYuN8s) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
 
-## DORA Metrics dashboard in Value Stream Analytics
+## DORA metrics in Value Stream Analytics
 
-The four DORA metrics are available out-of-the-box in the [Value Stream Analytics (VSA) overview dashboard](../group/value_stream_analytics/index.md#view-dora-metrics-and-key-metrics-for-a-group).
+The four DORA metrics are available out-of-the-box in the [Value Streams Dashboard](value_streams_dashboard.md).
 This helps you visualize the engineering work in the context of end-to-end value delivery.
 
 The One DevOps Platform [Value Stream Management](https://gitlab.com/gitlab-org/gitlab/-/value_stream_analytics) provides end-to-end visibility to the entire software delivery lifecycle.
@@ -37,76 +33,120 @@ This enables teams and managers to understand all aspects of productivity, quali
 
 ## Deployment frequency
 
-Deployment frequency is the frequency of successful deployments to production (hourly, daily, weekly, monthly, or yearly).
-This measures how often you deliver value to end users. A higher deployment frequency means you can
-get feedback sooner and iterate faster to deliver improvements and features. GitLab measures this as the number of
-deployments to a production environment in the given time period.
+> [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) the frequency calculation formula for the `all` and `monthly` intervals in GitLab 16.0.
 
-Deployment frequency displays in several charts:
+Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
-- [Group-level value stream analytics](../group/value_stream_analytics/index.md)
-- [Project-level value stream analytics](value_stream_analytics.md)
-- [CI/CD analytics](ci_cd_analytics.md)
+Software leaders can use the deployment frequency metric to understand how often the team successfully deploys software to production, and how quickly the teams can respond to customers' requests or new market opportunities.
+High deployment frequency means you can get feedback sooner and iterate faster to deliver improvements and features.
 
-To retrieve metrics for deployment frequency, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+### How deployment frequency is calculated
+
+In GitLab, Deployment frequency is measured by the average number of deployments per day to a given environment, based on the deployment's end time (its `finished_at` property).
+GitLab calculates the deployment frequency from the number of finished deployments on the given day.
+
+The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
+
+### How to improve deployment frequency
+
+The first step is to benchmark the cadence of code releases between groups and projects. Next, you should consider:
+
+- Add more automated testing.
+- Add more automated code validation.
+- Break the changes down into smaller iterations.
 
 ## Lead time for changes
 
-DORA Lead time for changes measures the time to successfully deliver a commit into production.
-This metric reflects the efficiency of CI/CD pipelines.
+Lead time for changes is the amount of time it takes a code change to get into production.
 
-In GitLab, Lead time for changes calculates the median time it takes for a merge request to get merged into production.
-We measure **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+"Lead time for changes" is not the same as "Lead time". In the value stream, "Lead time" measures the time it takes for work on an issue to move from the moment it's requested (Issue created) to the moment it's fulfilled and delivered (Issue closed).
 
-Over time, the lead time for changes should decrease, while your team's performance should increase.
+For software leaders, Lead time for changes reflects the efficiency of CI/CD pipelines and visualizes how quickly work is delivered to customers.
+Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
+In GitLab, Lead time for changes is measure by the `Median time it takes for a merge request to get merged into production (from master)`.
 
-Lead time for changes displays in several charts:
+### How lead time for changes is calculated
 
-- [Group-level value stream analytics](../group/value_stream_analytics/index.md)
-- [Project-level value stream analytics](value_stream_analytics.md)
-- [CI/CD analytics](ci_cd_analytics.md)
+GitLab calculates Lead time for changes base on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
 
-To retrieve metrics for lead time for changes, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+### How to improve lead time for changes
 
-- The definition of lead time for change can vary widely, which often creates confusion within the industry.
-- "Lead time for changes" is not the same as "Lead time". In the value stream, "Lead time" measures the time it takes for work on an issue to move from the moment it's requested (Issue created) to the moment it's fulfilled and delivered (Issue closed).
+The first step is to benchmark the CI/CD pipelines' efficiency between groups and projects. Next, you should consider:
+
+- Using Value Stream Analytics to identify bottlenecks in the processes.
+- Breaking the changes down into smaller iterations.
+- Adding more automation.
 
 ## Time to restore service
 
-Time to restore service measures how long it takes an organization to recover from a failure in production.
-GitLab measures this as the average time required to close the incidents
-in the given time period. This assumes:
+Time to restore service is the amount of time it takes an organization to recover from a failure in production.
 
+For software leaders, Time to restore service reflects how long it takes an organization to recover from a failure in production.
+Low Time to restore service means the organization can take risks with new innovative features to drive competitive advantages and increase business results.
+
+### How time to restore service is calculated
+
+In GitLab, Time to restore service is measured as the median time an incident was open for on a production environment.
+GitLab calculates the number of seconds an incident was open on a production environment in the given time period. This assumes:
+
+- [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
 - All incidents are related to a production environment.
-- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only
-one production deployment, and any production deployment is related to no more than one incident).
+- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only one production deployment, and any production deployment is related to no more than one incident.
 
-Time to restore service displays in several charts:
+### How to improve time to restore service
 
-- [Group-level value stream analytics](../group/value_stream_analytics/index.md)
-- [Project-level value stream analytics](value_stream_analytics.md)
-- [CI/CD analytics](ci_cd_analytics.md)
+The first step is to benchmark the team response and recover from service interruptions and outages, between groups and projects. Next, you should consider:
 
-To retrieve metrics for time to restore service, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+- Improving the observability into the production environment.
+- Improving response workflows.
 
 ## Change failure rate
 
-Change failure rate measures the percentage of deployments that cause a failure in production. GitLab measures this as the number
-of incidents divided by the number of deployments to a
-production environment in the given time period. This assumes:
+Change failure rate is how often a change cause failure in production.
 
+Software leaders can use the change failure rate metric to gain insights into the quality of the code being shipped.
+High change failure rate may indicate an inefficient deployment process or insufficient automated testing coverage.
+
+### How change failure rate is calculated
+
+In GitLab, Change failure rate is measured as the percentage of deployments that cause an incident in production in the given time period.
+GitLab calculates this by the number of incidents divided by the number of deployments to a production environment. This assumes:
+
+- [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
 - All incidents are related to a production environment.
-- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only
-one production deployment, and any production deployment is related to no
+- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only one production deployment, and any production deployment is related to no
 more than one incident.
 
-To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+### How to improve change failure rate
 
-### Insights: Custom DORA reporting
+The first step is to benchmark the quality and stability, between groups and projects.
 
-Custom charts to visualize DORA data with [Insights YAML-based reports](../../user/project/insights/index.md#dora-query-parameters).
+To improve this metric, you should consider:
 
-With this new visualization, software leaders can track metrics improvements, understand patterns in their metrics trends, and compare performance between groups and projects.
+- Finding the right balance between stability and throughput (Deployment frequency and Lead time for changes), and not sacrificing quality for speed.
+- Improving the efficacy of code review processes.
+- Adding more automated testing.
+
+## DORA metrics in GitLab
+
+The DORA metrics are displayed on the following charts:
+
+- [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement.
+- [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
+- Insights reports for [groups](../group/insights/index.md) and [projects](value_stream_analytics.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
+
+The table below provides an overview of the DORA metrics' data aggregation in different charts.
+
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
+|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
+| Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
+| Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |
+| Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
+| Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |
+
+## Retrieve DORA metrics data
+
+To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
 ### Measure DORA metrics without using GitLab CI/CD pipelines
 
@@ -114,6 +154,26 @@ Deployment frequency is calculated based on the deployments record, which is cre
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
 To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. See also the documentation page for [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+
+### Measure DORA metrics with Jira
+
+- Deployment frequency and Lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
+- Time to restore service and Change failure rate require GitLab incidents for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents).
+
+### Measure DORA Time to restore service and Change failure rate with external incidents
+
+[Time to restore service](#time-to-restore-service) and [Change failure rate](#change-failure-rate)
+require [GitLab incidents](../../operations/incident_management/manage_incidents.md) to calculate the metrics.
+
+For PagerDuty, you can set up a [webhook to automatically create a GitLab incident for each PagerDuty incident](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
+This configuration requires you to make changes in both PagerDuty and GitLab.
+
+For others incident management tools, you can set up the
+[HTTP integration](../../operations/incident_management/integrations.md#http-endpoints),
+and use it to automatically:
+
+1. [Create an incident when an alert is triggered](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered).
+1. [Close incidents via recovery alerts](../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts).
 
 ### Supported DORA metrics in GitLab
 

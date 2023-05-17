@@ -3,7 +3,7 @@ table_name: cluster_providers_aws
 classes:
 - Clusters::Providers::Aws
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) AWS specific details for an EKS cluster integration"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17057
 milestone: '12.4'

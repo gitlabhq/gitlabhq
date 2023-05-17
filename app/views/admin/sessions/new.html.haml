@@ -1,10 +1,10 @@
-- @hide_breadcrumbs = true
-- page_title _('Enter Admin Mode')
+- page_title _('Enter admin mode')
+- add_page_specific_style 'page_bundles/login'
 
 .row.justify-content-center
   .col-md-5.new-session-forms-container
     .login-page
-      #signin-container
+      #signin-container{ class: ('borderless' if Feature.enabled?(:restyle_login_page, @project)) }
         - if any_form_based_providers_enabled?
           = render 'devise/shared/tabs_ldap', show_password_form: allow_admin_mode_password_authentication_for_web?, render_signup_link: false
         - else
@@ -19,5 +19,4 @@
             = _('No authentication methods configured.')
 
         - if omniauth_enabled? && button_based_providers_enabled?
-          .clearfix
-            = render 'devise/shared/omniauth_box', hide_remember_me: true
+          = render 'devise/shared/omniauth_box', render_remember_me: false

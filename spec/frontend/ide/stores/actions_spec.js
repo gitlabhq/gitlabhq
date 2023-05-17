@@ -4,7 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import eventHub from '~/ide/eventhub';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   init,
   stageAllChanges,
@@ -31,7 +31,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Multi-file store actions', () => {
   let store;
@@ -210,7 +210,7 @@ describe('Multi-file store actions', () => {
         expect(store.dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
-      it('creates flash message if file already exists', async () => {
+      it('creates alert if file already exists', async () => {
         const f = file('test', '1', 'blob');
         store.state.trees['abcproject/mybranch'].tree = [f];
         store.state.entries[f.path] = f;
@@ -440,7 +440,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setErrorMessage', () => {
-    it('commis error messsage', () => {
+    it('commis error message', () => {
       return testAction(
         setErrorMessage,
         'error',
@@ -927,7 +927,7 @@ describe('Multi-file store actions', () => {
         expect(document.querySelector('.flash-alert')).toBeNull();
       });
 
-      it('does not pass the error further and flashes an alert if error is not 404', async () => {
+      it('does not pass the error further and creates an alert if error is not 404', async () => {
         mock.onGet(/(.*)/).replyOnce(HTTP_STATUS_IM_A_TEAPOT);
 
         await expect(getBranchData(...callParams)).rejects.toEqual(

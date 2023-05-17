@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe FileUploader do
-  let(:group) { create(:group, name: 'awesome') }
-  let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
+  let(:group) { create(:group, path: 'awesome') }
+  let(:project) { create(:project, :legacy_storage, namespace: group, path: 'project') }
   let(:uploader) { described_class.new(project, :avatar) }
   let(:upload) { double(model: project, path: "#{secret}/foo.jpg") }
   let(:secret) { "55dc16aa0edd05693fd98b5051e83321" } # this would be nicer as SecureRandom.hex, but the shared_examples breaks
@@ -13,9 +13,9 @@ RSpec.describe FileUploader do
 
   shared_examples 'builds correct legacy storage paths' do
     include_examples 'builds correct paths',
-                     store_dir: %r{awesome/project/\h+},
-                     upload_path: %r{\h+/<filename>},
-                     absolute_path: %r{#{described_class.root}/awesome/project/55dc16aa0edd05693fd98b5051e83321/foo.jpg}
+      store_dir: %r{awesome/project/\h+},
+      upload_path: %r{\h+/<filename>},
+      absolute_path: %r{#{described_class.root}/awesome/project/55dc16aa0edd05693fd98b5051e83321/foo.jpg}
   end
 
   context 'legacy storage' do
@@ -23,15 +23,15 @@ RSpec.describe FileUploader do
 
     context 'uses hashed storage' do
       context 'when rolled out attachments' do
-        let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
+        let(:project) { build_stubbed(:project, namespace: group, path: 'project') }
 
         include_examples 'builds correct paths',
-                         store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
-                         upload_path: %r{\h+/<filename>}
+          store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+          upload_path: %r{\h+/<filename>}
       end
 
       context 'when only repositories are rolled out' do
-        let(:project) { build_stubbed(:project, namespace: group, name: 'project', storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
+        let(:project) { build_stubbed(:project, namespace: group, path: 'project', storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
 
         it_behaves_like 'builds correct legacy storage paths'
       end
@@ -47,8 +47,8 @@ RSpec.describe FileUploader do
 
     # always use hashed storage path for remote uploads
     it_behaves_like 'builds correct paths',
-                     store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
-                     upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
+      store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+      upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
   end
 
   describe 'initialize' do

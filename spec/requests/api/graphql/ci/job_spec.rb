@@ -52,7 +52,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)', feature_category: :c
         'duration' => 25,
         'kind' => 'BUILD',
         'queuedDuration' => 2.0,
-        'status' => job_2.status.upcase
+        'status' => job_2.status.upcase,
+        'failureMessage' => job_2.present.failure_message
       )
     end
 

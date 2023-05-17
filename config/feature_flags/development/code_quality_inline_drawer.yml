@@ -1,0 +1,8 @@
+---
+name: code_quality_inline_drawer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114649
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397037
+milestone: '15.11'
+type: development
+group: group::static analysis
+default_enabled: false

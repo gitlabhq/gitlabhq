@@ -191,8 +191,14 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       expect(database.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 12' do
+    it 'returns false when using PostgreSQL 12' do
       allow(database).to receive(:version).and_return('12')
+
+      expect(database.postgresql_minimum_supported_version?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 13' do
+      allow(database).to receive(:version).and_return('13')
 
       expect(database.postgresql_minimum_supported_version?).to eq(true)
     end

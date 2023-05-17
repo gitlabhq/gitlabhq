@@ -1,4 +1,0 @@
----
-RSpec/VariableName:
-  Exclude:
-    - 'spec/models/user_spec.rb'

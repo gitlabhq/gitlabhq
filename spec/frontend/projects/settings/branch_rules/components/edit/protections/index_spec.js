@@ -26,10 +26,6 @@ describe('Branch Protections', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a heading', () => {
     expect(findHeading().text()).toBe(i18n.protections);
   });

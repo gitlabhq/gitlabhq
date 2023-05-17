@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Projects', feature_category: :projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :repository, creator: build(:user)) } # ensure creator != owner to avoid N+1 false-positive
   let_it_be(:project2) { create(:project, :public) }
 
   before do
@@ -18,7 +18,13 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     end
   end
 
-  it_behaves_like "a dashboard page with sidebar", :dashboard_projects_path, :projects
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_projects_path, :projects
+
+  it 'links to the "Explore projects" page' do
+    visit dashboard_projects_path
+
+    expect(page).to have_link("Explore projects", href: explore_projects_path)
+  end
 
   context 'when user has access to the project' do
     it 'shows role badge' do
@@ -106,6 +112,8 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
   end
 
   context 'when on Starred projects tab', :js do
+    it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :starred_dashboard_projects_path, :projects
+
     it 'shows the empty state when there are no starred projects' do
       visit(starred_dashboard_projects_path)
 
@@ -239,7 +247,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     create(:ci_pipeline, :with_job, status: :success, project: project, ref: project.default_branch, sha: project.commit.sha)
     visit dashboard_projects_path
 
-    control_count = ActiveRecord::QueryRecorder.new { visit dashboard_projects_path }.count
+    control = ActiveRecord::QueryRecorder.new { visit dashboard_projects_path }
 
     new_project = create(:project, :repository, name: 'new project')
     create(:ci_pipeline, :with_job, status: :success, project: new_project, ref: new_project.commit.sha)
@@ -247,15 +255,11 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
 
     ActiveRecord::QueryRecorder.new { visit dashboard_projects_path }.count
 
-    # There are seven known N+1 queries: https://gitlab.com/gitlab-org/gitlab/-/issues/214037
-    # 1. Project#open_issues_count
-    # 2. Project#open_merge_requests_count
-    # 3. Project#forks_count
-    # 4. ProjectsHelper#load_pipeline_status
-    # 5. RendersMemberAccess#preload_max_member_access_for_collection
-    # 6. User#max_member_access_for_project_ids
-    # 7. Ci::CommitWithPipeline#last_pipeline
+    # There are a few known N+1 queries: https://gitlab.com/gitlab-org/gitlab/-/issues/214037
+    # - User#max_member_access_for_project_ids
+    # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
+    # - Ci::Pipeline#detailed_status
 
-    expect { visit dashboard_projects_path }.not_to exceed_query_limit(control_count + 7)
+    expect { visit dashboard_projects_path }.not_to exceed_query_limit(control).with_threshold(4)
   end
 end

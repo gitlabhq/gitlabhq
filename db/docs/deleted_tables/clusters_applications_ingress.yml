@@ -1,0 +1,10 @@
+---
+table_name: clusters_applications_ingress
+feature_categories:
+- deployment_management
+description: "(Deprecated) A GitLab managed Ingress installation in a Kubernetes cluster"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d8223468ae2ae061020cc26336c51dc93cc75571
+milestone: '10.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119386
+removed_in_milestone: '16.0'

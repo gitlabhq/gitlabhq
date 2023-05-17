@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 
@@ -35,9 +35,6 @@ export default {
     isAuthoredByMe() {
       return this.noteAuthorId === this.getUserData.id;
     },
-    addButtonClass() {
-      return this.isAuthoredByMe ? 'js-user-authored' : '';
-    },
   },
   methods: {
     ...mapActions(['toggleAwardRequest']),
@@ -64,7 +61,6 @@ export default {
       :awards="awards"
       :can-award-emoji="canAwardEmoji"
       :current-user-id="getUserData.id"
-      :add-button-class="addButtonClass"
       @award="handleAward($event)"
     />
   </div>

@@ -30,13 +30,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
   end
 
   let(:migration) do
-    described_class.new(start_id: issue.id,
-                        end_id: issue.id + 30,
-                        batch_table: :issues,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ApplicationRecord.connection)
+    described_class.new(
+      start_id: issue.id,
+      end_id: issue.id + 30,
+      batch_table: :issues,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ApplicationRecord.connection
+    )
   end
 
   let(:perform_migration) { migration.perform }

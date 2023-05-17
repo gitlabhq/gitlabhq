@@ -14,7 +14,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   let_it_be(:pipeline) do
     create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                               ref: project.default_branch, user: user)
+                               ref: project.default_branch, user: user, name: 'Build pipeline')
   end
 
   before do
@@ -25,7 +25,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     it_behaves_like 'pipelines visibility table'
 
     context 'authorized user' do
-      it 'returns project pipelines' do
+      it 'returns project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines", user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -41,8 +41,44 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         it 'includes pipeline source' do
           get api("/projects/#{project.id}/pipelines", user)
 
-          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source])
+          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source name])
         end
+
+        context 'when pipeline_name_in_api feature flag is off' do
+          before do
+            stub_feature_flags(pipeline_name_in_api: false)
+          end
+
+          it 'does not include pipeline name in response and ignores name parameter' do
+            get api("/projects/#{project.id}/pipelines", user), params: { name: 'Chatops pipeline' }
+
+            expect(json_response.length).to eq(1)
+            expect(json_response.first.keys).not_to include('name')
+          end
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        # Call to trigger any one time queries
+        get api("/projects/#{project.id}/pipelines", user), params: {}
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/projects/#{project.id}/pipelines", user), params: {}
+        end
+
+        3.times do
+          create(
+            :ci_empty_pipeline,
+            project: project,
+            sha: project.commit.id,
+            ref: project.default_branch,
+            user: user,
+            name: 'Build pipeline')
+        end
+
+        expect do
+          get api("/projects/#{project.id}/pipelines", user), params: {}
+        end.not_to exceed_all_query_limit(control)
       end
 
       context 'when parameter is passed' do
@@ -52,7 +88,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
               create(:ci_pipeline, project: project, status: target)
             end
 
-            it 'returns matched pipelines' do
+            it 'returns matched pipelines', :aggregate_failures do
               get api("/projects/#{project.id}/pipelines", user), params: { scope: target }
 
               expect(response).to have_gitlab_http_status(:ok)
@@ -303,11 +339,24 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             end
           end
         end
+
+        context 'when name is provided' do
+          let_it_be(:pipeline2) { create(:ci_empty_pipeline, project: project, user: user, name: 'Chatops pipeline') }
+
+          it 'filters by name' do
+            get api("/projects/#{project.id}/pipelines", user), params: { name: 'Build pipeline' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(1)
+            expect(json_response.first['name']).to eq('Build pipeline')
+          end
+        end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not return project pipelines' do
+      it 'does not return project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -335,13 +384,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      it 'returns pipeline jobs' do
+      it 'returns pipeline jobs', :aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
 
-      it 'returns correct values' do
+      it 'returns correct values', :aggregate_failures do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
         expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
@@ -354,7 +403,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         let(:api_endpoint) { "/projects/#{project.id}/pipelines/#{pipeline.id}/jobs" }
       end
 
-      it 'returns pipeline data' do
+      it 'returns pipeline data', :aggregate_failures do
         json_job = json_response.first
 
         expect(json_job['pipeline']).not_to be_empty
@@ -368,7 +417,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'filter jobs with one scope element' do
         let(:query) { { 'scope' => 'pending' } }
 
-        it do
+        it :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
 
@@ -382,7 +431,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when filtering to only running jobs' do
         let(:query) { { 'scope' => 'running' } }
 
-        it do
+        it :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
 
@@ -402,7 +451,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'filter jobs with array of scope elements' do
         let(:query) { { scope: %w(pending running) } }
 
-        it do
+        it :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
         end
@@ -442,7 +491,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         let_it_be(:successor) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
 
-        it 'does not return retried jobs by default' do
+        it 'does not return retried jobs by default', :aggregate_failures do
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -450,7 +499,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'when include_retried is false' do
           let(:query) { { include_retried: false } }
 
-          it 'does not return retried jobs' do
+          it 'does not return retried jobs', :aggregate_failures do
             expect(json_response).to be_an Array
             expect(json_response.length).to eq(1)
           end
@@ -459,7 +508,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'when include_retried is true' do
           let(:query) { { include_retried: true } }
 
-          it 'returns retried jobs' do
+          it 'returns retried jobs', :aggregate_failures do
             expect(json_response).to be_an Array
             expect(json_response.length).to eq(2)
             expect(json_response[0]['name']).to eq(json_response[1]['name'])
@@ -469,7 +518,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'no pipeline is found' do
-      it 'does not return jobs' do
+      it 'does not return jobs', :aggregate_failures do
         get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/jobs", user)
 
         expect(json_response['message']).to eq '404 Project Not Found'
@@ -481,7 +530,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when user is not logged in' do
         let(:api_user) { nil }
 
-        it 'does not return jobs' do
+        it 'does not return jobs', :aggregate_failures do
           expect(json_response['message']).to eq '404 Project Not Found'
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -523,13 +572,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      it 'returns pipeline bridges' do
+      it 'returns pipeline bridges', :aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
 
-      it 'returns correct values' do
+      it 'returns correct values', :aggregate_failures do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
         expect(json_response.first['id']).to eq bridge.id
@@ -537,7 +586,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_response.first['stage']).to eq bridge.stage
       end
 
-      it 'returns pipeline data' do
+      it 'returns pipeline data', :aggregate_failures do
         json_bridge = json_response.first
 
         expect(json_bridge['pipeline']).not_to be_empty
@@ -548,7 +597,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_bridge['pipeline']['status']).to eq bridge.pipeline.status
       end
 
-      it 'returns downstream pipeline data' do
+      it 'returns downstream pipeline data', :aggregate_failures do
         json_bridge = json_response.first
 
         expect(json_bridge['downstream_pipeline']).not_to be_empty
@@ -568,7 +617,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'with one scope element' do
           let(:query) { { 'scope' => 'pending' } }
 
-          it :skip_before_request do
+          it :skip_before_request, :aggregate_failures do
             get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -581,7 +630,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'with array of scope elements' do
           let(:query) { { scope: %w(pending running) } }
 
-          it :skip_before_request do
+          it :skip_before_request, :aggregate_failures do
             get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -635,7 +684,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'no pipeline is found' do
-      it 'does not return bridges' do
+      it 'does not return bridges', :aggregate_failures do
         get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/bridges", user)
 
         expect(json_response['message']).to eq '404 Project Not Found'
@@ -647,7 +696,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when user is not logged in' do
         let(:api_user) { nil }
 
-        it 'does not return bridges' do
+        it 'does not return bridges', :aggregate_failures do
           expect(json_response['message']).to eq '404 Project Not Found'
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -704,7 +753,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           stub_ci_pipeline_to_return_yaml_file
         end
 
-        it 'creates and returns a new pipeline' do
+        it 'creates and returns a new pipeline', :aggregate_failures do
           expect do
             post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch }
           end.to change { project.ci_pipelines.count }.by(1)
@@ -717,7 +766,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         context 'variables given' do
           let(:variables) { [{ 'variable_type' => 'file', 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
 
-          it 'creates and returns a new pipeline using the given variables' do
+          it 'creates and returns a new pipeline using the given variables', :aggregate_failures do
             expect do
               post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch, variables: variables }
             end.to change { project.ci_pipelines.count }.by(1)
@@ -738,7 +787,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             stub_ci_pipeline_yaml_file(config)
           end
 
-          it 'creates and returns a new pipeline using the given variables' do
+          it 'creates and returns a new pipeline using the given variables', :aggregate_failures do
             expect do
               post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch, variables: variables }
             end.to change { project.ci_pipelines.count }.by(1)
@@ -763,7 +812,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
         end
 
-        it 'fails when using an invalid ref' do
+        it 'fails when using an invalid ref', :aggregate_failures do
           post api("/projects/#{project.id}/pipeline", user), params: { ref: 'invalid_ref' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -778,7 +827,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             project.update!(auto_devops_attributes: { enabled: false })
           end
 
-          it 'fails to create pipeline' do
+          it 'fails to create pipeline', :aggregate_failures do
             post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch }
 
             expect(response).to have_gitlab_http_status(:bad_request)
@@ -790,7 +839,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'unauthorized user' do
-      it 'does not create pipeline' do
+      it 'does not create pipeline', :aggregate_failures do
         post api("/projects/#{project.id}/pipeline", non_member), params: { ref: project.default_branch }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -811,21 +860,22 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      it 'exposes known attributes' do
+      it 'exposes known attributes', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pipeline/detail')
       end
 
-      it 'returns project pipeline' do
+      it 'returns project pipeline', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['sha']).to match(/\A\h{40}\z/)
+        expect(json_response['name']).to eq('Build pipeline')
       end
 
-      it 'returns 404 when it does not exist' do
+      it 'returns 404 when it does not exist', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{non_existing_record_id}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -844,10 +894,23 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response["coverage"]).to eq('30.00')
         end
       end
+
+      context 'with pipeline_name_in_api disabled' do
+        before do
+          stub_feature_flags(pipeline_name_in_api: false)
+        end
+
+        it 'does not return name', :aggregate_failures do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.keys).not_to include('name')
+        end
+      end
     end
 
     context 'unauthorized user' do
-      it 'does not return a project pipeline' do
+      it 'does not return a project pipeline', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -863,7 +926,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         create(:ci_pipeline, source: dangling_source, project: project)
       end
 
-      it 'returns the specified pipeline' do
+      it 'returns the specified pipeline', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{dangling_pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -878,7 +941,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       let!(:second_pipeline) do
         create(:ci_empty_pipeline, project: project, sha: second_branch.target,
-                                   ref: second_branch.name, user: user)
+                                   ref: second_branch.name, user: user, name: 'Build pipeline')
       end
 
       before do
@@ -887,18 +950,19 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'default repository branch' do
-        it 'gets the latest pipleine' do
+        it 'gets the latest pipleine', :aggregate_failures do
           get api("/projects/#{project.id}/pipelines/latest", user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/pipeline/detail')
           expect(json_response['ref']).to eq(project.default_branch)
           expect(json_response['sha']).to eq(project.commit.id)
+          expect(json_response['name']).to eq('Build pipeline')
         end
       end
 
       context 'ref parameter' do
-        it 'gets the latest pipleine' do
+        it 'gets the latest pipleine', :aggregate_failures do
           get api("/projects/#{project.id}/pipelines/latest", user), params: { ref: second_branch.name }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -907,10 +971,23 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response['sha']).to eq(second_branch.target)
         end
       end
+
+      context 'with pipeline_name_in_api disabled' do
+        before do
+          stub_feature_flags(pipeline_name_in_api: false)
+        end
+
+        it 'does not return name', :aggregate_failures do
+          get api("/projects/#{project.id}/pipelines/latest", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.keys).not_to include('name')
+        end
+      end
     end
 
     context 'unauthorized user' do
-      it 'does not return a project pipeline' do
+      it 'does not return a project pipeline', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -926,7 +1003,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     let(:api_user) { user }
 
     context 'user is a mantainer' do
-      it 'returns pipeline variables empty' do
+      it 'returns pipeline variables empty', :aggregate_failures do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -936,7 +1013,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'with variables' do
         let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
 
-        it 'returns pipeline variables' do
+        it 'returns pipeline variables', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -962,7 +1039,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         let(:api_user) { pipeline_owner_user }
         let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
 
-        it 'returns pipeline variables' do
+        it 'returns pipeline variables', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -987,7 +1064,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'user is not a project member' do
-      it 'does not return pipeline variables' do
+      it 'does not return pipeline variables', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -1000,14 +1077,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     context 'authorized user' do
       let(:owner) { project.first_owner }
 
-      it 'destroys the pipeline' do
+      it 'destroys the pipeline', :aggregate_failures do
         delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it 'returns 404 when it does not exist' do
+      it 'returns 404 when it does not exist', :aggregate_failures do
         delete api("/projects/#{project.id}/pipelines/#{non_existing_record_id}", owner)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -1021,7 +1098,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when the pipeline has jobs' do
         let_it_be(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
-        it 'destroys associated jobs' do
+        it 'destroys associated jobs', :aggregate_failures do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
 
           expect(response).to have_gitlab_http_status(:no_content)
@@ -1044,7 +1121,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
     context 'unauthorized user' do
       context 'when user is not member' do
-        it 'returns a 404' do
+        it 'returns a 404', :aggregate_failures do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -1059,7 +1136,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           project.add_developer(developer)
         end
 
-        it 'returns a 403' do
+        it 'returns a 403', :aggregate_failures do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", developer)
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -1078,7 +1155,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-      it 'retries failed builds' do
+      it 'retries failed builds', :aggregate_failures do
         expect do
           post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
         end.to change { pipeline.builds.count }.from(1).to(2)
@@ -1089,7 +1166,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'unauthorized user' do
-      it 'does not return a project pipeline' do
+      it 'does not return a project pipeline', :aggregate_failures do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -1106,7 +1183,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
       end
 
-      it 'returns error' do
+      it 'returns error', :aggregate_failures do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -1124,7 +1201,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
     let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-    context 'authorized user' do
+    context 'authorized user', :aggregate_failures do
       it 'retries failed builds', :sidekiq_might_not_need_inline do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 
@@ -1140,7 +1217,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         project.add_reporter(reporter)
       end
 
-      it 'rejects the action' do
+      it 'rejects the action', :aggregate_failures do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -1156,7 +1233,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       let(:pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when pipeline does not have a test report' do
-        it 'returns an empty test report' do
+        it 'returns an empty test report', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1167,7 +1244,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when pipeline has a test report' do
         let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
 
-        it 'returns the test report' do
+        it 'returns the test report', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1180,7 +1257,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           create(:ci_build, :broken_test_reports, name: 'rspec', pipeline: pipeline)
         end
 
-        it 'returns a suite_error' do
+        it 'returns a suite_error', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1190,7 +1267,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'unauthorized user' do
-      it 'does not return project pipelines' do
+      it 'does not return project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -1208,7 +1285,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       let(:pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when pipeline does not have a test report summary' do
-        it 'returns an empty test report summary' do
+        it 'returns an empty test report summary', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1219,7 +1296,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'when pipeline has a test report summary' do
         let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project) }
 
-        it 'returns the test report summary' do
+        it 'returns the test report summary', :aggregate_failures do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1229,7 +1306,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'unauthorized user' do
-      it 'does not return project pipelines' do
+      it 'does not return project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report_summary", non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)

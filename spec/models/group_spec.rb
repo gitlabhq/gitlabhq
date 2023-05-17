@@ -40,7 +40,14 @@ RSpec.describe Group, feature_category: :subgroups do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
+
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+
+    it do
+      is_expected.to have_many(:bulk_import_entities).class_name('BulkImports::Entity')
+        .with_foreign_key(:namespace_id).inverse_of(:group)
+    end
+
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }
@@ -447,6 +454,8 @@ RSpec.describe Group, feature_category: :subgroups do
   end
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
+
+  it_behaves_like 'ensures runners_token is prefixed', :group
 
   context 'after initialized' do
     it 'has a group_feature' do
@@ -955,6 +964,23 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe '.with_project_creation_levels' do
+      let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+
+      it 'returns groups with the specified project creation levels' do
+        result = described_class.with_project_creation_levels([
+          Gitlab::Access::NO_ONE_PROJECT_ACCESS,
+          Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+        ])
+
+        expect(result).to include(group_1, group_3)
+        expect(result).not_to include(group_2, group_4)
+      end
+    end
+
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
@@ -966,6 +992,22 @@ RSpec.describe Group, feature_category: :subgroups do
 
         expect(result).to include(group_2, group_3, group_4)
         expect(result).not_to include(group_1)
+      end
+
+      context 'when the application_setting is set to `NO_ONE_PROJECT_ACCESS`' do
+        before do
+          stub_application_setting(default_project_creation: Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+        end
+
+        it 'only includes groups where project creation is allowed' do
+          result = described_class.project_creation_allowed
+
+          expect(result).to include(group_2, group_3)
+
+          # group_4 won't be included because it has `project_creation_level: nil`,
+          # and that means it behaves like the value of the application_setting will inherited.
+          expect(result).not_to include(group_1, group_4)
+        end
       end
     end
 
@@ -2409,8 +2451,7 @@ RSpec.describe Group, feature_category: :subgroups do
     let(:shared_with_group) { create(:group, parent: group) }
 
     before do
-      create(:group_group_link, shared_group: nested_group,
-                                shared_with_group: shared_with_group)
+      create(:group_group_link, shared_group: nested_group, shared_with_group: shared_with_group)
     end
 
     subject(:related_group_ids) { nested_group.related_group_ids }
@@ -3115,11 +3156,11 @@ RSpec.describe Group, feature_category: :subgroups do
 
   describe '.organizations' do
     it 'returns organizations belonging to the group' do
-      organization1 = create(:organization, group: group)
-      create(:organization)
-      organization3 = create(:organization, group: group)
+      crm_organization1 = create(:crm_organization, group: group)
+      create(:crm_organization)
+      crm_organization3 = create(:crm_organization, group: group)
 
-      expect(group.organizations).to contain_exactly(organization1, organization3)
+      expect(group.organizations).to contain_exactly(crm_organization1, crm_organization3)
     end
   end
 
@@ -3584,6 +3625,13 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
+  describe '#content_editor_on_issues_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :content_editor_on_issues }
+      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
+    end
+  end
+
   describe '#work_items_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items }
@@ -3696,7 +3744,7 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '#usage_quotas_enabled?', feature_category: :subscription_cost_management, unless: Gitlab.ee? do
+  describe '#usage_quotas_enabled?', feature_category: :consumables_cost_management, unless: Gitlab.ee? do
     using RSpec::Parameterized::TableSyntax
 
     where(:feature_enabled, :root_group, :result) do

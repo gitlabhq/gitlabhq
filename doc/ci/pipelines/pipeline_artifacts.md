@@ -1,13 +1,13 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pipeline artifacts **(FREE)**
 
 Pipeline artifacts are files created by GitLab after a pipeline finishes. Pipeline artifacts are
-different to [job artifacts](job_artifacts.md) because they are not explicitly managed by
+different to [job artifacts](../jobs/job_artifacts.md) because they are not explicitly managed by
 `.gitlab-ci.yml` definitions.
 
 Pipeline artifacts are used by the [test coverage visualization feature](../testing/test_coverage_visualization.md)

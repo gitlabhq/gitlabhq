@@ -32,18 +32,28 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
+  before_action only: :index do
+    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
+  end
+
   before_action only: [:show, :diffs] do
+    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
+    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
-    push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
+    push_frontend_feature_flag(:deprecate_vulnerabilities_feedback, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
+    push_frontend_feature_flag(:single_file_file_by_file, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
-  end
-
-  before_action do
-    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
+    push_frontend_feature_flag(:realtime_approvals, project)
+    push_frontend_feature_flag(:saved_replies, current_user)
+    push_frontend_feature_flag(:code_quality_inline_drawer, project)
+    push_frontend_feature_flag(:hide_create_issue_resolve_all, project)
+    push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)
+    push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
+    push_frontend_feature_flag(:mr_activity_filters, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -123,8 +133,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       recent_commits,
       commits_count: @merge_request.commits_count
     )
+    commits_count = @merge_request.preparing? ? '-' : @merge_request.commits_count + @merge_request.context_commits_count
 
-    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page }
+    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page, count: commits_count }
   end
 
   def pipelines
@@ -266,6 +277,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     status = merge!
 
+    Gitlab::ApplicationContext.push(merge_action_status: status.to_s)
+
     if @merge_request.merge_error
       render json: { status: status, merge_error: @merge_request.merge_error }
     else
@@ -383,10 +396,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             @merge_request.merge_request_reviewers.map(&:cache_key)
           ]
 
-          render_cached(@merge_request,
-                        with: serializer,
-                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-                        serializer: params[:serializer])
+          render_cached(
+            @merge_request,
+            with: serializer,
+            cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+            serializer: params[:serializer]
+          )
         else
           render json: serializer.represent(@merge_request, serializer: params[:serializer])
         end
@@ -485,8 +500,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         AutoMergeService.new(project, current_user, merge_params).update(merge_request)
       else
         AutoMergeService.new(project, current_user, merge_params)
-          .execute(merge_request,
-                   params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          .execute(merge_request, params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       end
     else
       @merge_request.merge_async(current_user.id, merge_params)
@@ -590,6 +604,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def convert_date_to_epoch(date)
     Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
   rescue Date::Error, TypeError
+  end
+
+  def summarize_my_code_review_enabled?
+    namespace = project&.group&.root_ancestor
+    return false if namespace.nil?
+
+    Feature.enabled?(:summarize_my_code_review, current_user) &&
+      namespace.group_namespace? &&
+      namespace.licensed_feature_available?(:summarize_my_mr_code_review) &&
+      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review) &&
+      merge_request.send_to_ai?
   end
 end
 

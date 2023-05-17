@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::P12 do
 
     describe '#expires_at' do
       it 'returns the certificate expiration timestamp' do
-        expect(subject.metadata[:expires_at]).to eq('2022-09-21 14:56:00 UTC')
+        expect(subject.metadata[:expires_at]).to eq('2023-09-21 14:55:59 UTC')
       end
     end
 

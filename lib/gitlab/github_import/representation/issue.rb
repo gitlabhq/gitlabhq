@@ -79,7 +79,8 @@ module Gitlab
         def github_identifiers
           {
             iid: iid,
-            issuable_type: issuable_type
+            issuable_type: issuable_type,
+            title: title
           }
         end
       end

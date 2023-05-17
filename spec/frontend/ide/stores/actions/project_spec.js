@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
 import {
@@ -19,7 +19,7 @@ import {
 import { logError } from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/logger');
 
 const TEST_PROJECT_ID = 'abc/def';
@@ -104,7 +104,7 @@ describe('IDE store project actions', () => {
       desc                                                      | projectPath        | responseSuccess | expectedMutations
       ${'does not fetch permissions if project does not exist'} | ${undefined}       | ${true}         | ${[]}
       ${'fetches permission when project is specified'}         | ${TEST_PROJECT_ID} | ${true}         | ${[...permissionsMutations]}
-      ${'flashes an error if the request fails'}                | ${TEST_PROJECT_ID} | ${false}        | ${[]}
+      ${'alerts an error if the request fails'}                 | ${TEST_PROJECT_ID} | ${false}        | ${[]}
     `('$desc', async ({ projectPath, expectedMutations, responseSuccess } = {}) => {
       store.state.currentProjectId = projectPath;
       if (responseSuccess) {

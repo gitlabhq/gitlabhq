@@ -216,14 +216,6 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect { subject.execute([hash_config]) }.to raise_error(NameError)
     end
 
-    it 'configures on_single_sign_out proc for cas3' do
-      cas3_config = { 'name' => 'cas3', 'args' => {} }
-
-      expect(devise_config).to receive(:omniauth).with(:cas3, { on_single_sign_out: an_instance_of(Proc) })
-
-      subject.execute([cas3_config])
-    end
-
     it 'configures defaults for google_oauth2' do
       google_config = {
         'name' => 'google_oauth2',

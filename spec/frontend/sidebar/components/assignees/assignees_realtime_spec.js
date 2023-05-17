@@ -49,7 +49,6 @@ describe('Assignees Realtime', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
     SidebarMediator.singleton = null;
   });

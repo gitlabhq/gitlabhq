@@ -2,15 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::TrackArtifactReportWorker do
+RSpec.describe Ci::JobArtifacts::TrackArtifactReportWorker, feature_category: :code_testing do
   describe '#perform', :clean_gitlab_redis_shared_state do
     let_it_be(:group) { create(:group, :private) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:user) { create(:user) }
 
     let_it_be(:pipeline) do
-      create(:ci_pipeline, :with_test_reports, :with_coverage_reports,
-              project: project, user: user)
+      create(:ci_pipeline, :with_test_reports, :with_coverage_reports, project: project, user: user)
     end
 
     subject(:perform) { described_class.new.perform(pipeline_id) }

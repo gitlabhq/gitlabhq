@@ -27,10 +27,6 @@ describe('Expand button', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the prepended collapse button', () => {
     expect(expanderPrependEl().isVisible()).toBe(true);
     expect(expanderAppendEl().isVisible()).toBe(false);

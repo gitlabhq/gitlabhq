@@ -1,9 +1,8 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
-disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 ---
 
 # Environments and deployments **(FREE)**
@@ -159,6 +158,20 @@ deploy_review_app:
     - main
 ```
 
+### Rename an environment
+
+> - Renaming an environment by using the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3.
+> - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
+> - Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+
+You cannot rename an environment.
+
+To achieve the same result as renaming an environment:
+
+1. [Stop the existing environment](#stop-an-environment-by-using-the-ui).
+1. [Delete the existing environment](#delete-an-environment).
+1. [Create a new environment](#create-a-static-environment) with the desired name.
+
 ## Deployment tier of environments
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
@@ -207,7 +220,7 @@ The `when: manual` action:
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
-## Configure Kubernetes deployments (DEPRECATED)
+## Configure Kubernetes deployments (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -440,28 +453,31 @@ For example:
 With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
 from source files to public pages in the environment set for Review Apps.
 
-### Stop an environment
+### Stopping an environment
 
-When you stop an environment:
+Stopping an environment means its deployments are not accessible on the target server. You must stop
+an environment before it can be deleted.
 
-- On the **Environments** page, it moves from the list of **Available** environments
-  to the list of **Stopped** environments.
-- An [`on_stop` action](../yaml/index.md#environmenton_stop), if defined, is executed.
-
-There are multiple ways to clean up [dynamic environments](#create-a-dynamic-environment):
-
-- If you use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when a merge request is merged or closed](#stop-an-environment-when-a-merge-request-is-merged-or-closed).
-- If you do _NOT_ use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when the associated feature branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
-- If you set [an expiry period to an environment](../yaml/index.md#environmentauto_stop_in), GitLab stops an environment [when it's expired](#stop-an-environment-after-a-certain-time-period).
-
-To stop stale environments, you can [use the API](../../api/environments.md#stop-stale-environments).
+If the environment has an [`on_stop` action](../yaml/index.md#environmenton_stop) defined, it's
+executed to stop the environment.
 
 #### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.
 
-The following example shows a `deploy_review` job that calls a `stop_review` job
-to clean up and stop the environment.
+In the following example, a `deploy_review` job calls a `stop_review` job to clean up and stop the
+environment.
+
+- Both jobs must have the same [`rules`](../yaml/index.md#rules)
+  or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
+  the `stop_review` job might not be included in all pipelines that include the
+  `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
+- The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
+  if it's in a later stage than the job that started the environment.
+- If you can't use [merge request pipelines](../pipelines/merge_request_pipelines.md),
+  set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
+  `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
+  try to check out the code after the branch is deleted.
 
 ```yaml
 deploy_review:
@@ -483,30 +499,13 @@ stop_review:
   when: manual
 ```
 
-Both jobs must have the same [`rules`](../yaml/index.md#rules)
-or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
-the `stop_review` job might not be included in all pipelines that include the
-`deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
-
-The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
-if it's in a later stage than the job that started the environment.
-
-If you can't use [merge request pipelines](../pipelines/merge_request_pipelines.md),
-set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
-`stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
-try to check out the code after the branch is deleted.
-
-Read more in the [`.gitlab-ci.yml` reference](../yaml/index.md#environmenton_stop).
-
 #### Stop an environment when a merge request is merged or closed
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60885) in GitLab 11.10.
+When you use the [merge request pipelines](../pipelines/merge_request_pipelines.md) configuration,
+the `stop` trigger is automatically enabled.
 
-You can configure environments to stop when a merge request is merged or closed.
-This stop trigger is automatically enabled when you use [merge request pipelines](../pipelines/merge_request_pipelines.md).
-
-The following example shows a `deploy_review` job that calls a `stop_review` job
-to clean up and stop the environment.
+In the following example, the `deploy_review` job calls a `stop_review` job to clean up and stop
+the environment.
 
 ```yaml
 deploy_review:
@@ -531,38 +530,35 @@ stop_review:
       when: manual
 ```
 
-#### Stop an environment when another job is finished
+#### Run a pipeline job when environment is stopped
 
-You can set an environment to stop when another job is finished.
+You can specify a job to run when an environment is stopped.
+
+Prerequisites:
+
+- Both jobs must have the same rules or only/except configuration.
+- The `stop_review_app` job **must** have the following keywords defined:
+  - `when`, defined at either:
+    - [The job level](../yaml/index.md#when).
+    - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
+      also set [`allow_failure: true`](../yaml/index.md#allow_failure) so the pipeline can complete
+      even if the job doesn't run.
+  - `environment:name`
+  - `environment:action`
 
 In your `.gitlab-ci.yml` file, specify in the [`on_stop`](../yaml/index.md#environmenton_stop)
 keyword the name of the job that stops the environment.
 
-The following example shows a `review_app` job that calls a `stop_review_app` job after the first
-job is finished. The `stop_review_app` is triggered based on what is defined under `when`. In this
-case, it is set to `manual`, so it needs a
-[manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
-from the GitLab UI to run.
+In the following example:
 
-Both jobs must have the same rules or only/except configuration.
-In this example, if the configuration is not identical:
-
-- The `stop_review_app` job might not be included in all pipelines that include the `review_app` job.
-- It is not possible to trigger the `action: stop` to stop the environment automatically.
-
-Also in the example, `GIT_STRATEGY` is set to `none`. If the
-`stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
-the runner doesn't try to check out the code after the branch is deleted.
-
-The `stop_review_app` job **must** have the following keywords defined:
-
-- `when`, defined at either:
-  - [The job level](../yaml/index.md#when).
-  - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
-    also set [`allow_failure: true`](../yaml/index.md#allow_failure) so the pipeline can complete
-    even if the job doesn't run.
-- `environment:name`
-- `environment:action`
+- A `review_app` job calls a `stop_review_app` job after the first job is finished.
+- The `stop_review_app` is triggered based on what is defined under `when`. In this
+  case, it is set to `manual`, so it needs a
+  [manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
+  from the GitLab UI to run.
+- The `GIT_STRATEGY` is set to `none`. If the `stop_review_app` job is
+  [automatically triggered](../environments/index.md#stopping-an-environment),
+  the runner doesn't try to check out the code after the branch is deleted.
 
 ```yaml
 review_app:
@@ -586,21 +582,23 @@ stop_review_app:
 
 #### Stop an environment after a certain time period
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
+You can set an environment to stop automatically after a certain time period.
 
-You can set environments to stop automatically after a certain time period.
+NOTE:
+Due to resource limitations, a background worker for stopping environments runs only once every
+hour. This means that environments may not be stopped after the exact time period specified, but are
+instead stopped when the background worker detects expired environments.
 
 In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/index.md#environmentauto_stop_in)
-keyword. You can specify a human-friendly date as the value, such as `1 hour and 30 minutes` or `1 day`.
+keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
 After the time period passes, GitLab automatically triggers a job to stop the environment.
 
-Due to resource limitations, a background worker for stopping environments only runs once
-every hour. This means that environments aren't stopped at the exact timestamp specified, but are
-instead stopped when the hourly cron worker detects expired environments.
+In the following example:
 
-In the following example, each merge request creates a Review App environment.
-Each push triggers the `review_app` job and an environment named `review/your-branch-name`
-is created or updated. The environment runs until `stop_review_app` is executed:
+- Each commit on a merge request triggers a `review_app` job that deploys the latest change to the
+  environment and resets its expiry period.
+- If the environment is inactive for more than a week, GitLab automatically triggers the
+  `stop_review_app` job to stop the environment.
 
 ```yaml
 review_app:
@@ -622,13 +620,33 @@ stop_review_app:
       when: manual
 ```
 
-As long as the merge request is active and keeps getting new commits,
-the Review App doesn't stop. Developers don't need to worry about
-re-initiating Review App.
+##### View an environment's scheduled stop date and time
 
-Because `stop_review_app` is set to `auto_stop_in: 1 week`,
-if a merge request is inactive for more than a week,
-GitLab automatically triggers the `stop_review_app` job to stop the environment.
+When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+you can view its expiration date and time.
+
+To view an environment's expiration date and time:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Select the name of the environment.
+
+The expiration date and time is displayed in the upper-left corner, next to the environment's name.
+
+##### Override a environment's scheduled stop date and time
+
+When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+you can override its expiration.
+
+To override an environment's expiration:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Select the deployment name.
+1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
+
+The `auto_stop_in` setting is overridden and the environment remains active until it's stopped
+manually.
 
 #### Stop an environment without running the `on_stop` action
 
@@ -640,7 +658,7 @@ To stop an environment without running the defined `on_stop` action, execute the
 [Stop an environment API](../../api/environments.md#stop-an-environment) with the parameter
 `force=true`.
 
-#### Stop an environment through the UI
+#### Stop an environment by using the UI
 
 NOTE:
 To trigger an `on_stop` action and manually stop an environment from the
@@ -659,15 +677,20 @@ To stop an environment in the GitLab UI:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
 
-This feature is useful when you need to perform multiple **parallel** stop actions on an environment.
+To configure multiple **parallel** stop actions on an environment, specify the
+[`on_stop`](../yaml/index.md#environmenton_stop) keyword across multiple
+[deployment jobs](../jobs/index.md#deployment-jobs) for the same `environment`, as defined in the
+`.gitlab-ci.yml` file.
 
-To configure multiple stop actions on an environment, specify the [`on_stop`](../yaml/index.md#environmenton_stop)
-keyword across multiple [deployment jobs](../jobs/index.md#deployment-jobs) for the same `environment`, as defined in the `.gitlab-ci.yml` file.
+When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
-When an environment is stopped, the matching `on_stop` actions from *successful deployment jobs* alone are run in parallel in no particular order.
+In the following example, for the `test` environment there are two deployment jobs:
 
-In the following example, for the `test` environment there are two deployment jobs `deploy-to-cloud-a`
-and `deploy-to-cloud-b`.
+- `deploy-to-cloud-a`
+- `deploy-to-cloud-b`
+
+When the environment is stopped, the system runs `on_stop` actions `teardown-cloud-a` and
+`teardown-cloud-b` in parallel.
 
 ```yaml
 deploy-to-cloud-a:
@@ -697,32 +720,6 @@ teardown-cloud-b:
   when: manual
 ```
 
-When the environment is stopped, the system runs `on_stop` actions
-`teardown-cloud-a` and `teardown-cloud-b` in parallel.
-
-#### View a deployment's scheduled stop time
-
-You can view a deployment's expiration date in the GitLab UI.
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
-1. Select the name of the deployment.
-
-In the upper left, next to the environment name, the expiration date is displayed.
-
-#### Override a deployment's scheduled stop time
-
-You can manually override a deployment's expiration date.
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
-1. Select the deployment name.
-1. in the upper right, select the thumbtack (**{thumbtack}**).
-
-![Environment auto stop](img/environment_auto_stop_v13_10.png)
-
-The `auto_stop_in` setting is overwritten and the environment remains active until it's stopped manually.
-
 ### Delete an environment
 
 Delete an environment when you want to remove it and all its deployments.
@@ -730,7 +727,7 @@ Delete an environment when you want to remove it and all its deployments.
 Prerequisites:
 
 - You must have at least the Developer role.
-- You must [stop](#stop-an-environment) the environment before it can be deleted.
+- You must [stop](#stopping-an-environment) the environment before it can be deleted.
 
 To delete an environment:
 
@@ -866,7 +863,7 @@ It may take a minute or two for data to appear after initial deployment.
 
 Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
-### Web terminals (DEPRECATED)
+### Web terminals (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -990,19 +987,6 @@ like [Review Apps](../review_apps/index.md) (`review/*`).
 
 The most specific spec takes precedence over the other wildcard matching. In this case,
 the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
-
-### Rename an environment
-
-> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprecated and [is planned to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
-
-Renaming an environment through the UI is not possible.
-Instead, you need to delete the old environment and create a new one:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
-1. Find the environment and stop it.
-1. Delete the environment.
-1. Create a new environment with your preferred name.
 
 ## Related topics
 

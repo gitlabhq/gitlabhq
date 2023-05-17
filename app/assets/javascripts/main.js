@@ -89,9 +89,11 @@ initRails();
 function deferredInitialisation() {
   const $body = $('body');
 
-  initTopNav();
+  if (!gon.use_new_navigation) {
+    initTopNav();
+    initTodoToggle();
+  }
   initBreadcrumbs();
-  initTodoToggle();
   initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
   initServicePingConsent();
@@ -103,14 +105,6 @@ function deferredInitialisation() {
   initFeatureHighlight();
   initCopyCodeButton();
   initGitlabVersionCheck();
-
-  // Init super sidebar
-  if (gon.use_new_navigation) {
-    // eslint-disable-next-line promise/catch-or-return
-    import('./super_sidebar/super_sidebar_bundle').then(({ initSuperSidebar }) => {
-      initSuperSidebar();
-    });
-  }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

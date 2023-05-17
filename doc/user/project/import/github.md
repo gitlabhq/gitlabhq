@@ -1,13 +1,14 @@
 ---
-type: reference, howto
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import your project from GitHub to GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378267) in GitLab 15.11, GitLab instances behind proxies no longer require `github.com` and `api.github.com` entries in the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
@@ -30,18 +31,19 @@ When importing projects:
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.
 
-For additional technical details, refer to the [GitHub Importer](../../../development/github_importer.md)
-developer documentation.
-
-For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
 
 ## Prerequisites
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 To import projects from GitHub:
 
-- You must have at least the Maintainer role on the destination group to import to. Using the Developer role for this
-  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
-  GitLab 16.0.
+- [GitHub import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+  must be enabled. If not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
+  by default on GitLab.com.
+- You must have at least the Maintainer role on the destination group to import to.
 - Each GitHub author and assignee in the repository must have a
   [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
   on GitHub that matches their GitLab email address (regardless of how the account was created). If their email address
@@ -54,17 +56,18 @@ To import projects from GitHub:
   are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
   may have to add it on existing accounts.
 
-See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional
-prerequisites for those imports.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
+perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
 
 ### Importing from GitHub Enterprise to self-managed GitLab
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
-  with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
-  [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
+- GitHub must be enabled as an import source in the
+  [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+- For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
+  [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 ### Importing from GitHub.com to self-managed GitLab
 
@@ -82,10 +85,9 @@ Before you begin, ensure that any GitHub user you want to map to a GitLab user h
 [publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) on GitHub.
 
 If you are importing to GitLab.com, you can alternatively import GitHub repositories using a [personal access token](#use-a-github-token).
-We do not recommend this method, as it does not associate all user activity (such as issues and pull requests) with matching GitLab users.
 
-User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
-the user account that is performing the import.
+If a GitHub user's public email address doesn't match any GitLab user email address, the user's activity is associated with the user account that is
+performing the import.
 
 NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
@@ -103,9 +105,7 @@ Prerequisite:
 
 - Authentication token with administrator access.
 
-Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
-you can use a personal access token to import your project from GitHub, but this method cannot
-associate all user activity (such as issues and pull requests) with matching GitLab users.
+If you are a GitLab.com user, you can use a personal access token to import your project from GitHub.
 If you are an administrator of a self-managed GitLab instance or if you are importing from
 GitHub Enterprise, you cannot use a personal access token.
 The [GitHub integration method (above)](#use-the-github-integration) is recommended for all users.
@@ -124,6 +124,21 @@ If you are not using the GitHub integration, you can still perform an authorizat
 To use a newer personal access token in imports after previously performing these steps, sign out of
 your GitLab account and sign in again, or revoke the older personal access token in GitHub.
 
+### Filter repositories list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
+
+After you authorize access to your GitHub repositories, GitLab redirects you to the importer page and
+your GitHub repositories are listed.
+
+Use one of the following tabs to filter the list of repositories:
+
+- **Owner** (default): Filter the list to the repositories that you are the owner of.
+- **Collaborated**: Filter the list to the repositories that you have contributed to.
+- **Organization**: Filter the list to the repositories that belong to an organization you are a member of.
+
+When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown.
+
 ### Select additional items to import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
@@ -140,14 +155,14 @@ You can choose to import these items, but this could significantly increase impo
 - **Import issue and pull request events**.
 - **Use alternative comments import method**.
 - **Import Markdown attachments**.
+- **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
+  and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.
+  Outside collaborators are never imported.
 
 ### Select which repositories to import
 
 > - Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
-
-After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
-your GitHub repositories are listed.
 
 By default, the proposed repository namespaces match the names as they exist in GitHub, but based
 on your permissions, you can choose to edit these names before you proceed to import any of them.
@@ -169,6 +184,18 @@ To open an repository in GitLab URL after it has been imported, select its GitLa
 Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
 ![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
+
+### Check status of imports
+
+> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.0.
+
+After imports are completed, they can be in one of three states:
+
+- **Completed**: GitLab imported all repository entities.
+- **Partially completed**: GitLab failed to import some repository entities.
+- **Failed**: GitLab imported no repository entities.
+
+Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
 ## Mirror a repository and share pipeline status **(PREMIUM)**
 
@@ -209,17 +236,19 @@ The following items of a project are imported:
 - Repository description.
 - Git repository data.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
+- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10. From GitLab 16.0, can
+  be imported [as an additional item](#select-additional-items-to-import).
 - Issues.
 - Pull requests.
 - Wiki pages.
 - Milestones.
 - Labels.
-- Release note descriptions.
+- Release notes content.
 - Attachments for:
   - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
-  - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Comments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
   - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
-  - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
   `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
@@ -232,7 +261,7 @@ The following items of a project are imported:
 - Pull request "merged by" information.
 - Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
   GitLab 14.5.
-- Diff Notes suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
+- Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
   with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
   From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
@@ -252,14 +281,11 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
 | :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
 | **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** (1) | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a Premium license, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
-
-1. To successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** rule, you must add to the parent group in GitLab
-   the users that are allowed to bypass required pull requests before you begin importing.
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue
@@ -267,39 +293,25 @@ Mapping GitHub rule **Require status checks to pass before merging** to
 into GitLab due to technical difficulties. You can still create [external status checks](../merge_requests/status_checks.md)
 manually.
 
-## Alternative way to import notes and diff notes
+### Collaborators (members)
 
-When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.
-Not all pages can be fetched due to the following error coming from GitHub API: `In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
 
-An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
 
-Instead of using `issues_comments` and `pull_requests_comments`, use individual resources `issue_comments` and `pull_request_comments` instead to pull notes from one object at a time.
-This allows us to carry over any missing comments, however it increases the number of network requests required to perform the import, which means its execution takes a longer time.
+| GitHub role | Mapped GitLab role |
+|:------------|:-------------------|
+| Read        | Guest              |
+| Triage      | Reporter           |
+| Write       | Developer          |
+| Maintain    | Maintainer         |
+| Admin       | Owner              |
 
-## Reduce GitHub API request objects per page
+GitHub Enterprise Cloud has
+[custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
+These roles aren't supported and cause partially completed imports.
 
-Some GitHub API endpoints may return a 500 or 502 error for project imports from large repositories.
-To reduce the chance of such errors, you can enable the feature flag
-`github_importer_lower_per_page_limit` in the group project importing the data. This reduces the
-page size from 100 to 50.
-
-To enable this feature flag, start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-and run the following `enable` command:
-
-```ruby
-group = Group.find_by_full_path('my/group/fullpath')
-
-# Enable
-Feature.enable(:github_importer_lower_per_page_limit, group)
-```
-
-To disable the feature, run this command:
-
-```ruby
-# Disable
-Feature.disable(:github_importer_lower_per_page_limit, group)
-```
+To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 
@@ -443,3 +455,47 @@ repository to be imported manually. Administrators can manually import the repos
    # Trigger import from second step
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```
+
+### Errors when importing large projects
+
+The GitHub importer might encounter some errors when importing large projects.
+
+#### Alternative way to import notes and diff notes
+
+When the GitHub importer runs on extremely large projects, not all notes and diff notes can be imported due to the GitHub API `issues_comments` and `pull_requests_comments` endpoint limitations.
+
+If it's not possible to fetch all pages, the GitHub API might return the following error:
+
+```plaintext
+In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.
+```
+
+An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+
+Instead of using `issues_comments` and `pull_requests_comments`, use individual resources to pull notes from one object at a time. This way, you can carry over any missing comments. However, execution takes longer because this method increases the number of network requests required to perform the import.
+
+#### Reduce GitHub API request objects per page
+
+Some GitHub API endpoints might return a `500` or `502` error for project imports from large repositories.
+To reduce the chance of these errors, in the group project importing the data, enable the
+`github_importer_lower_per_page_limit` feature flag. When enabled, the flag reduces the
+page size from `100` to `50`.
+
+To enable this feature flag:
+
+1. Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following `enable` command:
+
+   ```ruby
+   group = Group.find_by_full_path('my/group/fullpath')
+
+   # Enable
+   Feature.enable(:github_importer_lower_per_page_limit, group)
+   ```
+
+To disable the feature flag, run this command:
+
+```ruby
+# Disable
+Feature.disable(:github_importer_lower_per_page_limit, group)
+```

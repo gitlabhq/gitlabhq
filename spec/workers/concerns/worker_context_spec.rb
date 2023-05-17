@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkerContext do
+RSpec.describe WorkerContext, feature_category: :shared do
   let(:worker) do
     Class.new do
       def self.name
@@ -73,9 +73,11 @@ RSpec.describe WorkerContext do
 
   describe '.bulk_perform_async_with_contexts' do
     subject do
-      worker.bulk_perform_async_with_contexts(%w(hello world),
-                                              context_proc: -> (_) { { user: build_stubbed(:user) } },
-                                              arguments_proc: -> (word) { word })
+      worker.bulk_perform_async_with_contexts(
+        %w(hello world),
+        context_proc: -> (_) { { user: build_stubbed(:user) } },
+        arguments_proc: -> (word) { word }
+      )
     end
 
     it 'calls bulk_perform_async with the arguments' do
@@ -89,10 +91,12 @@ RSpec.describe WorkerContext do
 
   describe '.bulk_perform_in_with_contexts' do
     subject do
-      worker.bulk_perform_in_with_contexts(10.minutes,
-                                           %w(hello world),
-                                           context_proc: -> (_) { { user: build_stubbed(:user) } },
-                                           arguments_proc: -> (word) { word })
+      worker.bulk_perform_in_with_contexts(
+        10.minutes,
+        %w(hello world),
+        context_proc: -> (_) { { user: build_stubbed(:user) } },
+        arguments_proc: -> (word) { word }
+      )
     end
 
     it 'calls bulk_perform_in with the arguments and delay' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CodequalityMrDiffEntity do
+RSpec.describe Ci::CodequalityMrDiffEntity, feature_category: :code_quality do
   let(:entity) { described_class.new(mr_diff_report) }
   let(:mr_diff_report) { Gitlab::Ci::Reports::CodequalityMrDiff.new(codequality_report.all_degradations) }
   let(:codequality_report) { Gitlab::Ci::Reports::CodequalityReports.new }

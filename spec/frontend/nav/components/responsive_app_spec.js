@@ -33,10 +33,6 @@ describe('~/nav/components/responsive_app.vue', () => {
     document.body.className = 'test-class';
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

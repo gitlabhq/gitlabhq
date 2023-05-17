@@ -2,7 +2,7 @@
   announcement_milestone: "15.8"  # (required) The milestone when this feature was first announced as deprecated.
   announcement_date: "2023-01-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "15.9"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2023-02-22" # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_date: "2023-02-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: ericschurter  # (required) GitLab username of the person reporting the change
   stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth

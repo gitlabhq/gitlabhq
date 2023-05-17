@@ -16,9 +16,9 @@ In case custom inflection logic is needed, custom inflectors are added in the [q
 
 ## Link a test to its test case
 
-Every test should have a corresponding test case in the [GitLab project Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/-/issues).
+Every test should have a corresponding test case in the [GitLab project test cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/-/issues).
 If a test case issue does not yet exist, any GitLab team member can create a new test case in
-the [Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) GitLab project
+the **[CI/CD > Test cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases)** page of the GitLab project
 with a placeholder title. After the test case URL is linked to a test in the code, when the test is
 run in a pipeline that has reporting enabled, the `report-results` script automatically updates the
 test case and the results issue.
@@ -413,7 +413,7 @@ except(page).to have_no_text('hidden')
 ```
 
 Unfortunately, that's not automatically the case for the predicate methods that we add to our
-[page objects](page_objects.md). We need to [create our own negatable matchers](https://relishapp.com/rspec/rspec-expectations/v/3-9/docs/custom-matchers/define-a-custom-matcher#matcher-with-separate-logic-for-expect().to-and-expect().not-to).
+[page objects](page_objects.md). We need to [create our own negatable matchers](https://rspec.info/features/3-12/rspec-expectations/custom-matchers/define-matcher/).
 
 The initial example uses the `have_job` matcher which is derived from the
 [`has_job?` predicate method of the `Page::Project::Pipeline::Show` page object](https://gitlab.com/gitlab-org/gitlab/-/blob/87864b3047c23b4308f59c27a3757045944af447/qa/qa/page/project/pipeline/show.rb#L53).

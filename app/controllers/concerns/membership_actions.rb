@@ -51,7 +51,7 @@ module MembershipActions
             _("User was successfully removed from project.")
           end
 
-        redirect_to members_page_url, notice: message
+        redirect_to members_page_url, notice: message, status: :see_other
       end
 
       format.js { head :ok }
@@ -63,10 +63,10 @@ module MembershipActions
 
     if access_requester.persisted?
       redirect_to polymorphic_path(membershipable),
-                  notice: _('Your request for access has been queued for review.')
+        notice: _('Your request for access has been queued for review.')
     else
       redirect_to polymorphic_path(membershipable),
-                  alert: format(_("Your request for access could not be processed: %{error_message}"), error_message: access_requester.errors.full_messages.to_sentence)
+        alert: format(_("Your request for access could not be processed: %{error_message}"), error_message: access_requester.errors.full_messages.to_sentence)
     end
   end
 

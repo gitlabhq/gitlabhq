@@ -9,12 +9,6 @@ module Types
 
     present_using Releases::LinkPresenter
 
-    field :external, GraphQL::Types::Boolean,
-      null: true,
-      method: :external?,
-      description: 'Indicates the link points to an external resource.',
-      deprecated: { reason: 'No longer used', milestone: '15.9' }
-
     field :id, GraphQL::Types::ID, null: false,
                                    description: 'ID of the link.'
     field :link_type,

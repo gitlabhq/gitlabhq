@@ -48,6 +48,40 @@ RSpec.describe Resolvers::GroupLabelsResolver do
       end
     end
 
+    describe 'association preloading', :saas do
+      let(:params) do
+        {
+          include_ancestor_groups: true,
+          include_descendant_groups: true,
+          only_group_labels: false
+        }
+      end
+
+      before do
+        group.add_developer(current_user)
+
+        # warmup
+        resolve_labels(group, params).to_a
+      end
+
+      it 'prevents N+1 queries' do
+        control = Gitlab::WithRequestStore.with_request_store do
+          ActiveRecord::QueryRecorder.new { resolve_labels(group, params).to_a }
+        end
+
+        another_project = create(:project, :private, group: sub_subgroup)
+        another_subgroup = create(:group, :private, parent: group)
+        create(:label, project: another_project, name: 'another project feature')
+        create(:group_label, group: another_subgroup, name: 'another group feature')
+
+        expect do
+          Gitlab::WithRequestStore.with_request_store do
+            resolve_labels(group, params).to_a
+          end
+        end.not_to exceed_query_limit(control.count)
+      end
+    end
+
     context 'at group level' do
       before_all do
         group.add_developer(current_user)

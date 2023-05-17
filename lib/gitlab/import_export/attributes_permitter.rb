@@ -80,7 +80,7 @@ module Gitlab
 
       # Deep traverse relations tree to build a list of allowed model relations
       def build_associations
-        stack = @attributes_finder.tree.to_a
+        stack = @attributes_finder.tree.deep_merge(@attributes_finder.import_only_tree).to_a
 
         while stack.any?
           model_name, relations = stack.pop

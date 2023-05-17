@@ -133,7 +133,11 @@ export default {
     <div
       class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
     >
-      <div v-if="icon.name" data-testid="design-event" class="gl-top-5 gl-right-5 gl-absolute">
+      <div
+        v-if="icon.name"
+        data-testid="design-event"
+        class="gl-absolute gl-top-3 gl-right-3 gl-mr-1"
+      >
         <span :title="icon.tooltip" :aria-label="icon.tooltip">
           <gl-icon
             :name="icon.name"
@@ -165,11 +169,11 @@ export default {
         />
       </gl-intersection-observer>
     </div>
-    <div class="card-footer gl-display-flex gl-w-full">
+    <div class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4">
       <div class="gl-display-flex gl-flex-direction-column str-truncated-100">
         <span
           v-gl-tooltip
-          class="gl-font-weight-bold str-truncated-100"
+          class="gl-font-weight-semibold str-truncated-100"
           data-qa-selector="design_file_name"
           :data-testid="`design-img-filename-${id}`"
           :title="filename"

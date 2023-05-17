@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable,
+  RSpec.describe 'Package', :orchestrated, :requires_admin, :packages, :object_storage, :reliable,
   feature_flag: {
     name: 'maven_central_request_forwarding',
     scope: :global
@@ -134,7 +134,7 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
-          Page::Project::Menu.perform(&:click_packages_link)
+          Page::Project::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package_name)
@@ -190,6 +190,8 @@ module QA
       end
 
       before do
+        QA::Support::Helpers::ImportSource.enable('git')
+
         Runtime::Feature.enable(:maven_central_request_forwarding)
         Flow::Login.sign_in_unless_signed_in
 

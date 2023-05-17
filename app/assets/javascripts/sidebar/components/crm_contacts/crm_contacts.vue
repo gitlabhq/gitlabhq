@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query.graphql';

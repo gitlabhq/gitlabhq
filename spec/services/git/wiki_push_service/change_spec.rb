@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::WikiPushService::Change do
+RSpec.describe Git::WikiPushService::Change, feature_category: :source_code_management do
   subject { described_class.new(project_wiki, change, raw_change) }
 
   let(:project_wiki) { double('ProjectWiki') }
@@ -60,11 +60,13 @@ RSpec.describe Git::WikiPushService::Change do
       end
 
       %i[added renamed modified].each do |op|
-        let(:operation) { op }
-        let(:slug) { new_path.chomp('.md') }
-        let(:revision) { change[:newrev] }
+        context "the operation is #{op}" do
+          let(:operation) { op }
+          let(:slug) { new_path.chomp('.md') }
+          let(:revision) { change[:newrev] }
 
-        it { is_expected.to have_attributes(page: wiki_page) }
+          it { is_expected.to have_attributes(page: wiki_page) }
+        end
       end
     end
   end

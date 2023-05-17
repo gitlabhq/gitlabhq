@@ -11,11 +11,11 @@ module API
         desc 'Register a new runner' do
           detail "Register a new runner for the instance"
           success Entities::Ci::RunnerRegistrationDetails
-          failure [[400, 'Bad Request'], [403, 'Forbidden']]
+          failure [[400, 'Bad Request'], [403, 'Forbidden'], [410, 'Gone']]
         end
         params do
           requires :token, type: String, desc: 'Registration token'
-          optional :description, type: String, desc: %q(Runner's description)
+          optional :description, type: String, desc: %q(Description of the runner)
           optional :maintainer_note, type: String, desc: %q(Deprecated: see `maintenance_note`)
           optional :maintenance_note, type: String,
                                       desc: %q(Free-form maintenance notes for the runner (1024 characters))
@@ -27,13 +27,13 @@ module API
             optional :architecture, type: String, desc: %q(Runner's architecture)
           end
           optional :active, type: Boolean,
-                            desc: 'Deprecated: Use `paused` instead. Specifies whether the runner is allowed ' \
+                            desc: 'Deprecated: Use `paused` instead. Specifies if the runner is allowed ' \
                                   'to receive new jobs'
-          optional :paused, type: Boolean, desc: 'Specifies whether the runner should ignore new jobs'
-          optional :locked, type: Boolean, desc: 'Specifies whether the runner should be locked for the current project'
+          optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
+          optional :locked, type: Boolean, desc: 'Specifies if the runner should be locked for the current project'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
                                   desc: 'The access level of the runner'
-          optional :run_untagged, type: Boolean, desc: 'Specifies whether the runner should handle untagged jobs'
+          optional :run_untagged, type: Boolean, desc: 'Specifies if the runner should handle untagged jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                               desc: %q(A list of runner tags)
           optional :maximum_timeout, type: Integer,
@@ -51,10 +51,18 @@ module API
           attributes[:maintenance_note] ||= deprecated_note if deprecated_note
           attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
-          result = ::Ci::Runners::RegisterRunnerService.new.execute(params[:token], attributes)
-          @runner = result.success? ? result.payload[:runner] : nil
-          forbidden! unless @runner
+          result = ::Ci::Runners::RegisterRunnerService.new(params[:token], attributes).execute
 
+          if result.error?
+            case result.reason
+            when :runner_registration_disallowed
+              render_api_error_with_reason!(410, '410 Gone', result.message)
+            else
+              forbidden!(result.message)
+            end
+          end
+
+          @runner = result.payload[:runner]
           if @runner.persisted?
             present @runner, with: Entities::Ci::RunnerRegistrationDetails
           else
@@ -75,6 +83,25 @@ module API
           destroy_conditionally!(current_runner) { ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute }
         end
 
+        desc 'Delete a registered runner manager' do
+          summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
+          http_codes [[204, 'Runner manager was deleted'], [400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
+        end
+        params do
+          requires :token, type: String, desc: %q(The runner's authentication token)
+          requires :system_id, type: String, desc: %q(The runner's system identifier.)
+        end
+        delete '/managers', urgency: :low, feature_category: :runner_fleet do
+          authenticate_runner!(ensure_runner_manager: false)
+
+          destroy_conditionally!(current_runner) do
+            ::Ci::Runners::UnregisterRunnerManagerService.new(
+              current_runner,
+              params[:token],
+              system_id: params[:system_id]).execute
+          end
+        end
+
         desc 'Validate authentication credentials' do
           summary "Verify authentication for a registered runner"
           success Entities::Ci::RunnerRegistrationDetails
@@ -85,7 +112,11 @@ module API
           optional :system_id, type: String, desc: %q(The runner's system identifier)
         end
         post '/verify', urgency: :low, feature_category: :runner do
-          authenticate_runner!
+          # For runners that were created in the UI, we want to update the contacted_at value
+          # only when it starts polling for jobs
+          registering_created_runner = params[:token].start_with?(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
+
+          authenticate_runner!(update_contacted_at: !registering_created_runner)
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
@@ -137,7 +168,6 @@ module API
             optional :certificate, type: String, desc: %q(Session's certificate)
             optional :authorization, type: String, desc: %q(Session's authorization)
           end
-          optional :job_age, type: Integer, desc: %q(Job should be older than passed age in seconds to be ran on runner)
         end
 
         # Since we serialize the build output ourselves to ensure Gitaly
@@ -170,7 +200,7 @@ module API
           end
 
           new_update = current_runner.ensure_runner_queue_value
-          result = ::Ci::RegisterJobService.new(current_runner, current_runner_machine).execute(runner_params)
+          result = ::Ci::RegisterJobService.new(current_runner, current_runner_manager).execute(runner_params)
 
           if result.valid?
             if result.build_json

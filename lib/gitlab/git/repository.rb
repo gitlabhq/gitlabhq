@@ -54,8 +54,6 @@ module Gitlab
       # state.
       alias_method :object_pool_remote_name, :gl_repository
 
-      # This initializer method is only used on the client side (gitlab-ce).
-      # Gitaly-ruby uses a different initializer.
       def initialize(storage, relative_path, gl_repository, gl_project_path, container: nil)
         @storage = storage
         @relative_path = relative_path
@@ -263,8 +261,12 @@ module Gitlab
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil)
         ref ||= root_ref
 
-        commit_id = extract_commit_id_from_ref(ref)
-        return {} if commit_id.nil?
+        if Feature.enabled?(:resolve_ambiguous_archives, container)
+          commit_id = extract_commit_id_from_ref(ref)
+          return {} if commit_id.nil?
+        else
+          commit_id = ref
+        end
 
         commit = Gitlab::Git::Commit.find(self, commit_id)
         return {} if commit.nil?
@@ -807,27 +809,17 @@ module Gitlab
         end
       end
 
-      def license(from_gitaly)
+      def license
         wrapped_gitaly_errors do
           response = gitaly_repository_client.find_license
 
           break nil if response.license_short_name.empty?
 
-          if from_gitaly
-            break ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
-                                                     name: response.license_name,
-                                                     nickname: response.license_nickname.presence,
-                                                     url: response.license_url.presence,
-                                                     path: response.license_path)
-          end
-
-          licensee_object = Licensee::License.new(response.license_short_name)
-
-          break nil if licensee_object.name.blank?
-
-          licensee_object.meta.nickname = "LICENSE" if licensee_object.key == "other"
-
-          licensee_object
+          ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
+                                             name: response.license_name,
+                                             nickname: response.license_nickname.presence,
+                                             url: response.license_url.presence,
+                                             path: response.license_path)
         end
       rescue Licensee::InvalidLicense => e
         Gitlab::ErrorTracking.track_exception(e)
@@ -1152,7 +1144,7 @@ module Gitlab
 
       def checksum
         # The exists? RPC is much cheaper, so we perform this request first
-        raise NoRepository, "Repository does not exists" unless exists?
+        raise NoRepository, "Repository does not exist" unless exists?
 
         gitaly_repository_client.calculate_checksum
       rescue GRPC::NotFound

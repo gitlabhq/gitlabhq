@@ -1,37 +1,50 @@
-import { mount } from '@vue/test-utils';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewDropdown from '~/ide/components/new_dropdown/index.vue';
 import Button from '~/ide/components/new_dropdown/button.vue';
-import { createStore } from '~/ide/stores';
+import Modal from '~/ide/components/new_dropdown/modal.vue';
+import { stubComponent } from 'helpers/stub_component';
+
+Vue.use(Vuex);
 
 describe('new dropdown component', () => {
   let wrapper;
+  const openMock = jest.fn();
+  const deleteEntryMock = jest.fn();
 
   const findAllButtons = () => wrapper.findAllComponents(Button);
 
-  const mountComponent = () => {
-    const store = createStore();
-    store.state.currentProjectId = 'abcproject';
-    store.state.path = '';
-    store.state.trees['abcproject/mybranch'] = { tree: [] };
+  const mountComponent = (props = {}) => {
+    const fakeStore = () => {
+      return new Vuex.Store({
+        actions: {
+          deleteEntry: deleteEntryMock,
+        },
+      });
+    };
 
-    wrapper = mount(NewDropdown, {
-      store,
+    wrapper = mountExtended(NewDropdown, {
+      store: fakeStore(),
       propsData: {
         branch: 'main',
         path: '',
         mouseOver: false,
         type: 'tree',
+        ...props,
+      },
+      stubs: {
+        NewModal: stubComponent(Modal, {
+          methods: {
+            open: openMock,
+          },
+        }),
       },
     });
   };
 
   beforeEach(() => {
     mountComponent();
-    jest.spyOn(wrapper.vm.$refs.newModal, 'open').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders new file, upload and new directory links', () => {
@@ -42,37 +55,34 @@ describe('new dropdown component', () => {
 
   describe('createNewItem', () => {
     it('opens modal for a blob when new file is clicked', () => {
-      findAllButtons().at(0).trigger('click');
+      findAllButtons().at(0).vm.$emit('click');
 
-      expect(wrapper.vm.$refs.newModal.open).toHaveBeenCalledWith('blob', '');
+      expect(openMock).toHaveBeenCalledWith('blob', '');
     });
 
     it('opens modal for a tree when new directory is clicked', () => {
-      findAllButtons().at(2).trigger('click');
+      findAllButtons().at(2).vm.$emit('click');
 
-      expect(wrapper.vm.$refs.newModal.open).toHaveBeenCalledWith('tree', '');
+      expect(openMock).toHaveBeenCalledWith('tree', '');
     });
   });
 
   describe('isOpen', () => {
     it('scrolls dropdown into view', async () => {
-      jest.spyOn(wrapper.vm.$refs.dropdownMenu, 'scrollIntoView').mockImplementation(() => {});
+      const dropdownMenu = wrapper.findByTestId('dropdown-menu');
+      const scrollIntoViewSpy = jest.spyOn(dropdownMenu.element, 'scrollIntoView');
 
       await wrapper.setProps({ isOpen: true });
 
-      expect(wrapper.vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
-        block: 'nearest',
-      });
+      expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'nearest' });
     });
   });
 
   describe('delete entry', () => {
     it('calls delete action', () => {
-      jest.spyOn(wrapper.vm, 'deleteEntry').mockImplementation(() => {});
-
       findAllButtons().at(4).trigger('click');
 
-      expect(wrapper.vm.deleteEntry).toHaveBeenCalledWith('');
+      expect(deleteEntryMock).toHaveBeenCalledWith(expect.anything(), '');
     });
   });
 });

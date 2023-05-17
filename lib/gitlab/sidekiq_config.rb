@@ -57,13 +57,12 @@ module Gitlab
         @cron_jobs ||= begin
           Gitlab.config.load_dynamic_cron_schedules!
 
-          # Load recurring jobs from gitlab.yml
-          # UGLY Hack to get nested hash from settingslogic
-          jobs = Gitlab::Json.parse(Gitlab.config.cron_jobs.to_json)
+          jobs = Gitlab.config.cron_jobs.to_hash
 
           jobs.delete('poll_interval') # Would be interpreted as a job otherwise
 
-          # UGLY hack: Settingslogic doesn't allow 'class' key
+          # Settingslogic (former gem used for yaml configuration) didn't allow 'class' key
+          # Therefore, we configure cron jobs with `job_class` as a workaround.
           required_keys = %w[job_class cron]
           jobs.each do |k, v|
             if jobs[k] && required_keys.all? { |s| jobs[k].key?(s) }

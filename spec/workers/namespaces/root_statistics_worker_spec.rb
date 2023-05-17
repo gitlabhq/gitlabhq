@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
-  let(:group) { create(:group, :with_aggregation_schedule) }
+RSpec.describe Namespaces::RootStatisticsWorker, '#perform', feature_category: :source_code_management do
+  let_it_be(:group) { create(:group, :with_aggregation_schedule) }
 
   subject(:worker) { described_class.new }
 
@@ -79,10 +79,6 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
     let(:job_args) { [group.id] }
 
     it 'deletes one aggregation schedule' do
-      # Make sure the group and it's aggregation schedule are created before
-      # counting
-      group
-
       expect { worker.perform(*job_args) }
         .to change { Namespace::AggregationSchedule.count }.by(-1)
       expect { worker.perform(*job_args) }
@@ -90,9 +86,7 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
     end
   end
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :sticky
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 
   it 'has the `until_executed` deduplicate strategy' do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)

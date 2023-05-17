@@ -23,7 +23,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
     }
   end
 
-  let(:mutation) { graphql_mutation(:workItemCreateFromTask, input) }
+  let(:mutation) { graphql_mutation(:workItemCreateFromTask, input, nil, ['productAnalyticsState']) }
   let(:mutation_response) { graphql_mutation_response(:work_item_create_from_task) }
 
   context 'the user is not allowed to update a work item' do
@@ -45,7 +45,6 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
 
       expect(response).to have_gitlab_http_status(:success)
       expect(work_item.description).to eq("- [ ] #{created_work_item.to_reference}+")
-      expect(created_work_item.issue_type).to eq('task')
       expect(created_work_item.work_item_type.base_type).to eq('task')
       expect(created_work_item.work_item_parent).to eq(work_item)
       expect(created_work_item).to be_confidential

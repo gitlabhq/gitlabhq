@@ -3,7 +3,7 @@ table_name: smartcard_identities
 classes:
 - SmartcardIdentity
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b6316689fdc2d142af85b17d511d39e50712b420
 milestone: '11.6'

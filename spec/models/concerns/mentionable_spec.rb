@@ -225,7 +225,7 @@ RSpec.describe Commit, 'Mentionable' do
     end
 
     context 'with external issue tracker' do
-      let(:project) { create(:project, :with_jira_integration, :repository) }
+      let_it_be(:project) { create(:project, :with_jira_integration, :repository) }
 
       it 'is true if external issues referenced' do
         allow(commit.raw).to receive(:message).and_return 'JIRA-123'

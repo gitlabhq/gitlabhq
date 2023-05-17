@@ -1,9 +1,9 @@
-import { GlFormGroup } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import IssueToken from '~/related_issues/components/issue_token.vue';
+import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
 import { linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
 
 const issuable1 = {
@@ -26,71 +26,60 @@ const issuable2 = {
 
 const pathIdSeparator = PathIdSeparator.Issue;
 
-const findFormInput = (wrapper) => wrapper.find('input').element;
-
-const findRadioInput = (inputs, value) =>
-  inputs.filter((input) => input.element.value === value)[0];
-
-const findRadioInputs = (wrapper) => wrapper.findAll('[name="linked-issue-type-radio"]');
-
-const constructWrapper = (props) => {
-  return shallowMount(AddIssuableForm, {
-    propsData: {
-      inputValue: '',
-      pendingReferences: [],
-      pathIdSeparator,
-      ...props,
-    },
-  });
-};
-
 describe('AddIssuableForm', () => {
   let wrapper;
 
-  afterEach(() => {
-    // Jest doesn't blur an item even if it is destroyed,
-    // so blur the input manually after each test
-    const input = findFormInput(wrapper);
-    if (input) input.blur();
+  const createComponent = (props = {}, mountFn = shallowMount) => {
+    wrapper = mountFn(AddIssuableForm, {
+      propsData: {
+        inputValue: '',
+        pendingReferences: [],
+        pathIdSeparator,
+        ...props,
+      },
+      stubs: {
+        RelatedIssuableInput,
+      },
+    });
+  };
 
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
+  const findAddIssuableForm = () => wrapper.find('form');
+  const findFormInput = () => wrapper.find('input').element;
+  const findRadioInput = (inputs, value) =>
+    inputs.filter((input) => input.element.value === value)[0];
+  const findAllIssueTokens = () => wrapper.findAllComponents(IssueToken);
+  const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
+  const findRadioInputs = () => wrapper.findAllComponents(GlFormRadio);
+
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
+  const findFormButtons = () => wrapper.findAllComponents(GlButton);
+  const findSubmitButton = () => findFormButtons().at(0);
+  const findRelatedIssuableInput = () => wrapper.findComponent(RelatedIssuableInput);
 
   describe('with data', () => {
     describe('without references', () => {
       describe('without any input text', () => {
         beforeEach(() => {
-          wrapper = shallowMount(AddIssuableForm, {
-            propsData: {
-              inputValue: '',
-              pendingReferences: [],
-              pathIdSeparator,
-            },
-          });
+          createComponent();
         });
 
         it('should have disabled submit button', () => {
-          expect(wrapper.vm.$refs.addButton.disabled).toBe(true);
-          expect(wrapper.vm.$refs.loadingIcon).toBeUndefined();
+          expect(findSubmitButton().props('disabled')).toBe(true);
+          expect(findSubmitButton().props('loading')).toBe(false);
         });
       });
 
       describe('with input text', () => {
         beforeEach(() => {
-          wrapper = shallowMount(AddIssuableForm, {
-            propsData: {
-              inputValue: 'foo',
-              pendingReferences: [],
-              pathIdSeparator,
-            },
+          createComponent({
+            inputValue: 'foo',
+            pendingReferences: [],
+            pathIdSeparator,
           });
         });
 
         it('should not have disabled submit button', () => {
-          expect(wrapper.vm.$refs.addButton.disabled).toBe(false);
+          expect(findSubmitButton().props('disabled')).toBe(false);
         });
       });
     });
@@ -99,59 +88,56 @@ describe('AddIssuableForm', () => {
       const inputValue = 'foo #123';
 
       beforeEach(() => {
-        wrapper = mount(AddIssuableForm, {
-          propsData: {
-            inputValue,
-            pendingReferences: [issuable1.reference, issuable2.reference],
-            pathIdSeparator,
-          },
+        createComponent({
+          inputValue,
+          pendingReferences: [issuable1.reference, issuable2.reference],
+          pathIdSeparator,
         });
-      });
+      }, mount);
 
       it('should put input value in place', () => {
         expect(findFormInput(wrapper).value).toBe(inputValue);
       });
 
       it('should render pending issuables items', () => {
-        expect(wrapper.findAllComponents(IssueToken)).toHaveLength(2);
+        expect(findAllIssueTokens()).toHaveLength(2);
       });
 
       it('should not have disabled submit button', () => {
-        expect(wrapper.vm.$refs.addButton.disabled).toBe(false);
+        expect(findSubmitButton().props('disabled')).toBe(false);
       });
     });
 
     describe('when issuable type is "issue"', () => {
       beforeEach(() => {
-        wrapper = mount(AddIssuableForm, {
-          propsData: {
+        createComponent(
+          {
             inputValue: '',
             issuableType: TYPE_ISSUE,
             pathIdSeparator,
             pendingReferences: [],
           },
-        });
+          mount,
+        );
       });
 
       it('does not show radio inputs', () => {
-        expect(findRadioInputs(wrapper).length).toBe(0);
+        expect(findRadioInputs()).toHaveLength(0);
       });
     });
 
     describe('when issuable type is "epic"', () => {
       beforeEach(() => {
-        wrapper = shallowMount(AddIssuableForm, {
-          propsData: {
-            inputValue: '',
-            issuableType: TYPE_EPIC,
-            pathIdSeparator,
-            pendingReferences: [],
-          },
+        createComponent({
+          inputValue: '',
+          issuableType: TYPE_EPIC,
+          pathIdSeparator,
+          pendingReferences: [],
         });
       });
 
       it('does not show radio inputs', () => {
-        expect(findRadioInputs(wrapper).length).toBe(0);
+        expect(findRadioInputs()).toHaveLength(0);
       });
     });
 
@@ -163,17 +149,15 @@ describe('AddIssuableForm', () => {
       `(
         'show header text as "$contextHeader" and footer text as "$contextFooter" issuableType is set to $issuableType',
         ({ issuableType, contextHeader, contextFooter }) => {
-          wrapper = shallowMount(AddIssuableForm, {
-            propsData: {
-              issuableType,
-              inputValue: '',
-              showCategorizedIssues: true,
-              pathIdSeparator,
-              pendingReferences: [],
-            },
+          createComponent({
+            issuableType,
+            inputValue: '',
+            showCategorizedIssues: true,
+            pathIdSeparator,
+            pendingReferences: [],
           });
 
-          expect(wrapper.findComponent(GlFormGroup).attributes('label')).toBe(contextHeader);
+          expect(findFormGroup().attributes('label')).toBe(contextHeader);
           expect(wrapper.find('p.bold').text()).toContain(contextFooter);
         },
       );
@@ -181,26 +165,24 @@ describe('AddIssuableForm', () => {
 
     describe('when it is a Linked Issues form', () => {
       beforeEach(() => {
-        wrapper = mount(AddIssuableForm, {
-          propsData: {
-            inputValue: '',
-            showCategorizedIssues: true,
-            issuableType: TYPE_ISSUE,
-            pathIdSeparator,
-            pendingReferences: [],
-          },
+        createComponent({
+          inputValue: '',
+          showCategorizedIssues: true,
+          issuableType: TYPE_ISSUE,
+          pathIdSeparator,
+          pendingReferences: [],
         });
       });
 
       it('shows radio inputs to allow categorisation of blocking issues', () => {
-        expect(findRadioInputs(wrapper).length).toBeGreaterThan(0);
+        expect(findRadioGroup().props('options').length).toBeGreaterThan(0);
       });
 
       describe('form radio buttons', () => {
         let radioInputs;
 
         beforeEach(() => {
-          radioInputs = findRadioInputs(wrapper);
+          radioInputs = findRadioInputs();
         });
 
         it('shows "relates to" option', () => {
@@ -216,58 +198,59 @@ describe('AddIssuableForm', () => {
         });
 
         it('shows 3 options in total', () => {
-          expect(radioInputs.length).toBe(3);
+          expect(findRadioGroup().props('options')).toHaveLength(3);
         });
       });
 
       describe('when the form is submitted', () => {
-        it('emits an event with a "relates_to" link type when the "relates to" radio input selected', async () => {
-          jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
+        it('emits an event with a "relates_to" link type when the "relates to" radio input selected', () => {
+          findAddIssuableForm().trigger('submit');
 
-          wrapper.vm.linkedIssueType = linkedIssueTypesMap.RELATES_TO;
-          wrapper.vm.onFormSubmit();
-
-          await nextTick();
-          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-            pendingReferences: '',
-            linkedIssueType: linkedIssueTypesMap.RELATES_TO,
-          });
+          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+            [
+              {
+                pendingReferences: '',
+                linkedIssueType: linkedIssueTypesMap.RELATES_TO,
+              },
+            ],
+          ]);
         });
 
-        it('emits an event with a "blocks" link type when the "blocks" radio input selected', async () => {
-          jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
+        it('emits an event with a "blocks" link type when the "blocks" radio input selected', () => {
+          findRadioGroup().vm.$emit('input', linkedIssueTypesMap.BLOCKS);
+          findAddIssuableForm().trigger('submit');
 
-          wrapper.vm.linkedIssueType = linkedIssueTypesMap.BLOCKS;
-          wrapper.vm.onFormSubmit();
-
-          await nextTick();
-          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-            pendingReferences: '',
-            linkedIssueType: linkedIssueTypesMap.BLOCKS,
-          });
+          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+            [
+              {
+                pendingReferences: '',
+                linkedIssueType: linkedIssueTypesMap.BLOCKS,
+              },
+            ],
+          ]);
         });
 
-        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', async () => {
-          jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
+        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', () => {
+          findRadioGroup().vm.$emit('input', linkedIssueTypesMap.IS_BLOCKED_BY);
+          findAddIssuableForm().trigger('submit');
 
-          wrapper.vm.linkedIssueType = linkedIssueTypesMap.IS_BLOCKED_BY;
-          wrapper.vm.onFormSubmit();
-
-          await nextTick();
-          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-            pendingReferences: '',
-            linkedIssueType: linkedIssueTypesMap.IS_BLOCKED_BY,
-          });
+          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+            [
+              {
+                pendingReferences: '',
+                linkedIssueType: linkedIssueTypesMap.IS_BLOCKED_BY,
+              },
+            ],
+          ]);
         });
 
-        it('shows error message when error is present', async () => {
+        it('shows error message when error is present', () => {
           const itemAddFailureMessage = 'Something went wrong while submitting.';
-          wrapper.setProps({
+          createComponent({
             hasError: true,
             itemAddFailureMessage,
           });
 
-          await nextTick();
           expect(wrapper.find('.gl-field-error').exists()).toBe(true);
           expect(wrapper.find('.gl-field-error').text()).toContain(itemAddFailureMessage);
         });
@@ -283,27 +266,31 @@ describe('AddIssuableForm', () => {
       };
 
       it('returns autocomplete object', () => {
-        wrapper = constructWrapper({
+        createComponent({
           autoCompleteSources,
         });
 
-        expect(wrapper.vm.transformedAutocompleteSources).toBe(autoCompleteSources);
+        expect(findRelatedIssuableInput().props('autoCompleteSources')).toEqual(
+          autoCompleteSources,
+        );
 
-        wrapper = constructWrapper({
+        createComponent({
           autoCompleteSources,
           confidential: false,
         });
 
-        expect(wrapper.vm.transformedAutocompleteSources).toBe(autoCompleteSources);
+        expect(findRelatedIssuableInput().props('autoCompleteSources')).toEqual(
+          autoCompleteSources,
+        );
       });
 
       it('returns autocomplete sources with query `confidential_only`, when it is confidential', () => {
-        wrapper = constructWrapper({
+        createComponent({
           autoCompleteSources,
           confidential: true,
         });
 
-        const actualSources = wrapper.vm.transformedAutocompleteSources;
+        const actualSources = findRelatedIssuableInput().props('autoCompleteSources');
 
         expect(actualSources.epics).toContain('?confidential_only=true');
         expect(actualSources.issues).toContain('?confidential_only=true');

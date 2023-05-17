@@ -4,7 +4,7 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gitaly developers guide
+# Gitaly development guidelines
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
 Workhorse and GitLab Shell.
@@ -14,7 +14,7 @@ Workhorse and GitLab Shell.
 <!-- vale gitlab.Spelling = NO -->
 
 In May 2019, Bob Van Landuyt
-hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
+hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
 on the [Gitaly project](https://gitlab.com/gitlab-org/gitaly). It included how to contribute to it as a
 Ruby developer, and shared domain-specific knowledge with anyone who may work in this part of the
 codebase in the future.
@@ -53,16 +53,6 @@ they are merged.
 
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart GDK using `gdk restart` to use a locally modified Gitaly version for development
-
-### `gitaly-ruby`
-
-It is possible to implement and test RPCs in Gitaly using Ruby code,
-in
-[`gitaly-ruby`](https://gitlab.com/gitlab-org/gitaly/tree/master/ruby).
-This should make it easier to contribute for developers who are less
-comfortable writing Go code.
-
-For more information, see the [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md).
 
 ## Gitaly-Related Test Failures
 
@@ -178,7 +168,8 @@ can replace `tmp/tests/gitaly` with a symlink. This is much faster
 because it avoids a Gitaly re-install each time you run `rspec`.
 
 Make sure this directory contains the files `config.toml` and `praefect.config.toml`.
-You can copy them from `config.toml.example` and `config.praefect.toml.example` respectively.
+You can copy `config.toml` from `config.toml.example`, and `praefect.config.toml`
+from `config.praefect.toml.example`.
 After copying, make sure to edit them so everything points to the correct paths.
 
 ```shell
@@ -249,7 +240,7 @@ Re-run steps 2-5 each time you want to try out new changes.
 
 [Return to Development documentation](index.md)
 
-## Wrapping RPCs in Feature Flags
+## Wrapping RPCs in feature flags
 
 Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
@@ -257,13 +248,13 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create a package scoped flag name:
 
-   ```golang
+   ```go
    var findAllTagsFeatureFlag = "go-find-all-tags"
    ```
 
 1. Create a switch in the code using the `featureflag` package:
 
-   ```golang
+   ```go
    if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
      // go implementation
    } else {
@@ -273,7 +264,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create Prometheus metrics:
 
-   ```golang
+   ```go
    var findAllTagsRequests = prometheus.NewCounterVec(
      prometheus.CounterOpts{
        Name: "gitaly_find_all_tags_requests_total",
@@ -297,7 +288,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Set headers in tests:
 
-   ```golang
+   ```go
    import (
      "google.golang.org/grpc/metadata"
 

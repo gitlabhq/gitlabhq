@@ -4,7 +4,6 @@ description: The number of active users existing in the instance. This is named 
 product_section: analytics
 product_stage: analytics
 product_group: product_intelligence
-product_category: collection
 value_type: number
 status: active
 milestone: "<13.9"

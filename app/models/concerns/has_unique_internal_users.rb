@@ -28,7 +28,7 @@ module HasUniqueInternalUsers
       existing_user = uncached { scope.first }
       return existing_user if existing_user.present?
 
-      uniquify = Uniquify.new
+      uniquify = Gitlab::Utils::Uniquify.new
 
       username = uniquify.string(username) { |s| User.find_by_username(s) }
 

@@ -6,6 +6,15 @@ module QA
       class Menu < Page::Base
         include SubMenus::Common
 
+        if Runtime::Env.super_sidebar_enabled?
+          prepend Page::SubMenus::SuperSidebar::Manage
+          prepend Page::SubMenus::SuperSidebar::Plan
+          prepend Page::SubMenus::SuperSidebar::Settings
+          prepend SubMenus::SuperSidebar::Main
+          prepend SubMenus::SuperSidebar::Build
+          prepend SubMenus::SuperSidebar::Operate
+        end
+
         def click_group_members_item
           hover_group_information do
             within_submenu do
@@ -15,6 +24,8 @@ module QA
         end
 
         def click_subgroup_members_item
+          return go_to_members if Runtime::Env.super_sidebar_enabled?
+
           hover_subgroup_information do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Members')
@@ -29,6 +40,8 @@ module QA
         end
 
         def click_group_general_settings_item
+          return go_to_general_settings if Runtime::Env.super_sidebar_enabled?
+
           hover_group_settings do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'General')
@@ -61,6 +74,8 @@ module QA
         end
 
         def go_to_group_packages
+          return go_to_package_registry if Runtime::Env.super_sidebar_enabled?
+
           hover_group_packages do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Package Registry')

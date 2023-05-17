@@ -11,4 +11,4 @@ level: warning
 ignorecase: true
 scope: raw
 raw:
-  - \*\*.+?\*\* button
+  - \*\*[^*]+\*\*\s+button

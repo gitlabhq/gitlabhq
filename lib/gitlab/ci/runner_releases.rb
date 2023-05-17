@@ -15,9 +15,14 @@ module Gitlab
         reset_backoff!
       end
 
+      def enabled?
+        ::Gitlab::CurrentSettings.current_application_settings.update_runner_versions_enabled?
+      end
+
       # Returns a sorted list of the publicly available GitLab Runner releases
       #
       def releases
+        return unless enabled?
         return if backoff_active?
 
         Rails.cache.fetch(

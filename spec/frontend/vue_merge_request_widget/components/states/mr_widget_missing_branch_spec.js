@@ -15,10 +15,6 @@ function factory(sourceBranchRemoved) {
 }
 
 describe('MRWidgetMissingBranch', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     sourceBranchRemoved | branchName
     ${true}             | ${'source'}

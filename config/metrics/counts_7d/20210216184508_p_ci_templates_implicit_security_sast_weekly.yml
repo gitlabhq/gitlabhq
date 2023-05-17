@@ -5,7 +5,6 @@ description: Count of pipelines with implicit SAST runs
 product_section: ops
 product_stage: verify
 product_group: "static_analysis"
-product_category: SAST
 value_type: number
 status: active
 time_frame: 7d

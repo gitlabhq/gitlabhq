@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_category: :importers do
   describe '#run' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }

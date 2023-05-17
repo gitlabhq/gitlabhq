@@ -9,7 +9,7 @@ export default function initDatePickers() {
 
     const calendar = new Pikaday({
       field: $datePicker.get(0),
-      theme: 'gitlab-theme animate-picker',
+      theme: 'gl-datepicker-theme animate-picker',
       format: 'yyyy-mm-dd',
       container: $datePicker.parent().get(0),
       parse: (dateString) => parsePikadayDate(dateString),
@@ -27,7 +27,10 @@ export default function initDatePickers() {
 
   $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
     e.preventDefault();
-    const calendar = $(e.target).siblings('.datepicker').data('pikaday');
+    const calendar = $(e.target)
+      .siblings('.issuable-form-select-holder')
+      .children('.datepicker')
+      .data('pikaday');
     calendar.setDate(null);
   });
 }

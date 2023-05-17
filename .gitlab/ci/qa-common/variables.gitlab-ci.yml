@@ -1,0 +1,20 @@
+# Default variables for package-and-test
+
+variables:
+  REGISTRY_HOST: "registry.gitlab.com"
+  REGISTRY_GROUP: "gitlab-org"
+  SKIP_REPORT_IN_ISSUES: "true"
+  SKIP_OMNIBUS_TRIGGER: "true"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "false"
+  OMNIBUS_GITLAB_RUBY3_BUILD: "false"
+  OMNIBUS_GITLAB_RUBY2_BUILD: "false"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB"
+  OMNIBUS_GITLAB_BUILD_ON_ALL_OS: "false"
+  ALLURE_JOB_NAME: $CI_PROJECT_NAME
+  COLORIZED_LOGS: "true"
+  QA_LOG_LEVEL: "info"
+  QA_TESTS: ""
+  QA_FEATURE_FLAGS: ""
+  # run all tests by default when package-and-test is included natively in other projects
+  # this will be overridden when selective test execution is used in gitlab canonical project
+  QA_RUN_ALL_TESTS: "true"

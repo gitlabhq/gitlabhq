@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as actions from '~/ide/stores/modules/terminal/actions/session_status';
 import { PENDING, RUNNING, STOPPING, STOPPED } from '~/ide/stores/modules/terminal/constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
@@ -8,7 +8,7 @@ import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_SESSION = {
   id: 7,
@@ -113,7 +113,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveSessionStatusError', () => {
-    it('flashes message', () => {
+    it('shows an alert', () => {
       actions.receiveSessionStatusError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({

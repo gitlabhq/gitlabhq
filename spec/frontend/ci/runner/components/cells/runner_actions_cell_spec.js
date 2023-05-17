@@ -31,10 +31,6 @@ describe('RunnerActionsCell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Edit Action', () => {
     it('Displays the runner edit link with the correct href', () => {
       createComponent();

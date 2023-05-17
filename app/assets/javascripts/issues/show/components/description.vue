@@ -1,35 +1,25 @@
 <script>
-import { GlModalDirective, GlToast } from '@gitlab/ui';
-import $ from 'jquery';
-import { uniqueId } from 'lodash';
+import { GlToast } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { createAlert } from '~/flash';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { isMetaKey } from '~/lib/utils/common_utils';
-import { isPositiveInteger } from '~/lib/utils/number_utils';
-import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import TaskList from '~/task_list';
-import Tracking from '~/tracking';
 import addHierarchyChildMutation from '~/work_items/graphql/add_hierarchy_child.mutation.graphql';
 import removeHierarchyChildMutation from '~/work_items/graphql/remove_hierarchy_child.mutation.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_CREATING,
   I18N_WORK_ITEM_ERROR_DELETING,
-  TRACKING_CATEGORY_SHOW,
   TASK_TYPE_NAME,
 } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -51,12 +41,8 @@ const workItemTypes = {
 export default {
   directives: {
     SafeHtml,
-    GlModal: GlModalDirective,
   },
-  components: {
-    WorkItemDetailModal,
-  },
-  mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
+  mixins: [animateMixin],
   inject: ['fullPath', 'hasIterationsFeature'],
   props: {
     canUpdate: {
@@ -68,11 +54,6 @@ export default {
       required: true,
     },
     descriptionText: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    taskStatus: {
       type: String,
       required: false,
       default: '',
@@ -97,11 +78,6 @@ export default {
       required: false,
       default: null,
     },
-    issueIid: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     isUpdating: {
       type: Boolean,
       required: false,
@@ -109,18 +85,12 @@ export default {
     },
   },
   data() {
-    const workItemId = getParameterByName('work_item_id');
-
     return {
       hasTaskListItemActions: false,
       preAnimation: false,
       pulseAnimation: false,
       initialUpdate: true,
       issueDetails: {},
-      activeTask: {},
-      workItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
-        : undefined,
       workItemTypes: [],
     };
   },
@@ -129,21 +99,12 @@ export default {
       query: getIssueDetailsQuery,
       variables() {
         return {
-          fullPath: this.fullPath,
-          iid: String(this.issueIid),
+          id: convertToGraphQLId(TYPENAME_ISSUE, this.issueId),
         };
       },
-      update: (data) => data.workspace?.issuable,
-    },
-    workItem: {
-      query: workItemQuery,
-      variables() {
-        return {
-          id: this.workItemId,
-        };
-      },
+      update: (data) => data.issue,
       skip() {
-        return !this.workItemId;
+        return !this.canUpdate || !this.issueId;
       },
     },
     workItemTypes: {
@@ -156,10 +117,13 @@ export default {
       update(data) {
         return data.workspace?.workItemTypes?.nodes;
       },
+      skip() {
+        return !this.canUpdate;
+      },
     },
   },
   computed: {
-    taskWorkItemType() {
+    taskWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
     },
     issueGid() {
@@ -168,7 +132,10 @@ export default {
   },
   watch: {
     descriptionHtml(newDescription, oldDescription) {
-      if (!this.initialUpdate && newDescription !== oldDescription) {
+      if (
+        !this.initialUpdate &&
+        this.stripClientState(newDescription) !== this.stripClientState(oldDescription)
+      ) {
         this.animateChange();
       } else {
         this.initialUpdate = false;
@@ -178,22 +145,12 @@ export default {
         this.renderGFM();
       });
     },
-    taskStatus() {
-      this.updateTaskStatusText();
-    },
   },
   mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
     this.renderGFM();
-    this.updateTaskStatusText();
-    if (this.workItemId) {
-      const taskLink = this.$el.querySelector(
-        `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
-      );
-      this.openWorkItemDetailModal(taskLink);
-    }
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
@@ -226,10 +183,10 @@ export default {
     },
     renderSortableLists() {
       // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
-      const lists = document.querySelectorAll(
+      const lists = this.$el.querySelectorAll?.(
         '.description .md > ul:not(.section-nav), .description .md > ul:not(.section-nav) ul, .description ol',
       );
-      lists.forEach((list) => {
+      lists?.forEach((list) => {
         if (list.children.length <= 1) {
           return;
         }
@@ -318,24 +275,6 @@ export default {
 
       this.$emit('taskListUpdateFailed');
     },
-    updateTaskStatusText() {
-      const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
-      const $issuableHeader = $('.issuable-meta');
-      const $tasks = $('#task_status', $issuableHeader);
-      const $tasksShort = $('#task_status_short', $issuableHeader);
-
-      if (taskRegexMatches) {
-        $tasks.text(this.taskStatus);
-        $tasksShort.text(
-          `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
-            taskRegexMatches[2] > 1 ? 's' : ''
-          }`,
-        );
-      } else {
-        $tasks.text('');
-        $tasksShort.text('');
-      }
-    },
     createTaskListItemActions(provide) {
       const app = new Vue({
         el: document.createElement('div'),
@@ -358,57 +297,15 @@ export default {
       this.$emit('saveDescription', newDescription);
     },
     renderTaskListItemActions() {
-      if (!this.$el?.querySelectorAll) {
-        return;
-      }
+      const taskListItems = this.$el.querySelectorAll?.(
+        '.task-list-item:not(.inapplicable, table .task-list-item)',
+      );
 
-      const taskListFields = this.$el.querySelectorAll('.task-list-item:not(.inapplicable)');
-
-      taskListFields.forEach((item) => {
-        const taskLink = item.querySelector('.gfm-issue');
-        if (taskLink) {
-          const { issue, referenceType, issueType } = taskLink.dataset;
-          if (issueType !== workItemTypes.TASK) {
-            return;
-          }
-          const workItemId = convertToGraphQLId(TYPENAME_WORK_ITEM, issue);
-          this.addHoverListeners(taskLink, workItemId);
-          taskLink.classList.add('gl-link');
-          taskLink.addEventListener('click', (e) => {
-            if (isMetaKey(e)) {
-              return;
-            }
-            e.preventDefault();
-            this.openWorkItemDetailModal(taskLink);
-            this.workItemId = workItemId;
-            this.updateWorkItemIdUrlQuery(issue);
-            this.track('viewed_work_item_from_modal', {
-              category: TRACKING_CATEGORY_SHOW,
-              label: 'work_item_view',
-              property: `type_${referenceType}`,
-            });
-          });
-          return;
-        }
-
-        const toggleClass = uniqueId('task-list-item-actions-');
-        const dropdown = this.createTaskListItemActions({ canUpdate: this.canUpdate, toggleClass });
-        this.addPointerEventListeners(item, `.${toggleClass}`);
+      taskListItems?.forEach((item) => {
+        const dropdown = this.createTaskListItemActions({ canUpdate: this.canUpdate });
         this.insertNextToTaskListItemText(dropdown, item);
+        this.addPointerEventListeners(item, '.task-list-item-actions');
         this.hasTaskListItemActions = true;
-      });
-    },
-    addHoverListeners(taskLink, id) {
-      let workItemPrefetch;
-      taskLink.addEventListener('mouseover', () => {
-        workItemPrefetch = setTimeout(() => {
-          this.workItemId = id;
-        }, 150);
-      });
-      taskLink.addEventListener('mouseout', () => {
-        if (workItemPrefetch) {
-          clearTimeout(workItemPrefetch);
-        }
       });
     },
     insertNextToTaskListItemText(element, listItem) {
@@ -427,26 +324,8 @@ export default {
         listItem.append(element);
       }
     },
-    setActiveTask(el) {
-      const { parentElement } = el;
-      const lineNumbers = parentElement.dataset.sourcepos.match(/\b\d+(?=:)/g);
-      this.activeTask = {
-        title: parentElement.innerText,
-        lineNumberStart: lineNumbers[0],
-        lineNumberEnd: lineNumbers[1],
-      };
-    },
-    openWorkItemDetailModal(el) {
-      if (!el) {
-        return;
-      }
-
-      this.setActiveTask(el);
-      this.$refs.detailsModal.show();
-    },
-    closeWorkItemDetailModal() {
-      this.workItemId = undefined;
-      this.updateWorkItemIdUrlQuery(undefined);
+    stripClientState(description) {
+      return description.replaceAll('<details open="true">', '<details>');
     },
     async createTask({ taskTitle, taskDescription, oldDescription }) {
       try {
@@ -468,7 +347,7 @@ export default {
           },
           projectPath: this.fullPath,
           title,
-          workItemTypeId: this.taskWorkItemType,
+          workItemTypeId: this.taskWorkItemTypeId,
         };
 
         const { data } = await this.$apollo.mutate({
@@ -532,16 +411,6 @@ export default {
         captureError: true,
       });
     },
-    handleDeleteTask(description) {
-      this.$emit('updateDescription', description);
-      this.$toast.show(s__('WorkItem|Task deleted'));
-    },
-    updateWorkItemIdUrlQuery(workItemId) {
-      updateHistory({
-        url: setUrlParams({ work_item_id: workItemId }),
-        replace: true,
-      });
-    },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'copy-code'] },
 };
@@ -569,16 +438,5 @@ export default {
       data-testid="textarea"
     >
     </textarea>
-    <work-item-detail-modal
-      ref="detailsModal"
-      :can-update="canUpdate"
-      :work-item-id="workItemId"
-      :issue-gid="issueGid"
-      :lock-version="lockVersion"
-      :line-number-start="activeTask.lineNumberStart"
-      :line-number-end="activeTask.lineNumberEnd"
-      @workItemDeleted="handleDeleteTask"
-      @close="closeWorkItemDetailModal"
-    />
   </div>
 </template>

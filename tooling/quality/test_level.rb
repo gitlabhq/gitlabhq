@@ -18,6 +18,7 @@ module Quality
       unit: %w[
         bin
         channels
+        components
         config
         contracts
         db
@@ -54,7 +55,6 @@ module Quality
         views
         workers
         tooling
-        components
       ],
       integration: %w[
         commands
@@ -77,8 +77,8 @@ module Quality
       @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}".freeze # rubocop:disable Style/RedundantFreeze
     end
 
-    def regexp(level)
-      @regexps[level] ||= Regexp.new("#{prefixes_for_regex}spec/#{folders_regex(level)}").freeze
+    def regexp(level, start_with = false)
+      @regexps[level] ||= Regexp.new("#{'^' if start_with}#{prefixes_for_regex}spec/#{folders_regex(level)}").freeze
     end
 
     def level_for(file_path)

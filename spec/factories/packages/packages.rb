@@ -78,19 +78,24 @@ FactoryBot.define do
 
       after :build do |package, evaluator|
         if evaluator.published_in == :create
-          create(:debian_publication, package: package)
+          build(:debian_publication, package: package)
         elsif !evaluator.published_in.nil?
           create(:debian_publication, package: package, distribution: evaluator.published_in)
         end
       end
 
       after :create do |package, evaluator|
+        if evaluator.published_in == :create
+          package.debian_publication.save!
+        end
+
         unless evaluator.without_package_files
           create :debian_package_file, :source, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :dsc, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :deb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :deb_dev, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :udeb, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :ddeb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :buildinfo, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :changes, evaluator.file_metadatum_trait, package: package
         end

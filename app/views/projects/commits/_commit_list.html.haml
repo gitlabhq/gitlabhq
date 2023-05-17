@@ -3,9 +3,9 @@
 - commits = Commit.decorate(commits, @project)
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-py-0'}) do |c|
-  - c.header do
+  - c.with_header do
     Commits (#{@total_commit_count})
-  - c.body do
+  - c.with_body do
     - if hidden > 0
       %ul.content-list
         - commits.each do |commit|

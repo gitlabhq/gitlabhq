@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth tokens', feature_category: :authentication_and_authorization do
+RSpec.describe 'OAuth tokens', feature_category: :system_access do
   include HttpBasicAuthHelpers
 
   context 'Resource Owner Password Credentials' do
@@ -124,6 +124,8 @@ RSpec.describe 'OAuth tokens', feature_category: :authentication_and_authorizati
 
     context 'when user account is not confirmed' do
       before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+
         user.update!(confirmed_at: nil)
 
         request_oauth_token(user, client_basic_auth_header(client))

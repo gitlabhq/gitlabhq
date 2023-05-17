@@ -7,50 +7,35 @@ namespace :gettext do
     # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/33014#note_31218998
     FileUtils.touch(pot_file_path)
 
-    Rake::Task['gettext:po_to_json'].invoke
+    command = [
+      "node", "./scripts/frontend/po_to_json.js",
+      "--locale-root", Rails.root.join('locale').to_s,
+      "--output-dir", Rails.root.join('app/assets/javascripts/locale').to_s
+    ]
+
+    abort 'Error: Unable to convert gettext files to js.'.color(:red) unless Kernel.system(*command)
   end
 
   desc 'Regenerate gitlab.pot file'
   task :regenerate do
+    require_relative "../../tooling/lib/tooling/gettext_extractor"
     ensure_locale_folder_presence!
-
-    # Clean up folders that do not contain a gitlab.po file
-    Pathname.new(locale_path).children.each do |child|
-      next unless child.directory?
-
-      folder_path = child.to_path
-
-      if File.exist?("#{folder_path}/gitlab.po")
-        # remove all translated files to speed up finding
-        FileUtils.rm Dir["#{folder_path}/gitlab.*"]
-      else
-        # remove empty translation folders so we don't generate un-needed .po files
-        puts "Deleting #{folder_path} as it does not contain a 'gitlab.po' file."
-
-        FileUtils.rm_r folder_path
-      end
-    end
 
     # remove the `pot` file to ensure it's completely regenerated
     FileUtils.rm_f(pot_file_path)
 
-    Rake::Task['gettext:find'].invoke
-
-    # leave only the required changes.
-    unless system(*%w(git -c core.hooksPath=/dev/null checkout -- locale/*/gitlab.po))
-      raise 'failed to cleanup generated locale/*/gitlab.po files'
-    end
+    extractor = Tooling::GettextExtractor.new(
+      glob_base: Rails.root
+    )
+    File.write(pot_file_path, extractor.generate_pot)
 
     raise 'gitlab.pot file not generated' unless File.exist?(pot_file_path)
 
-    # Remove timestamps from the pot file
-    pot_content = File.read pot_file_path
-    pot_content.gsub!(/^"POT?\-(?:Creation|Revision)\-Date\:.*\n/, '')
-    File.write pot_file_path, pot_content
-
     puts <<~MSG
-    All done. Please commit the changes to `locale/gitlab.pot`.
+      All done. Please commit the changes to `locale/gitlab.pot`.
 
+      Tip: For even faster regeneration, directly run the following command:
+        tooling/bin/gettext_extractor locale/gitlab.pot
     MSG
   end
 
@@ -86,19 +71,7 @@ namespace :gettext do
     end
   end
 
-  task :updated_check do
-    # Removing all pre-translated files speeds up `gettext:find` as the
-    # files don't need to be merged.
-    # Having `LC_MESSAGES/gitlab.mo files present also confuses the output.
-    FileUtils.rm Dir['locale/**/gitlab.*']
-    FileUtils.rm_f pot_file_path
-
-    # `gettext:find` writes touches to temp files to `stderr` which would cause
-    # `static-analysis` to report failures. We can ignore these.
-    silence_stderr do
-      Rake::Task['gettext:find'].invoke
-    end
-
+  task updated_check: [:regenerate] do
     pot_diff = `git diff -- #{pot_file_path} | grep -E '^(\\+|-)msgid'`.strip
 
     # reset the locale folder for potential next tasks
@@ -108,7 +81,7 @@ namespace :gettext do
       raise <<~MSG
         Changes in translated strings found, please update file `#{pot_file_path}` by running:
 
-          bin/rake gettext:regenerate
+          tooling/bin/gettext_extractor locale/gitlab.pot
 
         Then commit and push the resulting changes to `#{pot_file_path}`.
 
@@ -120,17 +93,6 @@ namespace :gettext do
   end
 
   private
-
-  # Customize list of translatable files
-  # See: https://github.com/grosser/gettext_i18n_rails#customizing-list-of-translatable-files
-  def files_to_translate
-    folders = %W(ee app lib config #{locale_path}).join(',')
-    exts = %w(rb erb haml slim rhtml js jsx vue handlebars hbs mustache).join(',')
-
-    Dir.glob(
-      "{#{folders}}/**/*.{#{exts}}"
-    )
-  end
 
   def report_errors_for_file(file, errors_for_file)
     puts "Errors in `#{file}`:"
@@ -159,7 +121,7 @@ namespace :gettext do
   def ensure_locale_folder_presence!
     unless Dir.exist?(locale_path)
       raise <<~MSG
-      Cannot find '#{locale_path}' folder. Please ensure you're running this task from the gitlab repo.
+        Cannot find '#{locale_path}' folder. Please ensure you're running this task from the gitlab repo.
 
       MSG
     end

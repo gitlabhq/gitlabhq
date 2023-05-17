@@ -1,7 +1,7 @@
 <!-- Set the correct label and milestone using autocomplete for guidance. Please @mention only the DRI(s) for each stage or group rather than an entire department. -->
 
 /label ~"release post" ~"release post item" ~"Technical Writing" ~devops:: ~group:: ~"release post item::removal"
-/label ~"type::maintenance"
+/label ~"type::maintenance" ~"maintenance::removal"
 /milestone %
 /assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
@@ -46,7 +46,6 @@ Please review:
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
 - [ ] If the removal is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a removal YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-removal-entry).
-- [ ] Make sure that the milestone dates are based on the dates in [Product milestone creation](https://about.gitlab.com/handbook/product/milestones/#product-milestone-creation).
 - [ ] Add reviewers by the 10th.
 - [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
   - Removal notices should not be merged before the code is removed from the product. Do not mark ~ready until the removal is complete, or you are certain it will be completed within the current milestone and released. If PMs are not sure, they should confirm with their Engineering Manager.

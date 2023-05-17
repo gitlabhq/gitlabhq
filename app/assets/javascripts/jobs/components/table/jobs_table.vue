@@ -2,6 +2,8 @@
 import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import ProjectCell from '~/pages/admin/jobs/components/table/cell/project_cell.vue';
+import RunnerCell from '~/pages/admin/jobs/components/table/cells/runner_cell.vue';
 import ActionsCell from './cells/actions_cell.vue';
 import DurationCell from './cells/duration_cell.vue';
 import JobCell from './cells/job_cell.vue';
@@ -19,6 +21,8 @@ export default {
     GlTable,
     JobCell,
     PipelineCell,
+    ProjectCell,
+    RunnerCell,
   },
   props: {
     jobs: {
@@ -29,6 +33,11 @@ export default {
       type: Array,
       required: false,
       default: () => DEFAULT_FIELDS,
+    },
+    admin: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   methods: {
@@ -64,6 +73,14 @@ export default {
 
     <template #cell(pipeline)="{ item }">
       <pipeline-cell :job="item" />
+    </template>
+
+    <template v-if="admin" #cell(project)="{ item }">
+      <project-cell :job="item" />
+    </template>
+
+    <template v-if="admin" #cell(runner)="{ item }">
+      <runner-cell :job="item" />
     </template>
 
     <template #cell(stage)="{ item }">

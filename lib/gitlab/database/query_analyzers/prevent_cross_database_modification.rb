@@ -22,12 +22,27 @@ module Gitlab
           self.with_suppressed(false, &blk)
         end
 
+        # This method will temporary ignore the given tables in a current transaction
+        # This is meant to disable `PreventCrossDB` check for some well known failures
+        def self.temporary_ignore_tables_in_transaction(tables, url:, &blk)
+          return yield unless context&.dig(:ignored_tables)
+
+          begin
+            prev_ignored_tables = context[:ignored_tables]
+            context[:ignored_tables] = prev_ignored_tables + tables
+            yield
+          ensure
+            context[:ignored_tables] = prev_ignored_tables
+          end
+        end
+
         def self.begin!
           super
 
           context.merge!({
             transaction_depth_by_db: Hash.new { |h, k| h[k] = 0 },
-            modified_tables_by_db: Hash.new { |h, k| h[k] = Set.new }
+            modified_tables_by_db: Hash.new { |h, k| h[k] = Set.new },
+            ignored_tables: []
           })
         end
 
@@ -57,7 +72,7 @@ module Gitlab
             if context[:transaction_depth_by_db][database] == 0
               context[:modified_tables_by_db][database].clear
 
-              # Attempt to troubleshoot  https://gitlab.com/gitlab-org/gitlab/-/issues/351531
+              # Attempt to troubleshoot https://gitlab.com/gitlab-org/gitlab/-/issues/351531
               ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :end_of_transaction)
             elsif context[:transaction_depth_by_db][database] < 0
               context[:transaction_depth_by_db][database] = 0
@@ -79,6 +94,9 @@ module Gitlab
           # https://gitlab.com/gitlab-org/gitlab/-/issues/343394
           tables -= %w[plans gitlab_subscriptions]
 
+          # Ignore some tables
+          tables -= context[:ignored_tables].to_a
+
           return if tables.empty?
 
           # All migrations will write to schema_migrations in the same transaction.
@@ -88,7 +106,7 @@ module Gitlab
 
           context[:modified_tables_by_db][database].merge(tables)
           all_tables = context[:modified_tables_by_db].values.flat_map(&:to_a)
-          schemas = ::Gitlab::Database::GitlabSchema.table_schemas(all_tables)
+          schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
 
           schemas += ApplicationRecord.gitlab_transactions_stack
 
@@ -96,10 +114,6 @@ module Gitlab
             message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
                       "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. " \
                       "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."
-
-            if schemas.any? { |s| s.to_s.start_with?("undefined") }
-              message += " The gitlab_schema was undefined for one or more of the tables in this transaction. Any new tables must be added to lib/gitlab/database/gitlab_schemas.yml ."
-            end
 
             raise CrossDatabaseModificationAcrossUnsupportedTablesError, message
           end

@@ -56,8 +56,10 @@ Sidebar.prototype.addEventListeners = function () {
     const layoutPage = document.querySelector('.layout-page');
     const rightSidebar = document.querySelector('.js-right-sidebar');
 
-    updateSidebarClasses(layoutPage, rightSidebar);
-    window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
+    if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
+      updateSidebarClasses(layoutPage, rightSidebar);
+      window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
+    }
   }
 };
 
@@ -70,7 +72,7 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   const $expandIcon = $('.js-sidebar-expand');
   const $toggleContainer = $('.js-sidebar-toggle-container');
   const isExpanded = $toggleContainer.data('is-expanded');
-  const tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
+  const tooltipLabel = isExpanded ? __('Collapse sidebar') : __('Expand sidebar');
   e.preventDefault();
 
   if (isExpanded) {

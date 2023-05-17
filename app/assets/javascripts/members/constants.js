@@ -192,8 +192,6 @@ export const MEMBER_STATE_ACTIVE = 2;
 export const BADGE_LABELS_AWAITING_SIGNUP = __('Awaiting user signup');
 export const BADGE_LABELS_PENDING = __('Pending owner action');
 
-export const DAYS_TO_EXPIRE_SOON = 7;
-
 export const LEAVE_MODAL_ID = 'member-leave-modal';
 
 export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';

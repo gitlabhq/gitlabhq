@@ -20,10 +20,6 @@ describe('PackageTags', () => {
   const tagBadges = () => wrapper.findAll('[data-testid="tagBadge"]');
   const moreBadge = () => wrapper.find('[data-testid="moreBadge"]');
 
-  afterEach(() => {
-    if (wrapper) wrapper.destroy();
-  });
-
   describe('tag label', () => {
     it('shows the tag label by default', () => {
       createComponent();

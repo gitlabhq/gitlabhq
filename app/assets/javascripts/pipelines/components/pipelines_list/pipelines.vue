@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -189,6 +189,10 @@ export default {
       );
     },
 
+    shouldRenderPagination() {
+      return !this.isLoading && !this.hasError;
+    },
+
     emptyTabMessage() {
       if (this.scope === this.$options.scopes.finished) {
         return s__('Pipelines|There are currently no finished pipelines.');
@@ -346,7 +350,7 @@ export default {
     </div>
 
     <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-display-flex">
-      <div class="row-content-block gl-display-flex gl-flex-grow-1">
+      <div class="row-content-block gl-display-flex gl-flex-grow-1 gl-border-b-0">
         <pipelines-filtered-search
           class="gl-display-flex gl-flex-grow-1 gl-mr-4"
           :project-id="projectId"
@@ -381,10 +385,8 @@ export default {
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="errorStateSvgPath"
-        :title="
-          s__(`Pipelines|There was an error fetching the pipelines.
-        Try again in a few moments or contact your support team.`)
-        "
+        :title="s__('Pipelines|There was an error fetching the pipelines.')"
+        :description="s__('Pipelines|Try again in a few moments or contact your support team.')"
       />
 
       <gl-empty-state

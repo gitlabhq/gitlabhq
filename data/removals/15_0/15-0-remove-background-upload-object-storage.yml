@@ -18,7 +18,7 @@
 
     #### Encrypted S3 buckets
 
-    Additionally, this also breaks the use of [encrypted S3 buckets](https://docs.gitlab.com/ee/administration/object_storage.html#encrypted-s3-buckets) with [storage-specific configuration form](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+    Additionally, this also breaks the use of [encrypted S3 buckets](https://docs.gitlab.com/ee/administration/object_storage.html#encrypted-s3-buckets) with [storage-specific configuration form](https://docs.gitlab.com/ee/administration/object_storage.html#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form).
 
     If your S3 buckets have [SSE-S3 or SSE-KMS encryption enabled](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html), please [migrate your configuration to use consolidated object storage form](https://docs.gitlab.com/ee/administration/object_storage.html#transition-to-consolidated-form) before upgrading to GitLab 15.0. Otherwise, you may start getting `ETag mismatch` errors during objects upload.
 
@@ -36,7 +36,7 @@
 
     If you have set a prefix, you can use a workaround to revert to background uploads:
 
-    1. Continue to use [storage-specific configuration](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+    1. Continue to use [storage-specific configuration](https://docs.gitlab.com/ee/administration/object_storage.html#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form).
     1. In Omnibus GitLab, set the `GITLAB_LEGACY_BACKGROUND_UPLOADS` to re-enable background uploads:
 
         ```ruby

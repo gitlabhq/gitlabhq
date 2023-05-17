@@ -33,10 +33,6 @@ describe('AbuseCategorySelector', () => {
     createComponent({ showDrawer: true });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findTitle = () => wrapper.findByTestId('category-drawer-title');
 

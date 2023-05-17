@@ -30,10 +30,6 @@ describe('IDE review mode', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders list of files', () => {
     expect(wrapper.text()).toContain('fileName');
   });
@@ -67,7 +63,7 @@ describe('IDE review mode', () => {
         await wrapper.vm.reactivate();
       });
 
-      it('updates viewer to "mrdiff"', async () => {
+      it('updates viewer to "mrdiff"', () => {
         expect(store.state.viewer).toBe('mrdiff');
       });
     });

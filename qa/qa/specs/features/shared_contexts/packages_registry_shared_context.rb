@@ -20,6 +20,20 @@ module QA
       end
     end
 
+    let(:package_project_inbound_job_token_disabled) do
+      Resource::CICDSettings.fabricate_via_api! do |settings|
+        settings.project_path = package_project.full_path
+        settings.inbound_job_token_scope_enabled = false
+      end
+    end
+
+    let(:client_project_inbound_job_token_disabled) do
+      Resource::CICDSettings.fabricate_via_api! do |settings|
+        settings.project_path = client_project.full_path
+        settings.inbound_job_token_scope_enabled = false
+      end
+    end
+
     let(:package) do
       Resource::Package.init do |package|
         package.name = package_name

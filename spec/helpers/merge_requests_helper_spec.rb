@@ -3,7 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
+  include Users::CalloutsHelper
+  include ApplicationHelper
+  include PageLayoutHelper
+  include ProjectsHelper
   include ProjectForksHelper
+  include IconsHelper
+
+  let_it_be(:current_user) { create(:user) }
 
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
@@ -27,7 +34,31 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#diffs_tab_pane_data' do
+    subject { diffs_tab_pane_data(project, merge_request, {}) }
+
+    context 'for endpoint_diff_for_path' do
+      context 'when sub-group project namespace' do
+        let_it_be(:group) { create(:group, :public) }
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:project) { create(:project, :private, group: subgroup) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'returns expected values' do
+          expect(
+            subject[:endpoint_diff_for_path]
+          ).to include("#{project.full_path}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+        end
+      end
+    end
+  end
+
   describe '#merge_path_description' do
+    # Using let_it_be(:project) raises the following error, so we use need to use let(:project):
+    #  ActiveRecord::InvalidForeignKey:
+    #    PG::ForeignKeyViolation: ERROR:  insert or update on table "fork_network_members" violates foreign key
+    #      constraint "fk_rails_a40860a1ca"
+    #    DETAIL:  Key (fork_network_id)=(8) is not present in table "fork_networks".
     let(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
     let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
@@ -148,6 +179,47 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it 'returns reviewer label only with include_value: false' do
         expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
       end
+    end
+  end
+
+  describe '#merge_request_source_branch' do
+    let_it_be(:project) { create(:project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    context 'when merge request is a fork' do
+      subject { merge_request_source_branch(merge_request_forked) }
+
+      it 'does show the fork icon' do
+        expect(subject).to match(/fork/)
+      end
+    end
+
+    context 'when merge request is not a fork' do
+      subject { merge_request_source_branch(merge_request) }
+
+      it 'does not show the fork icon' do
+        expect(subject).not_to match(/fork/)
+      end
+    end
+  end
+
+  describe '#tab_count_display' do
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when merge request is preparing' do
+      before do
+        allow(merge_request).to receive(:preparing?).and_return(true)
+      end
+
+      it { expect(tab_count_display(merge_request, 0)).to eq('-') }
+      it { expect(tab_count_display(merge_request, '0')).to eq('-') }
+    end
+
+    context 'when merge request is prepared' do
+      it { expect(tab_count_display(merge_request, 10)).to eq(10) }
+      it { expect(tab_count_display(merge_request, '10')).to eq('10') }
     end
   end
 end

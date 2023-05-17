@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GiteaController do
+RSpec.describe Import::GiteaController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:provider) { :gitea }
   let(:host_url) { 'https://try.gitea.io' }
 
   include_context 'a GitHub-ish import controller'
+
+  before do
+    stub_application_setting(import_sources: ['gitea'])
+  end
 
   def assign_host_url
     session[:gitea_host_url] = host_url
@@ -42,17 +46,21 @@ RSpec.describe Import::GiteaController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      context 'when host url is local or not http' do
-        %w[https://localhost:3000 http://192.168.0.1 ftp://testing].each do |url|
-          let(:host_url) { url }
+      shared_examples "unacceptable url" do |url, expected_error|
+        let(:host_url) { url }
 
-          it 'denies network request' do
-            get :status, format: :json
+        it 'denies network request' do
+          get :status, format: :json
 
-            expect(controller).to redirect_to(new_import_url)
-            expect(flash[:alert]).to eq('Specified URL cannot be used: "Only allowed schemes are http, https"')
-          end
+          expect(controller).to redirect_to(new_import_url)
+          expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{expected_error}\"")
         end
+      end
+
+      context 'when host url is local or not http' do
+        include_examples 'unacceptable url', 'https://localhost:3000', 'Only allowed schemes are http, https'
+        include_examples 'unacceptable url', 'http://192.168.0.1', 'Only allowed schemes are http, https'
+        include_examples 'unacceptable url', 'ftp://testing', 'Only allowed schemes are http, https'
       end
 
       context 'when DNS Rebinding protection is enabled' do

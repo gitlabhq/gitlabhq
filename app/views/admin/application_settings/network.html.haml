@@ -1,7 +1,7 @@
 - breadcrumb_title _("Network")
 - page_title _("Network")
 - add_page_specific_style 'page_bundles/settings'
-- @content_class = "limit-container-width" unless fluid_layout
+- @force_desktop_expanded_sidebar = true
 
 %section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
@@ -92,7 +92,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = s_('OutboundRequests|Allow requests to the local network from hooks and services.')
+      = s_('OutboundRequests|Allow requests to the local network from hooks and integrations.')
       = link_to _('Learn more.'), help_page_path('security/webhooks.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'outbound'
@@ -145,6 +145,8 @@
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'users_api_limits'
+
+= render 'projects_api_limits'
 
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header

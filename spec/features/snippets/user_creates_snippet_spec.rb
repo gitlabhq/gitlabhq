@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User creates snippet', :js, feature_category: :source_code_management do
   include DropzoneHelper
-  include Spec::Support::Helpers::Features::SnippetSpecHelpers
+  include Features::SnippetSpecHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -21,7 +21,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
     visit new_snippet_path
   end
 
-  it_behaves_like 'a dashboard page with sidebar', :new_snippet_path, :snippets
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :new_snippet_path, :snippets
 
   def fill_form
     snippet_fill_in_form(title: title, content: file_content, description: md_description)
@@ -128,7 +128,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
     expect(page).not_to have_content(files_validation_message)
   end
 
-  it 'previews a snippet with file' do
+  it 'previews a snippet with file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408203' do
     # Click placeholder first to expand full description field
     snippet_fill_in_description('My Snippet')
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')

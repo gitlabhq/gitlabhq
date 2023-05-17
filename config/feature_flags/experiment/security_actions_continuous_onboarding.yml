@@ -1,8 +1,0 @@
----
-name: security_actions_continuous_onboarding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82274
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345176
-milestone: '15.2'
-type: experiment
-group: group::acquisition
-default_enabled: false

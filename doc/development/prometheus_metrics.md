@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Working with Prometheus Metrics
+# Prometheus metrics development guidelines
 
 ## Adding to the library
 
@@ -78,3 +78,15 @@ For example, a histogram with 10 buckets and a label with 100 values would gener
 entries in the export endpoint.
 1. Trigger the relevant page or code that records the new metric.
 1. Check that the new metric appears at `/-/metrics`.
+
+For metrics that are not bounded to a specific context (`request`, `process`, `machine`, `namespace`, etc),
+generate them from a cron-based Sidekiq job:
+
+- For Geo related metrics, check `Geo::MetricsUpdateService`.
+- For other "global" / instance-wide metrics, check: `Metrics::GlobalMetricsUpdateService`.
+
+When exporting data from Sidekiq in an installation with more than one Sidekiq instance,
+you are not guaranteed that the same exporter will always be queried.
+
+You can read more and understand the caveats in [issue 406583](https://gitlab.com/gitlab-org/gitlab/-/issues/406583),
+where we also discuss a possible solution using a push-gateway.

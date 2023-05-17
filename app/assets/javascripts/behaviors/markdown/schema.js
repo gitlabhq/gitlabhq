@@ -1,4 +1,4 @@
-import { Schema } from 'prosemirror-model';
+import { Schema } from '@tiptap/pm/model';
 import editorExtensions from './editor_extensions';
 
 const nodes = editorExtensions.nodes.reduce(

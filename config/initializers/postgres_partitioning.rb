@@ -5,7 +5,8 @@ Gitlab::Database::Partitioning.register_models(
     AuditEvent,
     WebHookLog,
     LooseForeignKeys::DeletedRecord,
-    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog
+    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
+    Ci::RunnerManagerBuild
   ])
 
 if Gitlab.ee?
@@ -13,7 +14,8 @@ if Gitlab.ee?
     [
       IncidentManagement::PendingEscalations::Alert,
       IncidentManagement::PendingEscalations::Issue,
-      Security::Finding
+      Security::Finding,
+      Analytics::ValueStreamDashboard::Count
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

@@ -1,0 +1,10 @@
+# RuboCop configuration adjustments during the transition time from Ruby 3.0 to
+# Ruby 3.1.
+#
+# After the transition has been completed:
+# * Move all configuration which enabled or tweaked cops to .rubocop.yml.
+# * Remove all remaining configuration.
+
+# Short-hand Hash syntax does not work prior 3.1.
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

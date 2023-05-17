@@ -79,7 +79,13 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" status="closed" :actions="actions">
+  <state-container
+    status="closed"
+    :actions="actions"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <mr-widget-author-time
       :action-text="s__('mrWidget|Closed by')"
       :author="mr.metrics.closedBy"

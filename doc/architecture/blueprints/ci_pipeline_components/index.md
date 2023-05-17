@@ -8,6 +8,8 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # CI/CD Catalog
 
 ## Summary
@@ -92,9 +94,13 @@ This section defines some terms that are used throughout this document. With the
 identifying abstract concepts and are subject to changes as we refine the design by discovering new insights.
 
 - **Component** Is the reusable unit of pipeline configuration.
-- **Project** Is the GitLab project attached to a repository. A project can contain multiple components.
-- **Catalog** is the collection of projects that are set to contain components.
-- **Version** is the release name of a tag in the project, which allows components to be pinned to a specific revision.
+- **Components repository** represents a collection of CI components stored in the same project.
+- **Project** is the GitLab project attached to a single components repository.
+- **Catalog** is a collection of resources like components repositories.
+- **Catalog resource** is the single item displayed in the catalog. A components repository is a catalog resource.
+- **Version** is a specific revision of catalog resource. It maps to the released tag in the project,
+  which allows components to be pinned to a specific revision.
+- **Steps** is a collection of instructions for how jobs can be executed.
 
 ## Definition of pipeline component
 
@@ -128,7 +134,7 @@ Eventually, we want to make CI Catalog Components predictable. Including a
 component by its path, using a fixed `@` version, should always return the same
 configuration, regardless of a context from which it is getting included from.
 The resulting configuration should be the same for a given component version
-and the set of inputs passed using `with:` keyword, hence it should be
+and the set of inputs passed using `include:inputs` keyword, therefore it should be
 [deterministic](https://en.wikipedia.org/wiki/Deterministic_algorithm).
 
 A component should not produce side effects by being included and should be
@@ -202,7 +208,6 @@ A component YAML file:
 - Should be **validated statically** (for example: using JSON schema validators).
 
 ```yaml
----
 spec:
   inputs:
     website:
@@ -217,18 +222,14 @@ spec:
 # content of the component
 ```
 
-Components that are released in the catalog must have a `README.md` file at the root directory of the repository.
-The `README.md` represents the documentation for the specific component, hence it's recommended
-even when not releasing versions in the catalog.
-
 ### The component version
 
 The version of the component can be (in order of highest priority first):
 
 1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
-1. A released tag - For example: `gitlab.com/gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
-1. An unreleased tag - For example: `gitlab.com/gitlab-org/dast@rc-1.0`
+1. A tag - For example: `gitlab.com/gitlab-org/dast@1.0`
+1. A special moving target version that points to the most recent released tag. The target project must be
+explicitly marked as a [catalog resource](#catalog-resource) - For example: `gitlab.com/gitlab-org/dast@~latest`
 1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
@@ -237,26 +238,31 @@ takes precedence over the tag.
 
 As we want to be able to reference any revisions (even those not released), a component must be defined in a Git repository.
 
-NOTE:
 When referencing a component by local path (for example `./path/to/component`), its version is implicit and matches
 the commit SHA of the current pipeline context.
 
-## Components project
+## Components repository
 
-A components project is a GitLab project/repository that exclusively hosts one or more pipeline components.
+A components repository is a GitLab project/repository that exclusively hosts one or more pipeline components.
 
-For components projects it's highly recommended to set an appropriate avatar and project description
-to improve discoverability in the catalog.
+A components repository can be a catalog resource. For a components repository it's highly recommended to set
+an appropriate avatar and project description to improve discoverability in the catalog.
 
-### Structure of a components project
+Components repositories that are released in the catalog must have a `README.md` file at the root directory of the repository.
+The `README.md` represents the documentation of the components repository, hence it's recommended
+even when not listing the repository in the catalog.
 
-A project can host one or more components depending on whether the author wants to define a single component
-per project or include multiple cohesive components under the same project.
+### Structure of a components repository
 
-Let's imagine we are developing a component that runs RSpec tests for a Rails app. We create a component project
+A components repository can host one or more components. The author can decide whether to define a single component
+per repository or include multiple cohesive components in the same repository.
+
+A components repository is identified by the project full path.
+
+Let's imagine we are developing a component that runs RSpec tests for a Rails app. We create a project
 called `myorg/rails-rspec`.
 
-The following directory structure would support 1 component per project:
+The following directory structure would support 1 component per repository:
 
 ```plaintext
 .
@@ -267,10 +273,10 @@ The following directory structure would support 1 component per project:
 
 The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
 
-The component is now identified by the path `gitlab.com/myorg/rails-rspec` and we expect a `template.yml` file
-and `README.md` located in the root directory of the repository.
+The component is now identified by the path `gitlab.com/myorg/rails-rspec` which also maps to the
+project path. We expect a `template.yml` file and `README.md` to be located in the root directory of the repository.
 
-The following directory structure would support multiple components per project:
+The following directory structure would support multiple components per repository:
 
 ```plaintext
 .
@@ -319,7 +325,6 @@ This limitation encourages cohesion at project level and keeps complexity low.
 If the component takes any input parameters they must be specified according to the following schema:
 
 ```yaml
----
 spec:
   inputs:
     website: # by default all declared inputs are mandatory.
@@ -346,13 +351,13 @@ When using the component we pass the input parameters as follows:
 ```yaml
 include:
   - component: gitlab.com/org/my-component@1.0
-    with:
+    inputs:
       website: ${MY_WEBSITE} # variables expansion
       test_run: system
       environment: $[[ inputs.environment ]] # interpolation of upstream inputs
 ```
 
-Variables expansion must be supported for `with:` syntax as well as interpolation of
+Variables expansion must be supported for `include:inputs` syntax as well as interpolation of
 possible [inputs provided upstream](#input-parameters-for-pipelines).
 
 Input parameters are validated as soon as possible:
@@ -363,7 +368,6 @@ Input parameters are validated as soon as possible:
 1. Interpolate input parameters inside the component's content.
 
 ```yaml
----
 spec:
   inputs:
     environment:
@@ -383,8 +387,8 @@ With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the c
 
 ### CI configuration interpolation perspectives and limitations
 
-With `spec:` users will be able to define input arguments for CI configuration.
-With `with:` keywords, they will pass these arguments to CI components.
+With `spec:inputs` users will be able to define input arguments for CI configuration.
+With `include:inputs`, they will pass these arguments to CI components.
 
 `inputs` in `$[[ inputs.something ]]` is going to be an initial "object" or
 "container" that we will provide, to allow users to access their arguments in
@@ -427,32 +431,31 @@ enforce contracts.
 ### Input parameters for existing `include:` syntax
 
 Because we are adding input parameters to components used via `include:component` we have an opportunity to
-extend it to other `include:` types support inputs via `with:` syntax:
+extend it to other `include:` types support inputs through `inputs:` syntax:
 
 ```yaml
 include:
   - component: gitlab.com/org/my-component@1.0
-    with:
+    inputs:
       foo: bar
   - local: path/to/file.yml
-    with:
+    inputs:
       foo: bar
   - project: org/another
     file: .gitlab-ci.yml
-    with:
+    inputs:
       foo: bar
   - remote: http://example.com/ci/config
-    with:
+    inputs:
       foo: bar
   - template: Auto-DevOps.gitlab-ci.yml
-    with:
+    inputs:
       foo: bar
 ```
 
 Then the configuration being included must specify the inputs by defining a specification section in the YAML:
 
 ```yaml
----
 spec:
   inputs:
     foo:
@@ -460,15 +463,15 @@ spec:
 # rest of the configuration
 ```
 
-If a YAML includes content using `with:` but the including YAML doesn't define `inputs:` in the specifications,
+If a YAML includes content using `include:inputs` but the including YAML doesn't define `spec:inputs` in the specifications,
 an error should be raised.
 
-|`with:`| `inputs:` | result |
-| --- | --- | --- |
-| specified | |  raise error  |
-| specified | specified | validate inputs |
-| | specified | use defaults |
-| | | legacy `include:` without input passing |
+| `include:inputs` | `spec:inputs` | result                                  |
+|------------------|---------------|-----------------------------------------|
+| specified        |               | raise error                             |
+| specified        | specified     | validate inputs                         |
+|                  | specified     | use defaults                            |
+|                  |               | legacy `include:` without input passing |
 
 ### Input parameters for pipelines
 
@@ -488,7 +491,7 @@ Today we have different use cases where using explicit input parameters would be
 deploy-app:
   trigger:
     project: org/deployer
-    with:
+    inputs:
       provider: aws
       deploy_environment: staging
 ```
@@ -496,7 +499,6 @@ deploy-app:
 To solve the problem of `Run Pipeline` UI form we could fully leverage the `inputs` specifications:
 
 ```yaml
----
 spec:
   inputs:
     concurrency:
@@ -516,35 +518,114 @@ spec:
 # rest of the pipeline config
 ```
 
-### Limits
+## CI Catalog
 
-Any MVC that exposes a feature should be added with limitations from the beginning.
-It's safer to add new features with restrictions than trying to limit a feature after it's being used.
-We can always soften the restrictions later depending on user demand.
+The CI Catalog is an index of resources that users can leverage in CI/CD. It initially
+contains a list of components repositories that users can discover and use in their pipelines.
 
-Some limits we could consider adding:
+In the future, the Catalog could contain also other types of resources (for example:
+integrations, project templates, etc.).
 
-- number of components that a single project can contain/export
-- number of imports that a `.gitlab-ci.yml` file can use
-- number of imports that a component can declare/use
-- max level of nested imports
-- max length of the exported component name
+To list a components repository in the Catalog we need to mark the project as being a
+catalog resource. We do that initially with an API endpoint, similar to changing a project setting.
 
-## Publishing components
+Once a project is marked as a "catalog resource" it can be displayed in the Catalog.
 
-Users will be able to publish CI Components into a CI Catalog. This can happen
-in a CI pipeline job, similarly to how software is being deployed following
-Continuous Delivery principles. This will allow us to guardrail the quality of
-components being deployed. To ensure that the CI Components meet quality
-standards users will be able to test them before publishing new versions in the
+We could create a database record when the API endpoint is used and remove the record when
+the same is disabled/removed.
+
+## Catalog resource
+
+Upon publishing, a catalog resource should have at least following attributes:
+
+- `path`: to be uniquely identified.
+- `name`: for components repository this could be the project name.
+- `documentation`: we would use the `README.md` file which would be mandatory.
+- `versions`: one or more releases of the resource.
+
+Other properties of a catalog resource:
+
+- `description`: for components repository this could be the project description.
+- `avatar image`: we could use the project avatar.
+- indicators of popularity (stars, forks).
+- categorization: user should select a category and or define search tags
+
+As soon as a components repository is marked as being a "catalog resource"
+we should be seeing the resource listed in the Catalog.
+
+Initially for the resource, the project may not have any released tags.
+Users would be able to use the components repository by specifying a branch name or
+commit SHA for the version. However, these types of version qualifiers should not
+be listed in the catalog resource's page for various reasons:
+
+- The list of branches and tags can get very large.
+- Branches and tags may not be meaningful for the end-user.
+- Branches and tags don't communicate versioning thoroughly.
+
+## Releasing new resource versions to the Catalog
+
+The versions that should be displayed for the resource should be the project [releases](../../../user/project/releases/index.md).
+Creating project releases is an official act of versioning a resource.
+
+A resource page would have:
+
+- The latest release in evidence (for example: the default version).
+- The ability to inspect and use past releases of the resource.
+- The documentation represented by the `README.md`.
+
+Users should be able to release new versions of the resource in a CI pipeline job,
+similar to how software is being deployed following Continuous Delivery principles.
+
+To ensure that the components repository and the including components
+meet quality standards, users can test them before releasing new versions in the
 CI Catalog.
 
-Once a project containing components gets published we will index components'
+Some examples of checks we can run during the release of a new resource version:
+
+- Ensure the project contains a `README.md` in the root directory.
+- Ensure the project description exists.
+- If an index of available components is present for a components repository, ensure each
+  component has valid YAML.
+
+Once a new release for the project gets created we index the resource's
 metadata. We want to initially index as much metadata as possible, to gain more
 flexibility in how we design CI Catalog's main page. We don't want to be
-constrained by the lack of data available to properly visualize CI Components
-in CI Catalog. In order to do that, we may need to find all components that are
-being published, read their `spec` metadata and index what we find there.
+constrained by the lack of data available to properly visualize resources in
+the CI Catalog. To do that, we may need to find all resources that are
+being released and index their data and metadata.
+For example: index the content of `spec:` section for CI components.
+
+See an [example of development workflow](dev_workflow.md) for a components repository.
+
+## Note about future resource types
+
+In the future, to support multiple types of resources in the Catalog we could
+require a file `catalog-resource.yml` to be defined in the root directory of the project:
+
+```yaml
+name: DAST
+description: Scan a web endpoint to find vulnerabilities
+category: security
+tags: [dynamic analysis, security scanner]
+type: components_repository
+```
+
+This file could also be used for indexing metadata about the content of the resource.
+For example, users could list the components in the repository and we can index
+further data for search purpose:
+
+```yaml
+name: DAST
+description: Scan a web endpoint to find vulnerabilities
+category: security
+tags: [dynamic analysis, security scanner]
+type: components_repository
+metadata:
+  components:
+    - all-scans
+    - scan-x
+    - scan-y
+```
 
 ## Implementation guidelines
 
@@ -585,6 +666,20 @@ being published, read their `spec` metadata and index what we find there.
       components from GitLab.com or from repository exports.
     - Iterate on feedback.
 
+## Limits
+
+Any MVC that exposes a feature should be added with limitations from the beginning.
+It's safer to add new features with restrictions than trying to limit a feature after it's being used.
+We can always soften the restrictions later depending on user demand.
+
+Some limits we could consider adding:
+
+- number of components that a single project can contain/export
+- number of imports that a `.gitlab-ci.yml` file can use
+- number of imports that a component can declare/use
+- max level of nested imports
+- max length of the exported component name
+
 ## Who
 
 Proposal:
@@ -612,6 +707,6 @@ Domain experts:
 | Area                         | Who
 |------------------------------|------------------------|
 | Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Laura Montemayor-Rodriguez  |
+| Verify / Pipeline authoring  | Laura Montemayor       |
 
 <!-- vale gitlab.Spelling = YES -->

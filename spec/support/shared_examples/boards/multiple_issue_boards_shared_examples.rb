@@ -80,7 +80,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
       click_button 'Select a label'
 
-      page.choose(planning.title)
+      find('label', text: planning.title).click
 
       click_button 'Add to board'
 

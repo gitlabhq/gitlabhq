@@ -30,18 +30,21 @@ export const DORA_METRICS = {
   CHANGE_FAILURE_RATE: 'change_failure_rate',
 };
 
-export const VSA_METRICS_GROUPS = [
-  {
-    key: 'key_metrics',
-    title: s__('ValueStreamAnalytics|Key metrics'),
-    keys: Object.values(KEY_METRICS),
-  },
-  {
-    key: 'dora_metrics',
-    title: s__('ValueStreamAnalytics|DORA metrics'),
-    keys: Object.values(DORA_METRICS),
-  },
-];
+const VSA_FLOW_METRICS_GROUP = {
+  key: 'key_metrics',
+  title: s__('ValueStreamAnalytics|Key metrics'),
+  keys: Object.values(KEY_METRICS),
+};
+
+export const VSA_METRICS_GROUPS = [VSA_FLOW_METRICS_GROUP];
+
+export const VULNERABILITY_CRITICAL_TYPE = 'vulnerability_critical';
+export const VULNERABILITY_HIGH_TYPE = 'vulnerability_high';
+
+export const VULNERABILITY_METRICS = {
+  CRITICAL: VULNERABILITY_CRITICAL_TYPE,
+  HIGH: VULNERABILITY_HIGH_TYPE,
+};
 
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
@@ -105,6 +108,18 @@ export const METRIC_TOOLTIPS = {
     groupLink: '-/analytics/productivity_analytics',
     projectLink: '-/analytics/merge_request_analytics',
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+  [VULNERABILITY_METRICS.CRITICAL]: {
+    description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),
+    groupLink: '-/security/vulnerabilities',
+    projectLink: '-/security/vulnerability_report',
+    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
+  },
+  [VULNERABILITY_METRICS.HIGH]: {
+    description: s__('ValueStreamAnalytics|High vulnerabilities over time.'),
+    groupLink: '-/security/vulnerabilities',
+    projectLink: '-/security/vulnerability_report',
+    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
   },
 };
 

@@ -6,7 +6,7 @@ module Ci
   class RegisterJobService
     include ::Gitlab::Ci::Artifacts::Logger
 
-    attr_reader :runner, :runner_machine, :metrics
+    attr_reader :runner, :runner_manager, :metrics
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
@@ -18,9 +18,9 @@ module Ci
     # affect 5% of the worst case scenarios.
     MAX_QUEUE_DEPTH = 45
 
-    def initialize(runner, runner_machine)
+    def initialize(runner, runner_manager)
       @runner = runner
-      @runner_machine = runner_machine
+      @runner_manager = runner_manager
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
     end
 
@@ -127,11 +127,6 @@ module Ci
       # pick builds that have at least one tag
       unless runner.run_untagged?
         builds = queue.builds_with_any_tags(builds)
-      end
-
-      # pick builds that older than specified age
-      if params.key?(:job_age)
-        builds = queue.builds_queued_before(builds, params[:job_age].seconds.ago)
       end
 
       build_ids = retrieve_queue(-> { queue.execute(builds) })
@@ -244,7 +239,6 @@ module Ci
     def assign_runner!(build, params)
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
-      build.ensure_metadata.runner_machine = runner_machine if runner_machine
 
       failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
 
@@ -256,6 +250,7 @@ module Ci
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
         build.run!
+        build.runner_manager = runner_manager if runner_manager
       end
 
       !failure_reason

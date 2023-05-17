@@ -44,9 +44,6 @@ describe('Alert Details Sidebar', () => {
   }
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
     mock.restore();
   });
 

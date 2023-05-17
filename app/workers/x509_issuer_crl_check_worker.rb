@@ -40,14 +40,16 @@ class X509IssuerCrlCheckWorker
       certs = issuer.x509_certificates.where(serial_number: batch, certificate_status: :good) # rubocop: disable CodeReuse/ActiveRecord
 
       certs.find_each do |cert|
-        logger.info(message: "Certificate revoked",
-                    id: cert.id,
-                    email: cert.email,
-                    subject: cert.subject,
-                    serial_number: cert.serial_number,
-                    issuer: cert.x509_issuer.id,
-                    issuer_subject: cert.x509_issuer.subject,
-                    issuer_crl_url: cert.x509_issuer.crl_url)
+        logger.info(
+          message: "Certificate revoked",
+          id: cert.id,
+          email: cert.email,
+          subject: cert.subject,
+          serial_number: cert.serial_number,
+          issuer: cert.x509_issuer.id,
+          issuer_subject: cert.x509_issuer.subject,
+          issuer_crl_url: cert.x509_issuer.crl_url
+        )
       end
 
       certs.update_all(certificate_status: :revoked)
@@ -60,19 +62,23 @@ class X509IssuerCrlCheckWorker
     if response&.code == 200
       OpenSSL::X509::CRL.new(response.body)
     else
-      logger.warn(message: "Failed to download certificate revocation list",
-                  issuer: issuer.id,
-                  issuer_subject: issuer.subject,
-                  issuer_crl_url: issuer.crl_url)
+      logger.warn(
+        message: "Failed to download certificate revocation list",
+        issuer: issuer.id,
+        issuer_subject: issuer.subject,
+        issuer_crl_url: issuer.crl_url
+      )
 
       nil
     end
 
   rescue OpenSSL::X509::CRLError
-    logger.warn(message: "Failed to parse certificate revocation list",
-                issuer: issuer.id,
-                issuer_subject: issuer.subject,
-                issuer_crl_url: issuer.crl_url)
+    logger.warn(
+      message: "Failed to parse certificate revocation list",
+      issuer: issuer.id,
+      issuer_subject: issuer.subject,
+      issuer_crl_url: issuer.crl_url
+    )
 
     nil
   end

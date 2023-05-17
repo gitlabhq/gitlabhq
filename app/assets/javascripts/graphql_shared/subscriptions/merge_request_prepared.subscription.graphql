@@ -1,0 +1,8 @@
+subscription mergeRequestPrepared($issuableId: IssuableID!) {
+  mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      id
+      preparedAt
+    }
+  }
+}

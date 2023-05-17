@@ -1,12 +1,5 @@
 import { __, sprintf } from '~/locale';
-import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
-
-export const issuableTypesMap = {
-  ISSUE: 'issue',
-  INCIDENT: 'incident',
-  EPIC: 'epic',
-  MERGE_REQUEST: 'merge_request',
-};
+import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 export const linkedIssueTypesMap = {
   BLOCKS: 'blocks',
@@ -27,7 +20,7 @@ export const autoCompleteTextMap = {
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
-    [issuableTypesMap.INCIDENT]: sprintf(
+    [TYPE_INCIDENT]: sprintf(
       __(' or %{emphasisStart}#id%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
@@ -37,7 +30,7 @@ export const autoCompleteTextMap = {
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
-    [issuableTypesMap.MERGE_REQUEST]: sprintf(
+    [TYPE_MERGE_REQUEST]: sprintf(
       __(' or %{emphasisStart}!merge request id%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
@@ -46,21 +39,21 @@ export const autoCompleteTextMap = {
   false: {
     [TYPE_ISSUE]: '',
     [TYPE_EPIC]: '',
-    [issuableTypesMap.MERGE_REQUEST]: __(' or references'),
+    [TYPE_MERGE_REQUEST]: __(' or references'),
   },
 };
 
 export const inputPlaceholderTextMap = {
   [TYPE_ISSUE]: __('Paste issue link'),
-  [issuableTypesMap.INCIDENT]: __('Paste link'),
+  [TYPE_INCIDENT]: __('Paste link'),
   [TYPE_EPIC]: __('Paste epic link'),
-  [issuableTypesMap.MERGE_REQUEST]: __('Enter merge request URLs'),
+  [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const inputPlaceholderConfidentialTextMap = {
   [TYPE_ISSUE]: __('Paste confidential issue link'),
   [TYPE_EPIC]: __('Paste confidential epic link'),
-  [issuableTypesMap.MERGE_REQUEST]: __('Enter merge request URLs'),
+  [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const relatedIssuesRemoveErrorMap = {
@@ -96,7 +89,7 @@ export const addRelatedItemErrorMap = {
  */
 export const issuableIconMap = {
   [TYPE_ISSUE]: 'issues',
-  [issuableTypesMap.INCIDENT]: 'issues',
+  [TYPE_INCIDENT]: 'issues',
   [TYPE_EPIC]: 'epic',
 };
 
@@ -107,13 +100,13 @@ export const PathIdSeparator = {
 
 export const issuablesBlockHeaderTextMap = {
   [TYPE_ISSUE]: __('Linked items'),
-  [issuableTypesMap.INCIDENT]: __('Linked incidents or issues'),
+  [TYPE_INCIDENT]: __('Linked incidents or issues'),
   [TYPE_EPIC]: __('Linked epics'),
 };
 
 export const issuablesBlockHelpTextMap = {
   [TYPE_ISSUE]: __('Learn more about linking issues'),
-  [issuableTypesMap.INCIDENT]: __('Learn more about linking issues and incidents'),
+  [TYPE_INCIDENT]: __('Learn more about linking issues and incidents'),
   [TYPE_EPIC]: __('Learn more about linking epics'),
 };
 
@@ -124,12 +117,12 @@ export const issuablesBlockAddButtonTextMap = {
 
 export const issuablesFormCategoryHeaderTextMap = {
   [TYPE_ISSUE]: __('The current issue'),
-  [issuableTypesMap.INCIDENT]: __('The current incident'),
+  [TYPE_INCIDENT]: __('The current incident'),
   [TYPE_EPIC]: __('The current epic'),
 };
 
 export const issuablesFormInputTextMap = {
   [TYPE_ISSUE]: __('the following issues'),
-  [issuableTypesMap.INCIDENT]: __('the following incidents or issues'),
+  [TYPE_INCIDENT]: __('the following incidents or issues'),
   [TYPE_EPIC]: __('the following epics'),
 };

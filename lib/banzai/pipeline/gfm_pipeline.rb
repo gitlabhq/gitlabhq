@@ -11,6 +11,7 @@ module Banzai
       # The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
       def self.filters
         @filters ||= FilterArray[
+          Filter::CodeLanguageFilter,
           Filter::PlantumlFilter,
           # Must always be before the SanitizationFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
@@ -57,6 +58,7 @@ module Banzai
           Filter::References::ProjectReferenceFilter,
           Filter::References::DesignReferenceFilter,
           Filter::References::IssueReferenceFilter,
+          Filter::References::WorkItemReferenceFilter,
           Filter::References::ExternalIssueReferenceFilter,
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,

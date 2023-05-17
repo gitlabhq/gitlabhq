@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::BuildService do
+RSpec.describe Users::BuildService, feature_category: :user_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do

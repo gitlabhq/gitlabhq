@@ -10,14 +10,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     create(:project, creator_id: user.id, namespace: user.namespace)
   end
 
-  # The API supports all integrations except the GitLab Slack Application
-  # integration; this integration must be installed via the UI.
-  def self.integration_names
-    names = Integration.available_integration_names
-    names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
-    names
-  end
-
   %w[integrations services].each do |endpoint|
     describe "GET /projects/:id/#{endpoint}" do
       it 'returns authentication error when unauthenticated' do
@@ -51,9 +43,19 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
     end
 
-    integration_names.each do |integration|
+    where(:integration) do
+      # The API supports all integrations except the GitLab Slack Application
+      # integration; this integration must be installed via the UI.
+      names = Integration.available_integration_names
+      names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
+      names - %w[shimo zentao]
+    end
+
+    with_them do
+      integration = params[:integration]
+
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         # NOTE: Some attributes are not supported for PUT requests, even though they probably should be.
         # We can fix these manually, or with a generic approach like https://gitlab.com/gitlab-org/gitlab/-/issues/348208
@@ -62,7 +64,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             datadog: %i[archive_trace_events],
             discord: %i[branches_to_be_notified notify_only_broken_pipelines],
             hangouts_chat: %i[notify_only_broken_pipelines],
-            jira: %i[issues_enabled project_key vulnerabilities_enabled vulnerabilities_issuetype],
+            jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
             mattermost: %i[deployment_channel labels_to_be_notified],
             mock_ci: %i[enable_ssl_verification],
             prometheus: %i[manual_configuration],
@@ -119,7 +121,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
 
       describe "DELETE /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         before do
           initialize_integration(integration)
@@ -135,7 +137,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
 
       describe "GET /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         let!(:initialized_integration) { initialize_integration(integration, active: true) }
 
@@ -367,7 +369,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     describe 'Jira integration' do
       let(:integration_name) { 'jira' }
       let(:params) do
-        { url: 'https://jira.example.com', username: 'username', password: 'password' }
+        { url: 'https://jira.example.com', username: 'username', password: 'password', jira_auth_type: 0 }
       end
 
       before do
@@ -424,6 +426,30 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
     def assert_secret_fields_filtered(response_keys, integration)
       expect(response_keys).not_to include(*integration.secret_fields)
+    end
+  end
+
+  describe 'POST /slack/trigger' do
+    before_all do
+      create(:gitlab_slack_application_integration, project: project)
+    end
+
+    before do
+      stub_application_setting(slack_app_verification_token: 'token')
+    end
+
+    it 'returns status 200' do
+      post api('/slack/trigger'), params: { token: 'token', text: 'help' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['response_type']).to eq("ephemeral")
+    end
+
+    it 'returns status 404 when token is invalid' do
+      post api('/slack/trigger'), params: { token: 'invalid', text: 'foo' }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['response_type']).to be_blank
     end
   end
 end

@@ -11,7 +11,7 @@ module JiraIntegrationHelpers
     jira_issue_transition_id = '1'
 
     jira_tracker.update!(
-      url: url, username: username, password: password,
+      url: url, username: username, password: password, jira_auth_type: 0,
       jira_issue_transition_id: jira_issue_transition_id, active: true
     )
   end

@@ -35,8 +35,6 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     registrationToken,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
-    emptyStateSvgPath,
-    emptyStateFilteredSvgPath,
   } = el.dataset;
 
   const { cacheConfig, typeDefs, localMutations } = createLocalState();
@@ -53,8 +51,6 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
       localMutations,
       onlineContactTimeoutSecs,
       staleTimeoutSecs,
-      emptyStateSvgPath,
-      emptyStateFilteredSvgPath,
     },
     render(h) {
       return h(AdminRunnersApp, {

@@ -4,6 +4,7 @@ classes:
 - Dora::DailyMetrics
 feature_categories:
 - continuous_delivery
+- value_stream_management
 description: Stores daily snapshots of DORA4 metrics per environment.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55473
 milestone: '13.10'

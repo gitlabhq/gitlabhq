@@ -3,7 +3,7 @@ table_name: ci_secure_files
 classes:
 - Ci::SecureFile
 feature_categories:
-- pipeline_authoring
+- secrets_management
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77886
 milestone: '14.7'

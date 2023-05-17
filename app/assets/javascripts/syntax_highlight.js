@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-
 // Syntax Highlighter
 //
 // Applies a syntax highlighting color scheme CSS class to any element with the
@@ -14,7 +12,12 @@ export default function syntaxHighlight($els = null) {
   if (!$els || $els.length === 0) return;
 
   const els = $els.get ? $els.get() : $els;
+  // eslint-disable-next-line consistent-return
   const handler = (el) => {
+    if (el.classList === undefined) {
+      return el;
+    }
+
     if (el.classList.contains('js-syntax-highlight')) {
       // Given the element itself, apply highlighting
       return el.classList.add(gon.user_color_scheme);

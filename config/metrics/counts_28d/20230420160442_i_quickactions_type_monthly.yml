@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_type_monthly
+description: Count of MAU using the `/type` quick action
+product_section: dev
+product_stage: plan
+product_group: product_planning
+value_type: number
+status: active
+milestone: "16.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118790
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_type
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

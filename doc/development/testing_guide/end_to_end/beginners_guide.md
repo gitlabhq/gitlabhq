@@ -34,9 +34,8 @@ For more information, see [End-to-end testing Best Practices](best_practices.md)
 
 ## Determine if end-to-end tests are needed
 
-Check the code coverage of a specific feature before writing end-to-end tests,
-for both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles)
-and [GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) projects.
+Check the code coverage of a specific feature before writing end-to-end tests
+for the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) project.
 Does sufficient test coverage exist at the unit, feature, or integration levels?
 If you answered *yes*, then you *don't* need an end-to-end test.
 
@@ -53,9 +52,8 @@ For information about the distribution of tests per level in GitLab, see
   the feature and the lower-level tests.
 
 WARNING:
-Check both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and
-[GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage projects
-for previously-written tests for this feature. For analyzing the code coverage,
+Check the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage project
+for previously written tests for this feature. To analyze code coverage,
 you must understand which application files implement specific features.
 
 In this tutorial we're writing a login end-to-end test, even though it has been
@@ -87,7 +85,7 @@ file `basic_login_spec.rb`.
 See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
 
 WARNING:
-The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/550) in `13.2`
+The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/550) in `13.2`
 in adherence to RSpec 4.0 specifications. Use `RSpec.describe` instead.
 
 ### The outer `RSpec.describe` block
@@ -225,7 +223,7 @@ end
 1. Check if the user avatar *does not* appear in the top navigation.
 
 Behind the scenes, `be_signed_in` is a
-[predicate matcher](https://relishapp.com/rspec/rspec-expectations/v/3-8/docs/built-in-matchers/predicate-matchers)
+[predicate matcher](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/predicates/)
 that [implements checking the user avatar](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/page/main/menu.rb#L92).
 
 ## De-duplicate your code

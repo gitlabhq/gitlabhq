@@ -276,19 +276,35 @@ describe('getTimeframeWindowFrom', () => {
 });
 
 describe('formatTime', () => {
-  const expectedTimestamps = [
-    [0, '00:00:00'],
-    [1000, '00:00:01'],
-    [42000, '00:00:42'],
-    [121000, '00:02:01'],
-    [10921000, '03:02:01'],
-    [108000000, '30:00:00'],
-  ];
+  it.each`
+    milliseconds                            | expected
+    ${0}                                    | ${'00:00:00'}
+    ${1}                                    | ${'00:00:00'}
+    ${499}                                  | ${'00:00:00'}
+    ${500}                                  | ${'00:00:01'}
+    ${1000}                                 | ${'00:00:01'}
+    ${42 * 1000}                            | ${'00:00:42'}
+    ${60 * 1000}                            | ${'00:01:00'}
+    ${(60 + 1) * 1000}                      | ${'00:01:01'}
+    ${(3 * 60 * 60 + 2 * 60 + 1) * 1000}    | ${'03:02:01'}
+    ${(11 * 60 * 60 + 59 * 60 + 59) * 1000} | ${'11:59:59'}
+    ${30 * 60 * 60 * 1000}                  | ${'30:00:00'}
+    ${(35 * 60 * 60 + 3 * 60 + 7) * 1000}   | ${'35:03:07'}
+    ${240 * 60 * 60 * 1000}                 | ${'240:00:00'}
+    ${1000 * 60 * 60 * 1000}                | ${'1000:00:00'}
+  `(`formats $milliseconds ms as $expected`, ({ milliseconds, expected }) => {
+    expect(datetimeUtility.formatTime(milliseconds)).toBe(expected);
+  });
 
-  expectedTimestamps.forEach(([milliseconds, expectedTimestamp]) => {
-    it(`formats ${milliseconds}ms as ${expectedTimestamp}`, () => {
-      expect(datetimeUtility.formatTime(milliseconds)).toBe(expectedTimestamp);
-    });
+  it.each`
+    milliseconds                           | expected
+    ${-1}                                  | ${'00:00:00'}
+    ${-499}                                | ${'00:00:00'}
+    ${-1000}                               | ${'-00:00:01'}
+    ${-60 * 1000}                          | ${'-00:01:00'}
+    ${-(35 * 60 * 60 + 3 * 60 + 7) * 1000} | ${'-35:03:07'}
+  `(`when negative, formats $milliseconds ms as $expected`, ({ milliseconds, expected }) => {
+    expect(datetimeUtility.formatTime(milliseconds)).toBe(expected);
   });
 });
 

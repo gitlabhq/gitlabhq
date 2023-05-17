@@ -54,10 +54,6 @@ describe('TokensApp', () => {
     expect(container.props()).toMatchObject(expectedProps);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders all enabled tokens', () => {
     createComponent();
 

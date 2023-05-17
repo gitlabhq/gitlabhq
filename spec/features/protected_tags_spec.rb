@@ -16,8 +16,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     it "allows creating explicit protected tags" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       within(".protected-tags-list") { expect(page).to have_content('some-tag') }
       expect(ProtectedTag.count).to eq(1)
@@ -30,8 +30,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       within(".protected-tags-list") { expect(page).to have_content(commit.id[0..7]) }
     end
@@ -39,8 +39,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     it "displays an error message if the named tag does not exist" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       within(".protected-tags-list") { expect(page).to have_content('tag was removed') }
     end
@@ -50,8 +50,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     it "allows creating protected tags with a wildcard" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       within(".protected-tags-list") { expect(page).to have_content('*-stable') }
       expect(ProtectedTag.count).to eq(1)
@@ -64,8 +64,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       within(".protected-tags-list") do
         expect(page).to have_content("Protected tags (2)")
@@ -80,8 +80,8 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
-      set_allowed_to('create') if Gitlab.ee?
-      click_on "Protect"
+      set_allowed_to('create')
+      click_on_protect
 
       visit project_protected_tags_path(project)
       click_on "2 matching tags"
@@ -100,5 +100,15 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
     end
 
     include_examples "protected tags > access control > CE"
+  end
+
+  context 'when the users for protected tags feature is off' do
+    before do
+      stub_licensed_features(protected_refs_for_users: false)
+    end
+
+    include_examples 'Deploy keys with protected tags' do
+      let(:all_dropdown_sections) { ['Roles', 'Deploy Keys'] }
+    end
   end
 end

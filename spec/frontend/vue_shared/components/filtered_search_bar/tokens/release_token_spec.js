@@ -2,11 +2,11 @@ import { GlFilteredSearchToken, GlFilteredSearchTokenSegment } from '@gitlab/ui'
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import { mockReleaseToken } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('ReleaseToken', () => {
   const id = '123';
@@ -24,12 +24,9 @@ describe('ReleaseToken', () => {
         portalName: 'fake target',
         alignSuggestions: function fakeAlignSuggestions() {},
         suggestionsListClass: () => 'custom-class',
+        termsAsTokens: () => false,
       },
     });
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders release value', async () => {
     wrapper = createComponent({ value: { data: id } });

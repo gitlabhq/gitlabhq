@@ -113,7 +113,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :tag_not_found
           raise Gitlab::Git::UnknownRef, "tag does not exist: #{tag_name}"
         else
@@ -135,7 +135,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :invalid_format
           raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
         when :references_locked
@@ -239,7 +239,7 @@ module Gitlab
         sort_by = 'name' if sort_by == 'name_asc'
 
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
-        raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
+        return Gitaly::FindLocalBranchesRequest::SortBy::NAME unless enum_value
 
         enum_value
       end

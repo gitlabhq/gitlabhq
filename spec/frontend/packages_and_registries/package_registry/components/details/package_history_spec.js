@@ -63,11 +63,6 @@ describe('Package History', () => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findPackageHistoryLoader = () => wrapper.findComponent(PackageHistoryLoader);
   const findHistoryElement = (testId) => wrapper.findByTestId(testId);
   const findElementLink = (container) => container.findComponent(GlLink);

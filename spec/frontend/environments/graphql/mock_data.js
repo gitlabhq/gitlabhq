@@ -798,3 +798,112 @@ export const resolvedDeploymentDetails = {
     },
   },
 };
+
+export const agent = {
+  project: 'agent-project',
+  id: 'gid://gitlab/ClusterAgent/1',
+  name: 'agent-name',
+  kubernetesNamespace: 'agent-namespace',
+};
+
+const runningPod = { status: { phase: 'Running' } };
+const pendingPod = { status: { phase: 'Pending' } };
+const succeededPod = { status: { phase: 'Succeeded' } };
+const failedPod = { status: { phase: 'Failed' } };
+
+export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
+
+export const k8sServicesMock = [
+  {
+    metadata: {
+      name: 'my-first-service',
+      namespace: 'default',
+      creationTimestamp: new Date(),
+    },
+    spec: {
+      ports: [
+        {
+          name: 'https',
+          protocol: 'TCP',
+          port: 443,
+          targetPort: 8443,
+        },
+      ],
+      clusterIP: '10.96.0.1',
+      externalIP: '-',
+      type: 'ClusterIP',
+    },
+  },
+  {
+    metadata: {
+      name: 'my-second-service',
+      namespace: 'default',
+      creationTimestamp: '2020-07-03T14:06:04Z',
+    },
+    spec: {
+      ports: [
+        {
+          name: 'http',
+          protocol: 'TCP',
+          appProtocol: 'http',
+          port: 80,
+          targetPort: 'http',
+          nodePort: 31989,
+        },
+        {
+          name: 'https',
+          protocol: 'TCP',
+          appProtocol: 'https',
+          port: 443,
+          targetPort: 'https',
+          nodePort: 32679,
+        },
+      ],
+      clusterIP: '10.105.219.238',
+      externalIP: '-',
+      type: 'NodePort',
+    },
+  },
+];
+
+const readyDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'True' },
+      { type: 'Progressing', status: 'True' },
+    ],
+  },
+};
+const failedDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'False' },
+      { type: 'Progressing', status: 'False' },
+    ],
+  },
+};
+const readyDaemonSet = {
+  status: { numberReady: 1, desiredNumberScheduled: 1, numberMisscheduled: 0 },
+};
+const failedDaemonSet = {
+  status: { numberMisscheduled: 1, numberReady: 0, desiredNumberScheduled: 1 },
+};
+const readySet = { spec: { replicas: 2 }, status: { readyReplicas: 2 } };
+const failedSet = { spec: { replicas: 2 }, status: { readyReplicas: 1 } };
+const completedJob = { spec: { completions: 1 }, status: { succeeded: 1, failed: 0 } };
+const failedJob = { spec: { completions: 1 }, status: { succeeded: 0, failed: 1 } };
+const completedCronJob = {
+  spec: { suspend: 0 },
+  status: { active: 0, lastScheduleTime: new Date().toString() },
+};
+const suspendedCronJob = { spec: { suspend: 1 }, status: { active: 0, lastScheduleTime: '' } };
+const failedCronJob = { spec: { suspend: 0 }, status: { active: 2, lastScheduleTime: '' } };
+
+export const k8sWorkloadsMock = {
+  DeploymentList: [readyDeployment, failedDeployment],
+  DaemonSetList: [readyDaemonSet, failedDaemonSet, failedDaemonSet],
+  StatefulSetList: [readySet, readySet, failedSet],
+  ReplicaSetList: [readySet, failedSet],
+  JobList: [completedJob, completedJob, failedJob],
+  CronJobList: [completedCronJob, suspendedCronJob, failedCronJob],
+};

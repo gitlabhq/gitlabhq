@@ -68,7 +68,7 @@ module AccessTokensActions
     # user in the resource without multiple queries.
     resource.members.load
 
-    @scopes = Gitlab::Auth.resource_bot_scopes
+    @scopes = Gitlab::Auth.available_scopes_for(resource)
     @active_access_tokens = active_access_tokens
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

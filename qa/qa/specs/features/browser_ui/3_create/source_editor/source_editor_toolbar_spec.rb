@@ -2,7 +2,7 @@
 # tagged transient due to feature-flag caching flakiness. Remove tag along with feature flag removal.
 module QA
   RSpec.describe 'Create', feature_flag: { name: 'source_editor_toolbar', scope: :global } do
-    describe 'Source editor toolbar preview', product_group: :editor do
+    describe 'Source editor toolbar preview', product_group: :source_code do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'empty-project-with-md'

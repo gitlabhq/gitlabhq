@@ -5,5 +5,5 @@
 - if release
   - release_btn_text = s_('TagsPage|Edit release')
   - release_btn_path = edit_project_release_path(project, release)
-= link_to release_btn_path, class: css_classes, title: release_btn_text, data: { container: "body" } do
-  = sprite_icon('pencil', css_class: 'gl-icon')
+= link_to release_btn_path, class: css_classes do
+  = release_btn_text

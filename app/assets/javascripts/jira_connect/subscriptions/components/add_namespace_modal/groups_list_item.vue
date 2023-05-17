@@ -1,27 +1,15 @@
 <script>
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
-import { addSubscription } from '~/jira_connect/subscriptions/api';
-import { persistAlert, reloadPage } from '~/jira_connect/subscriptions/utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GroupItemName from '../group_item_name.vue';
-import {
-  INTEGRATIONS_DOC_LINK,
-  I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
-  I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
-  I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE,
-} from '../../constants';
+import { I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE } from '../../constants';
 
 export default {
   components: {
     GlButton,
     GroupItemName,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
-    addSubscriptionsPath: {
-      default: '',
-    },
     subscriptionsPath: {
       default: '',
     },
@@ -42,43 +30,19 @@ export default {
       isLoading: false,
     };
   },
-  computed: {
-    oauthEnabled() {
-      return this.glFeatures.jiraConnectOauth;
-    },
-  },
   methods: {
     ...mapActions(['addSubscription']),
     async onClick() {
-      if (this.oauthEnabled) {
-        this.isLoading = true;
+      this.isLoading = true;
+      try {
         await this.addSubscription({
           namespacePath: this.group.full_path,
           subscriptionsPath: this.subscriptionsPath,
         });
-        this.isLoading = false;
-      } else {
-        this.deprecatedAddSubscription();
+      } catch (error) {
+        this.$emit('error', error?.response?.data?.error || I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE);
       }
-    },
-    deprecatedAddSubscription() {
-      this.isLoading = true;
-
-      addSubscription(this.addSubscriptionsPath, this.group.full_path)
-        .then(() => {
-          persistAlert({
-            title: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
-            message: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
-            linkUrl: INTEGRATIONS_DOC_LINK,
-            variant: 'success',
-          });
-
-          reloadPage();
-        })
-        .catch((error) => {
-          this.$emit('error', error?.response?.data?.error || I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE);
-          this.isLoading = false;
-        });
+      this.isLoading = false;
     },
   },
 };

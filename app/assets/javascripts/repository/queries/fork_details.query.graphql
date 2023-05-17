@@ -4,6 +4,8 @@ query getForkDetails($projectPath: ID!, $ref: String) {
     forkDetails(ref: $ref) {
       ahead
       behind
+      isSyncing
+      hasConflicts
     }
   }
 }

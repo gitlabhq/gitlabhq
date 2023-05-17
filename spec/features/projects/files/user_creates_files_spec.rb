@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
-  include BlobSpecHelpers
+  include Features::SourceEditorSpecHelpers
+  include Features::BlobSpecHelpers
 
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\

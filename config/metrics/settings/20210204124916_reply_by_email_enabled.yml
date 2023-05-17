@@ -5,7 +5,6 @@ description: Whether incoming email is setup
 product_section: dev
 product_stage: plan
 product_group: certify
-product_category: collection
 value_type: boolean
 status: active
 time_frame: none

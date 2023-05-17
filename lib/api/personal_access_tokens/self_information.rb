@@ -5,7 +5,7 @@ module API
     class SelfInformation < ::API::Base
       include APIGuard
 
-      feature_category :authentication_and_authorization
+      feature_category :system_access
 
       helpers ::API::Helpers::PersonalAccessTokensHelpers
 

@@ -15,10 +15,6 @@ describe('ProjectAvatar', () => {
     wrapper = shallowMount(ProjectAvatar, { propsData: { ...defaultProps, ...props }, attrs });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders GlAvatar with correct props', () => {
     createComponent();
 
@@ -29,6 +25,7 @@ describe('ProjectAvatar', () => {
       entityName: defaultProps.projectName,
       size: 32,
       src: '',
+      fallbackOnError: true,
     });
   });
 

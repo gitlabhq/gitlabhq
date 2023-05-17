@@ -76,4 +76,25 @@ module EmailHelpers
       composed_expectation.and(have_enqueued_mail(mailer_class, mailer_method).with(*arguments))
     end
   end
+
+  def expect_sender(user, sender_email: nil)
+    sender = subject.header[:from].addrs[0]
+    expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
+    expect(sender.address).to eq(sender_email.presence || gitlab_sender)
+  end
+
+  def expect_service_desk_custom_email_delivery_options(service_desk_setting)
+    expect(subject.delivery_method).to be_a Mail::SMTP
+    expect(service_desk_setting.custom_email_credential).to be_present
+
+    credential = service_desk_setting.custom_email_credential
+
+    expect(subject.delivery_method.settings).to include(
+      address: credential.smtp_address,
+      port: credential.smtp_port,
+      user_name: credential.smtp_username,
+      password: credential.smtp_password,
+      domain: service_desk_setting.custom_email.split('@').last
+    )
+  end
 end

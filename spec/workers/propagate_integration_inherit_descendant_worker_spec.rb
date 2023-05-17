@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PropagateIntegrationInheritDescendantWorker do
+RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :integrations do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:group_integration) { create(:redmine_integration, :group, group: group) }

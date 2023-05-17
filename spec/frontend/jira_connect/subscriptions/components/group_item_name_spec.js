@@ -14,10 +14,6 @@ describe('GroupItemName', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('matches the snapshot', () => {
       createComponent();

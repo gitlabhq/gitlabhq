@@ -4,16 +4,22 @@ module QA
   module Support
     module Loglinking
       # Static address variables declared for mapping environment to logging URLs
-      STAGING_ADDRESS     = 'https://staging.gitlab.com'
-      STAGING_REF_ADDRESS = 'https://staging-ref.gitlab.com'
-      PRODUCTION_ADDRESS  = 'https://gitlab.com'
-      PRE_PROD_ADDRESS    = 'https://pre.gitlab.com'
+      STAGING_ADDRESS            = 'https://staging.gitlab.com'
+      STAGING_REF_ADDRESS        = 'https://staging-ref.gitlab.com'
+      PRODUCTION_ADDRESS         = 'https://gitlab.com'
+      PRE_PROD_ADDRESS           = 'https://pre.gitlab.com'
+
+      # Text titles used for labeling various IDs and URLs
+      CORRELATION_ID_TITLE       = 'Correlation Id:'
+      SENTRY_URL_TITLE           = 'Sentry Url:'
+      KIBANA_DISCOVER_URL_TITLE  = 'Kibana - Discover Url:'
+      KIBANA_DASHBOARD_URL_TITLE = 'Kibana - Dashboard Url:'
 
       class << self
         def failure_metadata(correlation_id)
           return if correlation_id.blank?
 
-          errors = ["Correlation Id: #{correlation_id}"]
+          errors = ["#{CORRELATION_ID_TITLE} #{correlation_id}"]
 
           env = logging_environment
 
@@ -24,9 +30,9 @@ module QA
           kibana_discover_url = kibana.discover_url
           kibana_dashboard_url = kibana.dashboard_url
 
-          errors << "Sentry Url: #{sentry_url}" if sentry_url
-          errors << "Kibana - Discover Url: #{kibana_discover_url}" if kibana_discover_url
-          errors << "Kibana - Dashboard Url: #{kibana_dashboard_url}" if kibana_dashboard_url
+          errors << "#{SENTRY_URL_TITLE} #{sentry_url}" if sentry_url
+          errors << "#{KIBANA_DISCOVER_URL_TITLE} #{kibana_discover_url}" if kibana_discover_url
+          errors << "#{KIBANA_DASHBOARD_URL_TITLE} #{kibana_dashboard_url}" if kibana_dashboard_url
 
           errors.join("\n")
         end
@@ -44,8 +50,6 @@ module QA
             :production
           when PRE_PROD_ADDRESS
             :pre
-          else
-            nil
           end
         end
       end

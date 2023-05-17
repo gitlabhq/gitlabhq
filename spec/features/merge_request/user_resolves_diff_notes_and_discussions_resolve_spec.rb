@@ -218,7 +218,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
       end
 
-      it 'allows user to quickly scroll to next unresolved thread' do
+      it 'allows user to quickly scroll to next unresolved thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410109' do
         page.within '.discussions-counter' do
           page.find('.discussion-next-btn').click
         end

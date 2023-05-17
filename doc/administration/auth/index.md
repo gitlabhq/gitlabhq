@@ -1,5 +1,4 @@
 ---
-comments: false
 type: index
 stage: Manage
 group: Authentication and Authorization
@@ -34,3 +33,7 @@ For more information, see the links shown on this page for each external provide
 | **User Removal**                                | SCIM (remove user from top-level group) | LDAP (remove user from groups and block from the instance)<br>SCIM |
 
 1. Using Just-In-Time (JIT) provisioning, user accounts are created when the user first signs in.
+
+## Test OIDC/OAuth in GitLab
+
+See [Test OIDC/OAuth in GitLab](test_oidc_oauth.md) to learn how to test OIDC/OAuth authentication in your GitLab instance using your client application.

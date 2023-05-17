@@ -100,7 +100,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
   def submit_then_clear_search(search)
     click_filtered_search_bar
-    send_keys(search, :enter)
+    send_keys(search, :enter, :enter)
     click_button 'Clear'
   end
 end

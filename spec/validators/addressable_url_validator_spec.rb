@@ -49,10 +49,15 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    it 'provides all arguments to UrlBlock validate' do
+    it 'provides all arguments to UrlBlocker.validate!' do
+      # AddressableUrlValidator evaluates all procs before passing as arguments.
+      expected_opts = described_class::BLOCKER_VALIDATE_OPTIONS.transform_values do |value|
+        value.is_a?(Proc) ? value.call : value
+      end
+
       expect(Gitlab::UrlBlocker)
           .to receive(:validate!)
-                  .with(badge.link_url, described_class::BLOCKER_VALIDATE_OPTIONS)
+                  .with(badge.link_url, expected_opts)
                   .and_return(true)
 
       subject
@@ -298,6 +303,67 @@ RSpec.describe AddressableUrlValidator do
         subject
 
         expect(badge.errors).to be_empty
+      end
+    end
+  end
+
+  context 'when deny_all_requests_except_allowed is' do
+    let(:url) { 'http://example.com' }
+    let(:options) { { attributes: [:link_url] } }
+    let(:validator) { described_class.new(**options) }
+
+    context 'true' do
+      let(:options) { super().merge(deny_all_requests_except_allowed: true) }
+
+      it 'prevents the url' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors).to be_present
+      end
+    end
+
+    context 'false' do
+      let(:options) { super().merge(deny_all_requests_except_allowed: false) }
+
+      it 'allows the url' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
+    end
+
+    context 'not given' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+        stub_application_setting(deny_all_requests_except_allowed: app_setting)
+      end
+
+      context 'when app setting is true' do
+        let(:app_setting) { true }
+
+        it 'prevents the url' do
+          badge.link_url = url
+
+          subject
+
+          expect(badge.errors).to be_present
+        end
+      end
+
+      context 'when app setting is false' do
+        let(:app_setting) { false }
+
+        it 'allows the url' do
+          badge.link_url = url
+
+          subject
+
+          expect(badge.errors).to be_empty
+        end
       end
     end
   end

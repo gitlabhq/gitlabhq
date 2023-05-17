@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -56,8 +60,26 @@ export default {
         return !this.isApolloBoard;
       },
       update(data) {
-        return data.workspace.board;
+        const { board } = data.workspace;
+        return {
+          ...board,
+          labels: board.labels?.nodes,
+        };
       },
+    },
+  },
+  computed: {
+    hasScope() {
+      if (this.board.labels?.length > 0) {
+        return true;
+      }
+      let hasScope = false;
+      ['assignee', 'iterationCadence', 'iteration', 'milestone', 'weight'].forEach((attr) => {
+        if (this.board[attr] !== null && this.board[attr] !== undefined) {
+          hasScope = true;
+        }
+      });
+      return hasScope;
     },
   },
 };
@@ -73,15 +95,28 @@ export default {
       >
         <boards-selector :board-apollo="board" @switchBoard="$emit('switchBoard', $event)" />
         <new-board-button />
-        <issue-board-filtered-search v-if="isIssueBoard" />
-        <epic-board-filtered-search v-else />
+        <issue-board-filtered-search
+          v-if="isIssueBoard"
+          :board="board"
+          :is-swimlanes-on="isSwimlanesOn"
+          @setFilters="$emit('setFilters', $event)"
+        />
+        <epic-board-filtered-search
+          v-else
+          :board="board"
+          @setFilters="$emit('setFilters', $event)"
+        />
       </div>
       <div
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"
       >
         <toggle-labels />
-        <toggle-epics-swimlanes v-if="swimlanesFeatureAvailable && isSignedIn" />
-        <config-toggle />
+        <toggle-epics-swimlanes
+          v-if="swimlanesFeatureAvailable && isSignedIn"
+          :is-swimlanes-on="isSwimlanesOn"
+          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+        />
+        <config-toggle :board-has-scope="hasScope" />
         <board-add-new-column-trigger v-if="canAdminList" />
         <toggle-focus />
       </div>

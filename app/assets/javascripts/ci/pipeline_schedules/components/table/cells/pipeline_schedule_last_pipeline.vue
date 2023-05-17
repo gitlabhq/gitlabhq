@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="last-pipeline-status">
     <ci-badge-link
       v-if="hasPipeline"
       :status="lastPipelineStatus"

@@ -26,10 +26,6 @@ describe('LabelItem', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('renders gl-link component', () => {
       expect(wrapper.findComponent(GlLink).exists()).toBe(true);

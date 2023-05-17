@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::V3::Github, feature_category: :integrations do
+RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
@@ -13,6 +13,13 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
   end
 
   describe 'GET /orgs/:namespace/repos' do
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject do
+        group = create(:group)
+        jira_get v3_api("/orgs/#{group.path}/repos", user)
+      end
+    end
+
     it 'returns an empty array' do
       group = create(:group)
 
@@ -32,6 +39,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
   end
 
   describe 'GET /user/repos' do
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject { jira_get v3_api('/user/repos', user) }
+    end
+
     it 'returns an empty array' do
       jira_get v3_api('/user/repos', user)
 
@@ -117,6 +128,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     describe 'GET /users/:username' do
       let!(:user1) { create(:user, username: 'jane.porter') }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/users/#{user.username}", user) }
+      end
+
       context 'user exists' do
         it 'responds with the expected user' do
           jira_get v3_api("/users/#{user.username}", user)
@@ -154,6 +169,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
       let(:group) { create(:group) }
       let(:project) { create(:project, :empty_repo, path: 'project.with.dot', group: group) }
       let(:events_path) { "/repos/#{group.path}/#{project.path}/events" }
+
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api(events_path, user) }
+      end
 
       context 'if there are no merge requests' do
         it 'returns an empty array' do
@@ -232,6 +251,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     describe 'GET /-/jira/pulls' do
       let(:route) { '/repos/-/jira/pulls' }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { perform_request }
+      end
+
       it 'returns an array of merge requests with github format' do
         perform_request
 
@@ -258,6 +281,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     describe 'GET /repos/:namespace/:project/pulls' do
       let(:route) { "/repos/#{project.namespace.path}/#{project.path}/pulls" }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { perform_request }
+      end
+
       it 'returns an array of merge requests for the proper project in github format' do
         perform_request
 
@@ -279,6 +306,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     end
 
     describe 'GET /repos/:namespace/:project/pulls/:id' do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", user) }
+      end
+
       context 'when user has access to the merge requests' do
         it 'returns the requested merge request in github format' do
           jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", user)
@@ -300,7 +331,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
 
       context 'when instance admin' do
         it 'returns the requested merge request in github format' do
-          jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", admin)
+          jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('entities/github/pull_request')
@@ -312,8 +343,8 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
   describe 'GET /users/:namespace/repos' do
     let(:group) { create(:group, name: 'foo') }
 
-    def expect_project_under_namespace(projects, namespace, user)
-      jira_get v3_api("/users/#{namespace.path}/repos", user)
+    def expect_project_under_namespace(projects, namespace, user, admin_mode = false)
+      jira_get v3_api("/users/#{namespace.path}/repos", user, admin_mode: admin_mode)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -331,6 +362,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
       expect(json_response.size).to eq(projects.size)
     end
 
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject { jira_get v3_api("/users/#{user.namespace.path}/repos", user) }
+    end
+
     context 'group namespace' do
       let(:project) { create(:project, group: group) }
       let!(:project2) { create(:project, :public, group: group) }
@@ -343,7 +378,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
         let(:user) { create(:user, :admin) }
 
         it 'returns an array of projects belonging to group' do
-          expect_project_under_namespace([project, project2], group, user)
+          expect_project_under_namespace([project, project2], group, user, true)
         end
 
         context 'with a private group' do
@@ -351,7 +386,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           let!(:project2) { create(:project, :private, group: group) }
 
           it 'returns an array of projects belonging to group' do
-            expect_project_under_namespace([project, project2], group, user)
+            expect_project_under_namespace([project, project2], group, user, true)
           end
         end
       end
@@ -423,6 +458,10 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
 
   describe 'GET /repos/:namespace/:project/branches' do
     context 'authenticated' do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user) }
+      end
+
       context 'updating project feature usage' do
         it 'counts Jira Cloud integration as enabled' do
           user_agent = 'Jira DVCS Connector Vertigo/4.42.0'
@@ -473,7 +512,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      context 'when the project has no repository', :aggregate_failures do
+      context 'when the project has no repository' do
         let_it_be(:project) { create(:project, creator: user) }
 
         it 'returns an empty collection response' do
@@ -516,7 +555,11 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     end
 
     context 'authenticated' do
-      it 'returns commit with github format', :aggregate_failures do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { call_api }
+      end
+
+      it 'returns commit with github format' do
         call_api
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -552,7 +595,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
             .and_call_original
         end
 
-        it 'handles the error, logs it, and returns empty diff files', :aggregate_failures do
+        it 'handles the error, logs it, and returns empty diff files' do
           allow(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .and_raise(GRPC::DeadlineExceeded)
@@ -567,7 +610,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           expect(response_diff_files(response)).to be_blank
         end
 
-        it 'only calls Gitaly once for all attempts within a period of time', :aggregate_failures do
+        it 'only calls Gitaly once for all attempts within a period of time' do
           expect(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .once # <- once
@@ -581,7 +624,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           end
         end
 
-        it 'calls Gitaly again after a period of time', :aggregate_failures do
+        it 'calls Gitaly again after a period of time' do
           expect(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .twice # <- twice
@@ -648,13 +691,14 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     get path, headers: { 'User-Agent' => user_agent }
   end
 
-  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil)
+  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil, admin_mode: false)
     api(
       path,
       user,
       version: 'v3',
       personal_access_token: personal_access_token,
-      oauth_access_token: oauth_access_token
+      oauth_access_token: oauth_access_token,
+      admin_mode: admin_mode
     )
   end
 end

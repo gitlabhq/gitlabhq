@@ -8,7 +8,7 @@ module BulkImports
       @export_filename = export_filename
     end
 
-    def execute
+    def execute(_options = {})
       return unless repository_exists?
 
       repository.bundle_to_disk(bundle_filepath)

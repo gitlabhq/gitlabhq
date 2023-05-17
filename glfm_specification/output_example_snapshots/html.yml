@@ -2,25 +2,22 @@
 02_01_00__preliminaries__tabs__001:
   canonical: "<pre><code>foo\tbaz\t\tbim\n</code></pre>\n"
   static: "<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre
-    data-sourcepos=\"1:2-1:13\" lang=\"plaintext\" class=\"code highlight js-syntax-highlight
-    language-plaintext\" data-canonical-lang=\"\" v-pre=\"true\"><code><span id=\"LC1\"
-    class=\"line\" lang=\"plaintext\">foo\tbaz\t\tbim</span></code></pre>\n<copy-code></copy-code>\n</div>"
-  wysiwyg: "<pre class=\"content-editor-code-block undefined code highlight\"><code>foo\tbaz\t\tbim</code></pre>"
+    data-sourcepos=\"1:2-1:13\" class=\"code highlight js-syntax-highlight language-plaintext\"
+    lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">foo\tbaz\t\tbim</span></code></pre>\n<copy-code></copy-code>\n</div>"
+  wysiwyg: "<pre dir=\"auto\" class=\"content-editor-code-block undefined code highlight\"><code>foo\tbaz\t\tbim</code></pre>"
 02_01_00__preliminaries__tabs__002:
   canonical: "<pre><code>foo\tbaz\t\tbim\n</code></pre>\n"
   static: "<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre
-    data-sourcepos=\"1:4-1:15\" lang=\"plaintext\" class=\"code highlight js-syntax-highlight
-    language-plaintext\" data-canonical-lang=\"\" v-pre=\"true\"><code><span id=\"LC1\"
-    class=\"line\" lang=\"plaintext\">foo\tbaz\t\tbim</span></code></pre>\n<copy-code></copy-code>\n</div>"
-  wysiwyg: "<pre class=\"content-editor-code-block undefined code highlight\"><code>foo\tbaz\t\tbim</code></pre>"
+    data-sourcepos=\"1:4-1:15\" class=\"code highlight js-syntax-highlight language-plaintext\"
+    lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">foo\tbaz\t\tbim</span></code></pre>\n<copy-code></copy-code>\n</div>"
+  wysiwyg: "<pre dir=\"auto\" class=\"content-editor-code-block undefined code highlight\"><code>foo\tbaz\t\tbim</code></pre>"
 02_01_00__preliminaries__tabs__003:
   canonical: "<pre><code>a\ta\nὐ\ta\n</code></pre>\n"
   static: "<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre
-    data-sourcepos=\"1:5-2:9\" lang=\"plaintext\" class=\"code highlight js-syntax-highlight
-    language-plaintext\" data-canonical-lang=\"\" v-pre=\"true\"><code><span id=\"LC1\"
-    class=\"line\" lang=\"plaintext\">a\ta</span>\n<span id=\"LC2\" class=\"line\"
-    lang=\"plaintext\">ὐ\ta</span></code></pre>\n<copy-code></copy-code>\n</div>"
-  wysiwyg: "<pre class=\"content-editor-code-block undefined code highlight\"><code>a\ta\nὐ\ta</code></pre>"
+    data-sourcepos=\"1:5-2:9\" class=\"code highlight js-syntax-highlight language-plaintext\"
+    lang=\"plaintext\" v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">a\ta</span>\n<span
+    id=\"LC2\" class=\"line\" lang=\"plaintext\">ὐ\ta</span></code></pre>\n<copy-code></copy-code>\n</div>"
+  wysiwyg: "<pre dir=\"auto\" class=\"content-editor-code-block undefined code highlight\"><code>a\ta\nὐ\ta</code></pre>"
 02_01_00__preliminaries__tabs__004:
   canonical: |
     <ul>
@@ -37,7 +34,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><p>bar</p></li></ul>
 02_01_00__preliminaries__tabs__005:
   canonical: |
     <ul>
@@ -52,13 +49,13 @@
     <li data-sourcepos="1:1-3:5">
     <p data-sourcepos="1:3-1:5">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:2-3:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  bar</span></code></pre>
+    <pre data-sourcepos="3:2-3:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><pre class="content-editor-code-block undefined code highlight"><code>  bar</code></pre></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>  bar</code></pre></li></ul>
 02_01_00__preliminaries__tabs__006:
   canonical: |
     <blockquote>
@@ -68,12 +65,12 @@
   static: |-
     <blockquote data-sourcepos="1:1-1:6" dir="auto">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:3-1:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  foo</span></code></pre>
+    <pre data-sourcepos="1:3-1:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>  foo</code></pre></blockquote>
+    <blockquote dir="auto" multiline="false"><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>  foo</code></pre></blockquote>
 02_01_00__preliminaries__tabs__007:
   canonical: |
     <ul>
@@ -86,13 +83,13 @@
     <ul data-sourcepos="1:1-1:6" dir="auto">
     <li data-sourcepos="1:1-1:6">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:3-1:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  foo</span></code></pre>
+    <pre data-sourcepos="1:3-1:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>  foo</code></pre></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>  foo</code></pre></li></ul>
 02_01_00__preliminaries__tabs__008:
   canonical: |
     <pre><code>foo
@@ -100,12 +97,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-2:4" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span>
+    <pre data-sourcepos="1:5-2:4" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span>
     <span id="LC2" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>foo
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo
     bar</code></pre>
 02_01_00__preliminaries__tabs__009:
   canonical: |
@@ -133,7 +130,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p></li></ul></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p><ul dir="auto" bullet="*"><li dir="auto"><p>baz</p></li></ul></li></ul></li></ul>
 02_01_00__preliminaries__tabs__010:
   canonical: |
     <h1>Foo</h1>
@@ -141,7 +138,7 @@
     <h1 data-sourcepos="1:1-1:5" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>Foo</h1>
   wysiwyg: |-
-    <h1>Foo</h1>
+    <h1 dir="auto">Foo</h1>
 02_01_00__preliminaries__tabs__011:
   canonical: |
     <hr />
@@ -161,7 +158,7 @@
     <li data-sourcepos="2:1-2:6">two`</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>`one</p></li><li><p>two`</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>`one</p></li><li dir="auto"><p>two`</p></li></ul>
 04_01_00__leaf_blocks__thematic_breaks__001:
   canonical: |
     <hr />
@@ -221,11 +218,11 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">***</span></code></pre>
+    <pre data-sourcepos="1:5-1:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">***</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>***</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>***</code></pre>
 04_01_00__leaf_blocks__thematic_breaks__007:
   canonical: |
     <p>Foo
@@ -309,9 +306,9 @@
     <li data-sourcepos="3:1-3:5">bar</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul>
     <hr>
-    <ul bullet="*"><li><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul>
 04_01_00__leaf_blocks__thematic_breaks__016:
   canonical: |
     <p>Foo</p>
@@ -334,7 +331,7 @@
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>Foo</h2>
     <p data-sourcepos="3:1-3:3" dir="auto">bar</p>
   wysiwyg: |-
-    <h2>Foo</h2>
+    <h2 dir="auto">Foo</h2>
     <p>bar</p>
 04_01_00__leaf_blocks__thematic_breaks__018:
   canonical: |
@@ -354,9 +351,9 @@
     <li data-sourcepos="3:1-3:5">Bar</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>Foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>Foo</p></li></ul>
     <hr>
-    <ul bullet="*"><li><p>Bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>Bar</p></li></ul>
 04_01_00__leaf_blocks__thematic_breaks__019:
   canonical: |
     <ul>
@@ -373,7 +370,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>Foo</p></li><li><p></p><hr></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>Foo</p></li><li dir="auto"><p></p><hr></li></ul>
 04_02_00__leaf_blocks__atx_headings__001:
   canonical: |
     <h1>foo</h1>
@@ -396,12 +393,12 @@
     <h6 data-sourcepos="6:1-6:10" dir="auto">
     <a id="user-content-foo-5" class="anchor" href="#foo-5" aria-hidden="true"></a>foo</h6>
   wysiwyg: |-
-    <h1>foo</h1>
-    <h2>foo</h2>
-    <h3>foo</h3>
-    <h4>foo</h4>
-    <h5>foo</h5>
-    <h6>foo</h6>
+    <h1 dir="auto">foo</h1>
+    <h2 dir="auto">foo</h2>
+    <h3 dir="auto">foo</h3>
+    <h4 dir="auto">foo</h4>
+    <h5 dir="auto">foo</h5>
+    <h6 dir="auto">foo</h6>
 04_02_00__leaf_blocks__atx_headings__002:
   canonical: |
     <p>####### foo</p>
@@ -433,7 +430,7 @@
     <h1 data-sourcepos="1:1-1:19" dir="auto">
     <a id="user-content-foo-bar-baz" class="anchor" href="#foo-bar-baz" aria-hidden="true"></a>foo <em>bar</em> *baz*</h1>
   wysiwyg: |-
-    <h1>foo <em>bar</em> *baz*</h1>
+    <h1 dir="auto">foo <em>bar</em> *baz*</h1>
 04_02_00__leaf_blocks__atx_headings__006:
   canonical: |
     <h1>foo</h1>
@@ -441,7 +438,7 @@
     <h1 data-sourcepos="1:1-1:22" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h1>
   wysiwyg: |-
-    <h1>foo</h1>
+    <h1 dir="auto">foo</h1>
 04_02_00__leaf_blocks__atx_headings__007:
   canonical: |
     <h3>foo</h3>
@@ -455,20 +452,20 @@
     <h1 data-sourcepos="3:4-3:8" dir="auto">
     <a id="user-content-foo-2" class="anchor" href="#foo-2" aria-hidden="true"></a>foo</h1>
   wysiwyg: |-
-    <h3>foo</h3>
-    <h2>foo</h2>
-    <h1>foo</h1>
+    <h3 dir="auto">foo</h3>
+    <h2 dir="auto">foo</h2>
+    <h1 dir="auto">foo</h1>
 04_02_00__leaf_blocks__atx_headings__008:
   canonical: |
     <pre><code># foo
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"># foo</span></code></pre>
+    <pre data-sourcepos="1:5-1:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"># foo</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code># foo</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code># foo</code></pre>
 04_02_00__leaf_blocks__atx_headings__009:
   canonical: |
     <p>foo
@@ -489,8 +486,8 @@
     <h3 data-sourcepos="2:3-2:11" dir="auto">
     <a id="user-content-bar" class="anchor" href="#bar" aria-hidden="true"></a>bar</h3>
   wysiwyg: |-
-    <h2>foo</h2>
-    <h3>bar</h3>
+    <h2 dir="auto">foo</h2>
+    <h3 dir="auto">bar</h3>
 04_02_00__leaf_blocks__atx_headings__011:
   canonical: |
     <h1>foo</h1>
@@ -501,8 +498,8 @@
     <h5 data-sourcepos="2:1-2:9" dir="auto">
     <a id="user-content-foo-1" class="anchor" href="#foo-1" aria-hidden="true"></a>foo</h5>
   wysiwyg: |-
-    <h1>foo</h1>
-    <h5>foo</h5>
+    <h1 dir="auto">foo</h1>
+    <h5 dir="auto">foo</h5>
 04_02_00__leaf_blocks__atx_headings__012:
   canonical: |
     <h3>foo</h3>
@@ -510,7 +507,7 @@
     <h3 data-sourcepos="1:1-1:7" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h3>
   wysiwyg: |-
-    <h3>foo</h3>
+    <h3 dir="auto">foo</h3>
 04_02_00__leaf_blocks__atx_headings__013:
   canonical: |
     <h3>foo ### b</h3>
@@ -518,7 +515,7 @@
     <h3 data-sourcepos="1:1-1:13" dir="auto">
     <a id="user-content-foo-b" class="anchor" href="#foo-b" aria-hidden="true"></a>foo ### b</h3>
   wysiwyg: |-
-    <h3>foo ### b</h3>
+    <h3 dir="auto">foo ### b</h3>
 04_02_00__leaf_blocks__atx_headings__014:
   canonical: |
     <h1>foo#</h1>
@@ -526,7 +523,7 @@
     <h1 data-sourcepos="1:1-1:6" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo#</h1>
   wysiwyg: |-
-    <h1>foo#</h1>
+    <h1 dir="auto">foo#</h1>
 04_02_00__leaf_blocks__atx_headings__015:
   canonical: |
     <h3>foo ###</h3>
@@ -541,9 +538,9 @@
     <a id="user-content-foo--2" class="anchor" href="#foo--2" aria-hidden="true"></a>foo <span data-escaped-char>#</span>
     </h1>
   wysiwyg: |-
-    <h3>foo ###</h3>
-    <h2>foo ###</h2>
-    <h1>foo #</h1>
+    <h3 dir="auto">foo ###</h3>
+    <h2 dir="auto">foo ###</h2>
+    <h1 dir="auto">foo #</h1>
 04_02_00__leaf_blocks__atx_headings__016:
   canonical: |
     <hr />
@@ -556,7 +553,7 @@
     <hr data-sourcepos="3:1-3:4">
   wysiwyg: |-
     <hr>
-    <h2>foo</h2>
+    <h2 dir="auto">foo</h2>
     <hr>
 04_02_00__leaf_blocks__atx_headings__017:
   canonical: |
@@ -570,7 +567,7 @@
     <p data-sourcepos="3:1-3:7" dir="auto">Bar foo</p>
   wysiwyg: |-
     <p>Foo bar</p>
-    <h1>baz</h1>
+    <h1 dir="auto">baz</h1>
     <p>Bar foo</p>
 04_02_00__leaf_blocks__atx_headings__018:
   canonical: |
@@ -582,9 +579,9 @@
     <h1 data-sourcepos="2:1-2:1" dir="auto"></h1>
     <h3 data-sourcepos="3:1-3:3" dir="auto"></h3>
   wysiwyg: |-
-    <h2></h2>
-    <h1></h1>
-    <h3></h3>
+    <h2 dir="auto"></h2>
+    <h1 dir="auto"></h1>
+    <h3 dir="auto"></h3>
 04_03_00__leaf_blocks__setext_headings__001:
   canonical: |
     <h1>Foo <em>bar</em></h1>
@@ -597,8 +594,8 @@
     <a id="user-content-foo-bar-1" class="anchor" href="#foo-bar-1" aria-hidden="true"></a>Foo <em>bar</em>
     </h2>
   wysiwyg: |-
-    <h1>Foo <em>bar</em></h1>
-    <h2>Foo <em>bar</em></h2>
+    <h1 dir="auto">Foo <em>bar</em></h1>
+    <h2 dir="auto">Foo <em>bar</em></h2>
 04_03_00__leaf_blocks__setext_headings__002:
   canonical: |
     <h1>Foo <em>bar
@@ -609,7 +606,7 @@
     baz</em>
     </h1>
   wysiwyg: |-
-    <h1>Foo <em>bar
+    <h1 dir="auto">Foo <em>bar
     baz</em></h1>
 04_03_00__leaf_blocks__setext_headings__003:
   canonical: |
@@ -621,7 +618,7 @@
     baz</em>
     </h1>
   wysiwyg: |-
-    <h1>Foo <em>bar
+    <h1 dir="auto">Foo <em>bar
     baz</em></h1>
 04_03_00__leaf_blocks__setext_headings__004:
   canonical: |
@@ -633,8 +630,8 @@
     <h1 data-sourcepos="4:1-5:1" dir="auto">
     <a id="user-content-foo-1" class="anchor" href="#foo-1" aria-hidden="true"></a>Foo</h1>
   wysiwyg: |-
-    <h2>Foo</h2>
-    <h1>Foo</h1>
+    <h2 dir="auto">Foo</h2>
+    <h1 dir="auto">Foo</h1>
 04_03_00__leaf_blocks__setext_headings__005:
   canonical: |
     <h2>Foo</h2>
@@ -648,9 +645,9 @@
     <h1 data-sourcepos="7:3-8:5" dir="auto">
     <a id="user-content-foo-2" class="anchor" href="#foo-2" aria-hidden="true"></a>Foo</h1>
   wysiwyg: |-
-    <h2>Foo</h2>
-    <h2>Foo</h2>
-    <h1>Foo</h1>
+    <h2 dir="auto">Foo</h2>
+    <h2 dir="auto">Foo</h2>
+    <h1 dir="auto">Foo</h1>
 04_03_00__leaf_blocks__setext_headings__006:
   canonical: |
     <pre><code>Foo
@@ -661,7 +658,7 @@
     <hr />
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-4:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Foo</span>
+    <pre data-sourcepos="1:5-4:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Foo</span>
     <span id="LC2" class="line" lang="plaintext">---</span>
     <span id="LC3" class="line" lang="plaintext"></span>
     <span id="LC4" class="line" lang="plaintext">Foo</span></code></pre>
@@ -669,7 +666,7 @@
     </div>
     <hr data-sourcepos="5:1-5:3">
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>Foo
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>Foo
     ---
 
     Foo</code></pre>
@@ -681,7 +678,7 @@
     <h2 data-sourcepos="1:1-2:13" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>Foo</h2>
   wysiwyg: |-
-    <h2>Foo</h2>
+    <h2 dir="auto">Foo</h2>
 04_03_00__leaf_blocks__setext_headings__008:
   canonical: |
     <p>Foo
@@ -715,7 +712,7 @@
     <h2 data-sourcepos="1:1-2:5" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>Foo</h2>
   wysiwyg: |-
-    <h2>Foo</h2>
+    <h2 dir="auto">Foo</h2>
 04_03_00__leaf_blocks__setext_headings__011:
   canonical: |
     <h2>Foo\</h2>
@@ -723,7 +720,7 @@
     <h2 data-sourcepos="1:1-2:4" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>Foo\</h2>
   wysiwyg: |-
-    <h2>Foo\</h2>
+    <h2 dir="auto">Foo\</h2>
 04_03_00__leaf_blocks__setext_headings__012:
   canonical: |
     <h2>`Foo</h2>
@@ -738,9 +735,9 @@
     <a id="user-content-a-titlea-lot" class="anchor" href="#a-titlea-lot" aria-hidden="true"></a>&lt;a title="a lot</h2>
     <p data-sourcepos="7:1-7:12" dir="auto">of dashes"/&gt;</p>
   wysiwyg: |-
-    <h2>`Foo</h2>
+    <h2 dir="auto">`Foo</h2>
     <p>`</p>
-    <h2>&lt;a title="a lot</h2>
+    <h2 dir="auto">&lt;a title="a lot</h2>
     <p>of dashes"/&gt;</p>
 04_03_00__leaf_blocks__setext_headings__013:
   canonical: |
@@ -754,7 +751,7 @@
     </blockquote>
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
-    <blockquote multiline="false"><p>Foo</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>Foo</p></blockquote>
     <hr>
 04_03_00__leaf_blocks__setext_headings__014:
   canonical: |
@@ -770,7 +767,7 @@
     ===</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo
+    <blockquote dir="auto" multiline="false"><p>foo
     bar
     ===</p></blockquote>
 04_03_00__leaf_blocks__setext_headings__015:
@@ -785,7 +782,7 @@
     </ul>
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
-    <ul bullet="*"><li><p>Foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>Foo</p></li></ul>
     <hr>
 04_03_00__leaf_blocks__setext_headings__016:
   canonical: |
@@ -796,7 +793,7 @@
     <a id="user-content-foobar" class="anchor" href="#foobar" aria-hidden="true"></a>Foo
     Bar</h2>
   wysiwyg: |-
-    <h2>Foo
+    <h2 dir="auto">Foo
     Bar</h2>
 04_03_00__leaf_blocks__setext_headings__017:
   canonical: |
@@ -806,7 +803,7 @@
     <p>Baz</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="s">Foo</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="yaml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-yaml" lang="yaml" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="s">Foo</span></span></code></pre>
     <copy-code></copy-code>
     </div>
     <h2 data-sourcepos="4:1-6:3" dir="auto">
@@ -814,7 +811,7 @@
     <p data-sourcepos="6:1-6:3" dir="auto">Baz</p>
   wysiwyg: |-
     <pre language="yaml" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>Foo</code></pre>
-    <h2>Bar</h2>
+    <h2 dir="auto">Bar</h2>
     <p>Baz</p>
 04_03_00__leaf_blocks__setext_headings__018:
   canonical: |
@@ -829,7 +826,7 @@
     <hr />
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-2:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="1:1-2:3" data-canonical-lang="yaml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-yaml" lang="yaml" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -846,7 +843,7 @@
     </ul>
     <hr data-sourcepos="2:1-2:5">
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul>
     <hr>
 04_03_00__leaf_blocks__setext_headings__021:
   canonical: |
@@ -855,12 +852,12 @@
     <hr />
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:5-1:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
     <hr>
 04_03_00__leaf_blocks__setext_headings__022:
   canonical: |
@@ -874,7 +871,7 @@
     </blockquote>
     <hr data-sourcepos="2:1-2:5">
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>foo</p></blockquote>
     <hr>
 04_03_00__leaf_blocks__setext_headings__023:
   canonical: |
@@ -883,7 +880,7 @@
     <h2 data-sourcepos="1:1-2:6" dir="auto">
     <a id="user-content--foo" class="anchor" href="#-foo" aria-hidden="true"></a>&gt; foo</h2>
   wysiwyg: |-
-    <h2>&gt; foo</h2>
+    <h2 dir="auto">&gt; foo</h2>
 04_03_00__leaf_blocks__setext_headings__024:
   canonical: |
     <p>Foo</p>
@@ -896,7 +893,7 @@
     <p data-sourcepos="5:1-5:3" dir="auto">baz</p>
   wysiwyg: |-
     <p>Foo</p>
-    <h2>bar</h2>
+    <h2 dir="auto">bar</h2>
     <p>baz</p>
 04_03_00__leaf_blocks__setext_headings__025:
   canonical: |
@@ -953,12 +950,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-2:25" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">a simple</span>
+    <pre data-sourcepos="1:5-2:25" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">a simple</span>
     <span id="LC2" class="line" lang="plaintext">  indented code block</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>a simple
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>a simple
       indented code block</code></pre>
 04_04_00__leaf_blocks__indented_code_blocks__002:
   canonical: |
@@ -976,7 +973,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><p>bar</p></li></ul>
 04_04_00__leaf_blocks__indented_code_blocks__003:
   canonical: |
     <ol>
@@ -997,7 +994,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p><ul bullet="*"><li><p>bar</p></li></ul></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul></li></ol>
 04_04_00__leaf_blocks__indented_code_blocks__004:
   canonical: |
     <pre><code>&lt;a/&gt;
@@ -1007,14 +1004,14 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-4:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;a/&gt;</span>
+    <pre data-sourcepos="1:5-4:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;a/&gt;</span>
     <span id="LC2" class="line" lang="plaintext">*hi*</span>
     <span id="LC3" class="line" lang="plaintext"></span>
     <span id="LC4" class="line" lang="plaintext">- one</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&lt;a/&gt;
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;a/&gt;
     *hi*
 
     - one</code></pre>
@@ -1030,7 +1027,7 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-7:10" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">chunk1</span>
+    <pre data-sourcepos="1:5-7:10" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">chunk1</span>
     <span id="LC2" class="line" lang="plaintext"></span>
     <span id="LC3" class="line" lang="plaintext">chunk2</span>
     <span id="LC4" class="line" lang="plaintext"></span>
@@ -1040,7 +1037,7 @@
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>chunk1
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>chunk1
 
     chunk2
 
@@ -1051,12 +1048,12 @@
   canonical: "<pre><code>chunk1\n  \n  chunk2\n</code></pre>\n"
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-3:12" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">chunk1</span>
+    <pre data-sourcepos="1:5-3:12" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">chunk1</span>
     <span id="LC2" class="line" lang="plaintext">  </span>
     <span id="LC3" class="line" lang="plaintext">  chunk2</span></code></pre>
     <copy-code></copy-code>
     </div>
-  wysiwyg: "<pre class=\"content-editor-code-block undefined code highlight\"><code>chunk1\n
+  wysiwyg: "<pre dir=\"auto\" class=\"content-editor-code-block undefined code highlight\"><code>chunk1\n
     \ \n  chunk2</code></pre>"
 04_04_00__leaf_blocks__indented_code_blocks__007:
   canonical: |
@@ -1075,12 +1072,12 @@
     <p>bar</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:5-1:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="2:1-2:3" dir="auto">bar</p>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
     <p>bar</p>
 04_04_00__leaf_blocks__indented_code_blocks__009:
   canonical: |
@@ -1095,21 +1092,21 @@
     <h1 data-sourcepos="1:1-1:9" dir="auto">
     <a id="user-content-heading" class="anchor" href="#heading" aria-hidden="true"></a>Heading</h1>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="2:5-2:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="2:5-2:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     <h2 data-sourcepos="3:1-5:7" dir="auto">
     <a id="user-content-heading-1" class="anchor" href="#heading-1" aria-hidden="true"></a>Heading</h2>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:5-5:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="5:5-5:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     <hr data-sourcepos="6:1-6:4">
   wysiwyg: |-
-    <h1>Heading</h1>
-    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
-    <h2>Heading</h2>
-    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <h1 dir="auto">Heading</h1>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <h2 dir="auto">Heading</h2>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
     <hr>
 04_04_00__leaf_blocks__indented_code_blocks__010:
   canonical: |
@@ -1118,12 +1115,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-2:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">    foo</span>
+    <pre data-sourcepos="1:5-2:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">    foo</span>
     <span id="LC2" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>    foo
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>    foo
     bar</code></pre>
 04_04_00__leaf_blocks__indented_code_blocks__011:
   canonical: |
@@ -1131,20 +1128,20 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:5-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="3:5-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
 04_04_00__leaf_blocks__indented_code_blocks__012:
   canonical: "<pre><code>foo  \n</code></pre>\n"
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo  </span></code></pre>
+    <pre data-sourcepos="1:5-1:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo  </span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>foo  </code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo  </code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__001:
   canonical: |
     <pre><code>&lt;
@@ -1152,12 +1149,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;</span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;</span>
     <span id="LC2" class="line" lang="plaintext"> &gt;</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&lt;
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;
      &gt;</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__002:
   canonical: |
@@ -1166,12 +1163,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;</span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;</span>
     <span id="LC2" class="line" lang="plaintext"> &gt;</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&lt;
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;
      &gt;</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__003:
   canonical: |
@@ -1187,12 +1184,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">~~~</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     ~~~</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__005:
   canonical: |
@@ -1201,12 +1198,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">```</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     ```</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__006:
   canonical: |
@@ -1215,12 +1212,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-4:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">```</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     ```</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__007:
   canonical: |
@@ -1229,23 +1226,23 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:4" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-4:4" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">~~~</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     ~~~</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__008:
   canonical: |
     <pre><code></code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-1:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="1:1-1:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code></code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__009:
   canonical: |
     <pre><code>
@@ -1254,13 +1251,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
     <span id="LC2" class="line" lang="plaintext">```</span>
     <span id="LC3" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>
     ```
     aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__010:
@@ -1273,34 +1270,34 @@
   static: |-
     <blockquote data-sourcepos="1:1-2:5" dir="auto">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:3-3:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
+    <pre data-sourcepos="1:3-3:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
     </blockquote>
     <p data-sourcepos="4:1-4:3" dir="auto">bbb</p>
   wysiwyg: |-
-    <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre></blockquote>
+    <blockquote dir="auto" multiline="false"><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa</code></pre></blockquote>
     <p>bbb</p>
 04_05_00__leaf_blocks__fenced_code_blocks__011:
   canonical: "<pre><code>\n  \n</code></pre>\n"
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
+    <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
     <span id="LC2" class="line" lang="plaintext">  </span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code></code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__012:
   canonical: |
     <pre><code></code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-2:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="1:1-2:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code></code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__013:
   canonical: |
     <pre><code>aaa
@@ -1308,12 +1305,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:2-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:2-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__014:
   canonical: |
@@ -1323,13 +1320,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:3-5:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:3-5:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">aaa</span>
     <span id="LC3" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     aaa
     aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__015:
@@ -1340,13 +1337,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:4-5:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:4-5:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext"> aaa</span>
     <span id="LC3" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
      aaa
     aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__016:
@@ -1357,13 +1354,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-3:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```</span>
+    <pre data-sourcepos="1:5-3:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```</span>
     <span id="LC2" class="line" lang="plaintext">aaa</span>
     <span id="LC3" class="line" lang="plaintext">```</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>```
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>```
     aaa
     ```</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__017:
@@ -1372,22 +1369,22 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
+    <pre data-sourcepos="1:1-3:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__018:
   canonical: |
     <pre><code>aaa
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:4-3:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
+    <pre data-sourcepos="1:4-3:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__019:
   canonical: |
     <pre><code>aaa
@@ -1395,12 +1392,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-3:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">    ```</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
         ```</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__020:
   canonical: |
@@ -1419,12 +1416,12 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
+    <pre data-sourcepos="1:1-3:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span>
     <span id="LC2" class="line" lang="plaintext">~~~ ~~</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa
     ~~~ ~~</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__022:
   canonical: |
@@ -1435,13 +1432,13 @@
   static: |-
     <p data-sourcepos="1:1-1:3" dir="auto">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="2:1-4:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="2:1-4:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="5:1-5:3" dir="auto">baz</p>
   wysiwyg: |-
     <p>foo</p>
-    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
     <p>baz</p>
 04_05_00__leaf_blocks__fenced_code_blocks__023:
   canonical: |
@@ -1453,15 +1450,15 @@
     <h2 data-sourcepos="1:1-3:3" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h2>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:1-5:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="3:1-5:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     <h1 data-sourcepos="6:1-6:5" dir="auto">
     <a id="user-content-baz" class="anchor" href="#baz" aria-hidden="true"></a>baz</h1>
   wysiwyg: |-
-    <h2>foo</h2>
-    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
-    <h1>baz</h1>
+    <h2 dir="auto">foo</h2>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
+    <h1 dir="auto">baz</h1>
 04_05_00__leaf_blocks__fenced_code_blocks__024:
   canonical: |
     <pre><code class="language-ruby">def foo(x)
@@ -1470,13 +1467,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-5:3" lang="ruby" class="code highlight js-syntax-highlight language-ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></span>
+    <pre data-sourcepos="1:1-5:3" data-canonical-lang="ruby" class="code highlight js-syntax-highlight language-ruby" lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></span>
     <span id="LC2" class="line" lang="ruby">  <span class="k">return</span> <span class="mi">3</span></span>
     <span id="LC3" class="line" lang="ruby"><span class="k">end</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="ruby" class="content-editor-code-block undefined code highlight"><code>def foo(x)
+    <pre dir="auto" language="ruby" class="content-editor-code-block undefined code highlight"><code>def foo(x)
       return 3
     end</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__025:
@@ -1487,13 +1484,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-5:7" lang="ruby" class="code highlight js-syntax-highlight language-ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></span>
+    <pre data-sourcepos="1:1-5:7" data-canonical-lang="ruby" data-lang-params="startline=3 $%@#$" class="code highlight js-syntax-highlight language-ruby" lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></span>
     <span id="LC2" class="line" lang="ruby">  <span class="k">return</span> <span class="mi">3</span></span>
     <span id="LC3" class="line" lang="ruby"><span class="k">end</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="ruby" class="content-editor-code-block undefined code highlight"><code>def foo(x)
+    <pre dir="auto" language="ruby" class="content-editor-code-block undefined code highlight"><code>def foo(x)
       return 3
     end</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__026:
@@ -1501,11 +1498,11 @@
     <pre><code class="language-;"></code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-2:4" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang=";" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="1:1-2:4" data-canonical-lang=";" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language=";" class="content-editor-code-block undefined code highlight"><code></code></pre>
+    <pre dir="auto" language=";" class="content-editor-code-block undefined code highlight"><code></code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__027:
   canonical: |
     <p><code>aa</code>
@@ -1522,22 +1519,22 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="aa" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="aa" data-lang-params="``` ~~~" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="aa" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" language="aa" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
 04_05_00__leaf_blocks__fenced_code_blocks__029:
   canonical: |
     <pre><code>``` aaa
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">``` aaa</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">``` aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>``` aaa</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>``` aaa</code></pre>
 04_06_00__leaf_blocks__html_blocks__001:
   canonical: |
     <table><tr><td>
@@ -1799,7 +1796,7 @@
     <p>okay</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
+    <pre class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"></span>
     <span id="LC2" class="line" lang="plaintext">import Text.HTML.TagSoup</span>
     <span id="LC3" class="line" lang="plaintext"></span>
     <span id="LC4" class="line" lang="plaintext">main :: IO ()</span>
@@ -1874,7 +1871,7 @@
     </div>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><div><p>
+    <blockquote dir="auto" multiline="false"><div><p>
     foo
     </p></div></blockquote>
     <p>bar</p>
@@ -1896,7 +1893,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p><div></div></li><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p><div></div></li><li dir="auto"><p>foo</p></li></ul>
 04_06_00__leaf_blocks__html_blocks__028:
   canonical: |
     <style>p{color:red;}</style>
@@ -1994,11 +1991,11 @@
   static: |2-
       <!-- foo -->
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:5-3:16" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;!-- foo --&gt;</span></code></pre>
+    <pre data-sourcepos="3:5-3:16" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;!-- foo --&gt;</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&lt;!-- foo --&gt;</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;!-- foo --&gt;</code></pre>
 04_06_00__leaf_blocks__html_blocks__036:
   canonical: |2
       <div>
@@ -2007,12 +2004,12 @@
   static: |2-
       <div>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:5-3:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;div&gt;</span></code></pre>
+    <pre data-sourcepos="3:5-3:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;div&gt;</span></code></pre>
     <copy-code></copy-code>
     </div>
     </div>
   wysiwyg: |-
-    <div><pre class="content-editor-code-block undefined code highlight"><code>&lt;div&gt;</code></pre></div>
+    <div><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;div&gt;</code></pre></div>
 04_06_00__leaf_blocks__html_blocks__037:
   canonical: |
     <p>Foo</p>
@@ -2118,7 +2115,7 @@
     <table dir="auto">
       <tr>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:5-8:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;td&gt;</span>
+    <pre data-sourcepos="5:5-8:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;td&gt;</span>
     <span id="LC2" class="line" lang="plaintext">  Hi</span>
     <span id="LC3" class="line" lang="plaintext">&lt;/td&gt;</span></code></pre>
     <copy-code></copy-code>
@@ -2126,7 +2123,7 @@
       </tr>
     </table>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&lt;td&gt;
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;td&gt;
       Hi
     &lt;/td&gt;</code></pre>
     <table><tbody><tr></tr></tbody></table>
@@ -2311,12 +2308,12 @@
     <p>[foo]</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-2:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[foo]: /url "title"</span></code></pre>
+    <pre data-sourcepos="1:5-2:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[foo]: /url "title"</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="3:1-3:5" dir="auto">[foo]</p>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>[foo]: /url "title"</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>[foo]: /url "title"</code></pre>
     <p>[foo]</p>
 04_07_00__leaf_blocks__link_reference_definitions__021:
   canonical: |
@@ -2325,12 +2322,12 @@
     <p>[foo]</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[foo]: /url</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[foo]: /url</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="5:1-5:5" dir="auto">[foo]</p>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>[foo]: /url</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>[foo]: /url</code></pre>
     <p>[foo]</p>
 04_07_00__leaf_blocks__link_reference_definitions__022:
   canonical: |
@@ -2359,9 +2356,9 @@
     <p data-sourcepos="3:3-3:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    <h1><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></h1>
+    <h1 dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></h1>
     <pre>[foo]: /url</pre>
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
 04_07_00__leaf_blocks__link_reference_definitions__024:
   canonical: |
     <h1>bar</h1>
@@ -2372,7 +2369,7 @@
     <p data-sourcepos="4:1-4:5" dir="auto"><a href="/url">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
-    <h1>bar</h1>
+    <h1 dir="auto">bar</h1>
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
 04_07_00__leaf_blocks__link_reference_definitions__025:
   canonical: |
@@ -2412,7 +2409,7 @@
     </blockquote>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
-    <blockquote multiline="false"><pre>[foo]: /url</pre></blockquote>
+    <blockquote dir="auto" multiline="false"><pre>[foo]: /url</pre></blockquote>
 04_07_00__leaf_blocks__link_reference_definitions__028:
   canonical: ""
   static: ""
@@ -2494,12 +2491,12 @@
     <p>bbb</p>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
+    <pre data-sourcepos="1:5-1:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">aaa</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="2:1-2:3" dir="auto">bbb</p>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
     <p>bbb</p>
 04_08_00__leaf_blocks__paragraphs__008:
   canonical: |
@@ -2521,7 +2518,7 @@
     <a id="user-content-aaa" class="anchor" href="#aaa" aria-hidden="true"></a>aaa</h1>
   wysiwyg: |-
     <p>aaa</p>
-    <h1>aaa</h1>
+    <h1 dir="auto">aaa</h1>
 04_10_00__leaf_blocks__tables_extension__001:
   canonical: |
     <table>
@@ -2662,7 +2659,7 @@
     </blockquote>
   wysiwyg: |-
     <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr></tbody></table>
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
 04_10_00__leaf_blocks__tables_extension__005:
   canonical: |
     <table>
@@ -2797,7 +2794,7 @@
     baz</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><h1>Foo</h1><p>bar
+    <blockquote dir="auto" multiline="false"><h1 dir="auto">Foo</h1><p>bar
     baz</p></blockquote>
 05_01_00__container_blocks__block_quotes__002:
   canonical: |
@@ -2814,7 +2811,7 @@
     baz</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><h1>Foo</h1><p>bar
+    <blockquote dir="auto" multiline="false"><h1 dir="auto">Foo</h1><p>bar
     baz</p></blockquote>
 05_01_00__container_blocks__block_quotes__003:
   canonical: |
@@ -2831,7 +2828,7 @@
     baz</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><h1>Foo</h1><p>bar
+    <blockquote dir="auto" multiline="false"><h1 dir="auto">Foo</h1><p>bar
     baz</p></blockquote>
 05_01_00__container_blocks__block_quotes__004:
   canonical: |
@@ -2841,13 +2838,13 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-3:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&gt; # Foo</span>
+    <pre data-sourcepos="1:5-3:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&gt; # Foo</span>
     <span id="LC2" class="line" lang="plaintext">&gt; bar</span>
     <span id="LC3" class="line" lang="plaintext">&gt; baz</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>&gt; # Foo
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&gt; # Foo
     &gt; bar
     &gt; baz</code></pre>
 05_01_00__container_blocks__block_quotes__005:
@@ -2865,7 +2862,7 @@
     baz</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><h1>Foo</h1><p>bar
+    <blockquote dir="auto" multiline="false"><h1 dir="auto">Foo</h1><p>bar
     baz</p></blockquote>
 05_01_00__container_blocks__block_quotes__006:
   canonical: |
@@ -2881,7 +2878,7 @@
     foo</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>bar
+    <blockquote dir="auto" multiline="false"><p>bar
     baz
     foo</p></blockquote>
 05_01_00__container_blocks__block_quotes__007:
@@ -2896,7 +2893,7 @@
     </blockquote>
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>foo</p></blockquote>
     <hr>
 05_01_00__container_blocks__block_quotes__008:
   canonical: |
@@ -2918,8 +2915,8 @@
     <li data-sourcepos="2:1-2:5">bar</li>
     </ul>
   wysiwyg: |-
-    <blockquote multiline="false"><ul bullet="*"><li><p>foo</p></li></ul></blockquote>
-    <ul bullet="*"><li><p>bar</p></li></ul>
+    <blockquote dir="auto" multiline="false"><ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul></blockquote>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul>
 05_01_00__container_blocks__block_quotes__009:
   canonical: |
     <blockquote>
@@ -2931,17 +2928,17 @@
   static: |-
     <blockquote data-sourcepos="1:1-1:9" dir="auto">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:7-1:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:7-1:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     </blockquote>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="2:5-2:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="2:5-2:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre></blockquote>
-    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
+    <blockquote dir="auto" multiline="false"><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre></blockquote>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
 05_01_00__container_blocks__block_quotes__010:
   canonical: |
     <blockquote>
@@ -2952,19 +2949,19 @@
   static: |-
     <blockquote data-sourcepos="1:1-1:5" dir="auto">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:3-2:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="1:3-2:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
     </blockquote>
     <p data-sourcepos="2:1-2:3" dir="auto">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code></code></pre>
+    <pre data-sourcepos="3:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code></code></pre></blockquote>
+    <blockquote dir="auto" multiline="false"><pre dir="auto" class="content-editor-code-block undefined code highlight"><code></code></pre></blockquote>
     <p>foo</p>
-    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code></code></pre>
 05_01_00__container_blocks__block_quotes__011:
   canonical: |
     <blockquote>
@@ -2977,7 +2974,7 @@
     - bar</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo
+    <blockquote dir="auto" multiline="false"><p>foo
     - bar</p></blockquote>
 05_01_00__container_blocks__block_quotes__012:
   canonical: |
@@ -2987,7 +2984,7 @@
     <blockquote data-sourcepos="1:1-1:1" dir="auto">
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p></p></blockquote>
+    <blockquote dir="auto" multiline="false"><p></p></blockquote>
 05_01_00__container_blocks__block_quotes__013:
   canonical: |
     <blockquote>
@@ -2996,7 +2993,7 @@
     <blockquote data-sourcepos="1:1-3:2" dir="auto">
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p></p></blockquote>
+    <blockquote dir="auto" multiline="false"><p></p></blockquote>
 05_01_00__container_blocks__block_quotes__014:
   canonical: |
     <blockquote>
@@ -3007,7 +3004,7 @@
     <p data-sourcepos="2:3-2:5">foo</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>foo</p></blockquote>
 05_01_00__container_blocks__block_quotes__015:
   canonical: |
     <blockquote>
@@ -3024,8 +3021,8 @@
     <p data-sourcepos="3:3-3:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo</p></blockquote>
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>foo</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
 05_01_00__container_blocks__block_quotes__016:
   canonical: |
     <blockquote>
@@ -3038,7 +3035,7 @@
     bar</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo
+    <blockquote dir="auto" multiline="false"><p>foo
     bar</p></blockquote>
 05_01_00__container_blocks__block_quotes__017:
   canonical: |
@@ -3052,7 +3049,7 @@
     <p data-sourcepos="3:3-3:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>foo</p><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>foo</p><p>bar</p></blockquote>
 05_01_00__container_blocks__block_quotes__018:
   canonical: |
     <p>foo</p>
@@ -3066,7 +3063,7 @@
     </blockquote>
   wysiwyg: |-
     <p>foo</p>
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
 05_01_00__container_blocks__block_quotes__019:
   canonical: |
     <blockquote>
@@ -3085,9 +3082,9 @@
     <p data-sourcepos="3:3-3:5">bbb</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>aaa</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>aaa</p></blockquote>
     <hr>
-    <blockquote multiline="false"><p>bbb</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bbb</p></blockquote>
 05_01_00__container_blocks__block_quotes__020:
   canonical: |
     <blockquote>
@@ -3100,7 +3097,7 @@
     baz</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>bar
+    <blockquote dir="auto" multiline="false"><p>bar
     baz</p></blockquote>
 05_01_00__container_blocks__block_quotes__021:
   canonical: |
@@ -3114,7 +3111,7 @@
     </blockquote>
     <p data-sourcepos="3:1-3:3" dir="auto">baz</p>
   wysiwyg: |-
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
     <p>baz</p>
 05_01_00__container_blocks__block_quotes__022:
   canonical: |
@@ -3128,7 +3125,7 @@
     </blockquote>
     <p data-sourcepos="3:1-3:3" dir="auto">baz</p>
   wysiwyg: |-
-    <blockquote multiline="false"><p>bar</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>bar</p></blockquote>
     <p>baz</p>
 05_01_00__container_blocks__block_quotes__023:
   canonical: |
@@ -3150,7 +3147,7 @@
     </blockquote>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><blockquote multiline="false"><blockquote multiline="false"><p>foo
+    <blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><p>foo
     bar</p></blockquote></blockquote></blockquote>
 05_01_00__container_blocks__block_quotes__024:
   canonical: |
@@ -3174,7 +3171,7 @@
     </blockquote>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><blockquote multiline="false"><blockquote multiline="false"><p>foo
+    <blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><p>foo
     bar
     baz</p></blockquote></blockquote></blockquote>
 05_01_00__container_blocks__block_quotes__025:
@@ -3189,7 +3186,7 @@
   static: |-
     <blockquote data-sourcepos="1:1-1:10" dir="auto">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:7-1:10" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
+    <pre data-sourcepos="1:7-1:10" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
     <copy-code></copy-code>
     </div>
     </blockquote>
@@ -3197,8 +3194,8 @@
     <p data-sourcepos="3:6-3:13">not code</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>code</code></pre></blockquote>
-    <blockquote multiline="false"><p>not code</p></blockquote>
+    <blockquote dir="auto" multiline="false"><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>code</code></pre></blockquote>
+    <blockquote dir="auto" multiline="false"><p>not code</p></blockquote>
 05_02_00__container_blocks__list_items__001:
   canonical: |
     <p>A paragraph
@@ -3212,7 +3209,7 @@
     <p data-sourcepos="1:1-2:15" dir="auto">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:5-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:5-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:1-6:16" dir="auto">
@@ -3221,8 +3218,8 @@
   wysiwyg: |-
     <p>A paragraph
     with two lines.</p>
-    <pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
-    <blockquote multiline="false"><p>A block quote.</p></blockquote>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
+    <blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote>
 05_02_00__container_blocks__list_items__002:
   canonical: |
     <ol>
@@ -3242,7 +3239,7 @@
     <p data-sourcepos="1:5-2:19">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:9-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:9-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:5-6:20">
@@ -3251,8 +3248,8 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
-    with two lines.</p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote multiline="false"><p>A block quote.</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
+    with two lines.</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__003:
   canonical: |
     <ul>
@@ -3265,7 +3262,7 @@
     </ul>
     <p data-sourcepos="3:2-3:4" dir="auto">two</p>
   wysiwyg: |-
-    <ul bullet="*"><li><p>one</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>one</p></li></ul>
     <p>two</p>
 05_02_00__container_blocks__list_items__004:
   canonical: |
@@ -3283,7 +3280,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>one</p><p>two</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>one</p><p>two</p></li></ul>
 05_02_00__container_blocks__list_items__005:
   canonical: |
     <ul>
@@ -3296,12 +3293,12 @@
     <li data-sourcepos="1:2-2:0">one</li>
     </ul>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:5-3:8" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> two</span></code></pre>
+    <pre data-sourcepos="3:5-3:8" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> two</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <ul bullet="*"><li><p>one</p></li></ul>
-    <pre class="content-editor-code-block undefined code highlight"><code> two</code></pre>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>one</p></li></ul>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code> two</code></pre>
 05_02_00__container_blocks__list_items__006:
   canonical: |
     <ul>
@@ -3318,7 +3315,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>one</p><p>two</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>one</p><p>two</p></li></ul>
 05_02_00__container_blocks__list_items__007:
   canonical: |
     <blockquote>
@@ -3343,7 +3340,7 @@
     </blockquote>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><blockquote multiline="false"><ol parens="false"><li><p>one</p><p>two</p></li></ol></blockquote></blockquote>
+    <blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><ol dir="auto" parens="false"><li dir="auto"><p>one</p><p>two</p></li></ol></blockquote></blockquote>
 05_02_00__container_blocks__list_items__008:
   canonical: |
     <blockquote>
@@ -3364,7 +3361,7 @@
     </blockquote>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><blockquote multiline="false"><ul bullet="*"><li><p>one</p></li></ul><p>two</p></blockquote></blockquote>
+    <blockquote dir="auto" multiline="false"><blockquote dir="auto" multiline="false"><ul dir="auto" bullet="*"><li dir="auto"><p>one</p></li></ul><p>two</p></blockquote></blockquote>
 05_02_00__container_blocks__list_items__009:
   canonical: |
     <p>-one</p>
@@ -3391,7 +3388,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><p>bar</p></li></ul>
 05_02_00__container_blocks__list_items__011:
   canonical: |
     <ol>
@@ -3410,7 +3407,7 @@
     <li data-sourcepos="1:1-9:9">
     <p data-sourcepos="1:5-1:7">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:5-5:7" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="3:5-5:7" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="7:5-7:7">baz</p>
@@ -3420,7 +3417,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p><pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre><p>baz</p><blockquote multiline="false"><p>bam</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre><p>baz</p><blockquote dir="auto" multiline="false"><p>bam</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__012:
   canonical: |
     <ul>
@@ -3438,7 +3435,7 @@
     <li data-sourcepos="1:1-6:9">
     <p data-sourcepos="1:3-1:5">Foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:7-6:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span>
+    <pre data-sourcepos="3:7-6:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span>
     <span id="LC2" class="line" lang="plaintext"></span>
     <span id="LC3" class="line" lang="plaintext"></span>
     <span id="LC4" class="line" lang="plaintext">baz</span></code></pre>
@@ -3447,7 +3444,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>Foo</p><pre class="content-editor-code-block undefined code highlight"><code>bar
+    <ul dir="auto" bullet="*"><li dir="auto"><p>Foo</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar
 
 
     baz</code></pre></li></ul>
@@ -3461,7 +3458,7 @@
     <li data-sourcepos="1:1-1:13">ok</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>ok</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>ok</p></li></ol>
 05_02_00__container_blocks__list_items__014:
   canonical: |
     <p>1234567890. not ok</p>
@@ -3479,7 +3476,7 @@
     <li data-sourcepos="1:1-1:5">ok</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>ok</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>ok</p></li></ol>
 05_02_00__container_blocks__list_items__016:
   canonical: |
     <ol start="3">
@@ -3490,7 +3487,7 @@
     <li data-sourcepos="1:1-1:7">ok</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>ok</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>ok</p></li></ol>
 05_02_00__container_blocks__list_items__017:
   canonical: |
     <p>-1. not ok</p>
@@ -3512,13 +3509,13 @@
     <li data-sourcepos="1:1-3:9">
     <p data-sourcepos="1:3-1:5">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:7-3:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="3:7-3:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li></ul>
 05_02_00__container_blocks__list_items__019:
   canonical: |
     <ol start="10">
@@ -3533,13 +3530,13 @@
     <li data-sourcepos="1:3-3:14">
     <p data-sourcepos="1:8-1:10">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:12-3:14" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="3:12-3:14" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p><pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li></ol>
 05_02_00__container_blocks__list_items__020:
   canonical: |
     <pre><code>indented code
@@ -3549,18 +3546,18 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-2:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="1:5-2:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="3:1-3:9" dir="auto">paragraph</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:5-5:13" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
+    <pre data-sourcepos="5:5-5:13" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
     <p>paragraph</p>
-    <pre class="content-editor-code-block undefined code highlight"><code>more code</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>more code</code></pre>
 05_02_00__container_blocks__list_items__021:
   canonical: |
     <ol>
@@ -3576,18 +3573,18 @@
     <ol data-sourcepos="1:1-5:16" dir="auto">
     <li data-sourcepos="1:1-5:16">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:8-2:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="1:8-2:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="3:4-3:12">paragraph</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:8-5:16" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
+    <pre data-sourcepos="5:8-5:16" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><p>paragraph</p><pre class="content-editor-code-block undefined code highlight"><code>more code</code></pre></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><p>paragraph</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>more code</code></pre></li></ol>
 05_02_00__container_blocks__list_items__022:
   canonical: |
     <ol>
@@ -3603,18 +3600,18 @@
     <ol data-sourcepos="1:1-5:16" dir="auto">
     <li data-sourcepos="1:1-5:16">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:8-2:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> indented code</span></code></pre>
+    <pre data-sourcepos="1:8-2:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="3:4-3:12">paragraph</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:8-5:16" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
+    <pre data-sourcepos="5:8-5:16" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">more code</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p></p><pre class="content-editor-code-block undefined code highlight"><code> indented code</code></pre><p>paragraph</p><pre class="content-editor-code-block undefined code highlight"><code>more code</code></pre></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code> indented code</code></pre><p>paragraph</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>more code</code></pre></li></ol>
 05_02_00__container_blocks__list_items__023:
   canonical: |
     <p>foo</p>
@@ -3637,7 +3634,7 @@
     </ul>
     <p data-sourcepos="3:3-3:5" dir="auto">bar</p>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul>
     <p>bar</p>
 05_02_00__container_blocks__list_items__025:
   canonical: |
@@ -3655,7 +3652,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><p>bar</p></li></ul>
 05_02_00__container_blocks__list_items__026:
   canonical: |
     <ul>
@@ -3674,19 +3671,19 @@
     <li data-sourcepos="1:1-2:5">foo</li>
     <li data-sourcepos="3:1-6:5">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:3-6:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
+    <pre data-sourcepos="4:3-6:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     <li data-sourcepos="7:1-8:9">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="8:7-8:9" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">baz</span></code></pre>
+    <pre data-sourcepos="8:7-8:9" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">baz</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>baz</code></pre></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>bar</code></pre></li><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>baz</code></pre></li></ul>
 05_02_00__container_blocks__list_items__027:
   canonical: |
     <ul>
@@ -3697,7 +3694,7 @@
     <li data-sourcepos="1:1-2:5">foo</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul>
 05_02_00__container_blocks__list_items__028:
   canonical: |
     <ul>
@@ -3711,7 +3708,7 @@
     </ul>
     <p data-sourcepos="3:3-3:5" dir="auto">foo</p>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p></li></ul>
     <p>foo</p>
 05_02_00__container_blocks__list_items__029:
   canonical: |
@@ -3728,7 +3725,7 @@
     <li data-sourcepos="3:1-3:5">bar</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p></p></li><li dir="auto"><p>bar</p></li></ul>
 05_02_00__container_blocks__list_items__030:
   canonical: |
     <ul>
@@ -3744,7 +3741,7 @@
     <li data-sourcepos="3:1-3:5">bar</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p></p></li><li dir="auto"><p>bar</p></li></ul>
 05_02_00__container_blocks__list_items__031:
   canonical: |
     <ol>
@@ -3760,7 +3757,7 @@
     <li data-sourcepos="3:1-3:6">bar</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p></li><li dir="auto"><p></p></li><li dir="auto"><p>bar</p></li></ol>
 05_02_00__container_blocks__list_items__032:
   canonical: |
     <ul>
@@ -3772,7 +3769,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p></li></ul>
 05_02_00__container_blocks__list_items__033:
   canonical: |
     <p>foo
@@ -3808,7 +3805,7 @@
     <p data-sourcepos="1:6-2:20">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:10-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:10-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:6-6:21">
@@ -3817,8 +3814,8 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
-    with two lines.</p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote multiline="false"><p>A block quote.</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
+    with two lines.</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__035:
   canonical: |
     <ol>
@@ -3838,7 +3835,7 @@
     <p data-sourcepos="1:7-2:21">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:11-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:11-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:7-6:22">
@@ -3847,8 +3844,8 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
-    with two lines.</p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote multiline="false"><p>A block quote.</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
+    with two lines.</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__036:
   canonical: |
     <ol>
@@ -3868,7 +3865,7 @@
     <p data-sourcepos="1:8-2:22">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:12-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:12-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:8-6:23">
@@ -3877,8 +3874,8 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
-    with two lines.</p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote multiline="false"><p>A block quote.</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
+    with two lines.</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__037:
   canonical: |
     <pre><code>1.  A paragraph
@@ -3890,7 +3887,7 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-6:24" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1.  A paragraph</span>
+    <pre data-sourcepos="1:5-6:24" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1.  A paragraph</span>
     <span id="LC2" class="line" lang="plaintext">    with two lines.</span>
     <span id="LC3" class="line" lang="plaintext"></span>
     <span id="LC4" class="line" lang="plaintext">        indented code</span>
@@ -3899,7 +3896,7 @@
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>1.  A paragraph
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>1.  A paragraph
         with two lines.
 
             indented code
@@ -3924,7 +3921,7 @@
     <p data-sourcepos="1:7-2:15">A paragraph
     with two lines.</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="4:11-5:0" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
+    <pre data-sourcepos="4:11-5:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">indented code</span></code></pre>
     <copy-code></copy-code>
     </div>
     <blockquote data-sourcepos="6:7-6:22">
@@ -3933,8 +3930,8 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
-    with two lines.</p><pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote multiline="false"><p>A block quote.</p></blockquote></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
+    with two lines.</p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>indented code</code></pre><blockquote dir="auto" multiline="false"><p>A block quote.</p></blockquote></li></ol>
 05_02_00__container_blocks__list_items__039:
   canonical: |
     <ol>
@@ -3947,7 +3944,7 @@
     with two lines.</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>A paragraph
+    <ol dir="auto" parens="false"><li dir="auto"><p>A paragraph
     with two lines.</p></li></ol>
 05_02_00__container_blocks__list_items__040:
   canonical: |
@@ -3973,7 +3970,7 @@
     </ol>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><ol parens="false"><li><p></p><blockquote multiline="false"><p>Blockquote
+    <blockquote dir="auto" multiline="false"><ol dir="auto" parens="false"><li dir="auto"><p></p><blockquote dir="auto" multiline="false"><p>Blockquote
     continued here.</p></blockquote></li></ol></blockquote>
 05_02_00__container_blocks__list_items__041:
   canonical: |
@@ -3999,7 +3996,7 @@
     </ol>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><ol parens="false"><li><p></p><blockquote multiline="false"><p>Blockquote
+    <blockquote dir="auto" multiline="false"><ol dir="auto" parens="false"><li dir="auto"><p></p><blockquote dir="auto" multiline="false"><p>Blockquote
     continued here.</p></blockquote></li></ol></blockquote>
 05_02_00__container_blocks__list_items__042:
   canonical: |
@@ -4035,7 +4032,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p><ul bullet="*"><li><p>boo</p></li></ul></li></ul></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p><ul dir="auto" bullet="*"><li dir="auto"><p>baz</p><ul dir="auto" bullet="*"><li dir="auto"><p>boo</p></li></ul></li></ul></li></ul></li></ul>
 05_02_00__container_blocks__list_items__043:
   canonical: |
     <ul>
@@ -4052,7 +4049,7 @@
     <li data-sourcepos="4:4-4:8">boo</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li><li><p>baz</p></li><li><p>boo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p>bar</p></li><li dir="auto"><p>baz</p></li><li dir="auto"><p>boo</p></li></ul>
 05_02_00__container_blocks__list_items__044:
   canonical: |
     <ol start="10">
@@ -4071,7 +4068,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p><ul bullet="*"><li><p>bar</p></li></ul></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul></li></ol>
 05_02_00__container_blocks__list_items__045:
   canonical: |
     <ol start="10">
@@ -4088,8 +4085,8 @@
     <li data-sourcepos="2:4-2:8">bar</li>
     </ul>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p></li></ol>
-    <ul bullet="*"><li><p>bar</p></li></ul>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p></li></ol>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul>
 05_02_00__container_blocks__list_items__046:
   canonical: |
     <ul>
@@ -4108,7 +4105,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p><ul bullet="*"><li><p>foo</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p><ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul></li></ul>
 05_02_00__container_blocks__list_items__047:
   canonical: |
     <ol>
@@ -4135,7 +4132,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p></p><ul bullet="*"><li><p></p><ol parens="false"><li><p>foo</p></li></ol></li></ul></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p></p><ul dir="auto" bullet="*"><li dir="auto"><p></p><ol dir="auto" parens="false"><li dir="auto"><p>foo</p></li></ol></li></ul></li></ol>
 05_02_00__container_blocks__list_items__048:
   canonical: |
     <ul>
@@ -4158,7 +4155,7 @@
     baz</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p><h1>Foo</h1></li><li><p></p><h2>Bar</h2><p>
+    <ul dir="auto" bullet="*"><li dir="auto"><p></p><h1 dir="auto">Foo</h1></li><li dir="auto"><p></p><h2 dir="auto">Bar</h2><p>
     baz</p></li></ul>
 05_04_00__container_blocks__lists__001:
   canonical: |
@@ -4178,8 +4175,8 @@
     <li data-sourcepos="3:1-3:5">baz</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li></ul>
-    <ul bullet="*"><li><p>baz</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>baz</p></li></ul>
 05_04_00__container_blocks__lists__002:
   canonical: |
     <ol>
@@ -4198,8 +4195,8 @@
     <li data-sourcepos="3:1-3:6">baz</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo</p></li><li><p>bar</p></li></ol>
-    <ol parens="false"><li><p>baz</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>foo</p></li><li dir="auto"><p>bar</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>baz</p></li></ol>
 05_04_00__container_blocks__lists__003:
   canonical: |
     <p>Foo</p>
@@ -4215,7 +4212,7 @@
     </ul>
   wysiwyg: |-
     <p>Foo</p>
-    <ul bullet="*"><li><p>bar</p></li><li><p>baz</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li><li dir="auto"><p>baz</p></li></ul>
 05_04_00__container_blocks__lists__004:
   canonical: |
     <p>The number of windows in my house is
@@ -4239,7 +4236,7 @@
     </ol>
   wysiwyg: |-
     <p>The number of windows in my house is</p>
-    <ol parens="false"><li><p>The number of doors is 6.</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>The number of doors is 6.</p></li></ol>
 05_04_00__container_blocks__lists__006:
   canonical: |
     <ul>
@@ -4266,7 +4263,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li><li><p>baz</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p>bar</p></li><li dir="auto"><p>baz</p></li></ul>
 05_04_00__container_blocks__lists__007:
   canonical: |
     <ul>
@@ -4299,7 +4296,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p><ul dir="auto" bullet="*"><li dir="auto"><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
 05_04_00__container_blocks__lists__008:
   canonical: |
     <ul>
@@ -4322,8 +4319,8 @@
     <li data-sourcepos="7:1-7:5">bim</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li></ul>
-    <ul bullet="*"><li><p>baz</p></li><li><p>bim</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li><li dir="auto"><p>bar</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>baz</p></li><li dir="auto"><p>bim</p></li></ul>
 05_04_00__container_blocks__lists__009:
   canonical: |
     <ul>
@@ -4350,12 +4347,12 @@
     </ul>
     <!-- -->
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="9:5-9:8" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
+    <pre data-sourcepos="9:5-9:8" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><p>notcode</p></li><li><p>foo</p></li></ul>
-    <pre class="content-editor-code-block undefined code highlight"><code>code</code></pre>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><p>notcode</p></li><li dir="auto"><p>foo</p></li></ul>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>code</code></pre>
 05_04_00__container_blocks__lists__010:
   canonical: |
     <ul>
@@ -4378,7 +4375,7 @@
     <li data-sourcepos="7:1-7:3">g</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li><li><p>d</p></li><li><p>e</p></li><li><p>f</p></li><li><p>g</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p></li><li dir="auto"><p>c</p></li><li dir="auto"><p>d</p></li><li dir="auto"><p>e</p></li><li dir="auto"><p>f</p></li><li dir="auto"><p>g</p></li></ul>
 05_04_00__container_blocks__lists__011:
   canonical: |
     <ol>
@@ -4405,7 +4402,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p></li><li dir="auto"><p>c</p></li></ol>
 05_04_00__container_blocks__lists__012:
   canonical: |
     <ul>
@@ -4424,7 +4421,7 @@
     - e</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li><li><p>d
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p></li><li dir="auto"><p>c</p></li><li dir="auto"><p>d
     - e</p></li></ul>
 05_04_00__container_blocks__lists__013:
   canonical: |
@@ -4448,12 +4445,12 @@
     </li>
     </ol>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:5-5:8" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">3. c</span></code></pre>
+    <pre data-sourcepos="5:5-5:8" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">3. c</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <ol parens="false"><li><p>a</p></li><li><p>b</p></li></ol>
-    <pre class="content-editor-code-block undefined code highlight"><code>3. c</code></pre>
+    <ol dir="auto" parens="false"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p></li></ol>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>3. c</code></pre>
 05_04_00__container_blocks__lists__014:
   canonical: |
     <ul>
@@ -4480,7 +4477,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p></li><li dir="auto"><p>c</p></li></ul>
 05_04_00__container_blocks__lists__015:
   canonical: |
     <ul>
@@ -4504,7 +4501,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p></p></li><li><p>c</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p></p></li><li dir="auto"><p>c</p></li></ul>
 05_04_00__container_blocks__lists__016:
   canonical: |
     <ul>
@@ -4533,7 +4530,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p>b</p><p>c</p></li><li><p>d</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p><p>c</p></li><li dir="auto"><p>d</p></li></ul>
 05_04_00__container_blocks__lists__017:
   canonical: |
     <ul>
@@ -4560,7 +4557,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p>b</p><pre>[ref]: /url</pre></li><li><p>d</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p>b</p><pre>[ref]: /url</pre></li><li dir="auto"><p>d</p></li></ul>
 05_04_00__container_blocks__lists__018:
   canonical: |
     <ul>
@@ -4578,7 +4575,7 @@
     <li data-sourcepos="1:1-1:3">a</li>
     <li data-sourcepos="2:1-6:5">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="2:3-6:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">b</span>
+    <pre data-sourcepos="2:3-6:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">b</span>
     <span id="LC2" class="line" lang="plaintext"></span>
     <span id="LC3" class="line" lang="plaintext"></span></code></pre>
     <copy-code></copy-code>
@@ -4587,7 +4584,7 @@
     <li data-sourcepos="7:1-7:3">c</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>b</code></pre></li><li><p>c</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>b</code></pre></li><li dir="auto"><p>c</p></li></ul>
 05_04_00__container_blocks__lists__019:
   canonical: |
     <ul>
@@ -4614,7 +4611,7 @@
     <li data-sourcepos="5:1-5:3">d</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p><ul bullet="*"><li><p>b</p><p>c</p></li></ul></li><li><p>d</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p><ul dir="auto" bullet="*"><li dir="auto"><p>b</p><p>c</p></li></ul></li><li dir="auto"><p>d</p></li></ul>
 05_04_00__container_blocks__lists__020:
   canonical: |
     <ul>
@@ -4635,7 +4632,7 @@
     <li data-sourcepos="4:1-4:3">c</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p><blockquote multiline="false"><p>b</p></blockquote></li><li><p>c</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p><blockquote dir="auto" multiline="false"><p>b</p></blockquote></li><li dir="auto"><p>c</p></li></ul>
 05_04_00__container_blocks__lists__021:
   canonical: |
     <ul>
@@ -4655,14 +4652,14 @@
     <p data-sourcepos="2:5-2:5">b</p>
     </blockquote>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="3:3-5:5" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">c</span></code></pre>
+    <pre data-sourcepos="3:3-5:5" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">c</span></code></pre>
     <copy-code></copy-code>
     </div>
     </li>
     <li data-sourcepos="6:1-6:3">d</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p><blockquote multiline="false"><p>b</p></blockquote><pre class="content-editor-code-block undefined code highlight"><code>c</code></pre></li><li><p>d</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p><blockquote dir="auto" multiline="false"><p>b</p></blockquote><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>c</code></pre></li><li dir="auto"><p>d</p></li></ul>
 05_04_00__container_blocks__lists__022:
   canonical: |
     <ul>
@@ -4673,7 +4670,7 @@
     <li data-sourcepos="1:1-1:3">a</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p></li></ul>
 05_04_00__container_blocks__lists__023:
   canonical: |
     <ul>
@@ -4692,7 +4689,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p><ul bullet="*"><li><p>b</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p><ul dir="auto" bullet="*"><li dir="auto"><p>b</p></li></ul></li></ul>
 05_04_00__container_blocks__lists__024:
   canonical: |
     <ol>
@@ -4706,14 +4703,14 @@
     <ol data-sourcepos="1:1-5:6" dir="auto">
     <li data-sourcepos="1:1-5:6">
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:4-3:6" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:4-3:6" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
     <p data-sourcepos="5:4-5:6">bar</p>
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre><p>bar</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p></p><pre dir="auto" class="content-editor-code-block undefined code highlight"><code>foo</code></pre><p>bar</p></li></ol>
 05_04_00__container_blocks__lists__025:
   canonical: |
     <ul>
@@ -4736,7 +4733,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p></li></ul><p>baz</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p><ul dir="auto" bullet="*"><li dir="auto"><p>bar</p></li></ul><p>baz</p></li></ul>
 05_04_00__container_blocks__lists__026:
   canonical: |
     <ul>
@@ -4773,7 +4770,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p><ul bullet="*"><li><p>b</p></li><li><p>c</p></li></ul></li><li><p>d</p><ul bullet="*"><li><p>e</p></li><li><p>f</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>a</p><ul dir="auto" bullet="*"><li dir="auto"><p>b</p></li><li dir="auto"><p>c</p></li></ul></li><li dir="auto"><p>d</p><ul dir="auto" bullet="*"><li dir="auto"><p>e</p></li><li dir="auto"><p>f</p></li></ul></li></ul>
 06_01_00__inlines__001:
   canonical: |
     <p><code>hi</code>lo`</p>
@@ -4853,22 +4850,22 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:8" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">\[\]</span></code></pre>
+    <pre data-sourcepos="1:5-1:8" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">\[\]</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>\[\]</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>\[\]</code></pre>
 06_02_00__inlines__backslash_escapes__008:
   canonical: |
     <pre><code>\[\]
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">\[\]</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">\[\]</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>\[\]</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>\[\]</code></pre>
 06_02_00__inlines__backslash_escapes__009:
   canonical: |
     <p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
@@ -4904,11 +4901,11 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="foo+bar" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="foo+bar" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="foo+bar" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" language="foo+bar" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
 06_03_00__inlines__entity_and_numeric_character_references__001:
   canonical: |
     <p>  &amp; © Æ Ď
@@ -4994,11 +4991,11 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="föö" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="föö" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="föö" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <pre dir="auto" language="föö" class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
 06_03_00__inlines__entity_and_numeric_character_references__011:
   canonical: |
     <p><code>f&amp;ouml;&amp;ouml;</code></p>
@@ -5012,11 +5009,11 @@
     </code></pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:5-1:18" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">f&amp;ouml;f&amp;ouml;</span></code></pre>
+    <pre data-sourcepos="1:5-1:18" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">f&amp;ouml;f&amp;ouml;</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>f&amp;ouml;f&amp;ouml;</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>f&amp;ouml;f&amp;ouml;</code></pre>
 06_03_00__inlines__entity_and_numeric_character_references__013:
   canonical: |
     <p>*foo*
@@ -5040,7 +5037,7 @@
     </ul>
   wysiwyg: |-
     <p>* foo</p>
-    <ul bullet="*"><li><p>foo</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>foo</p></li></ul>
 06_03_00__inlines__entity_and_numeric_character_references__015:
   canonical: |
     <p>foo
@@ -7463,7 +7460,7 @@
     &lt;/blockquote&gt;</strong></p>
   wysiwyg: |-
     <p></p>
-    <blockquote multiline="false"><p></p></blockquote>
+    <blockquote dir="auto" multiline="false"><p></p></blockquote>
 06_13_00__inlines__hard_line_breaks__001:
   canonical: |
     <p>foo<br />
@@ -7583,7 +7580,7 @@
     <h3 data-sourcepos="1:1-1:8" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo\</h3>
   wysiwyg: |-
-    <h3>foo\</h3>
+    <h3 dir="auto">foo\</h3>
 06_13_00__inlines__hard_line_breaks__015:
   canonical: |
     <h3>foo</h3>
@@ -7591,7 +7588,7 @@
     <h3 data-sourcepos="1:1-1:7" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h3>
   wysiwyg: |-
-    <h3>foo</h3>
+    <h3 dir="auto">foo</h3>
 06_14_00__inlines__soft_line_breaks__001:
   canonical: |
     <p>foo
@@ -7648,7 +7645,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> incomplete</li>
     </ul>
   wysiwyg: |-
-    <ul start="1" parens="false" data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>incomplete</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>incomplete</p></div></li></ul>
 07_01_00__gitlab_official_specification_markdown__task_list_items__002:
   canonical: |
     <ul>
@@ -7664,7 +7661,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> completed</li>
     </ul>
   wysiwyg: |-
-    <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>completed</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>completed</p></div></li></ul>
 07_01_00__gitlab_official_specification_markdown__task_list_items__003:
   canonical: |
     <ul>
@@ -7714,7 +7711,7 @@
     </pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">YAML front matter</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="yaml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-yaml" lang="yaml" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">YAML front matter</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -7728,7 +7725,7 @@
     </pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="toml" class="code highlight js-syntax-highlight language-toml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="err">title:</span> <span class="err">TOML</span> <span class="err">front</span> <span class="err">matter</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="toml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-toml" lang="toml" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="err">title:</span> <span class="err">TOML</span> <span class="err">front</span> <span class="err">matter</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -7744,7 +7741,7 @@
     </pre>
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-5:3" lang="json" class="code highlight js-syntax-highlight language-json" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
+    <pre data-sourcepos="1:1-5:3" data-canonical-lang="json" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-json" lang="json" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
     <span id="LC2" class="line" lang="json"><span class="w">  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JSON front matter"</span></span>
     <span id="LC3" class="line" lang="json"><span class="p">}</span></span></code></pre>
     <copy-code></copy-code>
@@ -7766,7 +7763,7 @@
   wysiwyg: |-
     <p>text</p>
     <hr>
-    <h2>title: YAML front matter</h2>
+    <h2 dir="auto">title: YAML front matter</h2>
 07_02_00__gitlab_official_specification_markdown__front_matter__005:
   canonical: |
     <hr>
@@ -7777,7 +7774,7 @@
     <a id="user-content-title-yaml-front-matter" class="anchor" href="#title-yaml-front-matter" aria-hidden="true"></a>title: YAML front matter</h2>
   wysiwyg: |-
     <hr>
-    <h2>title: YAML front matter</h2>
+    <h2 dir="auto">title: YAML front matter</h2>
 07_03_00__gitlab_official_specification_markdown__table_of_contents__001:
   canonical: |
     <nav>
@@ -7800,8 +7797,8 @@
     <a id="user-content-heading-2" class="anchor" href="#heading-2" aria-hidden="true"></a>Heading 2</h2>
   wysiwyg: |-
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
-    <h1>Heading 1</h1>
-    <h2>Heading 2</h2>
+    <h1 dir="auto">Heading 1</h1>
+    <h2 dir="auto">Heading 2</h2>
 07_03_00__gitlab_official_specification_markdown__table_of_contents__002:
   canonical: |
     <nav>
@@ -7824,8 +7821,8 @@
     <a id="user-content-heading-2" class="anchor" href="#heading-2" aria-hidden="true"></a>Heading 2</h2>
   wysiwyg: |-
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
-    <h1>Heading 1</h1>
-    <h2>Heading 2</h2>
+    <h1 dir="auto">Heading 1</h1>
+    <h2 dir="auto">Heading 2</h2>
 07_03_00__gitlab_official_specification_markdown__table_of_contents__003:
   canonical: |
     <p>[[<em>TOC</em>]]text</p>
@@ -7854,14 +7851,14 @@
     <a id="user-content-heading-1" class="anchor" href="#heading-1" aria-hidden="true"></a>Heading 1</h1>
   wysiwyg: |-
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
-    <h1>Heading 1</h1>
+    <h1 dir="auto">Heading 1</h1>
 08_01_00__gitlab_internal_extension_markdown__audio__001:
   canonical: |
     <p><audio src="audio.oga" title="audio title"></audio></p>
   static: |-
     <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga" class="with-attachment-icon">audio</a></span></p>
 08_01_00__gitlab_internal_extension_markdown__audio__002:
   canonical: |
     <p><audio src="audio.oga" title="audio title"></audio></p>
@@ -7869,14 +7866,14 @@
     <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
   wysiwyg: |-
     <pre>[audio]: audio.oga "audio title"</pre>
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga" class="with-attachment-icon">audio</a></span></p>
 08_02_00__gitlab_internal_extension_markdown__video__001:
   canonical: |
     <p><video src="video.m4v" title="video title"></video></p>
   static: |-
     <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video title" preload="metadata" width="400"></video><a href="video.m4v" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v">video</a></span></p>
+    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v" class="with-attachment-icon">video</a></span></p>
 08_02_00__gitlab_internal_extension_markdown__video__002:
   canonical: |
     <p><video src="video.mov" title="video title"></video></p>
@@ -7884,7 +7881,7 @@
     <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video title" preload="metadata" width="400"></video><a href="video.mov" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
   wysiwyg: |-
     <pre>[video]: video.mov "video title"</pre>
-    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov">video</a></span></p>
+    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov" class="with-attachment-icon">video</a></span></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__001:
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
@@ -7968,7 +7965,7 @@
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3">Sample Audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3" class="with-attachment-icon">Sample Audio</a></span></p>
 08_04_09__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio_and_video_in_lists__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -7993,9 +7990,9 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></li><li><p><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4">Sample Video</a></span></p></li></ul>
-    <ol parens="false"><li><p><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4">Sample Video</a></span></p></li><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></li></ol>
-    <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4">Sample Video</a></span></p></div></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li><li dir="auto"><p><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4" class="with-attachment-icon">Sample Video</a></span></p></li></ul>
+    <ol dir="auto" parens="false"><li dir="auto"><p><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4" class="with-attachment-icon">Sample Video</a></span></p></li><li dir="auto"><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li></ol>
+    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4" class="with-attachment-icon">Sample Video</a></span></p></div></li></ul>
 08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8005,7 +8002,7 @@
     <p data-sourcepos="3:3-3:21">This is another one</p>
     </blockquote>
   wysiwyg: |-
-    <blockquote multiline="false"><p>This is a blockquote</p><p>This is another one</p></blockquote>
+    <blockquote dir="auto" multiline="false"><p>This is a blockquote</p><p>This is another one</p></blockquote>
 08_04_11__gitlab_internal_extension_markdown__migrated_golden_master_examples__bold__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8026,7 +8023,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>list item 1</p></li><li dir="auto"><p>list item 2</p><ul dir="auto" bullet="*"><li dir="auto"><p>embedded list item 3</p></li></ul></li></ul>
 08_04_13__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_2__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8040,7 +8037,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>list item 1</p></li><li dir="auto"><p>list item 2</p><ul dir="auto" bullet="*"><li dir="auto"><p>embedded list item 3</p></li></ul></li></ul>
 08_04_14__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_3__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8054,37 +8051,37 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>list item 1</p></li><li dir="auto"><p>list item 2</p><ul dir="auto" bullet="*"><li dir="auto"><p>embedded list item 3</p></li></ul></li></ul>
 08_04_15__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_javascript__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="javascript" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="javascript" class="code highlight js-syntax-highlight language-javascript" lang="javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript">  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="javascript" class="content-editor-code-block undefined code highlight"><code>  console.log('hello world')</code></pre>
+    <pre dir="auto" language="javascript" class="content-editor-code-block undefined code highlight"><code>  console.log('hello world')</code></pre>
 08_04_16__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_plaintext__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  plaintext</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  plaintext</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>  plaintext</code></pre>
+    <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>  plaintext</code></pre>
 08_04_17__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_unknown__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="foobar" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="foobar" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="foobar" class="content-editor-code-block undefined code highlight"><code>  custom_language = &gt;&gt; this &lt;&lt;</code></pre>
+    <pre dir="auto" language="foobar" class="content-editor-code-block undefined code highlight"><code>  custom_language = &gt;&gt; this &lt;&lt;</code></pre>
 08_04_18__gitlab_internal_extension_markdown__migrated_golden_master_examples__color_chips__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8101,7 +8098,7 @@
     <li data-sourcepos="9:1-9:25"><code>HSLA(540,70%,50%,0.3)<span class="gfm-color_chip"><span style="background-color: HSLA(540,70%,50%,0.3);"></span></span></code></li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p><code>#F00</code></p></li><li><p><code>#F00A</code></p></li><li><p><code>#FF0000</code></p></li><li><p><code>#FF0000AA</code></p></li><li><p><code>RGB(0,255,0)</code></p></li><li><p><code>RGB(0%,100%,0%)</code></p></li><li><p><code>RGBA(0,255,0,0.3)</code></p></li><li><p><code>HSL(540,70%,50%)</code></p></li><li><p><code>HSLA(540,70%,50%,0.3)</code></p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p><code>#F00</code></p></li><li dir="auto"><p><code>#F00A</code></p></li><li dir="auto"><p><code>#FF0000</code></p></li><li dir="auto"><p><code>#FF0000AA</code></p></li><li dir="auto"><p><code>RGB(0,255,0)</code></p></li><li dir="auto"><p><code>RGB(0%,100%,0%)</code></p></li><li dir="auto"><p><code>RGBA(0,255,0,0.3)</code></p></li><li dir="auto"><p><code>HSL(540,70%,50%)</code></p></li><li dir="auto"><p><code>HSLA(540,70%,50%,0.3)</code></p></li></ul>
 08_04_19__gitlab_internal_extension_markdown__migrated_golden_master_examples__description_list__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8140,7 +8137,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-11:3" lang="nomnoml" class="code highlight js-syntax-highlight language-nomnoml" v-pre="true"><code><span id="LC1" class="line" lang="nomnoml">  #stroke: #a86128</span>
+    <pre data-sourcepos="1:1-11:3" data-canonical-lang="nomnoml" class="code highlight js-syntax-highlight language-nomnoml" lang="nomnoml" v-pre="true"><code><span id="LC1" class="line" lang="nomnoml">  #stroke: #a86128</span>
     <span id="LC2" class="line" lang="nomnoml">  [&lt;frame&gt;Decorator pattern|</span>
     <span id="LC3" class="line" lang="nomnoml">    [&lt;abstract&gt;Component||+ operation()]</span>
     <span id="LC4" class="line" lang="nomnoml">    [Client] depends --&gt; [Component]</span>
@@ -8152,7 +8149,7 @@
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre language="nomnoml" class="content-editor-code-block undefined code highlight"><code>  #stroke: #a86128
+    <pre dir="auto" language="nomnoml" class="content-editor-code-block undefined code highlight"><code>  #stroke: #a86128
       [&lt;frame&gt;Decorator pattern|
         [&lt;abstract&gt;Component||+ operation()]
         [Client] depends --&gt; [Component]
@@ -8166,7 +8163,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-7:3" lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">  Alice -&gt; Bob: Authentication Request</span>
+    <pre data-sourcepos="1:1-7:3" data-canonical-lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" lang="plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">  Alice -&gt; Bob: Authentication Request</span>
     <span id="LC2" class="line" lang="plantuml">  Bob --&gt; Alice: Authentication Response</span>
     <span id="LC3" class="line" lang="plantuml"></span>
     <span id="LC4" class="line" lang="plantuml">  Alice -&gt; Bob: Another authentication Request</span>
@@ -8184,7 +8181,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">A -&gt; B : Text with norwegian characters: æøå</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" lang="plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">A -&gt; B : Text with norwegian characters: æøå</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -8249,8 +8246,8 @@
     </ol>
     </section>
   wysiwyg: |-
-    <p>A footnote reference tag looks like this: <sup identifier="1">1</sup></p>
-    <p>This reference tag is a mix of letters and numbers. <sup identifier="footnote">footnote</sup></p>
+    <p>A footnote reference tag looks like this: <sup dir="auto" identifier="1">1</sup></p>
+    <p>This reference tag is a mix of letters and numbers. <sup dir="auto" identifier="footnote">footnote</sup></p>
     <div node="footnoteDefinition(paragraph(&quot;This is the text inside a footnote.&quot;))" htmlattributes="[object Object]"><p>This is the text inside a footnote.</p></div>
     <div node="footnoteDefinition(paragraph(&quot;This is another footnote.&quot;))" htmlattributes="[object Object]"><p>This is another footnote.</p></div>
 08_04_29__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_json__001:
@@ -8258,7 +8255,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-5:3" lang="json" class="code highlight js-syntax-highlight language-json" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
+    <pre data-sourcepos="1:1-5:3" data-canonical-lang="json" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-json" lang="json" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
     <span id="LC2" class="line" lang="json"><span class="w">  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Page title"</span></span>
     <span id="LC3" class="line" lang="json"><span class="p">}</span></span></code></pre>
     <copy-code></copy-code>
@@ -8272,7 +8269,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="toml" class="code highlight js-syntax-highlight language-toml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="py">title</span> <span class="p">=</span> <span class="s">"Page title"</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="toml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-toml" lang="toml" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="py">title</span> <span class="p">=</span> <span class="s">"Page title"</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -8282,7 +8279,7 @@
     TODO: Write canonical HTML for this example
   static: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">Page title</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" data-canonical-lang="yaml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-yaml" lang="yaml" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">Page title</span></span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
@@ -8313,12 +8310,12 @@
     <h6 data-sourcepos="11:1-11:16" dir="auto">
     <a id="user-content-heading-6" class="anchor" href="#heading-6" aria-hidden="true"></a>Heading 6</h6>
   wysiwyg: |-
-    <h1>Heading 1</h1>
-    <h2>Heading 2</h2>
-    <h3>Heading 3</h3>
-    <h4>Heading 4</h4>
-    <h5>Heading 5</h5>
-    <h6>Heading 6</h6>
+    <h1 dir="auto">Heading 1</h1>
+    <h2 dir="auto">Heading 2</h2>
+    <h3 dir="auto">Heading 3</h3>
+    <h4 dir="auto">Heading 4</h4>
+    <h5 dir="auto">Heading 5</h5>
+    <h6 dir="auto">Heading 6</h6>
 08_04_34__gitlab_internal_extension_markdown__migrated_golden_master_examples__horizontal_rule__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8354,17 +8351,20 @@
     + H<sub>2</sub>O</li>\n<li data-sourcepos=\"15:1-15:130\">The <strong>Pythagorean
     theorem</strong> is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var>
     = <var>c<sup>2</sup></var>\n</li>\n</ul>"
-  wysiwyg: "<ul bullet=\"*\"><li><p>Content editor is<s>great</s></p><p>.</p></li><li><p>If
-    the changes</p><p>, please</p><p>.</p></li><li><p>The English song</p><p> looks
-    like this in Hebrew:</p><p>. In the computer's memory, this is stored as</p><p>.</p></li><li><p>
-    by Edvard Munch. Painted in 1893.</p></li><li><p> is the standard markup language
-    for creating web pages.</p></li><li><p>Do not forget to buy</p><p> today.</p></li><li><p>This
-    is a paragraph and</p><p>.</p></li><li><p>The concert starts at</p><p> and you'll
-    be able to enjoy the band for at least</p><p>.</p></li><li><p>Press</p><p> +</p><p>
-    to copy text (Windows).</p></li><li><p>WWF's goal is to:</p><p> We hope they succeed.</p></li><li><p>The
-    error occurred was:</p></li><li><p>The area of a triangle is: 1/2 x</p><p> x</p><p>,
-    where</p><p> is the base, and</p><p> is the vertical height.</p></li><li><p></p></li><li><p>C</p><p>H</p><p>
-    + O</p><p> \t CO</p><p> + H</p><p>O</p></li><li><p>The<strong>Pythagorean theorem</strong>
+  wysiwyg: "<ul dir=\"auto\" bullet=\"*\"><li dir=\"auto\"><p>Content editor is<s>great</s></p><p>.</p></li><li
+    dir=\"auto\"><p>If the changes</p><p>, please</p><p>.</p></li><li dir=\"auto\"><p>The
+    English song</p><p> looks like this in Hebrew:</p><p>. In the computer's memory,
+    this is stored as</p><p>.</p></li><li dir=\"auto\"><p> by Edvard Munch. Painted
+    in 1893.</p></li><li dir=\"auto\"><p> is the standard markup language for creating
+    web pages.</p></li><li dir=\"auto\"><p>Do not forget to buy</p><p> today.</p></li><li
+    dir=\"auto\"><p>This is a paragraph and</p><p>.</p></li><li dir=\"auto\"><p>The
+    concert starts at</p><p> and you'll be able to enjoy the band for at least</p><p>.</p></li><li
+    dir=\"auto\"><p>Press</p><p> +</p><p> to copy text (Windows).</p></li><li dir=\"auto\"><p>WWF's
+    goal is to:</p><p> We hope they succeed.</p></li><li dir=\"auto\"><p>The error
+    occurred was:</p></li><li dir=\"auto\"><p>The area of a triangle is: 1/2 x</p><p>
+    x</p><p>, where</p><p> is the base, and</p><p> is the vertical height.</p></li><li
+    dir=\"auto\"><p></p></li><li dir=\"auto\"><p>C</p><p>H</p><p> + O</p><p> \t CO</p><p>
+    + H</p><p>O</p></li><li dir=\"auto\"><p>The<strong>Pythagorean theorem</strong>
     is often expressed as</p><p> +</p><p> =</p></li></ul>"
 08_04_36__gitlab_internal_extension_markdown__migrated_golden_master_examples__image__001:
   canonical: |
@@ -8389,7 +8389,7 @@
     <li data-sourcepos="2:1-2:11"><span class="idiff left right addition">added</span></li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>{-deleted-}</p></li><li><p>{+added+}</p></li></ul>
+    <ul dir="auto" bullet="*"><li dir="auto"><p>{-deleted-}</p></li><li dir="auto"><p>{+added+}</p></li></ul>
 08_04_39__gitlab_internal_extension_markdown__migrated_golden_master_examples__label__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8411,13 +8411,13 @@
     <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-math-style="inline" class="code math js-render-math">a^2+b^2=c^2</code>.</p>
     <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:1-7:3" lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
+    <pre data-sourcepos="5:1-7:3" data-canonical-lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" lang="math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
     <p>This math is inline $<code>a^2+b^2=c^2</code>$.</p>
     <p>This is on a separate line:</p>
-    <pre language="math" class="content-editor-code-block undefined code highlight"><code>a^2+b^2=c^2</code></pre>
+    <pre dir="auto" language="math" class="content-editor-code-block undefined code highlight"><code>a^2+b^2=c^2</code></pre>
 08_04_42__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8428,7 +8428,7 @@
     <li data-sourcepos="3:1-3:14">list item 3</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>list item 1</p></li><li><p>list item 2</p></li><li><p>list item 3</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>list item 1</p></li><li dir="auto"><p>list item 2</p></li><li dir="auto"><p>list item 3</p></li></ol>
 08_04_43__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list_with_start_order__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8439,7 +8439,7 @@
     <li data-sourcepos="3:1-3:16">list item 3</li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>list item 1</p></li><li><p>list item 2</p></li><li><p>list item 3</p></li></ol>
+    <ol dir="auto" parens="false"><li dir="auto"><p>list item 1</p></li><li dir="auto"><p>list item 2</p></li><li dir="auto"><p>list item 3</p></li></ol>
 08_04_44__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8477,7 +8477,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
     </ol>
   wysiwyg: |-
-    <ol start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>hello</p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>world</p></div></li><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>example</p></div></li></ol>
+    <ol dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>hello</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>world</p></div></li><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>example</p></div></li></ol>
 08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8520,7 +8520,7 @@
     <a id="user-content-content-after-table" class="anchor" href="#content-after-table" aria-hidden="true"></a>content after table</h1>
   wysiwyg: |-
     <table><tbody><tr><th colspan="1" rowspan="1"><p>header</p></th><th colspan="1" rowspan="1"><p>header</p></th></tr><tr><td colspan="1" rowspan="1"><p><code>code</code></p></td><td colspan="1" rowspan="1"><p>cell with <strong>bold</strong></p></td></tr><tr><td colspan="1" rowspan="1"><p><s>strike</s></p></td><td colspan="1" rowspan="1"><p>cell with <em>italic</em></p></td></tr></tbody></table>
-    <h1>content after table</h1>
+    <h1 dir="auto">content after table</h1>
 08_04_49__gitlab_internal_extension_markdown__migrated_golden_master_examples__table_of_contents__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8548,12 +8548,12 @@
     <a id="user-content-i-dont-know" class="anchor" href="#i-dont-know" aria-hidden="true"></a>I don't know</h3>
   wysiwyg: |-
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
-    <h1>Lorem</h1>
+    <h1 dir="auto">Lorem</h1>
     <p>Well, that's just like... your opinion.. man.</p>
-    <h2>Ipsum</h2>
-    <h3>Dolar</h3>
-    <h1>Sit amit</h1>
-    <h3>I don't know</h3>
+    <h2 dir="auto">Ipsum</h2>
+    <h3 dir="auto">Dolar</h3>
+    <h1 dir="auto">Sit amit</h1>
+    <h3 dir="auto">I don't know</h3>
 08_04_50__gitlab_internal_extension_markdown__migrated_golden_master_examples__task_list__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8584,7 +8584,7 @@
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video" preload="metadata" width="400"></video><a href="https://gitlab.com/gitlab.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/gitlab.mp4">Sample Video</a></span></p>
+    <p><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/gitlab.mp4" class="with-attachment-icon">Sample Video</a></span></p>
 08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8648,5 +8648,5 @@
     </ol>
     </section>
   wysiwyg: |-
-    <p>footnote reference tag <sup identifier="fortytwo">fortytwo</sup></p>
+    <p>footnote reference tag <sup dir="auto" identifier="fortytwo">fortytwo</sup></p>
     <div node="footnoteDefinition(paragraph(&quot;footnote text&quot;))" htmlattributes="[object Object]"><p>footnote text</p></div>

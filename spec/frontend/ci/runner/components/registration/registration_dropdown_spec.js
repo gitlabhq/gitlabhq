@@ -1,10 +1,10 @@
-import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
-import { mount, shallowMount, createWrapper } from '@vue/test-utils';
+import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm, GlIcon } from '@gitlab/ui';
+import { createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
 import { s__ } from '~/locale';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -12,7 +12,14 @@ import RegistrationDropdown from '~/ci/runner/components/registration/registrati
 import RegistrationToken from '~/ci/runner/components/registration/registration_token.vue';
 import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registration/registration_token_reset_dropdown_item.vue';
 
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
+import {
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_REGISTER_INSTANCE_TYPE,
+  I18N_REGISTER_GROUP_TYPE,
+  I18N_REGISTER_PROJECT_TYPE,
+} from '~/ci/runner/constants';
 
 import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
 import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
@@ -21,9 +28,7 @@ import {
   mockRunnerPlatforms,
   mockInstructions,
 } from 'jest/vue_shared/components/runner_instructions/mock_data';
-
-const mockToken = '0123456789';
-const maskToken = '**********';
+import { mockRegistrationToken } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -31,7 +36,7 @@ describe('RegistrationDropdown', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-
+  const findDropdownBtn = () => findDropdown().find('button');
   const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
@@ -53,17 +58,15 @@ describe('RegistrationDropdown', () => {
     await waitForPromises();
   };
 
-  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMount) => {
-    wrapper = extendedWrapper(
-      mountFn(RegistrationDropdown, {
-        propsData: {
-          registrationToken: mockToken,
-          type: INSTANCE_TYPE,
-          ...props,
-        },
-        ...options,
-      }),
-    );
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
+    wrapper = mountFn(RegistrationDropdown, {
+      propsData: {
+        registrationToken: mockRegistrationToken,
+        type: INSTANCE_TYPE,
+        ...props,
+      },
+      ...options,
+    });
   };
 
   const createComponentWithModal = () => {
@@ -79,25 +82,38 @@ describe('RegistrationDropdown', () => {
         // Use `attachTo` to find the modal
         attachTo: document.body,
       },
-      mount,
+      mountExtended,
     );
   };
 
   it.each`
     type             | text
-    ${INSTANCE_TYPE} | ${s__('Runners|Register an instance runner')}
-    ${GROUP_TYPE}    | ${s__('Runners|Register a group runner')}
-    ${PROJECT_TYPE}  | ${s__('Runners|Register a project runner')}
-  `('Dropdown text for type $type is "$text"', () => {
-    createComponent({ props: { type: INSTANCE_TYPE } }, mount);
+    ${INSTANCE_TYPE} | ${I18N_REGISTER_INSTANCE_TYPE}
+    ${GROUP_TYPE}    | ${I18N_REGISTER_GROUP_TYPE}
+    ${PROJECT_TYPE}  | ${I18N_REGISTER_PROJECT_TYPE}
+  `('Dropdown text for type $type is "$text"', ({ type, text }) => {
+    createComponent({ props: { type } }, mountExtended);
 
-    expect(wrapper.text()).toContain('Register an instance runner');
+    expect(wrapper.text()).toContain(text);
   });
 
-  it('Passes attributes to the dropdown component', () => {
+  it('Passes attributes to dropdown', () => {
     createComponent({ attrs: { right: true } });
 
     expect(findDropdown().attributes()).toMatchObject({ right: 'true' });
+  });
+
+  it('Passes default props and attributes to dropdown', () => {
+    createComponent();
+
+    expect(findDropdown().props()).toMatchObject({
+      category: 'primary',
+      variant: 'confirm',
+    });
+
+    expect(findDropdown().attributes()).toMatchObject({
+      toggleclass: '',
+    });
   });
 
   describe('Instructions dropdown item', () => {
@@ -111,13 +127,9 @@ describe('RegistrationDropdown', () => {
 
     describe('When the dropdown item is clicked', () => {
       beforeEach(async () => {
-        createComponentWithModal({}, mount);
+        createComponentWithModal({}, mountExtended);
 
         await openModal();
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
       });
 
       it('opens the modal with contents', () => {
@@ -146,7 +158,15 @@ describe('RegistrationDropdown', () => {
     });
 
     it('Displays masked value by default', () => {
-      createComponent({}, mount);
+      const mockToken = '0123456789';
+      const maskToken = '**********';
+
+      createComponent(
+        {
+          props: { registrationToken: mockToken },
+        },
+        mountExtended,
+      );
 
       expect(findRegistrationTokenInput().element.value).toBe(maskToken);
     });
@@ -175,7 +195,7 @@ describe('RegistrationDropdown', () => {
     };
 
     it('Updates token input', async () => {
-      createComponent({}, mount);
+      createComponent({}, mountExtended);
 
       expect(findRegistrationToken().props('value')).not.toBe(newToken);
 
@@ -185,15 +205,72 @@ describe('RegistrationDropdown', () => {
     });
 
     it('Updates token in modal', async () => {
-      createComponentWithModal({}, mount);
+      createComponentWithModal({}, mountExtended);
 
       await openModal();
 
-      expect(findModalContent()).toContain(mockToken);
+      expect(findModalContent()).toContain(mockRegistrationToken);
 
       await resetToken();
 
       expect(findModalContent()).toContain(newToken);
+    });
+  });
+
+  describe.each([
+    { createRunnerWorkflowForAdmin: true },
+    { createRunnerWorkflowForNamespace: true },
+  ])('When showing a "deprecated" warning', (glFeatures) => {
+    it('passes deprecated variant props and attributes to dropdown', () => {
+      createComponent({
+        provide: { glFeatures },
+      });
+
+      expect(findDropdown().props()).toMatchObject({
+        category: 'tertiary',
+        variant: 'default',
+        text: '',
+      });
+
+      expect(findDropdown().attributes()).toMatchObject({
+        toggleclass: 'gl-px-3!',
+      });
+    });
+
+    it.each`
+      type             | text
+      ${INSTANCE_TYPE} | ${I18N_REGISTER_INSTANCE_TYPE}
+      ${GROUP_TYPE}    | ${I18N_REGISTER_GROUP_TYPE}
+      ${PROJECT_TYPE}  | ${I18N_REGISTER_PROJECT_TYPE}
+    `('dropdown text for type $type is "$text"', ({ type, text }) => {
+      createComponent({ props: { type } }, mountExtended);
+
+      expect(wrapper.text()).toContain(text);
+    });
+
+    it('shows warning text', () => {
+      createComponent(
+        {
+          provide: { glFeatures },
+        },
+        mountExtended,
+      );
+
+      const text = wrapper.findByText(s__('Runners|Support for registration tokens is deprecated'));
+
+      expect(text.exists()).toBe(true);
+    });
+
+    it('button shows ellipsis icon', () => {
+      createComponent(
+        {
+          provide: { glFeatures },
+        },
+        mountExtended,
+      );
+
+      expect(findDropdownBtn().findComponent(GlIcon).props('name')).toBe('ellipsis_v');
+      expect(findDropdownBtn().findAllComponents(GlIcon)).toHaveLength(1);
     });
   });
 });

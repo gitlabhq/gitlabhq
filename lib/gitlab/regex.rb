@@ -5,7 +5,12 @@ module Gitlab
     module Packages
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
+
       PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
+
+      # see https://github.com/apache/maven/blob/c1dfb947b509e195c75d4275a113598cf3063c3e/maven-artifact/src/main/java/org/apache/maven/artifact/Artifact.java#L46
+      MAVEN_SNAPSHOT_DYNAMIC_PARTS = /\A.{0,1000}(-\d{8}\.\d{6}-\d+).{0,1000}\z/.freeze
+
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
 
       def conan_package_reference_regex
@@ -141,7 +146,7 @@ module Gitlab
       end
 
       def debian_direct_upload_filename_regex
-        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb)\z}o.freeze
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb|ddeb)\z}o.freeze
       end
 
       def helm_channel_regex
@@ -253,37 +258,44 @@ module Gitlab
       end
     end
 
+    module BulkImports
+      def bulk_import_destination_namespace_path_regex
+        # This regexp validates the string conforms to rules for a destination_namespace path:
+        # i.e does not start with a non-alphanumeric character,
+        # contains only alphanumeric characters, forward slashes, periods, and underscores,
+        # does not end with a period or forward slash, and has a relative path structure
+        # with no http protocol chars or leading or trailing forward slashes
+        # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/destination/namespace/path'
+        # the regex also allows for an empty string ('') to be accepted as this is allowed in
+        # a bulk_import POST request
+        @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|(\A[0-9a-z]*(-_.)?[0-9a-z])(\/?[0-9a-z]*[-_.]?[0-9a-z])+\z)/i
+      end
+
+      def bulk_import_source_full_path_regex
+        # This regexp validates the string conforms to rules for a source_full_path path:
+        # i.e does not start with a non-alphanumeric character except for periods or underscores,
+        # contains only alphanumeric characters, forward slashes, periods, and underscores,
+        # does not end with a period or forward slash, and has a relative path structure
+        # with no http protocol chars or leading or trailing forward slashes
+        # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
+        @bulk_import_source_full_path_regex ||= %r/\A([.]?)[^\W](\/?([-_.+]*)*[0-9a-z][-_]*)+\z/i
+      end
+
+      def bulk_import_source_full_path_regex_message
+        bulk_import_destination_namespace_path_regex_message
+      end
+
+      def bulk_import_destination_namespace_path_regex_message
+        "must have a relative path structure " \
+        "with no HTTP protocol characters, or leading or trailing forward slashes. " \
+        "Path segments must not start or end with a special character, " \
+        "and must not contain consecutive special characters."
+      end
+    end
+
     extend self
     extend Packages
-
-    def bulk_import_destination_namespace_path_regex
-      # This regexp validates the string conforms to rules for a destination_namespace path:
-      # i.e does not start with a non-alphanumeric character except for periods or underscores,
-      # contains only alphanumeric characters, forward slashes, periods, and underscores,
-      # does not end with a period or forward slash, and has a relative path structure
-      # with no http protocol chars or leading or trailing forward slashes
-      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/destination/namespace/path'
-      # the regex also allows for an empty string ('') to be accepted as this is allowed in
-      # a bulk_import POST request
-      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z)/i
-    end
-
-    def bulk_import_source_full_path_regex
-      # This regexp validates the string conforms to rules for a source_full_path path:
-      # i.e does not start with a non-alphanumeric character except for periods or underscores,
-      # contains only alphanumeric characters, forward slashes, periods, and underscores,
-      # does not end with a period or forward slash, and has a relative path structure
-      # with no http protocol chars or leading or trailing forward slashes
-      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
-      @bulk_import_source_full_path_regex ||= %r/\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z/i
-    end
-
-    def bulk_import_destination_namespace_path_regex_message
-      "cannot start with a non-alphanumeric character except for periods or underscores, " \
-      "can contain only alphanumeric characters, forward slashes, periods, and underscores, " \
-      "cannot end with a period or forward slash, and has a relative path structure " \
-      "with no http protocol chars or leading or trailing forward slashes" \
-    end
+    extend BulkImports
 
     def group_path_regex
       # This regexp validates the string conforms to rules for a group slug:
@@ -297,7 +309,7 @@ module Gitlab
     def group_path_regex_message
       "cannot start with a non-alphanumeric character except for periods or underscores, " \
       "can contain only alphanumeric characters, periods, and underscores, " \
-      "cannot end with a period or forward slash, and has no leading or trailing forward slashes" \
+      "cannot end with a period or forward slash, and has no leading or trailing forward slashes." \
     end
 
     def project_name_regex
@@ -454,7 +466,7 @@ module Gitlab
     # ```
     MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED =
       '(?P<code>' \
-        '^```\n' \
+        '^```.*?\n' \
         '(?:\n|.)*?' \
         '\n```\ *$' \
       ')'.freeze
@@ -471,6 +483,17 @@ module Gitlab
         \n<\/[^>]+?>\ *$
       )
     }mx.freeze
+
+    # HTML block:
+    # <tag>
+    # Anything, including `>>>` blocks which are ignored by this filter
+    # </tag>
+    MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED =
+      '(?P<html>' \
+        '^<[^>]+?>\ *\n' \
+        '(?:\n|.)*?' \
+        '\n<\/[^>]+?>\ *$' \
+      ')'.freeze
 
     # HTML comment line:
     # <!-- some commented text -->
@@ -494,9 +517,27 @@ module Gitlab
       }mx.freeze
     end
 
+    def markdown_code_or_html_blocks_untrusted
+      @markdown_code_or_html_blocks_untrusted ||=
+        "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED}"
+    end
+
     def markdown_code_or_html_comments_untrusted
       @markdown_code_or_html_comments_untrusted ||=
         "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED}"
+    end
+
+    def markdown_code_or_html_blocks_or_html_comments_untrusted
+      @markdown_code_or_html_comments_untrusted ||=
+        "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED}" \
         "|" \
         "#{MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED}" \
         "|" \
@@ -550,11 +591,15 @@ module Gitlab
     end
 
     def issue
-      @issue ||= /(?<issue>\d+)(?<format>\+)?(?=\W|\z)/
+      @issue ||= /(?<issue>\d+)(?<format>\+s{,1})?(?=\W|\z)/
+    end
+
+    def work_item
+      @work_item ||= /(?<work_item>\d+)(?<format>\+s{,1})?(?=\W|\z)/
     end
 
     def merge_request
-      @merge_request ||= /(?<merge_request>\d+)(?<format>\+)?/
+      @merge_request ||= /(?<merge_request>\d+)(?<format>\+s{,1})?/
     end
 
     def base64_regex

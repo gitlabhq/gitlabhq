@@ -6,17 +6,18 @@ import {
   REPORT_TYPE_SAST_IAC,
   REPORT_TYPE_DAST,
   REPORT_TYPE_DAST_PROFILES,
+  REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
   REPORT_TYPE_SECRET_DETECTION,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
   REPORT_TYPE_CORPUS_MANAGEMENT,
   REPORT_TYPE_API_FUZZING,
-  REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
 
 import kontraLogo from 'images/vulnerability/kontra-logo.svg';
 import scwLogo from 'images/vulnerability/scw-logo.svg';
+import secureflagLogo from 'images/vulnerability/secureflag-logo.svg';
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
@@ -35,7 +36,7 @@ export const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sas
 });
 
 export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
-export const SAST_IAC_SHORT_NAME = s__('ciReport|IaC Scanning');
+export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 export const SAST_IAC_DESCRIPTION = __(
   'Analyze your infrastructure as code configuration files for known vulnerabilities.',
 );
@@ -65,8 +66,31 @@ export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_PROFILES_DESCRIPTION = s__(
   'SecurityConfiguration|Manage profiles for use by DAST scans.',
 );
-export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage profiles');
+
+export const BAS_BADGE_TEXT = s__('SecurityConfiguration|Incubating feature');
+export const BAS_BADGE_TOOLTIP = s__(
+  'SecurityConfiguration|Breach and Attack Simulation is an incubating feature extending existing security testing by simulating adversary activity.',
+);
+export const BAS_DESCRIPTION = s__(
+  'SecurityConfiguration|Simulate breach and attack scenarios against your running application by attempting to detect and exploit known vulnerabilities.',
+);
+export const BAS_HELP_PATH = helpPagePath(
+  'user/application_security/breach_and_attack_simulation/index',
+);
+export const BAS_NAME = s__('SecurityConfiguration|Breach and Attack Simulation (BAS)');
+export const BAS_SHORT_NAME = s__('SecurityConfiguration|BAS');
+
+export const BAS_DAST_FEATURE_FLAG_DESCRIPTION = s__(
+  'SecurityConfiguration|Enable incubating Breach and Attack Simulation focused features such as callback attacks in your DAST scans.',
+);
+export const BAS_DAST_FEATURE_FLAG_HELP_PATH = helpPagePath(
+  'user/application_security/breach_and_attack_simulation/index',
+  { anchor: 'extend-dynamic-application-security-testing-dast' },
+);
+export const BAS_DAST_FEATURE_FLAG_NAME = s__(
+  'SecurityConfiguration|Out-of-Band Application Security Testing (OAST)',
+);
 
 export const SECRET_DETECTION_NAME = __('Secret Detection');
 export const SECRET_DETECTION_DESCRIPTION = __(
@@ -126,13 +150,7 @@ export const API_FUZZING_NAME = __('API Fuzzing');
 export const API_FUZZING_DESCRIPTION = __('Find bugs in your code with API fuzzing.');
 export const API_FUZZING_HELP_PATH = helpPagePath('user/application_security/api_fuzzing/index');
 
-export const LICENSE_COMPLIANCE_NAME = __('License Compliance');
-export const LICENSE_COMPLIANCE_DESCRIPTION = __(
-  'Search your project dependencies for their licenses and apply policies.',
-);
-export const LICENSE_COMPLIANCE_HELP_PATH = helpPagePath(
-  'user/compliance/license_compliance/index',
-);
+export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
 
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,
@@ -143,6 +161,8 @@ export const SCANNER_NAMES_MAP = {
   COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
   SECRET_DETECTION: SECRET_DETECTION_NAME,
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
+  BREACH_AND_ATTACK_SIMULATION: BAS_NAME,
+  CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
   GENERIC: s__('ciReport|Manually added'),
 };
 
@@ -224,14 +244,24 @@ export const securityFeatures = [
       configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
     },
   },
-];
-
-export const complianceFeatures = [
   {
-    name: LICENSE_COMPLIANCE_NAME,
-    description: LICENSE_COMPLIANCE_DESCRIPTION,
-    helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    type: REPORT_TYPE_LICENSE_COMPLIANCE,
+    anchor: 'bas',
+    badge: {
+      alwaysDisplay: true,
+      text: BAS_BADGE_TEXT,
+      tooltipText: BAS_BADGE_TOOLTIP,
+      variant: 'info',
+    },
+    description: BAS_DESCRIPTION,
+    name: BAS_NAME,
+    helpPath: BAS_HELP_PATH,
+    secondary: {
+      configurationHelpPath: BAS_DAST_FEATURE_FLAG_HELP_PATH,
+      description: BAS_DAST_FEATURE_FLAG_DESCRIPTION,
+      name: BAS_DAST_FEATURE_FLAG_NAME,
+    },
+    shortName: BAS_SHORT_NAME,
+    type: REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
   },
 ];
 
@@ -284,6 +314,9 @@ export const TEMP_PROVIDER_LOGOS = {
   [__('Secure Code Warrior')]: {
     svg: scwLogo,
   },
+  SecureFlag: {
+    svg: secureflagLogo,
+  },
 };
 
 // Use the `url` field from the GraphQL query once this issue is resolved
@@ -291,4 +324,5 @@ export const TEMP_PROVIDER_LOGOS = {
 export const TEMP_PROVIDER_URLS = {
   Kontra: 'https://application.security/',
   [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
+  SecureFlag: 'https://www.secureflag.com/',
 };

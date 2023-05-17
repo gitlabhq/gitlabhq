@@ -20,12 +20,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+
+    it do
+      is_expected.to belong_to(:head_pipeline).class_name('Ci::Pipeline').inverse_of(:merge_requests_as_head_pipeline)
+    end
+
     it { is_expected.to have_many(:assignees).through(:merge_request_assignees) }
     it { is_expected.to have_many(:reviewers).through(:merge_request_reviewers) }
     it { is_expected.to have_many(:merge_request_diffs) }
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:iteration) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_many(:draft_notes) }
@@ -33,6 +37,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:reviewed_by_users).through(:reviews).source(:author) }
     it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
+    it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent').inverse_of(:merge_request) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -393,8 +398,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         instance1 = MergeRequest.find(merge_request.id)
         instance2 = MergeRequest.find(merge_request.id)
 
-        instance1.ensure_metrics
-        instance2.ensure_metrics
+        instance1.ensure_metrics!
+        instance2.ensure_metrics!
 
         metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
         expect(metrics_records.size).to eq(1)
@@ -760,6 +765,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
+      context 'when scoped with :merged_before and :merged_after' do
+        before do
+          mr2.metrics.update!(merged_at: mr1.metrics.merged_at - 1.week)
+          mr3.metrics.update!(merged_at: mr1.metrics.merged_at + 1.week)
+        end
+
+        it 'excludes merge requests outside of the date range' do
+          expect(
+            project.merge_requests.merge(
+              MergeRequest::Metrics
+                .merged_before(mr1.metrics.merged_at + 1.day)
+                .merged_after(mr1.metrics.merged_at - 1.day)
+            ).total_time_to_merge
+          ).to be_within(1).of(expected_total_time([mr1]))
+        end
+      end
+
       def expected_total_time(mrs)
         mrs = mrs.reject { |mr| mr.merged_at.nil? }
         mrs.reduce(0.0) do |sum, mr|
@@ -1027,7 +1049,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#to_reference' do
-    let(:project) { build(:project, name: 'sample-project') }
+    let(:project) { build(:project) }
     let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
 
     it 'returns a String reference to the object' do
@@ -1035,12 +1057,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
-      expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
+      another_project = build(:project, namespace: project.namespace)
+      expect(merge_request.to_reference(another_project)).to eq "#{project.path}!1"
     end
 
     it 'returns a String reference with the full path' do
-      expect(merge_request.to_reference(full: true)).to eq(project.full_path + '!1')
+      expect(merge_request.to_reference(full: true)).to eq("#{project.full_path}!1")
     end
   end
 
@@ -4024,26 +4046,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#use_merge_base_pipeline_for_comparison?' do
     let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+    let(:service_class) { Ci::CompareReportsBaseService }
 
     subject { merge_request.use_merge_base_pipeline_for_comparison?(service_class) }
 
-    context 'when service class is Ci::CompareMetricsReportsService' do
-      let(:service_class) { 'Ci::CompareMetricsReportsService' }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when service class is Ci::CompareCodequalityReportsService' do
-      let(:service_class) { 'Ci::CompareCodequalityReportsService' }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when service class is different' do
-      let(:service_class) { 'Ci::GenerateCoverageReportsService' }
-
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to eq(false) }
   end
 
   describe '#comparison_base_pipeline' do
@@ -4051,6 +4058,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+    let(:service_class) { ::Ci::CompareReportsBaseService }
     let!(:base_pipeline) do
       create(:ci_pipeline,
         :with_test_reports,
@@ -4060,20 +4068,24 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
-    context 'when service class is Ci::CompareCodequalityReportsService' do
-      let(:service_class) { 'Ci::CompareCodequalityReportsService' }
+    before do
+      allow(merge_request).to receive(:use_merge_base_pipeline_for_comparison?)
+        .with(service_class).and_return(uses_merge_base)
+    end
+
+    context 'when service class uses merge base pipeline' do
+      let(:uses_merge_base) { true }
 
       context 'when merge request has a merge request pipeline' do
         let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline)
+          create(:merge_request, :with_merge_request_pipeline, source_project: project)
         end
 
-        let(:merge_base_pipeline) do
-          create(:ci_pipeline, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
+        let!(:merge_base_pipeline) do
+          create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
         end
 
         before do
-          merge_base_pipeline
           merge_request.update_head_pipeline
         end
 
@@ -4082,18 +4094,26 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
-      context 'when merge does not have a merge request pipeline' do
-        it 'returns the base_pipeline' do
-          expect(pipeline).to eq(base_pipeline)
-        end
+      it 'returns the base_pipeline when merge does not have a merge request pipeline' do
+        expect(pipeline).to eq(base_pipeline)
       end
     end
 
-    context 'when service_class is different' do
-      let(:service_class) { 'Ci::GenerateCoverageReportsService' }
+    context 'when service_class does not use merge base pipeline' do
+      let(:uses_merge_base) { false }
 
       it 'returns the base_pipeline' do
         expect(pipeline).to eq(base_pipeline)
+      end
+
+      context 'when merge request has a merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request, :with_merge_request_pipeline, source_project: project)
+        end
+
+        it 'returns the base pipeline' do
+          expect(pipeline).to eq(base_pipeline)
+        end
       end
     end
   end
@@ -4279,8 +4299,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project
 
-      expect { subject.destroy! }
-        .to change { project.open_merge_requests_count }.from(1).to(0)
+      expect do
+        subject.destroy!
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
 
@@ -4304,6 +4327,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(subject).and_call_original
 
         transition!
+      end
+
+      context 'when skip_merge_status_trigger is set to true' do
+        before do
+          subject.skip_merge_status_trigger = true
+        end
+
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when transaction is not committed' do
@@ -4459,7 +4490,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'checking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is checking' do
@@ -4479,7 +4510,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'cannot_be_merged_rechecking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is cannot_be_merged' do
@@ -4615,6 +4646,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .from(true)
           .to(false)
       end
+
+      context 'when it is a first contribution' do
+        let(:new_user) { create(:user) }
+
+        before do
+          subject.update!(author: new_user)
+        end
+
+        it 'sets first_contribution' do
+          subject.mark_as_merged
+
+          expect(subject.state).to eq('merged')
+          expect(subject.reload.first_contribution?).to be_truthy
+        end
+
+        it "doesn't set first_contribution not first contribution" do
+          create(:merged_merge_request, author: new_user)
+
+          subject.mark_as_merged
+
+          expect(subject.first_contribution?).to be_falsey
+        end
+      end
     end
 
     describe 'transition to cannot_be_merged' do
@@ -4697,9 +4751,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       [:closed, :merged].each do |state|
-        let(:state) { state }
-
         context state do
+          let(:state) { state }
+
           it 'does not notify' do
             expect(notification_service).not_to receive(:merge_request_unmergeable)
             expect(todo_service).not_to receive(:merge_request_became_unmergeable)

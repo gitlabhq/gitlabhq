@@ -58,7 +58,7 @@ RSpec.describe Emails::PagesDomains do
   end
 
   describe '#pages_domain_enabled_email' do
-    let(:email_subject) { "#{project.path} | GitLab Pages domain '#{domain.domain}' has been enabled" }
+    let(:email_subject) { "#{project.name} | GitLab Pages domain '#{domain.domain}' has been enabled" }
     let(:link_anchor) { 'steps' }
 
     subject { Notify.pages_domain_enabled_email(domain, user) }
@@ -69,7 +69,7 @@ RSpec.describe Emails::PagesDomains do
   end
 
   describe '#pages_domain_disabled_email' do
-    let(:email_subject) { "#{project.path} | GitLab Pages domain '#{domain.domain}' has been disabled" }
+    let(:email_subject) { "#{project.name} | GitLab Pages domain '#{domain.domain}' has been disabled" }
     let(:link_anchor) { '4-verify-the-domains-ownership' }
 
     subject { Notify.pages_domain_disabled_email(domain, user) }
@@ -82,7 +82,7 @@ RSpec.describe Emails::PagesDomains do
   end
 
   describe '#pages_domain_verification_succeeded_email' do
-    let(:email_subject) { "#{project.path} | Verification succeeded for GitLab Pages domain '#{domain.domain}'" }
+    let(:email_subject) { "#{project.name} | Verification succeeded for GitLab Pages domain '#{domain.domain}'" }
     let(:link_anchor) { 'steps' }
 
     subject { Notify.pages_domain_verification_succeeded_email(domain, user) }
@@ -93,7 +93,7 @@ RSpec.describe Emails::PagesDomains do
   end
 
   describe '#pages_domain_verification_failed_email' do
-    let(:email_subject) { "#{project.path} | ACTION REQUIRED: Verification failed for GitLab Pages domain '#{domain.domain}'" }
+    let(:email_subject) { "#{project.name} | ACTION REQUIRED: Verification failed for GitLab Pages domain '#{domain.domain}'" }
     let(:link_anchor) { 'steps' }
 
     subject { Notify.pages_domain_verification_failed_email(domain, user) }
@@ -104,7 +104,7 @@ RSpec.describe Emails::PagesDomains do
   end
 
   describe '#pages_domain_auto_ssl_failed_email' do
-    let(:email_subject) { "#{project.path} | ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '#{domain.domain}'" }
+    let(:email_subject) { "#{project.name} | ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '#{domain.domain}'" }
 
     subject { Notify.pages_domain_auto_ssl_failed_email(domain, user) }
 

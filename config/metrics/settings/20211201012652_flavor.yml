@@ -7,7 +7,6 @@ description: What PostgreSQL flavor is being used. Possible values are
 product_section: enablement
 product_stage: enablement
 product_group: database
-product_category: database
 value_type: string
 status: active
 milestone: "14.6"

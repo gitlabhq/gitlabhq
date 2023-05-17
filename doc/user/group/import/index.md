@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -27,30 +27,31 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
+> - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 
-FLAG:
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
 feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
-Also on self-managed GitLab, by default [migrating project items](#migrated-project-items-beta) is not available. To show
-this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects is available.
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 
 - Copy many groups at once.
-- Copy top-level groups to:
+- In the GitLab UI, copy top-level groups to:
   - Another top-level group.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
-- Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production
+- In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
+- Copy groups with projects (in [Beta](../../../policy/alpha-beta-support.md#beta) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
-  - On self-managed GitLab instances after an administrator first [enables the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`.
 
 Not all group and project resources are copied. See list of copied resources below:
 
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items-beta).
+
+WARNING:
+Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
+ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
@@ -58,11 +59,23 @@ We invite you to leave your feedback about migrating by direct transfer in
 If you want to move groups instead of copying groups, you can [transfer groups](../manage.md#transfer-a-group) if the
 groups are in the same GitLab instance. Transferring groups is a faster and more complete option.
 
-### Rate limit
+### Known issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
+See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of known issues for migrating by direct
+transfer.
 
-Each user can perform up to six migrations per minute.
+### Limits
+
+| Limit       | Description                                                                                                                                                                     |
+|:------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 6           | Maximum number of migrations permitted by a destination GitLab instance per minute per user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9. |
+| 5 GB        | Maximum relation size that can be downloaded from the source instance.                                                                                                          |
+| 10 GB       | Maximum size of a decompressed archive.                                                                                                                                         |
+| 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                                                            |
+| 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
+| 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
+| 8 hours     | Time until migration times out.                                                                                                                                                 |
+| 90 minutes  | Time the destination is waiting for export to complete.                                                                                                                         |
 
 ### Visibility rules
 
@@ -78,6 +91,8 @@ make sure to have a similar setup on the destination instance, or to import into
 
 ### Prerequisites
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 To migrate groups by direct transfer:
 
 - The network connection between instances or GitLab.com must support HTTPS.
@@ -92,25 +107,22 @@ To migrate groups by direct transfer:
   - For GitLab 15.0 and earlier source instances, the personal access token must have both the `api` and
     `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
-  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
-  GitLab 16.0.
+- You must have at least the Maintainer role on the destination group to migrate to.
 
 ### Prepare user accounts
 
 To ensure GitLab maps users and their contributions correctly:
 
-1. Create the required users on the destination GitLab instance. When migrating to GitLab.com, you must create users
-   manually unless [SCIM](../../group/saml_sso/scim_setup.md) is used. Creating users with the API is only available to
-   self-managed instances because it requires administrator access.
-1. Check that users have a public email on the source GitLab instance that matches their primary email on the
-   destination GitLab instance.
-1. Ensure that users confirm their primary email addresses on the destination GitLab instance. Most users receive an
-   email asking them to confirm their email address.
-1. If using an OmniAuth provider like SAML, link GitLab and SAML accounts of users on GitLab. All users on the
-   destination GitLab instance must sign in and verify their account on the destination GitLab instance. If using
-   [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), users must
-   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
+1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
+   administrator access. When migrating to GitLab.com or a self-managed GitLab instance you can:
+   - Create users manually.
+   - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
+     [SCIM](../../group/saml_sso/scim_setup.md). You can
+     [bypass the GitLab user account verification with verified email domains](../saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
+1. Ensure that users have a [public email](../../profile/index.md#set-your-public-email) on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
+   users receive an email asking them to confirm their email address.
+1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
+   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### Connect the source GitLab instance
 
@@ -125,7 +137,7 @@ Create the group you want to import to and connect the source GitLab instance:
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
-### Select the groups to import
+### Select the groups and projects to import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
@@ -135,11 +147,14 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not ready for production use.
+   - **Import with projects**.
    - **Import without projects**.
-   - **Import** on self-managed GitLab, when the `bulk_import_projects` feature flag is disabled and the feature is not available.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
+
+WARNING:
+Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
+ready for production use.
 
 ### Group import history
 
@@ -157,108 +172,162 @@ To view group import history:
 1. On the top bar, select **Create new…** (**{plus-square}**).
 1. Select **New group**.
 1. Select **Import group**.
-1. Select **History** in the upper right corner.
+1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
 
 ### Migrated group items
 
-The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
-file for groups lists many of the items imported when migrating groups by direct transfer. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
-[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
+The group items that are migrated depend on the version of GitLab you use on the destination. To determine if a
+specific group item is migrated:
+
+1. Check the [`groups/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/groups/stage.rb)
+   file for all editions and the
+   [`groups/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/bulk_imports/groups/stage.rb) file
+   for Enterprise Edition for your version on the destination. For example, for version 15.9:
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/bulk_imports/groups/stage.rb> (all editions).
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/ee/lib/ee/bulk_imports/groups/stage.rb> (Enterprise
+     Edition).
+1. Check the
+   [`group/import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
+   file for groups for your version on the destination. For example, for version 15.9:
+   <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/group/import_export.yml>.
+
+Any other group items are **not** migrated.
 
 Group items that are migrated to the destination GitLab instance include:
 
-- Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
-- Board Lists
-- Boards
-- Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
-  - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-- Finisher
-- Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
-- Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
-- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) in 15.4)
-- Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
-  Group members are associated with the imported group if:
-  - The user already exists in the destination GitLab instance and
-  - The user has a public email in the source GitLab instance that matches a
-    confirmed email in the destination GitLab instance
-- Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
-- Namespace Settings
-- Releases
-  - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
-- Subgroups
-- Uploads
+| Group item           | Introduced in                                                               |
+|:---------------------|:----------------------------------------------------------------------------|
+| Badges               | [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431)        |
+| Boards               | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+| Board lists          | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863)  |
+| Epics <sup>1</sup>   | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281)         |
+| Group labels         | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)         |
+| Iterations           | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
+| Iteration cadences   | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
+| Members <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
+| Group milestones     | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
+| Namespace settings   | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
+| Release milestones   | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
+| Subgroups            | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+| Uploads              | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 
-Any other items are **not** migrated.
+1. Epic resource state events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4, label
+   associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12, state and
+   state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7, and system note
+   metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
+1. Group members are associated with the imported group if the user:
+   - Already exists in the destination GitLab instance.
+   - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
-### Migrated project items (beta)
+### Migrated project items (Beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
+> - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+> - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
-FLAG:
-On self-managed GitLab, migrating project resources when migrating groups is not available by default.
-To make it available ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. On GitLab.com, groups are migrated with all their projects by default.
+If you choose to migrate projects when you [select groups to migrate](#select-the-groups-and-projects-to-import),
+project items are migrated with the projects.
 
-The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
-file for projects lists many of the items imported when migrating projects using group migration. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
-[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
+The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
+specific project item is migrated:
+
+1. Check the [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/projects/stage.rb)
+   file for all editions and the
+   [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/bulk_imports/projects/stage.rb)
+   file for Enterprise Edition for your version on the destination. For example, for version 15.9:
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/bulk_imports/projects/stage.rb> (all editions).
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/ee/lib/ee/bulk_imports/projects/stage.rb> (Enterprise
+     Edition).
+1. Check the
+   [`project/import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
+   file for projects for your version on the destination. For example, for version 15.9:
+   <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/project/import_export.yml>.
+
+Any other project items are **not** migrated.
+
+If you choose not to migrate projects along with groups or if you want to retry a project migration, you can
+initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features)
+Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:
 
-- Projects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
-  - Auto DevOps ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339410) in GitLab 14.6)
-  - Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) in GitLab 14.6)
-  - Branches (including protected branches) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) in GitLab 14.7)
-  - CI Pipelines ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339407) in GitLab 14.6)
-  - Designs ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339421) in GitLab 15.1)
-  - Issues ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267946) in GitLab 14.4)
-    - Issue iteration ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) in 15.4)
-    - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-    - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-    - Issue resource iteration events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-    - Merge request URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
-    - Time Tracking ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267946) in GitLab 14.4)
-  - Issue boards ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) in GitLab 14.4)
-  - Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339419) in GitLab 14.4)
-  - LFS Objects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339405) in GitLab 14.8)
-  - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341886) in GitLab 14.8)
-  - Merge Requests ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.5)
-    - Multiple merge request assignees ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
-    - Merge request reviewers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
-    - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
-    - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-    - Merge request resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-    - Issue URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
-    - Time Tracking ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.5)
-  - Push Rules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.6)
-  - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339417) in GitLab 14.5)
-  - External Pull Requests ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339409) in GitLab 14.5)
-  - Pipeline History ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339412) in GitLab 14.6)
-  - Pipeline Schedules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339408) in GitLab 14.8)
-  - Project Features ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74722) in GitLab 14.6)
-  - Releases ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.1)
-  - Release Evidences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360567) in GitLab 15.1)
-  - Repositories ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
-  - Snippets ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343438) in GitLab 14.6)
-  - Settings ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339416) in GitLab 14.6)
-    - Avatar ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75249) in GitLab 14.6)
-    - Container Expiration Policy ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) in GitLab 14.6)
-    - Project Properties ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75898) in GitLab 14.6)
-    - Service Desk ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) in GitLab 14.6)
-  - Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339401) in GitLab 14.5)
-  - Wikis ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345923) in GitLab 14.6)
+| Project item                            | Introduced in                                                              |
+|:----------------------------------------|:---------------------------------------------------------------------------|
+| Projects                                | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
+| Auto DevOps                             | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339410)        |
+| Badges                                  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) |
+| Branches (including protected branches) | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414)        |
+| CI Pipelines                            | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339407)        |
+| Commit comments                         | [GitLab 15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/391601)       |
+| Designs                                 | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339421)        |
+| Issues                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
+| Issue boards                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) |
+| Labels                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/339419)        |
+| LFS Objects                             | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339405)        |
+| Members                                 | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
+| Merge requests                          | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
+| Push rules                              | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
+| Milestones                              | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339417)        |
+| External pull requests                  | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339409)        |
+| Pipeline history                        | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339412)        |
+| Pipeline schedules                      | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339408)        |
+| Project features                        | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74722) |
+| Releases                                | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)        |
+| Release evidences                       | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/360567)        |
+| Repositories                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
+| Snippets                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/343438)        |
+| Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
+| Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
+| Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
-Items excluded from migration, because they contain sensitive information:
+#### Issue-related items
 
-- Pipeline Triggers.
+Issue-related project items that are migrated to the destination GitLab instance include:
+
+| Issue-related project item      | Introduced in                                                              |
+|:--------------------------------|:---------------------------------------------------------------------------|
+| Issue iterations                | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) |
+| Issue resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
+| Issue resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
+| Issue resource iteration events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
+| Merge request URL references    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947)        |
+| Time tracking                   | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
+
+#### Merge request-related items
+
+Merge request-related project items that are migrated to the destination GitLab instance include:
+
+| Merge request-related project item      | Introduced in                                                       |
+|:----------------------------------------|:--------------------------------------------------------------------|
+| Multiple merge request assignees        | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
+| Merge request reviewers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
+| Merge request approvers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
+| Merge request resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
+| Merge request resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
+| Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
+| Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
+
+#### Setting-related items
+
+Setting-related project items that are migrated to the destination GitLab instance include:
+
+| Setting-related project item | Introduced in                                                              |
+|:-----------------------------|:---------------------------------------------------------------------------|
+| Avatar                       | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75249) |
+| Container expiration policy  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) |
+| Project properties           | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75898) |
+| Service Desk                 | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) |
+
+#### Excluded items
+
+Project items excluded from migration because they contain sensitive information:
+
+- Pipeline triggers.
 
 ### Troubleshooting
 
@@ -283,7 +352,7 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 ```
 
 You can also see all migrated entities with any failures related to them using an
-[API endpoint](../../../api/bulk_imports.md#list-all-group-migrations-entities).
+[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
 
 #### Stale imports
 
@@ -316,6 +385,18 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The [Groups API](../../../api/groups.md#update-group).
 
+#### Other `404` errors
+
+You can receive other `404` errors when importing a group, for example:
+
+```json
+"exception_message": "Unsuccessful response 404 from [FILTERED] Bo...",
+"exception_class": "BulkImports::NetworkError",
+```
+
+This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the [prerequisites](#prerequisites) on the source
+instance.
+
 ## Migrate groups by uploading an export file (deprecated)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
@@ -323,8 +404,8 @@ To solve this, you must change the source group path to include a non-numerical 
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
-[migrating groups by direct transfer](#migrate-groups-by-direct-transfer-recommended). To follow progress on a solution for
-[offline environments](../../application_security/offline_deployments/index.md), see
+[migrating groups by direct transfer](#migrate-groups-by-direct-transfer-recommended). However, this feature is still recommended for migrating groups between
+offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/index.md), see
 [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/8985).
 
 Prerequisites:
@@ -356,13 +437,11 @@ Note the following:
 
 ### Compatibility
 
-Group file exports are in NDJSON format. GitLab previously produced group file exports in JSON format, however:
+> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
 
-- From GitLab 15.8, GitLab no longer supports importing a JSON-formatted group file export.
-- Between GitLab 14.0 and GitLab 14.7, GitLab no longer produces group file exports in JSON format but, to support
-  transitions, can still import JSON-formatted group file exports.
+Group file exports are in NDJSON format.
 
-From GitLab 13.0, GitLab can import group file exports that were exported from a version of GitLab up to two
+You can import group file exports that were exported from a version of GitLab up to two
 [minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
 [security releases](../../../policy/maintenance.md#security-releases).
 
@@ -377,7 +456,7 @@ For example:
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
 file for groups lists items exported and imported when migrating groups using file exports. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
+for your version of GitLab to check which items can be imported to the destination GitLab instance. For example,
 [`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
 
 Group items that are exported include:
@@ -404,7 +483,7 @@ Items that are **not** exported include:
 
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
-- Users must set a public email in the source GitLab instance that matches one of their verified emails in the target GitLab instance.
+- Users must set a public email in the source GitLab instance that matches their confirmed primary email in the destination GitLab instance. Most users receive an email asking them to confirm their email address.
 
 ### Enable export for a group
 

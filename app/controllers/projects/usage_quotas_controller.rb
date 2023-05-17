@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-class Projects::UsageQuotasController < Projects::ApplicationController
-  before_action :authorize_read_usage_quotas!
+module Projects
+  class UsageQuotasController < Projects::ApplicationController
+    before_action :authorize_read_usage_quotas!
 
-  layout "project_settings"
+    layout "project_settings"
 
-  feature_category :subscription_cost_management
-  urgency :low
+    feature_category :consumables_cost_management
+    urgency :low
 
-  def index
-    @hide_search_settings = true
+    def index
+      @hide_search_settings = true
+    end
   end
 end
+
+Projects::UsageQuotasController.prepend_mod

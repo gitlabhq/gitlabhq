@@ -110,7 +110,7 @@ module Gitlab
         when String
           # Handle emails from clients which append with commas,
           # example clients are Microsoft exchange and iOS app
-          Gitlab::IncomingEmail.scan_fallback_references(references)
+          email_class.scan_fallback_references(references)
         when nil
           []
         end
@@ -177,7 +177,7 @@ module Gitlab
 
       def recipients_from_received_headers
         strong_memoize :emails_from_received_headers do
-          received.map { |header| header.value[RECEIVED_HEADER_REGEX, 1] }.compact
+          received.filter_map { |header| header.value[RECEIVED_HEADER_REGEX, 1] }
         end
       end
 
@@ -203,7 +203,7 @@ module Gitlab
       end
 
       def email_class
-        Gitlab::IncomingEmail
+        Gitlab::Email::IncomingEmail
       end
     end
   end

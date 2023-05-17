@@ -96,10 +96,6 @@ describe('~/environments/components/environments_app.vue', () => {
     paginationMock = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should request available environments if the scope is invalid', async () => {
     await createWrapperWithMocked({
       environmentsApp: resolvedEnvironmentsApp,
@@ -174,12 +170,8 @@ describe('~/environments/components/environments_app.vue', () => {
       folder: resolvedFolder,
     });
 
-    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review app') });
-    button.trigger('click');
-
-    await nextTick();
-
-    expect(wrapper.findByText(s__('ReviewApp|Enable Review App')).exists()).toBe(true);
+    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
+    expect(button.exists()).toBe(true);
   });
 
   it('should not show a button to open the review app modal if review apps are configured', async () => {
@@ -191,7 +183,7 @@ describe('~/environments/components/environments_app.vue', () => {
       folder: resolvedFolder,
     });
 
-    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review app') });
+    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
     expect(button.exists()).toBe(false);
   });
 
@@ -426,7 +418,7 @@ describe('~/environments/components/environments_app.vue', () => {
       );
     });
 
-    it('should sync search term from query params on load', async () => {
+    it('should sync search term from query params on load', () => {
       expect(searchBox.element.value).toBe('prod');
     });
   });

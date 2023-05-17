@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Editor
+group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -178,7 +178,7 @@ strings in the standard
 
 In this context, it should not be confused with other similar or related meanings of
 _example_, such as
-[RSpec examples](https://relishapp.com/rspec/rspec-core/docs/example-groups/basic-structure-describe-it).
+[RSpec examples](https://rspec.info/features/3-12/rspec-core/example-groups/basic-structure/).
 
 See the section on the [`glfm_official_specification.md`](#glfm_official_specificationmd) file
 for more details on the backtick-delimited Markdown+HTML example syntax.
@@ -297,7 +297,7 @@ The Markdown dialect used in the GitLab application has a dual requirement for r
 1. Rendering to static read-only HTML format, to be displayed in various
    places throughout the application.
 1. Rendering editable content in the
-   [Content Editor](https://about.gitlab.com/direction/create/editor/content_editor/),
+   [Content Editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/),
    a ["What You See Is What You Get" (WYSIWYG)](https://en.wikipedia.org/wiki/WYSIWYG)
    editor. The Content Editor supports real-time instant switching between an editable
    Markdown source and an editable WYSIWYG document.

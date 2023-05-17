@@ -1,0 +1,33 @@
+- return unless Gitlab.dev_or_test_env? || Gitlab.com?
+
+- expanded = integration_expanded?('slack_app_')
+%section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Slack application')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Slack integration allows you to interact with GitLab via slash commands in a chat window.')
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-slack-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting) if expanded
+
+      %fieldset
+        .form-group
+          = f.gitlab_ui_checkbox_component :slack_app_enabled, s_('ApplicationSettings|Enable Slack application'),
+            help_text: s_('ApplicationSettings|This option is only available on GitLab.com')
+        .form-group
+          = f.label :slack_app_id, s_('SlackIntegration|Client ID'), class: 'label-bold'
+          = f.text_field :slack_app_id, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :slack_app_secret, s_('SlackIntegration|Client secret'), class: 'label-bold'
+          = f.text_field :slack_app_secret, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :slack_app_signing_secret, s_('SlackIntegration|Signing secret'), class: 'label-bold'
+          = f.text_field :slack_app_signing_secret, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :slack_app_verification_token, s_('SlackIntegration|Verification token'), class: 'label-bold'
+          = f.text_field :slack_app_verification_token, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), pajamas_button: true

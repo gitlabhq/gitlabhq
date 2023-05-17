@@ -1,17 +1,10 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PROJECT_STORAGE_TYPES } from '../constants';
 import { descendingStorageUsageSort } from '../utils';
 
 export default {
-  components: {
-    GlIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   mixins: [glFeatureFlagMixin()],
   props: {
     rootStorageStatistics: {
@@ -35,9 +28,7 @@ export default {
         storageSize,
         wikiSize,
         snippetsSize,
-        uploadsSize,
       } = this.rootStorageStatistics;
-      const artifactsSize = buildArtifactsSize + pipelineArtifactsSize;
 
       if (storageSize === 0) {
         return null;
@@ -70,9 +61,15 @@ export default {
         },
         {
           id: 'buildArtifactsSize',
-          style: this.usageStyle(this.barRatio(artifactsSize)),
-          class: 'gl-bg-data-viz-green-600',
-          size: artifactsSize,
+          style: this.usageStyle(this.barRatio(buildArtifactsSize)),
+          class: 'gl-bg-data-viz-green-500',
+          size: buildArtifactsSize,
+        },
+        {
+          id: 'pipelineArtifactsSize',
+          style: this.usageStyle(this.barRatio(pipelineArtifactsSize)),
+          class: 'gl-bg-data-viz-green-800',
+          size: pipelineArtifactsSize,
         },
         {
           id: 'wikiSize',
@@ -86,12 +83,6 @@ export default {
           class: 'gl-bg-data-viz-orange-800',
           size: snippetsSize,
         },
-        {
-          id: 'uploadsSize',
-          style: this.usageStyle(this.barRatio(uploadsSize)),
-          class: 'gl-bg-data-viz-aqua-700',
-          size: uploadsSize,
-        },
       ]
         .filter((data) => data.size !== 0)
         .sort(descendingStorageUsageSort('size'))
@@ -99,11 +90,10 @@ export default {
           const storageTypeExtraData = PROJECT_STORAGE_TYPES.find(
             (type) => storageType.id === type.id,
           );
-          const { name, tooltip } = storageTypeExtraData || {};
+          const name = storageTypeExtraData?.name;
 
           return {
             name,
-            tooltip,
             ...storageType,
           };
         });
@@ -154,15 +144,6 @@ export default {
         </span>
         <span class="gl-text-gray-500 gl-font-sm">
           {{ formatSize(storageType.size) }}
-        </span>
-        <span
-          v-if="storageType.tooltip"
-          v-gl-tooltip
-          :title="storageType.tooltip"
-          :aria-label="storageType.tooltip"
-          class="gl-ml-2"
-        >
-          <gl-icon name="question" :size="12" />
         </span>
       </div>
     </div>

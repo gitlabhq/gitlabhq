@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::EntityWorker do
+RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
   let_it_be(:entity) { create(:bulk_import_entity) }
 
   let_it_be(:pipeline_tracker) do

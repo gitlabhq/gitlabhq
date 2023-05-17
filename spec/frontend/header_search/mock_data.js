@@ -1,16 +1,14 @@
+import { ICON_PROJECT, ICON_GROUP, ICON_SUBGROUP } from '~/header_search/constants';
 import {
+  PROJECTS_CATEGORY,
+  GROUPS_CATEGORY,
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
   MSG_MR_ASSIGNED_TO_ME,
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
   MSG_IN_ALL_GITLAB,
-  PROJECTS_CATEGORY,
-  ICON_PROJECT,
-  GROUPS_CATEGORY,
-  ICON_GROUP,
-  ICON_SUBGROUP,
-} from '~/header_search/constants';
+} from '~/vue_shared/global_search/constants';
 
 export const MOCK_USERNAME = 'anyone';
 

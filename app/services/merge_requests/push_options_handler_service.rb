@@ -4,8 +4,7 @@ module MergeRequests
   class PushOptionsHandlerService < ::BaseProjectService
     LIMIT = 10
 
-    attr_reader :errors, :changes,
-                :push_options, :target_project
+    attr_reader :errors, :changes, :push_options, :target_project
 
     def initialize(project:, current_user:, changes:, push_options:, params: {})
       super(project: project, current_user: current_user, params: params)
@@ -112,8 +111,10 @@ module MergeRequests
         merge_request = ::MergeRequests::CreateService.new(
           project: project,
           current_user: current_user,
-          params: merge_request.attributes.merge(assignee_ids: merge_request.assignee_ids,
-                                                 label_ids: merge_request.label_ids)
+          params: merge_request.attributes.merge(
+            assignee_ids: merge_request.assignee_ids,
+            label_ids: merge_request.label_ids
+          )
         ).execute
       end
 

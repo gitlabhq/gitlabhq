@@ -34,6 +34,8 @@ module Gitlab
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
           end
+        rescue ArgumentError => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         rescue StandardError => e
           Gitlab::AppLogger.error(
             message: "Failed to create / detach partition(s)",

@@ -57,8 +57,18 @@ module Gitlab
           :milestone
         end
 
+        private
+
         def model
           Milestone
+        end
+
+        def github_identifiers(milestone)
+          {
+            iid: milestone[:number],
+            title: milestone[:title],
+            object_type: object_type
+          }
         end
       end
     end

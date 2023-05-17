@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::RemoteStateHandler do
+RSpec.describe Terraform::RemoteStateHandler, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
   let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
@@ -85,6 +85,7 @@ RSpec.describe Terraform::RemoteStateHandler do
         end
 
         expect(record.reload.name).to eq 'new-name'
+        expect(record.reload.project).to eq project
       end
 
       it 'raises exception if lock has not been acquired before' do

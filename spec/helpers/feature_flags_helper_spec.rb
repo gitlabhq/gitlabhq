@@ -33,12 +33,14 @@ RSpec.describe FeatureFlagsHelper do
     subject { helper.edit_feature_flag_data }
 
     it 'contains all the data needed to edit feature flags' do
-      is_expected.to include(endpoint: "/#{project.full_path}/-/feature_flags/#{feature_flag.iid}",
-                             project_id: project.id,
-                             feature_flags_path: "/#{project.full_path}/-/feature_flags",
-                             environments_endpoint: "/#{project.full_path}/-/environments/search.json",
-                             strategy_type_docs_page_path: "/help/operations/feature_flags#feature-flag-strategies",
-                             environments_scope_docs_path: "/help/ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable")
+      is_expected.to include(
+        endpoint: "/#{project.full_path}/-/feature_flags/#{feature_flag.iid}",
+        project_id: project.id,
+        feature_flags_path: "/#{project.full_path}/-/feature_flags",
+        environments_endpoint: "/#{project.full_path}/-/environments/search.json",
+        strategy_type_docs_page_path: "/help/operations/feature_flags#feature-flag-strategies",
+        environments_scope_docs_path: "/help/ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable"
+      )
     end
   end
 end

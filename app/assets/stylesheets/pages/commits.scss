@@ -71,18 +71,6 @@
   }
 }
 
-.commit-header {
-  padding: 5px 10px;
-  background-color: $gray-light;
-  border-bottom: 1px solid $gray-darker;
-  border-top: 1px solid $gray-darker;
-  font-size: 14px;
-
-  &:first-child {
-    border-top-width: 0;
-  }
-}
-
 .commit-row-title {
   .str-truncated {
     max-width: 70%;
@@ -270,6 +258,10 @@
   &:hover {
     @include gl-text-decoration-none;
   }
+
+  .header-main-content & {
+    @include gl-mr-2;
+  }
 }
 
 .gpg-popover-certificate-details {
@@ -326,5 +318,20 @@
 .add-review-item {
   .gl-tab-nav-item {
     height: 100%;
+  }
+}
+
+.add-review-item-modal {
+  .modal-content {
+    position: absolute;
+    top: 5%;
+  }
+
+  .title-hint-text {
+    color: $gl-text-color-secondary;
+  }
+
+  .gl-filtered-search-suggestion-list.dropdown-menu {
+    width: $gl-max-dropdown-max-height;
   }
 }

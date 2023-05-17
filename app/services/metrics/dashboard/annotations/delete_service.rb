@@ -24,7 +24,7 @@ module Metrics
         attr_reader :user, :annotation
 
         def authorize_action(_options)
-          if Ability.allowed?(user, :delete_metrics_dashboard_annotation, annotation)
+          if Ability.allowed?(user, :admin_metrics_dashboard_annotation, annotation)
             success
           else
             error(s_('MetricsDashboardAnnotation|You are not authorized to delete this annotation'))

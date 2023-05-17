@@ -26,4 +26,4 @@ get '/snippets/:snippet_id/raw/:ref/*path',
   constraints: { snippet_id: /\d+/ }
 
 get '/s/:username', to: redirect('users/%{username}/snippets'),
-                    constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
+  constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }

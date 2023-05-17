@@ -6,7 +6,7 @@ module Integrations
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
-    def self.reference_pattern(only_long: true)
+    def reference_pattern(only_long: true)
       @reference_pattern ||= %r{(?<issue>\b(bug|task|work item|workitem|rtcwi|defect)\b\s+\d+)}i
     end
 

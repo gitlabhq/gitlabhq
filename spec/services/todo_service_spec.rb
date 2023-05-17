@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodoService do
+RSpec.describe TodoService, feature_category: :team_planning do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -211,7 +211,6 @@ RSpec.describe TodoService do
         end
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:namespace) { project.namespace }
           let(:category) { described_class.to_s }
           let(:action) { 'incident_management_incident_todo' }
@@ -392,6 +391,39 @@ RSpec.describe TodoService do
           expect(john_doe.todos_done_count).to eq(1)
           expect(john_doe.todos_pending_count).to eq(0)
         end
+      end
+    end
+
+    describe '#resolve_todos_with_attributes_for_target' do
+      it 'marks related pending todos to the target for all the users as done' do
+        first_todo = create(:todo, :assigned, user: member, project: project, target: issue, author: author)
+        second_todo = create(:todo, :review_requested, user: john_doe, project: project, target: issue, author: author)
+        another_todo = create(:todo, :assigned, user: john_doe, project: project, target: project, author: author)
+
+        service.resolve_todos_with_attributes_for_target(issue, {})
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_done
+        expect(another_todo.reload).to be_pending
+      end
+
+      it 'marks related only filtered pending todos to the target for all the users as done' do
+        first_todo = create(:todo, :assigned, user: member, project: project, target: issue, author: author)
+        second_todo = create(:todo, :review_requested, user: john_doe, project: project, target: issue, author: author)
+        another_todo = create(:todo, :assigned, user: john_doe, project: project, target: project, author: author)
+
+        service.resolve_todos_with_attributes_for_target(issue, { action: Todo::ASSIGNED })
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_pending
+        expect(another_todo.reload).to be_pending
+      end
+
+      it 'fetches the pending todos with users preloaded' do
+        expect(PendingTodosFinder).to receive(:new)
+          .with(a_hash_including(preload_user_association: true)).and_call_original
+
+        service.resolve_todos_with_attributes_for_target(issue, { action: Todo::ASSIGNED })
       end
     end
 
@@ -1225,20 +1257,64 @@ RSpec.describe TodoService do
   end
 
   describe '#resolve_access_request_todos' do
-    let_it_be(:source) { create(:group, :public) }
-    let_it_be(:requester) { create(:group_member, :access_request, group: source, user: assignee) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group_requester) { create(:group_member, :access_request, group: group, user: assignee) }
+    let_it_be(:project_requester) { create(:project_member, :access_request, project: project, user: non_member) }
+    let_it_be(:another_pending_todo) { create(:todo, state: :pending, user: john_doe) }
+    # access request by another user
+    let_it_be(:another_group_todo) do
+      create(:todo, state: :pending, target: group, action: Todo::MEMBER_ACCESS_REQUESTED)
+    end
 
-    it 'marks the todos for request handler as done' do
-      request_handler_todo = create(:todo,
-                                    user: member,
-                                    state: :pending,
-                                    action: Todo::MEMBER_ACCESS_REQUESTED,
-                                    author: requester.user,
-                                    target: source)
+    let_it_be(:another_project_todo) do
+      create(:todo, state: :pending, target: project, action: Todo::MEMBER_ACCESS_REQUESTED)
+    end
 
-      service.resolve_access_request_todos(member, requester)
+    it 'marks the todos for group access request handlers as done' do
+      access_request_todos = [member, john_doe].map do |group_user|
+        create(:todo,
+          user: group_user,
+          state: :pending,
+          action: Todo::MEMBER_ACCESS_REQUESTED,
+          author: group_requester.user,
+          target: group
+        )
+      end
 
-      expect(request_handler_todo.reload).to be_done
+      expect do
+        service.resolve_access_request_todos(group_requester)
+      end.to change {
+        Todo.pending.where(target: group).for_author(group_requester.user)
+          .for_action(Todo::MEMBER_ACCESS_REQUESTED).count
+      }.from(2).to(0)
+
+      expect(access_request_todos.each(&:reload)).to all be_done
+      expect(another_pending_todo.reload).not_to be_done
+      expect(another_group_todo.reload).not_to be_done
+    end
+
+    it 'marks the todos for project access request handlers as done' do
+      # The project has 1 owner already. Adding another owner here
+      project.add_member(john_doe, Gitlab::Access::OWNER)
+
+      access_request_todo = create(:todo,
+        user: john_doe,
+        state: :pending,
+        action: Todo::MEMBER_ACCESS_REQUESTED,
+        author: project_requester.user,
+        target: project
+      )
+
+      expect do
+        service.resolve_access_request_todos(project_requester)
+      end.to change {
+        Todo.pending.where(target: project).for_author(project_requester.user)
+          .for_action(Todo::MEMBER_ACCESS_REQUESTED).count
+      }.from(2).to(0) # The original owner todo was created with the pending access request
+
+      expect(access_request_todo.reload).to be_done
+      expect(another_pending_todo.reload).to be_pending
+      expect(another_project_todo.reload).to be_pending
     end
   end
 

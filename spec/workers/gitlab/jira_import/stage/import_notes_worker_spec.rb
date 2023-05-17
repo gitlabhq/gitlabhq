@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JiraImport::Stage::ImportNotesWorker do
+RSpec.describe Gitlab::JiraImport::Stage::ImportNotesWorker, feature_category: :importers do
   let_it_be(:project) { create(:project, import_type: 'jira') }
 
   describe 'modules' do

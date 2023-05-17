@@ -204,7 +204,9 @@ module SearchHelper
 
       if search_has_project?
         hash[:project] = { id: @project.id, name: @project.name }
-        hash[:project_metadata] = { issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project) }
+        hash[:project_metadata] = { mr_path: project_merge_requests_path(@project) }
+        hash[:project_metadata][:issues_path] = project_issues_path(@project) if @project.feature_available?(:issues, current_user)
+
         hash[:code_search] = search_scope.nil?
         hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
       end
@@ -244,7 +246,7 @@ module SearchHelper
   # Autocomplete results for settings pages, for admins
   def default_autocomplete_admin
     [
-      { category: "Settings", label: _("Admin Section"), url: admin_root_path }
+      { category: "Jump to", label: _("Admin Area / Dashboard"), url: admin_root_path }
     ]
   end
 
@@ -339,7 +341,7 @@ module SearchHelper
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search_by_title(term)
+    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
       {
         category: "Projects",

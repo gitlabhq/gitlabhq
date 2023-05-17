@@ -7,9 +7,12 @@ import { stubTransition } from 'helpers/stub_transition';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
+import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
-import { resolvedEnvironment, rolloutStatus } from './graphql/mock_data';
+import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
+import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
+import { mockKasTunnelUrl } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -20,15 +23,24 @@ describe('~/environments/components/new_environment_item.vue', () => {
     return createMockApollo();
   };
 
-  const createWrapper = ({ propsData = {}, apolloProvider } = {}) =>
+  const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
     mountExtended(EnvironmentItem, {
       apolloProvider,
       propsData: { environment: resolvedEnvironment, ...propsData },
-      provide: { helpPagePath: '/help', projectId: '1', projectPath: '/1' },
+      provide: {
+        helpPagePath: '/help',
+        projectId: '1',
+        projectPath: '/1',
+        kasTunnelUrl: mockKasTunnelUrl,
+        ...provideData,
+      },
       stubs: { transition: stubTransition() },
     });
 
   const findDeployment = () => wrapper.findComponent(Deployment);
+  const findActions = () => wrapper.findComponent(EnvironmentActions);
+  const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
+  const findMonitoringLink = () => wrapper.find('[data-testid="environment-monitoring"]');
 
   const expandCollapsedSection = async () => {
     const button = wrapper.findByRole('button', { name: __('Expand') });
@@ -36,10 +48,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
     return button;
   };
-
-  afterEach(() => {
-    wrapper?.destroy();
-  });
 
   it('displays the name when not in a folder', () => {
     wrapper = createWrapper({ apolloProvider: createApolloProvider() });
@@ -126,9 +134,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('shows a dropdown if there are actions to perform', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const actions = wrapper.findByRole('button', { name: __('Deploy to...') });
-
-      expect(actions.exists()).toBe(true);
+      expect(findActions().exists()).toBe(true);
     });
 
     it('does not show a dropdown if there are no actions to perform', () => {
@@ -142,22 +148,20 @@ describe('~/environments/components/new_environment_item.vue', () => {
         },
       });
 
-      const actions = wrapper.findByRole('button', { name: __('Deploy to...') });
-
-      expect(actions.exists()).toBe(false);
+      expect(findActions().exists()).toBe(false);
     });
 
     it('passes all the actions down to the action component', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const action = wrapper.findByRole('menuitem', { name: 'deploy-staging' });
-
-      expect(action.exists()).toBe(true);
+      expect(findActions().props('actions')).toMatchObject(
+        resolvedEnvironment.lastDeployment.manualActions,
+      );
     });
   });
 
   describe('stop', () => {
-    it('shows a buton to stop the environment if the environment is available', () => {
+    it('shows a button to stop the environment if the environment is available', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
       const stop = wrapper.findByRole('button', { name: s__('Environments|Stop environment') });
@@ -165,7 +169,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       expect(stop.exists()).toBe(true);
     });
 
-    it('does not show a buton to stop the environment if the environment is stopped', () => {
+    it('does not show a button to stop the environment if the environment is stopped', () => {
       wrapper = createWrapper({
         propsData: { environment: { ...resolvedEnvironment, canStop: false } },
         apolloProvider: createApolloProvider(),
@@ -311,7 +315,25 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       expect(rollback.exists()).toBe(false);
     });
+
+    describe.each([true, false])(
+      'when `remove_monitor_metrics` flag  is %p',
+      (removeMonitorMetrics) => {
+        beforeEach(() => {
+          wrapper = createWrapper({
+            propsData: { environment: { ...resolvedEnvironment, metricsPath: '/metrics' } },
+            apolloProvider: createApolloProvider(),
+            provideData: { glFeatures: { removeMonitorMetrics } },
+          });
+        });
+
+        it(`${removeMonitorMetrics ? 'does not render' : 'renders'} link to metrics`, () => {
+          expect(findMonitoringLink().exists()).toBe(!removeMonitorMetrics);
+        });
+      },
+    );
   });
+
   describe('terminal', () => {
     it('shows the link to the terminal if set up', () => {
       wrapper = createWrapper({
@@ -384,6 +406,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       const button = await expandCollapsedSection();
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
+      expect(button.props('category')).toBe('secondary');
       expect(collapse.attributes('visible')).toBe('visible');
       expect(icon.props('name')).toBe('chevron-lg-down');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(true);
@@ -513,6 +536,74 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       const deployBoard = wrapper.findComponent(DeployBoardWrapper);
       expect(deployBoard.exists()).toBe(false);
+    });
+  });
+
+  describe('kubernetes overview', () => {
+    const environmentWithAgent = {
+      ...resolvedEnvironment,
+      agent,
+    };
+
+    it('should render if the feature flag is enabled and the environment has an agent object with the required data specified', () => {
+      wrapper = createWrapper({
+        propsData: { environment: environmentWithAgent },
+        provideData: {
+          glFeatures: {
+            kasUserAccessProject: true,
+          },
+        },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().props()).toMatchObject({
+        agentProjectPath: agent.project,
+        agentName: agent.name,
+        agentId: agent.id,
+        namespace: agent.kubernetesNamespace,
+      });
+    });
+
+    it('should not render if the feature flag is not enabled', () => {
+      wrapper = createWrapper({
+        propsData: { environment: environmentWithAgent },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
+    });
+
+    it('should not render if the environment has no agent object', () => {
+      wrapper = createWrapper({
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
+    });
+
+    it('should not render if the environment has an agent object without agent id specified', () => {
+      const environment = {
+        ...resolvedEnvironment,
+        agent: {
+          project: agent.project,
+          name: agent.name,
+        },
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
     });
   });
 });

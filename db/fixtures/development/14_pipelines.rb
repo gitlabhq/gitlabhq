@@ -199,11 +199,15 @@ class Gitlab::Seeder::Pipelines
     GenericCommitStatus.create!(attributes)
   end
 
+  def runners
+    @runners ||= FactoryBot.create_list(:ci_runner, 6)
+  end
+
   def job_attributes(pipeline, stage, opts)
     {
       name: 'test build', ci_stage: stage, stage_idx: stage.position,
       ref: pipeline.ref, tag: false, user: build_user, project: @project, pipeline: pipeline,
-      scheduling_type: :stage, created_at: Time.now, updated_at: Time.now
+      scheduling_type: :stage, created_at: Time.now, updated_at: Time.now, runner_id: runners.shuffle.first.id
     }.merge(opts)
   end
 

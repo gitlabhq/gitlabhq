@@ -1,12 +1,12 @@
 <script>
 import { GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
-import { __ } from '~/locale';
+import { ALL_GITLAB } from '~/vue_shared/global_search/constants';
 
 export default {
   name: 'HeaderSearchDefaultItems',
   i18n: {
-    allGitLab: __('All GitLab'),
+    ALL_GITLAB,
   },
   components: {
     GlDropdownSectionHeader,
@@ -26,7 +26,7 @@ export default {
       return (
         this.searchContext?.project?.name ||
         this.searchContext?.group?.name ||
-        this.$options.i18n.allGitLab
+        this.$options.i18n.ALL_GITLAB
       );
     },
   },

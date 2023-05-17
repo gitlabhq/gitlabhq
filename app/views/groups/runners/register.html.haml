@@ -1,0 +1,7 @@
+- runner_name = runner_short_name(@runner)
+- breadcrumb_title s_('Runners|Register')
+- page_title s_('Runners|Register'), runner_name
+- add_to_breadcrumbs _('Runners'), group_runners_path(@group)
+- add_to_breadcrumbs runner_name, register_group_runner_path(@group, @runner)
+
+#js-group-register-runner{ data: { runner_id: @runner.id, runners_path: group_runners_path(@group) } }

@@ -22,7 +22,7 @@ class Projects::RefsController < Projects::ApplicationController
           when "tree"
             project_tree_path(@project, @id)
           when "blob"
-            project_blob_path(@project, @id, ref_type: ref_type)
+            project_blob_path(@project, @id)
           when "graph"
             project_network_path(@project, @id, ref_type: ref_type)
           when "graphs"

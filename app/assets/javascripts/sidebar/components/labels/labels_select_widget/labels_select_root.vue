@@ -2,14 +2,14 @@
 import { debounce } from 'lodash';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
 
 import { __ } from '~/locale';
 import { issuableLabelsQueries } from '../../../constants';
 import SidebarEditableItem from '../../sidebar_editable_item.vue';
-import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
+import { DEBOUNCE_DROPDOWN_DELAY, VARIANT_SIDEBAR } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import EmbeddedLabelsList from './embedded_labels_list.vue';
@@ -60,7 +60,7 @@ export default {
     variant: {
       type: String,
       required: false,
-      default: DropdownVariant.Sidebar,
+      default: VARIANT_SIDEBAR,
     },
     labelsFilterBasePath: {
       type: String,
@@ -166,7 +166,7 @@ export default {
           fullPath: this.fullPath,
         };
 
-        if (this.issuableType === IssuableType.TestCase) {
+        if (this.issuableType === TYPE_TEST_CASE) {
           queryVariables.types = ['TEST_CASE'];
         }
 
@@ -262,9 +262,9 @@ export default {
 
       switch (this.issuableType) {
         case TYPE_ISSUE:
-        case IssuableType.TestCase:
+        case TYPE_TEST_CASE:
           return updateVariables;
-        case IssuableType.MergeRequest:
+        case TYPE_MERGE_REQUEST:
           return {
             ...updateVariables,
             operationMode: MutationOperationMode.Replace,
@@ -319,12 +319,12 @@ export default {
 
       switch (this.issuableType) {
         case TYPE_ISSUE:
-        case IssuableType.TestCase:
+        case TYPE_TEST_CASE:
           return {
             ...removeVariables,
             removeLabelIds: [labelId],
           };
-        case IssuableType.MergeRequest:
+        case TYPE_MERGE_REQUEST:
           return {
             ...removeVariables,
             labelIds: [labelId],

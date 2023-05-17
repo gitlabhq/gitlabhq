@@ -44,8 +44,13 @@ module Ci
         blob.each_line do |line|
           key, value = scan_line!(line)
 
-          variables[key] = Ci::JobVariable.new(job_id: artifact.job_id,
-                                               source: :dotenv, key: key, value: value, raw: false)
+          variables[key] = Ci::JobVariable.new(
+            job_id: artifact.job_id,
+            source: :dotenv,
+            key: key,
+            value: value,
+            raw: false
+          )
         end
       end
 

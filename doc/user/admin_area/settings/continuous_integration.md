@@ -54,7 +54,7 @@ To enable a project runner for more than one project:
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
-1. In the upper right, select **Edit** (**{pencil}**).
+1. In the upper-right corner, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
@@ -148,7 +148,7 @@ are locked against deletion and kept regardless of the expiry time.
 When disabled, the latest artifacts for any **new** successful or fixed pipelines
 are allowed to expire.
 
-This setting takes precedence over the [project level setting](../../../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+This setting takes precedence over the [project level setting](../../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 If disabled at the instance level, you cannot enable this per-project.
 
 To disable the setting:
@@ -194,6 +194,16 @@ To set all new [CI/CD variables](../../../ci/variables/index.md) as
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Select **Protect CI/CD variables by default**.
 
+## Maximum includes
+
+The maximum number of [includes](../../../ci/yaml/includes.md) per pipeline can be set at the instance level.
+The default is `150`.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Change the value of **Maximum includes**.
+1. Select **Save changes** for the changes to take effect.
+
 ## Default CI/CD configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
@@ -227,6 +237,7 @@ from the Admin Area:
    - **Maximum number of DAG dependencies that a job can have**
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
+   - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
 
 ## Enable or disable the pipeline suggestion banner
 
@@ -244,12 +255,13 @@ To enable or disable the banner:
 
 ## Required pipeline configuration **(ULTIMATE SELF)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 
-NOTE:
-An alternative [compliance solution](../../group/compliance_frameworks.md#compliance-pipelines)
-is available. We recommend this alternative solution because it provides greater flexibility,
-allowing required pipelines to be assigned to specific compliance framework labels.
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
+and is planned for removal in 17.0. Use [compliance pipelines](../../group/compliance_frameworks.md#compliance-pipelines)
+instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
@@ -267,7 +279,7 @@ use a template from:
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
 added the project configuration with the [`include` keyword](../../../ci/yaml/index.md#include).
-To view a project's full merged configuration, [View the merged YAML](../../../ci/pipeline_editor/index.md#view-expanded-configuration)
+To view a project's full merged configuration, [View full configuration](../../../ci/pipeline_editor/index.md#view-full-configuration)
 in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
@@ -344,9 +356,9 @@ To restrict all users in an instance from registering runners:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Runner registration**.
-1. Clear the checkbox if you don't want to display runner registration
-   information in the UI for group or project members.
+1. Expand **Runners**.
+1. In the **Runner registration** section, clear the **Members of the project can register runners** and
+   **Members of the group can register runners** checkboxes to remove runner registration from the UI.
 1. Select **Save changes**.
 
 NOTE:
@@ -368,6 +380,20 @@ To restrict runner registration by members in a specific group:
 1. On the left sidebar, select **Overview > Groups** and find your group.
 1. Select **Edit**.
 1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
+1. Select **Save changes**.
+
+## Disable runner version management
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+
+By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../../ci/runners/configure_runners.md#determine-which-runners-need-to-be-upgraded).
+
+To disable your instance fetching this data:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
 1. Select **Save changes**.
 
 ## Troubleshooting

@@ -1,0 +1,10 @@
+---
+table_name: dora_performance_scores
+classes:
+- Dora::PerformanceScore
+feature_categories:
+- value_stream_management
+description: Stores monthly snapshots of DORA4 performance scores per project.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115689
+milestone: '15.11'
+gitlab_schema: gitlab_main

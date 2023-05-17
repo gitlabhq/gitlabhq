@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Helm::ProcessFileService do
+RSpec.describe Packages::Helm::ProcessFileService, feature_category: :package_registry do
   let(:package) { create(:helm_package, without_package_files: true, status: 'processing') }
   let!(:package_file) { create(:helm_package_file, without_loaded_metadatum: true, package: package) }
   let(:channel) { 'stable' }

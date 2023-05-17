@@ -35,11 +35,6 @@ describe('Pipelines Empty State', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when user can configure CI', () => {
     describe('when the ios_specific_templates experiment is active', () => {
       beforeEach(() => {

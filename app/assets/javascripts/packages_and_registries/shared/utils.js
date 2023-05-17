@@ -55,15 +55,6 @@ export const renderBreadcrumb = (router, apolloProvider, RegistryBreadcrumb) => 
       RegistryBreadcrumb,
     },
     render(createElement) {
-      // FIXME(@tnir): this is a workaround until the MR gets merged:
-      // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48115
-      const parentEl = breadCrumbEl.parentElement.parentElement;
-      if (parentEl) {
-        parentEl.classList.remove('breadcrumbs-container');
-        parentEl.classList.add('gl-display-flex');
-        parentEl.classList.add('w-100');
-      }
-      // End of FIXME(@tnir)
       return createElement('registry-breadcrumb', {
         class: breadCrumbEl.className,
         props: {

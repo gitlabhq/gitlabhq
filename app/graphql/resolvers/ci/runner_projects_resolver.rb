@@ -15,10 +15,10 @@ module Resolvers
 
       argument :sort, GraphQL::Types::String,
                required: false,
-               default_value: 'id_asc', # TODO: Remove in %16.0 and move :sort to ProjectSearchArguments, see https://gitlab.com/gitlab-org/gitlab/-/issues/372117
+               default_value: 'id_asc', # TODO: Remove in %17.0 and move :sort to ProjectSearchArguments, see https://gitlab.com/gitlab-org/gitlab/-/issues/372117
                deprecated: {
-                 reason: 'Default sort order will change in 16.0. ' \
-                   'Specify `"id_asc"` if query results\' order is important',
+                 reason: 'Default sort order will change in GitLab 17.0. ' \
+                   'Specify `"id_asc"` if you require the query results to be ordered by ascending IDs',
                  milestone: '15.4'
                },
                description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
@@ -34,25 +34,30 @@ module Resolvers
                                              .where(runner_id: runner_ids)
                                              .pluck(:runner_id, :project_id)
 
-          project_ids = plucked_runner_and_project_ids.collect { |_runner_id, project_id| project_id }.uniq
+          unique_project_ids = plucked_runner_and_project_ids.collect { |_runner_id, project_id| project_id }.uniq
           projects = ProjectsFinder
                        .new(current_user: current_user,
                             params: project_finder_params(args),
-                            project_ids_relation: project_ids)
+                            project_ids_relation: unique_project_ids)
                        .execute
           projects = apply_lookahead(projects)
           Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute
+          sorted_project_ids = projects.map(&:id)
           projects_by_id = projects.index_by(&:id)
 
           # In plucked_runner_and_project_ids, first() represents the runner ID, and second() the project ID,
           # so let's group the project IDs by runner ID
-          runner_project_ids_by_runner_id =
+          project_ids_by_runner_id =
             plucked_runner_and_project_ids
               .group_by(&:first)
-              .transform_values { |values| values.map(&:second).filter_map { |project_id| projects_by_id[project_id] } }
+              .transform_values { |runner_id_and_project_id| runner_id_and_project_id.map(&:second) }
+          # Reorder the project IDs according to the order in sorted_project_ids
+          sorted_project_ids_by_runner_id =
+            project_ids_by_runner_id.transform_values { |project_ids| sorted_project_ids.intersection(project_ids) }
 
           runner_ids.each do |runner_id|
-            runner_projects = runner_project_ids_by_runner_id[runner_id] || []
+            runner_project_ids = sorted_project_ids_by_runner_id[runner_id] || []
+            runner_projects = runner_project_ids.map { |id| projects_by_id[id] }
 
             loader.call(runner_id, runner_projects)
           end
@@ -68,9 +73,9 @@ module Resolvers
 
       def preloads
         super.merge({
-                      full_path: [:route, { namespace: [:route] }],
-                      web_url: [:route, { namespace: [:route] }]
-                    })
+          full_path: [:route, { namespace: [:route] }],
+          web_url: [:route, { namespace: [:route] }]
+        })
       end
     end
   end

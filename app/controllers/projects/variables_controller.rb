@@ -3,7 +3,7 @@
 class Projects::VariablesController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
-  feature_category :pipeline_authoring
+  feature_category :secrets_management
 
   urgency :low, [:show, :update]
 

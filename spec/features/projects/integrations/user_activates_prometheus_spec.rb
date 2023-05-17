@@ -6,6 +6,7 @@ RSpec.describe 'User activates Prometheus', feature_category: :integrations do
   include_context 'project integration activation'
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     stub_request(:get, /.*prometheus.example.com.*/)
   end
 

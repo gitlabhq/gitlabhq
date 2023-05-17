@@ -64,7 +64,7 @@ module Gitlab
           #                              display_name: String,
           #                              default: Boolean }]
           def find_all_paths(project)
-            dashboards = user_facing_dashboard_services(project).flat_map do |service|
+            dashboards = user_facing_dashboard_services.flat_map do |service|
               service.all_dashboard_paths(project)
             end
 
@@ -73,19 +73,8 @@ module Gitlab
 
           private
 
-          def user_facing_dashboard_services(project)
-            predefined_dashboard_services_for(project) + [project_service]
-          end
-
-          def predefined_dashboard_services_for(project)
-            # Only list the self-monitoring dashboard on the self-monitoring project,
-            # since it is the only dashboard (at time of writing) that shows data
-            # about GitLab itself.
-            if project.self_monitoring?
-              return [self_monitoring_service]
-            end
-
-            PREDEFINED_DASHBOARD_LIST
+          def user_facing_dashboard_services
+            PREDEFINED_DASHBOARD_LIST + [project_service]
           end
 
           def system_service
@@ -94,10 +83,6 @@ module Gitlab
 
           def project_service
             ::Metrics::Dashboard::CustomDashboardService
-          end
-
-          def self_monitoring_service
-            ::Metrics::Dashboard::SelfMonitoringDashboardService
           end
 
           def service_for(options)

@@ -43,6 +43,14 @@ describe('Jobs Store Utils', () => {
 
       expect(parsedHeaderLine.isClosed).toBe(true);
     });
+
+    it('expands all pre-closed sections if hash is present', () => {
+      const headerLine = { content: [{ text: 'foo' }], section_options: { collapsed: 'true' } };
+
+      const parsedHeaderLine = parseHeaderLine(headerLine, 2, '#L33');
+
+      expect(parsedHeaderLine.isClosed).toBe(false);
+    });
   });
 
   describe('parseLine', () => {

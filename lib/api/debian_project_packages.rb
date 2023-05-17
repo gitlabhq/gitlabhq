@@ -17,7 +17,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
-          user_project(action: :read_package)
+          authorized_user_project(action: :read_package)
         end
       end
 
@@ -52,7 +52,6 @@ module API
           tags %w[debian_packages]
         end
 
-        route_setting :authentication, authenticate_non_public: true
         get 'pool/:distribution/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do
           present_distribution_package_file!(project_or_group)
         end
@@ -82,13 +81,12 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs and udebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
-          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
           put do
-            authorize_upload!(authorized_user_project)
-            bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)
+            authorize_upload!(project_or_group)
+            bad_request!('File is too large') if project_or_group.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)
 
             file_params = {
               file: params['file'],
@@ -101,17 +99,19 @@ module API
 
             package = if params[:distribution].present?
                         ::Packages::CreateTemporaryPackageService.new(
-                          authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job)
+                          project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
                         ).execute(:debian, name: ::Packages::Debian::TEMPORARY_PACKAGE_NAME)
                       else
-                        ::Packages::Debian::FindOrCreateIncomingService.new(authorized_user_project, current_user).execute
+                        ::Packages::Debian::FindOrCreateIncomingService.new(project_or_group, current_user).execute
                       end
 
             ::Packages::Debian::CreatePackageFileService.new(package: package, current_user: current_user, params: file_params).execute
 
+            track_debian_package_event 'push_package'
+
             created!
           rescue ObjectStorage::RemoteStoreError => e
-            Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: authorized_user_project.id })
+            Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
 
             forbidden!
           end
@@ -132,14 +132,13 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs and udebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
-          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
           put 'authorize' do
             authorize_workhorse!(
-              subject: authorized_user_project,
-              maximum_size: authorized_user_project.actual_limits.debian_max_file_size
+              subject: project_or_group,
+              maximum_size: project_or_group.actual_limits.debian_max_file_size
             )
           end
         end

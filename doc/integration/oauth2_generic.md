@@ -54,7 +54,7 @@ To configure the provider:
 
    :::TabTitle Linux package (Omnibus)
 
-   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
       account provisioning for users who do not have an existing GitLab account.
    1. Edit `/etc/gitlab/gitlab.rb` to add the configuration for your provider. For example:
@@ -98,7 +98,7 @@ To configure the provider:
 
    :::TabTitle Helm chart (Kubernetes)
 
-   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
       account provisioning for users who do not have an existing GitLab account.
    1. Export the Helm values:
@@ -107,39 +107,45 @@ To configure the provider:
       helm get values gitlab > gitlab_values.yaml
       ```
 
-   1. Edit `gitlab_values.yaml`.
+   1. Put the following content in a file named `oauth2_generic.yaml` for use as a
+      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
 
-      NOTE:
-      The following example exposes the `app_secret` value in the main YAML file.
-      You're strongly advised to use
-      [Helm secrets](https://docs.gitlab.com/charts/installation/secrets.html)
-      instead.
+      ```yaml
+      name: "oauth2_generic"
+      label: "Provider name" # optional label for login button defaults to "Oauth2 Generic"
+      app_id: "<your_app_client_id>"
+      app_secret: "<your_app_client_secret>"
+      args:
+        client_options:
+          site: "<your_auth_server_url>"
+          user_info_url: "/oauth2/v1/userinfo"
+          authorize_url: "/oauth2/v1/authorize"
+          token_url: "/oauth2/v1/token"
+        user_response_structure:
+          root_path: []
+          id_path: ["sub"]
+          attributes:
+            email: "email"
+            name: "name"
+        authorize_params:
+          scope: "openid profile email"
+        strategy_class: "OmniAuth::Strategies::OAuth2Generic"
+      ```
+
+   1. Create the Kubernetes Secret:
+
+      ```shell
+      kubectl create secret generic -n <namespace> gitlab-oauth2-generic --from-file=provider=oauth2_generic.yaml
+      ```
+
+   1. Edit `gitlab_values.yaml` and add the provider configuration:
 
       ```yaml
       global:
         appConfig:
           omniauth:
-            enabled: true
             providers:
-              - name: "oauth2_generic"
-                label: "Provider name" # optional label for login button defaults to "Oauth2 Generic"
-                app_id: "<your_app_client_id>"
-                app_secret: "<your_app_client_secret>"
-                args:
-                  client_options:
-                    site: "<your_auth_server_url>"
-                    user_info_url: "/oauth2/v1/userinfo"
-                    authorize_url: "/oauth2/v1/authorize"
-                    token_url: "/oauth2/v1/token"
-                  user_response_structure:
-                    root_path: []
-                    id_path: ["sub"]
-                    attributes:
-                      email: "email"
-                      name: "name"
-                  authorize_params:
-                    scope: "openid profile email"
-                  strategy_class: "OmniAuth::Strategies::OAuth2Generic"
+              - secret: gitlab-oauth2-generic
       ```
 
    1. Save the file and apply the new values:
@@ -150,7 +156,7 @@ To configure the provider:
 
    :::TabTitle Self-compiled (source)
 
-   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
       account provisioning for users who do not have an existing GitLab account.
    1. Edit `/home/git/gitlab/config/gitlab.yml`:

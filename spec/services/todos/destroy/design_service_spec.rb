@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::Destroy::DesignService do
+RSpec.describe Todos::Destroy::DesignService, feature_category: :design_management do
   let_it_be(:user)     { create(:user) }
   let_it_be(:user_2)   { create(:user) }
   let_it_be(:design)   { create(:design) }

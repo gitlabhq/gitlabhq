@@ -7,12 +7,24 @@ RSpec.describe Projects::DataTransfer, feature_category: :source_code_management
 
   it { expect(subject).to be_valid }
 
+  # tests DataTransferCounterAttribute with the appropiate attributes
+  it_behaves_like CounterAttribute,
+    %i[repository_egress artifacts_egress packages_egress registry_egress] do
+    let(:model) { create(:project_data_transfer, project: project) }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'scopes' do
+    let(:dates) { %w[2023-01-01 2023-02-01 2023-03-01] }
+
+    before do
+      dates.each { |date| create(:project_data_transfer, project: project, date: date) }
+    end
+
     describe '.current_month' do
       subject { described_class.current_month }
 
@@ -23,6 +35,26 @@ RSpec.describe Projects::DataTransfer, feature_category: :source_code_management
 
           is_expected.to match_array([current_month])
         end
+      end
+    end
+
+    describe '.with_project_between_dates' do
+      subject do
+        described_class.with_project_between_dates(project, Date.new(2023, 2, 1), Date.new(2023, 3, 1))
+      end
+
+      it 'returns the correct number of results' do
+        expect(subject.size).to eq(2)
+      end
+    end
+
+    describe '.with_namespace_between_dates' do
+      subject do
+        described_class.with_namespace_between_dates(project.namespace, Date.new(2023, 2, 1), Date.new(2023, 3, 1))
+      end
+
+      it 'returns the correct number of results' do
+        expect(subject.select(:namespace_id).to_a.size).to eq(2)
       end
     end
   end

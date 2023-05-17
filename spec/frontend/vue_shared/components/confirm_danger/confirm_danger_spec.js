@@ -32,10 +32,6 @@ describe('Confirm Danger Modal', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the button', () => {
     expect(wrapper.html()).toContain(buttonText);
   });
@@ -52,7 +48,7 @@ describe('Confirm Danger Modal', () => {
 
     wrapper = createComponent({ disabled: true });
 
-    expect(findBtn().attributes('disabled')).toBe('true');
+    expect(findBtn().attributes('disabled')).toBeDefined();
   });
 
   it('passes `buttonClass` prop to button', () => {

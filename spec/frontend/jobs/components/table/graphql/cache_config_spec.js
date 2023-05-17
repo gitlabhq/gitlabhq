@@ -84,4 +84,23 @@ describe('jobs/components/table/graphql/cache_config', () => {
       expect(res.nodes).toHaveLength(CIJobConnectionIncomingCacheRunningStatus.nodes.length);
     });
   });
+
+  describe('when incoming data has no nodes', () => {
+    it('should return existing cache', () => {
+      const res = cacheConfig.typePolicies.CiJobConnection.merge(
+        CIJobConnectionExistingCache,
+        { __typename: 'CiJobConnection', count: 500 },
+        {
+          args: { statuses: 'SUCCESS' },
+        },
+      );
+
+      const expectedResponse = {
+        ...CIJobConnectionExistingCache,
+        statuses: 'SUCCESS',
+      };
+
+      expect(res).toEqual(expectedResponse);
+    });
+  });
 });

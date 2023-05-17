@@ -296,4 +296,4 @@ GITLAB_CONTINUOUS_PROFILING="stackdriver?service=workhorse&service_version=1.0.1
 
 ## Related topics
 
-- [LabKit monitoring documentation](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go).
+- [LabKit monitoring documentation](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go)

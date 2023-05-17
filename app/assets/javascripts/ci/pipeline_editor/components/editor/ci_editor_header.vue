@@ -10,12 +10,14 @@ export default {
     browseTemplates: __('Browse templates'),
     help: __('Help'),
     jobAssistant: s__('JobAssistant|Job assistant'),
+    aiAssistant: s__('PipelinesAiAssistant|Ai assistant'),
   },
   TEMPLATE_REPOSITORY_URL,
   components: {
     GlButton,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  inject: ['aiChatAvailable'],
   props: {
     showDrawer: {
       type: Boolean,
@@ -24,6 +26,15 @@ export default {
     showJobAssistantDrawer: {
       type: Boolean,
       required: true,
+    },
+    showAiAssistantDrawer: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    isAiConfigChatAvailable() {
+      return this.glFeatures.aiCiConfigGenerator && this.aiChatAvailable;
     },
   },
   methods: {
@@ -38,6 +49,11 @@ export default {
     toggleJobAssistantDrawer() {
       this.$emit(
         this.showJobAssistantDrawer ? 'close-job-assistant-drawer' : 'open-job-assistant-drawer',
+      );
+    },
+    toggleAiAssistantDrawer() {
+      this.$emit(
+        this.showAiAssistantDrawer ? 'close-ai-assistant-drawer' : 'open-ai-assistant-drawer',
       );
     },
     trackHelpDrawerClick() {
@@ -84,6 +100,16 @@ export default {
       @click="toggleJobAssistantDrawer"
     >
       {{ $options.i18n.jobAssistant }}
+    </gl-button>
+    <gl-button
+      v-if="isAiConfigChatAvailable"
+      icon="bulb"
+      size="small"
+      data-testid="ai-assistant-drawer-toggle"
+      data-qa-selector="ai_assistant_drawer_toggle"
+      @click="toggleAiAssistantDrawer"
+    >
+      {{ $options.i18n.aiAssistant }}
     </gl-button>
   </div>
 </template>

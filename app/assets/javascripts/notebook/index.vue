@@ -60,6 +60,10 @@ export default {
   margin-bottom: 10px;
 }
 
+.output .text-cell {
+  overflow-x: auto;
+}
+
 .cell pre {
   margin: 0;
   width: 100%;

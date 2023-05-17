@@ -1,17 +1,24 @@
 import $ from 'jquery';
 import CreateItemDropdown from '~/create_item_dropdown';
-import { createAlert } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import AccessDropdown from '~/projects/settings/access_dropdown';
 import { initToggle } from '~/toggles';
-import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
+import { expandSection } from '~/settings_panels';
+import { scrollToElement } from '~/lib/utils/common_utils';
+import {
+  BRANCH_RULES_ANCHOR,
+  PROTECTED_BRANCHES_ANCHOR,
+  IS_PROTECTED_BRANCH_CREATED,
+  ACCESS_LEVELS,
+  LEVEL_TYPES,
+} from './constants';
 
 export default class ProtectedBranchCreate {
   constructor(options) {
     this.hasLicense = options.hasLicense;
-
     this.$form = $('.js-new-protected-branch');
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     this.currentProjectUserDefaults = {};
@@ -22,7 +29,7 @@ export default class ProtectedBranchCreate {
     if (this.hasLicense) {
       this.codeOwnerToggle = initToggle(document.querySelector('.js-code-owner-toggle'));
     }
-
+    this.showSuccessAlertIfNeeded();
     this.bindEvents();
   }
 
@@ -81,6 +88,49 @@ export default class ProtectedBranchCreate {
     callback(gon.open_branches);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  expandAndScroll(anchor) {
+    expandSection(anchor);
+    scrollToElement(anchor);
+  }
+
+  hasProtectedBranchSuccessAlert() {
+    return (
+      window.gon?.features?.branchRules &&
+      this.isLocalStorageAvailable &&
+      localStorage.getItem(IS_PROTECTED_BRANCH_CREATED)
+    );
+  }
+
+  createSuccessAlert() {
+    this.alert = createAlert({
+      variant: VARIANT_SUCCESS,
+      containerSelector: '.js-alert-protected-branch-created-container',
+      title: s__('ProtectedBranch|View protected branches as branch rules'),
+      message: s__('ProtectedBranch|Manage branch related settings in one area with branch rules.'),
+      primaryButton: {
+        text: s__('ProtectedBranch|View branch rule'),
+        clickHandler: () => {
+          this.expandAndScroll(BRANCH_RULES_ANCHOR);
+        },
+      },
+      secondaryButton: {
+        text: __('Dismiss'),
+        clickHandler: () => this.alert.dismiss(),
+      },
+    });
+  }
+
+  showSuccessAlertIfNeeded() {
+    if (!this.hasProtectedBranchSuccessAlert()) {
+      return;
+    }
+    this.expandAndScroll(PROTECTED_BRANCHES_ANCHOR);
+
+    this.createSuccessAlert();
+    localStorage.removeItem(IS_PROTECTED_BRANCH_CREATED);
+  }
+
   getFormData() {
     const formData = {
       authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
@@ -127,6 +177,9 @@ export default class ProtectedBranchCreate {
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
+        if (this.isLocalStorageAvailable) {
+          localStorage.setItem(IS_PROTECTED_BRANCH_CREATED, 'true');
+        }
         window.location.reload();
       })
       .catch(() =>

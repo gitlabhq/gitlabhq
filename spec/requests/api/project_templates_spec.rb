@@ -10,6 +10,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
   let(:url_encoded_path) { "#{public_project.namespace.path}%2F#{public_project.path}" }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     private_project.add_developer(developer)
   end
 
@@ -69,6 +70,18 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
       expect(json_response).to satisfy_one { |template| template['key'] == 'Default' }
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 400 bad request like other unknown types' do
+        get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls")
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
 
     it 'returns issue templates' do
@@ -169,6 +182,18 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('Default')
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 400 bad request like other unknown types' do
+        get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls/Default")
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
 
     it 'returns a specific license' do

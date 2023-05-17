@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteWithContributions from '~/admin/users/components/actions/delete_with_contributions.vue';
 import eventHub, {
@@ -35,7 +35,7 @@ describe('DeleteWithContributions', () => {
   };
 
   const createComponent = () => {
-    wrapper = mountExtended(DeleteWithContributions, { propsData: defaultPropsData });
+    wrapper = mount(DeleteWithContributions, { propsData: defaultPropsData });
   };
 
   describe('when action is clicked', () => {
@@ -47,10 +47,10 @@ describe('DeleteWithContributions', () => {
       });
 
       it('displays loading icon and disables button', async () => {
-        await wrapper.trigger('click');
+        await wrapper.find('button').trigger('click');
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-        expect(wrapper.findByRole('menuitem').attributes()).toMatchObject({
+        expect(wrapper.attributes()).toMatchObject({
           disabled: 'disabled',
           'aria-busy': 'true',
         });
@@ -67,7 +67,7 @@ describe('DeleteWithContributions', () => {
       });
 
       it('emits event with association counts', async () => {
-        await wrapper.trigger('click');
+        await wrapper.find('button').trigger('click');
         await waitForPromises();
 
         expect(associationsCount).toHaveBeenCalledWith(defaultPropsData.userId);
@@ -92,7 +92,7 @@ describe('DeleteWithContributions', () => {
       });
 
       it('emits event with error', async () => {
-        await wrapper.trigger('click');
+        await wrapper.find('button').trigger('click');
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith(

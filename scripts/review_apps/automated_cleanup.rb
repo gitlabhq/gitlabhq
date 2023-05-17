@@ -24,6 +24,25 @@ module ReviewApps
     ].freeze
     ENVIRONMENTS_NOT_FOUND_THRESHOLD = 3
 
+    def self.parse_args(argv)
+      options = {
+        dry_run: false
+      }
+
+      OptionParser.new do |opts|
+        opts.on("-d BOOLEAN", "--dry-run BOOLEAN", String, "Whether to perform a dry-run or not.") do |value|
+          options[:dry_run] = true if value == 'true'
+        end
+
+        opts.on("-h", "--help", "Prints this help") do
+          puts opts
+          exit
+        end
+      end.parse!(argv)
+
+      options
+    end
+
     # $GITLAB_PROJECT_REVIEW_APP_CLEANUP_API_TOKEN => `Automated Review App Cleanup` project token
     def initialize(
       project_path: ENV['CI_PROJECT_PATH'],
@@ -36,8 +55,6 @@ module ReviewApps
       @api_endpoint                     = api_endpoint
       @dry_run                          = options[:dry_run]
       @environments_not_found_count     = 0
-
-      puts "Dry-run mode." if dry_run
     end
 
     def gitlab
@@ -52,19 +69,16 @@ module ReviewApps
       end
     end
 
-    def review_apps_namespace
-      'review-apps'
-    end
-
     def helm
       @helm ||= Tooling::Helm3Client.new
     end
 
     def kubernetes
-      @kubernetes ||= Tooling::KubernetesClient.new(namespace: review_apps_namespace)
+      @kubernetes ||= Tooling::KubernetesClient.new
     end
 
     def perform_gitlab_environment_cleanup!(days_for_delete:)
+      puts "Dry-run mode." if dry_run
       puts "Checking for Review Apps not updated in the last #{days_for_delete} days..."
 
       checked_environments = []
@@ -106,6 +120,7 @@ module ReviewApps
     end
 
     def perform_gitlab_docs_environment_cleanup!(days_for_stop:, days_for_delete:)
+      puts "Dry-run mode." if dry_run
       puts "Checking for Docs Review Apps not updated in the last #{days_for_stop} days..."
 
       checked_environments = []
@@ -140,6 +155,7 @@ module ReviewApps
     end
 
     def perform_helm_releases_cleanup!(days:)
+      puts "Dry-run mode." if dry_run
       puts "Checking for Helm releases that are failed or not updated in the last #{days} days..."
 
       threshold = threshold_time(days: days)
@@ -162,13 +178,9 @@ module ReviewApps
     end
 
     def perform_stale_namespace_cleanup!(days:)
-      kubernetes_client = Tooling::KubernetesClient.new(namespace: nil)
+      puts "Dry-run mode." if dry_run
 
-      kubernetes_client.cleanup_review_app_namespaces(created_before: threshold_time(days: days), wait: false) unless dry_run
-    end
-
-    def perform_stale_pvc_cleanup!(days:)
-      kubernetes.cleanup_by_created_at(resource_type: 'pvc', created_before: threshold_time(days: days), wait: false) unless dry_run
+      kubernetes.cleanup_namespaces_by_created_at(created_before: threshold_time(days: days)) unless dry_run
     end
 
     private
@@ -242,7 +254,7 @@ module ReviewApps
       releases_names = releases.map(&:name)
       unless dry_run
         helm.delete(release_name: releases_names)
-        kubernetes.cleanup_by_release(release_name: releases_names, wait: false)
+        kubernetes.delete_namespaces(releases_names)
       end
 
     rescue Tooling::Helm3Client::CommandFailedError => ex
@@ -256,7 +268,11 @@ module ReviewApps
     end
 
     def threshold_time(days:)
-      Time.now - days * 24 * 3600
+      days_integer = days.to_i
+
+      raise "days should be an integer between 1 and 365 inclusive! Got #{days_integer}" unless days_integer.between?(1, 365)
+
+      Time.now - days_integer * 24 * 3600
     end
 
     def ignore_exception?(exception_message, exceptions_ignored)
@@ -276,21 +292,7 @@ def timed(task)
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = {
-    dry_run: false
-  }
-
-  OptionParser.new do |opts|
-    opts.on("-d", "--dry-run", "Whether to perform a dry-run or not.") do |value|
-      options[:dry_run] = true
-    end
-
-    opts.on("-h", "--help", "Prints this help") do
-      puts opts
-      exit
-    end
-  end.parse!
-
+  options           = ReviewApps::AutomatedCleanup.parse_args(ARGV)
   automated_cleanup = ReviewApps::AutomatedCleanup.new(options: options)
 
   timed('Docs Review Apps cleanup') do
@@ -313,11 +315,5 @@ if $PROGRAM_NAME == __FILE__
 
   timed('Stale Namespace cleanup') do
     automated_cleanup.perform_stale_namespace_cleanup!(days: 3)
-  end
-
-  puts
-
-  timed('Stale PVC cleanup') do
-    automated_cleanup.perform_stale_pvc_cleanup!(days: 30)
   end
 end

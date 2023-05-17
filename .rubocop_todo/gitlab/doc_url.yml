@@ -24,7 +24,6 @@ Gitlab/DocUrl:
     - 'ee/app/mailers/emails/user_cap.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
-    - 'ee/lib/slack/block_kit/app_home_opened.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'lib/backup/database.rb'

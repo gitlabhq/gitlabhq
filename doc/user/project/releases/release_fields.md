@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -90,6 +90,8 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 
 #### Permanent links to release assets
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
+
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
@@ -120,6 +122,14 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v11.9.0-rc2/downloads/bin
 ```
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
+
+If the release is private, you need to provide a Personal Access Token with either `api` or `read_api` scopes using
+a `private_token` query parameter or a `HTTP_PRIVATE_TOKEN` header when making the request. For example:
+
+```shell
+curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/:release/downloads/:filepath?private_token=<your_access_token>"
+curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/my-group/my-project/-/releases/:release/downloads/:filepath"
+```
 
 #### Permanent links to latest release assets
 
@@ -245,7 +255,7 @@ release:
 ```
 
 NOTE:
-Directly attaching [job artifacts](../../../ci/pipelines/job_artifacts.md)
+Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
 links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.

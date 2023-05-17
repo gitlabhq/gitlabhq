@@ -37,7 +37,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def preferences_param_names
-    [
+    preferences_param_names = [
       :color_scheme_id,
       :diffs_deletion_color,
       :diffs_addition_color,
@@ -48,7 +48,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :first_day_of_week,
       :preferred_language,
       :time_display_relative,
-      :time_format_in_24h,
       :show_whitespace_in_diffs,
       :view_diffs_file_by_file,
       :tab_width,
@@ -57,9 +56,10 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :render_whitespace_in_code,
       :markdown_surround_selection,
       :markdown_automatic_lists,
-      :use_legacy_web_ide,
       :use_new_navigation
     ]
+    preferences_param_names << :enabled_following if ::Feature.enabled?(:disable_follow_users, user)
+    preferences_param_names
   end
 end
 

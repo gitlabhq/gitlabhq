@@ -25,6 +25,7 @@ module Projects
       end
 
       def edit
+        render_404 if integration.to_param == 'prometheus' && Feature.enabled?(:remove_monitor_metrics)
       end
 
       def update

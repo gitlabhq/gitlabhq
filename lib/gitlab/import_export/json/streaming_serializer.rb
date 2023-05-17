@@ -8,6 +8,8 @@ module Gitlab
 
         BATCH_SIZE = 100
 
+        attr_reader :exported_objects_count
+
         class Raw < String
           def to_json(*_args)
             to_s
@@ -21,6 +23,7 @@ module Gitlab
           @relations_schema = relations_schema
           @json_writer = json_writer
           @logger = logger
+          @exported_objects_count = 0
         end
 
         def execute
@@ -40,21 +43,28 @@ module Gitlab
             relations_schema.merge(include: nil, preloads: nil, unsafe: true))
 
           json_writer.write_attributes(exportable_path, attributes)
+
+          increment_exported_objects_counter
         end
 
-        def serialize_relation(definition)
+        def serialize_relation(definition, options = {})
           raise ArgumentError, 'definition needs to be Hash' unless definition.is_a?(Hash)
           raise ArgumentError, 'definition needs to have exactly one Hash element' unless definition.one?
 
-          key, options = definition.first
+          key, definition_options = definition.first
 
           record = exportable.public_send(key) # rubocop: disable GitlabSecurity/PublicSend
+
+          if options[:batch_ids]
+            record = record.where(record.model.primary_key => Array.wrap(options[:batch_ids]).map(&:to_i))
+          end
+
           if record.is_a?(ActiveRecord::Relation)
-            serialize_many_relations(key, record, options)
+            serialize_many_relations(key, record, definition_options)
           elsif record.respond_to?(:each) # this is to support `project_members` that return an Array
-            serialize_many_each(key, record, options)
+            serialize_many_each(key, record, definition_options)
           else
-            serialize_single_relation(key, record, options)
+            serialize_single_relation(key, record, definition_options)
           end
         end
 
@@ -75,6 +85,8 @@ module Gitlab
                 before_read_callback(record)
 
                 items << exportable_json_record(record, options, key)
+
+                increment_exported_objects_counter
 
                 after_read_callback(record)
               end
@@ -175,6 +187,8 @@ module Gitlab
           enumerator = Enumerator.new do |items|
             records.each do |record|
               items << exportable_json_record(record, options, key)
+
+              increment_exported_objects_counter
             end
           end
 
@@ -187,6 +201,8 @@ module Gitlab
           json = exportable_json_record(record, options, key)
 
           json_writer.write_relation(@exportable_path, key, json)
+
+          increment_exported_objects_counter
         end
 
         def includes
@@ -262,6 +278,10 @@ module Gitlab
           message = "Exporting #{relation} relation"
           message += ". Number of records to export: #{size}" if size
           logger.info(message: message, **log_base_data)
+        end
+
+        def increment_exported_objects_counter
+          @exported_objects_count += 1
         end
       end
     end

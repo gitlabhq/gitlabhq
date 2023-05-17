@@ -41,8 +41,8 @@ class Admin::TopicsController < Admin::ApplicationController
     @topic.destroy!
 
     redirect_to admin_topics_path,
-                status: :found,
-                notice: format(_('Topic %{topic_name} was successfully removed.'), topic_name: @topic.title_or_name)
+      status: :found,
+      notice: format(_('Topic %{topic_name} was successfully removed.'), topic_name: @topic.title_or_name)
   end
 
   def merge

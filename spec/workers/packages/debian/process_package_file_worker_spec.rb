@@ -31,6 +31,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
     where(:case_name, :expected_file_type, :file_name, :component_name) do
       'with a deb'   | 'deb'  | 'libsample0_1.2.3~alpha2_amd64.deb'   | 'main'
       'with an udeb' | 'udeb' | 'sample-udeb_1.2.3~alpha2_amd64.udeb' | 'contrib'
+      'with a ddeb'  | 'ddeb' | 'sample-ddeb_1.2.3~alpha2_amd64.ddeb' | 'main'
     end
 
     with_them do
@@ -63,6 +64,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
               .to not_change(Packages::Package, :count)
               .and not_change { Packages::PackageFile.count }
               .and not_change { package.package_files.count }
+              .and change { package_file.reload.status }.to('error')
               .and change { package.reload.status }.from('processing').to('error')
           end
         end

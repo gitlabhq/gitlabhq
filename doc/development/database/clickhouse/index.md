@@ -83,3 +83,65 @@ Quoting the [documentation](https://clickhouse.com/docs/en/sql-reference/stateme
 > If there's some aggregation in the view query, it's applied only to the batch
 > of freshly inserted data. Any changes to existing data of the source table
 > (like update, delete, drop a partition, etc.) do not change the materialized view.
+
+## Secure and sensible defaults
+
+ClickHouse instances should follow these security recommendations:
+
+### Users
+
+Files: `users.xml` and `config.xml`.
+
+| Topic | Security Requirement | Reason |
+| ----- | -------------------- | ------ |
+| [`user_name/password`](https://clickhouse.com/docs/en/operations/settings/settings-users/#user-namepassword) | Usernames **must not** be blank. Passwords **must** use `password_sha256_hex` and **must not** be blank. | `plaintext` and `password_double_sha1_hex` are insecure. If username isn't specified, [`default` is used with no password](https://clickhouse.com/docs/en/operations/settings/settings-users/). |
+| [`access_management`](https://clickhouse.com/docs/en/operations/settings/settings-users/#access_management-user-setting) | Use Server [configuration files](https://clickhouse.com/docs/en/operations/configuration-files) `users.xml` and `config.xml`. Avoid SQL-driven workflow. | SQL-driven workflow implies that at least one user has `access_management` which can be avoided via configuration files. These files are easier to audit and monitor too, considering that ["You can't manage the same access entity by both configuration methods simultaneously."](https://clickhouse.com/docs/en/operations/access-rights/#access-control). |
+| [`user_name/networks`](https://clickhouse.com/docs/en/operations/settings/settings-users/#user-namenetworks) | At least one of `<ip>`, `<host>`, `<host_regexp>` **must** be set. Do not use `<ip>::/0</ip>` to open access for any network. | Network controls. ([Trust cautiously](https://about.gitlab.com/handbook/security/architecture/#trust-cautiously) principle) |
+| [`user_name/profile`](https://clickhouse.com/docs/en/operations/settings/settings-users/#user-nameprofile) | Use profiles to set similar properties across multiple users and set limits (from the user interface). | [Least privilege](https://about.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle and limits. |
+| [`user_name/quota`](https://clickhouse.com/docs/en/operations/settings/settings-users/#user-namequota) | Set quotas for users whenever possible. | Limit resource usage over a period of time or track the use of resources. |
+| [`user_name/databases`](https://clickhouse.com/docs/en/operations/settings/settings-users/#user-namedatabases) | Restrict access to data, and avoid users with full access. | [Least privilege](https://about.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle. |
+
+### Network
+
+Files: `config.xml`
+
+| Topic | Security Requirement | Reason |
+| ----- | -------------------- | ------ |
+| [`mysql_port`](https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings/#server_configuration_parameters-mysql_port) | Disable MySQL access unless strictly necessary:<br/> `<!-- <mysql_port>9004</mysql_port> -->`. | Close unnecessary ports and features exposure. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth) principle) |
+| [`postgresql_port`](https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings/#server_configuration_parameters-postgresql_port) | Disable PostgreSQL access unless strictly necessary:<br/> `<!-- <mysql_port>9005</mysql_port> -->` | Close unnecessary ports and features exposure. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth) principle) |
+| [`http_port/https_port`](https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings/#http-porthttps-port) & [`tcp_port/tcp_port_secure`](https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings/#http-porthttps-port) | Configure [SSL-TLS](https://clickhouse.com/docs/en/guides/sre/configuring-ssl), and disable non SSL ports:<br/>`<!-- <http_port>8123</http_port> -->`<br/>`<!-- <tcp_port>9000</tcp_port> -->`<br/>and enable secure ports:<br/>`<https_port>8443</https_port>`<br/>`<tcp_port_secure>9440</tcp_port_secure>` | Encrypt data in transit. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth) principle) |
+| [`interserver_http_host`](https://clickhouse.com/docs/en/operations/server-configuration-parameters/settings/#interserver-http-host) | Disable `interserver_http_host` in favor of `interserver_https_host` (`<interserver_https_port>9010</interserver_https_port>`) if ClickHouse is configured as a cluster. | Encrypt data in transit. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth) principle) |
+
+### Storage
+
+| Topic | Security Requirement | Reason |
+| ----- | -------------------- | ------ |
+| Permissions | ClickHouse runs by default with the `clickhouse` user. Running as `root` is never needed. Use the principle of least privileges for the folders: `/etc/clickhouse-server`, `/var/lib/clickhouse`, `/var/log/clickhouse-server`. These folders must belong to the `clickhouse` user and group, and no other system user must have access to them. | Default passwords, ports and rules are "open doors". ([Fail securely & use secure defaults](https://about.gitlab.com/handbook/security/architecture/#fail-securely--use-secure-defaults) principle) |
+| Encryption | Use an encrypted storage for logs and data if RED data is processed. On Kubernetes, the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) used must be encrypted. | Encrypt data at rest. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth)) |
+
+### Logging
+
+| Topic | Security Requirement | Reason |
+| ----- | -------------------- | ------ |
+| `logger` | `Log` and `errorlog` **must** be defined and writable by `clickhouse`. | Make sure logs are stored. |
+| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster **must** report [logs to our SIEM](https://internal-handbook.gitlab.io/handbook/security/infrastructure_security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://about.gitlab.com/handbook/security/audit-logging-policy.html). |
+| Log sensitive data | Query masking rules **must** be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions/) can be used and leak sensitive data (keys) in logs. |
+
+#### Example masking rules
+
+```xml
+<query_masking_rules>
+    <rule>
+        <name>hide SSN</name>
+        <regexp>(^|\D)\d{3}-\d{2}-\d{4}($|\D)</regexp>
+        <replace>000-00-0000</replace>
+    </rule>
+    <rule>
+        <name>hide encrypt/decrypt arguments</name>
+        <regexp>
+           ((?:aes_)?(?:encrypt|decrypt)(?:_mysql)?)\s*\(\s*(?:'(?:\\'|.)+'|.*?)\s*\)
+        </regexp>
+        <replace>\1(???)</replace>
+    </rule>
+</query_masking_rules>
+```

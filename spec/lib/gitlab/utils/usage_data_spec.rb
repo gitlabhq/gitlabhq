@@ -487,12 +487,12 @@ RSpec.describe Gitlab::Utils::UsageData do
       end
 
       context 'when Redis HLL raises any error' do
-        subject { described_class.redis_usage_data { raise Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch } }
+        subject { described_class.redis_usage_data { raise Gitlab::UsageDataCounters::HLLRedisCounter::EventError } }
 
         let(:fallback) { 15 }
         let(:failing_class) { nil }
 
-        it_behaves_like 'failing hardening method', Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch
+        it_behaves_like 'failing hardening method', Gitlab::UsageDataCounters::HLLRedisCounter::EventError
       end
 
       it 'returns the evaluated block when given' do

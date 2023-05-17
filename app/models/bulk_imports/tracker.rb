@@ -7,8 +7,11 @@ class BulkImports::Tracker < ApplicationRecord
 
   belongs_to :entity,
     class_name: 'BulkImports::Entity',
+    inverse_of: :trackers,
     foreign_key: :bulk_import_entity_id,
     optional: false
+
+  has_many :batches, class_name: 'BulkImports::BatchTracker', inverse_of: :tracker
 
   validates :relation,
     presence: true,

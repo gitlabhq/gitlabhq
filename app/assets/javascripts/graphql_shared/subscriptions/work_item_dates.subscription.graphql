@@ -1,0 +1,18 @@
+subscription issuableDatesUpdated($issuableId: IssuableID!) {
+  issuableDatesUpdated(issuableId: $issuableId) {
+    ... on WorkItem {
+      id
+      widgets {
+        ... on WorkItemWidgetStartAndDueDate {
+          type
+          dueDate
+          startDate
+        }
+      }
+    }
+    ... on Issue {
+      id
+      dueDate
+    }
+  }
+}

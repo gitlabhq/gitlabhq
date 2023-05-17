@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::Groups::CreatorService do
+RSpec.describe Members::Groups::CreatorService, feature_category: :subgroups do
   let_it_be(:source, reload: true) { create(:group, :public) }
+  let_it_be(:source2, reload: true) { create(:group, :public) }
   let_it_be(:user) { create(:user) }
 
   describe '.access_levels' do
@@ -16,6 +17,7 @@ RSpec.describe Members::Groups::CreatorService do
 
   describe '.add_members' do
     it_behaves_like 'bulk member creation' do
+      let_it_be(:source_type) { Group }
       let_it_be(:member_type) { GroupMember }
     end
   end

@@ -21,7 +21,9 @@ module Import
     def execute
       uri = Gitlab::Utils.parse_url(@params[:url])
 
-      return ServiceResponse.error(message: "#{@params[:url]} is not a valid URL") unless uri
+      if !uri || !uri.hostname || Project::VALID_IMPORT_PROTOCOLS.exclude?(uri.scheme)
+        return ServiceResponse.error(message: "#{@params[:url]} is not a valid URL")
+      end
 
       return ServiceResponse.success if uri.scheme == 'git'
 

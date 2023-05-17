@@ -41,7 +41,6 @@ describe('Promote label modal', () => {
 
   afterEach(() => {
     axiosMock.reset();
-    wrapper.destroy();
   });
 
   describe('Modal title and description', () => {

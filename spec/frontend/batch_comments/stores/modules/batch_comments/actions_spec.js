@@ -317,4 +317,10 @@ describe('Batch comments store actions', () => {
       expect(window.mrTabs.tabShown).toHaveBeenCalledWith('diffs');
     });
   });
+
+  describe('clearDrafts', () => {
+    it('commits CLEAR_DRAFTS', () => {
+      return testAction(actions.clearDrafts, null, null, [{ type: 'CLEAR_DRAFTS' }], []);
+    });
+  });
 });

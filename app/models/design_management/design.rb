@@ -13,6 +13,9 @@ module DesignManagement
     include RelativePositioning
     include Todoable
     include Participable
+    include CacheMarkdownField
+
+    cache_markdown_field :description
 
     belongs_to :project, inverse_of: :designs
     belongs_to :issue
@@ -28,12 +31,13 @@ module DesignManagement
     has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
     has_internal_id :iid, scope: :project, presence: true,
-                          hook_names: %i[create update], # Deal with old records
-                          track_if: -> { !importing? }
+      hook_names: %i[create update], # Deal with old records
+      track_if: -> { !importing? }
 
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?
     validates :filename, uniqueness: { scope: :issue_id }, length: { maximum: 255 }
+    validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
     validate :validate_file_is_image
 
     alias_attribute :title, :filename
@@ -43,7 +47,7 @@ module DesignManagement
 
     # Pre-fetching scope to include the data necessary to construct a
     # reference using `to_reference`.
-    scope :for_reference, -> { includes(issue: [{ project: [:route, :namespace] }]) }
+    scope :for_reference, -> { includes(issue: [{ namespace: :project }, { project: [:route, :namespace] }]) }
 
     # A design can be uniquely identified by issue_id and filename
     # Takes one or more sets of composite IDs of the form:
@@ -174,16 +178,12 @@ module DesignManagement
           (?<url_filename> #{valid_char}+ \. #{ext})
         }x
 
-        super(path_segment, filename_pattern)
+        compose_link_reference_pattern(path_segment, filename_pattern)
       end
     end
 
     def self.build_full_path(issue, design)
       File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", design.filename)
-    end
-
-    def description
-      ''
     end
 
     def new_design?

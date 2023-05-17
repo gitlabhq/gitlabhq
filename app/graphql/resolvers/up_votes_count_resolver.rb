@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class UpVotesCountResolver < BaseResolver
-    include Gitlab::Graphql::Authorize::AuthorizeResource
-    include BatchLoaders::AwardEmojiVotesBatchLoader
-
+  class UpVotesCountResolver < Resolvers::AwardEmoji::BaseVotesCountResolver
     type GraphQL::Types::Int, null: true
 
     def resolve
       authorize!(object)
-      load_votes(object, AwardEmoji::UPVOTE_NAME)
+      votes_batch_loader.load_upvotes(object)
     end
   end
 end

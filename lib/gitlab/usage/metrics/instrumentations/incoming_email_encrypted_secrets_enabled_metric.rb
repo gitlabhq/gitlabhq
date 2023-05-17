@@ -6,7 +6,7 @@ module Gitlab
       module Instrumentations
         class IncomingEmailEncryptedSecretsEnabledMetric < GenericMetric
           value do
-            Gitlab::IncomingEmail.encrypted_secrets.active?
+            Gitlab::Email::IncomingEmail.encrypted_secrets.active?
           end
         end
       end

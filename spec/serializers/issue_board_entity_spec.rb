@@ -16,13 +16,17 @@ RSpec.describe IssueBoardEntity do
   subject { described_class.new(resource, request: request).as_json }
 
   it 'has basic attributes' do
-    expect(subject).to include(:id, :iid, :title, :confidential, :due_date, :project_id, :relative_position,
-                               :labels, :assignees, project: hash_including(:id, :path, :path_with_namespace))
+    expect(subject).to include(
+      :id, :iid, :title, :confidential, :due_date, :project_id, :relative_position,
+      :labels, :assignees, project: hash_including(:id, :path, :path_with_namespace)
+    )
   end
 
   it 'has path and endpoints' do
-    expect(subject).to include(:reference_path, :real_path, :issue_sidebar_endpoint,
-                               :toggle_subscription_endpoint, :assignable_labels_endpoint)
+    expect(subject).to include(
+      :reference_path, :real_path, :issue_sidebar_endpoint,
+      :toggle_subscription_endpoint, :assignable_labels_endpoint
+    )
   end
 
   it 'has milestone attributes' do
@@ -57,18 +61,8 @@ RSpec.describe IssueBoardEntity do
     context 'when issue is of type task' do
       let(:resource) { create(:issue, :task, project: project) }
 
-      context 'when the use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'has a work item path' do
-          expect(subject[:real_path]).to eq(project_work_items_path(project, resource.id))
-        end
-      end
-
       it 'has a work item path with iid' do
-        expect(subject[:real_path]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
+        expect(subject[:real_path]).to eq(project_work_items_path(project, resource.iid))
       end
     end
   end

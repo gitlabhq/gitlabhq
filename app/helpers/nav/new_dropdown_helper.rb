@@ -6,19 +6,19 @@ module Nav
       return unless current_user
 
       menu_sections = []
+      data = { title: _('Create new...') }
 
-      if group&.persisted?
-        menu_sections.push(group_menu_section(group))
-      elsif project&.persisted?
+      if project&.persisted?
         menu_sections.push(project_menu_section(project))
+      elsif group&.persisted?
+        menu_sections.push(group_menu_section(group))
       end
 
       menu_sections.push(general_menu_section)
 
-      {
-        title: _("Create new..."),
-        menu_sections: menu_sections.select { |x| x.fetch(:menu_items).any? }
-      }
+      data[:menu_sections] = menu_sections.select { |x| x.fetch(:menu_items).any? }
+
+      data
     end
 
     private
@@ -51,11 +51,7 @@ module Nav
       menu_items.push(create_epic_menu_item(group))
 
       if can?(current_user, :admin_group_member, group)
-        menu_items.push(
-          invite_members_menu_item(
-            href: group_group_members_path(group)
-          )
-        )
+        menu_items.push(invite_members_menu_item(partial: 'groups/invite_members_top_nav_link'))
       end
 
       {
@@ -102,11 +98,7 @@ module Nav
       end
 
       if can_admin_project_member?(project)
-        menu_items.push(
-          invite_members_menu_item(
-            href: project_project_members_path(project)
-          )
-        )
+        menu_items.push(invite_members_menu_item(partial: 'projects/invite_members_top_nav_link'))
       end
 
       {
@@ -157,16 +149,16 @@ module Nav
       }
     end
 
-    def invite_members_menu_item(href:)
+    def invite_members_menu_item(partial:)
       ::Gitlab::Nav::TopNavMenuItem.build(
         id: 'invite',
         title: s_('InviteMember|Invite members'),
-        emoji: 'shaking_hands',
-        href: href,
+        icon: 'shaking_hands',
+        partial: partial,
+        component: 'invite_members',
         data: {
-          track_action: 'click_link_invite_members',
-          track_label: 'plus_menu_dropdown',
-          track_property: 'navigation_top'
+          trigger_source: 'top-nav',
+          trigger_element: 'text-emoji'
         }
       )
     end

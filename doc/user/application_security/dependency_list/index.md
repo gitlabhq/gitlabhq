@@ -13,11 +13,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use the dependency list to review your project's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
 
-To see the dependency list, go to your project and select **Security & Compliance > Dependency list**.
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
+
+To see the dependency list, go to your project and select **Security and Compliance > Dependency list**.
 
 This information is sometimes referred to as a Software Bill of Materials, SBOM, or BOM.
-
-The dependency list only shows the results of the last successful pipeline to run on the default branch. This is why we recommend not changing the default behavior of allowing the secure jobs to fail.
 
 ## Prerequisites
 
@@ -29,6 +30,9 @@ To view your project's dependencies, ensure you meet the following requirements:
 - Your project uses at least one of the
   [languages and package managers](../dependency_scanning/index.md#supported-languages-and-package-managers)
   supported by Gemnasium.
+- A successful pipeline was run on the default branch.
+  You should not change the default behavior of allowing the
+  [application security jobs](../../application_security/index.md#application-coverage) to fail.
 
 ## View a project's dependencies
 

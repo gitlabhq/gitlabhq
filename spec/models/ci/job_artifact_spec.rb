@@ -7,7 +7,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:job) }
+    it { is_expected.to belong_to(:job).class_name('Ci::Build').with_foreign_key(:job_id).inverse_of(:job_artifacts) }
     it { is_expected.to validate_presence_of(:job) }
     it { is_expected.to validate_presence_of(:partition_id) }
   end
@@ -243,6 +243,29 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
     end
   end
 
+  describe '.non_trace' do
+    subject { described_class.non_trace }
+
+    context 'when there is only a trace job artifact' do
+      let!(:trace) { create(:ci_job_artifact, :trace) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when there is only a non-trace job artifact' do
+      let!(:junit) { create(:ci_job_artifact, :junit) }
+
+      it { is_expected.to eq([junit]) }
+    end
+
+    context 'when there are both trace and non-trace job artifacts' do
+      let!(:trace) { create(:ci_job_artifact, :trace) }
+      let!(:junit) { create(:ci_job_artifact, :junit) }
+
+      it { is_expected.to eq([junit]) }
+    end
+  end
+
   describe '.downloadable' do
     subject { described_class.downloadable }
 
@@ -460,9 +483,11 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
 
       context "when #{file_type} type with other formats" do
         described_class.file_formats.except(file_format).values.each do |other_format|
-          let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: other_format) }
+          context "with #{other_format}" do
+            let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: other_format) }
 
-          it { is_expected.not_to be_valid }
+            it { is_expected.not_to be_valid }
+          end
         end
       end
     end

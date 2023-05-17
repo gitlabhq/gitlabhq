@@ -11,7 +11,6 @@ module QA
             element :ci_variable_key_field
             element :ci_variable_value_field
             element :ci_variable_save_button
-            element :ci_variable_delete_button
           end
 
           def fill_variable(key, value, masked = false)
@@ -36,14 +35,6 @@ module QA
 
           def click_ci_variable_save_button
             click_element :ci_variable_save_button
-          end
-
-          def click_reveal_ci_variable_value_button
-            click_element :reveal_ci_variable_value_button
-          end
-
-          def click_ci_variable_delete_button
-            click_element :ci_variable_delete_button
           end
         end
       end

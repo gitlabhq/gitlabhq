@@ -34,11 +34,6 @@ describe('Ide File Row component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findFileRowExtra = () => wrapper.findComponent(FileRowExtra);
   const findFileRow = () => wrapper.findComponent(FileRow);
   const hasDropdownOpen = () => findFileRowExtra().props('dropdownOpen');

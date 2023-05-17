@@ -17,6 +17,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
       before_all do
         project.add_developer(user)
         project2.add_developer(user)
+        user.toggle_star(project2)
       end
 
       before do
@@ -39,6 +40,21 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
         expect(assigns(:projects)).to eq(projects)
       end
 
+      it 'assigns the correct all_user_projects' do
+        get :index
+        all_user_projects = assigns(:all_user_projects)
+
+        expect(all_user_projects.count).to eq(2)
+      end
+
+      it 'assigns the correct all_starred_projects' do
+        get :index
+        all_starred_projects = assigns(:all_starred_projects)
+
+        expect(all_starred_projects.count).to eq(1)
+        expect(all_starred_projects).to include(project2)
+      end
+
       context 'project sorting' do
         it_behaves_like 'set sort order from user preference' do
           let(:sorting_param) { 'created_asc' }
@@ -59,6 +75,36 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
 
         %w[latest_activity_desc latest_activity_asc stars_desc stars_asc created_desc].each do |sort|
           it_behaves_like 'search and sort parameters', sort
+        end
+      end
+
+      context 'with archived project' do
+        let_it_be(:archived_project) do
+          project2.tap { |p| p.update!(archived: true) }
+        end
+
+        it 'does not display archived project' do
+          get :index
+          projects_result = assigns(:projects)
+
+          expect(projects_result).not_to include(archived_project)
+          expect(projects_result).to include(project)
+        end
+
+        it 'excludes archived project from all_user_projects' do
+          get :index
+          all_user_projects = assigns(:all_user_projects)
+
+          expect(all_user_projects.count).to eq(1)
+          expect(all_user_projects).not_to include(archived_project)
+        end
+
+        it 'excludes archived project from all_starred_projects' do
+          get :index
+          all_starred_projects = assigns(:all_starred_projects)
+
+          expect(all_starred_projects.count).to eq(0)
+          expect(all_starred_projects).not_to include(archived_project)
         end
       end
 

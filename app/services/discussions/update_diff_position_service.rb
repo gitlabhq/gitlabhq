@@ -25,7 +25,7 @@ module Discussions
 
       Note.transaction do
         discussion.notes.each do |note|
-          Gitlab::Timeless.timeless(note, &:save)
+          note.save(touch: false)
         end
 
         if outdated && current_user

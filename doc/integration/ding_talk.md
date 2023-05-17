@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # DingTalk OAuth 2.0 OmniAuth provider **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341898) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341898) in GitLab 14.5.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390855) in GitLab 15.10.
 
 You can sign in to GitLab using your DingTalk account.
 Sign in to DingTalk Open Platform and create an application on it. DingTalk generates a client ID and secret key for you to use.
@@ -51,7 +52,7 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `dingtalk` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 

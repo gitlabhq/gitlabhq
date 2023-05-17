@@ -8,119 +8,113 @@ module Ci
 
         attr_reader :pipeline
 
-        # We use these columns to perform an efficient
-        # calculation of a status
-        STATUSES_COLUMNS = [
-          :id, :name, :status, :allow_failure,
-          :stage_idx, :processed, :lock_version
-        ].freeze
-
         def initialize(pipeline)
           @pipeline = pipeline
-          @stage_statuses = {}
-          @prior_stage_statuses = {}
+          @stage_jobs = {}
+          @prior_stage_jobs = {}
         end
 
         # This method updates internal status for given ID
-        def set_processable_status(id, status, lock_version)
-          processable = all_statuses_by_id[id]
-          return unless processable
+        def set_job_status(id, status, lock_version)
+          job = all_jobs_by_id[id]
+          return unless job
 
-          processable[:status] = status
-          processable[:lock_version] = lock_version
+          job[:status] = status
+          job[:lock_version] = lock_version
         end
 
-        # This methods gets composite status of all processables
+        # This methods gets composite status of all jobs
         def status_of_all
-          status_for_array(all_statuses, dag: false)
+          status_for_array(all_jobs)
         end
 
-        # This methods gets composite status for processables with given names
-        def status_for_names(names, dag:)
-          name_statuses = all_statuses_by_name.slice(*names)
+        # This methods gets composite status for jobs at a given stage
+        def status_of_stage(stage_position)
+          strong_memoize("status_of_stage_#{stage_position}") do
+            stage_jobs = all_jobs_grouped_by_stage_position[stage_position].to_a
 
-          status_for_array(name_statuses.values, dag: dag)
-        end
-
-        # This methods gets composite status for processables before given stage
-        def status_for_prior_stage_position(position)
-          strong_memoize("status_for_prior_stage_position_#{position}") do
-            stage_statuses = all_statuses_grouped_by_stage_position
-              .select { |stage_position, _| stage_position < position }
-
-            status_for_array(stage_statuses.values.flatten, dag: false)
+            status_for_array(stage_jobs.flatten)
           end
         end
 
-        # This methods gets a list of processables for a given stage
-        def created_processable_ids_for_stage_position(current_position)
-          all_statuses_grouped_by_stage_position[current_position]
+        # This methods gets composite status for jobs with given names
+        def status_of_jobs(names)
+          jobs = all_jobs_by_name.slice(*names)
+
+          status_for_array(jobs.values, dag: true)
+        end
+
+        # This methods gets composite status for jobs before given stage
+        def status_of_jobs_prior_to_stage(stage_position)
+          strong_memoize("status_of_jobs_prior_to_stage_#{stage_position}") do
+            stage_jobs = all_jobs_grouped_by_stage_position
+              .select { |position, _| position < stage_position }
+
+            status_for_array(stage_jobs.values.flatten)
+          end
+        end
+
+        # This methods gets a list of jobs for a given stage
+        def created_job_ids_in_stage(stage_position)
+          all_jobs_grouped_by_stage_position[stage_position]
             .to_a
-            .select { |processable| processable[:status] == 'created' }
-            .map { |processable| processable[:id] }
+            .select { |job| job[:status] == 'created' }
+            .map { |job| job[:id] }
         end
 
-        # This methods gets composite status for processables at a given stage
-        def status_for_stage_position(current_position)
-          strong_memoize("status_for_stage_position_#{current_position}") do
-            stage_statuses = all_statuses_grouped_by_stage_position[current_position].to_a
-
-            status_for_array(stage_statuses.flatten, dag: false)
-          end
-        end
-
-        # This method returns a list of all processable, that are to be processed
-        def processing_processables
-          all_statuses.lazy.reject { |status| status[:processed] }
+        # This method returns a list of all job, that are to be processed
+        def processing_jobs
+          all_jobs.lazy.reject { |job| job[:processed] }
         end
 
         private
 
-        def status_for_array(statuses, dag:)
+        # We use these columns to perform an efficient calculation of a status
+        JOB_ATTRS = [
+          :id, :name, :status, :allow_failure,
+          :stage_idx, :processed, :lock_version
+        ].freeze
+
+        def status_for_array(jobs, dag: false)
           result = Gitlab::Ci::Status::Composite
-            .new(statuses, dag: dag)
+            .new(jobs, dag: dag, project: pipeline.project)
             .status
           result || 'success'
         end
 
-        def all_statuses_grouped_by_stage_position
-          strong_memoize(:all_statuses_by_order) do
-            all_statuses.group_by { |status| status[:stage_idx].to_i }
+        def all_jobs_grouped_by_stage_position
+          strong_memoize(:all_jobs_by_order) do
+            all_jobs.group_by { |job| job[:stage_idx].to_i }
           end
         end
 
-        def all_statuses_by_id
-          strong_memoize(:all_statuses_by_id) do
-            all_statuses.index_by { |row| row[:id] }
+        def all_jobs_by_id
+          strong_memoize(:all_jobs_by_id) do
+            all_jobs.index_by { |row| row[:id] }
           end
         end
 
-        def all_statuses_by_name
-          strong_memoize(:statuses_by_name) do
-            all_statuses.index_by { |row| row[:name] }
+        def all_jobs_by_name
+          strong_memoize(:jobs_by_name) do
+            all_jobs.index_by { |row| row[:name] }
           end
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
-        def all_statuses
+        def all_jobs
           # We fetch all relevant data in one go.
           #
-          # This is more efficient than relying
-          # on PostgreSQL to calculate composite status
-          # for us
+          # This is more efficient than relying on PostgreSQL to calculate composite status for us
           #
-          # Since we need to reprocess everything
-          # we can fetch all of them and do processing
-          # ourselves.
-          strong_memoize(:all_statuses) do
-            raw_statuses = pipeline
-              .statuses
-              .latest
+          # Since we need to reprocess everything we can fetch all of them and do processing ourselves.
+          strong_memoize(:all_jobs) do
+            raw_jobs = pipeline
+              .current_jobs
               .ordered_by_stage
-              .pluck(*STATUSES_COLUMNS)
+              .pluck(*JOB_ATTRS)
 
-            raw_statuses.map do |row|
-              STATUSES_COLUMNS.zip(row).to_h
+            raw_jobs.map do |row|
+              JOB_ATTRS.zip(row).to_h
             end
           end
         end

@@ -5,7 +5,7 @@ RSpec.shared_examples 'updating of user activity' do |paths_to_visit|
 
   before do
     group = create(:group, name: 'group')
-    project = create(:project, :public, namespace: group, name: 'project')
+    project = create(:project, :public, namespace: group, path: 'project')
 
     create(:issue, project: project, iid: 10)
     create(:merge_request, source_project: project, iid: 15)

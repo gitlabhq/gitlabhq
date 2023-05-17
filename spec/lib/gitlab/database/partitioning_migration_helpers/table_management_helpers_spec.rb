@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers, feature_category: :database do
   include Database::PartitioningHelpers
   include Database::TriggerHelpers
   include Database::TableSchemaHelpers
+  include MigrationsHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)
@@ -14,9 +15,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   let_it_be(:connection) { ActiveRecord::Base.connection }
 
   let(:source_table) { :_test_original_table }
-  let(:partitioned_table) { '_test_migration_partitioned_table' }
-  let(:function_name) { '_test_migration_function_name' }
-  let(:trigger_name) { '_test_migration_trigger_name' }
+  let(:partitioned_table) { :_test_migration_partitioned_table }
+  let(:function_name) { :_test_migration_function_name }
+  let(:trigger_name) { :_test_migration_trigger_name }
   let(:partition_column) { 'created_at' }
   let(:min_date) { Date.new(2019, 12) }
   let(:max_date) { Date.new(2020, 3) }
@@ -42,15 +43,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   context 'list partitioning conversion helpers' do
-    shared_examples_for 'delegates to ConvertTableToFirstListPartition' do
+    shared_examples_for 'delegates to ConvertTable' do
       let(:extra_options) { {} }
       it 'throws an error if in a transaction' do
         allow(migration).to receive(:transaction_open?).and_return(true)
         expect { migrate }.to raise_error(/cannot be run inside a transaction/)
       end
 
-      it 'delegates to a method on ConvertTableToFirstListPartition' do
-        expect_next_instance_of(Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
+      it 'delegates to a method on List::ConvertTable' do
+        expect_next_instance_of(Gitlab::Database::Partitioning::List::ConvertTable,
                                 migration_context: migration,
                                 table_name: source_table,
                                 parent_table_name: partitioned_table,
@@ -65,7 +66,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#convert_table_to_first_list_partition' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:lock_tables) { [source_table] }
         let(:extra_options) { { lock_tables: lock_tables } }
         let(:expected_method) { :partition }
@@ -80,7 +81,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#revert_converting_table_to_first_list_partition' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_partitioning }
         let(:migrate) do
           migration.revert_converting_table_to_first_list_partition(table_name: source_table,
@@ -92,19 +93,20 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#prepare_constraint_for_list_partitioning' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :prepare_for_partitioning }
         let(:migrate) do
           migration.prepare_constraint_for_list_partitioning(table_name: source_table,
                                                              partitioning_column: partition_column,
                                                              parent_table_name: partitioned_table,
-                                                             initial_partitioning_value: min_date)
+                                                             initial_partitioning_value: min_date,
+                                                             async: false)
         end
       end
     end
 
     describe '#revert_preparing_constraint_for_list_partitioning' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_preparation_for_partitioning }
         let(:migrate) do
           migration.revert_preparing_constraint_for_list_partitioning(table_name: source_table,
@@ -121,12 +123,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:old_primary_key) { 'id' }
     let(:new_primary_key) { [old_primary_key, partition_column] }
 
-    before do
-      allow(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals)
-    end
-
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -227,7 +225,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           end
         end
 
-        let(:non_int_table) { :another_example }
+        let(:non_int_table) { :_test_another_example }
         let(:old_primary_key) { 'identifier' }
 
         it 'does not change the primary key datatype' do
@@ -422,7 +420,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:migration_class) { 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
 
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -462,7 +460,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
   describe '#enqueue_partitioning_data_migration' do
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -484,17 +482,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     context 'when records exist in the source table' do
-      let(:migration_class) { '::Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
+      let(:migration_class) { described_class::MIGRATION }
       let(:sub_batch_size) { described_class::SUB_BATCH_SIZE }
-      let(:pause_seconds) { described_class::PAUSE_SECONDS }
       let!(:first_id) { source_model.create!(name: 'Bob', age: 20).id }
       let!(:second_id) { source_model.create!(name: 'Alice', age: 30).id }
       let!(:third_id) { source_model.create!(name: 'Sam', age: 40).id }
 
       before do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
-
-        expect(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals).and_call_original
+        stub_const("#{described_class.name}::SUB_BATCH_SIZE", 1)
       end
 
       it 'enqueues jobs to copy each batch of data' do
@@ -503,13 +499,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         Sidekiq::Testing.fake! do
           migration.enqueue_partitioning_data_migration source_table
 
-          expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-
-          first_job_arguments = [first_id, second_id, source_table.to_s, partitioned_table, 'id']
-          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([migration_class, first_job_arguments])
-
-          second_job_arguments = [third_id, third_id, source_table.to_s, partitioned_table, 'id']
-          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([migration_class, second_job_arguments])
+          expect(migration_class).to have_scheduled_batched_migration(
+            table_name: source_table,
+            column_name: :id,
+            job_arguments: [partitioned_table],
+            batch_size: described_class::BATCH_SIZE,
+            sub_batch_size: described_class::SUB_BATCH_SIZE
+          )
         end
       end
     end
@@ -517,7 +513,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
   describe '#cleanup_partitioning_data_migration' do
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -528,18 +524,36 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
     end
 
-    context 'when tracking records exist in the background_migration_jobs table' do
-      let(:migration_class) { 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
-      let!(:job1) { create(:background_migration_job, class_name: migration_class, arguments: [1, 10, source_table]) }
-      let!(:job2) { create(:background_migration_job, class_name: migration_class, arguments: [11, 20, source_table]) }
-      let!(:job3) { create(:background_migration_job, class_name: migration_class, arguments: [1, 10, 'other_table']) }
+    context 'when tracking records exist in the batched_background_migrations table' do
+      let(:migration_class) { described_class::MIGRATION }
+
+      before do
+        create(
+          :batched_background_migration,
+          job_class_name: migration_class,
+          table_name: source_table,
+          column_name: :id,
+          job_arguments: [partitioned_table]
+        )
+
+        create(
+          :batched_background_migration,
+          job_class_name: migration_class,
+          table_name: 'other_table',
+          column_name: :id,
+          job_arguments: ['other_table_partitioned']
+        )
+      end
 
       it 'deletes those pertaining to the given table' do
         expect { migration.cleanup_partitioning_data_migration(source_table) }
-          .to change { ::Gitlab::Database::BackgroundMigrationJob.count }.from(3).to(1)
+          .to change { ::Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
 
-        remaining_record = ::Gitlab::Database::BackgroundMigrationJob.first
-        expect(remaining_record).to have_attributes(class_name: migration_class, arguments: [1, 10, 'other_table'])
+        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: 'other_table').any?)
+          .to be_truthy
+
+        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: source_table).any?)
+          .to be_falsy
       end
     end
   end
@@ -577,10 +591,10 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   describe '#finalize_backfilling_partitioned_table' do
-    let(:source_column) { 'id' }
+    let(:source_column) { :id }
 
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -601,131 +615,28 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
     end
 
-    context 'finishing pending background migration jobs' do
+    context 'finishing pending batched background migration jobs' do
       let(:source_table_double) { double('table name') }
       let(:raw_arguments) { [1, 50_000, source_table_double, partitioned_table, source_column] }
       let(:background_job) { double('background job', args: ['background jobs', raw_arguments]) }
+      let(:bbm_arguments) do
+        {
+          job_class_name: described_class::MIGRATION,
+          table_name: source_table,
+          column_name: connection.primary_key(source_table),
+          job_arguments: [partitioned_table]
+        }
+      end
 
       before do
         allow(migration).to receive(:table_exists?).with(partitioned_table).and_return(true)
-        allow(migration).to receive(:copy_missed_records)
         allow(migration).to receive(:execute).with(/VACUUM/)
         allow(migration).to receive(:execute).with(/^(RE)?SET/)
       end
 
-      it 'finishes remaining jobs for the correct table' do
-        expect_next_instance_of(described_class::JobArguments) do |job_arguments|
-          expect(job_arguments).to receive(:source_table_name).and_call_original
-        end
-
-        expect(Gitlab::BackgroundMigration).to receive(:steal)
-          .with(described_class::MIGRATION_CLASS_NAME)
-          .and_yield(background_job)
-
-        expect(source_table_double).to receive(:==).with(source_table.to_s)
-
-        migration.finalize_backfilling_partitioned_table source_table
-      end
-
-      it 'requires the migration helper to execute in DML mode' do
-        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
-
-        expect(Gitlab::BackgroundMigration).to receive(:steal)
-          .with(described_class::MIGRATION_CLASS_NAME)
-          .and_yield(background_job)
-
-        migration.finalize_backfilling_partitioned_table source_table
-      end
-    end
-
-    context 'when there is missed data' do
-      let(:partitioned_model) { Class.new(ActiveRecord::Base) }
-      let(:timestamp) { Time.utc(2019, 12, 1, 12).round }
-      let!(:record1) { source_model.create!(name: 'Bob', age: 20, created_at: timestamp, updated_at: timestamp) }
-      let!(:record2) { source_model.create!(name: 'Alice', age: 30, created_at: timestamp, updated_at: timestamp) }
-      let!(:record3) { source_model.create!(name: 'Sam', age: 40, created_at: timestamp, updated_at: timestamp) }
-      let!(:record4) { source_model.create!(name: 'Sue', age: 50, created_at: timestamp, updated_at: timestamp) }
-
-      let!(:pending_job1) do
-        create(:background_migration_job,
-               class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [record1.id, record2.id, source_table, partitioned_table, source_column])
-      end
-
-      let!(:pending_job2) do
-        create(:background_migration_job,
-               class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [record3.id, record3.id, source_table, partitioned_table, source_column])
-      end
-
-      let!(:succeeded_job) do
-        create(:background_migration_job, :succeeded,
-               class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [record4.id, record4.id, source_table, partitioned_table, source_column])
-      end
-
-      before do
-        partitioned_model.primary_key = :id
-        partitioned_model.table_name = partitioned_table
-
-        allow(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals)
-
-        migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
-
-        allow(Gitlab::BackgroundMigration).to receive(:steal)
-        allow(migration).to receive(:execute).with(/VACUUM/)
-        allow(migration).to receive(:execute).with(/^(RE)?SET/)
-      end
-
-      it 'idempotently cleans up after failed background migrations' do
-        expect(partitioned_model.count).to eq(0)
-
-        partitioned_model.insert(record2.attributes, unique_by: [:id, :created_at])
-
-        expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable) do |backfill|
-          allow(backfill).to receive(:transaction_open?).and_return(false)
-
-          expect(backfill).to receive(:perform)
-            .with(record1.id, record2.id, source_table, partitioned_table, source_column)
-            .and_call_original
-
-          expect(backfill).to receive(:perform)
-            .with(record3.id, record3.id, source_table, partitioned_table, source_column)
-            .and_call_original
-        end
-
-        migration.finalize_backfilling_partitioned_table source_table
-
-        expect(partitioned_model.count).to eq(3)
-
-        [record1, record2, record3].each do |original|
-          copy = partitioned_model.find(original.id)
-          expect(copy.attributes).to eq(original.attributes)
-        end
-
-        expect(partitioned_model.find_by_id(record4.id)).to be_nil
-
-        [pending_job1, pending_job2].each do |job|
-          expect(job.reload).to be_succeeded
-        end
-      end
-
-      it 'raises an error if no job tracking records are marked as succeeded' do
-        expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable) do |backfill|
-          allow(backfill).to receive(:transaction_open?).and_return(false)
-
-          expect(backfill).to receive(:perform).and_return(0)
-        end
-
-        expect do
-          migration.finalize_backfilling_partitioned_table source_table
-        end.to raise_error(/failed to update tracking record/)
-      end
-
-      it 'vacuums the table after loading is complete' do
-        expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable) do |backfill|
-          allow(backfill).to receive(:perform).and_return(1)
-        end
+      it 'ensures finishing of remaining jobs and vacuums the partitioned table' do
+        expect(migration).to receive(:ensure_batched_background_migration_is_finished)
+          .with(bbm_arguments)
 
         expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
         expect(migration).to receive(:disable_statement_timeout).and_call_original

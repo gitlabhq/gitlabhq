@@ -10,17 +10,20 @@ RSpec.describe API::Users, feature_category: :user_profile do
       it 'returns a success status and the value has been changed' do
         put api("/user/preferences", user), params: {
           view_diffs_file_by_file: true,
-          show_whitespace_in_diffs: true
+          show_whitespace_in_diffs: true,
+          pass_user_identities_to_ci_jwt: true
         }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['view_diffs_file_by_file']).to eq(true)
         expect(json_response['show_whitespace_in_diffs']).to eq(true)
+        expect(json_response['pass_user_identities_to_ci_jwt']).to eq(true)
 
         user.reload
 
         expect(user.view_diffs_file_by_file).to be_truthy
         expect(user.show_whitespace_in_diffs).to be_truthy
+        expect(user.pass_user_identities_to_ci_jwt).to be_truthy
       end
     end
 

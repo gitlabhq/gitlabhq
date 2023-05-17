@@ -22,11 +22,6 @@ describe('History Item', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findTimelineEntry = () => wrapper.findComponent(TimelineEntryItem);
   const findGlIcon = () => wrapper.findComponent(GlIcon);
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');

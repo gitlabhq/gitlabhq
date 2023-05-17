@@ -7,10 +7,6 @@ describe('PDFLab component', () => {
 
   const mountComponent = ({ pdf }) => shallowMount(PDFLab, { propsData: { pdf } });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without PDF data', () => {
     beforeEach(() => {
       wrapper = mountComponent({ pdf: '' });

@@ -12,7 +12,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:public_permissions) do
     %i[
-      read_group read_counts read_achievement
+      read_group read_counts
       read_label read_issue_board_list read_milestone read_issue_board
     ]
   end
@@ -42,9 +42,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:developer_permissions) do
     %i[
-      create_metrics_dashboard_annotation
-      delete_metrics_dashboard_annotation
-      update_metrics_dashboard_annotation
+      admin_metrics_dashboard_annotation
       create_custom_emoji
       create_package
       read_cluster
@@ -59,6 +57,7 @@ RSpec.shared_context 'GroupPolicy context' do
       create_cluster update_cluster admin_cluster add_cluster
       destroy_upload
       admin_achievement
+      award_achievement
     ]
   end
 

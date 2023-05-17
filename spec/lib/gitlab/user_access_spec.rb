@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UserAccess do
+RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
   include ProjectForksHelper
 
   let(:access) { described_class.new(user, container: project) }
@@ -85,10 +85,10 @@ RSpec.describe Gitlab::UserAccess do
       let(:not_existing_branch) { create :protected_branch, :developers_can_merge, project: project }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it 'returns true for admins' do
+        it 'returns false for admins' do
           user.update!(admin: true)
 
-          expect(access.can_push_to_branch?(branch.name)).to be_truthy
+          expect(access.can_push_to_branch?(branch.name)).to be_falsey
         end
       end
 

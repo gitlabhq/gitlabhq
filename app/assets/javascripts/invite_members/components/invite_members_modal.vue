@@ -13,20 +13,21 @@ import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import Tracking from '~/tracking';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
-import { getParameterValues } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
+import {
+  memberName,
+  triggerExternalAlert,
+  qualifiesForTasksToBeDone,
+} from 'ee_else_ce/invite_members/utils/member_utils';
 import {
   USERS_FILTER_ALL,
   INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
-  LEARN_GITLAB,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
 } from '../constants';
 import eventHub from '../event_hub';
 import { responseFromSuccess } from '../utils/response_message_parser';
-import { memberName } from '../utils/member_utils';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
   displaySuccessfulInvitationAlert,
@@ -51,6 +52,8 @@ export default {
     MembersTokenSelect,
     ModalConfetti,
     UserLimitNotification,
+    ActiveTrialNotification: () =>
+      import('ee_component/invite_members/components/active_trial_notification.vue'),
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
   inject: ['newProjectPath'],
@@ -168,11 +171,7 @@ export default {
       );
     },
     tasksToBeDoneEnabled() {
-      return (
-        (getParameterValues('open_modal')[0] === 'invite_members_for_task' ||
-          this.isOnLearnGitlab) &&
-        this.tasksToBeDoneOptions.length
-      );
+      return qualifiesForTasksToBeDone(this.source) && this.tasksToBeDoneOptions.length;
     },
     showTasksToBeDone() {
       return (
@@ -190,9 +189,6 @@ export default {
       return this.showTasksToBeDone && this.selectedTasksToBeDone.length
         ? this.selectedTaskProject.id
         : '';
-    },
-    isOnLearnGitlab() {
-      return this.source === LEARN_GITLAB;
     },
     showUserLimitNotification() {
       return !isEmpty(this.usersLimitDataset.alertVariant);
@@ -246,14 +242,10 @@ export default {
 
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
-      if (this.isOnLearnGitlab) {
-        this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, this.source);
-      }
     });
 
     if (this.tasksToBeDoneEnabled) {
       this.openModal({ source: 'in_product_marketing_email' });
-      this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, INVITE_MEMBERS_FOR_TASK.view);
     }
   },
   methods: {
@@ -281,36 +273,18 @@ export default {
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
-    trackEvent(experimentName, eventName) {
-      const tracking = new ExperimentTracking(experimentName);
-      tracking.event(eventName);
-    },
     showEmptyInvitesAlert() {
       this.invalidFeedbackMessage = this.$options.labels.placeHolder;
       this.shouldShowEmptyInvitesAlert = true;
       this.$refs.alerts.focus();
     },
-    sendInvite({ accessLevel, expiresAt }) {
-      this.isLoading = true;
-      this.clearValidation();
-
-      if (!this.isEmptyInvites) {
-        this.showEmptyInvitesAlert();
-        return;
-      }
-
+    getInvitePayload({ accessLevel, expiresAt }) {
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
-
-      const apiAddByInvite = this.isProject
-        ? Api.inviteProjectMembers.bind(Api)
-        : Api.inviteGroupMembers.bind(Api);
 
       const email = usersToInviteByEmail !== '' ? { email: usersToInviteByEmail } : {};
       const userId = usersToAddById !== '' ? { user_id: usersToAddById } : {};
 
-      this.trackinviteMembersForTask();
-
-      apiAddByInvite(this.id, {
+      return {
         format: 'json',
         expires_at: expiresAt,
         access_level: accessLevel,
@@ -319,20 +293,39 @@ export default {
         tasks_project_id: this.tasksProjectForPost,
         ...email,
         ...userId,
-      })
-        .then((response) => {
-          const { error, message } = responseFromSuccess(response);
+      };
+    },
+    async sendInvite({ accessLevel, expiresAt }) {
+      this.isLoading = true;
+      this.clearValidation();
 
-          if (error) {
-            this.showMemberErrors(message);
-          } else {
-            this.onInviteSuccess();
-          }
-        })
-        .catch((e) => this.showInvalidFeedbackMessage(e))
-        .finally(() => {
-          this.isLoading = false;
-        });
+      if (!this.isEmptyInvites) {
+        this.showEmptyInvitesAlert();
+        return;
+      }
+
+      this.trackInviteMembersForTask();
+
+      const apiAddByInvite = this.isProject
+        ? Api.inviteProjectMembers.bind(Api)
+        : Api.inviteGroupMembers.bind(Api);
+
+      try {
+        const payload = this.getInvitePayload({ accessLevel, expiresAt });
+        const response = await apiAddByInvite(this.id, payload);
+
+        const { error, message } = responseFromSuccess(response);
+
+        if (error) {
+          this.showMemberErrors(message);
+        } else {
+          this.onInviteSuccess();
+        }
+      } catch (e) {
+        this.showInvalidFeedbackMessage(e);
+      } finally {
+        this.isLoading = false;
+      }
     },
     showMemberErrors(message) {
       this.invalidMembers = message;
@@ -342,11 +335,10 @@ export default {
       // initial token creation hits this and nothing is found... so safe navigation
       return this.newUsersToInvite.find((member) => memberName(member) === username)?.name;
     },
-    trackinviteMembersForTask() {
+    trackInviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
       const property = this.selectedTasksToBeDone.join(',');
-      const tracking = new ExperimentTracking(INVITE_MEMBERS_FOR_TASK.name, { label, property });
-      tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
+      this.track(INVITE_MEMBERS_FOR_TASK.submit, { label, property });
     },
     onCancel() {
       this.track('click_cancel', { label: this.source });
@@ -375,9 +367,7 @@ export default {
       }
     },
     showSuccessMessage() {
-      if (this.isOnLearnGitlab) {
-        eventHub.$emit('showSuccessfulInvitationsAlert');
-      } else {
+      if (!triggerExternalAlert(this.source)) {
         this.$toast.show(this.$options.labels.toastMessageSuccessful);
       }
 
@@ -421,7 +411,6 @@ export default {
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
-    :active-trial-dataset="activeTrialDataset"
     :full-path="fullPath"
     @close="onClose"
     @cancel="onCancel"
@@ -430,7 +419,9 @@ export default {
     @access-level="onAccessLevelUpdate"
   >
     <template #intro-text-before>
-      <div v-if="isCelebration" class="gl-p-4 gl-font-size-h1"><gl-emoji data-name="tada" /></div>
+      <div v-if="isCelebration" class="gl-p-4 gl-font-size-h1">
+        <gl-emoji data-name="tada" />
+      </div>
     </template>
     <template #intro-text-after>
       <br />
@@ -502,6 +493,10 @@ export default {
           :users-limit-dataset="usersLimitDataset"
         />
       </div>
+    </template>
+
+    <template #active-trial-alert>
+      <active-trial-notification v-if="!isCelebration" :active-trial-dataset="activeTrialDataset" />
     </template>
 
     <template #select="{ exceptionState, inputId }">

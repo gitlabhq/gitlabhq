@@ -5,6 +5,8 @@ module Gitlab
     class UserFormatter
       attr_reader :client, :raw
 
+      GITEA_GHOST_EMAIL = 'ghost_user@gitea_import_dummy_email.com'
+
       def initialize(client, raw)
         @client = client
         @raw = raw
@@ -27,7 +29,14 @@ module Gitlab
       private
 
       def email
-        @email ||= client.user(raw[:login]).to_h[:email]
+        # Gitea marks deleted users as 'Ghost' users and removes them from
+        # their system. So for Gitea 'Ghost' users  we need to assign a dummy
+        # email address to avoid querying the Gitea api for a non existing user
+        if raw[:login] == 'Ghost' && raw[:id] == -1
+          @email = GITEA_GHOST_EMAIL
+        else
+          @email ||= client.user(raw[:login]).to_h[:email]
+        end
       end
 
       def find_by_email

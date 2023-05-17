@@ -162,8 +162,6 @@ describe('RepoEditor', () => {
     // create a new model each time, otherwise tests conflict with each other
     // because of same model being used in multiple tests
     monacoEditor.getModels().forEach((model) => model.dispose());
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('default', () => {
@@ -295,7 +293,7 @@ describe('RepoEditor', () => {
       });
 
       describe('when file changes to non-markdown file', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           wrapper.setProps({ file: dummyFile.empty });
         });
 
@@ -603,7 +601,7 @@ describe('RepoEditor', () => {
       const f = createRemoteFile('newFile');
       Vue.set(vm.$store.state.entries, f.path, f);
 
-      jest.spyOn(service, 'getRawFileData').mockImplementation(async () => {
+      jest.spyOn(service, 'getRawFileData').mockImplementation(() => {
         expect(vm.file.loading).toBe(true);
 
         // switching from edit to diff mode usually triggers editor initialization
@@ -611,7 +609,7 @@ describe('RepoEditor', () => {
 
         jest.runOnlyPendingTimers();
 
-        return 'rawFileData123\n';
+        return Promise.resolve('rawFileData123\n');
       });
 
       wrapper.setProps({
@@ -632,18 +630,18 @@ describe('RepoEditor', () => {
 
       jest
         .spyOn(service, 'getRawFileData')
-        .mockImplementation(async () => {
+        .mockImplementation(() => {
           // opening fileB while the content of fileA is still being fetched
           wrapper.setProps({
             file: fileB,
           });
-          return aContent;
+          return Promise.resolve(aContent);
         })
-        .mockImplementationOnce(async () => {
+        .mockImplementationOnce(() => {
           // we delay returning fileB content
           // to make sure the editor doesn't initialize prematurely
           jest.advanceTimersByTime(30);
-          return bContent;
+          return Promise.resolve(bContent);
         });
 
       wrapper.setProps({

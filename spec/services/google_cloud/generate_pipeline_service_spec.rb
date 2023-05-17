@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::GeneratePipelineService do
+RSpec.describe GoogleCloud::GeneratePipelineService, feature_category: :deployment_management do
   describe 'for cloud-run' do
     describe 'when there is no existing pipeline' do
       let_it_be(:project) { create(:project, :repository) }

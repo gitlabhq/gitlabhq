@@ -20,7 +20,7 @@ describe('content/components/wrappers/table_of_contents', () => {
     eventHub = eventHubFactory();
   };
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     wrapper = mountExtended(TableOfContentsWrapper, {
       propsData: {
         editor: tiptapEditor,
@@ -68,10 +68,6 @@ describe('content/components/wrappers/table_of_contents', () => {
 
     await emitEditorEvent({ event: 'update', tiptapEditor });
     await nextTick();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders a node-view-wrapper as a ul element', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildEraseService do
+RSpec.describe Ci::BuildEraseService, feature_category: :continuous_integration do
   let_it_be(:user) { user }
 
   let(:build) { create(:ci_build, :artifacts, :trace_artifact, artifacts_expire_at: 100.days.from_now) }

@@ -30,6 +30,12 @@ function updateMergeRequestCounts(newCount) {
  * Refresh user counts (and broadcast if open)
  */
 export function refreshUserMergeRequestCounts() {
+  if (gon?.use_new_navigation) {
+    // The new sidebar manages _all_ the counts in
+    // ~/super_sidebar/user_counts_manager.js
+    document.dispatchEvent(new CustomEvent('userCounts:fetch'));
+    return Promise.resolve();
+  }
   return getUserCounts()
     .then(({ data }) => {
       const assignedMergeRequests = data.assigned_merge_requests;
@@ -67,6 +73,12 @@ export function closeUserCountsBroadcast() {
  * no special functionality lost except cross tab notifications
  */
 export function openUserCountsBroadcast() {
+  if (gon?.use_new_navigation) {
+    // The new sidebar broadcasts _all counts_ and updates
+    // them accordingly. Therefore we do not need this manager
+    // ~/super_sidebar/user_counts_manager.js
+    return;
+  }
   closeUserCountsBroadcast();
 
   if (window.BroadcastChannel) {

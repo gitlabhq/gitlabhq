@@ -1,4 +1,4 @@
-import { GlFormGroup, GlListbox, GlIcon } from '@gitlab/ui';
+import { GlFormGroup, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -32,7 +32,7 @@ describe('Issue type field component', () => {
     },
   };
 
-  const findListBox = () => wrapper.findComponent(GlListbox);
+  const findListBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findAllIssueItems = () => wrapper.findAll('[data-testid="issue-type-list-item"]');
   const findIssueItemAt = (at) => findAllIssueItems().at(at);
@@ -58,10 +58,6 @@ describe('Issue type field component', () => {
 
   beforeEach(() => {
     mockIssueStateData = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it.each`

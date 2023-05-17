@@ -28,28 +28,12 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
     context 'when linked issue is a task' do
       let(:issue_b) { create :issue, :task, project: project }
 
-      context 'when the use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'returns a work item path for the linked task' do
-          get namespace_project_issue_links_path(issue_links_params)
-
-          expect(json_response.count).to eq(1)
-          expect(json_response.first).to include(
-            'path' => project_work_items_path(issue_b.project, issue_b.id),
-            'type' => 'TASK'
-          )
-        end
-      end
-
       it 'returns a work item path for the linked task using the iid in the path' do
         get namespace_project_issue_links_path(issue_links_params)
 
         expect(json_response.count).to eq(1)
         expect(json_response.first).to include(
-          'path' => project_work_items_path(issue_b.project, issue_b.iid, iid_path: true),
+          'path' => project_work_items_path(issue_b.project, issue_b.iid),
           'type' => 'TASK'
         )
       end
@@ -74,8 +58,7 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq('message' => nil,
-                                    'issuables' => list_service_response.as_json)
+        expect(json_response).to eq('message' => nil, 'issuables' => list_service_response.as_json)
       end
     end
 
@@ -178,9 +161,6 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
   end
 
   def issue_links_params(opts = {})
-    opts.reverse_merge(namespace_id: issue.project.namespace,
-                       project_id: issue.project,
-                       issue_id: issue,
-                       format: :json)
+    opts.reverse_merge(namespace_id: issue.project.namespace, project_id: issue.project, issue_id: issue, format: :json)
   end
 end

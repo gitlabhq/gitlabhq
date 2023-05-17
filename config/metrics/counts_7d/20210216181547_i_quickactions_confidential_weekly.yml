@@ -6,7 +6,6 @@ description: Count of WAU using the `/confidential` quick action to set an issue
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: issue_tracking
 value_type: number
 status: active
 time_frame: 7d

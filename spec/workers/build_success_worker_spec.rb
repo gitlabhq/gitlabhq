@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildSuccessWorker do
+RSpec.describe BuildSuccessWorker, feature_category: :continuous_integration do
   describe '#perform' do
     subject { described_class.new.perform(build.id) }
 

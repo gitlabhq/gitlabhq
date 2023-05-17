@@ -49,6 +49,7 @@ module Gitlab
       gon.ee                     = Gitlab.ee?
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
+      gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
 
       if current_user
         gon.current_user_id = current_user.id
@@ -56,18 +57,19 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
-        gon.use_new_navigation = Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
+        gon.use_new_navigation = NavHelper.show_super_sidebar?(current_user)
       end
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
       push_frontend_feature_flag(:usage_data_api, type: :ops)
       push_frontend_feature_flag(:security_auto_fix)
-      push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
-      push_frontend_feature_flag(:integration_slack_app_notifications)
-      push_frontend_feature_flag(:full_path_project_search, current_user)
+      push_frontend_feature_flag(:super_sidebar_peek, current_user)
+      push_frontend_feature_flag(:unbatch_graphql_queries, current_user)
+      # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
+      push_frontend_feature_flag(:remove_monitor_metrics)
     end
 
     # Exposes the state of a feature flag to the frontend code.

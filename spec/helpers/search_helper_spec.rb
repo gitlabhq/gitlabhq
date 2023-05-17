@@ -306,6 +306,46 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
   end
 
+  describe 'projects_autocomplete' do
+    let_it_be(:user) { create(:user, name: "madelein") }
+    let_it_be(:project_1) { create(:project, name: 'test 1') }
+    let_it_be(:project_2) { create(:project, name: 'test 2') }
+    let(:search_term) { 'test' }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+    end
+
+    context 'when the user does not have access to projects' do
+      it 'does not return any results' do
+        expect(projects_autocomplete(search_term)).to eq([])
+      end
+    end
+
+    context 'when the user has access to one project' do
+      before do
+        project_2.add_developer(user)
+      end
+
+      it 'returns the project' do
+        expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
+      end
+
+      context 'when a project namespace matches the search term but the project does not' do
+        let_it_be(:group) { create(:group, name: 'test group') }
+        let_it_be(:project_3) { create(:project, name: 'nothing', namespace: group) }
+
+        before do
+          group.add_owner(user)
+        end
+
+        it 'returns all projects matching the term' do
+          expect(projects_autocomplete(search_term).pluck(:id)).to match_array([project_2.id, project_3.id])
+        end
+      end
+    end
+  end
+
   describe 'search_entries_info' do
     using RSpec::Parameterized::TableSyntax
 
@@ -827,6 +867,21 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       it 'adds the :project and :project-metadata correctly to hash' do
         expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
         expect(header_search_context[:project_metadata]).to eq(project_metadata)
+      end
+
+      context 'feature issues is not available' do
+        let(:feature_available) { false }
+        let(:project_metadata) { { mr_path: project_merge_requests_path(project) } }
+
+        before do
+          allow(project).to receive(:feature_available?).and_call_original
+          allow(project).to receive(:feature_available?).with(:issues, current_user).and_return(feature_available)
+        end
+
+        it 'adds the :project and :project-metadata correctly to hash' do
+          expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
+          expect(header_search_context[:project_metadata]).to eq(project_metadata)
+        end
       end
 
       context 'with scope' do

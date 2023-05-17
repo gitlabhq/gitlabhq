@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::UpdateService do
+RSpec.describe Deployments::UpdateService, feature_category: :continuous_delivery do
   let(:deploy) { create(:deployment) }
 
   describe '#execute' do

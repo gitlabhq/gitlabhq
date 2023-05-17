@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:import_state) { create(:import_state, project: project) }
 
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :pull_requests_merged_by)
+        .with(project.id, { '123' => 2 }, :collaborators)
 
       worker.import(client, project)
     end

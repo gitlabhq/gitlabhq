@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    RSpec.describe YamlProcessor, feature_category: :pipeline_authoring do
+    RSpec.describe YamlProcessor, feature_category: :pipeline_composition do
       include StubRequests
       include RepoHelpers
 
@@ -658,6 +658,191 @@ module Gitlab
             end
 
             it_behaves_like 'has warnings and expected error', /build job: need test is not defined in current or prior stages/
+          end
+
+          describe '#validate_job_needs!' do
+            context "when all validations pass" do
+              let(:config) do
+                <<-EOYML
+                    stages:
+                      - lint
+                    lint_job:
+                      needs: [lint_job_2]
+                      stage: lint
+                      script: 'echo lint_job'
+                      rules:
+                        - if: $var == null
+                          needs:
+                            - lint_job_2
+                            - job: lint_job_3
+                              optional: true
+                    lint_job_2:
+                      stage: lint
+                      script: 'echo job'
+                      rules:
+                        - if: $var == null
+                    lint_job_3:
+                      stage: lint
+                      script: 'echo job'
+                      rules:
+                        - if: $var == null
+                EOYML
+              end
+
+              it 'returns a valid response' do
+                expect(subject).to be_valid
+                expect(subject).to be_instance_of(Gitlab::Ci::YamlProcessor::Result)
+              end
+            end
+
+            context 'needs as array' do
+              context 'single need in following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs: [test_job]
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'multiple needs in the following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs: [test_job, test_job_2]
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                      test_job_2:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'single need in following state - hyphen need' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - test_job
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'when there are duplicate needs (string and hash)' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - test
+                      test_job_1:
+                        stage: test
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - test_job_2
+                              - job: test_job_2
+                      test_job_2:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'test_job_1 has the following needs duplicated: test_job_2.'
+              end
+            end
+
+            context 'rule needs as hash' do
+              context 'single hash need in following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - job: test_job
+                                artifacts: false
+                                optional: false
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+            end
+
+            context 'job rule need does not exist' do
+              let(:config) do
+                <<-EOYML
+                  build:
+                    stage: build
+                    script: echo
+                    rules:
+                      - when: always
+                  test:
+                    stage: test
+                    script: echo
+                    rules:
+                      - if: $var == null
+                        needs: [unknown_job]
+                EOYML
+              end
+
+              it_behaves_like 'has warnings and expected error', /test job: undefined need: unknown_job/
+            end
           end
         end
       end
@@ -1685,7 +1870,8 @@ module Gitlab
               key: 'key',
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1710,7 +1896,8 @@ module Gitlab
               key: { files: ['file'] },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1737,7 +1924,8 @@ module Gitlab
                 key: 'keya',
                 policy: 'pull-push',
                 when: 'on_success',
-                unprotect: false
+                unprotect: false,
+                fallback_keys: []
               },
               {
                 paths: ['logs/', 'binaries/'],
@@ -1745,7 +1933,8 @@ module Gitlab
                 key: 'key',
                 policy: 'pull-push',
                 when: 'on_success',
-                unprotect: false
+                unprotect: false,
+                fallback_keys: []
               }
             ]
           )
@@ -1773,7 +1962,8 @@ module Gitlab
               key: { files: ['file'] },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1799,7 +1989,8 @@ module Gitlab
               key: { files: ['file'], prefix: 'prefix' },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1823,7 +2014,8 @@ module Gitlab
               key: 'local',
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
       end
@@ -2395,10 +2587,16 @@ module Gitlab
           end
         end
 
-        context 'undefined need' do
+        context 'when need is an undefined job' do
           let(:needs) { ['undefined'] }
 
           it_behaves_like 'returns errors', 'test1 job: undefined need: undefined'
+
+          context 'when need is optional' do
+            let(:needs) { [{ job: 'undefined', optional: true }] }
+
+            it { is_expected.to be_valid }
+          end
         end
 
         context 'needs to deploy' do
@@ -2408,9 +2606,33 @@ module Gitlab
         end
 
         context 'duplicate needs' do
-          let(:needs) { %w(build1 build1) }
+          context 'when needs are specified in an array' do
+            let(:needs) { %w(build1 build1) }
 
-          it_behaves_like 'returns errors', 'test1 has duplicate entries in the needs section.'
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build1.'
+          end
+
+          context 'when a job is specified multiple times' do
+            let(:needs) do
+              [
+                { job: "build2", artifacts: true, optional: false },
+                { job: "build2", artifacts: true, optional: false }
+              ]
+            end
+
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build2.'
+          end
+
+          context 'when job is specified multiple times with different attributes' do
+            let(:needs) do
+              [
+                { job: "build2", artifacts: false, optional: true },
+                { job: "build2", artifacts: true, optional: false }
+              ]
+            end
+
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build2.'
+          end
         end
 
         context 'needs and dependencies that are mismatching' do

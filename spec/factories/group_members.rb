@@ -30,6 +30,12 @@ FactoryBot.define do
       after(:build) { |group_member, _| group_member.user.block! }
     end
 
+    trait :banned do
+      after(:create) do |member|
+        create(:namespace_ban, namespace: member.member_namespace.root_ancestor, user: member.user) unless member.owner?
+      end
+    end
+
     trait :minimal_access do
       to_create { |instance| instance.save!(validate: false) }
 
@@ -54,10 +60,12 @@ FactoryBot.define do
 
     after(:build) do |group_member, evaluator|
       if evaluator.tasks_to_be_done.present?
-        build(:member_task,
-              member: group_member,
-              project: build(:project, namespace: group_member.source),
-              tasks_to_be_done: evaluator.tasks_to_be_done)
+        build(
+          :member_task,
+          member: group_member,
+          project: build(:project, namespace: group_member.source),
+          tasks_to_be_done: evaluator.tasks_to_be_done
+        )
       end
     end
   end

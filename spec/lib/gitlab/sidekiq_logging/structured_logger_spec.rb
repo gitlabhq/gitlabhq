@@ -309,7 +309,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       shared_examples 'performs database queries' do
-        it 'logs the database time', :aggregate_errors do
+        it 'logs the database time', :aggregate_failures do
           expect(logger).to receive(:info).with(expected_start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
 
@@ -318,7 +318,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           end
         end
 
-        it 'prevents database time from leaking to the next job', :aggregate_errors do
+        it 'prevents database time from leaking to the next job', :aggregate_failures do
           expect(logger).to receive(:info).with(expected_start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
           expect(logger).to receive(:info).with(expected_start_payload).ordered

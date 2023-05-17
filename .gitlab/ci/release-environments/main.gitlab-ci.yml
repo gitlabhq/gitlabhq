@@ -4,6 +4,7 @@ default:
 
 stages:
   - prepare
+  - deploy
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
@@ -56,7 +57,38 @@ release-environments-build-cng:
     GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
     GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
     RUBY_VERSION: "${FULL_RUBY_VERSION}"
+    IMAGE_TAG_EXT: "-${CI_COMMIT_SHORT_SHA}"
   trigger:
     project: gitlab-org/build/CNG-mirror
     branch: $TRIGGER_BRANCH
+    strategy: depend
+
+release-environments-deploy-env:
+  allow_failure: true
+  stage: deploy
+  needs: ["release-environments-build-cng"]
+  variables:
+    DEPLOY_ENV: deploy.env
+  script:
+    - ./scripts/construct-release-environments-versions.rb > $DEPLOY_ENV
+  artifacts:
+    reports:
+      dotenv: $DEPLOY_ENV
+    paths:
+      - $DEPLOY_ENV
+    expire_in: 7 days
+    when: always
+
+release-environments-deploy:
+  allow_failure: true
+  stage: deploy
+  needs: ["release-environments-deploy-env"]
+  inherit:
+    variables: false
+  variables:
+    VERSIONS: "${VERSIONS}"
+    ENVIRONMENT: "${ENVIRONMENT}"
+  trigger:
+    project: gitlab-com/gl-infra/release-environments
+    branch: main
     strategy: depend

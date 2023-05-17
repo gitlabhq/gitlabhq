@@ -118,7 +118,7 @@ RSpec.describe Ci::ResourceGroup do
 
     let!(:resource_group) { create(:ci_resource_group, process_mode: process_mode, project: project) }
 
-    Ci::HasStatus::STATUSES_ENUM.keys.each do |status|
+    Ci::HasStatus::STATUSES_ENUM.keys.each do |status| # rubocop:diable RSpec/UselessDynamicDefinition
       let!("build_1_#{status}") { create(:ci_build, pipeline: pipeline_1, status: status, resource_group: resource_group) }
       let!("build_2_#{status}") { create(:ci_build, pipeline: pipeline_2, status: status, resource_group: resource_group) }
     end
@@ -163,6 +163,25 @@ RSpec.describe Ci::ResourceGroup do
       it 'returns empty' do
         is_expected.to be_empty
       end
+    end
+  end
+
+  describe '#current_processable' do
+    subject { resource_group.current_processable }
+
+    let(:build) { create(:ci_build) }
+    let(:resource_group) { create(:ci_resource_group) }
+
+    context 'when resource is retained by a build' do
+      before do
+        resource_group.assign_resource_to(build)
+      end
+
+      it { is_expected.to eq(build) }
+    end
+
+    context 'when resource is not retained by a build' do
+      it { is_expected.to be_nil }
     end
   end
 end

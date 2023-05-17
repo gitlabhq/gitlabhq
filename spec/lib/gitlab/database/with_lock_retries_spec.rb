@@ -61,12 +61,12 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
 
       context 'lock_fiber' do
         it 'acquires lock successfully' do
-          check_exclusive_lock_query = """
+          check_exclusive_lock_query = <<~QUERY
             SELECT 1
             FROM pg_locks l
             JOIN pg_class t ON l.relation = t.oid
             WHERE t.relkind = 'r' AND l.mode = 'ExclusiveLock' AND t.relname = '#{Project.table_name}'
-          """
+          QUERY
 
           expect(connection.execute(check_exclusive_lock_query).to_a).to be_present
         end

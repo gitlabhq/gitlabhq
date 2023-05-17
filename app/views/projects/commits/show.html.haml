@@ -6,7 +6,7 @@
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 .js-project-commits-show{ 'data-commits-limit' => @limit }
-  .tree-holder
+  .tree-holder.gl-mt-5
     .nav-block
       .tree-ref-container
         .tree-ref-holder.gl-max-w-26

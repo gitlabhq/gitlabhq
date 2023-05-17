@@ -69,10 +69,6 @@ describe('job group dropdown component', () => {
     wrapper = mountFn(JobGroupDropdown, { propsData: { group } });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     createComponent({ mountFn: mount });
   });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :authentication_and_authorization do
+RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   include described_class
   include HttpBasicAuthHelpers
 
@@ -407,6 +407,17 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :authentication_and_
 
     it 'returns nil if no access_token present' do
       expect(find_user_from_access_token).to be_nil
+    end
+
+    context 'when run for kubernetes internal API endpoint' do
+      before do
+        set_bearer_token('AgentToken')
+        set_header('SCRIPT_NAME', '/api/v4/internal/kubernetes/modules/starboard_vulnerability/policies_configuration')
+      end
+
+      it 'returns nil' do
+        expect(find_user_from_access_token).to be_nil
+      end
     end
 
     context 'when validate_access_token! returns valid' do

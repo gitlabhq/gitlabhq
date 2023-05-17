@@ -19,21 +19,18 @@ namespace :import do
   resource :github, only: [:create, :new], controller: :github do
     post :personal_access_token
     get :status
+    get :details
     get :callback
     get :realtime_changes
+    get :failures
     post :cancel
     post :cancel_all
+    get :counts
   end
 
   resource :gitea, only: [:create, :new], controller: :gitea do
     post :personal_access_token
     get :status
-    get :realtime_changes
-  end
-
-  resource :gitlab, only: [:create], controller: :gitlab do
-    get :status
-    get :callback
     get :realtime_changes
   end
 
@@ -84,6 +81,4 @@ namespace :import do
     get :realtime_changes
     post :upload
   end
-
-  resource :phabricator, only: [:create, :new], controller: :phabricator
 end

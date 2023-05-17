@@ -9,14 +9,14 @@ module Gitlab
       class Parser
         # keys represent the trailing digit in color changing command (30-37, 40-47, 90-97. 100-107)
         COLOR = {
-          0 => 'black', # not that this is gray in the intense color table
+          0 => 'black', # Note: This is gray in the intense color table.
           1 => 'red',
           2 => 'green',
           3 => 'yellow',
           4 => 'blue',
           5 => 'magenta',
           6 => 'cyan',
-          7 => 'white' # not that this is gray in the dark (aka default) color table
+          7 => 'white' # Note: This is gray in the dark (aka default) color table.
         }.freeze
 
         STYLE_SWITCHES = {

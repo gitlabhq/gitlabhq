@@ -56,11 +56,12 @@ RSpec.describe PageLayoutHelper do
     end
 
     %w(project user group).each do |type|
-      let(:object) { build(type, trait) }
-      let(:trait) { :with_avatar }
-
       context "with @#{type} assigned" do
+        let(:object) { build(type, trait) }
+        let(:trait) { :with_avatar }
+
         before do
+          stub_application_setting(gravatar_enabled: false)
           assign(type, object)
         end
 
@@ -128,12 +129,14 @@ RSpec.describe PageLayoutHelper do
 
     describe 'a bare controller' do
       it 'returns an empty context' do
-        expect(search_context).to have_attributes(project: nil,
-                                                  group: nil,
-                                                  snippets: [],
-                                                  project_metadata: {},
-                                                  group_metadata: {},
-                                                  search_url: '/search')
+        expect(search_context).to have_attributes(
+          project: nil,
+          group: nil,
+          snippets: [],
+          project_metadata: {},
+          group_metadata: {},
+          search_url: '/search'
+        )
       end
     end
   end

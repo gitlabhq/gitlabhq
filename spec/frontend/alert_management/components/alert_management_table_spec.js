@@ -68,7 +68,7 @@ describe('AlertManagementTable', () => {
         },
         stubs,
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );
@@ -79,9 +79,6 @@ describe('AlertManagementTable', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
     mock.restore();
   });
 

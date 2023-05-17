@@ -1,8 +1,0 @@
----
-name: namespace_storage_limit_bypass_date_check
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86794
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/361785
-milestone: '15.0'
-type: development
-group: group::utilization
-default_enabled: false

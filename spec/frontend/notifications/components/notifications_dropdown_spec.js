@@ -25,7 +25,7 @@ describe('NotificationsDropdown', () => {
         CustomNotificationsModal,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       provide: {
         dropdownItems: mockDropdownItems,
@@ -61,8 +61,6 @@ describe('NotificationsDropdown', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
   });
 

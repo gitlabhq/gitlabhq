@@ -10,6 +10,7 @@ module Admin
     def index
       @relations_by_tab = {
         'queued' => batched_migration_class.queued.queue_order,
+        'finalizing' => batched_migration_class.finalizing.queue_order,
         'failed' => batched_migration_class.with_status(:failed).queue_order,
         'finished' => batched_migration_class.with_status(:finished).queue_order.reverse_order
       }

@@ -12,7 +12,7 @@ export const updateGlobalTodoCount = (additionalTodoCount) => {
 
   if (countContainer === null) return;
 
-  const currentCount = parseInt(countContainer.innerText, 10);
+  const currentCount = parseInt(countContainer.innerText, 10) || 0;
 
   const todoToggleEvent = new CustomEvent('todo:toggle', {
     detail: {

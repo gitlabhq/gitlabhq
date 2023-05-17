@@ -27,12 +27,6 @@ describe('ServiceDeskSetting', () => {
       }),
     );
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('when isEnabled=true', () => {
     describe('only isEnabled', () => {
       describe('as project admin', () => {

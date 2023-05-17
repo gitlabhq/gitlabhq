@@ -29,7 +29,6 @@ module QA
 
           view 'app/views/shared/_remote_mirror_update_button.html.haml' do
             element :update_now_button
-            element :updating_button
           end
 
           view 'app/views/projects/mirrors/_ssh_host_keys.html.haml' do
@@ -86,11 +85,10 @@ module QA
 
           def update(url)
             row_index = find_repository_row_index(url)
-
             within_element_by_index(:mirrored_repository_row_container, row_index) do
               # When a repository is first mirrored, the update process might
               # already be started, so the button is already "clicked"
-              click_element :update_now_button unless has_element? :updating_button
+              click_element :update_now_button if has_element?(:update_now_button, wait: 0)
             end
           end
 
@@ -120,7 +118,8 @@ module QA
               all_elements(:mirror_repository_url_content, minimum: 1).index do |url|
                 # The url might be a sanitized url but the target_url won't be so
                 # we compare just the paths instead of the full url
-                URI.parse(url.text).path == target_url.path
+                # We also must remove any badges from the url (e.g. All Branches)
+                URI.parse(url.text.split("\n").first).path == target_url.path
               end
             end
           end

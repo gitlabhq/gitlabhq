@@ -2,23 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
+RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: :experimentation_activation do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) }
-  let_it_be(:candidate) { create(:ml_candidates, user: user, experiment: experiment) }
+  let_it_be(:candidate) { create(:ml_candidates, user: user, experiment: experiment, project: project) }
 
   let(:repository) { described_class.new(project, user) }
 
-  describe '#by_iid' do
-    let(:iid) { candidate.iid }
+  describe '#by_eid' do
+    let(:eid) { candidate.eid }
 
-    subject { repository.by_iid(iid) }
+    subject { repository.by_eid(eid) }
 
     it { is_expected.to eq(candidate) }
 
     context 'when iid does not exist' do
-      let(:iid) { non_existing_record_iid.to_s }
+      let(:eid) { non_existing_record_iid.to_s }
 
       it { is_expected.to be_nil }
     end
@@ -38,7 +38,7 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
 
     it 'creates the candidate' do
       expect(subject.start_time).to eq(1234)
-      expect(subject.iid).not_to be_nil
+      expect(subject.eid).not_to be_nil
       expect(subject.end_time).to be_nil
       expect(subject.name).to eq('some_candidate')
     end
@@ -166,6 +166,14 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
         expect { repository.add_tag!(candidate, 'new', props[:value]) }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context 'when tag starts with gitlab.' do
+      it 'calls HandleCandidateGitlabMetadataService' do
+        expect(Ml::ExperimentTracking::HandleCandidateGitlabMetadataService).to receive(:new).and_call_original
+
+        repository.add_tag!(candidate, 'gitlab.CI_USER_ID', user.id)
+      end
+    end
   end
 
   describe "#add_params" do
@@ -289,6 +297,16 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
 
       it 'does not throw and adds only the first of each kind' do
         expect { subject }.to change { candidate.reload.metadata.size }.by(1)
+      end
+    end
+
+    context 'when tags is nil' do
+      let(:tags) { nil }
+
+      it 'does not handle gitlab tags' do
+        expect(repository).not_to receive(:handle_gitlab_tags)
+
+        subject
       end
     end
   end

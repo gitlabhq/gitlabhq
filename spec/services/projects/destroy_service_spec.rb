@@ -207,9 +207,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   context 'when project has exports' do
     let!(:project_with_export) do
       create(:project, :repository, namespace: user.namespace).tap do |project|
-        create(:import_export_upload,
-                project: project,
-                export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+        create(
+          :import_export_upload,
+          project: project,
+          export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')
+        )
       end
     end
 
@@ -337,8 +339,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       let(:container_repository) { create(:container_repository) }
 
       before do
-        stub_container_registry_tags(repository: project.full_path + '/image',
-                                     tags: ['tag'])
+        stub_container_registry_tags(repository: project.full_path + '/image', tags: ['tag'])
         project.container_repositories << container_repository
       end
 
@@ -387,8 +388,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     context 'when there are tags for legacy root repository' do
       before do
-        stub_container_registry_tags(repository: project.full_path,
-                                     tags: ['tag'])
+        stub_container_registry_tags(repository: project.full_path, tags: ['tag'])
       end
 
       context 'when image repository tags deletion succeeds' do
@@ -414,8 +414,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     context 'when there are no tags for legacy root repository' do
       before do
-        stub_container_registry_tags(repository: project.full_path,
-                                     tags: [])
+        stub_container_registry_tags(repository: project.full_path, tags: [])
       end
 
       it 'does not try to destroy the repository' do

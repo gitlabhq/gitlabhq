@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 
 export default {

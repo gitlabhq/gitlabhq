@@ -4,7 +4,9 @@ const yaml = require('js-yaml');
 const { evaluateModuleFromSource } = require('../helpers/evaluate_module_from_source');
 
 const PLUGIN_NAME = 'GraphqlKnownOperationsPlugin';
-const GRAPHQL_PATH_REGEX = /(query|mutation)\.graphql$/;
+const SUPPORTED_OPS = ['query', 'mutation', 'subscription'];
+/* eslint-disable no-useless-escape */
+const GRAPHQL_PATH_REGEX = new RegExp(`(${SUPPORTED_OPS.join('|')})\.graphql$`);
 
 /**
  * Returns whether a given webpack module is a "graphql" module
@@ -34,7 +36,7 @@ const getOperationNames = (module) => {
   });
 
   const names = moduleExports.definitions
-    .filter((x) => ['query', 'mutation'].includes(x.operation))
+    .filter((x) => SUPPORTED_OPS.includes(x.operation))
     .map((x) => x.name?.value)
     // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
     .filter(Boolean);

@@ -1,0 +1,9 @@
+mutation runnerCreate($input: RunnerCreateInput!) {
+  runnerCreate(input: $input) {
+    runner {
+      id
+      ephemeralRegisterUrl
+    }
+    errors
+  }
+}

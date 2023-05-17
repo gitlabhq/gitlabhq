@@ -189,14 +189,14 @@ RSpec.describe QA::Runtime::Env do
   end
 
   describe '.github_access_token' do
-    it 'returns "" if GITHUB_ACCESS_TOKEN is not defined' do
-      stub_env('GITHUB_ACCESS_TOKEN', nil)
+    it 'returns "" if QA_GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('QA_GITHUB_ACCESS_TOKEN', nil)
 
       expect(described_class.github_access_token).to eq('')
     end
 
-    it 'returns stripped string if GITHUB_ACCESS_TOKEN is defined' do
-      stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
+    it 'returns stripped string if QA_GITHUB_ACCESS_TOKEN is defined' do
+      stub_env('QA_GITHUB_ACCESS_TOKEN', ' abc123 ')
       expect(described_class.github_access_token).to eq('abc123')
     end
   end
@@ -229,14 +229,14 @@ RSpec.describe QA::Runtime::Env do
   end
 
   describe '.require_github_access_token!' do
-    it 'raises ArgumentError if GITHUB_ACCESS_TOKEN is not defined' do
-      stub_env('GITHUB_ACCESS_TOKEN', nil)
+    it 'raises ArgumentError if QA_GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('QA_GITHUB_ACCESS_TOKEN', nil)
 
       expect { described_class.require_github_access_token! }.to raise_error(ArgumentError)
     end
 
-    it 'does not raise if GITHUB_ACCESS_TOKEN is defined' do
-      stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
+    it 'does not raise if QA_GITHUB_ACCESS_TOKEN is defined' do
+      stub_env('QA_GITHUB_ACCESS_TOKEN', ' abc123 ')
 
       expect { described_class.require_github_access_token! }.not_to raise_error
     end
@@ -282,9 +282,13 @@ RSpec.describe QA::Runtime::Env do
   end
 
   describe 'remote grid credentials' do
-    it 'is blank if username is empty' do
+    before do
       stub_env('QA_REMOTE_GRID_USERNAME', nil)
+      stub_env('QA_REMOTE_GRID_ACCESS_KEY', nil)
+      stub_env('QA_REMOTE_GRID', nil)
+    end
 
+    it 'is blank if username is empty' do
       expect(described_class.send(:remote_grid_credentials)).to eq('')
     end
 
@@ -300,42 +304,41 @@ RSpec.describe QA::Runtime::Env do
 
       expect(described_class.send(:remote_grid_credentials)).to eq('foo:bar@')
     end
-  end
 
-  describe '.remote_grid_protocol' do
-    it 'defaults protocol to http' do
-      stub_env('QA_REMOTE_GRID_PROTOCOL', nil)
-      expect(described_class.remote_grid_protocol).to eq('http')
-    end
-  end
-
-  describe '.remote_grid' do
-    it 'is falsey if QA_REMOTE_GRID is not set' do
-      expect(described_class.remote_grid).to be_falsey
-    end
-
-    it 'accepts https protocol' do
-      stub_env('QA_REMOTE_GRID', 'localhost:4444')
-      stub_env('QA_REMOTE_GRID_PROTOCOL', 'https')
-
-      expect(described_class.remote_grid).to eq('https://localhost:4444/wd/hub')
-    end
-
-    context 'with credentials' do
-      it 'has a grid of http://user:key@grid/wd/hub' do
-        stub_env('QA_REMOTE_GRID_USERNAME', 'foo')
-        stub_env('QA_REMOTE_GRID_ACCESS_KEY', 'bar')
-        stub_env('QA_REMOTE_GRID', 'localhost:4444')
-
-        expect(described_class.remote_grid).to eq('http://foo:bar@localhost:4444/wd/hub')
+    describe '.remote_grid_protocol' do
+      it 'defaults protocol to http' do
+        expect(described_class.remote_grid_protocol).to eq('http')
       end
     end
 
-    context 'without credentials' do
-      it 'has a grid of http://grid/wd/hub' do
-        stub_env('QA_REMOTE_GRID', 'localhost:4444')
+    describe '.remote_grid' do
+      it 'is falsey if QA_REMOTE_GRID is not set' do
+        expect(described_class.remote_grid).to be_falsey
+      end
 
-        expect(described_class.remote_grid).to eq('http://localhost:4444/wd/hub')
+      it 'accepts https protocol' do
+        stub_env('QA_REMOTE_GRID', 'localhost:4444')
+        stub_env('QA_REMOTE_GRID_PROTOCOL', 'https')
+
+        expect(described_class.remote_grid).to eq('https://localhost:4444/wd/hub')
+      end
+
+      context 'with credentials' do
+        it 'has a grid of http://user:key@grid/wd/hub' do
+          stub_env('QA_REMOTE_GRID_USERNAME', 'foo')
+          stub_env('QA_REMOTE_GRID_ACCESS_KEY', 'bar')
+          stub_env('QA_REMOTE_GRID', 'localhost:4444')
+
+          expect(described_class.remote_grid).to eq('http://foo:bar@localhost:4444/wd/hub')
+        end
+      end
+
+      context 'without credentials' do
+        it 'has a grid of http://grid/wd/hub' do
+          stub_env('QA_REMOTE_GRID', 'localhost:4444')
+
+          expect(described_class.remote_grid).to eq('http://localhost:4444/wd/hub')
+        end
       end
     end
   end

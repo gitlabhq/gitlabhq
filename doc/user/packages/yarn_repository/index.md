@@ -6,220 +6,310 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Publish packages with Yarn
 
-Publish npm packages in your project's Package Registry using Yarn. Then install the
-packages whenever you need to use them as a dependency.
+You can publish packages with [Yarn 1 (Classic)](https://classic.yarnpkg.com) and [Yarn 2+](https://yarnpkg.com).
 
-Learn how to build a [yarn](../workflows/build_packages.md#yarn) package.
+To find the Yarn version used in the deployment container, run `yarn --version` in the `script` block of the CI
+script job block that is responsible for calling `yarn publish`**`. The Yarn version is shown in the pipeline output.
 
-You can get started with Yarn 2 by following the [Yarn documentation](https://yarnpkg.com/getting-started/install/).
+Learn how to build a [Yarn](../workflows/build_packages.md#yarn) package.
+
+You can use the Yarn documentation to get started with
+[Yarn Classic](https://classic.yarnpkg.com/en/docs/getting-started) and
+[Yarn 2+](https://yarnpkg.com/getting-started/).
 
 ## Publish to GitLab Package Registry
+
+You can use Yarn to publish to the GitLab Package Registry.
 
 ### Authentication to the Package Registry
 
 You need a token to publish a package. Different tokens are available depending on what you're trying to
 achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
 
-- If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
-- If you publish a package via CI/CD pipelines, you must use a CI job token.
+- If your organization uses two-factor authentication (2FA), you must use a
+  personal access token with the scope set to `api`.
+- If you publish a package via CI/CD pipelines, you can use a CI job token in
+  private runners or you can register a variable for shared runners.
 
-Create a token and save it to use later in the process.
+### Publish configuration
 
-### Naming convention
-
-Depending on how you install the package, you may need to adhere to the naming convention.
-
-You can use one of two API endpoints to install packages:
-
-- **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Project-level**: Use when you have a few npm packages, and they are not in the same GitLab group.
-
-If you plan to install a package through the [project level](#install-from-the-project-level), you do not have to
-adhere to the naming convention.
-
-If you plan to install a package through the [instance level](#install-from-the-instance-level), then you must name
-your package with a [scope](https://docs.npmjs.com/misc/scope/). Scoped packages begin with a `@` and have the
-`@owner/package-name` format. You can set up the scope for your package in the `.yarnrc.yml` file and by using the
-`publishConfig` option in the `package.json`.
-
-- The value used for the `@scope` is the root of the project that hosts the packages and not the root
-  of the project with the package's source code. The scope should be lowercase.
-- The package name can be anything you want
-
-| Project URL                                             | Package Registry in | Scope     | Full package name      |
-| ------------------------------------------------------- | ------------------- | --------- | ---------------------- |
-| `https://gitlab.com/my-org/engineering-group/analytics` | Analytics           | `@my-org` | `@my-org/package-name` |
-
-### Configuring `.yarnrc.yml` to publish from the project level
-
-To publish with the project-level npm endpoint, set the following configuration in
-`.yarnrc.yml`:
+To publish, set the following configuration in `.yarnrc.yml`. This file should be
+located in the root directory of your package project source where `package.json` is found.
 
 ```yaml
 npmScopes:
-  foo:
-    npmRegistryServer: 'https://<your_domain>/api/v4/projects/<your_project_id>/packages/npm/'
+  <my-org>:
     npmPublishRegistry: 'https://<your_domain>/api/v4/projects/<your_project_id>/packages/npm/'
-
-npmRegistries:
-  //gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:
     npmAlwaysAuth: true
     npmAuthToken: '<your_token>'
 ```
 
 In this configuration:
 
+- Replace `<my-org>` with your organization scope, exclude the `@` symbol.
 - Replace `<your_domain>` with your domain name.
 - Replace `<your_project_id>` with your project's ID, which you can find on the project's home page.
-- Replace `<your_token>` with a deploy token, group access token, project access token, or personal access token.
+- Replace `<your_token>` with a deployment token, group access token, project access token, or personal access token.
 
-### Configuring `.yarnrc.yml` to publish from the instance level
+Scoped registry does not work in Yarn Classic in `package.json` file, based on
+this [issue](https://github.com/yarnpkg/yarn/pull/7829).
+Therefore, under `publishConfig` there should be `registry` and not `@scope:registry` for Yarn Classic.
+You can publish using your command line or a CI/CD pipeline to the GitLab Package Registry.
 
-For the instance-level npm endpoint, use this Yarn 2 configuration in `.yarnrc.yml`:
-
-```yaml
-npmScopes:
-  <scope>:
-    npmRegistryServer: 'https://<your_domain>/api/v4/packages/npm/'
-
-npmRegistries:
-  //gitlab.example.com/api/v4/packages/npm/:
-    npmAlwaysAuth: true
-    npmAuthToken: '<your_token>'
-```
-
-In this configuration:
-
-- Replace `<your_domain>` with your domain name.
-- Your scope is `<scope>`, without `@`.
-- Replace `<your_token>` with a deploy token, group access token, project access token, or personal access token.
-
-### Publishing a package via the command line
-
-Publish a package:
+### Publishing via the command line - Manual Publish
 
 ```shell
-npm publish
+# Yarn 1 (Classic)
+yarn publish
+
+# Yarn 2+
+yarn npm publish
 ```
 
 Your package should now publish to the Package Registry.
 
-### Publishing via a CI/CD pipeline
+### Publishing via a CI/CD pipeline - Automated Publish
 
-In the GitLab project that houses your `yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example:
+You can use pipeline variables when you use this method.
+
+You can use **Shared Runners** *(Default)* or **Private Runners** (Advanced).
+
+#### Shared runners
+
+Third party images such as `node:latest` or `node:current` do not have direct access
+to the `CI_JOB_TOKEN` when operating in a shared runner. You must configure an
+authentication token or use a private runner.
+
+To create a authentication token:
+
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
+1. On the left sidebar, select **Settings > Repository > Deploy Tokens**.
+1. Create a deployment token with `read_package_registry` and `write_package_registry` scopes and copy the generated token.
+1. On the left sidebar, select **Settings > CI/CD > Variables**.
+1. Select `Add variable` and use the following settings:
+
+| Field              | Value                        |
+|--------------------|------------------------------|
+| key                | `NPM_AUTH_TOKEN`             |
+| value              | `<DEPLOY-TOKEN-FROM-STEP-3>` |
+| type               | Variable                     |
+| Protected variable | `CHECKED`                    |
+| Mask variable      | `CHECKED`                    |
+| Expand variable    | `CHECKED`                    |
+
+To use any **Protected variable**:
+
+   1. Go to the repository that contains the Yarn package source code.
+   1. On the left sidebar, select **Settings > Repository**.
+      - If you are building from branches with tags, select **Protected Tags** and add `v*` (wildcard) for semantic versioning.
+      - If you are building from branches without tags, select **Protected Branches**.
+
+Then add the `NPM_AUTH_TOKEN` created above, to the `.yarnrc.yml` configuration
+in your package project root directory where `package.json` is found:
 
 ```yaml
-image: node:latest
+npmScopes:
+  esp-code:
+    npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
+    npmAlwaysAuth: true
+    npmAuthToken: "${NPM_AUTH_TOKEN}"
+```
+
+#### Private runners
+
+Add the `CI_JOB_TOKEN` to the `.yarnrc.yml` configuration in your package project
+root directory where `package.json` is found:
+
+```yaml
+npmScopes:
+  esp-code:
+    npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
+    npmAlwaysAuth: true
+    npmAuthToken: "${CI_JOB_TOKEN}"
+```
+
+To publish the package using CI/CD pipeline, In the GitLab project that houses
+your `yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example to trigger
+only on any tag push:
+
+```yaml
+# Yarn 1
+image: node:lts
 
 stages:
   - deploy
 
+rules:
+- if: $CI_COMMIT_TAG
+
 deploy:
   stage: deploy
   script:
-    - npm publish
+    - yarn publish
+```
+
+```yaml
+# Yarn 2+
+image: node:lts
+
+stages:
+  - deploy
+
+rules:
+  - if: $CI_COMMIT_TAG
+
+deploy:
+  stage: deploy
+  before_script:
+    - corepack enable
+    - yarn set version stable
+  script:
+    - yarn npm publish
 ```
 
 Your package should now publish to the Package Registry when the pipeline runs.
 
 ## Install a package
 
-If multiple packages have the same name and version, the most recently-published package is retrieved when you install a package.
+NOTE:
+If multiple packages have the same name and version, the most recently-published
+package is retrieved when you install a package.
 
-You can install a package from a GitLab project or instance:
+You can use one of two API endpoints to install packages:
 
-- **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Project-level**: Use when you have a few npm packages, and they are not in the same GitLab group.
+- **Instance-level**: Best used when working with many packages in an organization scope.
+
+- If you plan to install a package through the [instance level](#install-from-the-instance-level),
+  then you must name your package with a [scope](https://docs.npmjs.com/misc/scope/).
+  Scoped packages begin with a `@` and have the `@owner/package-name` format. You can set up
+  the scope for your package in the `.yarnrc.yml` file and by using the `publishConfig`
+  option in the `package.json`.
+
+- The value used for the `@scope` is the organization root (top-level project) `...com/my-org`
+  *(@my-org)* that hosts the packages, not the root of the project with the package's source code.
+- The scope is always lowercase.
+- The package name can be anything you want `@my-org/any-name`.
+
+- **Project-level**: For when you have a one-off package.
+
+If you plan to install a package through the [project level](#install-from-the-project-level),
+you do not have to adhere to the naming convention.
+
+| Project URL                                                       | Package Registry     | Organization Scope | Full package name           |
+|-------------------------------------------------------------------|----------------------|--------------------|-----------------------------|
+| `https://gitlab.com/<my-org>/<group-name>/<package-name-example>` | Package Name Example | `@my-org`          | `@my-org/package-name`      |
+| `https://gitlab.com/<example-org>/<group-name>/<project-name>`    | Project Name         | `@example-org`     | `@example-org/project-name` |
+
+You can install from the instance level or from the project level.
+
+The configurations for `.yarnrc.yml` can be added per package consuming project
+root where `package.json` is located, or you can use a global
+configuration located in your system user home directory.
 
 ### Install from the instance level
 
-WARNING:
-You must use packages published with the scoped [naming convention](#naming-convention) when you install a package from the instance level.
+Use these steps for global configuration in the `.yarnrc.yml` file:
 
-1. Authenticate to the Package Registry
+1. [Configure organization scope](#configure-organization-scope).
+1. [Set the registry](#set-the-registry).
 
-   If you install a package from a private project, you must authenticate to the Package Registry. Skip this step if the project is not private.
+#### Configure organization scope
 
-   ```shell
-   npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
-   ```
+```yaml
+npmScopes:
+ <my-org>:
+   npmRegistryServer: "https://<your_domain_name>/api/v4/packages/npm"
+```
 
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+- Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
 
-1. Set the registry
+#### Set the registry
 
-   ```shell
-   npm config set @scope:registry https://your_domain_name.com/api/v4/packages/npm/
-   ```
+Skip this step if your package is public not private.
 
-   - Replace `@scope` with the [root level group](#naming-convention) of the project you're installing to the package from.
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+```yaml
+  npmRegistries:
+    //<your_domain_name>/api/v4/packages/npm:
+      npmAlwaysAuth: true
+      npmAuthToken: "<your_token>"
+```
 
-1. Install the package
-
-   ```shell
-   yarn add @scope/my-package
-   ```
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
+- Replace `<your_token>` with a deployment token (recommended), group access token, project access token, or personal access token.
 
 ### Install from the project level
 
-1. Authenticate to the Package Registry
+Use these steps for each project in the `.yarnrc.yml` file:
 
-   If you install a package from a private project, you must authenticate to the Package Registry. Skip this step if the project is not private.
+1. [Configure project scope](#configure-project-scope).
+1. [Set the registry](#set-the-registry-project-level).
 
-   ```shell
-   npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
-   ```
+#### Configure project scope
 
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the project's home page.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+  ```yaml
+  npmScopes:
+    <my-org>:
+      npmRegistryServer: "https://<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm"
+```
 
-1. Set the registry
+- Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
+- Replace `<your_project_id>` with your project ID, found on the project's home page.
 
-   ```shell
-   npm config set @scope:registry=https://your_domain_name/api/v4/projects/your_project_id/packages/npm/
-   ```
+#### Set the registry (project level)
 
-   - Replace `@scope` with the [root level group](#naming-convention) of the project you're installing to the package from.
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the project's home page.
+Skip this step if your package is public not private.
 
-1. Install the package
+```yaml
+npmRegistries:
+  //<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm:
+    npmAlwaysAuth: true
+    npmAuthToken: "<your_token>"
+```
 
-   ```shell
-   yarn add @scope/my-package
-   ```
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
+- Replace `<your_token>` with a deployment token (recommended), group access token, project access token, or personal access token.
+- Replace `<your_project_id>` with your project ID, found on the project's home page.
 
-## Helpful hints
+### Install the package
 
-For full helpful hints information, refer to the [npm documentation](../npm_registry/index.md#helpful-hints).
+For Yarn 2+, use `yarn add` either in the command line or in the CI/CD pipelines to install your packages:
 
-### Supported CLI commands
+```shell
+yarn add @scope/my-package
+```
 
-The GitLab npm repository supports the following commands for the npm CLI (`npm`) and yarn CLI
-(`yarn`):
+#### For Yarn Classic
 
-- `npm install`: Install npm packages.
-- `npm publish`: Publish an npm package to the registry.
-- `npm dist-tag add`: Add a dist-tag to an npm package.
-- `npm dist-tag ls`: List dist-tags for a package.
-- `npm dist-tag rm`: Delete a dist-tag.
-- `npm ci`: Install npm packages directly from your `package-lock.json` file.
-- `npm view`: Show package metadata.
-- `yarn add`: Install an npm package.
-- `yarn update`: Update your dependencies.
+The Yarn Classic setup, requires both `.npmrc` and `.yarnrc` files as
+[mentioned in issue](https://github.com/yarnpkg/yarn/issues/4451#issuecomment-753670295):
+
+- Place credentials in the `.npmrc` file.
+- Place the scoped registry in the `.yarnrc` file.
+
+```shell
+# .npmrc
+//<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm/:_authToken="<your_token>"
+
+# .yarnrc
+"@scope:registry" "https://<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm/"
+```
+
+Then you can use `yarn add` to install your packages.
+
+## Related topics
+
+- [npm documentation](../npm_registry/index.md#helpful-hints)
+- [Yarn Migration Guide](https://yarnpkg.com/getting-started/migration)
 
 ## Troubleshooting
 
-For full troubleshooting information, refer to the [npm documentation](../npm_registry/index.md#troubleshooting).
-
 ### Error running Yarn with the Package Registry for the npm registry
 
-If you are using [Yarn](https://classic.yarnpkg.com/en/) with the npm registry, you may get
-an error message like:
+If you are using [Yarn](https://classic.yarnpkg.com/en/) with the npm registry, you may get an error message like:
 
 ```shell
 yarn install v1.15.2
@@ -233,14 +323,7 @@ info If you think this is a bug, please open a bug report with the information p
 info Visit https://classic.yarnpkg.com/en/docs/cli/install for documentation about this command
 ```
 
-In this case, try adding this to your `.npmrc` file (and replace `<your_token>`
-with your personal access token or deploy token):
-
-```plaintext
-//gitlab.example.com/api/v4/projects/:_authToken=<your_token>
-```
-
-You can also use `yarn config` instead of `npm config` when setting your auth-token dynamically:
+In this case, the following commands creates a file called `.yarnrc` in the current directory. Make sure to be in either your user home directory for global configuration or your project root for per-project configuration:
 
 ```shell
 yarn config set '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"

@@ -5,7 +5,6 @@ namespace :jira_connect do
   root to: proc { [404, {}, ['']] }, as: 'base'
 
   get 'app_descriptor' => 'app_descriptor#show'
-  get :users, to: 'users#show'
 
   namespace :events do
     post 'installed'

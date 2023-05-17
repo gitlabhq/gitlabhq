@@ -8,7 +8,7 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
   describe 'associations' do
     let!(:job_variable) { create(:ci_job_variable) }
 
-    it { is_expected.to belong_to(:job) }
+    it { is_expected.to belong_to(:job).class_name('Ci::Build').with_foreign_key(:job_id).inverse_of(:job_variables) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:job_id) }
   end
 

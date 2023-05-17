@@ -45,11 +45,6 @@ describe('Project remove modal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('intialized', () => {
     beforeEach(() => {
       createComponent();
@@ -74,7 +69,7 @@ describe('Project remove modal', () => {
     });
 
     it('the confirm button is disabled', () => {
-      expect(findConfirmButton().attributes('disabled')).toBe('true');
+      expect(findConfirmButton().attributes('disabled')).toBeDefined();
     });
   });
 

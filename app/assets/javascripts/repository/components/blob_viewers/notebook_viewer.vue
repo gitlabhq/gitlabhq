@@ -1,11 +1,15 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
-import notebookLoader from '~/blob/notebook';
 import { stripPathTail } from '~/lib/utils/url_utility';
+import NotebookViewer from '~/blob/notebook/notebook_viewer.vue';
 
 export default {
-  components: {
-    GlLoadingIcon,
+  components: { NotebookViewer },
+  provide() {
+    // `relativeRawPath` is injected in app/assets/javascripts/notebook/cells/markdown.vue
+    // It is needed for images in Markdown cells that reference local files to work.
+    // See the following MR for more context:
+    // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69075
+    return { relativeRawPath: stripPathTail(this.url) };
   },
   props: {
     blob: {
@@ -18,14 +22,9 @@ export default {
       url: this.blob.rawPath,
     };
   },
-  mounted() {
-    notebookLoader({ el: this.$refs.viewer, relativeRawPath: stripPathTail(this.url) });
-  },
 };
 </script>
 
 <template>
-  <div ref="viewer" :data-endpoint="url" data-testid="notebook">
-    <gl-loading-icon class="gl-my-4" size="lg" />
-  </div>
+  <notebook-viewer :endpoint="url" />
 </template>

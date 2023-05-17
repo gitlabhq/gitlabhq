@@ -1,0 +1,29 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Enforced validation of CI/CD parameter character lengths"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was deprecated.
+  announcement_date: "2023-02-22"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  removal_date: "2023-05-22"  # (required) This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the removal
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372770  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
+
+    In GitLab 16.0, validation will be added to strictly limit the following to 255 characters as well:
+
+    - The `stage` keyword.
+    - The `ref`, which is the Git branch or tag name for the pipeline.
+    - The `description` and `target_url` parameter, used by external CI/CD integrations.
+
+    Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
+#
+# OPTIONAL FIELDS
+#
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: "https://docs.gitlab.com/ee/ci/yaml/#stages"  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -39,11 +39,6 @@ describe('~/user_lists/components/user_lists.vue', () => {
 
   const newButton = () => within(wrapper.element).queryAllByText('New user list');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('without permissions', () => {
     const provideData = {
       ...mockProvide,
@@ -87,7 +82,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
         emptyState = wrapper.findComponent(GlEmptyState);
       });
 
-      it('should render the empty state', async () => {
+      it('should render the empty state', () => {
         expect(emptyState.exists()).toBe(true);
       });
 

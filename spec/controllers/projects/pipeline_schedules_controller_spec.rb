@@ -410,9 +410,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       it { expect { go }.to be_denied_for(:visitor) }
 
       context 'when user is schedule owner' do
-        it { expect { go }.to be_denied_for(:owner).of(project).own(pipeline_schedule) }
-        it { expect { go }.to be_denied_for(:maintainer).of(project).own(pipeline_schedule) }
-        it { expect { go }.to be_denied_for(:developer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_allowed_for(:owner).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_allowed_for(:maintainer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
         it { expect { go }.to be_denied_for(:reporter).of(project).own(pipeline_schedule) }
         it { expect { go }.to be_denied_for(:guest).of(project).own(pipeline_schedule) }
         it { expect { go }.to be_denied_for(:user).own(pipeline_schedule) }

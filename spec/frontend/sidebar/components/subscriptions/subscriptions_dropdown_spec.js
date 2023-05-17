@@ -15,10 +15,6 @@ describe('SubscriptionsDropdown component', () => {
     wrapper = shallowMount(SubscriptionsDropdown);
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with no value selected', () => {
     beforeEach(() => {
       createComponent();

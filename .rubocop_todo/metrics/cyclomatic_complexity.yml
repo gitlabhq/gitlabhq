@@ -18,4 +18,3 @@ Metrics/CyclomaticComplexity:
     - 'qa/qa/runtime/browser.rb'
     - 'qa/qa/support/repeater.rb'
     - 'sidekiq_cluster/cli.rb'
-    - 'spec/support/cycle_analytics_helpers/test_generation.rb'

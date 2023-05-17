@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -52,7 +52,7 @@ The following table explains the version compatibility between GitLab and Auto D
 | GitLab version   | `auto-deploy-image` version | Notes |
 |------------------|-----------------------------|-------|
 | v10.0 to v14.0   | v0.1.0 to v2.0.0            | v0 and v1 auto-deploy-image are backwards compatible. |
-| v13.4 and higher | v2.0.0 and higher           | v2 auto-deploy-image contains breaking changes, as explained in the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image). |
+| v13.4 and later  | v2.0.0 and later            | v2 auto-deploy-image contains breaking changes, as explained in the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image). |
 
 You can find the current stable version of auto-deploy-image in the [Auto Deploy stable template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
@@ -179,7 +179,7 @@ used the `v0.17.0` chart, add `AUTO_DEVOPS_FORCE_DEPLOY_V2`.
 
 ## Early adopters
 
-If you want to use the latest [Beta](../../policy/alpha-beta-support.md#beta-features) or unstable version of `auto-deploy-image`, include
+If you want to use the latest [Beta](../../policy/alpha-beta-support.md#beta) or unstable version of `auto-deploy-image`, include
 the latest Auto Deploy template into your `.gitlab-ci.yml`:
 
 ```yaml
@@ -189,7 +189,7 @@ include:
 ```
 
 WARNING:
-Using a [Beta](../../policy/alpha-beta-support.md#beta-features) or unstable `auto-deploy-image` could cause unrecoverable damage to
+Using a [Beta](../../policy/alpha-beta-support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
 your environments. Do not test it with important projects or environments.
 
 The next stable template update is [planned for GitLab v14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/232788).

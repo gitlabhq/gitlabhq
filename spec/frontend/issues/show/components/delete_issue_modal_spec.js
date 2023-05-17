@@ -20,10 +20,6 @@ describe('DeleteIssueModal component', () => {
   const mountComponent = (props = {}) =>
     shallowMount(DeleteIssueModal, { propsData: { ...defaultProps, ...props } });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('modal', () => {
     it('renders', () => {
       wrapper = mountComponent();

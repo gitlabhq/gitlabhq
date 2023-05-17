@@ -1,5 +1,5 @@
-mutation updateCIJobTokenScope($input: CiCdSettingsUpdateInput!) {
-  ciCdSettingsUpdate(input: $input) {
+mutation updateCIJobTokenScope($input: ProjectCiCdSettingsUpdateInput!) {
+  projectCiCdSettingsUpdate(input: $input) {
     ciCdSettings {
       jobTokenScopeEnabled
     }

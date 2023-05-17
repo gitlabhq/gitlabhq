@@ -102,8 +102,43 @@
     }
   }
 
-  .active > a {
-    color: var(--black, $black);
+  .active > .wiki-list {
+    a,
+    .wiki-list-expand-button,
+    .wiki-list-collapse-button {
+      color: $black;
+    }
+  }
+
+  .wiki-list {
+    height: $gl-spacing-scale-8;
+
+    &:hover {
+      background: $gray-10;
+
+      .wiki-list-create-child-button {
+        display: block;
+        box-shadow: none;
+
+        &:focus {
+          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
+        }
+
+        &:active {
+          background: $gray-100 !important;
+          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
+        }
+      }
+    }
+  }
+
+  .wiki-list-expand-button,
+  .wiki-list-collapse-button {
+    color: $gray-400;
+
+    &:hover {
+      color: $black;
+    }
   }
 
   ul.wiki-pages,
@@ -113,12 +148,8 @@
     margin: 0;
   }
 
-  ul.wiki-pages li {
-    margin: 5px 0 10px;
-  }
-
   ul.wiki-pages ul {
-    padding-left: 15px;
+    padding-left: 20px;
   }
 
   .wiki-sidebar-header {
@@ -152,4 +183,45 @@ ul.wiki-pages-list.content-list {
 
 .wiki-form .markdown-area {
   max-height: 55vh;
+}
+
+.wiki-list {
+  .wiki-list-create-child-button {
+    display: none;
+  }
+
+  .wiki-list-expand-button,
+  .wiki-list-collapse-button {
+    left: -$gl-spacing-scale-5;
+  }
+
+  .wiki-list-expand-button {
+    display: none;
+  }
+
+  &.collapsed {
+    .wiki-list-collapse-button {
+      display: none;
+    }
+
+    .wiki-list-expand-button {
+      display: block;
+    }
+  }
+
+  &.collapsed + ul {
+    display: none;
+  }
+}
+
+.drawio-editor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+  z-index: 1100;
+  visibility: hidden;
 }

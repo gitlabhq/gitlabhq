@@ -9,7 +9,6 @@ module Gitlab
 
         attach_to :active_record
 
-        IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
         DB_COUNTERS = %i{count write_count cached_count}.freeze
         SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(/\*.*\*/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$}i.freeze
 
@@ -114,7 +113,7 @@ module Gitlab
         end
 
         def ignored_query?(payload)
-          payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
+          payload[:name] == 'SCHEMA' || payload[:name] == 'TRANSACTION'
         end
 
         def cached_query?(payload)

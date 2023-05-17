@@ -39,16 +39,12 @@ describe('DropdownKeyboardNavigation', () => {
     },
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('onInit', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('should $emit @change with the default index', async () => {
+    it('should $emit @change with the default index', () => {
       expect(wrapper.emitted('change')[0]).toStrictEqual([MOCK_DEFAULT_INDEX]);
     });
 
@@ -101,6 +97,25 @@ describe('DropdownKeyboardNavigation', () => {
         expect(wrapper.emitted('change')).toHaveLength(1);
       });
     });
+
+    describe.each`
+      keyboardAction       | direction | index | max   | min
+      ${helpers.arrowDown} | ${1}      | ${10} | ${10} | ${0}
+      ${helpers.arrowUp}   | ${-1}     | ${0}  | ${10} | ${0}
+    `(
+      'moving out of bounds with cycle enabled',
+      ({ keyboardAction, direction, index, max, min }) => {
+        beforeEach(() => {
+          createComponent({ index, max, min, enableCycle: true });
+          keyboardAction();
+        });
+
+        it(`in ${direction} direction does $emit correct @change event`, () => {
+          // The first @change`call happens on created() so we test that we only have 1 call
+          expect(wrapper.emitted('change')[1]).toStrictEqual([direction === 1 ? min : max]);
+        });
+      },
+    );
 
     describe.each`
       keyboardAction       | direction | index | max   | min

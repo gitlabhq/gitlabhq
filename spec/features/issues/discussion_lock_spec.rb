@@ -9,6 +9,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
 
   before do
     sign_in(user)
+    stub_feature_flags(moved_mr_sidebar: false)
   end
 
   context 'when a user is a team member' do
@@ -99,7 +100,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
       it 'the user can not create a comment' do
         page.within('#notes') do
           expect(page).not_to have_selector('js-main-target-form')
-          expect(page.find('.disabled-comment'))
+          expect(page.find('.disabled-comments'))
             .to have_content('This issue is locked. Only project members can comment.')
         end
       end

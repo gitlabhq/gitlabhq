@@ -6,9 +6,12 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
   let(:user) { create :user }
   let(:project) { create :project, :repository, namespace: user.namespace }
   let(:ref_selector) { '.ref-selector' }
+  let(:ref_with_hash) { 'ref-#-hash' }
 
   before do
     sign_in(user)
+
+    project.repository.create_branch(ref_with_hash, 'master')
 
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     allow(Network::Graph).to receive(:max_count).and_return(10)
@@ -50,6 +53,12 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
         page.within '.network-graph' do
           expect(page).to have_content 'feature'
         end
+      end
+
+      it 'switches ref to branch containing a hash' do
+        switch_ref_to(ref_with_hash)
+
+        expect(page).to have_selector ref_selector, text: ref_with_hash
       end
 
       it 'switches ref to tag' do

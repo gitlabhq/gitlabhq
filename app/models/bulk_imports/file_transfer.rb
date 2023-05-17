@@ -9,9 +9,9 @@ module BulkImports
     def config_for(portable)
       case portable
       when ::Project
-        FileTransfer::ProjectConfig.new(portable)
+        ::BulkImports::FileTransfer::ProjectConfig.new(portable)
       when ::Group
-        FileTransfer::GroupConfig.new(portable)
+        ::BulkImports::FileTransfer::GroupConfig.new(portable)
       else
         raise(UnsupportedObjectType, "Unsupported object type: #{portable.class}")
       end

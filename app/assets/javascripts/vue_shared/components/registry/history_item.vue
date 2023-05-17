@@ -19,7 +19,9 @@ export default {
 
 <template>
   <timeline-entry-item class="system-note note-wrapper">
-    <div class="timeline-icon">
+    <div
+      class="gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600 gl-float-left"
+    >
       <gl-icon :name="icon" />
     </div>
     <div class="timeline-content">

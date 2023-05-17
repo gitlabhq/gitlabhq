@@ -140,14 +140,7 @@ the parent project. Additionally, if you do not trust the fork project's runner,
 running the pipeline in the parent project uses the parent project's trusted runners.
 
 WARNING:
-Fork merge requests can contain malicious code that tries to steal secrets in the
-parent project when the pipeline runs, even before merge. As a reviewer, carefully
-check the changes in the merge request before triggering the pipeline. If you trigger
-the pipeline by selecting **Run pipeline** or applying a suggestion, GitLab shows
-a warning that you must accept before the pipeline runs. If you trigger the pipeline
-by using any other method, including the API, [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
-or [**Rebase** option](../../user/project/merge_requests/methods/index.md#rebasing-in-semi-linear-merge-methods),
-**no warning displays**.
+Fork merge requests can contain malicious code that tries to steal secrets in the parent project when the pipeline runs, even before merge. As a reviewer, carefully check the changes in the merge request before triggering the pipeline. Unless you trigger the pipeline through the API or the [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics), GitLab shows a warning that you must accept before the pipeline runs. Otherwise, **no warning displays**.
 
 Prerequisites:
 
@@ -209,15 +202,19 @@ It's possible to have both branch pipelines and merge request pipelines in the
 **Pipelines** tab of a single merge request. This might be [by configuration](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines),
 or [by accident](#two-pipelines-when-pushing-to-a-branch).
 
-If both types of pipelines are in one merge request, the merge request's pipeline
-is not considered successful if:
-
-- The branch pipeline succeeds.
-- The merge request pipeline fails.
-
 When using the [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
 feature and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
+
+Therefore, the MR pipeline result is marked as unsuccessful if the
+**merge request pipeline** fails, independently of the **branch pipeline** result.
+
+However:
+
+- These conditions are not enforced.
+- A race condition determines which pipeline's result is used to either block or pass merge requests.
+
+This bug is tracked on [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927).
 
 ### `An error occurred while trying to run a new pipeline for this merge request.`
 

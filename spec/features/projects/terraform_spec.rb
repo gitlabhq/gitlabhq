@@ -33,7 +33,7 @@ RSpec.describe 'Terraform', :js, feature_category: :projects do
         end
 
         it 'displays a tab with states count' do
-          expect(page).to have_content("States #{project.terraform_states.size}")
+          expect(page).to have_content("Terraform states #{project.terraform_states.size}")
         end
 
         it 'displays a table with terraform states' do

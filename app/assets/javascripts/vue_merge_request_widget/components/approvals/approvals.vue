@@ -1,32 +1,34 @@
 <script>
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { GlButton, GlSprintf } from '@gitlab/ui';
+import { createAlert } from '~/alert';
+import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
-import MrWidgetContainer from '../mr_widget_container.vue';
-import MrWidgetIcon from '../mr_widget_icon.vue';
+import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
-import { FETCH_LOADING, FETCH_ERROR, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
-import { humanizeInvalidApproversRules } from './humanized_text';
+import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
 
 export default {
   name: 'MRWidgetApprovals',
   components: {
-    MrWidgetContainer,
-    MrWidgetIcon,
     ApprovalsSummary,
     ApprovalsSummaryOptional,
+    StateContainer,
     GlButton,
     GlSprintf,
-    GlLink,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
+  provide: {
+    expandDetailsTooltip: __('Expand eligible approvers'),
+    collapseDetailsTooltip: __('Collapse eligible approvers'),
+  },
   props: {
     mr: {
       type: Object,
@@ -56,13 +58,16 @@ export default {
       required: false,
       default: false,
     },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      fetchingApprovals: true,
       hasApprovalAuthError: false,
       isApproving: false,
-      updatedCount: 0,
     };
   },
   computed: {
@@ -70,7 +75,7 @@ export default {
       return this.mr.approvalsWidgetType === 'base';
     },
     isApproved() {
-      return Boolean(this.approvals.approved);
+      return Boolean(this.approvals.approved || this.approvedBy.length);
     },
     isOptional() {
       return this.isOptionalDefault !== null ? this.isOptionalDefault : !this.approvedBy.length;
@@ -78,32 +83,40 @@ export default {
     hasAction() {
       return Boolean(this.action);
     },
-    approvals() {
-      return this.mr.approvals || {};
-    },
     invalidRules() {
-      return this.approvals.invalid_approvers_rules || [];
+      return this.approvals.approvalState?.rules?.filter((rule) => rule.invalid) || [];
+    },
+    invalidApprovedRules() {
+      return this.invalidRules.filter((rule) => rule.allowMergeWhenInvalid);
+    },
+    invalidFailedRules() {
+      return this.invalidRules.filter((rule) => !rule.allowMergeWhenInvalid);
     },
     hasInvalidRules() {
-      return this.approvals.merge_request_approvers_available && this.invalidRules.length;
+      return this.mr.mergeRequestApproversAvailable && this.invalidRules.length;
     },
-    invalidRulesText() {
-      return humanizeInvalidApproversRules(this.invalidRules);
+    hasInvalidApprovedRules() {
+      return this.mr.mergeRequestApproversAvailable && this.invalidApprovedRules.length;
+    },
+    hasInvalidFailedRules() {
+      return this.mr.mergeRequestApproversAvailable && this.invalidFailedRules.length;
     },
     approvedBy() {
-      return this.approvals.approved_by ? this.approvals.approved_by.map((x) => x.user) : [];
+      return this.approvals.approvedBy?.nodes || [];
     },
     userHasApproved() {
-      return Boolean(this.approvals.user_has_approved);
+      return this.approvedBy.some(
+        (approver) => getIdFromGraphQLId(approver.id) === gon.current_user_id,
+      );
     },
     userCanApprove() {
-      return Boolean(this.approvals.user_can_approve);
+      return Boolean(this.approvals.userPermissions.canApprove);
     },
     showApprove() {
       return !this.userHasApproved && this.userCanApprove && this.mr.isOpen;
     },
     showUnapprove() {
-      return this.userHasApproved && !this.userCanApprove && this.mr.state !== 'merged';
+      return this.userHasApproved && !this.userCanApprove && this.mr.state !== STATUS_MERGED;
     },
     approvalText() {
       return this.isApproved && this.approvedBy.length > 0
@@ -129,24 +142,29 @@ export default {
 
       return null;
     },
-    pluralizedRuleText() {
-      return this.invalidRules.length > 1
+    pluralizedApprovedRuleText() {
+      return this.invalidApprovedRules.length > 1
         ? this.$options.i18n.invalidRulesPlural
         : this.$options.i18n.invalidRuleSingular;
     },
-  },
-  created() {
-    this.refreshApprovals()
-      .then(() => {
-        this.fetchingApprovals = false;
-      })
-      .catch(() =>
-        this.alerts.push(
-          createAlert({
-            message: FETCH_ERROR,
-          }),
-        ),
-      );
+    pluralizedFailedRuleText() {
+      return this.invalidFailedRules.length > 1
+        ? this.$options.i18n.invalidFailedRulesPlural
+        : this.$options.i18n.invalidFailedRuleSingular;
+    },
+    pluralizedRuleText() {
+      return [
+        this.hasInvalidFailedRules
+          ? sprintf(this.pluralizedFailedRuleText, { rules: this.invalidFailedRules.length })
+          : null,
+        this.hasInvalidApprovedRules
+          ? sprintf(this.pluralizedApprovedRuleText, { rules: this.invalidApprovedRules.length })
+          : null,
+      ]
+        .filter((text) => Boolean(text))
+        .join(', ')
+        .concat('.');
+    },
   },
   methods: {
     approve() {
@@ -196,16 +214,14 @@ export default {
       this.isApproving = true;
       this.clearError();
       return serviceFn()
-        .then((data) => {
-          this.mr.setApprovals(data);
-          this.updatedCount += 1;
-
+        .then(() => {
           if (!window.gon?.features?.realtimeMrStatusChange) {
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('ApprovalUpdated');
           }
 
-          this.$emit('updated');
+          // TODO: Remove this line when we move to Apollo subscriptions
+          this.$apollo.queries.approvals.refetch();
         })
         .catch(errFn)
         .then(() => {
@@ -216,21 +232,30 @@ export default {
   FETCH_LOADING,
   linkToInvalidRules: INVALID_RULES_DOCS_PATH,
   i18n: {
-    invalidRuleSingular: s__(
-      'mrWidget|Approval rule %{rules} is invalid. GitLab has approved this rule automatically to unblock the merge request. %{link}',
+    invalidRuleSingular: s__('mrWidget|%{rules} invalid rule has been approved automatically'),
+    invalidRulesPlural: s__('mrWidget|%{rules} invalid rules have been approved automatically'),
+    invalidFailedRuleSingular: s__(
+      "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}",
     ),
-    invalidRulesPlural: s__(
-      'mrWidget|Approval rules %{rules} are invalid. GitLab has approved these rules automatically to unblock the merge request. %{link}',
+    invalidFailedRulesPlural: s__(
+      "mrWidget|%{dangerStart}%{rules} rules can't be approved%{dangerEnd}",
     ),
     learnMore: __('Learn more.'),
   },
 };
 </script>
 <template>
-  <mr-widget-container>
-    <div class="js-mr-approvals d-flex align-items-start align-items-md-center">
-      <mr-widget-icon name="approval" />
-      <div v-if="fetchingApprovals">{{ $options.FETCH_LOADING }}</div>
+  <div class="js-mr-approvals mr-section-container mr-widget-workflow">
+    <state-container
+      :is-loading="$apollo.queries.approvals.loading"
+      :mr="mr"
+      status="approval"
+      is-collapsible
+      collapse-on-desktop
+      :collapsed="collapsed"
+      @toggle="() => $emit('toggle')"
+    >
+      <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
           <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
@@ -239,7 +264,7 @@ export default {
               :variant="action.variant"
               :category="action.category"
               :loading="isApproving"
-              class="gl-mr-5"
+              class="gl-mr-3"
               data-qa-selector="approve_button"
               @click="action.action"
             >
@@ -252,21 +277,15 @@ export default {
             />
             <approvals-summary
               v-else
-              :project-path="mr.targetProjectFullPath"
-              :iid="`${mr.iid}`"
-              :updated-count="updatedCount"
+              :approval-state="approvals"
+              :disable-committers-approval="disableCommittersApproval"
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
-              <template #rules>
-                {{ invalidRulesText }}
-              </template>
-              <template #link>
-                <gl-link :href="$options.linkToInvalidRules" target="_blank">
-                  {{ $options.i18n.learnMore }}
-                </gl-link>
+              <template #danger="{ content }">
+                <span class="gl-font-weight-bold text-danger">{{ content }}</span>
               </template>
             </gl-sprintf>
           </div>
@@ -277,9 +296,7 @@ export default {
           :has-approval-auth-error="hasApprovalAuthError"
         ></slot>
       </template>
-    </div>
-    <template #footer>
-      <slot name="footer"></slot>
-    </template>
-  </mr-widget-container>
+    </state-container>
+    <slot name="footer"></slot>
+  </div>
 </template>

@@ -44,8 +44,6 @@ module Integrations
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user_id)
 
-      return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
-
       optional_arguments = {
         project: project,
         namespace: group || project&.namespace

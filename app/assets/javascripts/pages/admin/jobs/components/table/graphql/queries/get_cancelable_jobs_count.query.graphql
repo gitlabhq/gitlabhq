@@ -1,0 +1,5 @@
+query canelableJobs {
+  cancelable: jobs(statuses: [PENDING, RUNNING]) {
+    count
+  }
+}

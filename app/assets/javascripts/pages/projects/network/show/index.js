@@ -24,7 +24,7 @@ const initRefSwitcher = () => {
         },
         on: {
           input(selectedRef) {
-            visitUrl(joinPaths(networkRootPath, selectedRef));
+            visitUrl(joinPaths(networkRootPath, encodeURIComponent(selectedRef)));
           },
         },
       });

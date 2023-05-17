@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::RepositoryBundleExportService do
+RSpec.describe BulkImports::RepositoryBundleExportService, feature_category: :importers do
   let(:project) { create(:project) }
   let(:export_path) { Dir.mktmpdir }
 

@@ -13,10 +13,6 @@ describe('Diff viewer mode changed component', () => {
     });
   });
 
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it('renders aMode & bMode', () => {
     expect(vm.text()).toContain('File mode changed from 123 to 321');
   });

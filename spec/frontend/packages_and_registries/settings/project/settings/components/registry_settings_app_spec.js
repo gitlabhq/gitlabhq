@@ -20,11 +20,6 @@ describe('Registry Settings app', () => {
   const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const defaultProvide = {
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,
@@ -84,7 +79,7 @@ describe('Registry Settings app', () => {
       ${false}                      | ${true}
       ${false}                      | ${false}
     `(
-      'container expiration policy $showContainerRegistrySettings and package cleanup policy is $showPackageRegistrySettings',
+      'container cleanup policy $showContainerRegistrySettings and package cleanup policy is $showPackageRegistrySettings',
       ({ showContainerRegistrySettings, showPackageRegistrySettings }) => {
         mountComponent({
           showContainerRegistrySettings,

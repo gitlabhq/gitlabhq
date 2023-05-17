@@ -1,0 +1,11 @@
+---
+table_name: geo_lfs_object_deleted_events
+classes: []
+feature_categories:
+- geo_replication
+description: Geo event for when an LFS object gets deleted, belongs to geo_event_log.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3481
+milestone: '10.2'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88257
+removed_in_milestone: '15.1'

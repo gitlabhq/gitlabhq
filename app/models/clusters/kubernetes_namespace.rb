@@ -22,9 +22,9 @@ module Clusters
     delegate :api_url, to: :platform_kubernetes, allow_nil: true
 
     attr_encrypted :service_account_token,
-        mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_truncated,
-        algorithm: 'aes-256-cbc'
+      mode: :per_attribute_iv,
+      key: Settings.attr_encrypted_db_key_base_truncated,
+      algorithm: 'aes-256-cbc'
 
     scope :has_service_account_token, -> { where.not(encrypted_service_account_token: nil) }
     scope :with_environment_name, -> (name) { joins(:environment).where(environments: { name: name }) }

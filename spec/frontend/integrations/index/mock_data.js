@@ -47,4 +47,13 @@ export const mockInactiveIntegrations = [
       '/gitlab-qa-sandbox-group/project_with_jenkins_6a55a67c-57c6ed0597c9319a/-/services/bamboo/edit',
     name: 'bamboo',
   },
+  {
+    active: false,
+    title: 'Prometheus',
+    description: 'A monitoring tool for Kubernetes',
+    updated_at: null,
+    edit_path:
+      '/gitlab-qa-sandbox-group/project_with_jenkins_6a55a67c-57c6ed0597c9319a/-/services/prometheus/edit',
+    name: 'prometheus',
+  },
 ];

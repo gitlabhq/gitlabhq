@@ -78,6 +78,7 @@ export default {
         v-model.trim="labelTitle"
         :placeholder="__('Name new label')"
         :autofocus="true"
+        data-testid="label-title"
       />
     </div>
     <div class="dropdown-content px-2">
@@ -92,10 +93,14 @@ export default {
         />
       </div>
       <div class="color-input-container gl-display-flex">
-        <span
-          class="dropdown-label-color-preview position-relative position-relative d-inline-block"
-          :style="{ backgroundColor: selectedColor }"
-        ></span>
+        <gl-form-input
+          v-model.trim="selectedColor"
+          class="gl-rounded-top-right-none gl-rounded-bottom-right-none gl-mr-n1 gl-mb-2 gl-w-8"
+          type="color"
+          :value="selectedColor"
+          :placeholder="__('Open color picker')"
+          data-testid="selected-color"
+        />
         <gl-form-input
           v-model.trim="selectedColor"
           class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
@@ -109,6 +114,7 @@ export default {
         category="primary"
         variant="confirm"
         class="float-left d-flex align-items-center"
+        data-testid="create-click"
         @click="handleCreateClick"
       >
         <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />

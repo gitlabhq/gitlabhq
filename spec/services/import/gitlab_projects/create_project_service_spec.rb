@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failures do
+RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failures, feature_category: :importers do
   let(:fake_file_acquisition_strategy) do
     Class.new do
       attr_reader :errors
@@ -35,6 +35,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
 
   before do
     stub_const('FakeStrategy', fake_file_acquisition_strategy)
+    stub_application_setting(import_sources: ['gitlab_project'])
   end
 
   describe 'validation' do
@@ -127,7 +128,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
         expect(response.payload).to eq(other_errors: [])
       end
 
-      context 'when the project contains multilple errors' do
+      context 'when the project contains multiple errors' do
         it 'fails to create a project' do
           params.merge!(name: '_ an invalid name _', path: '_ an invalid path _')
 
@@ -137,10 +138,13 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
 
           expect(response).to be_error
           expect(response.http_status).to eq(:bad_request)
-          expect(response.message)
-            .to eq(%{Project namespace path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'})
+          expect(response.message).to eq(
+            'Project namespace path must not start or end with a special character and must not contain consecutive ' \
+            'special characters.'
+          )
           expect(response.payload).to eq(
             other_errors: [
+              %{Project namespace path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'},
               %{Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'},
               %{Path must not start or end with a special character and must not contain consecutive special characters.}
             ])

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::MattermostSlashCommands do
+RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integrations do
   it_behaves_like Integrations::BaseSlashCommands
 
   describe 'Mattermost API' do
@@ -121,13 +121,6 @@ RSpec.describe Integrations::MattermostSlashCommands do
         it 'shows error messages' do
           expect(subject).to eq([[], "Failed to get team list."])
         end
-      end
-    end
-
-    describe '#chat_responder' do
-      it 'returns the responder to use for Mattermost' do
-        expect(described_class.new.chat_responder)
-          .to eq(Gitlab::Chat::Responder::Mattermost)
       end
     end
   end

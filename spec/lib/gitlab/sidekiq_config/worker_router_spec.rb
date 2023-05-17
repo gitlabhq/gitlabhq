@@ -21,7 +21,6 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       create_worker('PostReceive', :git) | 'git:post_receive'
       create_worker('PipelineHooksWorker', :pipeline_hooks) | 'pipeline_hooks:pipeline_hooks'
       create_worker('Gitlab::JiraImport::AdvanceStageWorker') | 'jira_import_advance_stage'
-      create_worker('Gitlab::PhabricatorImport::ImportTasksWorker', :importer) | 'importer:phabricator_import_import_tasks'
     end
 
     with_them do
@@ -127,6 +126,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
   describe '.global' do
     before do
       described_class.remove_instance_variable(:@global_worker_router) if described_class.instance_variable_defined?(:@global_worker_router)
+      stub_config(sidekiq: { routing_rules: routing_rules })
     end
 
     after do
@@ -137,10 +137,6 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       include_context 'router examples setup'
 
       with_them do
-        before do
-          stub_config(sidekiq: { routing_rules: routing_rules })
-        end
-
         it 'routes the worker to the correct queue' do
           expect(described_class.global.route(worker)).to eql(expected_queue)
         end
@@ -156,10 +152,6 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
 
           include ApplicationWorker
         end
-      end
-
-      before do
-        stub_config(sidekiq: { routing_rules: routing_rules })
       end
 
       context 'invalid routing rules format' do
@@ -182,6 +174,26 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
 
           expect(described_class.global.route(worker)).to eql('foo_bar')
         end
+      end
+    end
+
+    context 'when routing rules is missing `*` as the last rule' do
+      let(:routing_rules) { [['resource_boundary=cpu', 'cpu']] }
+
+      it 'logs a warning' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(a_string_matching('sidekiq.routing_rules config is missing'))
+
+        described_class.global
+      end
+    end
+
+    context 'when routing rules has a `*` rule as the last rule' do
+      let(:routing_rules) { [['resource_boundary=cpu', 'cpu'], ['*', 'default']] }
+
+      it 'does not log any warning' do
+        expect(Gitlab::AppLogger).not_to receive(:warn)
+
+        described_class.global
       end
     end
   end

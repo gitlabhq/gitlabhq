@@ -29,10 +29,6 @@
   border-bottom: 1px solid $white-dark;
   color: $gl-text-color;
 
-  &.oneline-block {
-    line-height: 42px;
-  }
-
   &.white {
     background-color: $white;
   }
@@ -88,10 +84,6 @@
 .content-block {
   padding: $gl-padding 0;
   border-bottom: 1px solid $white-dark;
-
-  &.oneline-block {
-    line-height: 36px;
-  }
 
   > .controls {
     float: right;

@@ -48,10 +48,6 @@ describe('Transfer group form', () => {
   const findTransferLocations = () => wrapper.findComponent(TransferLocations);
   const findHiddenInput = () => wrapper.find('[name="new_parent_group_id"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();
@@ -73,7 +69,7 @@ describe('Transfer group form', () => {
       expect(findHiddenInput().attributes('value')).toBeUndefined();
     });
 
-    it('does not render the alert message', () => {
+    it('does not render the alert', () => {
       expect(findAlert().exists()).toBe(false);
     });
 

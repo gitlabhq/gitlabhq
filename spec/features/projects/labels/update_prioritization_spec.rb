@@ -101,7 +101,7 @@ RSpec.describe 'Prioritize labels', feature_category: :team_planning do
       expect(page).to have_content 'wontfix'
 
       # Sort labels
-      drag_to(selector: '.label-list-item', from_index: 1, to_index: 2)
+      drag_to(selector: '.label-list-item .label-content', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
         expect(first('.label-list-item')).to have_content('feature')

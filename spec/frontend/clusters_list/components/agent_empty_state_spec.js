@@ -22,12 +22,6 @@ describe('AgentEmptyStateComponent', () => {
     });
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('renders the empty state', () => {
     expect(findEmptyState().exists()).toBe(true);
   });

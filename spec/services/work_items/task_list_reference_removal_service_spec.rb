@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::TaskListReferenceRemovalService do
+RSpec.describe WorkItems::TaskListReferenceRemovalService, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository).tap { |project| project.add_developer(developer) } }
   let_it_be(:task) { create(:work_item, project: project, title: 'Task title') }

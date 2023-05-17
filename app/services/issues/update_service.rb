@@ -6,7 +6,7 @@ module Issues
     # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
     # to disable spam checking.
     def initialize(container:, current_user: nil, params: {}, spam_params: nil)
-      super(project: container, current_user: current_user, params: params)
+      super(container: container, current_user: current_user, params: params)
       @spam_params = spam_params
     end
 
@@ -39,7 +39,8 @@ module Issues
     def change_work_item_type(issue)
       return unless issue.changed_attributes['issue_type']
 
-      type_id = find_work_item_type_id(issue.issue_type)
+      issue_type = params[:issue_type] || ::Issue::DEFAULT_ISSUE_TYPE
+      type_id = find_work_item_type_id(issue_type)
 
       issue.work_item_type_id = type_id
     end
@@ -64,7 +65,6 @@ module Issues
       handle_assignee_changes(issue, old_assignees)
       handle_confidential_change(issue)
       handle_added_labels(issue, old_labels)
-      handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)
       handle_severity_change(issue, old_severity)
       handle_escalation_status_change(issue)
@@ -76,6 +76,7 @@ module Issues
       return if issue.assignees == old_assignees
 
       create_assignee_note(issue, old_assignees)
+      Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
       notification_service.async.reassigned_issue(issue, current_user, old_assignees)
       todo_service.reassigned_assignable(issue, current_user, old_assignees)
       track_incident_action(current_user, issue, :incident_assigned)
@@ -115,23 +116,6 @@ module Issues
     private
 
     attr_reader :spam_params
-
-    # TODO: remove this once MergeRequests::UpdateService#initialize is changed to take container as named argument.
-    #
-    # Issues::UpdateService is used together with MergeRequests::UpdateService in Mutations::Assignable#assign! method
-    # however MergeRequests::UpdateService#initialize still takes `project` as param and Issues::UpdateService is being
-    # changed to take `container` as param. So we are adding this workaround in the meantime.
-    def self.constructor_container_arg(value)
-      { container: value }
-    end
-
-    def handle_quick_actions(issue)
-      # Do not handle quick actions unless the work item is the default Issue.
-      # The available quick actions for a work item depend on its type and widgets.
-      return unless issue.work_item_type.default_issue?
-
-      super
-    end
 
     def handle_date_changes(issue)
       return unless issue.previous_changes.slice('due_date', 'start_date').any?
@@ -175,35 +159,6 @@ module Issues
       end
     end
 
-    def handle_milestone_change(issue)
-      return unless issue.previous_changes.include?('milestone_id')
-
-      invalidate_milestone_issue_counters(issue)
-      send_milestone_change_notification(issue)
-      GraphqlTriggers.issuable_milestone_updated(issue)
-    end
-
-    def invalidate_milestone_issue_counters(issue)
-      issue.previous_changes['milestone_id'].each do |milestone_id|
-        next unless milestone_id
-
-        milestone = Milestone.find_by_id(milestone_id)
-
-        delete_milestone_closed_issue_counter_cache(milestone)
-        delete_milestone_total_issue_counter_cache(milestone)
-      end
-    end
-
-    def send_milestone_change_notification(issue)
-      return if skip_milestone_email
-
-      if issue.milestone.nil?
-        notification_service.async.removed_milestone(issue, current_user)
-      else
-        notification_service.async.changed_milestone(issue, issue.milestone, current_user)
-      end
-    end
-
     def handle_added_mentions(issue, old_mentioned_users)
       added_mentions = issue.mentioned_users(current_user) - old_mentioned_users
 
@@ -229,7 +184,7 @@ module Issues
     end
 
     def do_handle_issue_type_change(issue)
-      SystemNoteService.change_issue_type(issue, current_user)
+      SystemNoteService.change_issue_type(issue, current_user, issue.issue_type_before_last_save)
 
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
     end

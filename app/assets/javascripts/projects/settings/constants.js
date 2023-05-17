@@ -17,6 +17,7 @@ export const LEVEL_ID_PROP = {
 export const ACCESS_LEVELS = {
   MERGE: 'merge_access_levels',
   PUSH: 'push_access_levels',
+  CREATE: 'create_access_levels',
 };
 
 export const ACCESS_LEVEL_NONE = 0;

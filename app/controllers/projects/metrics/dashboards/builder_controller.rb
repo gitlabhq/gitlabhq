@@ -10,6 +10,8 @@ module Projects
         urgency :low
 
         def panel_preview
+          return not_found if Feature.enabled?(:remove_monitor_metrics)
+
           respond_to do |format|
             format.json do
               if rendered_panel.success?

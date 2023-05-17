@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkCreateIntegrationService do
+RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
   include JiraIntegrationHelpers
 
   before_all do

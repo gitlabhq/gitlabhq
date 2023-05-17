@@ -76,9 +76,8 @@ the source and the target tables in sync:
 1. Deleting namespaces/projects.
 
 ```mermaid
-graph TD
-
-    subgraph "CI database (tables)"
+graph LR
+    subgraph CI["CI Tables"]
         E[other CI tables]
         F{queries with joins allowed}
         G[ci_project_mirrors]
@@ -89,17 +88,18 @@ graph TD
         F---H
     end
 
-    A---B
-    B---C
-    B---D
+    Main["Main Tables"]---L["⛔ ← Joins are not allowed → ⛔"]
+    L---CI
 
-L["⛔ ← Joins are not allowed → ⛔"]
-
-    subgraph "Main database (tables)"
+    subgraph Main["Main Tables"]
         A[other main tables]
         B{queries with joins allowed}
         C[projects]
         D[namespaces]
+
+        A---B
+        B---C
+        B---D
     end
 ```
 

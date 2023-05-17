@@ -25,6 +25,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     value = value.to_h.stringify_keys if options[:hash_conversion] == true
+    value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
 
     unless valid_schema?(value)
       record.errors.add(attribute, _("must be a valid json schema"))

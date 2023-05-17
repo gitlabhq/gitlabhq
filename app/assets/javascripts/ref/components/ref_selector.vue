@@ -42,10 +42,10 @@ export default {
       required: false,
       default: '',
     },
-    refType: {
-      type: String,
+    queryParams: {
+      type: Object,
       required: false,
-      default: null,
+      default: () => {},
     },
     projectId: {
       type: String,
@@ -93,6 +93,7 @@ export default {
       matches: (state) => state.matches,
       lastQuery: (state) => state.query,
       selectedRef: (state) => state.selectedRef,
+      params: (state) => state.params,
     }),
     ...mapGetters(['isLoading', 'isQueryPossiblyASha']),
     i18n() {
@@ -186,6 +187,7 @@ export default {
     this.debouncedSearch = debounce(this.search, SEARCH_DEBOUNCE_MS);
 
     this.setProjectId(this.projectId);
+    this.setParams(this.queryParams);
 
     this.$watch(
       'enabledRefTypes',
@@ -206,6 +208,7 @@ export default {
     ...mapActions([
       'setEnabledRefTypes',
       'setUseSymbolicRefNames',
+      'setParams',
       'setProjectId',
       'setSelectedRef',
     ]),

@@ -21,6 +21,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
 
   before do
     stub_terraform_state_object_storage
+    stub_config(terraform_state: { enabled: true })
   end
 
   shared_examples 'endpoint with unique user tracking' do
@@ -51,7 +52,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject(:api_request) { request }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'terraform_state_api_request' }
         let(:label) { 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly' }
@@ -82,6 +82,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { get api(state_path), headers: auth_header }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
@@ -111,17 +112,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           it_behaves_like 'can access terraform state' do
             let(:state_name) { given_state_name }
           end
-        end
-
-        context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
-          let(:state_name) { 'state-name-with-dot' }
-          let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name}.tfstate" }
-
-          before do
-            stub_feature_flags(allow_dots_on_tf_state_names: false)
-          end
-
-          it_behaves_like 'can access terraform state'
         end
 
         context 'for a project that does not exist' do
@@ -194,6 +184,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'when terraform state with a given name is already present' do
       context 'with maintainer permissions' do
@@ -273,21 +264,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(Gitlab::Json.parse(response.body)).to be_empty
-          end
-        end
-
-        context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
-          let(:non_existing_state_name) { 'state-name-with-dot.tfstate' }
-
-          before do
-            stub_feature_flags(allow_dots_on_tf_state_names: false)
-          end
-
-          it 'strips characters after the dot' do
-            expect { request }.to change { Terraform::State.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(Terraform::State.last.name).to eq('state-name-with-dot')
           end
         end
       end
@@ -372,6 +348,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { delete api(state_path), headers: auth_header }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     shared_examples 'schedules the state for deletion' do
       it 'returns empty body' do
@@ -392,18 +369,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       where(given_state_name: %w[test-state test.state test%2Ffoo])
       with_them do
         let(:state_name) { given_state_name }
-
-        it_behaves_like 'schedules the state for deletion'
-      end
-
-      context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
-        let(:state_name) { 'state-name-with-dot' }
-        let(:state_name_with_dot) { "#{state_name}.tfstate" }
-        let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name_with_dot}" }
-
-        before do
-          stub_feature_flags(allow_dots_on_tf_state_names: false)
-        end
 
         it_behaves_like 'schedules the state for deletion'
       end
@@ -469,6 +434,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         request
 
         expect(response).to have_gitlab_http_status(:conflict)
+        expect(Gitlab::Json.parse(response.body)).to include('Who' => current_user.username)
       end
     end
 
@@ -496,30 +462,10 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     context 'with a dot in the state name' do
       let(:state_name) { 'test.state' }
 
-      context 'with allow_dots_on_tf_state_names ff enabled' do
-        before do
-          stub_feature_flags(allow_dots_on_tf_state_names: true)
-        end
+      it 'locks the terraform state' do
+        request
 
-        let(:state_name) { 'test.state' }
-
-        it 'locks the terraform state' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'with allow_dots_on_tf_state_names ff disabled' do
-        before do
-          stub_feature_flags(allow_dots_on_tf_state_names: false)
-        end
-
-        it 'returns 404' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -540,7 +486,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     before do
       state.lock_xid = '123.456'
       state.save!
-      stub_feature_flags(allow_dots_on_tf_state_names: true)
     end
 
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
@@ -551,6 +496,10 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
 
     it_behaves_like 'cannot access a state that is scheduled for deletion' do
       let(:lock_id) { 'irrelevant to this test, just needs to be present' }
+    end
+
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config' do
+      let(:lock_id) { '123.456' }
     end
 
     where(given_state_name: %w[test-state test.state test%2Ffoo])
@@ -564,23 +513,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           request
 
           expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'with allow_dots_on_tf_state_names ff disabled' do
-        before do
-          stub_feature_flags(allow_dots_on_tf_state_names: false)
-        end
-
-        context 'with dots in the state name' do
-          let(:lock_id) { '123.456' }
-          let(:state_name) { 'test.state' }
-
-          it 'returns 404' do
-            request
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
         end
       end
 

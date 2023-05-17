@@ -29,3 +29,10 @@ export const validateImageName = (file) => {
   const legalImageRegex = /^[\w.\-+]+\.(png|jpg|jpeg|gif|bmp|tiff|ico|webp)$/;
   return legalImageRegex.test(fileName) ? fileName : 'image.png';
 };
+
+export const validateFileFromAllowList = (fileName, allowList) => {
+  const parts = fileName.split('.');
+  const ext = `.${parts[parts.length - 1]}`;
+
+  return allowList.includes(ext);
+};

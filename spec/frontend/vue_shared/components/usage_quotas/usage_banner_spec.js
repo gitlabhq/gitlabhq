@@ -24,10 +24,6 @@ describe('usage banner', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     slotName                  | finderFunction
     ${'left-primary-text'}    | ${findLeftPrimaryTextSlot}

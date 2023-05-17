@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Attachments::ImportReleaseWorker do
+RSpec.describe Gitlab::GithubImport::Attachments::ImportReleaseWorker, feature_category: :importers do
   subject(:worker) { described_class.new }
 
   describe '#import' do
@@ -19,6 +19,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportReleaseWorker do
       {
         'record_db_id' => rand(100),
         'record_type' => 'Release',
+        'tag' => 'v1.0',
         'text' => <<-TEXT
           Some text...
 

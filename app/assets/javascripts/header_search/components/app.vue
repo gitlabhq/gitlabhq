@@ -1,7 +1,6 @@
 <script>
 import {
   GlSearchBoxByType,
-  GlOutsideDirective as Outside,
   GlIcon,
   GlToken,
   GlTooltipDirective,
@@ -12,9 +11,19 @@ import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { truncate } from '~/lib/utils/text_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
+import {
+  SEARCH_GITLAB,
+  SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
+  SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
+  SEARCH_DESCRIBED_BY_DEFAULT,
+  SEARCH_DESCRIBED_BY_UPDATED,
+  SEARCH_RESULTS_LOADING,
+  SEARCH_RESULTS_SCOPE,
+  KBD_HELP,
+} from '~/vue_shared/global_search/constants';
 import {
   FIRST_DROPDOWN_INDEX,
   SEARCH_BOX_INDEX,
@@ -26,6 +35,7 @@ import {
   IS_SEARCHING,
   IS_FOCUSED,
   IS_NOT_FOCUSED,
+  DROPDOWN_CLOSE_TIMEOUT,
 } from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
@@ -34,28 +44,16 @@ import HeaderSearchScopedItems from './header_search_scoped_items.vue';
 export default {
   name: 'HeaderSearchApp',
   i18n: {
-    searchGitlab: s__('GlobalSearch|Search GitLab'),
-    searchInputDescribeByNoDropdown: s__(
-      'GlobalSearch|Type and press the enter key to submit search.',
-    ),
-    searchInputDescribeByWithDropdown: s__(
-      'GlobalSearch|Type for new suggestions to appear below.',
-    ),
-    searchDescribedByDefault: s__(
-      'GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list.',
-    ),
-    searchDescribedByUpdated: s__(
-      'GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.',
-    ),
-    searchResultsLoading: s__('GlobalSearch|Search results are loading'),
-    searchResultsScope: s__('GlobalSearch|in %{scope}'),
-    kbdHelp: sprintf(
-      s__('GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search'),
-      { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
-      false,
-    ),
+    SEARCH_GITLAB,
+    SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
+    SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
+    SEARCH_DESCRIBED_BY_DEFAULT,
+    SEARCH_DESCRIBED_BY_UPDATED,
+    SEARCH_RESULTS_LOADING,
+    SEARCH_RESULTS_SCOPE,
+    KBD_HELP,
   },
-  directives: { Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
+  directives: { GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
   components: {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,
@@ -67,7 +65,6 @@ export default {
   },
   data() {
     return {
-      showDropdown: false,
       isFocused: false,
       currentFocusIndex: SEARCH_BOX_INDEX,
     };
@@ -93,7 +90,7 @@ export default {
       return Boolean(gon?.current_username);
     },
     showSearchDropdown() {
-      if (!this.showDropdown || !this.isLoggedIn) {
+      if (!this.isFocused || !this.isLoggedIn) {
         return false;
       }
       return this.searchOptions?.length > 0;
@@ -110,12 +107,11 @@ export default {
       }
       return FIRST_DROPDOWN_INDEX;
     },
-
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
-        return this.$options.i18n.searchInputDescribeByWithDropdown;
+        return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN;
       }
-      return this.$options.i18n.searchInputDescribeByNoDropdown;
+      return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN;
     },
     dropdownResultsDescription() {
       if (!this.showSearchDropdown) {
@@ -123,14 +119,14 @@ export default {
       }
 
       if (this.showDefaultItems) {
-        return sprintf(this.$options.i18n.searchDescribedByDefault, {
+        return sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_DEFAULT, {
           count: this.searchOptions.length,
         });
       }
 
       return this.loading
-        ? this.$options.i18n.searchResultsLoading
-        : sprintf(this.$options.i18n.searchDescribedByUpdated, {
+        ? this.$options.i18n.SEARCH_RESULTS_LOADING
+        : sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_UPDATED, {
             count: this.searchOptions.length,
           });
     },
@@ -154,7 +150,7 @@ export default {
       return this.searchBarItem?.icon;
     },
     scopeTokenTitle() {
-      return sprintf(this.$options.i18n.searchResultsScope, {
+      return sprintf(this.$options.i18n.SEARCH_RESULTS_SCOPE, {
         scope: this.infieldHelpContent,
       });
     },
@@ -162,29 +158,18 @@ export default {
   methods: {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     openDropdown() {
-      this.showDropdown = true;
+      this.isFocused = true;
+      this.$emit('expandSearchBar');
 
-      // check isFocused state to avoid firing duplicate events
-      if (!this.isFocused) {
-        this.isFocused = true;
-        this.$emit('expandSearchBar', true);
-
-        Tracking.event(undefined, 'focus_input', {
-          label: 'global_search',
-          property: 'navigation_top',
-        });
-      }
-    },
-    closeDropdown() {
-      this.showDropdown = false;
+      Tracking.event(undefined, 'focus_input', {
+        label: 'global_search',
+        property: 'navigation_top',
+      });
     },
     collapseAndCloseSearchBar() {
-      // we need a delay on this method
-      // for the search bar not to remove
-      // the clear button from dom
-      // and register clicks on dropdown items
+      // without timeout dropdown closes
+      // before click event is dispatched
       setTimeout(() => {
-        this.showDropdown = false;
         this.isFocused = false;
         this.$emit('collapseSearchBar');
 
@@ -192,7 +177,7 @@ export default {
           label: 'global_search',
           property: 'navigation_top',
         });
-      }, 200);
+      }, DROPDOWN_CLOSE_TIMEOUT);
     },
     submitSearch() {
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS && this.currentFocusIndex < 0) {
@@ -228,9 +213,8 @@ export default {
 
 <template>
   <form
-    v-outside="closeDropdown"
     role="search"
-    :aria-label="$options.i18n.searchGitlab"
+    :aria-label="$options.i18n.SEARCH_GITLAB"
     class="header-search gl-relative gl-rounded-base gl-w-full"
     :class="searchBarClasses"
     data-testid="header-search-form"
@@ -241,17 +225,16 @@ export default {
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
-      data-qa-selector="search_term_field"
+      data-qa-selector="global_search_input"
       autocomplete="off"
-      :placeholder="$options.i18n.searchGitlab"
+      :placeholder="$options.i18n.SEARCH_GITLAB"
       :aria-activedescendant="currentFocusedId"
       :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
-      @focus="openDropdown"
-      @click="openDropdown"
-      @blur="collapseAndCloseSearchBar"
+      @focusin="openDropdown"
+      @focusout="collapseAndCloseSearchBar"
       @input="getAutocompleteOptions"
       @keydown.enter.stop.prevent="submitSearch"
-      @keydown.esc.stop.prevent="closeDropdown"
+      @keydown.esc.stop.prevent="collapseAndCloseSearchBar"
     />
     <gl-token
       v-if="showScopeHelp"
@@ -267,7 +250,7 @@ export default {
         :size="16"
       />{{
         getTruncatedScope(
-          sprintf($options.i18n.searchResultsScope, {
+          sprintf($options.i18n.SEARCH_RESULTS_SCOPE, {
             scope: infieldHelpContent,
           }),
         )
@@ -277,7 +260,7 @@ export default {
       v-show="!isFocused"
       v-gl-tooltip.bottom.hover.html
       class="gl-absolute gl-right-3 gl-top-0 gl-z-index-1 keyboard-shortcut-helper"
-      :title="$options.i18n.kbdHelp"
+      :title="$options.i18n.KBD_HELP"
       >/</kbd
     >
     <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
@@ -303,7 +286,7 @@ export default {
           :max="searchOptions.length - 1"
           :min="$options.FIRST_DROPDOWN_INDEX"
           :default-index="defaultIndex"
-          @tab="closeDropdown"
+          :enable-cycle="true"
         />
         <header-search-default-items
           v-if="showDefaultItems"

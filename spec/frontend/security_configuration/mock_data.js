@@ -1,9 +1,19 @@
+import {
+  SAST_NAME,
+  SAST_SHORT_NAME,
+  SAST_DESCRIPTION,
+  SAST_HELP_PATH,
+  SAST_CONFIG_HELP_PATH,
+} from '~/security_configuration/components/constants';
+import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
+
 export const testProjectPath = 'foo/bar';
 export const testProviderIds = [101, 102, 103];
-export const testProviderName = ['Kontra', 'Secure Code Warrior', 'Other Vendor'];
+export const testProviderName = ['Kontra', 'Secure Code Warrior', 'SecureFlag'];
 export const testTrainingUrls = [
   'https://www.vendornameone.com/url',
   'https://www.vendornametwo.com/url',
+  'https://www.vendornamethree.com/url',
 ];
 
 const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [
@@ -99,4 +109,24 @@ export const updateSecurityTrainingProvidersErrorResponse = {
       training: null,
     },
   },
+};
+
+export const securityFeaturesMock = [
+  {
+    name: SAST_NAME,
+    shortName: SAST_SHORT_NAME,
+    description: SAST_DESCRIPTION,
+    helpPath: SAST_HELP_PATH,
+    configurationHelpPath: SAST_CONFIG_HELP_PATH,
+    type: REPORT_TYPE_SAST,
+    available: true,
+  },
+];
+
+export const provideMock = {
+  upgradePath: '/upgrade',
+  autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',
+  autoDevopsPath: '/autoDevopsPath',
+  projectFullPath: 'namespace/project',
+  vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/index',
 };

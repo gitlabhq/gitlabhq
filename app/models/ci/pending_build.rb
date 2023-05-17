@@ -14,7 +14,6 @@ module Ci
     validates :namespace, presence: true
 
     scope :ref_protected, -> { where(protected: true) }
-    scope :queued_before, ->(time) { where(arel_table[:created_at].lt(time)) }
     scope :with_instance_runners, -> { where(instance_runners_enabled: true) }
     scope :for_tags, ->(tag_ids) do
       if tag_ids.present?

@@ -3,7 +3,7 @@
 module Gitlab
   module Instrumentation
     module RedisInterceptor
-      APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
+      APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax command xread xreadgroup].freeze
 
       def call(command)
         instrument_call([command]) do
@@ -40,7 +40,13 @@ module Gitlab
 
         yield
       rescue ::Redis::BaseError => ex
-        instrumentation_class.instance_count_exception(ex)
+        if ex.message.start_with?('MOVED', 'ASK')
+          instrumentation_class.instance_count_cluster_redirection(ex)
+        else
+          instrumentation_class.instance_count_exception(ex)
+        end
+
+        instrumentation_class.log_exception(ex)
         raise ex
       ensure
         duration = Gitlab::Metrics::System.monotonic_time - start

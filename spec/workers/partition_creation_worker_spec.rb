@@ -2,7 +2,7 @@
 #
 require 'spec_helper'
 
-RSpec.describe PartitionCreationWorker do
+RSpec.describe PartitionCreationWorker, feature_category: :database do
   subject { described_class.new.perform }
 
   let(:management_worker) { double }

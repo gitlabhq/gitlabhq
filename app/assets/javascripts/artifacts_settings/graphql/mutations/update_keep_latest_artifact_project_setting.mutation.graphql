@@ -1,5 +1,7 @@
 mutation updateKeepLatestArtifactProjectSetting($fullPath: ID!, $keepLatestArtifact: Boolean!) {
-  ciCdSettingsUpdate(input: { fullPath: $fullPath, keepLatestArtifact: $keepLatestArtifact }) {
+  projectCiCdSettingsUpdate(
+    input: { fullPath: $fullPath, keepLatestArtifact: $keepLatestArtifact }
+  ) {
     errors
   }
 }

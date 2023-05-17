@@ -25,10 +25,6 @@ describe('Assignee component', () => {
   const findComponentTextNoUsers = () => wrapper.find('[data-testid="no-value"]');
   const findCollapsedChildren = () => wrapper.findAll('.sidebar-collapsed-icon > *');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('No assignees/users', () => {
     it('displays no assignee icon when collapsed', () => {
       createWrapper();

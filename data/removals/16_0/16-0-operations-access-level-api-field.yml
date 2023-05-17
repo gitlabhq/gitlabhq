@@ -1,0 +1,16 @@
+- title: "Project REST API field `operations_access_level` removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.8"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: timofurrer  # (required) GitLab username of the person reporting the removal
+  stage: deploy  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385798  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In project REST API endpoints, the `operations_access_level` field
+    is removed in favor of more specialized fields like:
+
+    - `releases_access_level`
+    - `environments_access_level`
+    - `feature_flags_access_level`
+    - `infrastructure_access_level`
+    - `monitor_access_level`

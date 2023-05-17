@@ -1,12 +1,11 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import SetupInstructions from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/setup_instructions.vue';
 import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/index.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import VersionSelectForm from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/version_select_form.vue';
 
-import { updateInstallation } from '~/jira_connect/subscriptions/api';
+import { updateInstallation, setApiBaseURL } from '~/jira_connect/subscriptions/api';
 import { reloadPage, persistBaseUrl, retrieveBaseUrl } from '~/jira_connect/subscriptions/utils';
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 
@@ -23,7 +22,6 @@ describe('SignInGitlabMultiversion', () => {
 
   const mockBasePath = 'gitlab.mycompany.com';
 
-  const findSetupInstructions = () => wrapper.findComponent(SetupInstructions);
   const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
   const findVersionSelectForm = () => wrapper.findComponent(VersionSelectForm);
   const findSubtitle = () => wrapper.findByTestId('subtitle');
@@ -31,10 +29,6 @@ describe('SignInGitlabMultiversion', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(SignInGitlabMultiversion);
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when version is not selected', () => {
     describe('VersionSelectForm', () => {
@@ -72,23 +66,12 @@ describe('SignInGitlabMultiversion', () => {
         expect(findSubtitle().text()).toBe(SignInGitlabMultiversion.i18n.signInSubtitle);
       });
 
-      it('renders setup instructions', () => {
-        expect(findSetupInstructions().exists()).toBe(true);
+      it('renders sign in button', () => {
+        expect(findSignInOauthButton().props('gitlabBasePath')).toBe(mockBasePath);
       });
 
-      describe('when SetupInstructions emits `next` event', () => {
-        beforeEach(async () => {
-          findSetupInstructions().vm.$emit('next');
-          await nextTick();
-        });
-
-        it('renders sign in button', () => {
-          expect(findSignInOauthButton().props('gitlabBasePath')).toBe(mockBasePath);
-        });
-
-        it('hides setup instructions', () => {
-          expect(findSetupInstructions().exists()).toBe(false);
-        });
+      it('calls setApiBaseURL with correct params', () => {
+        expect(setApiBaseURL).toHaveBeenCalledWith(mockBasePath);
       });
     });
 
@@ -98,12 +81,12 @@ describe('SignInGitlabMultiversion', () => {
         createComponent();
       });
 
-      it('does not render setup instructions', () => {
-        expect(findSetupInstructions().exists()).toBe(false);
-      });
-
       it('renders sign in button', () => {
         expect(findSignInOauthButton().props('gitlabBasePath')).toBe(GITLAB_COM_BASE_PATH);
+      });
+
+      it('does not call setApiBaseURL', () => {
+        expect(setApiBaseURL).not.toHaveBeenCalled();
       });
 
       describe('when button emits `sign-in` event', () => {

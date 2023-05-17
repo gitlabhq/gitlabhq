@@ -203,18 +203,16 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def get_pipelines_index_html(params = {})
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project
-                  }.merge(params),
-                  format: :html
+        namespace_id: project.namespace,
+        project_id: project
+      }.merge(params), format: :html
     end
 
     def get_pipelines_index_json(params = {})
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project
-                  }.merge(params),
-                  format: :json
+        namespace_id: project.namespace,
+        project_id: project
+      }.merge(params), format: :json
     end
 
     def create_all_pipeline_types
@@ -236,12 +234,15 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def create_pipeline(status, sha, merge_request: nil)
       user = create(:user)
-      pipeline = create(:ci_empty_pipeline, status: status,
-                                            project: project,
-                                            sha: sha.id,
-                                            ref: sha.id.first(8),
-                                            user: user,
-                                            merge_request: merge_request)
+      pipeline = create(
+        :ci_empty_pipeline,
+        status: status,
+        project: project,
+        sha: sha.id,
+        ref: sha.id.first(8),
+        user: user,
+        merge_request: merge_request
+      )
 
       build_stage = create(:ci_stage, name: 'build', pipeline: pipeline)
       test_stage = create(:ci_stage, name: 'test', pipeline: pipeline)
@@ -275,23 +276,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(json_response['pipelines'].count).to eq returned
         expect(json_response['count']['all'].to_i).to eq all
-      end
-    end
-  end
-
-  describe 'GET #index' do
-    before do
-      stub_application_setting(auto_devops_enabled: false)
-    end
-
-    context 'with runners_availability_section experiment' do
-      it 'tracks the assignment', :experiment do
-        stub_experiments(runners_availability_section: true)
-
-        expect(experiment(:runners_availability_section))
-          .to track(:assignment).with_context(namespace: project.namespace).on_next_instance
-
-        get :index, params: { namespace_id: project.namespace, project_id: project }
       end
     end
   end
@@ -378,9 +362,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project,
-                                   user: user,
-                                   sha: project.commit.id)
+        create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
 
       let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
@@ -598,9 +580,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
       def create_pipeline(project)
         create(:ci_empty_pipeline, project: project).tap do |pipeline|
-          create(:ci_build, pipeline: pipeline,
-                            ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline),
-                            name: 'rspec')
+          create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline), name: 'rspec')
         end
       end
 
@@ -771,11 +751,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     before do
       get :status, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: pipeline.id
-                   },
-                   format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     it 'return a detailed pipeline status in json' do
@@ -825,7 +802,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         subject { get :charts, params: request_params, format: :html }
 
         let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'perform_analytics_usage_action' }
         let(:namespace) { project.namespace }
@@ -868,9 +844,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
       context 'when latest commit contains [ci skip]' do
         before do
-          project.repository.create_file(user, 'new-file.txt', 'A new file',
-                                         message: '[skip ci] This is a test',
-                                         branch_name: 'master')
+          project.repository.create_file(user, 'new-file.txt', 'A new file', message: '[skip ci] This is a test', branch_name: 'master')
         end
 
         it_behaves_like 'creates a pipeline'
@@ -906,11 +880,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     subject do
       post :create, params: {
-                      namespace_id: project.namespace,
-                      project_id: project,
-                      pipeline: { ref: 'master' }
-                    },
-                    format: :json
+        namespace_id: project.namespace, project_id: project, pipeline: { ref: 'master' }
+      }, format: :json
     end
 
     before do
@@ -969,11 +940,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   describe 'POST retry.json' do
     subject(:post_retry) do
       post :retry, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: pipeline.id
-                   },
-                   format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     let!(:pipeline) { create(:ci_pipeline, :failed, project: project) }
@@ -1036,11 +1004,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     before do
       post :cancel, params: {
-                      namespace_id: project.namespace,
-                      project_id: project,
-                      id: pipeline.id
-                    },
-                    format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     it 'cancels a pipeline without returning any content', :sidekiq_might_not_need_inline do
@@ -1183,7 +1148,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def clear_controller_memoization
       controller.clear_memoization(:pipeline_test_report)
-      controller.instance_variable_set(:@pipeline, nil)
+      controller.remove_instance_variable(:@pipeline)
     end
   end
 
@@ -1192,17 +1157,11 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     let(:branch_secondary) { project.repository.branches[1] }
 
     let!(:pipeline_master) do
-      create(:ci_pipeline,
-             ref: branch_main.name,
-             sha: branch_main.target,
-             project: project)
+      create(:ci_pipeline, ref: branch_main.name, sha: branch_main.target, project: project)
     end
 
     let!(:pipeline_secondary) do
-      create(:ci_pipeline,
-             ref: branch_secondary.name,
-             sha: branch_secondary.target,
-             project: project)
+      create(:ci_pipeline, ref: branch_secondary.name, sha: branch_secondary.target, project: project)
     end
 
     before do
@@ -1316,149 +1275,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
                          project_id: project,
                          id: pipeline.id
                        }
-    end
-  end
-
-  describe 'GET config_variables.json', :use_clean_rails_memory_store_caching do
-    include ReactiveCachingHelpers
-
-    let(:ci_config) { '' }
-    let(:files) {  { '.gitlab-ci.yml' => YAML.dump(ci_config) } }
-    let(:project)  { create(:project, :auto_devops_disabled, :custom_repo, files: files) }
-    let(:service)  { Ci::ListConfigVariablesService.new(project, user) }
-
-    before do
-      allow(Ci::ListConfigVariablesService)
-        .to receive(:new)
-        .and_return(service)
-    end
-
-    context 'when sending a valid ref' do
-      let(:ref) { 'master' }
-      let(:ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'test',
-            script: 'echo'
-          }
-        }
-      end
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns variable list' do
-        get_config_variables
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['KEY1']).to eq({ 'value' => 'val 1', 'description' => 'description 1' })
-      end
-    end
-
-    context 'when sending an invalid ref' do
-      let(:ref) { 'invalid-ref' }
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns empty json' do
-        get_config_variables
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({})
-      end
-    end
-
-    context 'when sending an invalid config' do
-      let(:ref) { 'master' }
-      let(:ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'invalid',
-            script: 'echo'
-          }
-        }
-      end
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns empty result' do
-        get_config_variables
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({})
-      end
-    end
-
-    context 'when the cache is empty' do
-      let(:ref) { 'master' }
-      let(:ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'test',
-            script: 'echo'
-          }
-        }
-      end
-
-      it 'returns no content' do
-        get_config_variables
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
-    end
-
-    context 'when project uses external project ci config' do
-      let(:other_project) { create(:project, :custom_repo, files: other_project_files) }
-      let(:other_project_files) { { '.gitlab-ci.yml' => YAML.dump(other_project_ci_config) } }
-      let(:ref) { 'master' }
-
-      let(:other_project_ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'test',
-            script: 'echo'
-          }
-        }
-      end
-
-      before do
-        other_project.add_developer(user)
-        project.update!(ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}:master")
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns other project config variables' do
-        get_config_variables
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['KEY1']).to eq({ 'value' => 'val 1', 'description' => 'description 1' })
-      end
-    end
-
-    private
-
-    def get_config_variables
-      get :config_variables, params: { namespace_id: project.namespace,
-                                       project_id: project,
-                                       sha: ref },
-                             format: :json
     end
   end
 

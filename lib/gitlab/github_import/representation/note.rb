@@ -76,7 +76,7 @@ module Gitlab
         def github_identifiers
           {
             note_id: note_id,
-            noteable_id: noteable_id,
+            noteable_iid: noteable_id,
             noteable_type: noteable_type
           }
         end

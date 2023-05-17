@@ -1,0 +1,21 @@
+---
+key_path: counts.projects_google_play_active
+description: Count of projects with active integrations for Google Play
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621
+time_frame: all
+data_source: database
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorization do
+RSpec.describe ProjectPolicy, feature_category: :system_access do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
   include_context 'ProjectPolicy context'
@@ -437,6 +437,36 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
 
       context 'when admin mode is disabled' do
         it { expect_disallowed(:import_project_members_from_another_project) }
+      end
+    end
+  end
+
+  context 'importing work items' do
+    %w(reporter developer maintainer owner).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_allowed(:import_work_items) }
+      end
+    end
+
+    %w(guest anonymous).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_disallowed(:import_work_items) }
+      end
+    end
+
+    context 'with an admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:import_work_items) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:import_work_items) }
       end
     end
   end
@@ -1259,7 +1289,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
         it { is_expected.to be_allowed(:create_package) }
         it { is_expected.to be_allowed(:read_package) }
         it { is_expected.to be_allowed(:read_project) }
-        it { is_expected.to be_disallowed(:destroy_package) }
+        it { is_expected.to be_allowed(:destroy_package) }
 
         it_behaves_like 'package access with repository disabled'
       end
@@ -1435,6 +1465,28 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
 
         it 'allows managing google cloud' do
           expect_allowed(:admin_project_google_cloud)
+        end
+      end
+    end
+  end
+
+  context 'infrastructure aws feature' do
+    %w(guest reporter developer).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'disallows managing aws' do
+          expect_disallowed(:admin_project_aws)
+        end
+      end
+    end
+
+    %w(maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'allows managing aws' do
+          expect_allowed(:admin_project_aws)
         end
       end
     end
@@ -2315,6 +2367,12 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
   describe 'infrastructure feature' do
     using RSpec::Parameterized::TableSyntax
 
+    before do
+      # assuming the default setting terraform_state.enabled=true
+      # the terraform_state permissions should follow the same logic as the other features
+      stub_config(terraform_state: { enabled: true })
+    end
+
     let(:guest_permissions) { [] }
 
     let(:developer_permissions) do
@@ -2378,10 +2436,35 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
         end
       end
     end
+
+    context 'when terraform state management is disabled' do
+      before do
+        stub_config(terraform_state: { enabled: false })
+      end
+
+      with_them do
+        let(:current_user) { user_subject(role) }
+        let(:project) { project_subject(project_visibility) }
+
+        let(:developer_permissions) do
+          [:read_terraform_state]
+        end
+
+        let(:maintainer_permissions) do
+          developer_permissions + [:admin_terraform_state]
+        end
+
+        it 'always disallows the terraform_state feature' do
+          project.project_feature.update!(infrastructure_access_level: access_level)
+
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+    end
   end
 
   describe 'access_security_and_compliance' do
-    context 'when the "Security & Compliance" is enabled' do
+    context 'when the "Security and Compliance" is enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::PRIVATE)
       end
@@ -2427,7 +2510,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
       end
     end
 
-    context 'when the "Security & Compliance" is not enabled' do
+    context 'when the "Security and Compliance" is not enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::DISABLED)
       end
@@ -2727,6 +2810,14 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
 
           it { is_expected.to be_allowed(:register_project_runners) }
         end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
+          end
+
+          it { is_expected.to be_allowed(:register_project_runners) }
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -2742,6 +2833,14 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
       context 'with project runner registration disabled' do
         before do
           stub_application_setting(valid_runner_registrars: ['group'])
+        end
+
+        it { is_expected.to be_disallowed(:register_project_runners) }
+      end
+
+      context 'with specific project runner registration disabled' do
+        before do
+          project.update!(runner_registration_enabled: false)
         end
 
         it { is_expected.to be_disallowed(:register_project_runners) }
@@ -2779,145 +2878,255 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
     end
   end
 
-  describe 'create_project_runners' do
-    context 'create_runner_workflow flag enabled' do
+  describe 'create_runner' do
+    context 'create_runner_workflow_for_namespace flag enabled' do
       before do
-        stub_feature_flags(create_runner_workflow: true)
+        stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
       end
 
       context 'admin' do
         let(:current_user) { admin }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it { is_expected.to be_allowed(:create_project_runners) }
+          it { is_expected.to be_allowed(:create_runner) }
 
           context 'with project runner registration disabled' do
             before do
               stub_application_setting(valid_runner_registrars: ['group'])
             end
 
-            it { is_expected.to be_allowed(:create_project_runners) }
+            it { is_expected.to be_allowed(:create_runner) }
+          end
+
+          context 'with specific project runner registration disabled' do
+            before do
+              project.update!(runner_registration_enabled: false)
+            end
+
+            it { is_expected.to be_allowed(:create_runner) }
           end
         end
 
         context 'when admin mode is disabled' do
-          it { is_expected.to be_disallowed(:create_project_runners) }
+          it { is_expected.to be_disallowed(:create_runner) }
         end
       end
 
       context 'with owner' do
         let(:current_user) { owner }
 
-        it { is_expected.to be_allowed(:create_project_runners) }
+        it { is_expected.to be_allowed(:create_runner) }
 
         context 'with project runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['group'])
           end
 
-          it { is_expected.to be_disallowed(:create_project_runners) }
+          it { is_expected.to be_disallowed(:create_runner) }
+        end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
+          end
+
+          it { is_expected.to be_disallowed(:create_runner) }
         end
       end
 
       context 'with maintainer' do
         let(:current_user) { maintainer }
 
-        it { is_expected.to be_allowed(:create_project_runners) }
+        it { is_expected.to be_allowed(:create_runner) }
       end
 
       context 'with reporter' do
         let(:current_user) { reporter }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with guest' do
         let(:current_user) { guest }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with developer' do
         let(:current_user) { developer }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with anonymous' do
         let(:current_user) { nil }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
     end
 
-    context 'create_runner_workflow flag disabled' do
+    context 'create_runner_workflow_for_namespace flag disabled' do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_namespace: [group])
       end
 
       context 'admin' do
         let(:current_user) { admin }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it { is_expected.to be_disallowed(:create_project_runners) }
+          it { is_expected.to be_disallowed(:create_runner) }
 
           context 'with project runner registration disabled' do
             before do
               stub_application_setting(valid_runner_registrars: ['group'])
             end
 
-            it { is_expected.to be_disallowed(:create_project_runners) }
+            it { is_expected.to be_disallowed(:create_runner) }
+          end
+
+          context 'with specific project runner registration disabled' do
+            before do
+              project.update!(runner_registration_enabled: false)
+            end
+
+            it { is_expected.to be_disallowed(:create_runner) }
           end
         end
 
         context 'when admin mode is disabled' do
-          it { is_expected.to be_disallowed(:create_project_runners) }
+          it { is_expected.to be_disallowed(:create_runner) }
         end
       end
 
       context 'with owner' do
         let(:current_user) { owner }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
 
         context 'with project runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['group'])
           end
 
-          it { is_expected.to be_disallowed(:create_project_runners) }
+          it { is_expected.to be_disallowed(:create_runner) }
+        end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
+          end
+
+          it { is_expected.to be_disallowed(:create_runner) }
         end
       end
 
       context 'with maintainer' do
         let(:current_user) { maintainer }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with reporter' do
         let(:current_user) { reporter }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with guest' do
         let(:current_user) { guest }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with developer' do
         let(:current_user) { developer }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
 
       context 'with anonymous' do
         let(:current_user) { nil }
 
-        it { is_expected.to be_disallowed(:create_project_runners) }
+        it { is_expected.to be_disallowed(:create_runner) }
       end
+    end
+  end
+
+  describe 'admin_project_runners' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:create_runner) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:create_runner) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:create_runner) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:create_runner) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
+  end
+
+  describe 'read_project_runners' do
+    subject(:policy) { described_class.new(user, project) }
+
+    context 'with maintainer' do
+      let(:user) { maintainer }
+
+      it { is_expected.to be_allowed(:read_project_runners) }
+    end
+
+    context 'with admin', :enable_admin_mode do
+      let(:user) { admin }
+
+      it { is_expected.to be_allowed(:read_project_runners) }
+    end
+
+    context 'with reporter' do
+      let(:user) { reporter }
+
+      it { is_expected.to be_disallowed(:read_project_runners) }
+    end
+
+    context 'when the user is not part of the project' do
+      let(:user) { non_member }
+
+      it { is_expected.to be_disallowed(:read_project_runners) }
     end
   end
 
@@ -3040,6 +3249,18 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
 
       it { expect_disallowed(:read_code) }
     end
+  end
+
+  describe 'read_namespace_catalog' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
+  end
+
+  describe 'add_catalog_resource' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
   private

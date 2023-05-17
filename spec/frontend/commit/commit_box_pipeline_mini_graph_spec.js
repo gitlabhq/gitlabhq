@@ -5,13 +5,13 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import CommitBoxPipelineMiniGraph from '~/projects/commit_box/info/components/commit_box_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { COMMIT_BOX_POLL_INTERVAL } from '~/projects/commit_box/info/constants';
 import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/projects/commit_box/info/graphql/queries/get_pipeline_stages.query.graphql';
-import * as graphQlUtils from '~/pipelines/components/graph/utils';
+import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 import {
   mockDownstreamQueryResponse,
   mockPipelineStagesQueryResponse,
@@ -20,7 +20,7 @@ import {
   mockUpstreamQueryResponse,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -69,10 +69,6 @@ describe('Commit box pipeline mini graph', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('should display loading state when loading', () => {
       createComponent();
@@ -87,7 +83,7 @@ describe('Commit box pipeline mini graph', () => {
       await createComponent();
     });
 
-    it('should not display loading state after the query is resolved', async () => {
+    it('should not display loading state after the query is resolved', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findPipelineMiniGraph().exists()).toBe(true);
     });
@@ -245,16 +241,16 @@ describe('Commit box pipeline mini graph', () => {
     });
 
     it('toggles query polling with visibility check', async () => {
-      jest.spyOn(graphQlUtils, 'toggleQueryPollingByVisibility');
+      jest.spyOn(sharedGraphQlUtils, 'toggleQueryPollingByVisibility');
 
       createComponent();
 
       await waitForPromises();
 
-      expect(graphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
+      expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
         wrapper.vm.$apollo.queries.pipelineStages,
       );
-      expect(graphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
+      expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
         wrapper.vm.$apollo.queries.pipeline,
       );
     });

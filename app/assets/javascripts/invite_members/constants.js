@@ -1,12 +1,12 @@
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
+export const PROJECT_SELECT_LABEL_ID = 'project-select';
 export const SEARCH_DELAY = 200;
 export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
-  name: 'invite_members_for_task',
-  view: 'modal_opened_from_email',
   submit: 'submit',
 };
 export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
@@ -19,7 +19,10 @@ export const GROUP_FILTERS = {
 export const USERS_FILTER_ALL = 'all';
 export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';
 export const TRIGGER_ELEMENT_BUTTON = 'button';
-export const TRIGGER_ELEMENT_SIDE_NAV = 'side-nav';
+export const TOP_NAV_INVITE_MEMBERS_COMPONENT = 'invite_members';
+export const TRIGGER_ELEMENT_WITH_EMOJI = 'text-emoji';
+export const TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI = 'dropdown-text-emoji';
+export const TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN = 'dropdown-text';
 export const INVITE_MEMBER_MODAL_TRACKING_CATEGORY = 'invite_members_modal';
 export const TRIGGER_DEFAULT_QA_SELECTOR = 'invite_members_button';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
@@ -59,9 +62,18 @@ export const GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
 );
 
-export const GROUP_MODAL_ALERT_BODY = s__(
-  'InviteMembersModal| Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
+export const GROUP_MODAL_TO_GROUP_ALERT_BODY = s__(
+  'InviteMembersModal|Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
 );
+export const GROUP_MODAL_TO_GROUP_ALERT_LINK = helpPagePath('user/group/manage', {
+  anchor: 'share-a-group-with-another-group',
+});
+export const GROUP_MODAL_TO_PROJECT_ALERT_BODY = s__(
+  'InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
+);
+export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath('user/project/members/index', {
+  anchor: 'add-groups-to-a-project',
+});
 
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
@@ -76,7 +88,6 @@ export const READ_MORE_TEXT = s__(
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
-export const CANCEL_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Explore paid plans');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
 export const MEMBER_ERROR_LIST_TEXT = s__(
   'InviteMembersModal|Review the invite errors and try again:',
@@ -128,16 +139,19 @@ export const GROUP_MODAL_LABELS = {
   title: GROUP_MODAL_DEFAULT_TITLE,
   toGroup: {
     introText: GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT,
+    notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
+    notificationLink: GROUP_MODAL_TO_GROUP_ALERT_LINK,
   },
   toProject: {
     introText: GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT,
+    notificationText: GROUP_MODAL_TO_PROJECT_ALERT_BODY,
+    notificationLink: GROUP_MODAL_TO_PROJECT_ALERT_LINK,
   },
   searchField: GROUP_SEARCH_FIELD,
   placeHolder: GROUP_PLACEHOLDER,
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
 };
 
-export const LEARN_GITLAB = 'learn_gitlab';
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';
 export const ON_CELEBRATION_TRACK_LABEL = 'invite_celebration_modal';
 

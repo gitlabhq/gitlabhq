@@ -143,6 +143,17 @@ body.gl-dark {
       background-color: $gray-200;
     }
   }
+
+  .gl-new-dropdown-item {
+    &:active,
+    &:hover,
+    &:focus,
+    &:focus:active {
+      .gl-new-dropdown-item-content {
+        @include gl-bg-gray-10;
+      }
+    }
+  }
 }
 
 // Some hacks and overrides for things that don't properly support dark mode
@@ -288,4 +299,14 @@ body.gl-dark {
 .timeline-entry.draft-note:not(.note-form) .timeline-content {
   // soften on darkmode
   background-color: mix($gray-50, $orange-50, 75%) !important;
+}
+
+.tanuki-bot-chat-drawer .tanuki-bot-message {
+  // lightens chat bubble in darkmode as $gray-50 matches drawer background.  See tanuki_bot_chat.scss
+  background-color: $gray-100;
+}
+
+.ai-genie-chat,
+.ai-genie-chat .gl-form-input {
+  background-color: $gray-10;
 }

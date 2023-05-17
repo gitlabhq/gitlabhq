@@ -51,7 +51,7 @@ export const ENVIRONMENT_COUNT_BY_SCOPE = {
 };
 
 export const REVIEW_APP_MODAL_I18N = {
-  title: s__('ReviewApp|Enable Review App'),
+  title: s__('Environments|Enable Review Apps'),
   intro: s__(
     'EnableReviewApp|Review apps are dynamic environments that you can use to provide a live preview of changes made in a feature branch.',
   ),
@@ -87,3 +87,5 @@ export const ENVIRONMENT_NEW_HELP_TEXT = __(
 );
 
 export const ENVIRONMENT_EDIT_HELP_TEXT = ENVIRONMENT_NEW_HELP_TEXT;
+
+export const SERVICES_LIMIT_PER_PAGE = 10;

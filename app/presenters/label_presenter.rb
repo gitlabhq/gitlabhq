@@ -27,14 +27,18 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
   def filter_path(type: :issue)
     case context_subject
     when Group
-      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
-                  context_subject,
-                  label_name: [label.name])
+      send( # rubocop:disable GitlabSecurity/PublicSend
+        "#{type.to_s.pluralize}_group_path",
+        context_subject,
+        label_name: [label.name]
+      )
     when Project
-      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
-                  context_subject.namespace,
-                  context_subject,
-                  label_name: [label.name])
+      send( # rubocop:disable GitlabSecurity/PublicSend
+        "namespace_project_#{type.to_s.pluralize}_path",
+        context_subject.namespace,
+        context_subject,
+        label_name: [label.name]
+      )
     end
   end
 

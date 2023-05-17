@@ -198,22 +198,22 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
     let_it_be(:agent_authorizations_without_env) do
       [
-        create(:agent_group_authorization, agent: create(:cluster_agent, project: other_project), group: group),
-        create(:agent_project_authorization, agent: create(:cluster_agent, project: project), project: project),
-        Clusters::Agents::ImplicitAuthorization.new(agent: create(:cluster_agent, project: project))
+        create(:agent_ci_access_group_authorization, agent: create(:cluster_agent, project: other_project), group: group),
+        create(:agent_ci_access_project_authorization, agent: create(:cluster_agent, project: project), project: project),
+        Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization.new(agent: create(:cluster_agent, project: project))
       ]
     end
 
     let_it_be(:agent_authorizations_with_review_and_production_env) do
       [
         create(
-          :agent_group_authorization,
+          :agent_ci_access_group_authorization,
           agent: create(:cluster_agent, project: other_project),
           group: group,
           environments: ['production', 'review/*']
         ),
         create(
-          :agent_project_authorization,
+          :agent_ci_access_project_authorization,
           agent: create(:cluster_agent, project: project),
           project: project,
           environments: ['production', 'review/*']
@@ -224,13 +224,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let_it_be(:agent_authorizations_with_staging_env) do
       [
         create(
-          :agent_group_authorization,
+          :agent_ci_access_group_authorization,
           agent: create(:cluster_agent, project: other_project),
           group: group,
           environments: ['staging']
         ),
         create(
-          :agent_project_authorization,
+          :agent_ci_access_project_authorization,
           agent: create(:cluster_agent, project: project),
           project: project,
           environments: ['staging']
@@ -546,40 +546,18 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   describe 'GET /projects/:id/jobs rate limited' do
     let(:query) { {} }
 
-    context 'with the ci_enforce_rate_limits_jobs_api feature flag on' do
-      before do
-        stub_feature_flags(ci_enforce_rate_limits_jobs_api: true)
-
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
-          allow(strategy).to receive(:increment).and_return(threshold + 1)
-        end
-
-        get api("/projects/#{project.id}/jobs", api_user), params: query
+    before do
+      allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+        threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
+        allow(strategy).to receive(:increment).and_return(threshold + 1)
       end
 
-      it 'enforces rate limits for the endpoint' do
-        expect(response).to have_gitlab_http_status :too_many_requests
-        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
-      end
+      get api("/projects/#{project.id}/jobs", api_user), params: query
     end
 
-    context 'with the ci_enforce_rate_limits_jobs_api feature flag off' do
-      before do
-        stub_feature_flags(ci_enforce_rate_limits_jobs_api: false)
-
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
-          allow(strategy).to receive(:increment).and_return(threshold + 1)
-        end
-
-        get api("/projects/#{project.id}/jobs", api_user), params: query
-      end
-
-      it 'makes a successful request' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_limited_pagination_headers
-      end
+    it 'enforces rate limits for the endpoint' do
+      expect(response).to have_gitlab_http_status :too_many_requests
+      expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
     end
   end
 

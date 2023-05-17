@@ -12,6 +12,7 @@ import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
+import DrawioDiagram from '../extensions/drawio_diagram';
 import Comment from '../extensions/comment';
 import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
@@ -134,6 +135,10 @@ const defaultSerializerConfig = {
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Comment.name]: renderComment,
     [Diagram.name]: preserveUnchanged(renderCodeBlock),
+    [DrawioDiagram.name]: preserveUnchanged({
+      render: renderImage,
+      inline: true,
+    }),
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();
@@ -222,6 +227,7 @@ const defaultSerializerConfig = {
     [TableRow.name]: renderTableRow,
     [TaskItem.name]: preserveUnchanged((state, node) => {
       state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
+      if (!node.textContent) state.write('&nbsp;');
       state.renderContent(node);
     }),
     [TaskList.name]: preserveUnchanged((state, node) => {

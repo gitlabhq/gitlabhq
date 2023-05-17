@@ -70,13 +70,13 @@ export const removeProjectSuccess = {
 
 export const updateScopeSuccess = {
   data: {
-    ciCdSettingsUpdate: {
+    projectCiCdSettingsUpdate: {
       ciCdSettings: {
         jobTokenScopeEnabled: false,
         __typename: 'ProjectCiCdSetting',
       },
       errors: [],
-      __typename: 'CiCdSettingsUpdatePayload',
+      __typename: 'ProjectCiCdSettingsUpdatePayload',
     },
   },
 };
@@ -120,32 +120,6 @@ export const mockFields = [
     label: '',
   },
 ];
-
-export const optInJwtQueryResponse = (optInJwt) => ({
-  data: {
-    project: {
-      id: '1',
-      ciCdSettings: {
-        optInJwt,
-        __typename: 'ProjectCiCdSetting',
-      },
-      __typename: 'Project',
-    },
-  },
-});
-
-export const optInJwtMutationResponse = (optInJwt) => ({
-  data: {
-    ciCdSettingsUpdate: {
-      ciCdSettings: {
-        optInJwt,
-        __typename: 'ProjectCiCdSetting',
-      },
-      errors: [],
-      __typename: 'CiCdSettingsUpdatePayload',
-    },
-  },
-});
 
 export const inboundJobTokenScopeEnabledResponse = {
   data: {
@@ -217,13 +191,13 @@ export const inboundRemoveProjectSuccess = {
 
 export const inboundUpdateScopeSuccessResponse = {
   data: {
-    ciCdSettingsUpdate: {
+    projectCiCdSettingsUpdate: {
       ciCdSettings: {
         inboundJobTokenScopeEnabled: false,
         __typename: 'ProjectCiCdSetting',
       },
       errors: [],
-      __typename: 'CiCdSettingsUpdatePayload',
+      __typename: 'ProjectCiCdSettingsUpdatePayload',
     },
   },
 };

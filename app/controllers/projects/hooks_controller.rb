@@ -4,8 +4,8 @@ class Projects::HooksController < Projects::ApplicationController
   include ::WebHooks::HookActions
 
   # Authorize
-  before_action :authorize_admin_project!
-  before_action :hook_logs, only: :edit
+  before_action :authorize_admin_project!, except: :destroy
+  before_action :authorize_destroy_project_hook!, only: :destroy
   before_action -> { check_rate_limit!(:project_testing_hook, scope: [@project, current_user]) }, only: :test
 
   respond_to :html
@@ -34,11 +34,11 @@ class Projects::HooksController < Projects::ApplicationController
     @hook ||= @project.hooks.find(params[:id])
   end
 
-  def hook_logs
-    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
-  end
-
   def trigger_values
     ProjectHook.triggers.values
+  end
+
+  def authorize_destroy_project_hook!
+    render_404 unless can?(current_user, :destroy_web_hook, hook)
   end
 end

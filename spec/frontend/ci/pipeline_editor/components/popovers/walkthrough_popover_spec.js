@@ -12,17 +12,13 @@ describe('WalkthroughPopover component', () => {
     return extendedWrapper(mountFn(WalkthroughPopover));
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('CTA button clicked', () => {
     beforeEach(async () => {
       wrapper = createComponent(mount);
       await wrapper.findByTestId('ctaBtn').trigger('click');
     });
 
-    it('emits "walkthrough-popover-cta-clicked" event', async () => {
+    it('emits "walkthrough-popover-cta-clicked" event', () => {
       expect(wrapper.emitted()['walkthrough-popover-cta-clicked']).toHaveLength(1);
     });
   });

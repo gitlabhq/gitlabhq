@@ -1,8 +1,8 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Mousetrap from 'mousetrap';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import api from '~/api';
 import {
   keysFor,
@@ -11,16 +11,18 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '~/notes/event_hub';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -39,12 +41,15 @@ import {
   TRACKING_WHITESPACE_HIDE,
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
+  EVT_MR_PREPARED,
 } from '../constants';
 
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
+import { updateChangesTabCount } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
+import FindingsDrawer from './shared/findings_drawer.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';
@@ -53,15 +58,15 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import TreeList from './tree_list.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
+import PreRenderer from './pre_renderer.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
-    DynamicScroller: () =>
-      import('vendor/vue-virtual-scroller').then(({ DynamicScroller }) => DynamicScroller),
-    DynamicScrollerItem: () =>
-      import('vendor/vue-virtual-scroller').then(({ DynamicScrollerItem }) => DynamicScrollerItem),
-    PreRenderer: () => import('./pre_renderer.vue').then((PreRenderer) => PreRenderer),
+    FindingsDrawer,
+    DynamicScroller,
+    DynamicScrollerItem,
+    PreRenderer,
     VirtualScrollerScrollSync,
     CompareVersions,
     DiffFile,
@@ -75,6 +80,8 @@ export default {
     GlPagination,
     GlSprintf,
     GlAlert,
+    GenerateTestFileDrawer: () =>
+      import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   alerts: {
@@ -92,6 +99,10 @@ export default {
       required: true,
     },
     endpointBatch: {
+      type: String,
+      required: true,
+    },
+    endpointDiffForPath: {
       type: String,
       required: true,
     },
@@ -195,6 +206,7 @@ export default {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
+    ...mapState('findingsDrawer', ['activeDrawer']),
     ...mapState('diffs', [
       'showTreeList',
       'isLoading',
@@ -218,6 +230,7 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
+      'generateTestFilePath',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -226,8 +239,10 @@ export default {
       'isVirtualScrollingEnabled',
       'isBatchLoading',
       'isBatchLoadingError',
+      'flatBlobsList',
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
+    ...mapGetters('findingsDrawer', ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -241,7 +256,10 @@ export default {
       return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
     renderDiffFiles() {
-      return this.diffFiles.length > 0;
+      return this.flatBlobsList.length > 0;
+    },
+    diffsIncomplete() {
+      return this.flatBlobsList.length !== this.diffFiles.length;
     },
     renderFileTree() {
       return this.renderDiffFiles && this.showTreeList;
@@ -253,7 +271,7 @@ export default {
       return this.startVersion === null && this.latestDiff;
     },
     showFileByFileNavigation() {
-      return this.diffFiles.length > 1 && this.viewDiffsFileByFile;
+      return this.flatBlobsList.length > 1 && this.viewDiffsFileByFile;
     },
     currentFileNumber() {
       return this.currentDiffIndex + 1;
@@ -264,9 +282,9 @@ export default {
       return currentDiffIndex >= 1 ? currentDiffIndex : null;
     },
     nextFileNumber() {
-      const { currentFileNumber, diffFiles } = this;
+      const { currentFileNumber, flatBlobsList } = this;
 
-      return currentFileNumber < diffFiles.length ? currentFileNumber + 1 : null;
+      return currentFileNumber < flatBlobsList.length ? currentFileNumber + 1 : null;
     },
     visibleWarning() {
       let visible = false;
@@ -283,6 +301,9 @@ export default {
     },
     fileReviews() {
       return reviewStatuses(this.diffFiles, this.mrReviews);
+    },
+    resourceId() {
+      return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
   },
   watch: {
@@ -303,6 +324,11 @@ export default {
     diffViewType() {
       this.adjustView();
     },
+    viewDiffsFileByFile(newViewFileByFile) {
+      if (!newViewFileByFile && this.diffsIncomplete && this.glFeatures.singleFileFileByFile) {
+        this.refetchDiffData({ refetchMeta: false });
+      }
+    },
     shouldShow() {
       // When the shouldShow property changed to true, the route is rendered for the first time
       // and if we have the isLoading as true this means we didn't fetch the data
@@ -321,6 +347,7 @@ export default {
       endpoint: this.endpoint,
       endpointMetadata: this.endpointMetadata,
       endpointBatch: this.endpointBatch,
+      endpointDiffForPath: this.endpointDiffForPath,
       endpointCoverage: this.endpointCoverage,
       endpointUpdateUser: this.endpointUpdateUser,
       projectPath: this.projectPath,
@@ -330,8 +357,6 @@ export default {
       defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
       mrReviews: this.rehydratedMrReviews,
     });
-
-    this.interfaceWithDOM();
 
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
@@ -385,7 +410,7 @@ export default {
     this.subscribeToEvents();
 
     this.unwatchDiscussions = this.$watch(
-      () => `${this.diffFiles.length}:${this.$store.state.notes.discussions.length}`,
+      () => `${this.flatBlobsList.length}:${this.$store.state.notes.discussions.length}`,
       () => {
         this.setDiscussions();
 
@@ -420,41 +445,51 @@ export default {
       'setCodequalityEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
+      'fetchFileByFile',
       'fetchCoverageFiles',
       'fetchCodequality',
+      'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
       'cacheTreeListWidth',
-      'scrollToFile',
+      'goToFile',
       'setShowTreeList',
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
+      'setGenerateTestFilePath',
     ]),
+    ...mapActions('findingsDrawer', ['setDrawer']),
+    closeDrawer() {
+      this.setDrawer({});
+    },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
+      if (this.glFeatures.singleFileFileByFile) {
+        diffsEventHub.$on('diffFilesModified', this.setDiscussions);
+        notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      }
+      diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
     },
     unsubscribeFromEvents() {
+      diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
+      if (this.glFeatures.singleFileFileByFile) {
+        notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
+        diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      }
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
-    interfaceWithDOM() {
-      this.diffsTab = document.querySelector('.js-diffs-tab');
-    },
-    updateChangesTabCount() {
-      const badge = this.diffsTab.querySelector('.gl-badge');
-
-      if (this.diffsTab && badge) {
-        badge.textContent = this.diffFilesLength;
-      }
-    },
     navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex(number - 1);
+      this.navigateToDiffFileIndex({
+        index: number - 1,
+        singleFile: this.glFeatures.singleFileFileByFile,
+      });
     },
-    refetchDiffData() {
-      this.fetchData(false);
+    refetchDiffData({ refetchMeta = true } = {}) {
+      this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
     },
     needsReload() {
       return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
@@ -462,42 +497,52 @@ export default {
     needsFirstLoad() {
       return !this.diffFiles.length;
     },
-    fetchData(toggleTree = true) {
-      this.fetchDiffFilesMeta()
-        .then((data) => {
-          let realSize = 0;
+    fetchData({ toggleTree = true, fetchMeta = true } = {}) {
+      if (fetchMeta) {
+        this.fetchDiffFilesMeta()
+          .then((data) => {
+            let realSize = 0;
 
-          if (data) {
-            realSize = data.real_size;
-          }
+            if (data) {
+              realSize = data.real_size;
 
-          this.diffFilesLength = parseInt(realSize, 10) || 0;
-          if (toggleTree) {
-            this.setTreeDisplay();
-          }
+              if (this.viewDiffsFileByFile && this.glFeatures.singleFileFileByFile) {
+                this.fetchFileByFile();
+              }
+            }
 
-          this.updateChangesTabCount();
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
+            this.diffFilesLength = parseInt(realSize, 10) || 0;
+            if (toggleTree) {
+              this.setTreeDisplay();
+            }
+
+            updateChangesTabCount({
+              count: this.diffFilesLength,
+            });
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        });
+      }
 
-      this.fetchDiffFilesBatch()
-        .then(() => {
-          if (toggleTree) this.setTreeDisplay();
-          // Guarantee the discussions are assigned after the batch finishes.
-          // Just watching the length of the discussions or the diff files
-          // isn't enough, because with split diff loading, neither will
-          // change when loading the other half of the diff files.
-          this.setDiscussions();
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
+      if (!this.viewDiffsFileByFile || !this.glFeatures.singleFileFileByFile) {
+        this.fetchDiffFilesBatch()
+          .then(() => {
+            if (toggleTree) this.setTreeDisplay();
+            // Guarantee the discussions are assigned after the batch finishes.
+            // Just watching the length of the discussions or the diff files
+            // isn't enough, because with split diff loading, neither will
+            // change when loading the other half of the diff files.
+            this.setDiscussions();
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        });
+      }
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
@@ -572,8 +617,11 @@ export default {
     },
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
-      if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
-        this.scrollToFile({ path: this.diffFiles[targetIndex].file_path });
+      if (targetIndex >= 0 && targetIndex < this.flatBlobsList.length) {
+        this.goToFile({
+          path: this.flatBlobsList[targetIndex].path,
+          singleFile: this.glFeatures.singleFileFileByFile,
+        });
       }
     },
     setTreeDisplay() {
@@ -582,7 +630,7 @@ export default {
 
       if (storedTreeShow !== null) {
         showTreeList = parseBoolean(storedTreeShow);
-      } else if (!bp.isDesktop() || (!this.isBatchLoading && this.diffFiles.length <= 1)) {
+      } else if (!bp.isDesktop() || (!this.isBatchLoading && this.flatBlobsList.length <= 1)) {
         showTreeList = false;
       }
 
@@ -634,6 +682,11 @@ export default {
 
 <template>
   <div v-show="shouldShow">
+    <findings-drawer
+      v-if="glFeatures.codeQualityInlineDrawer"
+      :drawer="activeDrawer"
+      @close="closeDrawer"
+    />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />
@@ -753,7 +806,7 @@ export default {
               />
               <gl-sprintf :message="__('File %{current} of %{total}')">
                 <template #current>{{ currentFileNumber }}</template>
-                <template #total>{{ diffFiles.length }}</template>
+                <template #total>{{ flatBlobsList.length }}</template>
               </gl-sprintf>
             </div>
             <gl-loading-icon v-else-if="retrievingBatches" size="lg" />
@@ -765,5 +818,11 @@ export default {
         </div>
       </div>
     </div>
+    <generate-test-file-drawer
+      v-if="getNoteableData.id"
+      :resource-id="resourceId"
+      :file-path="generateTestFilePath"
+      @close="() => setGenerateTestFilePath('')"
+    />
   </div>
 </template>

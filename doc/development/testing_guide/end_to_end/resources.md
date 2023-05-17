@@ -249,7 +249,7 @@ end
 ```
 
 The `populate` method iterates through its arguments and call each
-attribute respectively. Here `populate(:brand)` has the same effect as
+attribute. Here `populate(:brand)` has the same effect as
 just `brand`. Using the populate method makes the intention clearer.
 
 With this, it ensures we construct the data right after we create the

@@ -31,7 +31,7 @@ describe('RunnerTypeBadge', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -43,8 +43,6 @@ describe('RunnerTypeBadge', () => {
 
   afterEach(() => {
     jest.useFakeTimers({ legacyFakeTimers: true });
-
-    wrapper.destroy();
   });
 
   it('renders online state', () => {

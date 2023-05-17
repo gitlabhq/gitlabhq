@@ -1,5 +1,5 @@
 query GroupBoardMilestones($fullPath: ID!, $searchTerm: String, $state: MilestoneStateEnum) {
-  group(fullPath: $fullPath) {
+  workspace: group(fullPath: $fullPath) {
     id
     milestones(
       includeAncestors: true

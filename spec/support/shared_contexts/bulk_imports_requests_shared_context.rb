@@ -24,16 +24,18 @@ RSpec.shared_context 'bulk imports requests context' do |url|
 
     stub_request(:get, "https://gitlab.example.com/api/v4/groups?min_access_level=50&page=1&per_page=20&private_token=demo-pat&search=test&top_level_only=true")
       .with(headers: request_headers)
-      .to_return(status: 200,
-                 body: [{
-                   id: 2595440,
-                   web_url: 'https://gitlab.com/groups/test',
-                   name: 'Test',
-                   path: 'stub-test-group',
-                   full_name: 'Test',
-                   full_path: 'stub-test-group'
-                 }].to_json,
-                 headers: page_response_headers)
+      .to_return(
+        status: 200,
+        body: [{
+          id: 2595440,
+          web_url: 'https://gitlab.com/groups/test',
+          name: 'Test',
+          path: 'stub-test-group',
+          full_name: 'Test',
+          full_path: 'stub-test-group'
+        }].to_json,
+        headers: page_response_headers
+      )
 
     stub_request(:get, "%{url}/api/v4/groups?min_access_level=50&page=1&per_page=20&private_token=demo-pat&search=&top_level_only=true" % { url: url })
       .to_return(
@@ -45,6 +47,7 @@ RSpec.shared_context 'bulk imports requests context' do |url|
           full_name: 'Stub',
           full_path: 'stub-group'
         }].to_json,
-        headers: page_response_headers)
+        headers: page_response_headers
+      )
   end
 end

@@ -20,16 +20,23 @@ class UserPreference < ApplicationRecord
     less_than_or_equal_to: Gitlab::TabWidth::MAX
   }
   validates :diffs_deletion_color, :diffs_addition_color,
-            format: { with: ColorsHelper::HEX_COLOR_PATTERN },
-            allow_blank: true
-  validates :use_legacy_web_ide, allow_nil: false, inclusion: { in: [true, false] }
+    format: { with: ColorsHelper::HEX_COLOR_PATTERN },
+    allow_blank: true
+
+  validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
+
+  validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
+  ignore_columns :time_format_in_24h, remove_with: '16.2', remove_after: '2023-07-22'
+  # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
+  ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
 
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
-  attribute :time_format_in_24h, default: false
   attribute :render_whitespace_in_code, default: false
+
+  enum visibility_pipeline_id_type: { id: 0, iid: 1 }
 
   class << self
     def notes_filters
@@ -82,22 +89,6 @@ class UserPreference < ApplicationRecord
   def time_display_relative=(value)
     if value.nil?
       default = self.class.column_defaults['time_display_relative']
-      super(default)
-    else
-      super(value)
-    end
-  end
-
-  def time_format_in_24h
-    value = read_attribute(:time_format_in_24h)
-    return value unless value.nil?
-
-    self.class.column_defaults['time_format_in_24h']
-  end
-
-  def time_format_in_24h=(value)
-    if value.nil?
-      default = self.class.column_defaults['time_format_in_24h']
       super(default)
     else
       super(value)

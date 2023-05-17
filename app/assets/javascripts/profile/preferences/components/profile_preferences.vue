@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
 import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
 import IntegrationView from './integration_view.vue';
 
@@ -131,6 +131,10 @@ export default {
         :message-url="view.message_url"
         :config="$options.integrationViewConfigs[view.name]"
       />
+    </div>
+
+    <div class="col-lg-4"></div>
+    <div class="col-lg-8">
       <hr />
     </div>
     <div class="col-sm-12 js-hide-when-nothing-matches-search">

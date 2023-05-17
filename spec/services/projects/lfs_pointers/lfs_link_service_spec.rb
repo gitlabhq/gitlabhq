@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::LfsPointers::LfsLinkService do
-  let!(:project) { create(:project, lfs_enabled: true) }
-  let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
+RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_code_management do
+  let_it_be(:project) { create(:project, lfs_enabled: true) }
+  let_it_be(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
+
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }
   let(:all_oids) { LfsObject.pluck(:oid, :size).to_h.merge(new_oids) }
   let(:new_lfs_object) { create(:lfs_object) }
@@ -17,10 +18,24 @@ RSpec.describe Projects::LfsPointers::LfsLinkService do
 
   describe '#execute' do
     it 'raises an error when trying to link too many objects at once' do
+      stub_const("#{described_class}::MAX_OIDS", 5)
+
       oids = Array.new(described_class::MAX_OIDS) { |i| "oid-#{i}" }
       oids << 'the straw'
 
       expect { subject.execute(oids) }.to raise_error(described_class::TooManyOidsError)
+    end
+
+    it 'executes a block after validation and before execution' do
+      block = instance_double(Proc)
+
+      expect(subject).to receive(:validate!).ordered
+      expect(block).to receive(:call).ordered
+      expect(subject).to receive(:link_existing_lfs_objects).ordered
+
+      subject.execute([]) do
+        block.call
+      end
     end
 
     it 'links existing lfs objects to the project' do
@@ -41,13 +56,13 @@ RSpec.describe Projects::LfsPointers::LfsLinkService do
     it 'links in batches' do
       stub_const("#{described_class}::BATCH_SIZE", 3)
 
-      expect(Gitlab::Import::Logger)
-        .to receive(:info)
-        .with(class: described_class.name,
-              project_id: project.id,
-              project_path: project.full_path,
-              lfs_objects_linked_count: 7,
-              iterations: 3)
+      expect(Gitlab::Import::Logger).to receive(:info).with(
+        class: described_class.name,
+        project_id: project.id,
+        project_path: project.full_path,
+        lfs_objects_linked_count: 7,
+        iterations: 3
+      )
 
       lfs_objects = create_list(:lfs_object, 7)
       linked = subject.execute(lfs_objects.pluck(:oid))

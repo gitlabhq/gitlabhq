@@ -177,7 +177,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
 
-Get a single personal access token by using passing the token in a header.
+Get a single personal access token and information about that token by passing the token in a header.
 
 ```plaintext
 GET /personal_access_tokens/self
@@ -204,6 +204,36 @@ Example response:
     "expires_at": null
 }
 ```
+
+## Rotate a personal access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+
+Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week.
+
+```plaintext
+POST /personal_access_tokens/:id/rotate
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer/string | yes | ID of personal access token |
+
+NOTE:
+Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user.
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>/rotate"
+```
+
+### Responses
+
+- `200: OK` if the existing token is successfully revoked and the new token successfully created.
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if either the:
+  - User does not have access to the token with the specified ID.
+  - Token with the specified ID does not exist.
+- `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 
 ## Revoke a personal access token
 

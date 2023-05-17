@@ -48,10 +48,6 @@ describe('GroupsList', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllItems = () => wrapper.findAllComponents(GroupsListItem);

@@ -9,20 +9,21 @@ class UsersController < ApplicationController
   include Gitlab::NoteableMetadata
 
   requires_cross_project_access show: false,
-                                groups: false,
-                                projects: false,
-                                contributed: false,
-                                snippets: true,
-                                calendar: false,
-                                followers: false,
-                                following: false,
-                                calendar_activities: true
+    groups: false,
+    projects: false,
+    contributed: false,
+    snippets: true,
+    calendar: false,
+    followers: false,
+    following: false,
+    calendar_activities: true
 
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
-  before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following]
+  before_action :authorize_read_user_profile!, only: [
+    :calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following
+  ]
   before_action only: [:exists] do
     check_rate_limit!(:username_exists, scope: request.ip)
   end
@@ -71,7 +72,19 @@ class UsersController < ApplicationController
 
       format.json do
         load_events
-        pager_json("events/_events", @events.count, events: @events)
+
+        if Feature.enabled?(:profile_tabs_vue, current_user)
+          @events = if user.include_private_contributions?
+                      @events
+                    else
+                      @events.select { |event| event.visible_to_user?(current_user) }
+                    end
+
+          render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
+                                                 .represent(@events)
+        else
+          pager_json("events/_events", @events.count, events: @events)
+        end
       end
     end
   end
@@ -169,7 +182,7 @@ class UsersController < ApplicationController
 
   def exists
     if Gitlab::CurrentSettings.signup_enabled? || current_user
-      render json: { exists: !!Namespace.find_by_path_or_name(params[:username]) }
+      render json: { exists: !!Namespace.without_project_namespaces.find_by_path_or_name(params[:username]) }
     else
       render json: { error: _('You must be authenticated to access this path.') }, status: :unauthorized
     end
@@ -178,7 +191,12 @@ class UsersController < ApplicationController
   def follow
     followee = current_user.follow(user)
 
-    flash[:alert] = followee.errors.full_messages.join(', ') if followee&.errors&.any?
+    if followee
+      flash[:alert] = followee.errors.full_messages.join(', ') if followee&.errors&.any?
+    else
+      flash[:alert] = s_('Action not allowed.')
+    end
+
     redirect_path = referer_path(request) || @user
 
     redirect_to redirect_path

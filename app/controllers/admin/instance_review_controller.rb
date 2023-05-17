@@ -5,7 +5,7 @@ class Admin::InstanceReviewController < Admin::ApplicationController
   urgency :low
 
   def index
-    redirect_to("#{Gitlab::SubscriptionPortal.subscriptions_instance_review_url}?#{instance_review_params}")
+    redirect_to("#{subscription_portal_instance_review_url}?#{instance_review_params}")
   end
 
   def instance_review_params

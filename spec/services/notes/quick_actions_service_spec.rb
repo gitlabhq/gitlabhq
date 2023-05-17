@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::QuickActionsService do
+RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
   shared_context 'note on noteable' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
@@ -182,7 +182,7 @@ RSpec.describe Notes::QuickActionsService do
 
       context 'on an incident' do
         before do
-          issue.update!(issue_type: :incident)
+          issue.update!(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
         end
 
         it 'leaves the note empty' do
@@ -224,7 +224,7 @@ RSpec.describe Notes::QuickActionsService do
 
       context 'on an incident' do
         before do
-          issue.update!(issue_type: :incident)
+          issue.update!(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
         end
 
         it 'leaves the note empty' do
@@ -247,28 +247,6 @@ RSpec.describe Notes::QuickActionsService do
           expect { execute(note) }.to change { issue.reload.milestone }.from(milestone).to(nil)
         end
       end
-    end
-  end
-
-  describe '.noteable_update_service_class' do
-    include_context 'note on noteable'
-
-    it 'returns Issues::UpdateService for a note on an issue' do
-      note = create(:note_on_issue, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(Issues::UpdateService)
-    end
-
-    it 'returns MergeRequests::UpdateService for a note on a merge request' do
-      note = create(:note_on_merge_request, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(MergeRequests::UpdateService)
-    end
-
-    it 'returns Commits::TagService for a note on a commit' do
-      note = create(:note_on_commit, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(Commits::TagService)
     end
   end
 
@@ -321,6 +299,84 @@ RSpec.describe Notes::QuickActionsService do
     it_behaves_like 'note on noteable that supports quick actions' do
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:note) { build(:note_on_merge_request, project: project, noteable: merge_request) }
+    end
+
+    context 'note on work item that supports quick actions' do
+      include_context 'note on noteable'
+
+      let_it_be(:work_item, reload: true) { create(:work_item, project: project) }
+
+      let(:note) { build(:note_on_work_item, project: project, noteable: work_item) }
+
+      let!(:labels) { create_pair(:label, project: project) }
+
+      before do
+        note.note = note_text
+      end
+
+      describe 'note with only command' do
+        describe '/close, /label & /assign' do
+          let(:note_text) do
+            %(/close\n/label ~#{labels.first.name} ~#{labels.last.name}\n/assign @#{assignee.username}\n)
+          end
+
+          it 'closes noteable, sets labels, assigns and leave no note' do
+            content = execute(note)
+
+            expect(content).to be_empty
+            expect(note.noteable).to be_closed
+            expect(note.noteable.labels).to match_array(labels)
+            expect(note.noteable.assignees).to eq([assignee])
+          end
+        end
+
+        describe '/reopen' do
+          before do
+            note.noteable.close!
+            expect(note.noteable).to be_closed
+          end
+          let(:note_text) { '/reopen' }
+
+          it 'opens the noteable, and leave no note' do
+            content = execute(note)
+
+            expect(content).to be_empty
+            expect(note.noteable).to be_open
+          end
+        end
+      end
+
+      describe 'note with command & text' do
+        describe '/close, /label, /assign' do
+          let(:note_text) do
+            %(HELLO\n/close\n/label ~#{labels.first.name} ~#{labels.last.name}\n/assign @#{assignee.username}\nWORLD)
+          end
+
+          it 'closes noteable, sets labels, assigns, and sets milestone to noteable' do
+            content = execute(note)
+
+            expect(content).to eq "HELLO\nWORLD"
+            expect(note.noteable).to be_closed
+            expect(note.noteable.labels).to match_array(labels)
+            expect(note.noteable.assignees).to eq([assignee])
+          end
+        end
+
+        describe '/reopen' do
+          before do
+            note.noteable.close
+            expect(note.noteable).to be_closed
+          end
+          let(:note_text) { "HELLO\n/reopen\nWORLD" }
+
+          it 'opens the noteable' do
+            content = execute(note)
+
+            expect(content).to eq "HELLO\nWORLD"
+            expect(note.noteable).to be_open
+          end
+        end
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlButton, GlAlert, GlCard } from '@gitlab/ui';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';

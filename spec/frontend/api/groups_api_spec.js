@@ -10,23 +10,18 @@ const mockUrlRoot = '/gitlab';
 const mockGroupId = '99';
 
 describe('GroupsApi', () => {
-  let originalGon;
   let mock;
-
-  const dummyGon = {
-    api_version: mockApiVersion,
-    relative_url_root: mockUrlRoot,
-  };
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    originalGon = window.gon;
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: mockApiVersion,
+      relative_url_root: mockUrlRoot,
+    };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('updateGroup', () => {

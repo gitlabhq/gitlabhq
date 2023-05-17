@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_category: :source_code_management do
   let_it_be(:merge_request) { create(:merge_request_with_diffs) }
 
   let(:diff_hash) do
@@ -282,17 +282,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
     end
 
     it 'returns cache key' do
-      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true, true])}")
-    end
-
-    context 'when the `use_marker_ranges` feature flag is disabled' do
-      before do
-        stub_feature_flags(use_marker_ranges: false)
-      end
-
-      it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, false, true])}")
-      end
+      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true])}")
     end
 
     context 'when the `diff_line_syntax_highlighting` feature flag is disabled' do
@@ -301,7 +291,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       end
 
       it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true, false])}")
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, false])}")
       end
     end
   end

@@ -56,6 +56,7 @@ RSpec.describe Nav::TopNavHelper do
         expected_primary = [
           { href: '/explore', icon: 'project', id: 'project', title: 'Projects' },
           { href: '/explore/groups', icon: 'group', id: 'groups', title: 'Groups' },
+          { href: '/explore/projects/topics', icon: 'labels', id: 'topics', title: 'Topics' },
           { href: '/explore/snippets', icon: 'snippet', id: 'snippets', title: 'Snippets' }
         ].map do |item|
           ::Gitlab::Nav::TopNavMenuItem.build(**item)
@@ -77,6 +78,12 @@ RSpec.describe Nav::TopNavHelper do
             id: 'groups-shortcut',
             title: 'Groups',
             css_class: 'dashboard-shortcuts-groups'
+          },
+          {
+            href: '/explore/projects/topics',
+            id: 'topics-shortcut',
+            title: 'Topics',
+            css_class: 'dashboard-shortcuts-topics'
           },
           {
             href: '/explore/snippets',
@@ -320,20 +327,6 @@ RSpec.describe Nav::TopNavHelper do
       context 'with milestones' do
         let(:with_milestones) { true }
 
-        it 'has expected :primary' do
-          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
-            title: 'Explore'
-          )
-          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            data: { **menu_data_tracking_attrs('milestones') },
-            href: '/dashboard/milestones',
-            icon: 'clock',
-            id: 'milestones',
-            title: 'Milestones'
-          )
-          expect(subject[:primary]).to eq([expected_header, expected_primary])
-        end
-
         it 'has expected :shortcuts' do
           expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'milestones-shortcut',
@@ -348,23 +341,6 @@ RSpec.describe Nav::TopNavHelper do
       context 'with snippets' do
         let(:with_snippets) { true }
 
-        it 'has expected :primary' do
-          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
-            title: 'Explore'
-          )
-          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            data: {
-              qa_selector: 'snippets_link',
-              **menu_data_tracking_attrs('snippets')
-            },
-            href: '/dashboard/snippets',
-            icon: 'snippet',
-            id: 'snippets',
-            title: 'Snippets'
-          )
-          expect(subject[:primary]).to eq([expected_header, expected_primary])
-        end
-
         it 'has expected :shortcuts' do
           expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'snippets-shortcut',
@@ -378,20 +354,6 @@ RSpec.describe Nav::TopNavHelper do
 
       context 'with activity' do
         let(:with_activity) { true }
-
-        it 'has expected :primary' do
-          expected_header = ::Gitlab::Nav::TopNavMenuHeader.build(
-            title: 'Explore'
-          )
-          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            data: { **menu_data_tracking_attrs('activity') },
-            href: '/dashboard/activity',
-            icon: 'history',
-            id: 'activity',
-            title: 'Activity'
-          )
-          expect(subject[:primary]).to eq([expected_header, expected_primary])
-        end
 
         it 'has expected :shortcuts' do
           expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
@@ -431,7 +393,7 @@ RSpec.describe Nav::TopNavHelper do
         it 'has leave_admin_mode as last :secondary item' do
           expected_leave_admin_mode_item = ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'leave_admin_mode',
-            title: 'Leave Admin Mode',
+            title: 'Leave admin mode',
             icon: 'lock-open',
             href: '/admin/session/destroy',
             data: { method: 'post', **menu_data_tracking_attrs('leave_admin_mode') }
@@ -447,11 +409,11 @@ RSpec.describe Nav::TopNavHelper do
           expected_enter_admin_mode_item = ::Gitlab::Nav::TopNavMenuItem.build(
             data: {
               qa_selector: 'menu_item_link',
-              qa_title: 'Enter Admin Mode',
+              qa_title: 'Enter admin mode',
               **menu_data_tracking_attrs('enter_admin_mode')
             },
             id: 'enter_admin_mode',
-            title: 'Enter Admin Mode',
+            title: 'Enter admin mode',
             icon: 'lock',
             href: '/admin/session/new'
           )

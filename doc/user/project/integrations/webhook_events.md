@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -271,6 +271,7 @@ Payload example:
     "human_time_estimate": null,
     "human_time_change": null,
     "weight": null,
+    "health_status": "at_risk",
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
     "state": "opened",
@@ -861,6 +862,7 @@ Payload example:
     "visibility_level":20,
     "path_with_namespace":"gitlabhq/gitlab-test",
     "default_branch":"master",
+    "ci_config_path":"",
     "homepage":"http://example.com/gitlabhq/gitlab-test",
     "url":"http://example.com/gitlabhq/gitlab-test.git",
     "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
@@ -885,7 +887,10 @@ Payload example:
     "title": "MS-Viewport",
     "created_at": "2013-12-03T17:23:34Z",
     "updated_at": "2013-12-03T17:23:34Z",
+    "last_edited_at": "2013-12-03T17:23:34Z",
+    "last_edited_by_id": 1,
     "milestone_id": null,
+    "state_id": 1,
     "state": "opened",
     "blocking_discussions_resolved": true,
     "work_in_progress": false,
@@ -893,6 +898,11 @@ Payload example:
     "merge_status": "unchecked",
     "target_project_id": 14,
     "description": "",
+    "total_time_spent": 1800,
+    "time_change": 30,
+    "human_total_time_spent": "30m",
+    "human_time_change": "30s",
+    "human_time_estimate": "30m",
     "url": "http://example.com/diaspora/merge_requests/1",
     "source": {
       "name":"Awesome Project",
@@ -929,6 +939,7 @@ Payload example:
     "last_commit": {
       "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "message": "fixed readme",
+      "title": "Update file README.md",
       "timestamp": "2012-01-03T23:36:29+02:00",
       "url": "http://example.com/awesome_space/awesome_project/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "author": {
@@ -997,7 +1008,15 @@ Payload example:
         "type": "ProjectLabel",
         "group_id": 41
       }]
-    }
+    },
+    "last_edited_at": {
+      "previous": null,
+      "current": "2023-03-15 00:00:10 UTC"
+    },
+    "last_edited_by_id": {
+      "previous": null,
+      "current": 3278533
+    },
   },
   "assignees": [
     {
@@ -1074,7 +1093,8 @@ Payload example:
     "message": "adding an awesome page to the wiki",
     "slug": "awesome",
     "url": "http://example.com/root/awesome-project/-/wikis/awesome",
-    "action": "create"
+    "action": "create",
+    "diff_url": "http://example.com/root/awesome-project/-/wikis/home/diff?version_id=78ee4a6705abfbff4f4132c6646dbaae9c8fb6ec"
   }
 }
 ```
@@ -1392,6 +1412,7 @@ Payload example:
   "build_started_at": null,
   "build_finished_at": null,
   "build_duration": null,
+  "build_queued_duration": 1095.588715, // duration in seconds
   "build_allow_failure": false,
   "build_failure_reason": "script_failure",
   "retries_count": 2,        // the second retry of this job
@@ -1487,6 +1508,7 @@ Payload example:
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
   "environment": "staging",
+  "environment_tier": "staging",
   "environment_slug": "staging",
   "environment_external_url": "https://staging.example.com",
   "project": {

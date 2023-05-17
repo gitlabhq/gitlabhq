@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Manage' do
     include Support::API
 
-    describe 'Jira integration', :jira, :orchestrated, :requires_admin, product_group: :integrations do
+    describe 'Jira integration', :jira, :orchestrated, :requires_admin, product_group: :import_and_integrate do
       let(:jira_project_key) { 'JITP' }
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

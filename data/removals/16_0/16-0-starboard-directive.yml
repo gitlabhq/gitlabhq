@@ -1,0 +1,19 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Starboard directive in the config for the GitLab agent for Kubernetes removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.4"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: gonzoyumo  # (required) GitLab username of the person reporting the removal
+  stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368828  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The GitLab operational container scanning feature no longer requires you to install Starboard. The `starboard:` directive in configuration files for the GitLab agent for Kubernetes has been removed. Use the `container_scanning:` directive instead.
+#
+# OPTIONAL FIELDS
+#
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

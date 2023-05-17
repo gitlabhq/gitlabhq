@@ -45,30 +45,35 @@ module SnippetsHelper
   def embedded_raw_snippet_button(snippet, blob)
     return if blob.empty? || blob.binary? || blob.stored_externally?
 
-    link_to(external_snippet_icon('doc-code'),
-            gitlab_raw_snippet_blob_url(snippet, blob.path),
-            class: 'gl-button btn btn-default',
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            title: 'Open raw')
+    link_to(
+      external_snippet_icon('doc-code'),
+      gitlab_raw_snippet_blob_url(snippet, blob.path),
+      class: 'gl-button btn btn-default',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      title: 'Open raw'
+    )
   end
 
   def embedded_snippet_download_button(snippet, blob)
-    link_to(external_snippet_icon('download'),
-            gitlab_raw_snippet_blob_url(snippet, blob.path, nil, inline: false),
-            class: 'gl-button btn btn-default',
-            target: '_blank',
-            title: 'Download',
-            rel: 'noopener noreferrer')
+    link_to(
+      external_snippet_icon('download'),
+      gitlab_raw_snippet_blob_url(snippet, blob.path, nil, inline: false),
+      class: 'gl-button btn btn-default',
+      target: '_blank',
+      title: 'Download',
+      rel: 'noopener noreferrer'
+    )
   end
 
   def embedded_copy_snippet_button(blob)
     return unless blob.rendered_as_text?(ignore_errors: false)
 
-    content_tag(:button,
-        class: 'gl-button btn btn-default copy-to-clipboard-btn',
-        title: 'Copy snippet contents',
-        onclick: "copyToClipboard('.blob-content[data-blob-id=\"#{blob.id}\"] > pre')"
+    content_tag(
+      :button,
+      class: 'gl-button btn btn-default copy-to-clipboard-btn',
+      title: 'Copy snippet contents',
+      onclick: "copyToClipboard('.blob-content[data-blob-id=\"#{blob.id}\"] > pre')"
     ) do
       external_snippet_icon('copy-to-clipboard')
     end

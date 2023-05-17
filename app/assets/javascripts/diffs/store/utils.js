@@ -19,6 +19,8 @@ import {
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
 
+const SHA1 = /\b([a-f0-9]{40})\b/;
+
 export const isAdded = (line) => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = (line) => ['old', 'old-nonewline'].includes(line.type);
 export const isUnchanged = (line) => !line.type;
@@ -556,3 +558,44 @@ export const allDiscussionWrappersExpanded = (diff) => {
 
   return discussionsExpanded;
 };
+
+export function isUrlHashNoteLink(urlHash = '') {
+  const id = urlHash.replace(/^#/, '');
+
+  return id.startsWith('note');
+}
+
+export function isUrlHashFileHeader(urlHash = '') {
+  const id = urlHash.replace(/^#/, '');
+
+  return id.startsWith('diff-content');
+}
+
+export function parseUrlHashAsFileHash(urlHash = '', currentDiffFileId = '') {
+  const isNoteLink = isUrlHashNoteLink(urlHash);
+  let id = urlHash.replace(/^#/, '');
+
+  if (isNoteLink && currentDiffFileId) {
+    id = currentDiffFileId;
+  } else if (isUrlHashFileHeader(urlHash)) {
+    id = id.replace('diff-content-', '');
+  } else if (!SHA1.test(id) || isNoteLink) {
+    id = null;
+  }
+
+  return id;
+}
+
+export function markTreeEntriesLoaded({ priorEntries, loadedFiles }) {
+  const newEntries = { ...priorEntries };
+
+  loadedFiles.forEach((newFile) => {
+    const entry = newEntries[newFile.new_path];
+
+    if (entry) {
+      entry.diffLoaded = true;
+    }
+  });
+
+  return newEntries;
+}

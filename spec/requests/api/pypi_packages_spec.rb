@@ -14,9 +14,17 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_pypi_user' } }
 
+  let(:snowplow_gitlab_standard_context) { snowplow_context }
   let(:headers) { {} }
+
+  def snowplow_context(user_role: :developer)
+    if user_role == :anonymous
+      { project: project, namespace: project.namespace, property: 'i_package_pypi_user' }
+    else
+      { project: project, namespace: project.namespace, property: 'i_package_pypi_user', user: user }
+    end
+  end
 
   context 'simple index API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
@@ -26,7 +34,6 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
     describe 'GET /api/v4/groups/:id/-/packages/pypi/simple' do
       let(:url) { "/groups/#{group.id}/-/packages/pypi/simple" }
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_pypi_user' } }
 
       it_behaves_like 'pypi simple index API endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
@@ -82,13 +89,13 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
   context 'simple package API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
-    let(:snowplow_gitlab_standard_context) { { project: nil, namespace: group, property: 'i_package_pypi_user' } }
 
     subject { get api(url), headers: headers }
 
     describe 'GET /api/v4/groups/:id/-/packages/pypi/simple/:package_name' do
       let(:package_name) { package.name }
       let(:url) { "/groups/#{group.id}/-/packages/pypi/simple/#{package_name}" }
+      let(:snowplow_context) { { project: nil, namespace: project.namespace, property: 'i_package_pypi_user' } }
 
       it_behaves_like 'pypi simple API endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
@@ -126,7 +133,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
       let(:package_name) { package.name }
       let(:url) { "/projects/#{project.id}/packages/pypi/simple/#{package_name}" }
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_pypi_user' } }
+      let(:snowplow_context) { { project: project, namespace: project.namespace, property: 'i_package_pypi_user' } }
 
       it_behaves_like 'pypi simple API endpoint'
       it_behaves_like 'rejects PyPI access with unknown project id'
@@ -242,6 +249,13 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
         let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:snowplow_gitlab_standard_context) do
+          if user_role == :anonymous || (visibility_level == :public && !user_token)
+            { project: project, namespace: project.namespace, property: 'i_package_pypi_user' }
+          else
+            { project: project, namespace: project.namespace, property: 'i_package_pypi_user', user: user }
+          end
+        end
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
@@ -378,6 +392,14 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
   context 'file download endpoint' do
     let_it_be(:package_name) { 'Dummy-Package' }
     let_it_be(:package) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
+
+    let(:snowplow_gitlab_standard_context) do
+      if user_role == :anonymous || (visibility_level == :public && !user_token)
+        { project: project, namespace: project.namespace, property: 'i_package_pypi_user' }
+      else
+        { project: project, namespace: project.namespace, property: 'i_package_pypi_user', user: user }
+      end
+    end
 
     subject { get api(url), headers: headers }
 

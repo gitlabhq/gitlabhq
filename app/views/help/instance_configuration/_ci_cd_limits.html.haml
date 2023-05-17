@@ -19,34 +19,30 @@
             %th= title.to_s.humanize
       %tbody
         %tr
-          %td= s_('AdminSettings|Maximum number of jobs in a single pipeline')
+          %td= plan_limit_setting_description(:ci_pipeline_size)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_pipeline_size])
         %tr
-          %td= s_('AdminSettings|Total number of jobs in currently active pipelines')
+          %td= plan_limit_setting_description(:ci_active_jobs)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_active_jobs])
         %tr
-          %td= s_('AdminSettings|Maximum number of active pipelines per project')
-          - ci_cd_limits.each_value do |limits|
-            %td= instance_configuration_disabled_cell_html(limits[:ci_active_pipelines])
-        %tr
-          %td= s_('AdminSettings|Maximum number of pipeline subscriptions to and from a project')
+          %td= plan_limit_setting_description(:ci_project_subscriptions)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_project_subscriptions])
         %tr
-          %td= s_('AdminSettings|Maximum number of pipeline schedules')
+          %td= plan_limit_setting_description(:ci_pipeline_schedules)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_pipeline_schedules])
         %tr
-          %td= s_('AdminSettings|Maximum number of DAG dependencies that a job can have')
+          %td= plan_limit_setting_description(:ci_needs_size_limit)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_needs_size_limit])
         %tr
-          %td= s_('AdminSettings|Maximum number of runners registered per group')
+          %td= plan_limit_setting_description(:ci_registered_group_runners)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_registered_group_runners])
         %tr
-          %td= s_('AdminSettings|Maximum number of runners registered per project')
+          %td= plan_limit_setting_description(:ci_registered_project_runners)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_registered_project_runners])

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::StageMethods do
+RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
   let_it_be(:project2) { create(:project, :import_canceled) }
 

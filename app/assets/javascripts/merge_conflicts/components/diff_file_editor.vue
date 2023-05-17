@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapActions } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { INTERACTIVE_RESOLVE_MODE } from '../constants';

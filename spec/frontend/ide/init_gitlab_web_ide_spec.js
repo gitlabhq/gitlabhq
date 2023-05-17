@@ -20,12 +20,12 @@ const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
 const TEST_PROJECT_PATH = 'group1/project1';
 const TEST_BRANCH_NAME = '12345-foo-patch';
-const TEST_GITLAB_URL = 'https://test-gitlab/';
 const TEST_USER_PREFERENCES_PATH = '/user/preferences';
 const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/public/path';
 const TEST_FILE_PATH = 'foo/README.md';
 const TEST_MR_ID = '7';
 const TEST_MR_TARGET_PROJECT = 'gitlab-org/the-real-gitlab';
+const TEST_SIGN_IN_PATH = 'sign-in';
 const TEST_FORK_INFO = { fork_path: '/forky' };
 const TEST_IDE_REMOTE_PATH = '/-/ide/remote/:remote_host/:remote_path';
 const TEST_START_REMOTE_PARAMS = {
@@ -56,6 +56,7 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.editorFontSrcUrl = TEST_EDITOR_FONT_SRC_URL;
     el.dataset.editorFontFormat = TEST_EDITOR_FONT_FORMAT;
     el.dataset.editorFontFamily = TEST_EDITOR_FONT_FAMILY;
+    el.dataset.signInPath = TEST_SIGN_IN_PATH;
 
     document.body.append(el);
   };
@@ -69,7 +70,6 @@ describe('ide/init_gitlab_web_ide', () => {
 
   beforeEach(() => {
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
-    window.gon.gitlab_url = TEST_GITLAB_URL;
 
     confirmAction.mockImplementation(
       () =>
@@ -100,7 +100,7 @@ describe('ide/init_gitlab_web_ide', () => {
         mrId: TEST_MR_ID,
         mrTargetProject: '',
         forkInfo: null,
-        gitlabUrl: TEST_GITLAB_URL,
+        gitlabUrl: TEST_HOST,
         nonce: TEST_NONCE,
         httpHeaders: {
           'mock-csrf-header': 'mock-csrf-token',
@@ -109,6 +109,7 @@ describe('ide/init_gitlab_web_ide', () => {
         links: {
           userPreferences: TEST_USER_PREFERENCES_PATH,
           feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
+          signIn: TEST_SIGN_IN_PATH,
         },
         editorFont: {
           srcUrl: TEST_EDITOR_FONT_SRC_URL,

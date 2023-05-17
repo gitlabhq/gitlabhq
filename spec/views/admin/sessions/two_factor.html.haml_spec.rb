@@ -29,14 +29,10 @@ RSpec.describe 'admin/sessions/two_factor.html.haml' do
     end
   end
 
-  context 'user has u2f active' do
-    let(:user) { create(:admin, :two_factor_via_u2f) }
+  context 'user has WebAuthn active' do
+    let(:user) { create(:admin, :two_factor_via_webauthn) }
 
-    before do
-      stub_feature_flags(webauthn: false)
-    end
-
-    it 'shows enter u2f form' do
+    it 'shows enter WebAuthn form' do
       render
 
       expect(rendered).to have_css('#js-login-2fa-device.btn')

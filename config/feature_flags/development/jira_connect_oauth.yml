@@ -1,8 +1,0 @@
----
-name: jira_connect_oauth
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355048
-milestone: '14.9'
-type: development
-group: group::integrations
-default_enabled: false

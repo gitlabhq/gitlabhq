@@ -17,11 +17,17 @@
     = render "projects/pipelines/info", commit: @pipeline.commit
 
   - if pipeline_has_errors
-    .bs-callout.bs-callout-danger
-      %h4= _('Unable to create pipeline')
-      %ul
-        - @pipeline.yaml_errors.split("\n").each do |error|
-          %li= error
+    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
+      variant: :danger,
+      dismissible: false,
+      alert_options: { class: 'gl-mb-5' }) do |c|
+      - c.with_body do
+        %ul
+          - @pipeline.yaml_errors.split("\n").each do |error|
+            %li= error
+        - if can_view_pipeline_editor?(@project)
+          = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project), variant: :confirm) do
+            = s_("Pipelines|Go to the pipeline editor")
 
   - else
     #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }

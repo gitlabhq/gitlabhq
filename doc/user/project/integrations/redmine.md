@@ -1,13 +1,12 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Redmine **(FREE)**
 
-Use [Redmine](https://www.redmine.org/) as the issue tracker.
-
+You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

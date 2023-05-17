@@ -71,7 +71,6 @@ module Gitlab
         strong_memoize(:redis_key) do
           options = [
             diff_options,
-            Feature.enabled?(:use_marker_ranges, diffable.project),
             Feature.enabled?(:diff_line_syntax_highlighting, diffable.project)
           ]
           options_for_key = OpenSSL::Digest::SHA256.hexdigest(options.join)

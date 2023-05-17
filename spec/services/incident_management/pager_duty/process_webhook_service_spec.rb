@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
+RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService, feature_category: :incident_management do
   let_it_be(:project, reload: true) { create(:project) }
 
   describe '#execute' do

@@ -1,6 +1,13 @@
 #!/usr/bin/make -f
 %:
 	dh $@
+
 override_dh_gencontrol:
 	dh_gencontrol -psample-dev -- -v'1.2.3~binary'
 	dh_gencontrol --remaining-packages
+
+override_dh_builddeb:
+	# Hack to mimic Ubuntu ddebs
+	dh_builddeb
+	mv ../sample-ddeb_1.2.3~alpha2_amd64.deb ../sample-ddeb_1.2.3~alpha2_amd64.ddeb
+	sed -i 's/sample-ddeb_1.2.3~alpha2_amd64.deb libs optional/sample-ddeb_1.2.3~alpha2_amd64.ddeb libs optional/' debian/files

@@ -29,8 +29,6 @@ module Types
           object.conan_file_metadatum
         when 'helm'
           object.helm_file_metadatum
-        else
-          nil
         end
       end
     end

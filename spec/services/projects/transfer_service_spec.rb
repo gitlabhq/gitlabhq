@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TransferService do
+RSpec.describe Projects::TransferService, feature_category: :projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
@@ -20,12 +20,32 @@ RSpec.describe Projects::TransferService do
 
     subject(:transfer_service) { described_class.new(project, user) }
 
-    let!(:package) { create(:npm_package, project: project) }
+    let!(:package) { create(:npm_package, project: project, name: "@testscope/test") }
 
     context 'with a root namespace change' do
+      it 'allow the transfer' do
+        expect(transfer_service.execute(group)).to be true
+        expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with pending destruction package' do
+      before do
+        package.pending_destruction!
+      end
+
+      it 'allow the transfer' do
+        expect(transfer_service.execute(group)).to be true
+        expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with namespaced packages present' do
+      let!(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
+
       it 'does not allow the transfer' do
         expect(transfer_service.execute(group)).to be false
-        expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if project has NPM packages")
+        expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
       end
     end
 
@@ -39,7 +59,7 @@ RSpec.describe Projects::TransferService do
         other_group.add_owner(user)
       end
 
-      it 'does allow the transfer' do
+      it 'allow the transfer' do
         expect(transfer_service.execute(other_group)).to be true
         expect(project.errors[:new_namespace]).to be_empty
       end
@@ -667,10 +687,11 @@ RSpec.describe Projects::TransferService do
       user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour,
-                user_ids,
-                batch_delay: 30.seconds, batch_size: 100)
+        receive(:bulk_perform_in).with(
+          1.hour,
+          user_ids,
+          batch_delay: 30.seconds, batch_size: 100
+        )
       )
 
       subject
@@ -694,10 +715,15 @@ RSpec.describe Projects::TransferService do
       project.design_repository
     end
 
+    def clear_design_repo_memoization
+      project.design_management_repository.clear_memoization(:repository)
+      project.clear_memoization(:design_repository)
+    end
+
     it 'does not create a design repository' do
       expect(subject.execute(group)).to be true
 
-      project.clear_memoization(:design_repository)
+      clear_design_repo_memoization
 
       expect(design_repository.exists?).to be false
     end
@@ -713,7 +739,7 @@ RSpec.describe Projects::TransferService do
         it 'moves the repository' do
           expect(subject.execute(group)).to be true
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: new_full_path,
@@ -725,7 +751,7 @@ RSpec.describe Projects::TransferService do
           allow(subject).to receive(:execute_system_hooks).and_raise('foo')
           expect { subject.execute(group) }.to raise_error('foo')
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_full_path,
@@ -742,7 +768,7 @@ RSpec.describe Projects::TransferService do
 
           expect(subject.execute(group)).to be true
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_disk_path,
@@ -756,7 +782,7 @@ RSpec.describe Projects::TransferService do
           allow(subject).to receive(:execute_system_hooks).and_raise('foo')
           expect { subject.execute(group) }.to raise_error('foo')
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_disk_path,

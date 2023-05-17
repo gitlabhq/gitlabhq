@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.issuableType === IssuableType.MergeRequest;
+      return this.issuableType === TYPE_MERGE_REQUEST;
     },
     cannotMerge() {
       const canMerge = this.user.mergeRequestInteraction?.canMerge || this.user.can_merge;

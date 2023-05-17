@@ -76,7 +76,7 @@ RSpec.shared_examples 'returns packages' do |container_type, user_type|
       subject
 
       expect(json_response.length).to eq(2)
-      expect(json_response.map { |package| package['id'] }).to contain_exactly(package1.id, package2.id)
+      expect(json_response.pluck('id')).to contain_exactly(package1.id, package2.id)
     end
   end
 end
@@ -123,7 +123,7 @@ RSpec.shared_examples 'returns packages with subgroups' do |container_type, user
       subject
 
       expect(json_response.length).to eq(3)
-      expect(json_response.map { |package| package['id'] }).to contain_exactly(package1.id, package2.id, package3.id)
+      expect(json_response.pluck('id')).to contain_exactly(package1.id, package2.id, package3.id)
     end
   end
 end
@@ -138,7 +138,7 @@ RSpec.shared_examples 'package sorting' do |order_by|
       it 'returns the sorted packages' do
         subject
 
-        expect(json_response.map { |package| package['id'] }).to eq(packages.map(&:id))
+        expect(json_response.pluck('id')).to eq(packages.map(&:id))
       end
     end
 
@@ -148,7 +148,7 @@ RSpec.shared_examples 'package sorting' do |order_by|
       it 'returns the sorted packages' do
         subject
 
-        expect(json_response.map { |package| package['id'] }).to eq(packages.reverse.map(&:id))
+        expect(json_response.pluck('id')).to eq(packages.reverse.map(&:id))
       end
     end
   end
@@ -225,7 +225,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
         subject
 
         expect(json_response.length).to eq(1)
-        expect(json_response.map { |package| package['package_type'] }).to contain_exactly(package_type)
+        expect(json_response.pluck('package_type')).to contain_exactly(package_type)
       end
     end
   end
@@ -253,7 +253,7 @@ RSpec.shared_examples 'with versionless packages' do
       it 'does not return the package' do
         subject
 
-        expect(json_response.map { |package| package['id'] }).not_to include(versionless_package.id)
+        expect(json_response.pluck('id')).not_to include(versionless_package.id)
       end
     end
 
@@ -268,7 +268,7 @@ RSpec.shared_examples 'with versionless packages' do
             it 'returns the package' do
               subject
 
-              expect(json_response.map { |package| package['id'] }).to include(versionless_package.id)
+              expect(json_response.pluck('id')).to include(versionless_package.id)
             end
           end
         end
@@ -295,7 +295,7 @@ RSpec.shared_examples 'with status param' do
       it 'does not return the package' do
         subject
 
-        expect(json_response.map { |package| package['id'] }).not_to include(hidden_package.id)
+        expect(json_response.pluck('id')).not_to include(hidden_package.id)
       end
     end
 
@@ -309,7 +309,7 @@ RSpec.shared_examples 'with status param' do
       it 'returns the package' do
         subject
 
-        expect(json_response.map { |package| package['id'] }).to include(hidden_package.id)
+        expect(json_response.pluck('id')).to include(hidden_package.id)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::Destroy::ConfidentialIssueService do
+RSpec.describe Todos::Destroy::ConfidentialIssueService, feature_category: :team_planning do
   let(:project)        { create(:project, :public) }
   let(:user)           { create(:user) }
   let(:author)         { create(:user) }

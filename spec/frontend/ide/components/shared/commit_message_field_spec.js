@@ -23,10 +23,6 @@ describe('CommitMessageField', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTextArea = () => wrapper.find('textarea');
   const findHighlights = () => wrapper.findByTestId('highlights');
   const findHighlightsText = () => wrapper.findByTestId('highlights-text');
@@ -54,7 +50,7 @@ describe('CommitMessageField', () => {
       await nextTick();
     });
 
-    it('is added on textarea focus', async () => {
+    it('is added on textarea focus', () => {
       expect(wrapper.attributes('class')).toEqual(
         expect.stringContaining('gl-outline-none! gl-focus-ring-border-1-gray-900!'),
       );

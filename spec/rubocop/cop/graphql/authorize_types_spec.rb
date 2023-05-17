@@ -17,6 +17,28 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
     TYPE
   end
 
+  it 'adds add an offense when authorize has no arguments' do
+    expect_offense(<<~TYPE.strip)
+      module Types
+        class AType < SuperClassWithFields
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
+          authorize
+        end
+      end
+    TYPE
+  end
+
+  it 'adds add an offense when authorize is empty' do
+    expect_offense(<<~TYPE.strip)
+      module Types
+        class AType < SuperClassWithFields
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
+          authorize []
+        end
+      end
+    TYPE
+  end
+
   it 'does not add an offense for classes that have an authorize call' do
     expect_no_offenses(<<~TYPE.strip)
       module Types

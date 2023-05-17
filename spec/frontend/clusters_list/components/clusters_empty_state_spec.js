@@ -21,10 +21,6 @@ describe('ClustersEmptyStateComponent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the help text is not provided', () => {
     beforeEach(() => {
       createWrapper();

@@ -1,14 +1,28 @@
-%h1.page-title.gl-font-size-h-display
-  = _("Authorization required")
-%main{ :role => "main" }
-  %p.h4
-    = html_escape(_("Authorize %{user} to use your account?")) % { user: tag.strong(@chat_name_params[:chat_name]) }
+- @hide_search_settings = true
 
-  %hr
-  .actions
-    = form_tag profile_chat_names_path, method: :post do
-      = hidden_field_tag :token, @chat_name_token.token
-      = submit_tag _("Authorize"), class: "gl-button btn btn-confirm wide float-left"
-    = form_tag deny_profile_chat_names_path, method: :delete do
-      = hidden_field_tag :token, @chat_name_token.token
-      = submit_tag _("Deny"), class: "gl-button btn btn-danger gl-ml-3"
+%main{ role: 'main' }
+  .gl-max-w-80.gl-mx-auto.gl-mt-6
+    = render Pajamas::CardComponent.new do |c|
+      - c.header do
+        %h4.gl-m-0= sprintf(s_('Integrations|Authorize %{integration_name} (%{user}) to use your account?'), { user: @chat_name_params[:chat_name], integration_name: @integration_name })
+      - c.body do
+        %p
+          = sprintf(s_('Integrations|An application called %{integration_name} is requesting access to your GitLab account. This application was created by GitLab Inc.'), { integration_name: @integration_name })
+        %p
+          = _('This application will be able to:')
+          %ul
+            %li= s_('SlackIntegration|Create and read issue data and comments.')
+            %li= s_('SlackIntegration|Perform deployments.')
+            %li= s_('SlackIntegration|Run ChatOps jobs.')
+        %p.gl-mb-0
+          = s_("SlackIntegration|You don't have to reauthorize this application if the permission scope changes in future releases.")
+      - c.footer do
+        .gl-display-flex
+          = form_tag profile_chat_names_path, method: :post do
+            = hidden_field_tag :token, @chat_name_token.token
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger) do
+              = _('Authorize')
+          = form_tag deny_profile_chat_names_path, method: :delete do
+            = hidden_field_tag :token, @chat_name_token.token
+            = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-ml-3' }) do
+              = _('Deny')

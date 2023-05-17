@@ -57,7 +57,7 @@ module MergeRequests
     def build_context_commit_rows(merge_request_id, commits)
       commits.map.with_index do |commit, index|
         # generate context commit information for given commit
-        commit_hash = commit.to_hash.except(:parent_ids)
+        commit_hash = commit.to_hash.except(:parent_ids, :referenced_by)
         sha = Gitlab::Database::ShaAttribute.serialize(commit_hash.delete(:id))
         commit_hash.merge(
           merge_request_id: merge_request_id,
@@ -75,7 +75,7 @@ module MergeRequests
       diff_order = 0
 
       commits.flat_map.with_index do |commit, index|
-        commit_hash = commit.to_hash.except(:parent_ids)
+        commit_hash = commit.to_hash.except(:parent_ids, :referenced_by)
         sha = Gitlab::Database::ShaAttribute.serialize(commit_hash.delete(:id))
         # generate context commit diff information for given commit
         diffs = commit.diffs

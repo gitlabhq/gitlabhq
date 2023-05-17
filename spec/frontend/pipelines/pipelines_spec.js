@@ -11,7 +11,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
@@ -25,7 +25,7 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 
 import { stageReply, users, mockSearch, branches } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const mockProjectPath = 'twitter/flight';
 const mockProjectId = '21';
@@ -42,7 +42,7 @@ describe('Pipelines', () => {
   let trackingSpy;
 
   const paths = {
-    emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
+    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
     ciLintPath: '/ci/lint',
@@ -53,7 +53,7 @@ describe('Pipelines', () => {
   };
 
   const noPermissions = {
-    emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
+    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
   };
@@ -114,7 +114,6 @@ describe('Pipelines', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.reset();
     window.history.pushState.mockReset();
   });
@@ -246,7 +245,7 @@ describe('Pipelines', () => {
             await waitForPromises();
           });
 
-          it('should filter pipelines', async () => {
+          it('should filter pipelines', () => {
             expect(findPipelinesTable().exists()).toBe(true);
 
             expect(findPipelineUrlLinks()).toHaveLength(1);
@@ -288,7 +287,7 @@ describe('Pipelines', () => {
             await waitForPromises();
           });
 
-          it('should filter pipelines', async () => {
+          it('should filter pipelines', () => {
             expect(findEmptyState().text()).toBe('There are currently no pipelines.');
           });
 
@@ -331,11 +330,11 @@ describe('Pipelines', () => {
           await waitForPromises();
         });
 
-        it('requests data with query params on filter submit', async () => {
+        it('requests data with query params on filter submit', () => {
           expect(mock.history.get[1].params).toEqual(expectedParams);
         });
 
-        it('renders filtered pipelines', async () => {
+        it('renders filtered pipelines', () => {
           expect(findPipelineUrlLinks()).toHaveLength(1);
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.id}`);
         });
@@ -357,7 +356,7 @@ describe('Pipelines', () => {
           await waitForPromises();
         });
 
-        it('requests data with query params on filter submit', async () => {
+        it('requests data with query params on filter submit', () => {
           expect(mock.history.get[1].params).toEqual({ page: '1', scope: 'all' });
         });
 
@@ -517,7 +516,7 @@ describe('Pipelines', () => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
 
-        it('is loading after a time', async () => {
+        it('is loading after a time', () => {
           expect(findPipelineUrlLinks()).toHaveLength(mockPipelinesIds.length);
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockPipelinesIds[0]}`);
           expect(findPipelineUrlLinks().at(1).text()).toBe(`#${mockPipelinesIds[1]}`);
@@ -728,7 +727,7 @@ describe('Pipelines', () => {
   });
 
   describe('when pipelines cannot be loaded', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mock.onGet(mockPipelinesEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
     });
 
@@ -751,8 +750,9 @@ describe('Pipelines', () => {
       });
 
       it('shows error state', () => {
-        expect(findEmptyState().text()).toBe(
-          'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
+        expect(findEmptyState().props('title')).toBe('There was an error fetching the pipelines.');
+        expect(findEmptyState().props('description')).toBe(
+          'Try again in a few moments or contact your support team.',
         );
       });
     });
@@ -776,8 +776,9 @@ describe('Pipelines', () => {
       });
 
       it('shows error state', () => {
-        expect(findEmptyState().text()).toBe(
-          'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
+        expect(findEmptyState().props('title')).toBe('There was an error fetching the pipelines.');
+        expect(findEmptyState().props('description')).toBe(
+          'Try again in a few moments or contact your support team.',
         );
       });
     });

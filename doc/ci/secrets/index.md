@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
@@ -23,14 +23,7 @@ GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
 first supported provider, and [KV-V2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)
 as the first supported secrets engine.
 
-By default, GitLab authenticates using Vault's
-[JSON Web Token (JWT) authentication method](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication), using
-the [JSON Web Token](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) (`CI_JOB_JWT`).
-
-[ID tokens](../yaml/index.md#id_tokens) is the preferred secure way to authenticate with Vault,
-because ID tokens are defined per-job. GitLab can also authenticate with Vault by using the `CI_JOB_JWT`,
-but that token is provided to every job, which can be a security risk.
-
+Use [ID tokens](../yaml/index.md#id_tokens) to [authenticate with Vault](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication).
 The [Authenticating and Reading Secrets With HashiCorp Vault](../examples/authenticating-with-hashicorp-vault/index.md)
 tutorial has more details about authenticating with ID tokens.
 
@@ -40,7 +33,7 @@ can use [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
 The flow for using GitLab with HashiCorp Vault
 is summarized by this diagram:
 
-![Flow between GitLab and HashiCorp](../img/gitlab_vault_workflow_v13_4.png "How GitLab CI_JOB_JWT works with HashiCorp Vault")
+![Flow between GitLab and HashiCorp](../img/gitlab_vault_workflow_v13_4.png "How GitLab authenticates with HashiCorp Vault")
 
 1. Configure your vault and secrets.
 1. Generate your JWT and provide it to your CI job.
@@ -60,7 +53,7 @@ and supports multiple secrets engines.
 
 To configure your Vault server:
 
-1. Ensure your Vault server is running on version 1.2.0 or higher.
+1. Ensure your Vault server is running on version 1.2.0 or later.
 1. Enable the authentication method by running these commands. They provide your Vault
    server the [JSON Web Key Set](https://www.rfc-editor.org/rfc/rfc7517) (JWKS) endpoint for your GitLab instance, so Vault
    can fetch the public signing key and verify the JSON Web Token (JWT) when authenticating:

@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import MergeRequest from '~/merge_request';
 import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
@@ -137,7 +137,12 @@ export default {
 </script>
 
 <template>
-  <state-container :mr="mr" status="failed">
+  <state-container
+    status="failed"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span class="gl-ml-0! gl-text-body! gl-flex-grow-1">
       <bold-text :message="$options.i18n.removeDraftStatus" />
     </span>

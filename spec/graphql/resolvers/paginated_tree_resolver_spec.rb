@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::PaginatedTreeResolver do
+RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -54,6 +54,16 @@ RSpec.describe Resolvers::PaginatedTreeResolver do
     context 'when repository does not exist' do
       before do
         allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it 'returns nil' do
+        is_expected.to be(nil)
+      end
+    end
+
+    context 'when repository is empty' do
+      before do
+        allow(repository).to receive(:empty?).and_return(true)
       end
 
       it 'returns nil' do

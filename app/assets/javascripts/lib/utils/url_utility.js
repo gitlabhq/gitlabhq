@@ -5,8 +5,11 @@ const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 const SHA_REGEX = /[\da-f]{40}/gi;
 
+// GitLab default domain (override in jh)
+export const DOMAIN = 'gitlab.com';
+
 // About GitLab default host (overwrite in jh)
-export const PROMO_HOST = 'about.gitlab.com';
+export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 
 // About Gitlab default url (overwrite in jh)
 export const PROMO_URL = `https://${PROMO_HOST}`;
@@ -269,6 +272,11 @@ export const setUrlFragment = (url, fragment) => {
   return `${rootUrl}#${encodedFragment}`;
 };
 
+/**
+ * Navigates to a URL
+ * @param {*} url - url to navigate to
+ * @param {*} external - if true, open a new page or tab
+ */
 export function visitUrl(url, external = false) {
   if (external) {
     // Simulate `target="_blank" rel="noopener noreferrer"`
@@ -281,6 +289,19 @@ export function visitUrl(url, external = false) {
   }
 }
 
+export function refreshCurrentPage() {
+  visitUrl(window.location.href);
+}
+
+/**
+ * Navigates to a URL
+ * @deprecated Use visitUrl from ~/lib/utils/url_utility.js instead
+ * @param {*} url
+ */
+export function redirectTo(url) {
+  return window.location.assign(url);
+}
+
 export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
   if (win.history) {
     if (replace) {
@@ -289,14 +310,6 @@ export function updateHistory({ state = {}, title = '', url, replace = false, wi
       win.history.pushState(state, title, url);
     }
   }
-}
-
-export function refreshCurrentPage() {
-  visitUrl(window.location.href);
-}
-
-export function redirectTo(url) {
-  return window.location.assign(url);
 }
 
 export const escapeFileUrl = (fileUrl) => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
@@ -315,15 +328,6 @@ export function webIDEUrl(route = undefined) {
 export function getBaseURL() {
   const { protocol, host } = window.location;
   return `${protocol}//${host}`;
-}
-
-/**
- * Takes a URL and returns content from the start until the final '/'
- *
- * @param {String} url - full url, including protocol and host
- */
-export function stripFinalUrlSegment(url) {
-  return new URL('.', url).href;
 }
 
 /**

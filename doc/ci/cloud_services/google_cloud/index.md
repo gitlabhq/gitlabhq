@@ -1,13 +1,14 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure OpenID Connect with GCP Workload Identity Federation **(FREE)**
 
 WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.
+`CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and is scheduled to be removed in GitLab 16.5. Use [ID tokens](../../yaml/index.md#id_tokens) instead.
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration
@@ -30,7 +31,7 @@ To complete this tutorial:
 
 ## Create the Google Cloud Workload Identity Pool
 
-[Create a new Google Cloud Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#oidc) with the following options:
+[Create a new Google Cloud Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#create_the_workload_identity_pool_and_provider) with the following options:
 
 - **Name**: Human-friendly name for the Workload Identity Pool, such as `GitLab`.
 - **Pool ID**: Unique ID in the Google Cloud project for the Workload Identity Pool,
@@ -80,7 +81,7 @@ However, you have no permissions on Google Cloud (_authorization_).
 
 To grant your GitLab CI/CD job permissions on Google Cloud, you must:
 
-1. [Create a Google Cloud Service Account](https://www.google.com/search?q=google+cloud+create+service+account).
+1. [Create a Google Cloud Service Account](https://cloud.google.com/iam/docs/service-accounts-create).
    You can use whatever name and ID you prefer.
 1. [Grant IAM permissions](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to your
    service account on Google Cloud resources. These permissions vary significantly based on

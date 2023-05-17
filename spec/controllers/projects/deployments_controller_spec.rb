@@ -210,8 +210,6 @@ RSpec.describe Projects::DeploymentsController do
   end
 
   def deployment_params(opts = {})
-    opts.reverse_merge(namespace_id: project.namespace,
-                       project_id: project,
-                       environment_id: environment.id)
+    opts.reverse_merge(namespace_id: project.namespace, project_id: project, environment_id: environment.id)
   end
 end

@@ -4,7 +4,7 @@
   = render Pajamas::AlertComponent.new(variant: :tip,
     alert_options: { class: 'gl-my-5' },
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
 
 .top-area

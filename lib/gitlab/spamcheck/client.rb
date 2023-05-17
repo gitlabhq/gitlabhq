@@ -3,18 +3,12 @@ require 'spamcheck'
 
 module Gitlab
   module Spamcheck
+    Error = Class.new(StandardError)
+
     class Client
       include ::Spam::SpamConstants
 
       DEFAULT_TIMEOUT_SECS = 2
-
-      VERDICT_MAPPING = {
-        ::Spamcheck::SpamVerdict::Verdict::ALLOW => ALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW => CONDITIONAL_ALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::DISALLOW => DISALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::BLOCK => BLOCK_USER,
-        ::Spamcheck::SpamVerdict::Verdict::NOOP => NOOP
-      }.freeze
 
       ACTION_MAPPING = {
         create: ::Spamcheck::Action::CREATE,
@@ -40,8 +34,9 @@ module Gitlab
         pb, grpc_method = build_protobuf(**protobuf_args)
         response = grpc_method.call(pb, metadata: metadata)
 
-        verdict = convert_verdict_to_gitlab_constant(response.verdict)
-        [verdict, response.extra_attributes.to_h, response.error]
+        raise Error, response.error unless response.error.blank?
+
+        Result.new(response)
       end
 
       private
@@ -53,19 +48,16 @@ module Gitlab
         when Snippet
           [::Spamcheck::Snippet, grpc_client.method(:check_for_spam_snippet)]
         else
-          raise ArgumentError, "Not a spammable type: #{spammable.class.name}"
+          [::Spamcheck::Generic, grpc_client.method(:check_for_spam_generic)]
         end
-      end
-
-      def convert_verdict_to_gitlab_constant(verdict)
-        VERDICT_MAPPING.fetch(::Spamcheck::SpamVerdict::Verdict.resolve(verdict), verdict)
       end
 
       def build_protobuf(spammable:, user:, context:, extra_features:)
         protobuf_class, grpc_method = get_spammable_mappings(spammable)
         pb = protobuf_class.new(**extra_features)
-        pb.title = spammable.spam_title || ''
-        pb.description = spammable.spam_description || ''
+        pb.title = spammable.spam_title || '' if pb.respond_to?(:title)
+        pb.description = spammable.spam_description || '' if pb.respond_to?(:description)
+        pb.text = spammable.spammable_text || '' if pb.respond_to?(:text)
         pb.created_at = convert_to_pb_timestamp(spammable.created_at) if spammable.created_at
         pb.updated_at = convert_to_pb_timestamp(spammable.updated_at) if spammable.updated_at
         pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)
@@ -82,8 +74,10 @@ module Gitlab
       def build_user_protobuf(user)
         user_pb = ::Spamcheck::User.new
         user_pb.username = user.username
+        user_pb.id = user.id
         user_pb.org = user.organization || ''
         user_pb.created_at = convert_to_pb_timestamp(user.created_at)
+        user_pb.abuse_metadata = Google::Protobuf::Map.new(:string, :float, user.abuse_metadata)
 
         user_pb.emails << build_email(user.email, user.confirmed?)
 

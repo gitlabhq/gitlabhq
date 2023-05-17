@@ -1,13 +1,13 @@
 import { GlButton, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Modal from '~/ide/components/new_dropdown/modal.vue';
 import { createStore } from '~/ide/stores';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createEntriesFromPaths } from '../../helpers';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const NEW_NAME = 'babar';
 
@@ -79,7 +79,6 @@ describe('new file modal component', () => {
 
   afterEach(() => {
     store = null;
-    wrapper.destroy();
     document.body.innerHTML = '';
   });
 
@@ -94,11 +93,11 @@ describe('new file modal component', () => {
     it('renders modal', () => {
       expect(findGlModal().props()).toMatchObject({
         actionCancel: {
-          attributes: [{ variant: 'default' }],
+          attributes: { variant: 'default' },
           text: 'Cancel',
         },
         actionPrimary: {
-          attributes: [{ variant: 'confirm' }],
+          attributes: { variant: 'confirm' },
           text: 'Create file',
         },
         actionSecondary: null,
@@ -170,7 +169,7 @@ describe('new file modal component', () => {
         expect(findGlModal().props()).toMatchObject({
           title: modalTitle,
           actionPrimary: {
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
             text: btnTitle,
           },
         });
@@ -298,7 +297,7 @@ describe('new file modal component', () => {
       expect(findGlModal().props()).toMatchObject({
         title,
         actionPrimary: {
-          attributes: [{ variant: 'confirm' }],
+          attributes: { variant: 'confirm' },
           text: title,
         },
       });
@@ -340,7 +339,7 @@ describe('new file modal component', () => {
           });
         });
 
-        it('does not trigger flash', () => {
+        it('does not trigger alert', () => {
           expect(createAlert).not.toHaveBeenCalled();
         });
       });
@@ -359,7 +358,7 @@ describe('new file modal component', () => {
           });
         });
 
-        it('does not trigger flash', () => {
+        it('does not trigger alert', () => {
           expect(createAlert).not.toHaveBeenCalled();
         });
       });
@@ -379,7 +378,7 @@ describe('new file modal component', () => {
       triggerSubmitModal();
     });
 
-    it('creates flash', () => {
+    it('creates alert', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'The name "src" is already taken in this directory.',
         fadeTransition: false,
@@ -404,7 +403,7 @@ describe('new file modal component', () => {
       triggerSubmitModal();
     });
 
-    it('does not create flash', () => {
+    it('does not create alert', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
 

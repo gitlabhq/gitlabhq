@@ -35,17 +35,15 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
     beforeEach(async () => {
       const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-      renderMarkdown.mockResolvedValueOnce(
-        `<p><strong>${text}</strong></p><pre lang="javascript"></pre><!-- some comment -->`,
-      );
+      renderMarkdown.mockResolvedValueOnce(`<p><strong>${text}</strong></p><!-- some comment -->`);
 
       result = await deserializer.deserialize({
-        content: 'content',
+        markdown: '**Bold text**\n<!-- some comment -->',
         schema: tiptapEditor.schema,
       });
     });
 
-    it('transforms HTML returned by render function to a ProseMirror document', async () => {
+    it('transforms HTML returned by render function to a ProseMirror document', () => {
       const document = doc(p(bold(text)), comment(' some comment '));
 
       expect(result.document.toJSON()).toEqual(document.toJSON());
@@ -53,12 +51,22 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
   });
 
   describe('when the render function returns an empty value', () => {
-    it('returns an empty object', async () => {
-      const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
+    it('returns an empty prosemirror document', async () => {
+      const deserializer = createMarkdownDeserializer({
+        render: renderMarkdown,
+        schema: tiptapEditor.schema,
+      });
 
       renderMarkdown.mockResolvedValueOnce(null);
 
-      expect(await deserializer.deserialize({ content: 'content' })).toEqual({});
+      const result = await deserializer.deserialize({
+        markdown: '',
+        schema: tiptapEditor.schema,
+      });
+
+      const document = doc(p());
+
+      expect(result.document.toJSON()).toEqual(document.toJSON());
     });
   });
 });

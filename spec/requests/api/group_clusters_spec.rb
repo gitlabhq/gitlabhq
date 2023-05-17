@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupClusters, feature_category: :kubernetes_management do
+RSpec.describe API::GroupClusters, feature_category: :deployment_management do
   include KubernetesHelpers
 
   let(:current_user) { create(:user) }

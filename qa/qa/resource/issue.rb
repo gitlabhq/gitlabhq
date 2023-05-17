@@ -30,7 +30,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Show.perform(&:go_to_new_issue)
+        Page::Project::Menu.perform(&:go_to_new_issue)
 
         Page::Project::Issue::New.perform do |new_page|
           new_page.fill_title(@title)

@@ -102,7 +102,7 @@ module Gitlab
             (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
         end
         command :draft do
-          @updates[:wip_event] = draft_action_command
+          @updates[:wip_event] = 'draft'
         end
 
         desc { _('Set the Ready status') }
@@ -309,19 +309,9 @@ module Gitlab
         noun = quick_action_target.to_ability_name.humanize(capitalize: false)
         if !quick_action_target.draft?
           _("%{verb} this %{noun} as a draft.")
-        elsif Feature.disabled?(:draft_quick_action_non_toggle, quick_action_target.project)
-          _("%{verb} this %{noun} as ready.")
         else
           _("No change to this %{noun}'s draft status.")
         end % { verb: verb, noun: noun }
-      end
-
-      def draft_action_command
-        if Feature.disabled?(:draft_quick_action_non_toggle, quick_action_target.project)
-          quick_action_target.draft? ? 'ready' : 'draft'
-        else
-          'draft'
-        end
       end
 
       def merge_orchestration_service

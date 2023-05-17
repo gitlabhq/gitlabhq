@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService do
+RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, feature_category: :incident_management do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { User.alert_bot }
 

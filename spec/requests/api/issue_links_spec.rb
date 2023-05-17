@@ -87,7 +87,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when user does not have write access to given issue' do
-        it 'returns 404' do
+        it 'returns 403' do
           unauthorized_project = create(:project)
           target_issue = create(:issue, project: unauthorized_project)
           unauthorized_project.add_guest(user)
@@ -95,8 +95,8 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
                params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
 
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('No matching issue found. Make sure that you are adding a valid issue URL.')
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq("Couldn't link issue. You must have at least the Reporter role in both projects.")
         end
       end
 

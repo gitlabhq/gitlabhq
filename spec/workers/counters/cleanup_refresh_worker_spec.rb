@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Counters::CleanupRefreshWorker do
+RSpec.describe Counters::CleanupRefreshWorker, feature_category: :shared do
   let(:model) { create(:project_statistics) }
 
   describe '#perform', :redis do

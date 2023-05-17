@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Events::DestroyService do
+RSpec.describe Events::DestroyService, feature_category: :user_profile do
   subject(:service) { described_class.new(project) }
 
   let_it_be(:project, reload: true) { create(:project, :repository) }

@@ -3,18 +3,20 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 - add_page_specific_style 'page_bundles/editor'
-
 - if @conflict
   = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
     variant: :danger,
     dismissible: false) do |c|
-    - blob_url = project_blob_path(@project, @id)
-    - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
-      - sprite_icon('external-link', css_class: 'gl-icon').html_safe
-    - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe % { url: blob_url }
-    = c.body do
-      = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start, link_end: '</a>'.html_safe , icon: external_link_icon }
-
+    - c.with_body do
+      - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe
+      - link_end = '</a>'.html_safe
+      - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
+        - sprite_icon('external-link', css_class: 'gl-icon').html_safe
+      - if @different_project
+        = _("Error: Can't edit this file. The fork and upstream project have diverged. %{link_start}Edit the file on the fork %{icon}%{link_end}, and create a merge request.").html_safe % {link_start: blob_link_start % { url: project_blob_path(@project_to_commit_into, @id) } , link_end: link_end, icon: external_link_icon }
+      - else
+        - blob_url = project_blob_path(@project, @id)
+        = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
 
 %h1.page-title.gl-font-size-h-display.blob-edit-page-title
   Edit file

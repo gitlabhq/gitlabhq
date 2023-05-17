@@ -142,7 +142,7 @@ with secure tokens as you complete the setup process.
 1. `PRAEFECT_EXTERNAL_TOKEN`: repositories hosted on your Praefect cluster can
    only be accessed by Gitaly clients that carry this token.
 1. `PRAEFECT_INTERNAL_TOKEN`: this token is used for replication traffic inside
-   your Praefect cluster. This is distinct from `PRAEFECT_EXTERNAL_TOKEN`
+   your Praefect cluster. This token is distinct from `PRAEFECT_EXTERNAL_TOKEN`
    because Gitaly clients must not be able to access internal nodes of the
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
@@ -269,11 +269,16 @@ The database used by Praefect is now configured.
 You can now configure Praefect to use the database:
 
 ```ruby
-praefect['database_host'] = POSTGRESQL_HOST
-praefect['database_port'] = 5432
-praefect['database_user'] = 'praefect'
-praefect['database_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_dbname'] = 'praefect_production'
+praefect['configuration'] = {
+   # ...
+   database: {
+      # ...
+      host: POSTGRESQL_HOST,
+      port: 5432,
+      password: PRAEFECT_SQL_PASSWORD,
+      dbname: 'praefect_production',
+   }
+}
 ```
 
 If you see Praefect database errors after configuring PostgreSQL, see
@@ -285,19 +290,27 @@ Praefect performance can be improved by additionally configuring the `database_d
 settings:
 
 ```ruby
-praefect['database_direct_host'] = POSTGRESQL_HOST
-praefect['database_direct_port'] = 5432
+praefect['configuration'] = {
+   # ...
+   database: {
+      # ...
+      session_pooled: {
+         # ...
+         host: POSTGRESQL_HOST,
+         port: 5432
 
-# Use the following to override parameters of direct database connection.
-# Comment out where the parameters are the same for both connections.
-
-praefect['database_direct_user'] = 'praefect'
-praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_direct_dbname'] = 'praefect_production'
-#praefect['database_direct_sslmode'] = '...'
-#praefect['database_direct_sslcert'] = '...'
-#praefect['database_direct_sslkey'] = '...'
-#praefect['database_direct_sslrootcert'] = '...'
+         # Use the following to override parameters of direct database connection.
+         # Comment out where the parameters are the same for both connections.
+         user: 'praefect',
+         password: PRAEFECT_SQL_PASSWORD,
+         dbname: 'praefect_production',
+         # sslmode: '...',
+         # sslcert: '...',
+         # sslkey: '...',
+         # sslrootcert: '...',
+      }
+   }
+}
 ```
 
 When configured, this connection is automatically used for the
@@ -313,8 +326,8 @@ reads distribution caching is enabled by configuration
 
 #### Use PgBouncer
 
-To reduce PostgreSQL resource consumption, we recommend setting up and configuring
-[PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. However, PgBouncer isn't required because
+To reduce PostgreSQL resource consumption, you should set up and configure [PgBouncer](https://www.pgbouncer.org/) in
+front of the PostgreSQL instance. However, PgBouncer isn't required because
 Praefect makes a low number of connections. If you choose to use PgBouncer, you can use the same PgBouncer instance for
 both the GitLab application database and the Praefect database.
 
@@ -322,15 +335,21 @@ To configure PgBouncer in front of the PostgreSQL instance, you must point Praef
 parameters on Praefect configuration:
 
 ```ruby
-praefect['database_host'] = PGBOUNCER_HOST
-praefect['database_port'] = 6432
-praefect['database_user'] = 'praefect'
-praefect['database_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_dbname'] = 'praefect_production'
-#praefect['database_sslmode'] = '...'
-#praefect['database_sslcert'] = '...'
-#praefect['database_sslkey'] = '...'
-#praefect['database_sslrootcert'] = '...'
+praefect['configuration'] = {
+   # ...
+   database: {
+      # ...
+      host: PGBOUNCER_HOST,
+      port: 6432,
+      user: 'praefect',
+      password: PRAEFECT_SQL_PASSWORD,
+      dbname: 'praefect_production',
+      # sslmode: '...',
+      # sslcert: '...',
+      # sslkey: '...',
+      # sslrootcert: '...',
+   }
+}
 ```
 
 Praefect requires an additional connection to the PostgreSQL that supports the
@@ -341,12 +360,12 @@ It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 To configure the additional connection, you must either:
 
 - Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
-  but with different pool mode. That is, `pool_mode = session`.
+  but with different pool mode (`pool_mode = session`).
 - Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
 #### Configure a new PgBouncer database with `pool_mode = session`
 
-We recommend using PgBouncer with `session` pool mode. You can use the
+You should use PgBouncer with `session` pool mode. You can use the
 [bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
@@ -399,23 +418,30 @@ praefect_production_direct = host=POSTGRESQL_HOST auth_user=pgbouncer dbname=pra
 Now you can configure Praefect to use PgBouncer for both connections:
 
 ```ruby
-praefect['database_host'] = PGBOUNCER_HOST
-praefect['database_port'] = 6432
-praefect['database_user'] = 'praefect'
-# `PRAEFECT_SQL_PASSWORD` is the plain-text password of
-# Praefect user. Not to be confused with `PRAEFECT_SQL_PASSWORD_HASH`.
-praefect['database_password'] = PRAEFECT_SQL_PASSWORD
-
-praefect['database_dbname'] = 'praefect_production'
-praefect['database_direct_dbname'] = 'praefect_production_direct'
-
-# There is no need to repeat the following. Parameters of direct
-# database connection will fall back to the values above.
-
-#praefect['database_direct_host'] = PGBOUNCER_HOST
-#praefect['database_direct_port'] = 6432
-#praefect['database_direct_user'] = 'praefect'
-#praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['configuration'] = {
+   # ...
+   database: {
+      # ...
+      host: PGBOUNCER_HOST,
+      port: 6432,
+      user: 'praefect',
+      # `PRAEFECT_SQL_PASSWORD` is the plain-text password of
+      # Praefect user. Not to be confused with `PRAEFECT_SQL_PASSWORD_HASH`.
+      password: PRAEFECT_SQL_PASSWORD,
+      dbname: 'praefect_production',
+      session_pooled: {
+         # ...
+         dbname: 'praefect_production_direct',
+         # There is no need to repeat the following. Parameters of direct
+         # database connection will fall back to the values above.
+         #
+         # host: PGBOUNCER_HOST,
+         # port: 6432,
+         # user: 'praefect',
+         # password: PRAEFECT_SQL_PASSWORD,
+      },
+   },
+}
 ```
 
 With this configuration, Praefect uses PgBouncer for both connection types.
@@ -428,25 +454,34 @@ configuration option is set. For more details, consult the PgBouncer documentati
 
 #### Configure Praefect to connect directly to PostgreSQL
 
-As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different connection parameters for direct access
-to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different
+connection parameters for direct access to PostgreSQL. This connection supports the `LISTEN` feature.
 
 An example of Praefect configuration that bypasses PgBouncer and directly connects to PostgreSQL:
 
 ```ruby
-praefect['database_direct_host'] = POSTGRESQL_HOST
-praefect['database_direct_port'] = 5432
+praefect['configuration'] = {
+   # ...
+   database: {
+      # ...
+      session_pooled: {
+         # ...
+         host: POSTGRESQL_HOST,
+         port: 5432,
 
-# Use the following to override parameters of direct database connection.
-# Comment out where the parameters are the same for both connections.
-
-praefect['database_direct_user'] = 'praefect'
-praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_direct_dbname'] = 'praefect_production'
-#praefect['database_direct_sslmode'] = '...'
-#praefect['database_direct_sslcert'] = '...'
-#praefect['database_direct_sslkey'] = '...'
-#praefect['database_direct_sslrootcert'] = '...'
+         # Use the following to override parameters of direct database connection.
+         # Comment out where the parameters are the same for both connections.
+         #
+         user: 'praefect',
+         password: PRAEFECT_SQL_PASSWORD,
+         dbname: 'praefect_production',
+         # sslmode: '...',
+         # sslcert: '...',
+         # sslkey: '...',
+         # sslrootcert: '...',
+      },
+   },
+}
 ```
 
 ### Praefect
@@ -501,30 +536,42 @@ Updates to example must be made at:
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   praefect['listen_addr'] = '0.0.0.0:2305'
+   praefect['configuration'] = {
+      # ...
+      listen_addr: '0.0.0.0:2305',
+   }
    ```
 
 1. Configure Prometheus metrics by editing
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Enable Prometheus metrics access to Praefect. You must use firewalls
-   # to restrict access to this address/port.
-   # The default metrics endpoint is /metrics
-   praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
-
-   # Some metrics run queries against the database. Enabling separate database metrics allows
-   # these metrics to be collected when the metrics are
-   # scraped on a separate /db_metrics endpoint.
-   praefect['separate_database_metrics'] = true
+   praefect['configuration'] = {
+      # ...
+      #
+      # Enable Prometheus metrics access to Praefect. You must use firewalls
+      # to restrict access to this address/port.
+      # The default metrics endpoint is /metrics
+      prometheus_listen_addr: '0.0.0.0:9652',
+      # Some metrics run queries against the database. Enabling separate database metrics allows
+      # these metrics to be collected when the metrics are
+      # scraped on a separate /db_metrics endpoint.
+      prometheus_exclude_database_from_default_metrics: true,
+   }
    ```
 
-1. Configure a strong `auth_token` for **Praefect** by editing
-   `/etc/gitlab/gitlab.rb`. This is needed by clients outside the cluster
+1. Configure a strong authentication token for **Praefect** by editing
+   `/etc/gitlab/gitlab.rb`, which is needed by clients outside the cluster
    (like GitLab Shell) to communicate with the Praefect cluster:
 
    ```ruby
-   praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
+   praefect['configuration'] = {
+      # ...
+      auth: {
+         # ...
+         token: 'PRAEFECT_EXTERNAL_TOKEN',
+      },
+   }
    ```
 
 1. Configure **Praefect** to [connect to the PostgreSQL database](#postgresql). We
@@ -533,19 +580,32 @@ Updates to example must be made at:
    If you want to use a TLS client certificate, the options below can be used:
 
    ```ruby
-   # Connect to PostgreSQL using a TLS client certificate
-   # praefect['database_sslcert'] = '/path/to/client-cert'
-   # praefect['database_sslkey'] = '/path/to/client-key'
-
-   # Trust a custom certificate authority
-   # praefect['database_sslrootcert'] = '/path/to/rootcert'
+   praefect['configuration'] = {
+      # ...
+      database: {
+         # ...
+         #
+         # Connect to PostgreSQL using a TLS client certificate
+         # sslcert: '/path/to/client-cert',
+         # sslkey: '/path/to/client-key',
+         #
+         # Trust a custom certificate authority
+         # sslrootcert: '/path/to/rootcert',
+      },
+   }
    ```
 
    By default, Praefect refuses to make an unencrypted connection to
    PostgreSQL. You can override this by uncommenting the following line:
 
    ```ruby
-   # praefect['database_sslmode'] = 'disable'
+   praefect['configuration'] = {
+      # ...
+      database: {
+         # ...
+         # sslmode: 'disable',
+      },
+   }
    ```
 
 1. Configure the **Praefect** cluster to connect to each Gitaly node in the
@@ -573,29 +633,37 @@ Updates to example must be made at:
 
    NOTE:
    When adding additional Gitaly nodes to a virtual storage, all storage names
-   within that virtual storage must be unique. Additionally, all Gitaly node
+   in that virtual storage must be unique. Additionally, all Gitaly node
    addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
-   # server ('default') and in git_data_dirs on Gitaly nodes ('gitaly-1')
-   praefect['virtual_storages'] = {
-     'default' => {
-       'nodes' => {
-         'gitaly-1' => {
-           'address' => 'tcp://GITALY_HOST_1:8075',
-           'token'   => 'PRAEFECT_INTERNAL_TOKEN',
+   # server ('default') and in gitaly['configuration'][:storage][INDEX][:name] on Gitaly nodes ('gitaly-1')
+   praefect['configuration'] = {
+      # ...
+      virtual_storage: [
+         {
+            # ...
+            name: 'default',
+            node: [
+               {
+                  storage: 'gitaly-1',
+                  address: 'tcp://GITALY_HOST_1:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-2',
+                  address: 'tcp://GITALY_HOST_2:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-3',
+                  address: 'tcp://GITALY_HOST_3:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+            ],
          },
-         'gitaly-2' => {
-           'address' => 'tcp://GITALY_HOST_2:8075',
-           'token'   => 'PRAEFECT_INTERNAL_TOKEN'
-         },
-         'gitaly-3' => {
-           'address' => 'tcp://GITALY_HOST_3:8075',
-           'token'   => 'PRAEFECT_INTERNAL_TOKEN'
-         }
-       }
-     }
+      ],
    }
    ```
 
@@ -662,7 +730,7 @@ for secure connections, you must:
 
 Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
 and on all Praefect clients that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) (and repeated below).
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) (and repeated below).
 
 Note the following:
 
@@ -681,7 +749,14 @@ Note the following:
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
   necessary.
 
-  To disable the unencrypted listener, set `praefect['listen_addr'] = nil`.
+  To disable the unencrypted listener, set:
+
+  ```ruby
+  praefect['configuration'] = {
+    # ...
+    listen_addr: nil,
+  }
+  ```
 
 To configure Praefect with TLS:
 
@@ -702,9 +777,15 @@ To configure Praefect with TLS:
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   praefect['tls_listen_addr'] = "0.0.0.0:3305"
-   praefect['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-   praefect['key_path'] = "/etc/gitlab/ssl/key.pem"
+   praefect['configuration'] = {
+      # ...
+      tls_listen_addr: '0.0.0.0:3305',
+      tls: {
+         # ...
+         certificate_path: '/etc/gitlab/ssl/cert.pem',
+         key_path: '/etc/gitlab/ssl/key.pem',
+      },
+   }
    ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -790,6 +871,125 @@ To configure Praefect with TLS:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
+#### Service discovery
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+
+Prerequisites:
+
+- A DNS server.
+
+GitLab uses service discovery to retrieve a list of Praefect hosts. Service
+discovery involves periodic checks of a DNS A or AAAA record, with the IPs
+retrieved from the record serving as the addresses of the target nodes.
+Praefect does not support service discovery by SRV record.
+
+By default, the minimum time between checks is 5 minutes, regardless of the
+records' TTLs. Praefect does not support customizing this interval. When clients
+receive an update, they:
+
+- Establish new connections to the new IP addresses.
+- Keep existing connections to intact IP addresses.
+- Drop connections to removed IP addresses.
+
+In-flight requests on to-be-removed connections are still handled until they
+finish. Workhorse has a 10-minute timeout, while other clients do not specify a
+graceful timeout.
+
+The DNS server should return all IP addresses instead of load-balancing itself.
+Clients can distribute requests to IP addresses in a round-robin fashion.
+
+Before updating client configuration, ensure that DNS service discovery works
+correctly. It should return the list of IP addresses correctly. `dig` is a good
+tool to use to verify.
+
+```console
+❯ dig A praefect.service.consul @127.0.0.1
+
+; <<>> DiG 9.10.6 <<>> A praefect.service.consul @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 29210
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 3, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;praefect.service.consul.                     IN      A
+
+;; ANSWER SECTION:
+praefect.service.consul.              0       IN      A       10.0.0.3
+praefect.service.consul.              0       IN      A       10.0.0.2
+praefect.service.consul.              0       IN      A       10.0.0.1
+
+;; Query time: 0 msec
+;; SERVER: ::1#53(::1)
+;; WHEN: Wed Dec 14 12:53:58 +07 2022
+;; MSG SIZE  rcvd: 86
+```
+
+##### Configure service discovery
+
+By default, Praefect delegates DNS resolution to the operating system. In such
+cases, the Gitaly address can be set in either of these formats:
+
+- `dns:[host]:[port]`
+- `dns:///[host]:[port]` (note the three slashes)
+
+You can also appoint an authoritative name server by setting it in this format:
+
+- `dns://[authority_host]:[authority_port]/[host]:[port]`
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   praefect['consul_service_name'] = 'praefect'
+   ```
+
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+`/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
+with Praefect service discovery address, such as `praefect.service.consul`.
+
+   ```ruby
+   git_data_dirs({
+     "default" => {
+       "gitaly_address" => 'dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   })
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+:::TabTitle Self-compiled (source)
+
+1. Install a DNS service discovery service. Register all Praefect nodes with the service.
+1. On the Praefect clients (except Gitaly servers), edit `storages` in
+   `/home/git/gitlab/config/gitlab.yml` as follows:
+
+   ```yaml
+   gitlab:
+     repositories:
+       storages:
+         default:
+           gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
+           path: /some/local/path
+   ```
+
+   NOTE:
+   `/some/local/path` should be set to a local folder that exists, however no
+   data is stored in this folder. [Issue 375254](https://gitlab.com/gitlab-org/gitlab/-/issues/375254)
+   proposes to remove this requirement.
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+::EndTabs
+
 ### Gitaly
 
 NOTE:
@@ -813,12 +1013,11 @@ because we rely on Praefect to route operations correctly.
 
 Particular attention should be shown to:
 
-- The `gitaly['auth_token']` configured in this section must match the `token`
-  value under `praefect['virtual_storages']['nodes']` on the Praefect node. This was set
-  in the [previous section](#praefect). This document uses the placeholder
-  `PRAEFECT_INTERNAL_TOKEN` throughout.
-- The storage names in `git_data_dirs` configured in this section must match the
-  storage names under `praefect['virtual_storages']` on the Praefect node. This
+- The `gitaly['configuration'][:auth][:token]` configured in this section must match the `token`
+  value under `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
+  set in the [previous section](#praefect). This document uses the placeholder `PRAEFECT_INTERNAL_TOKEN` throughout.
+- The storage names in `gitaly['configuration'][:storage]` configured in this section must match the
+  storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
 
@@ -834,7 +1033,7 @@ For more information on Gitaly server configuration, see our
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Disable all other services on the Praefect node
+   # Disable all other services on the Gitaly node
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
@@ -859,22 +1058,31 @@ For more information on Gitaly server configuration, see our
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Make Gitaly accept connections on all network interfaces.
-   # Use firewalls to restrict access to this address/port.
-   gitaly['listen_addr'] = '0.0.0.0:8075'
-
-   # Enable Prometheus metrics access to Gitaly. You must use firewalls
-   # to restrict access to this address/port.
-   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+   gitaly['configuration'] = {
+      # ...
+      #
+      # Make Gitaly accept connections on all network interfaces.
+      # Use firewalls to restrict access to this address/port.
+      listen_addr: '0.0.0.0:8075',
+      # Enable Prometheus metrics access to Gitaly. You must use firewalls
+      # to restrict access to this address/port.
+      prometheus_listen_addr: '0.0.0.0:9236',
+   }
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
-   `/etc/gitlab/gitlab.rb`. This is needed by clients to communicate with
+   `/etc/gitlab/gitlab.rb`, which is needed by clients to communicate with
    this Gitaly nodes. Typically, this token is the same for all Gitaly
    nodes.
 
    ```ruby
-   gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
+   gitaly['configuration'] = {
+      # ...
+      auth: {
+         # ...
+         token: 'PRAEFECT_INTERNAL_TOKEN',
+      },
+   }
    ```
 
 1. Configure the GitLab Shell secret token, which is needed for `git push` operations. Either:
@@ -903,13 +1111,13 @@ For more information on Gitaly server configuration, see our
    gitlab_rails['internal_api_url'] = 'http://GITLAB_HOST'
    ```
 
-1. Configure the storage location for Git data by setting `git_data_dirs` in
+1. Configure the storage location for Git data by setting `gitaly['configuration'][:storage]` in
    `/etc/gitlab/gitlab.rb`. Each Gitaly node should have a unique storage name
    (such as `gitaly-1`).
 
-   Instead of configuring `git_data_dirs` uniquely for each Gitaly node, it is
+   Instead of configuring `gitaly['configuration'][:storage]` uniquely for each Gitaly node, it is
    often easier to have include the configuration for all Gitaly nodes on every
-   Gitaly node. This is supported because the Praefect `virtual_storages`
+   Gitaly node. You can do this because the Praefect `virtual_storage`
    configuration maps each storage name (such as `gitaly-1`) to a specific node, and
    requests are routed accordingly. This means every Gitaly node in your fleet
    can share the same configuration.
@@ -918,17 +1126,23 @@ For more information on Gitaly server configuration, see our
    # You can include the data dirs for all nodes in the same config, because
    # Praefect will only route requests according to the addresses provided in the
    # prior step.
-   git_data_dirs({
-     "gitaly-1" => {
-       "path" => "/var/opt/gitlab/git-data"
-     },
-     "gitaly-2" => {
-       "path" => "/var/opt/gitlab/git-data"
-     },
-     "gitaly-3" => {
-       "path" => "/var/opt/gitlab/git-data"
-     }
-   })
+   gitaly['configuration'] = {
+      # ...
+      storage: [
+        {
+          name: 'gitaly-1',
+          path: '/var/opt/gitlab/git-data',
+        },
+        {
+          name: 'gitaly-2',
+          path: '/var/opt/gitlab/git-data',
+        },
+        {
+          name: 'gitaly-3',
+          path: '/var/opt/gitlab/git-data',
+        },
+      ],
+   }
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
@@ -967,10 +1181,7 @@ scope of the GitLab documentation.
 
 NOTE:
 The load balancer must be configured to accept traffic from the Gitaly nodes in
-addition to the GitLab nodes. Some requests handled by
-[`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) sidecar processes call into the main Gitaly
-process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
-`git_data_dirs` setting to make this connection.
+addition to the GitLab nodes.
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
@@ -980,8 +1191,8 @@ Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
 NOTE:
-We recommend the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for example,
-clones) keep some connections open for extended periods.
+You should use the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for
+example, clones) keep some connections open for extended periods.
 
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
@@ -995,12 +1206,12 @@ To complete this section you need:
 - [Configured Gitaly nodes](#gitaly)
 
 The Praefect cluster needs to be exposed as a storage location to the GitLab
-application. This is done by updating the `git_data_dirs`.
+application, which is done by updating the `git_data_dirs`.
 
 Particular attention should be shown to:
 
 - the storage name added to `git_data_dirs` in this section must match the
-  storage name under `praefect['virtual_storages']` on the Praefect nodes. This
+  storage name under `praefect['configuration'][:virtual_storage]` on the Praefect nodes. This
   was set in the [Praefect](#praefect) section of this guide. This document uses
   `default` as the Praefect storage name.
 
@@ -1219,12 +1430,16 @@ You can configure:
   The configuration is added to the `/etc/gitlab/gitlab.rb` file:
 
   ```ruby
-  praefect['virtual_storages'] = {
-    'default' => {
-      'default_replication_factor' => 1,
+   praefect['configuration'] = {
       # ...
-    }
-  }
+      virtual_storage: [
+         {
+            # ...
+            name: 'default',
+            default_replication_factor: 1,
+         },
+      ],
+   }
   ```
 
 - A replication factor for an existing repository using the `set-replication-factor` sub-command.
@@ -1313,29 +1528,50 @@ interval is configurable with any valid [Go duration string](https://pkg.go.dev/
 To verify the metadata every three days:
 
 ```ruby
-praefect['background_verification_verification_interval'] = '72h'
+praefect['configuration'] = {
+   # ...
+   background_verification: {
+      # ...
+      verification_interval: '72h',
+   },
+}
 ```
 
 Values of 0 and below disable the background verifier.
 
 ```ruby
-praefect['background_verification_verification_interval'] = '0'
+praefect['configuration'] = {
+   # ...
+   background_verification: {
+      # ...
+      verification_interval: '0',
+   },
+}
 ```
 
 #### Enable deletions
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) and disabled by default in GitLab 15.0
+> - [Default enabled](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5321) in GitLab 15.9.
+
 WARNING:
-Deletions are disabled by default due to a race condition with repository renames that can cause incorrect
-deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
-You should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled.
+Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
+that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
+than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
-By default, the worker does not delete invalid metadata records but logs them and outputs Prometheus
-metrics for them.
+By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
+metrics.
 
-You can enable deleting invalid metadata records with:
+You can disable deleting invalid metadata records with:
 
 ```ruby
-praefect['background_verification_delete_invalid_records'] = true
+praefect['configuration'] = {
+   # ...
+   background_verification: {
+      # ...
+      delete_invalid_records: false,
+   },
+}
 ```
 
 ### Prioritize verification manually
@@ -1370,10 +1606,10 @@ The output includes the number of replicas that were marked unverified.
 
 ## Automatic failover and primary election strategies
 
-Praefect regularly checks the health of each Gitaly node. This is used to automatically fail over
+Praefect regularly checks the health of each Gitaly node, which is used to automatically fail over
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.
 
-We recommend using [repository-specific primary nodes](#repository-specific-primary-nodes). This is
+You should use [repository-specific primary nodes](#repository-specific-primary-nodes). This is
 [the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574) from GitLab 14.0.
 
 ### Repository-specific primary nodes

@@ -59,7 +59,6 @@ RSpec.describe 'Creation of a new release', feature_category: :release_orchestra
               name
               url
               linkType
-              external
               directAssetUrl
             }
           }
@@ -135,7 +134,6 @@ RSpec.describe 'Creation of a new release', feature_category: :release_orchestra
                 name: asset_link[:name],
                 url: asset_link[:url],
                 linkType: asset_link[:linkType],
-                external: true,
                 directAssetUrl: expected_direct_asset_url
               }]
             }

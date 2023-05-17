@@ -9,7 +9,9 @@ module Gitlab
         def for(output:, cached: false)
           case output.to_sym
           when :all_metrics_values
-            with_instrumentation_classes(all_metrics_values(cached), :with_value)
+            Rails.cache.fetch(CACHE_KEY, force: !cached, expires_in: 2.weeks) do
+              with_instrumentation_classes(Gitlab::UsageData.data, :with_value)
+            end
           when :metrics_queries
             with_instrumentation_classes(metrics_queries, :with_instrumentation)
           when :non_sql_metrics_values
@@ -25,12 +27,6 @@ module Gitlab
           instrumented_payload = Gitlab::Usage::ServicePing::InstrumentedPayload.new(instrumented_metrics_key_paths, output_method).build
 
           old_payload.with_indifferent_access.deep_merge(instrumented_payload)
-        end
-
-        def all_metrics_values(cached)
-          Rails.cache.fetch(CACHE_KEY, force: !cached, expires_in: 2.weeks) do
-            Gitlab::UsageData.data
-          end
         end
 
         def metrics_queries

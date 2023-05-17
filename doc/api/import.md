@@ -1,20 +1,26 @@
 ---
 stage: Manage
-group: Import
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import API **(FREE)**
 
+Use the Import API to import repositories from GitHub or Bitbucket Server.
+
 ## Import repository from GitHub
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - `collaborators_import` key in `optional_stages` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 
 Import your projects from GitHub to GitLab using the API.
 
-The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that
-you have at least the Maintainer role for. Using the Developer role for this purpose was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+Prerequisites:
+
+- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
+- The namespace set in `target_namespace` must exist.
+- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for.
 
 ```plaintext
 POST /import/github
@@ -43,7 +49,8 @@ curl --request POST \
     "optional_stages": {
       "single_endpoint_issue_events_import": true,
       "single_endpoint_notes_import": true,
-      "attachments_import": true
+      "attachments_import": true,
+      "collaborators_import": true
     }
 }'
 ```
@@ -53,6 +60,7 @@ The following keys are available for `optional_stages`:
 - `single_endpoint_issue_events_import`, for issue and pull request events import.
 - `single_endpoint_notes_import`, for an alternative and more thorough comments import.
 - `attachments_import`, for Markdown attachments import.
+- `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.
 
 For more information, see [Select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
 
@@ -77,7 +85,7 @@ token:
 - The GitLab project inherits the original project's visibility settings. As a result, the project is publicly accessible if the original project is public.
 - If the `path` or `target_namespace` does not exist, the project import fails.
 
-## Cancel GitHub project import
+### Cancel GitHub project import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
 
@@ -122,14 +130,11 @@ Returns the following status codes:
 - `400 Bad Request`: the project import cannot be canceled.
 - `404 Not Found`: the project associated with `project_id` does not exist.
 
-## Import GitHub gists into GitLab snippets
+### Import GitHub gists into GitLab snippets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `github_import_gists`.
-On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.10.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.11. Feature flag `github_import_gists` removed.
 
 You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
 GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
@@ -163,12 +168,15 @@ Returns the following status codes:
 
 ## Import repository from Bitbucket Server
 
-Import your projects from Bitbucket Server to GitLab via the API.
+Import your projects from Bitbucket Server to GitLab using the API.
 
-NOTE:
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
 You must specify a `target_namespace` if you want to import the repository to a GitLab group.
 If you do not specify `target_namespace`, the project imports to your personal user namespace.
+
+Prerequisites:
+
+- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
 
 ```plaintext
 POST /import/bitbucket_server
@@ -202,3 +210,9 @@ curl --request POST \
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../user/project/import/index.md#automate-group-and-project-import).
+
+## Related topics
+
+- [Group migration by direct transfer API](bulk_imports.md).
+- [Group import and export API](group_import_export.md).
+- [Project import and export API](project_import_export.md).

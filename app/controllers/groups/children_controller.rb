@@ -5,6 +5,8 @@ module Groups
     extend ::Gitlab::Utils::Override
 
     before_action :group
+    before_action :validate_per_page
+
     skip_cross_project_access_check :index
 
     feature_category :subgroups
@@ -41,10 +43,11 @@ module Groups
     protected
 
     def setup_children(parent)
-      @children = GroupDescendantsFinder.new(current_user: current_user,
-                                             parent_group: parent,
-                                             params: params.to_unsafe_h).execute
-      @children = @children.page(params[:page])
+      @children = GroupDescendantsFinder.new(
+        current_user: current_user,
+        parent_group: parent,
+        params: group_descendants_params
+      ).execute.page(params[:page])
     end
 
     private
@@ -52,6 +55,26 @@ module Groups
     override :has_project_list?
     def has_project_list?
       true
+    end
+
+    def group_descendants_params
+      @group_descendants_params ||= params.to_unsafe_h.compact
+    end
+
+    def validate_per_page
+      return unless group_descendants_params.key?(:per_page)
+
+      per_page = begin
+        Integer(group_descendants_params[:per_page])
+      rescue ArgumentError, TypeError
+        0
+      end
+
+      respond_to do |format|
+        format.json do
+          render status: :bad_request, json: { message: 'per_page does not have a valid value' } if per_page < 1
+        end
+      end
     end
   end
 end

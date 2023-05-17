@@ -2,19 +2,22 @@
 
 require "spec_helper"
 
-RSpec.describe Projects::UpdatePagesService do
+RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
   let_it_be(:project, refind: true) { create(:project, :repository) }
 
   let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
 
-  let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
+  let(:options) { {} }
+  let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD', options: options) }
   let(:invalid_file) { fixture_file_upload('spec/fixtures/dk.png') }
 
   let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
+  let(:custom_root_file) { fixture_file_upload("spec/fixtures/pages_with_custom_root.zip") }
   let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.zip") }
   let(:empty_metadata_filename) { "spec/fixtures/pages_empty.zip.meta" }
   let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
+  let(:custom_root_file_metadata) { "spec/fixtures/pages_with_custom_root.zip.meta" }
   let(:metadata) { fixture_file_upload(metadata_filename) if File.exist?(metadata_filename) }
 
   subject { described_class.new(project, build) }
@@ -97,6 +100,7 @@ RSpec.describe Projects::UpdatePagesService do
         expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
         expect(deployment.ci_build_id).to eq(build.id)
+        expect(deployment.root_directory).to be_nil
       end
 
       it 'does not fail if pages_metadata is absent' do
@@ -116,9 +120,11 @@ RSpec.describe Projects::UpdatePagesService do
 
         it 'schedules a destruction of older deployments' do
           expect(DestroyPagesDeploymentsWorker).to(
-            receive(:perform_in).with(described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
-                                      project.id,
-                                      instance_of(Integer))
+            receive(:perform_in).with(
+              described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
+              project.id,
+              instance_of(Integer)
+            )
           )
 
           execute
@@ -140,7 +146,45 @@ RSpec.describe Projects::UpdatePagesService do
         it 'returns an error' do
           expect(execute).not_to eq(:success)
 
-          expect(GenericCommitStatus.last.description).to eq("Error: The `public/` folder is missing, or not declared in `.gitlab-ci.yml`.")
+          expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+        end
+      end
+
+      context 'when there is a custom root config' do
+        let(:file) { custom_root_file }
+        let(:metadata_filename) { custom_root_file_metadata }
+
+        context 'when the directory specified with `publish` is included in the artifacts' do
+          let(:options) { { publish: 'foo' } }
+
+          it 'creates pages_deployment and saves it in the metadata' do
+            expect(execute).to eq(:success)
+
+            deployment = project.pages_deployments.last
+            expect(deployment.root_directory).to eq(options[:publish])
+          end
+        end
+
+        context 'when the directory specified with `publish` is not included in the artifacts' do
+          let(:options) { { publish: 'bar' } }
+
+          it 'returns an error' do
+            expect(execute).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+          end
+        end
+
+        context 'when there is a folder named `public`, but `publish` specifies a different one' do
+          let(:options) { { publish: 'foo' } }
+          let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
+          let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
+
+          it 'returns an error' do
+            expect(execute).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+          end
         end
       end
 
@@ -322,10 +366,14 @@ RSpec.describe Projects::UpdatePagesService do
   context 'when retrying the job' do
     let(:stage) { create(:ci_stage, position: 1_000_000, name: 'deploy', pipeline: pipeline) }
     let!(:older_deploy_job) do
-      create(:generic_commit_status, :failed, pipeline: pipeline,
-                                              ref: build.ref,
-                                              ci_stage: stage,
-                                              name: 'pages:deploy')
+      create(
+        :generic_commit_status,
+        :failed,
+        pipeline: pipeline,
+        ref: build.ref,
+        ci_stage: stage,
+        name: 'pages:deploy'
+      )
     end
 
     before do

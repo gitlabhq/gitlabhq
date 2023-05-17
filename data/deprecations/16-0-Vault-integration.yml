@@ -19,20 +19,28 @@
 #
 - title: "HashiCorp Vault integration will no longer use CI_JOB_JWT by default"
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "16.5"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: dhershkovitch  # (required) GitLab username of the person reporting the change
-  stage: stage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366798  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+    As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
 
-    To be prepared for this change, you should do the following before GitLab 16.0:
+    To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
+    keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
 
-    - [Disable the use of JSON web tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication) in the pipeline.
-    - Ensure the bound audience is prefixed with `https://`.
-    - Use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens) keyword
-      and configure the `aud` claim.
+    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+    setting, which prevents the old tokens from being exposed to any jobs and enables
+    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+    In GitLab 16.0 and later:
+
+    - This setting will be removed.
+    - CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+      and will not have any `CI_JOB_JWT*` tokens available.
+    - Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+      tokens available until GitLab 16.5.
 # If an End of Support period applies, the announcement should be shared with GitLab Support
 # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
 #

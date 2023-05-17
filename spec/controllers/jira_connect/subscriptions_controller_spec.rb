@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionsController do
+RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrations do
   let_it_be(:installation) { create(:jira_connect_installation) }
 
   describe '#index' do
@@ -54,26 +54,6 @@ RSpec.describe JiraConnect::SubscriptionsController do
             ]
           )
           expect(json_response).to include('subscriptions_path' => jira_connect_subscriptions_path)
-        end
-
-        context 'when not signed in to GitLab' do
-          it 'contains a login path' do
-            expect(json_response).to include('login_path' => jira_connect_users_path)
-          end
-        end
-
-        context 'when signed in to GitLab' do
-          let(:user) { create(:user) }
-
-          before do
-            sign_in(user)
-
-            get :index, params: { jwt: jwt }
-          end
-
-          it 'does not contain a login path' do
-            expect(json_response).to include('login_path' => nil)
-          end
         end
 
         context 'with context qsh' do

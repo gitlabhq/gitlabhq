@@ -6,7 +6,7 @@ import { GlAlert } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { logError } from '~/lib/logger';
 import IssuableMoveDropdown from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import issuableEventHub from '~/issues/list/eventhub';
@@ -22,7 +22,7 @@ import {
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/logger');
 useMockLocationHelper();
 
@@ -159,7 +159,6 @@ describe('MoveIssuesButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 
@@ -167,7 +166,7 @@ describe('MoveIssuesButton', () => {
     it('renders disabled by default', () => {
       createComponent();
       expect(findDropdown().exists()).toBe(true);
-      expect(findDropdown().attributes('disabled')).toBe('true');
+      expect(findDropdown().attributes('disabled')).toBeDefined();
     });
 
     it.each`
@@ -186,7 +185,7 @@ describe('MoveIssuesButton', () => {
       await nextTick();
 
       if (disabled) {
-        expect(findDropdown().attributes('disabled')).toBe('true');
+        expect(findDropdown().attributes('disabled')).toBeDefined();
       } else {
         expect(findDropdown().attributes('disabled')).toBeUndefined();
       }
@@ -347,7 +346,7 @@ describe('MoveIssuesButton', () => {
         expect(issuableEventHub.$emit).not.toHaveBeenCalled();
       });
 
-      it('emits `issuables:bulkMoveStarted` when issues are moving', async () => {
+      it('emits `issuables:bulkMoveStarted` when issues are moving', () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.issuesTasksAndTestCases });
         emitMoveIssuablesEvent();
 
@@ -389,7 +388,7 @@ describe('MoveIssuesButton', () => {
     });
 
     describe('shows errors', () => {
-      it('does not create flashes or logs errors when no issue is selected', async () => {
+      it('does not create alerts or logs errors when no issue is selected', async () => {
         createComponent();
         emitMoveIssuablesEvent();
 
@@ -399,7 +398,7 @@ describe('MoveIssuesButton', () => {
         expect(createAlert).not.toHaveBeenCalled();
       });
 
-      it('does not create flashes or logs errors when only tasks are selected', async () => {
+      it('does not create alerts or logs errors when only tasks are selected', async () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.tasksOnly });
         emitMoveIssuablesEvent();
 
@@ -409,7 +408,7 @@ describe('MoveIssuesButton', () => {
         expect(createAlert).not.toHaveBeenCalled();
       });
 
-      it('does not create flashes or logs errors when only test cases are selected', async () => {
+      it('does not create alerts or logs errors when only test cases are selected', async () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.testCasesOnly });
         emitMoveIssuablesEvent();
 
@@ -419,7 +418,7 @@ describe('MoveIssuesButton', () => {
         expect(createAlert).not.toHaveBeenCalled();
       });
 
-      it('does not create flashes or logs errors when only tasks and test cases are selected', async () => {
+      it('does not create alerts or logs errors when only tasks and test cases are selected', async () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.tasksAndTestCases });
         emitMoveIssuablesEvent();
 
@@ -429,7 +428,7 @@ describe('MoveIssuesButton', () => {
         expect(createAlert).not.toHaveBeenCalled();
       });
 
-      it('does not create flashes or logs errors when issues are moved without errors', async () => {
+      it('does not create alerts or logs errors when issues are moved without errors', async () => {
         createComponent(
           { selectedIssuables: selectedIssuesMocks.issuesTasksAndTestCases },
           resolvedMutationWithoutErrorsMock,
@@ -442,7 +441,7 @@ describe('MoveIssuesButton', () => {
         expect(createAlert).not.toHaveBeenCalled();
       });
 
-      it('creates a flash and logs errors when a mutation returns errors', async () => {
+      it('creates an alert and logs errors when a mutation returns errors', async () => {
         createComponent(
           { selectedIssuables: selectedIssuesMocks.issuesTasksAndTestCases },
           resolvedMutationWithErrorsMock,
@@ -462,14 +461,14 @@ describe('MoveIssuesButton', () => {
           `Error moving issue. Error message: ${mockMutationErrorMessage}`,
         );
 
-        // Only one flash is created even if multiple errors are reported
+        // Only one alert is created even if multiple errors are reported
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'There was an error while moving the issues.',
         });
       });
 
-      it('creates a flash but not logs errors when a mutation is rejected', async () => {
+      it('creates an alert but not logs errors when a mutation is rejected', async () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.issuesTasksAndTestCases });
         emitMoveIssuablesEvent();
 

@@ -37,8 +37,8 @@ module Gitlab
       ISSUE_DESIGN_COMMENT_REMOVED = 'g_project_management_issue_design_comments_removed'
 
       class << self
-        def track_issue_created_action(author:, project:)
-          track_snowplow_action(ISSUE_CREATED, author, project)
+        def track_issue_created_action(author:, namespace:)
+          track_snowplow_action(ISSUE_CREATED, author, namespace)
           track_unique_action(ISSUE_CREATED, author)
         end
 
@@ -179,8 +179,16 @@ module Gitlab
 
         private
 
-        def track_snowplow_action(event_name, author, project)
-          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
+        def track_snowplow_action(event_name, author, container)
+          namespace, project = case container
+                               when Project
+                                 [container.namespace, container]
+                               when Namespaces::ProjectNamespace
+                                 [container.parent, container.project]
+                               else
+                                 [container, nil]
+                               end
+
           return unless author
 
           Gitlab::Tracking.event(
@@ -189,7 +197,7 @@ module Gitlab
             label: ISSUE_LABEL,
             property: event_name,
             project: project,
-            namespace: project.namespace,
+            namespace: namespace,
             user: author,
             context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
           )

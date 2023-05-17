@@ -1,0 +1,12 @@
+---
+table_name: project_tracing_settings
+classes:
+  - ProjectTracingSetting
+feature_categories:
+  - tracing
+description:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7903
+milestone: '15.5'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91679
+removed_in_milestone: '15.2'

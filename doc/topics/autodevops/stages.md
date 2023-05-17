@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -491,7 +491,7 @@ deletion).
 
 You can configure database initialization and migrations for PostgreSQL to run
 within the application pod by setting the project CI/CD variables `DB_INITIALIZE` and
-`DB_MIGRATE` respectively.
+`DB_MIGRATE`.
 
 If present, `DB_INITIALIZE` is run as a shell command within an application pod
 as a Helm post-install hook. As some applications can't run without a successful
@@ -614,8 +614,7 @@ To use Auto Monitoring:
 1. Select **Run pipeline**.
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitor-environments)
-   to view the metrics of your deployed application. To view the metrics of the
-   whole Kubernetes cluster, on the left sidebar, select **Monitor > Metrics**.
+   to view the metrics of your deployed application.
 
 ![Auto Metrics](img/auto_monitoring.png)
 

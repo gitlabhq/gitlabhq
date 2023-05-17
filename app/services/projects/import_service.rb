@@ -36,8 +36,11 @@ module Projects
       )
 
       message = Projects::ImportErrorFilter.filter_message(e.message)
-      error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") %
-              { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: message })
+      error(
+        s_(
+          "ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}"
+        ) % { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: message }
+      )
     end
 
     protected

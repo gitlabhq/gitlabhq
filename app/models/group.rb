@@ -7,7 +7,6 @@ class Group < Namespace
   include AfterCommitQueue
   include AccessRequestable
   include Avatarable
-  include Referable
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
@@ -21,7 +20,6 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Todoable
-  include IssueParent
 
   extend ::Gitlab::Utils::Override
 
@@ -111,6 +109,7 @@ class Group < Namespace
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
 
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
+  has_many :bulk_import_entities, class_name: 'BulkImports::Entity', foreign_key: :namespace_id, inverse_of: :group
 
   has_many :group_deploy_keys_groups, inverse_of: :group
   has_many :group_deploy_keys, through: :group_deploy_keys_groups
@@ -162,7 +161,8 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 format_with_prefix: :runners_token_prefix,
+                                 require_prefix_for_validation: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
@@ -198,14 +198,27 @@ class Group < Namespace
       .where(project_authorizations: { user_id: user_ids })
   end
 
+  scope :with_project_creation_levels, -> (project_creation_levels) do
+    where(project_creation_level: project_creation_levels)
+  end
+
   scope :project_creation_allowed, -> do
-    permitted_levels = [
+    project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
       nil
     ]
 
-    where(project_creation_level: permitted_levels)
+    # When the value of application_settings.default_project_creation is set to `NO_ONE_PROJECT_ACCESS`,
+    # it means that a `nil` value for `groups.project_creation_level` is telling us:
+    # do not allow project creation in such groups.
+    # ie, `nil` is a placeholder value for inheriting the value from the ApplicationSetting.
+    # So we remove `nil` from the list when the application_setting's value is `NO_ONE_PROJECT_ACCESS`
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+      project_creation_allowed_on_levels.delete(nil)
+    end
+
+    with_project_creation_levels(project_creation_allowed_on_levels)
   end
 
   scope :shared_into_ancestors, -> (group) do
@@ -238,14 +251,6 @@ class Group < Namespace
       else
         order_by(method)
       end
-    end
-
-    def reference_prefix
-      User.reference_prefix
-    end
-
-    def reference_pattern
-      User.reference_pattern
     end
 
     # WARNING: This method should never be used on its own
@@ -362,10 +367,6 @@ class Group < Namespace
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
     notification_settings.find { |n| n.notification_email.present? }&.notification_email
-  end
-
-  def to_reference(_from = nil, target_project: nil, full: nil)
-    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def web_url(only_path: nil)
@@ -561,7 +562,7 @@ class Group < Namespace
   # rubocop: enable CodeReuse/ServiceClass
 
   def users_ids_of_direct_members
-    direct_members.pluck(:user_id)
+    direct_members.pluck_user_ids
   end
 
   def user_ids_for_project_authorizations
@@ -762,11 +763,6 @@ class Group < Namespace
     ensure_runners_token!
   end
 
-  override :format_runners_token
-  def format_runners_token(token)
-    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
-  end
-
   def project_creation_level
     super || ::Gitlab::CurrentSettings.default_project_creation
   end
@@ -814,8 +810,10 @@ class Group < Namespace
   end
 
   def preload_shared_group_links
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(self, shared_with_group_links: [shared_with_group: :route])
+    ActiveRecord::Associations::Preloader.new(
+      records: [self],
+      associations: { shared_with_group_links: [shared_with_group: :route] }
+    ).call
   end
 
   def update_shared_runners_setting!(state)
@@ -905,6 +903,10 @@ class Group < Namespace
       Gitlab::CurrentSettings.group_runner_token_expiration_interval&.seconds,
       group_interval
     ].compact.min
+  end
+
+  def content_editor_on_issues_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:content_editor_on_issues)
   end
 
   def work_items_feature_flag_enabled?
@@ -1094,6 +1096,10 @@ class Group < Namespace
 
   def enable_shared_runners!
     update!(shared_runners_enabled: true)
+  end
+
+  def runners_token_prefix
+    RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
   end
 end
 

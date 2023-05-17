@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::KeysCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Users::KeysCountService, :use_clean_rails_memory_store_caching, feature_category: :system_access do
   let(:user) { create(:user) }
 
   subject { described_class.new(user) }

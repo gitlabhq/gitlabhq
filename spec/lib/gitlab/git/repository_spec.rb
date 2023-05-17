@@ -203,6 +203,25 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
             expect(metadata['CommitId']).to eq(expected_commit_id)
           end
         end
+
+        context 'when resolve_ambiguous_archives is disabled' do
+          before do
+            stub_feature_flags(resolve_ambiguous_archives: false)
+          end
+
+          where(:ref, :expected_commit_id, :desc) do
+            'refs/heads/branch-merged'    | ref(:branch_merged_commit_id) | 'when tag looks like a branch (difference!)'
+            'branch-merged'               | ref(:branch_master_commit_id) | 'when tag has the same name as a branch'
+            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when tag looks like a commit id'
+            'v0.0.0'                      | ref(:branch_master_commit_id) | 'when tag looks like a normal tag'
+          end
+
+          with_them do
+            it 'selects the correct commit' do
+              expect(metadata['CommitId']).to eq(expected_commit_id)
+            end
+          end
+        end
       end
 
       context 'when branch is ambiguous' do
@@ -220,6 +239,25 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         with_them do
           it 'selects the correct commit' do
             expect(metadata['CommitId']).to eq(expected_commit_id)
+          end
+        end
+
+        context 'when resolve_ambiguous_archives is disabled' do
+          before do
+            stub_feature_flags(resolve_ambiguous_archives: false)
+          end
+
+          where(:ref, :expected_commit_id, :desc) do
+            'refs/tags/v1.0.0'            | ref(:tag_1_0_0_commit_id)     | 'when branch looks like a tag (difference!)'
+            'v1.0.0'                      | ref(:tag_1_0_0_commit_id)     | 'when branch has the same name as a tag'
+            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when branch looks like a commit id'
+            'just-a-normal-branch'        | ref(:branch_master_commit_id) | 'when branch looks like a normal branch'
+          end
+
+          with_them do
+            it 'selects the correct commit' do
+              expect(metadata['CommitId']).to eq(expected_commit_id)
+            end
           end
         end
       end
@@ -1820,8 +1858,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'when Gitaly returns Internal error' do
       before do
-        expect(repository.gitaly_ref_client)
-          .to receive(:find_tag)
+        expect(Gitlab::GitalyClient)
+          .to receive(:call)
           .and_raise(GRPC::Internal, "tag not found")
       end
 
@@ -1830,8 +1868,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'when Gitaly returns tag_not_found error' do
       before do
-        expect(repository.gitaly_ref_client)
-          .to receive(:find_tag)
+        expect(Gitlab::GitalyClient)
+          .to receive(:call)
           .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
                                         "tag was not found",
                                         Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
@@ -1862,47 +1900,37 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#license' do
-    where(from_gitaly: [true, false])
-    with_them do
-      subject(:license) { repository.license(from_gitaly) }
+    subject(:license) { repository.license }
 
-      context 'when no license file can be found' do
-        let_it_be(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to have_attributes(key: 'mit') }
-      end
-
-      context 'when license is not recognized ' do
-        let_it_be(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
-
-        before do
-          project.repository.update_file(
-            project.owner,
-            'LICENSE',
-            'This software is licensed under the Dummy license.',
-            message: 'Update license',
-            branch_name: 'master')
-        end
-
-        it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    it 'does not crash when license is invalid' do
-      expect(Licensee::License).to receive(:new)
-        .and_raise(Licensee::InvalidLicense)
+    context 'when an mit license is found' do
+      it { is_expected.to have_attributes(key: 'mit') }
+    end
 
-      expect(repository.license(false)).to be_nil
+    context 'when license is not recognized ' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
+
+      before do
+        project.repository.update_file(
+          project.owner,
+          'LICENSE',
+          'This software is licensed under the Dummy license.',
+          message: 'Update license',
+          branch_name: 'master')
+      end
+
+      it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
     end
   end
 
@@ -2421,107 +2449,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       expect(resp.replicas).to be_empty
       expect(resp.primary.checksum).to eq(repository.checksum)
-    end
-  end
-
-  describe '#squash' do
-    let(:branch_name) { 'fix' }
-    let(:start_sha) { TestEnv::BRANCH_SHA['master'] }
-    let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
-
-    subject do
-      opts = {
-        branch: branch_name,
-        start_sha: start_sha,
-        end_sha: end_sha,
-        author: user,
-        message: 'Squash commit message'
-      }
-
-      repository.squash(user, opts)
-    end
-
-    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
-    skip 'sparse checkout' do
-      let(:expected_files) { %w(files files/js files/js/application.js) }
-
-      it 'checks out only the files in the diff' do
-        allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
-          m.call(*args) do
-            worktree_path = args[0]
-            files_pattern = File.join(worktree_path, '**', '*')
-            expected = expected_files.map do |path|
-              File.expand_path(path, worktree_path)
-            end
-
-            expect(Dir[files_pattern]).to eq(expected)
-          end
-        end
-
-        subject
-      end
-
-      context 'when the diff contains a rename' do
-        let(:end_sha) do
-          repository.commit_files(
-            user,
-            branch_name: repository.root_ref,
-            message: 'Move CHANGELOG to encoding/',
-            actions: [{
-              action: :move,
-              previous_path: 'CHANGELOG',
-              file_path: 'encoding/CHANGELOG',
-              content: 'CHANGELOG'
-            }]
-          ).newrev
-        end
-
-        after do
-          # Erase our commits so other tests get the original repo
-          repository.write_ref(repository.root_ref, TestEnv::BRANCH_SHA['master'])
-        end
-
-        it 'does not include the renamed file in the sparse checkout' do
-          allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
-            m.call(*args) do
-              worktree_path = args[0]
-              files_pattern = File.join(worktree_path, '**', '*')
-
-              expect(Dir[files_pattern]).not_to include('CHANGELOG')
-              expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
-            end
-          end
-
-          subject
-        end
-      end
-    end
-
-    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
-    skip 'with an ASCII-8BIT diff' do
-      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
-
-      it 'applies a ASCII-8BIT diff' do
-        allow(repository).to receive(:run_git!).and_call_original
-        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
-
-        expect(subject).to match(/\h{40}/)
-      end
-    end
-
-    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
-    skip 'with trailing whitespace in an invalid patch' do
-      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
-
-      it 'does not include whitespace warnings in the error' do
-        allow(repository).to receive(:run_git!).and_call_original
-        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
-
-        expect { subject }.to raise_error do |error|
-          expect(error).to be_a(described_class::GitError)
-          expect(error.message).not_to include('trailing whitespace')
-        end
-      end
     end
   end
 

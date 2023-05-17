@@ -44,17 +44,17 @@ module Mutations
       end
 
       def resolve(id:, **link_attrs)
-        link = authorized_find!(id)
+        link = authorized_find!(id: id)
 
-        unless link.update(link_attrs)
-          return { link: nil, errors: link.errors.full_messages }
+        result = ::Releases::Links::UpdateService
+          .new(link.release, current_user, link_attrs)
+          .execute(link)
+
+        if result.success?
+          { link: result.payload[:link], errors: [] }
+        else
+          { link: nil, errors: result.message }
         end
-
-        { link: link, errors: [] }
-      end
-
-      def find_object(id)
-        GitlabSchema.find_by_gid(id)
       end
     end
   end

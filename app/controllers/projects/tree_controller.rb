@@ -18,7 +18,8 @@ class Projects::TreeController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:highlight_js, @project)
-    push_frontend_feature_flag(:file_line_blame, @project)
+    push_frontend_feature_flag(:synchronize_fork, @project.fork_source)
+    push_frontend_feature_flag(:explain_code_chat, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
 
@@ -49,9 +50,12 @@ class Projects::TreeController < Projects::ApplicationController
   def create_dir
     return render_404 unless @commit_params.values.all?
 
-    create_commit(Files::CreateDirService,  success_notice: _("The directory has been successfully created."),
-                                            success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
-                                            failure_path: project_tree_path(@project, @ref))
+    create_commit(
+      Files::CreateDirService,
+      success_notice: _("The directory has been successfully created."),
+      success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
+      failure_path: project_tree_path(@project, @ref)
+    )
   end
 
   private

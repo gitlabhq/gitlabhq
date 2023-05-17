@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification, query_analyzers: false,
-  feature_category: :pods do
+  feature_category: :cell do
   let_it_be(:pipeline, refind: true) { create(:ci_pipeline) }
   let_it_be(:project, refind: true) { create(:project) }
 
@@ -118,6 +118,18 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
         end
       end
 
+      context 'when ci_pipelines are ignored for cross modification' do
+        it 'does not raise error' do
+          Project.transaction do
+            expect do
+              described_class.temporary_ignore_tables_in_transaction(%w[ci_pipelines], url: 'TODO') do
+                run_queries
+              end
+            end.not_to raise_error
+          end
+        end
+      end
+
       context 'when data modification happens in nested transactions' do
         it 'raises error' do
           Project.transaction(requires_new: true) do
@@ -209,27 +221,16 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     end
   end
 
-  context 'when some table with a defined schema and another table with undefined gitlab_schema is modified' do
-    it 'raises an error including including message about undefined schema' do
-      expect do
-        Project.transaction do
-          project.touch
-          project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
-        end
-      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
-    end
-  end
-
   context 'when execution is rescued with StandardError' do
     it 'raises cross-database data modification exception' do
       expect do
         Project.transaction do
           project.touch
-          project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
+          project.connection.execute('UPDATE ci_pipelines SET id=1 WHERE id = -1')
         end
       rescue StandardError
         # Ensures that standard rescue does not silence errors
-      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
+      end.to raise_error /Cross-database data modification/
     end
   end
 

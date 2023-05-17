@@ -15,6 +15,12 @@ module WorkItems
         []
       end
 
+      def self.callback_class
+        Issuable::Callbacks.const_get(name.demodulize, false)
+      rescue NameError
+        nil
+      end
+
       def type
         self.class.type
       end

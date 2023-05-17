@@ -8,21 +8,12 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
+- You can configure GitLab so your users can sign in with their Kerberos credentials.
+- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
+
 WARNING:
 GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
 [set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
-
-## Overview
-
-[Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a
-computer network. Kerberos was developed in the Athena Project at the
-[Massachusetts Institute of Technology (MIT)](https://web.mit.edu/). The name is taken from Greek
-mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
-
-## Use-cases
-
-- GitLab can be configured to allow your users to sign with their Kerberos credentials.
-- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 
@@ -99,7 +90,7 @@ to authenticate with Kerberos tokens.
 
 #### Enable single sign-on
 
-Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+Configure the [common settings](omniauth.md#configure-common-settings)
 to add `kerberos` as a single sign-on provider. This enables Just-In-Time
 account provisioning for users who do not have an existing GitLab account.
 
@@ -356,7 +347,27 @@ as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8 kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
+### Use Keytabs created using AES-only encryption with Windows AD
+
+When you create a keytab with Advanced Encryption Standard (AES)-only encryption, you must select the **This account supports Kerberos AES <128/256> bit encryption** checkbox for that account in the AD server. Whether the checkbox is 128 or 256 bit depends on the encryption strength used when you created the keytab. To check this, on the Active Directory server:
+
+1. Open the **Users and Groups** tool.
+1. Locate the account that you used to create the keytab.
+1. Right-click the account and select **Properties**.
+1. In **Account Options** on the **Account** tab, select the appropriate AES encryption support checkbox.
+1. Save and close.
+
 ## Troubleshooting
+
+### Using Google Chrome with Kerberos authentication against Windows AD
+
+When you use Google Chrome to sign in to GitLab with Kerberos, you must enter your full username. For example, `username@domain.com`.
+
+If you do not enter your full username, the sign-in fails. Check the logs to see the following event message as evidence of this sign-in failure:
+
+```plain
+"message":"OmniauthKerberosController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested\nUnknown error"`.
+```
 
 ### Test connectivity between the GitLab and Kerberos servers
 

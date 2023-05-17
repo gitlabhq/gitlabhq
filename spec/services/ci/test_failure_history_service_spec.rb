@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
+RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be_with_reload(:pipeline) do

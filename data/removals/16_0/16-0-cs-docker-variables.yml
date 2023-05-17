@@ -1,0 +1,31 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Container Scanning variables that reference Docker removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.4"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: gonzoyumo  # (required) GitLab username of the person reporting the removal
+  stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371840  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    All Container Scanning variables with a name prefixed by `DOCKER_` have been removed. This includes:
+
+    - `DOCKER_IMAGE`
+    - `DOCKER_PASSWORD`
+    - `DOCKER_USER`
+    - `DOCKERFILE_PATH`
+
+    Instead, use the [new variable names](https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-cicd-variables):
+
+    - `CS_IMAGE`
+    - `CS_REGISTRY_PASSWORD`
+    - `CS_REGISTRY_USER`
+    - `CS_DOCKERFILE_PATH`
+#
+# OPTIONAL FIELDS
+#
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

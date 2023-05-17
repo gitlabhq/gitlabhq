@@ -140,8 +140,6 @@ class PostReceive
   end
 
   def emit_snowplow_event(project, user)
-    return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
-
     metric_path = 'counts.source_code_pushes'
     Gitlab::Tracking.event(
       'PostReceive',

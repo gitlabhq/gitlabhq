@@ -5,7 +5,6 @@ description: Total GitLab Pages domains
 product_section: ops
 product_stage: create
 product_group: editor
-product_category: pages
 value_type: number
 status: active
 time_frame: all

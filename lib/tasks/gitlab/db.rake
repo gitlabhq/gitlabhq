@@ -4,6 +4,7 @@ databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
 def each_database(databases, include_geo: false)
   ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+    next if database == 'embedding'
     next if !include_geo && database == 'geo'
 
     yield database
@@ -60,13 +61,18 @@ namespace :gitlab do
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
         tables = connection.tables
 
+        # Views that are dependencies to PG_EXTENSION (like pg_stat_statements) should be ignored
+        ignored_views = Gitlab::Database::PgDepend.using_connection(connection) do
+          Gitlab::Database::PgDepend.from_pg_extension('VIEW').pluck('relname')
+        end
+
         # Removes the entry from the array
         tables.delete 'schema_migrations'
         # Truncate schema_migrations to ensure migrations re-run
         connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
 
         # Drop any views
-        connection.views.each do |view|
+        (connection.views - ignored_views).each do |view|
           connection.execute("DROP VIEW IF EXISTS #{connection.quote_table_name(view)} CASCADE")
         end
 
@@ -109,9 +115,11 @@ namespace :gitlab do
       load_database = connection.tables.count <= 1
 
       if load_database
+        puts "Running db:schema:load#{database_name} rake task"
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
         Rake::Task["db:schema:load#{database_name}"].invoke
       else
+        puts "Running db:migrate#{database_name} rake task"
         Rake::Task["db:migrate#{database_name}"].invoke
       end
 
@@ -131,7 +139,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
+    desc 'This adjusts and cleans db/structure.sql - it runs after db:schema:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
         structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
@@ -147,26 +155,13 @@ namespace :gitlab do
       Rake::Task[task_name].reenable
     end
 
-    # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-    #
-    # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-    Rake::Task['db:structure:dump'].enhance do
-      Rake::Task['gitlab:db:clean_structure_sql'].invoke
-    end
-
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-      #
-      # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-      Rake::Task["db:structure:dump:#{name}"].enhance do
-        Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      end
-
+      # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
       Rake::Task["db:schema:dump:#{name}"].enhance do
         Rake::Task['gitlab:db:clean_structure_sql'].invoke
       end
@@ -313,6 +308,36 @@ namespace :gitlab do
       end
     end
 
+    namespace :validate_async_constraints do
+      each_database(databases) do |database_name|
+        task database_name, [:pick] => :environment do |_, args|
+          args.with_defaults(pick: 2)
+
+          if Feature.disabled?(:database_async_foreign_key_validation, type: :ops)
+            puts <<~NOTE.color(:yellow)
+              Note: database async foreign key validation feature is currently disabled.
+
+              Enable with: Feature.enable(:database_async_foreign_key_validation)
+            NOTE
+            exit
+          end
+
+          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+            Gitlab::Database::AsyncConstraints.validate_pending_entries!(how_many: args[:pick].to_i)
+          end
+        end
+      end
+
+      task :all, [:pick] => :environment do |_, args|
+        default_pick = Gitlab.dev_or_test_env? ? 1000 : 2
+        args.with_defaults(pick: default_pick)
+
+        each_database(databases) do |database_name|
+          Rake::Task["gitlab:db:validate_async_constraints:#{database_name}"].invoke(args[:pick])
+        end
+      end
+    end
+
     desc 'Check if there have been user additions to the database'
     task active: :environment do
       if ActiveRecord::Base.connection.migration_context.needs_migration?
@@ -320,11 +345,7 @@ namespace :gitlab do
         exit 1
       end
 
-      # A list of projects that GitLab creates automatically on install/upgrade
-      # gc = Gitlab::CurrentSettings.current_application_settings
-      seed_projects = [Gitlab::CurrentSettings.current_application_settings.self_monitoring_project]
-
-      if (Project.count - seed_projects.count { |x| !x.nil? }).eql?(0)
+      if Project.count.eql?(0)
         puts "No user created projects. Database not active"
         exit 1
       end
@@ -427,21 +448,61 @@ namespace :gitlab do
       end
     end
 
+    namespace :schema_checker do
+      # TODO: Remove `test_replication` after PG 14 upgrade is finished
+      # https://gitlab.com/gitlab-com/gl-infra/db-migration/-/merge_requests/406#note_1369214728
+      IGNORED_TABLES = %w[test_replication].freeze
+      IGNORED_TRIGGERS = ['gitlab_schema_write_trigger_for_'].freeze
+
+      desc 'Checks schema inconsistencies'
+      task run: :environment do
+        database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
+        database = Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+
+        stucture_sql_path = Rails.root.join('db/structure.sql')
+        structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+
+        filter = Gitlab::Database::SchemaValidation::InconsistencyFilter.new(IGNORED_TABLES, IGNORED_TRIGGERS)
+
+        inconsistencies =
+          Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute.filter_map(&filter)
+
+        gitlab_url = 'gitlab-org/gitlab'
+
+        inconsistencies.each do |inconsistency|
+          Gitlab::Database::SchemaValidation::TrackInconsistency.new(
+            inconsistency,
+            Project.find_by_full_path(gitlab_url),
+            User.support_bot
+          ).execute
+
+          puts inconsistency.inspect
+        end
+      end
+    end
+
     namespace :dictionary do
-      DB_DOCS_PATH = File.join(Rails.root, 'db', 'docs')
-      EE_DICTIONARY_PATH = File.join(Rails.root, 'ee', 'db', 'docs')
+      DB_DOCS_PATH = Rails.root.join('db', 'docs')
 
       desc 'Generate database docs yaml'
       task generate: :environment do
+        next if Gitlab.jh?
+
         FileUtils.mkdir_p(DB_DOCS_PATH)
-        FileUtils.mkdir_p(EE_DICTIONARY_PATH) if Gitlab.ee?
+
+        if Gitlab.ee?
+          Gitlab::Database::EE_DATABASES_NAME_TO_DIR.each do |_, ee_db_dir|
+            FileUtils.mkdir_p(Rails.root.join(ee_db_dir, 'docs'))
+          end
+        end
 
         Rails.application.eager_load!
 
         version = Gem::Version.new(File.read('VERSION'))
-        milestone = version.release.segments[0..1].join('.')
+        milestone = version.release.segments.first(2).join('.')
 
         classes = {}
+        ignored_tables = %w[p_ci_builds]
 
         Gitlab::Database.database_base_models.each do |_, model_class|
           tables = model_class.connection.tables
@@ -459,10 +520,12 @@ namespace :gitlab do
             .reject(&:abstract_class)
             .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
             .reject { |c| c.name =~ /^HABTM_/ }
+            .reject { |c| c < Gitlab::Database::Migration[1.0]::MigrationRecord }
             .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
 
           sources.each do |source_name|
             next if source_name.start_with?('_test_') # Ignore test tables
+            next if ignored_tables.include?(source_name)
 
             database = model_class.connection_db_config.name
             file = dictionary_file_path(source_name, views, database)
@@ -488,7 +551,7 @@ namespace :gitlab do
               end
 
               if existing_metadata['classes'] && existing_metadata['classes'].sort != table_metadata['classes'].sort
-                existing_metadata['classes'] = table_metadata['classes']
+                existing_metadata['classes'] = (existing_metadata['classes'] + table_metadata['classes']).uniq.sort
                 outdated = true
               end
 
@@ -511,7 +574,11 @@ namespace :gitlab do
       def dictionary_file_path(source_name, views, database)
         sub_directory = views.include?(source_name) ? 'views' : ''
 
-        path = database == 'geo' ? EE_DICTIONARY_PATH : DB_DOCS_PATH
+        path = if Gitlab.ee? && Gitlab::Database::EE_DATABASES_NAME_TO_DIR.key?(database.to_s)
+                 Rails.root.join(Gitlab::Database::EE_DATABASES_NAME_TO_DIR[database.to_s], 'docs')
+               else
+                 DB_DOCS_PATH
+               end
 
         File.join(path, sub_directory, "#{source_name}.yml")
       end

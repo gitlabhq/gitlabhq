@@ -15,6 +15,10 @@ RSpec.describe API::Metrics::UserStarredDashboards, feature_category: :metrics d
     }
   end
 
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
+  end
+
   describe 'POST /projects/:id/metrics/user_starred_dashboards' do
     before do
       project.add_reporter(user)
@@ -80,6 +84,18 @@ RSpec.describe API::Metrics::UserStarredDashboards, feature_category: :metrics d
     context 'without correct permissions' do
       it 'returns 404 not found' do
         post api(url, create(:user)), params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        post api(url, user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -157,6 +173,18 @@ RSpec.describe API::Metrics::UserStarredDashboards, feature_category: :metrics d
     context 'without correct permissions' do
       it 'returns 404 not found' do
         post api(url, create(:user)), params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        delete api(url, user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

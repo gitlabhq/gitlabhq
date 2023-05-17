@@ -1,0 +1,6 @@
+= render Pajamas::AlertComponent.new(variant: :danger,
+  dismissible: false,
+  alert_options: { class: 'gl-mb-5' }) do |c|
+  = c.body do
+    - link_to_model = link_to(model_name, link_path, target: '_blank', rel: 'noopener noreferrer')
+    = _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs.").html_safe % { model_name: model_name, link_to_model: link_to_model }

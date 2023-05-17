@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Gitlab migration', product_group: :import do
+    describe 'Gitlab migration', product_group: :import_and_integrate do
       include_context 'with gitlab project migration'
 
       let!(:source_issue) do
@@ -15,7 +15,7 @@ module QA
 
       let(:source_issue_comments) do
         source_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 
@@ -32,7 +32,7 @@ module QA
 
       let(:imported_issue_comments) do
         imported_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 
@@ -67,11 +67,7 @@ module QA
 
         it(
           'preserves related merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305',
-          quarantine: {
-            type: :bug,
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/386308'
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305'
         ) do
           expect_project_import_finished_successfully
           expect(imported_related_mrs).to eq([source_mr.iid])

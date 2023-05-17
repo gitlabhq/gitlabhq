@@ -520,6 +520,25 @@ it('waits for an event', () => {
 });
 ```
 
+### Manipulate `gon` object
+
+`gon` (or `window.gon`) is a global object used to pass data from the backend. If your test depends
+on its value you can directly modify it:
+
+```javascript
+describe('when logged in', () => {
+  beforeEach(() => {
+    gon.current_user_id = 1;
+  });
+
+  it('shows message', () => {
+    expect(wrapper.text()).toBe('Logged in!');
+  });
+})
+```
+
+`gon` is reset in every test to ensure tests are isolated.
+
 ### Ensuring that tests are isolated
 
 Tests are normally architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.
@@ -546,6 +565,53 @@ Example
     fakeApollo = null;
     store = null;
   });
+```
+
+### Testing local-only Apollo queries and mutations
+
+To add a new query or mutation before it is added to the backend, we can use the `@client` directive. For example:
+
+```graphql
+mutation setActiveBoardItemEE($boardItem: LocalBoardItem, $isIssue: Boolean = true) {
+  setActiveBoardItem(boardItem: $boardItem) @client {
+    ...Issue @include(if: $isIssue)
+    ...EpicDetailed @skip(if: $isIssue)
+  }
+}
+```
+
+When writing test cases for such calls, we can use resolvers to make sure they are called with the correct parameters.
+
+For example, when creating the wrapper, we should make sure the resolver is mapped to the query or mutation.
+The mutation we are mocking here is `setActiveBoardItem`:
+
+```javascript
+const mockSetActiveBoardItemResolver = jest.fn();
+const mockApollo = createMockApollo([], {
+    Mutation: {
+      setActiveBoardItem: mockSetActiveBoardItemResolver,
+    },
+});
+```
+
+In the following code, we must pass four arguments. The second one must be the collection of input variables of the query or mutation mocked.
+To test that the mutation is called with the correct parameters:
+
+```javascript
+it('calls setActiveBoardItemMutation on close', async () => {
+    wrapper.findComponent(GlDrawer).vm.$emit('close');
+
+    await waitForPromises();
+
+    expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+            boardItem: null,
+        },
+        expect.anything(),
+        expect.anything(),
+    );
+});
 ```
 
 ### Jest best practices
@@ -800,10 +866,10 @@ often using fixtures to validate correct integration with the backend code.
 
 ### Use fixtures
 
-To import a JSON fixture, `import` it using the `test_fixtures` alias.
+To import a JSON or HTML fixture, `import` it using the `test_fixtures` alias.
 
 ```javascript
-import responseBody from 'test_fixtures/some/fixture.json' // loads spec/frontend/fixtures/some/fixture.json
+import responseBody from 'test_fixtures/some/fixture.json' // loads tmp/tests/frontend/fixtures-ee/some/fixture.json
 
 it('makes a request', () => {
   axiosMock.onGet(endpoint).reply(200, responseBody);
@@ -811,23 +877,6 @@ it('makes a request', () => {
   myButton.click();
 
   // ...
-});
-```
-
-For other fixtures, Jest uses `spec/frontend/__helpers__/fixtures.js` to import them in tests.
-
-The following are examples of tests that work for Jest:
-
-```javascript
-it('uses some HTML element', () => {
-  loadHTMLFixture('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
-
-  const element = document.getElementById('#my-id');
-
-  // ...
-
-  // Jest does not clean up the DOM automatically
-  resetHTMLFixture();
 });
 ```
 
@@ -844,6 +893,26 @@ You can generate fixtures by running:
 - `bin/rspec spec/frontend/fixtures/merge_requests.rb` to generate specific fixtures (in this case for `merge_request.rb`)
 
 You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
+
+### Download fixtures
+
+We generate fixtures in GitLab CI, and store them in the package registry.
+
+The `scripts/frontend/download_fixtures.sh` script is meant to download and extract those fixtures for local use:
+
+```shell
+# Checks if a frontend fixture package exists in the gitlab-org/gitlab
+# package registry by looking at the commits on a local branch.
+#
+# The package is downloaded and extracted if it exists
+$ scripts/frontend/download_fixtures.sh
+
+# Same as above, but only looks at the last 10 commits of the currently checked-out branch
+$ scripts/frontend/download_fixtures.sh --max-commits=10
+
+# Looks at the commits on the local master branch instead of the currently checked-out branch
+$ scripts/frontend/download_fixtures.sh --branch master
+```
 
 #### Creating new fixtures
 
@@ -1161,15 +1230,14 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 ## Snapshots
 
-By now you've probably heard of [Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) and why they are useful for various reasons.
-To use them within GitLab, there are a few guidelines that should be highlighted:
+[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should **only** be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required usecase. To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
 - Don't think of a snapshot file as a black box
 - Care for the output of the snapshot, otherwise, it's not providing any real value. This will usually involve reading the generated snapshot file as you would read any other piece of code
 
 Think of a snapshot test as a simple way to store a raw `String` representation of what you've put into the item being tested. This can be used to evaluate changes in a component, a store, a complex piece of generated output, etc. You can see more in the list below for some recommended `Do's and Don'ts`.
-While snapshot tests can be a very powerful tool. They are meant to supplement, not to replace unit tests.
+While snapshot tests can be a very powerful tool, they are meant to supplement, not to replace unit tests.
 
 Jest provides a great set of docs on [best practices](https://jestjs.io/docs/snapshot-testing#best-practices) that we should keep in mind when creating snapshots.
 
@@ -1180,6 +1248,161 @@ A snapshot is purely a stringified version of what you ask to be tested on the l
 Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
 
 Find all the details in Jests official documentation [https://jestjs.io/docs/snapshot-testing](https://jestjs.io/docs/snapshot-testing)
+
+### Pros and Cons
+
+**Pros**
+
+- Provides a good warning against accidental changes of important HTML structures
+- Ease of setup
+
+**Cons**
+
+- Lacks the clarity or guard rails that `vue-tests-utils` provides by finding elements and asserting their presence directly
+- Creates unnecessary noise when updating components purposefully
+- High risk of taking a snapshot of bugs, which then turns the tests against us since the test will now fail when fixing the issue
+- No meaningful assertions or expectations within snapshots makes them harder to reason about or replace
+- When used with dependencies like [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui), it creates fragility in tests when the underlying library changes the HTML of a component we are testing
+
+### When to use
+
+**Use snapshots when**
+
+- Protecting critical HTML structures so it doesn't change by accident
+- Asserting JS object or JSON outputs of complex utility functions
+
+### When not to use
+
+**Don't use snapshots when**
+
+- Tests could be written using `vue-tests-utils` instead
+- Asserting the logic of a component
+- Predicting data structure(s) outputs
+- There are UI elements outside of the repository (think of GitLab UI version updates)
+
+### Examples
+
+As you can see, the cons of snapshot tests far outweight the pros in general. To illustrate this better, this section will show a few examples of when you might be tempted to
+use snapshot testing and why they are not good patterns.
+
+#### Example #1 - Element visiblity
+
+When testing elements visibility, favour using `vue-tests-utils (VTU)` to find a given component and then a basic `.exists()` method call on the VTU wrapper. This provides better readability and more resilient testing. If you look at the examples below, notice how the assertions on the snapshots do not tell you what you are expecting to see. We are relying entirely on `it` description to give us context and on the assumption that the snapshot has captured the desired behavior.
+
+```vue
+<template>
+  <my-component v-if="isVisible" />
+</template>
+```
+
+Bad:
+
+```javascript
+it('hides the component', () => {
+  createComponent({ props: { isVisible: false }})
+
+  expect(wrapper.element).toMatchSnapshot()
+})
+
+it('shows the component', () => {
+  createComponent({ props: { isVisible: true }})
+
+  expect(wrapper.element).toMatchSnapshot()
+})
+```
+
+Good:
+
+```javascript
+it('hides the component', () => {
+  createComponent({ props: { isVisible: false }})
+
+  expect(findMyComponent().exists()).toBe(false)
+})
+
+it('shows the component', () => {
+  createComponent({ props: { isVisible: true }})
+
+  expect(findMyComponent().exists()).toBe(true)
+})
+```
+
+Not only that, but imagine having passed the wrong prop to your component and having the wrong visibility: the snapshot test would still pass because you would have captured the HTML **with the issue** and so unless you double-checked the output of the snapshot, you would never know that your test is broken.
+
+#### Example #2 - Presence of text
+
+Finding text within a component is very easy by using the `vue-test-utils` method `wrapper.text()`. However, there are some cases where it might be tempting to use snapshots when the value returned has a lot of inconsistent spacing due to formatting or HTML nesting.
+
+In these instances, it is better to assert each string individually and make multiple assertions than to use a snapshot to ignore the spaces. This is because any change to the DOM layout will fail the snapshot test even if the text is still perfectly formatted.
+
+```vue
+<template>
+  <gl-sprintf :message="my-message">
+    <template #code="{ content }">
+      <code>{{ content }}</code>
+    </template>
+  </gl-sprintf>
+  <p> My second message </p>
+</template>
+```
+
+Bad:
+
+```javascript
+it('renders the text as I expect', () => {
+  expect(wrapper.text()).toMatchSnapshot()
+})
+```
+
+Good:
+
+```javascript
+it('renders the code snippet', () => {
+  expect(findCodeTag().text()).toContain("myFunction()")
+})
+
+it('renders the paragraph text', () => {
+  expect(findOtherText().text()).toBe("My second message")
+})
+```
+
+#### Example #3 - Complex HTML
+
+When we have very complex HTML, we should focus on asserting specific sensitive and meaningful points rather than capturing it as a whole. The value in a snapshot test is to **warn developers** that they might have accidentally change an HTML structure that they did not intend to change. If the output of the change is hard to read, which is often the case with complex HTML output, then **is the signal itself that something changed** sufficient? And if it is, can it be accomplished without snapshots?
+
+A good example of a complex HTML output is `GlTable`. Snapshot testing might feel like a good option since you can capture rows and columns structure, but we should instead try to assert text we expect or count the number of rows and columns manually.
+
+```vue
+<template>
+  <gl-table ...all-them-props />
+</template>
+```
+
+Bad:
+
+```javascript
+it('renders GlTable as I expect', () => {
+  expect(findGlTable().element).toMatchSnapshot()
+})
+```
+
+Good:
+
+```javascript
+it('renders the right number of rows', () => {
+  expect(findGlTable().findAllRows()).toHaveLength(expectedLength)
+})
+
+it('renders the special icon that only appears on a full moon', () => {
+  expect(findGlTable().findMoonIcon().exists()).toBe(true)
+})
+
+it('renders the correct email format', () => {
+  expect(findGlTable().text()).toContain('my_strange_email@shaddyprovide.com')
+})
+```
+
+Although more verbose, this now means that our tests are not going to break if `GlTable` changes its internal implementation, we communicate to other developers (or ourselves in 6 months) what is important to preserve when refactoring or adding to our table.
 
 ### How to take a snapshot
 
@@ -1210,43 +1433,6 @@ it('renders the component correctly', () => {
 ```
 
 The above test will create two snapshots. It's important to decide which of the snapshots provide more value for codebase safety. That is, if one of these snapshots changes, does that highlight a possible break in the codebase? This can help catch unexpected changes if something in an underlying dependency changes without our knowledge.
-
-### Pros and Cons
-
-**Pros**
-
-- Speed up the creation of unit tests
-- Easy to maintain
-- Provides a good safety net to protect against accidental breakage of important HTML structures
-
-**Cons**
-
-- Is not a catch-all solution that replaces the work of integration or unit tests
-- No meaningful assertions or expectations within snapshots
-- When carelessly used with [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui) it can create fragility in tests when the underlying library changes the HTML of a component we are testing
-
-A good guideline to follow: the more complex the component you may want to steer away from just snapshot testing. But that's not to say you can't still snapshot test and test your component as normal.
-
-### When to use
-
-**Use snapshots when**
-
-- to capture a components rendered output
-- to fully or partially match templates
-- to match readable data structures
-- to verify correctly composed native HTML elements
-- as a safety net for critical structures so others don't break it by accident
-- Template heavy component
-- Not a lot of logic in the component
-- Composed of native HTML elements
-
-### When not to use
-
-**Don't use snapshots when**
-
-- To capture large data structures just to have something
-- To just have some kind of test written
-- To capture highly volatile UI elements without stubbing them (Think of GitLab UI version updates)
 
 ## Get started with feature tests
 
@@ -1567,11 +1753,8 @@ Inside the terminal, where capybara is running, you can also execute `next` whic
 
 ### Updating ChromeDriver
 
-On MacOS, if you get a ChromeDriver error, make sure to update it by running
-
-```shell
-  brew upgrade chromedriver
-```
+Starting from `Selenium` 4.6, ChromeDriver can be automatically managed by `Selenium Manager` which comes with the `selenium-webdriver` gem.
+You are no longer required to manually keeping chromedriver in sync.
 
 ---
 

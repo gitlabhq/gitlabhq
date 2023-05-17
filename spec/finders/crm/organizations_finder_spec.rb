@@ -12,8 +12,8 @@ RSpec.describe Crm::OrganizationsFinder do
       let_it_be(:root_group) { create(:group, :crm_enabled) }
       let_it_be(:group) { create(:group, parent: root_group) }
 
-      let_it_be(:organization_1) { create(:organization, group: root_group) }
-      let_it_be(:organization_2) { create(:organization, group: root_group) }
+      let_it_be(:crm_organization_1) { create(:crm_organization, group: root_group) }
+      let_it_be(:crm_organization_2) { create(:crm_organization, group: root_group) }
 
       context 'when user does not have permissions to see organizations in the group' do
         it 'returns an empty array' do
@@ -28,7 +28,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
         context 'when feature flag is enabled' do
           it 'returns all group organizations' do
-            expect(subject).to match_array([organization_1, organization_2])
+            expect(subject).to match_array([crm_organization_1, crm_organization_2])
           end
         end
       end
@@ -46,7 +46,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
     context 'when customer relations feature is disabled for the group' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:organization) { create(:organization, group: group) }
+      let_it_be(:crm_organization) { create(:crm_organization, group: group) }
 
       before do
         group.add_developer(user)
@@ -62,7 +62,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
       let_it_be(:search_test_a) do
         create(
-          :organization,
+          :crm_organization,
           group: search_test_group,
           name: "DEF",
           description: "ghi_st",
@@ -72,7 +72,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
       let_it_be(:search_test_b) do
         create(
-          :organization,
+          :crm_organization,
           group: search_test_group,
           name: "ABC_st",
           description: "JKL",
@@ -134,7 +134,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
       let_it_be(:sort_test_a) do
         create(
-          :organization,
+          :crm_organization,
           group: group,
           name: "ABC",
           description: "1"
@@ -143,7 +143,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
       let_it_be(:sort_test_b) do
         create(
-          :organization,
+          :crm_organization,
           group: group,
           name: "DEF",
           description: "2",
@@ -153,7 +153,7 @@ RSpec.describe Crm::OrganizationsFinder do
 
       let_it_be(:sort_test_c) do
         create(
-          :organization,
+          :crm_organization,
           group: group,
           name: "GHI",
           default_rate: 20
@@ -186,8 +186,8 @@ RSpec.describe Crm::OrganizationsFinder do
 
   describe '.counts_by_state' do
     let_it_be(:group) { create(:group, :crm_enabled) }
-    let_it_be(:active_organizations) { create_list(:organization, 3, group: group, state: :active) }
-    let_it_be(:inactive_organizations) { create_list(:organization, 2, group: group, state: :inactive) }
+    let_it_be(:active_crm_organizations) { create_list(:crm_organization, 3, group: group, state: :active) }
+    let_it_be(:inactive_crm_organizations) { create_list(:crm_organization, 2, group: group, state: :inactive) }
 
     before do
       group.add_developer(user)

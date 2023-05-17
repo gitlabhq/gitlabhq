@@ -7,27 +7,27 @@ module Gitlab
         module Validators
           class SchemaValidator
             SUPPORTED_VERSIONS = {
-              cluster_image_scanning: %w[14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              container_scanning: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              coverage_fuzzing: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              dast: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              api_fuzzing: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              dependency_scanning: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              sast: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4],
-              secret_detection: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4]
+              cluster_image_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              container_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              coverage_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              dast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              api_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              dependency_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              sast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6],
+              secret_detection: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.6]
             }.freeze
 
-            VERSIONS_TO_REMOVE_IN_16_0 = %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3].freeze
+            VERSIONS_TO_REMOVE_IN_17_0 = %w[].freeze
 
             DEPRECATED_VERSIONS = {
-              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_16_0,
-              container_scanning: VERSIONS_TO_REMOVE_IN_16_0,
-              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_16_0,
-              dast: VERSIONS_TO_REMOVE_IN_16_0,
-              api_fuzzing: VERSIONS_TO_REMOVE_IN_16_0,
-              dependency_scanning: VERSIONS_TO_REMOVE_IN_16_0,
-              sast: VERSIONS_TO_REMOVE_IN_16_0,
-              secret_detection: VERSIONS_TO_REMOVE_IN_16_0
+              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_17_0,
+              container_scanning: VERSIONS_TO_REMOVE_IN_17_0,
+              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
+              dast: VERSIONS_TO_REMOVE_IN_17_0,
+              api_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
+              dependency_scanning: VERSIONS_TO_REMOVE_IN_17_0,
+              sast: VERSIONS_TO_REMOVE_IN_17_0,
+              secret_detection: VERSIONS_TO_REMOVE_IN_17_0
             }.freeze
 
             CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }
@@ -131,11 +131,6 @@ module Gitlab
             end
 
             def report_uses_deprecated_schema_version?
-              # Avoid deprecation warnings for GitLab security scanners
-              # To be removed via https://gitlab.com/gitlab-org/gitlab/-/issues/386798
-              return if report_data.dig('scan', 'scanner', 'vendor', 'name')&.downcase == 'gitlab'
-              return if report_data.dig('scan', 'analyzer', 'vendor', 'name')&.downcase == 'gitlab'
-
               DEPRECATED_VERSIONS[report_type].include?(report_version)
             end
 

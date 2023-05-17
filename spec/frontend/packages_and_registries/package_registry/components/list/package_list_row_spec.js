@@ -1,5 +1,5 @@
 import { GlFormCheckbox, GlSprintf, GlTruncate } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -9,7 +9,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
-import PackageIconAndName from '~/packages_and_registries/shared/components/package_icon_and_name.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry/constants';
@@ -39,7 +38,7 @@ describe('packages_list_row', () => {
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackagePath = () => wrapper.findComponent(PackagePath);
   const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
-  const findPackageIconAndName = () => wrapper.findComponent(PackageIconAndName);
+  const findPackageType = () => wrapper.findByTestId('package-type');
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
@@ -67,14 +66,10 @@ describe('packages_list_row', () => {
         selected,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders', () => {
     mountComponent();
@@ -136,12 +131,11 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('emits the delete event when the delete button is clicked', async () => {
+    it('emits the delete event when the delete button is clicked', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
       findDeleteDropdown().vm.$emit('click');
 
-      await nextTick();
       expect(wrapper.emitted('delete')).toHaveLength(1);
     });
   });
@@ -237,10 +231,10 @@ describe('packages_list_row', () => {
       expect(findLeftSecondaryInfos().text()).toContain('published by Administrator');
     });
 
-    it('has icon and name component', () => {
+    it('has package type with middot', () => {
       mountComponent();
 
-      expect(findPackageIconAndName().text()).toBe(packageWithoutTags.packageType.toLowerCase());
+      expect(findPackageType().text()).toBe(`· ${packageWithoutTags.packageType.toLowerCase()}`);
     });
   });
 

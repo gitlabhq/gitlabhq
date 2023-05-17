@@ -45,10 +45,6 @@ describe('URL utility', () => {
   });
 
   describe('webIDEUrl', () => {
-    afterEach(() => {
-      gon.relative_url_root = '';
-    });
-
     it('escapes special characters', () => {
       expect(urlUtils.webIDEUrl('/gitlab-org/gitlab-#-foss/merge_requests/1')).toBe(
         '/-/ide/project/gitlab-org/gitlab-%23-foss/merge_requests/1',
@@ -505,10 +501,6 @@ describe('URL utility', () => {
       gon.gitlab_url = gitlabUrl;
     });
 
-    afterEach(() => {
-      gon.gitlab_url = '';
-    });
-
     it.each`
       url                                        | urlType                    | external
       ${'/gitlab-org/gitlab-test/-/issues/2'}    | ${'relative'}              | ${false}
@@ -793,18 +785,6 @@ describe('URL utility', () => {
       ${['///', '/', '//']}                       | ${'/'}
     `('joins paths $paths => $expected', ({ paths, expected }) => {
       expect(urlUtils.joinPaths(...paths)).toBe(expected);
-    });
-  });
-
-  describe('stripFinalUrlSegment', () => {
-    it.each`
-      path                                                        | expected
-      ${'http://fake.domain/twitter/typeahead-js/-/tags/v0.11.0'} | ${'http://fake.domain/twitter/typeahead-js/-/tags/'}
-      ${'http://fake.domain/bar/cool/-/nested/content'}           | ${'http://fake.domain/bar/cool/-/nested/'}
-      ${'http://fake.domain/bar/cool?q="search"'}                 | ${'http://fake.domain/bar/'}
-      ${'http://fake.domain/bar/cool#link-to-something'}          | ${'http://fake.domain/bar/'}
-    `('stripFinalUrlSegment $path => $expected', ({ path, expected }) => {
-      expect(urlUtils.stripFinalUrlSegment(path)).toBe(expected);
     });
   });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CopyCrossDatabaseAssociationsService do
+RSpec.describe Ci::CopyCrossDatabaseAssociationsService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:old_build) { create(:ci_build, pipeline: pipeline) }

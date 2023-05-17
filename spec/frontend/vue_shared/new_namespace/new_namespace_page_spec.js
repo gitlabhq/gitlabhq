@@ -4,17 +4,21 @@ import { nextTick } from 'vue';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
+import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
+import { sidebarState } from '~/super_sidebar/constants';
 
-describe('Experimental new project creation app', () => {
+jest.mock('~/super_sidebar/constants');
+describe('Experimental new namespace creation app', () => {
   let wrapper;
 
   const findWelcomePage = () => wrapper.findComponent(WelcomePage);
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
+  const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
 
   const DEFAULT_PROPS = {
     title: 'Create something',
-    initialBreadcrumb: 'Something',
+    initialBreadcrumbs: [{ text: 'Something', href: '#' }],
     panels: [
       { name: 'panel1', selector: '#some-selector1' },
       { name: 'panel2', selector: '#some-selector2' },
@@ -33,7 +37,6 @@ describe('Experimental new project creation app', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     window.location.hash = '';
   });
 
@@ -46,8 +49,8 @@ describe('Experimental new project creation app', () => {
       expect(findWelcomePage().exists()).toBe(true);
     });
 
-    it('does not render breadcrumbs', () => {
-      expect(findBreadcrumb().exists()).toBe(false);
+    it('renders breadcrumbs', () => {
+      expect(findBreadcrumb().exists()).toBe(true);
     });
   });
 
@@ -75,7 +78,7 @@ describe('Experimental new project creation app', () => {
     it('renders breadcrumbs', () => {
       const breadcrumb = findBreadcrumb();
       expect(breadcrumb.exists()).toBe(true);
-      expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumb);
+      expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumbs[0].text);
     });
   });
 
@@ -103,5 +106,23 @@ describe('Experimental new project creation app', () => {
     await nextTick();
     expect(findWelcomePage().exists()).toBe(false);
     expect(findLegacyContainer().exists()).toBe(true);
+  });
+
+  describe.each`
+    featureFlag | isSuperSidebarCollapsed | isToggleVisible
+    ${true}     | ${true}                 | ${true}
+    ${true}     | ${false}                | ${false}
+    ${false}    | ${true}                 | ${false}
+    ${false}    | ${false}                | ${false}
+  `('Super sidebar toggle', ({ featureFlag, isSuperSidebarCollapsed, isToggleVisible }) => {
+    beforeEach(() => {
+      sidebarState.isCollapsed = isSuperSidebarCollapsed;
+      gon.use_new_navigation = featureFlag;
+      createComponent();
+    });
+
+    it(`${isToggleVisible ? 'is visible' : 'is not visible'}`, () => {
+      expect(findSuperSidebarToggle().exists()).toBe(isToggleVisible);
+    });
   });
 });

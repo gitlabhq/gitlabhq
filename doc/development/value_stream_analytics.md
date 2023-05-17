@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics development guide
+# Value stream analytics development guidelines
 
 For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
 
@@ -65,7 +65,7 @@ of the stage. Stages are configurable by the user within the pairing rules defin
   IDs are identical.
   - The stage event hash ID is later used to store the aggregated data in partitioned database tables.
 
-Historically, value stream analytics defined [7 stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
+Historically, value stream analytics defined [six stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
 which are always available to the end-users regardless of the subscription.
 
 ### Value streams
@@ -160,6 +160,7 @@ graph LR;
   IssueCreated --> IssueLastEdited;
   IssueCreated --> IssueLabelAdded;
   IssueCreated --> IssueLabelRemoved;
+  IssueCreated --> IssueFirstAssignedAt;
   MergeRequestCreated --> MergeRequestMerged;
   MergeRequestCreated --> MergeRequestClosed;
   MergeRequestCreated --> MergeRequestFirstDeployedToProduction;
@@ -168,6 +169,13 @@ graph LR;
   MergeRequestCreated --> MergeRequestLastEdited;
   MergeRequestCreated --> MergeRequestLabelAdded;
   MergeRequestCreated --> MergeRequestLabelRemoved;
+  MergeRequestCreated --> MergeRequestFirstAssignedAt;
+  MergeRequestFirstAssignedAt --> MergeRequestClosed;
+  MergeRequestFirstAssignedAt --> MergeRequestLastBuildStarted;
+  MergeRequestFirstAssignedAt --> MergeRequestLastEdited;
+  MergeRequestFirstAssignedAt --> MergeRequestMerged;
+  MergeRequestFirstAssignedAt --> MergeRequestLabelAdded;
+  MergeRequestFirstAssignedAt --> MergeRequestLabelRemoved;
   MergeRequestLastBuildStarted --> MergeRequestLastBuildFinished;
   MergeRequestLastBuildStarted --> MergeRequestClosed;
   MergeRequestLastBuildStarted --> MergeRequestFirstDeployedToProduction;
@@ -184,19 +192,30 @@ graph LR;
   IssueLabelAdded --> IssueLabelAdded;
   IssueLabelAdded --> IssueLabelRemoved;
   IssueLabelAdded --> IssueClosed;
+  IssueLabelAdded --> IssueFirstAssignedAt;
   IssueLabelRemoved --> IssueClosed;
+  IssueLabelRemoved --> IssueFirstAssignedAt;
   IssueFirstAddedToBoard --> IssueClosed;
   IssueFirstAddedToBoard --> IssueFirstAssociatedWithMilestone;
   IssueFirstAddedToBoard --> IssueFirstMentionedInCommit;
   IssueFirstAddedToBoard --> IssueLastEdited;
   IssueFirstAddedToBoard --> IssueLabelAdded;
   IssueFirstAddedToBoard --> IssueLabelRemoved;
+  IssueFirstAddedToBoard --> IssueFirstAssignedAt;
+  IssueFirstAssignedAt --> IssueClosed;
+  IssueFirstAssignedAt --> IssueFirstAddedToBoard;
+  IssueFirstAssignedAt --> IssueFirstAssociatedWithMilestone;
+  IssueFirstAssignedAt --> IssueFirstMentionedInCommit;
+  IssueFirstAssignedAt --> IssueLastEdited;
+  IssueFirstAssignedAt --> IssueLabelAdded;
+  IssueFirstAssignedAt --> IssueLabelRemoved;
   IssueFirstAssociatedWithMilestone --> IssueClosed;
   IssueFirstAssociatedWithMilestone --> IssueFirstAddedToBoard;
   IssueFirstAssociatedWithMilestone --> IssueFirstMentionedInCommit;
   IssueFirstAssociatedWithMilestone --> IssueLastEdited;
   IssueFirstAssociatedWithMilestone --> IssueLabelAdded;
   IssueFirstAssociatedWithMilestone --> IssueLabelRemoved;
+  IssueFirstAssociatedWithMilestone --> IssueFirstAssignedAt;
   IssueFirstMentionedInCommit --> IssueClosed;
   IssueFirstMentionedInCommit --> IssueFirstAssociatedWithMilestone;
   IssueFirstMentionedInCommit --> IssueFirstAddedToBoard;
@@ -221,8 +240,11 @@ graph LR;
   MergeRequestLastBuildFinished --> MergeRequestLabelRemoved;
   MergeRequestLabelAdded --> MergeRequestLabelAdded;
   MergeRequestLabelAdded --> MergeRequestLabelRemoved;
+  MergeRequestLabelAdded --> MergeRequestMerged;
+  MergeRequestLabelAdded --> MergeRequestFirstAssignedAt;
   MergeRequestLabelRemoved --> MergeRequestLabelAdded;
   MergeRequestLabelRemoved --> MergeRequestLabelRemoved;
+  MergeRequestLabelRemoved --> MergeRequestFirstAssignedAt;
 ```
 
 ## Default stages
@@ -343,9 +365,25 @@ Seed issues and merge requests for value stream analytics:
 
 Seed DORA daily metrics for value stream, insights and CI/CD analytics:
 
-1. [Create an environment from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project's homepage, in the upper-left corner, copy the **Project ID**. You need it in a later step.
+1. [Create an environment for your selected project from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
 1. Open the rails console:
 
    ```shell
    rails c
    ```
+
+1. In the rails console, find the created environment by searching for the project ID:
+
+    ```shell
+    e = Environment.find_by(project_id: <project-id>, name: "production")
+    ```
+
+1. To seed data for the past 100 days for the environment, run the following command:
+
+    ```shell
+    100.times { |i| Dora::DailyMetrics.create(environment_id: e.id, date: (i + 1).days.ago, deployment_frequency: rand(50), incidents_count: rand(5),   lead_time_for_changes_in_seconds: rand(50000), time_to_restore_service_in_seconds: rand(100000)) }
+    ```
+
+DORA metric data should now be available for your selected project and any group or subgroup it belongs to.

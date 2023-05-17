@@ -53,12 +53,6 @@ describe('Sentry Error Stack Trace', () => {
     });
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('loading', () => {
     it('should show spinner while loading', () => {
       mountComponent();

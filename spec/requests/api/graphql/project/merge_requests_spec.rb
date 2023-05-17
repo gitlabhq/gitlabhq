@@ -226,6 +226,28 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     it_behaves_like 'when searching with parameters'
   end
 
+  context 'when searching by approved' do
+    let(:approved_mr) { create(:merge_request, target_project: project, source_project: project) }
+
+    before do
+      create(:approval, merge_request: approved_mr)
+    end
+
+    context 'when true' do
+      let(:search_params) { { approved: true } }
+      let(:mrs) { [approved_mr] }
+
+      it_behaves_like 'when searching with parameters'
+    end
+
+    context 'when false' do
+      let(:search_params) { { approved: false } }
+      let(:mrs) { all_merge_requests }
+
+      it_behaves_like 'when searching with parameters'
+    end
+  end
+
   context 'when requesting `approved_by`' do
     let(:search_params) { { iids: [merge_request_a.iid.to_s, merge_request_b.iid.to_s] } }
     let(:extra_iid_for_second_query) { merge_request_c.iid.to_s }
@@ -331,7 +353,7 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     end
 
     context 'when award emoji votes' do
-      let(:requested_fields) { [:upvotes, :downvotes] }
+      let(:requested_fields) { 'upvotes downvotes awardEmoji { nodes { name } }' }
 
       before do
         create_list(:award_emoji, 2, name: 'thumbsup', awardable: merge_request_a)
@@ -588,8 +610,9 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
         end
 
         let(:query) do
+          # Adding a no-op `not` filter to mimic the same query as the frontend does
           graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
-          mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
+          mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0, not: { labels: null }) {
             totalTimeToMerge
             count
           }

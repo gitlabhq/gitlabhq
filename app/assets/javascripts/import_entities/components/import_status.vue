@@ -1,31 +1,10 @@
 <script>
-import { GlAccordion, GlAccordionItem, GlBadge, GlIcon } from '@gitlab/ui';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { GlAccordion, GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+import { STATISTIC_ITEMS } from '~/import/constants';
 import { STATUSES } from '../constants';
-
-const STATISTIC_ITEMS = {
-  diff_note: __('Diff notes'),
-  issue: __('Issues'),
-  issue_attachment: s__('GithubImporter|Issue attachments'),
-  issue_event: __('Issue events'),
-  label: __('Labels'),
-  lfs_object: __('LFS objects'),
-  merge_request_attachment: s__('GithubImporter|Merge request attachments'),
-  milestone: __('Milestones'),
-  note: __('Notes'),
-  note_attachment: s__('GithubImporter|Note attachments'),
-  protected_branch: __('Protected branches'),
-  pull_request: s__('GithubImporter|Pull requests'),
-  pull_request_merged_by: s__('GithubImporter|PR mergers'),
-  pull_request_review: s__('GithubImporter|PR reviews'),
-  pull_request_review_request: s__('GithubImporter|PR reviews'),
-  release: __('Releases'),
-  release_attachment: s__('GithubImporter|Release attachments'),
-};
-
-// support both camel case and snake case versions
-Object.assign(STATISTIC_ITEMS, convertObjectPropsToCamelCase(STATISTIC_ITEMS));
 
 const SCHEDULED_STATUS = {
   icon: 'status-scheduled',
@@ -77,8 +56,20 @@ export default {
     GlAccordionItem,
     GlBadge,
     GlIcon,
+    GlLink,
+  },
+  mixins: [glFeatureFlagMixin()],
+  inject: {
+    detailsPath: {
+      default: undefined,
+    },
   },
   props: {
+    projectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     status: {
       type: String,
       required: true,
@@ -102,13 +93,16 @@ export default {
       return this.stats && this.knownStats.length > 0;
     },
 
+    isIncomplete() {
+      return this.status === STATUSES.FINISHED && this.stats && isIncompleteImport(this.stats);
+    },
+
     mappedStatus() {
       if (this.status === STATUSES.FINISHED) {
-        const isIncomplete = this.stats && isIncompleteImport(this.stats);
-        return isIncomplete
+        return this.isIncomplete
           ? {
               icon: 'status-alert',
-              text: __('Partial import'),
+              text: s__('Import|Partially completed'),
               variant: 'warning',
             }
           : {
@@ -119,6 +113,22 @@ export default {
       }
 
       return STATUS_MAP[this.status];
+    },
+
+    showDetails() {
+      return (
+        Boolean(this.detailsPathForProject) &&
+        this.glFeatures.importDetailsPage &&
+        this.isIncomplete
+      );
+    },
+
+    detailsPathForProject() {
+      if (!this.projectId || !this.detailsPath) {
+        return null;
+      }
+
+      return `${this.detailsPath}?project_id=${this.projectId}`;
     },
   },
 
@@ -140,25 +150,22 @@ export default {
   },
 
   STATISTIC_ITEMS,
+  i18n: {
+    detailsLink: s__('Import|See failures'),
+  },
 };
 </script>
 
 <template>
   <div>
-    <div class="gl-display-inline-block gl-w-13">
-      <gl-badge
-        :icon="mappedStatus.icon"
-        :variant="mappedStatus.variant"
-        size="md"
-        icon-size="sm"
-        class="gl-mr-2"
-      >
+    <div class="gl-display-inline-block">
+      <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" size="md" icon-size="sm">
         {{ mappedStatus.text }}
       </gl-badge>
     </div>
     <gl-accordion v-if="hasStats" :header-level="3">
       <gl-accordion-item :title="__('Details')">
-        <ul class="gl-p-0 gl-list-style-none gl-font-sm">
+        <ul class="gl-p-0 gl-mb-3 gl-list-style-none gl-font-sm">
           <li v-for="key in knownStats" :key="key">
             <div class="gl-display-flex gl-w-20 gl-align-items-center">
               <gl-icon
@@ -173,6 +180,9 @@ export default {
             </div>
           </li>
         </ul>
+        <gl-link v-if="showDetails" :href="detailsPathForProject">{{
+          $options.i18n.detailsLink
+        }}</gl-link>
       </gl-accordion-item>
     </gl-accordion>
   </div>

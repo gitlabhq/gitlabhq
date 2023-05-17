@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
+RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   include RepoHelpers
   include ProjectForksHelper
 

@@ -1,13 +1,20 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import { n__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
     TimeAgoTooltip,
+    GlLink,
     GlSprintf,
   },
   props: {
+    taskCompletionStatus: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     updatedAt: {
       type: String,
       required: false,
@@ -25,8 +32,32 @@ export default {
     },
   },
   computed: {
+    completedCount() {
+      return this.taskCompletionStatus.completed_count;
+    },
+    count() {
+      return this.taskCompletionStatus.count;
+    },
     hasUpdatedBy() {
       return this.updatedByName && this.updatedByPath;
+    },
+    showCheck() {
+      return this.completedCount === this.count;
+    },
+    taskStatus() {
+      const { completedCount, count } = this;
+      if (!count) {
+        return undefined;
+      }
+
+      return sprintf(
+        n__(
+          '%{completedCount} of %{count} checklist item completed',
+          '%{completedCount} of %{count} checklist items completed',
+          count,
+        ),
+        { completedCount, count },
+      );
     },
   },
 };
@@ -34,27 +65,28 @@ export default {
 
 <template>
   <small class="edited-text js-issue-widgets">
-    <gl-sprintf v-if="!hasUpdatedBy" :message="__('Edited %{timeago}')">
-      <template #timeago>
-        <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
-      </template>
-    </gl-sprintf>
-    <gl-sprintf v-else-if="!updatedAt" :message="__('Edited by %{author}')">
-      <template #author>
-        <a :href="updatedByPath" class="author-link gl-hover-text-decoration-underline">
-          <span>{{ updatedByName }}</span>
-        </a>
-      </template>
-    </gl-sprintf>
-    <gl-sprintf v-else :message="__('Edited %{timeago} by %{author}')">
-      <template #timeago>
-        <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
-      </template>
-      <template #author>
-        <a :href="updatedByPath" class="author-link gl-hover-text-decoration-underline">
-          <span>{{ updatedByName }}</span>
-        </a>
-      </template>
-    </gl-sprintf>
+    <template v-if="taskStatus">
+      <template v-if="showCheck">&check;</template>
+      {{ taskStatus }}
+      <template v-if="updatedAt">&middot;</template>
+    </template>
+
+    <template v-if="updatedAt">
+      <gl-sprintf v-if="!hasUpdatedBy" :message="__('Edited %{timeago}')">
+        <template #timeago>
+          <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
+        </template>
+      </gl-sprintf>
+      <gl-sprintf v-else :message="__('Edited %{timeago} by %{author}')">
+        <template #timeago>
+          <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
+        </template>
+        <template #author>
+          <gl-link :href="updatedByPath" class="gl-font-sm gl-hover-text-gray-900 gl-text-gray-700">
+            {{ updatedByName }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
   </small>
 </template>

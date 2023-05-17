@@ -3,51 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildsHelper do
-  describe '#build_summary' do
-    subject { helper.build_summary(build, skip: skip) }
-
-    context 'when build has no trace' do
-      let(:build) { instance_double(Ci::Build, has_trace?: false) }
-
-      context 'when skip is false' do
-        let(:skip) { false }
-
-        it 'returns no job log' do
-          expect(subject).to eq('No job log')
-        end
-      end
-
-      context 'when skip is true' do
-        let(:skip) { true }
-
-        it 'returns no job log' do
-          expect(subject).to eq('No job log')
-        end
-      end
-    end
-
-    context 'when build has trace' do
-      let(:build) { create(:ci_build, :trace_live) }
-
-      context 'when skip is true' do
-        let(:skip) { true }
-
-        it 'returns link to logs' do
-          expect(subject).to include('View job log')
-          expect(subject).to include(pipeline_job_url(build.pipeline, build))
-        end
-      end
-
-      context 'when skip is false' do
-        let(:skip) { false }
-
-        it 'returns log lines' do
-          expect(subject).to include(build.trace.html(last_lines: 10).html_safe)
-        end
-      end
-    end
-  end
-
   describe '#sidebar_build_class' do
     using RSpec::Parameterized::TableSyntax
 
@@ -94,20 +49,6 @@ RSpec.describe Ci::BuildsHelper do
       ci_build = assign_build
 
       expect(subject).to eq(title: "Job Failed \##{ci_build.id}", description: project_job_url(project, ci_build))
-    end
-  end
-
-  describe '#prepare_failed_jobs_summary_data' do
-    let(:failed_build) { create(:ci_build, :failed, :trace_live) }
-
-    subject { helper.prepare_failed_jobs_summary_data([failed_build]) }
-
-    it 'returns array of failed jobs with id, failure and failure summary' do
-      expect(subject).to eq([{
-        id: failed_build.id,
-        failure: failed_build.present.callout_failure_message,
-        failure_summary: helper.build_summary(failed_build)
-      }].to_json)
     end
   end
 

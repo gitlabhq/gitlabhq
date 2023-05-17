@@ -1,0 +1,8 @@
+---
+name: ci_includable_files_interpolation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113211
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/399146
+milestone: '15.11'
+type: development
+group: group::pipeline authoring
+default_enabled: true

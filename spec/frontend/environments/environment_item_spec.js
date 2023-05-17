@@ -19,10 +19,6 @@ describe('Environment item', () => {
   let tracking;
 
   const factory = (options = {}) => {
-    // This destroys any wrappers created before a nested call to factory reassigns it
-    if (wrapper && wrapper.destroy) {
-      wrapper.destroy();
-    }
     wrapper = mount(EnvironmentItem, {
       ...options,
     });
@@ -55,10 +51,7 @@ describe('Environment item', () => {
   const findUpcomingDeploymentAvatarLink = () =>
     findUpcomingDeployment().findComponent(GlAvatarLink);
   const findUpcomingDeploymentAvatar = () => findUpcomingDeployment().findComponent(GlAvatar);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findMonitoringLink = () => wrapper.find('[data-testid="environment-monitoring"]');
 
   describe('when item is not folder', () => {
     it('should render environment name', () => {
@@ -390,10 +383,6 @@ describe('Environment item', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should render folder icon and name', () => {
       expect(wrapper.find('.folder-name').text()).toContain(folder.name);
       expect(wrapper.find('.folder-icon')).toBeDefined();
@@ -446,4 +435,25 @@ describe('Environment item', () => {
       });
     });
   });
+
+  describe.each([true, false])(
+    'when `remove_monitor_metrics` flag  is %p',
+    (removeMonitorMetrics) => {
+      beforeEach(() => {
+        factory({
+          propsData: {
+            model: {
+              metrics_path: 'http://0.0.0.0:3000/flightjs/Flight/-/metrics?environment=6',
+            },
+            tableData,
+          },
+          provide: { glFeatures: { removeMonitorMetrics } },
+        });
+      });
+
+      it(`${removeMonitorMetrics ? 'does not render' : 'renders'} link to metrics`, () => {
+        expect(findMonitoringLink().exists()).toBe(!removeMonitorMetrics);
+      });
+    },
+  );
 });

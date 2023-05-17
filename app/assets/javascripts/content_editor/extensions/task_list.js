@@ -4,6 +4,13 @@ import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import { getMarkdownSource } from '../services/markdown_sourcemap';
 
 export default TaskList.extend({
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      HTMLAttributes: { dir: 'auto' },
+    };
+  },
+
   addAttributes() {
     return {
       numeric: {
@@ -33,6 +40,10 @@ export default TaskList.extend({
   },
 
   renderHTML({ HTMLAttributes: { numeric, ...HTMLAttributes } }) {
-    return [numeric ? 'ol' : 'ul', mergeAttributes(HTMLAttributes, { 'data-type': 'taskList' }), 0];
+    return [
+      numeric ? 'ol' : 'ul',
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { 'data-type': 'taskList' }),
+      0,
+    ];
   },
 });

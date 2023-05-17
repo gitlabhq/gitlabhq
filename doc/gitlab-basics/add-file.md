@@ -7,89 +7,95 @@ type: howto
 
 # Add a file to a repository **(FREE)**
 
-Adding files to a repository is a small, but key task. Bringing files in to a repository,
-such as code, images, or documents, allows them to be tracked by Git, even though they
-may have been created elsewhere.
+Adding files to a repository is a small, but key, task. No matter where the code,
+images, or documents were created, Git tracks them after you add them to your repository.
 
-You can add a file to a repository in your [terminal](#add-a-file-using-the-command-line), and
-then push to GitLab. You can also use the [web interface](../user/project/repository/web_editor.md#upload-a-file),
-which may be a simpler solution.
+## Add an existing file
 
-If you need to create a file first, for example a `README.md` text file, that can
-also be done from the [terminal](command-line-commands.md#create-a-text-file-in-the-current-directory) or
-[web interface](../user/project/repository/web_editor.md#create-a-file).
+To add an existing file to your repository, either:
 
-## Add a file using the command line
+- Upload the file from the GitLab UI.
+- Add a file to your repository from the command line, then push the file up to GitLab.
 
-Open a [terminal/shell](command-line-commands.md), and change into the folder of your
-GitLab project. This usually means running the following command until you get
-to the desired destination:
+### From the UI
 
-```shell
-cd <destination folder>
-```
+If you are unfamiliar with the command line, use the
+[Web Editor](../user/project/repository/web_editor.md) to upload a file from the GitLab UI:
 
-[Create a new branch](../tutorials/make_your_first_git_commit.md#create-a-branch-and-make-changes) to add your file into. Submitting changes directly
-to the default branch should be avoided unless your project is very small and you're the
-only person working on it.
+<!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
+<!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
-You can also [switch to an existing branch](start-using-git.md#switch-to-a-branch)
-if you have one already.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **Upload file**.
+1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Select **Upload file**.
 
-Using your standard tool for copying files (for example, Finder in macOS, or File Explorer
-on Windows), put the file into a directory in the GitLab project.
+### From the command line
 
-Check if your file is actually present in the directory (if you're on Windows,
-use `dir` instead):
+To add a new file from the command line:
 
-```shell
-ls
-```
+1. Open a terminal (or shell) window.
+1. Use the "change directory" (`cd`) command to go to your GitLab project's folder.
+   Run the `cd DESTINATION` command, changing `DESTINATION` to the location of your folder.
+1. Choose a Git branch to work in. You can either:
+   - [Create a new branch](../tutorials/make_first_git_commit/index.md#create-a-branch-and-make-changes)
+     to add your file into. Don't submit changes directly to the default branch of your
+     repository unless your project is very small and you're the only person working on it.
+   - [Switch to an existing branch](start-using-git.md#switch-to-a-branch).
+1. Copy the file into the appropriate directory in your project. Use your standard tool
+   for copying files, such as Finder in macOS, or File Explorer in Windows.
+1. In your terminal window, confirm that your file is present in the directory:
+   - Windows: Use the `dir` command.
+   - All other operating systems: Use the `ls` command.
+   You should see the name of the file in the list shown.
+1. Check the status of your file with the `git status` command. Your file's name
+   should be red. Files listed in red are in your file system, but Git isn't tracking them yet.
+1. Tell Git to track this file with the `git add FILENAME` command, replacing `FILENAME`
+   with the name of your file.
+1. Check the status of your file again with the `git status` command. Your file's name
+   should be green. Files listed in green are tracked locally by Git, but still
+   need to be committed and pushed.
+1. Commit (save) your file to your local copy of your project's Git repository:
 
-You should see the name of the file in the list shown.
+   ```shell
+   git commit -m "DESCRIBE COMMIT IN A FEW WORDS"
+   ```
 
-Check the status:
+1. Push (send) your changes from your copy of the repository, up to GitLab.
+   In this command, `origin` refers to the copy of the repository stored at GitLab.
+   Replace `BRANCHNAME` with the name of your branch:
 
-```shell
-git status
-```
+   ```shell
+   git push origin BRANCHNAME
+   ```
 
-Your file's name should appear in red, so `git` took notice of it! Now add it
-to the repository:
+1. Git prepares, compresses, and sends the data. Lines from the remote repository
+   (here, GitLab) are prefixed with `remote:` like this:
 
-```shell
-git add <name of file>
-```
+   ```plaintext
+   Enumerating objects: 9, done.
+   Counting objects: 100% (9/9), done.
+   Delta compression using up to 10 threads
+   Compressing objects: 100% (5/5), done.
+   Writing objects: 100% (5/5), 1.84 KiB | 1.84 MiB/s, done.
+   Total 5 (delta 3), reused 0 (delta 0), pack-reused 0
+   remote:
+   remote: To create a merge request for BRANCHNAME, visit:
+   remote:   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=BRANCHNAME
+   remote:
+   To https://gitlab.com/gitlab-org/gitlab.git
+    * [new branch]                BRANCHNAME -> BRANCHNAME
+   branch 'BRANCHNAME' set up to track 'origin/BRANCHNAME'.
+   ```
 
-Check the status again, your file's name should have turned green:
+Your file is now copied from your local copy of the repository, up to the remote
+repository at GitLab. To create a merge request, copy the link sent back from the remote
+repository and paste it into a browser window.
 
-```shell
-git status
-```
+## Add a new file
 
-Commit (save) your file to the repository:
+To create a new file (like a `README.md` text file) in your repository, either:
 
-```shell
-git commit -m "DESCRIBE COMMIT IN A FEW WORDS"
-```
-
-Now you can push (send) your changes (in the branch `<branch-name>`) to GitLab
-(the Git remote named 'origin'):
-
-```shell
-git push origin <branch-name>
-```
-
-Your image is added to your branch in your repository in GitLab.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+- [Create the file](../user/project/repository/web_editor.md#create-a-file) from the GitLab UI.
+- Create the file from the terminal.

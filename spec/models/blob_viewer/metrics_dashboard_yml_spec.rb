@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobViewer::MetricsDashboardYml do
+RSpec.describe BlobViewer::MetricsDashboardYml, feature_category: :metrics do
   include FakeBlobHelpers
   include RepoHelpers
 
@@ -117,6 +117,20 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
 
     it 'returns validation errors' do
       expect(viewer.errors).to eq ["YAML syntax: The parsed YAML is too big"]
+    end
+  end
+
+  describe '.can_render?' do
+    subject { described_class.can_render?(blob) }
+
+    it { is_expected.to be false }
+
+    context 'when metrics dashboard feature is available' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: false)
+      end
+
+      it { is_expected.to be true }
     end
   end
 end

@@ -32,6 +32,8 @@ export const integrationFormSections = {
   JIRA_TRIGGER: 'jira_trigger',
   JIRA_ISSUES: 'jira_issues',
   TRIGGER: 'trigger',
+  APPLE_APP_STORE: 'apple_app_store',
+  GOOGLE_PLAY: 'google_play',
 };
 
 export const integrationFormSectionComponents = {
@@ -40,6 +42,8 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
   [integrationFormSections.TRIGGER]: 'IntegrationSectionTrigger',
+  [integrationFormSections.APPLE_APP_STORE]: 'IntegrationSectionAppleAppStore',
+  [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
 };
 
 export const integrationTriggerEvents = {
@@ -90,7 +94,7 @@ export const billingPlanNames = {
   [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
 };
 
-export const INTEGRATION_TYPE_SLACK = 'slack';
+const INTEGRATION_TYPE_SLACK = 'slack';
 const INTEGRATION_TYPE_SLACK_APPLICATION = 'gitlab_slack_application';
 const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
 

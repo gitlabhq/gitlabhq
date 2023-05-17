@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'set'
+require 'test_file_finder'
 
 # These tests run a sanity check on the mapping file `tests.yml`
 # used with the `test_file_finder` gem (`tff`) to identify matching test files.
@@ -35,6 +36,12 @@ tests = [
   },
 
   {
+    explanation: 'FOSS lib should map to respective spec',
+    source: 'lib/gitaly/server.rb',
+    expected: ['spec/lib/gitaly/server_spec.rb']
+  },
+
+  {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368628',
     source: 'lib/gitlab/usage_data_counters/foo.rb',
     expected: ['spec/lib/gitlab/usage_data_spec.rb']
@@ -53,15 +60,15 @@ tests = [
   },
 
   {
-    explanation: 'FOSS lib should map to respective spec',
-    source: 'lib/gitaly/server.rb',
-    expected: ['spec/lib/gitaly/server_spec.rb']
+    explanation: 'Tooling should map to respective spec',
+    source: 'tooling/danger/specs/project_factory_suggestion.rb',
+    expected: ['spec/tooling/danger/specs/project_factory_suggestion_spec.rb']
   },
 
   {
-    explanation: 'Tooling should map to respective spec',
-    source: 'tooling/lib/tooling/helm3_client.rb',
-    expected: ['spec/tooling/lib/tooling/helm3_client_spec.rb']
+    explanation: 'Map RuboCop related files to respective specs',
+    source: 'rubocop/cop/gettext/static_identifier.rb',
+    expected: ['spec/rubocop/cop/gettext/static_identifier_spec.rb']
   },
 
   {
@@ -81,13 +88,13 @@ tests = [
     source: 'db/migrate/20221014034338_populate_releases_access_level_from_repository.rb',
     expected: ['spec/migrations/populate_releases_access_level_from_repository_spec.rb']
   },
-
+  # rubocop:disable Layout/LineLength
   {
     explanation: 'Migration should map to its timestamped spec',
-    source: 'db/post_migrate/20210915022415_cleanup_bigint_conversion_for_ci_builds.rb',
-    expected: ['spec/migrations/20210915022415_cleanup_bigint_conversion_for_ci_builds_spec.rb']
+    source: 'db/post_migrate/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table.rb',
+    expected: ['spec/migrations/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table_spec.rb']
   },
-
+  # rubocop:enable Layout/LineLength
   {
     explanation: 'FOSS views should map to respective spec',
     source: 'app/views/admin/dashboard/index.html.haml',
@@ -196,14 +203,31 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
     source: 'ee/lib/ee/gitlab/usage_data_counters/known_events/common.yml',
     expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
+  },
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146',
+    source: 'config/feature_categories.yml',
+    expected: ['spec/db/docs_spec.rb', 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360',
+    source: 'vendor/project_templates/gitbook.tar.gz',
+    expected: ['spec/lib/gitlab/project_template_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1683#note_1385966977',
+    source: 'app/finders/members_finder.rb',
+    expected: ['spec/finders/members_finder_spec.rb', 'spec/graphql/types/project_member_relation_enum_spec.rb']
   }
 ]
 
 class MappingTest
-  def initialize(explanation:, source:, expected:, mapping: 'tests.yml')
+  def initialize(explanation:, source:, expected:, strategy:)
     @explanation = explanation
     @source = source
-    @mapping = mapping
+    @strategy = strategy
     @expected_set = Set.new(expected)
     @actual_set = Set.new(actual)
   end
@@ -225,11 +249,14 @@ class MappingTest
   attr_reader :explanation, :source, :expected_set, :actual_set, :mapping
 
   def actual
-    `tff -f #{mapping} #{source}`.split(' ')
+    tff = TestFileFinder::FileFinder.new(paths: [source])
+    tff.use @strategy
+    tff.test_files
   end
 end
 
-results = tests.map { |test| MappingTest.new(**test) }
+strategy = TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
+results = tests.map { |test| MappingTest.new(strategy: strategy, **test) }
 
 failed_tests = results.select(&:failed?)
 if failed_tests.any?

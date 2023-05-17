@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Integrations
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270123) in GitLab 14.1
 
-This integration enables you to send CI/CD pipeline and job information to
+The Datadog integration enables you to send CI/CD pipeline and job information to
 [Datadog](https://www.datadoghq.com/). The [Datadog CI Visibility](https://app.datadoghq.com/ci)
 product helps you monitor for job failures and performance issues, then troubleshoot them.
 It's based on [Webhooks](../user/project/integrations/webhooks.md),
@@ -53,4 +53,4 @@ section of your Datadog account.
 
 ## Related topics
 
-- [Datadog CI Visibility](https://docs.datadoghq.com/continuous_integration/) documentation.
+- [Datadog CI Visibility documentation](https://docs.datadoghq.com/continuous_integration/)

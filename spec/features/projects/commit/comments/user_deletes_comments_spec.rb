@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User deletes comments on a commit", :js, feature_category: :source_code_management do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
   include Spec::Support::Helpers::ModalHelpers
   include RepoHelpers
 
@@ -30,7 +30,7 @@ RSpec.describe "User deletes comments on a commit", :js, feature_category: :sour
       note.hover
 
       find(".more-actions").click
-      find(".more-actions .dropdown-menu li", match: :first)
+      find(".more-actions li", match: :first)
 
       find(".js-note-delete").click
     end

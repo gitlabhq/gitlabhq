@@ -247,9 +247,11 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
                 straight: true)
             end
 
-            go(diff_head: true,
-               diff_id: merge_request.merge_request_diff.id,
-               start_sha: merge_request.merge_request_diff.start_commit_sha)
+            go(
+              diff_head: true,
+              diff_id: merge_request.merge_request_diff.id,
+              start_sha: merge_request.merge_request_diff.start_commit_sha
+            )
           end
         end
       end
@@ -329,15 +331,17 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
-            expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
-                                                        noteable_id: merge_request.id,
-                                                        commit_id: nil)
+            expect(assigns(:new_diff_note_attrs)).to eq(
+              noteable_type: 'MergeRequest',
+              noteable_id: merge_request.id,
+              commit_id: nil
+            )
           end
 
           it 'only renders the diffs for the path given' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
-            paths = json_response['diff_files'].map { |file| file['new_path'] }
+            paths = json_response['diff_files'].pluck('new_path')
 
             expect(paths).to include(existing_path)
           end
@@ -528,8 +532,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
 
     context 'with diff_id and start_sha params' do
       subject do
-        go(diff_id: merge_request.merge_request_diff.id,
-           start_sha: merge_request.merge_request_diff.start_commit_sha)
+        go(diff_id: merge_request.merge_request_diff.id, start_sha: merge_request.merge_request_diff.start_commit_sha)
       end
 
       it_behaves_like 'serializes diffs with expected arguments' do

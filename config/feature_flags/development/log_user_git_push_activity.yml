@@ -1,0 +1,8 @@
+---
+name: log_user_git_push_activity
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112527
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393283
+milestone: "15.10"
+type: development
+group: group::utilization
+default_enabled: false

@@ -76,7 +76,6 @@ module API
       expose(:builds_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :builds) }
       expose(:snippets_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :snippets) }
       expose(:pages_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :pages) }
-      expose(:operations_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :operations) }
       expose(:analytics_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :analytics) }
       expose(:container_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :container_registry) }
       expose(:security_and_compliance_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
@@ -88,7 +87,6 @@ module API
 
       expose :emails_disabled, documentation: { type: 'boolean' }
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
-      expose :group_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
       expose :creator_id, documentation: { type: 'integer', example: 1 }
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do
@@ -104,30 +102,44 @@ module API
       expose :import_error, documentation: { type: 'string', example: 'Import error' }, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
         project.import_state&.last_error
       end
-
       expose :open_issues_count, documentation: { type: 'integer', example: 1 }, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
-      expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
-      expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
-      expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
-      expose :ci_separated_caches, documentation: { type: 'boolean' }
-      expose :ci_opt_in_jwt, documentation: { type: 'boolean' }
-      expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }
-      expose :public_builds, as: :public_jobs, documentation: { type: 'boolean' }
-      expose :build_git_strategy, documentation: { type: 'string', example: 'fetch' }, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
-        project.build_allow_git_fetch ? 'fetch' : 'clone'
+      expose :description_html, documentation: { type: 'string' }
+      expose :updated_at, documentation: { type: 'dateTime', example: '2020-05-07T04:27:17.016Z' }
+
+      with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :admin_project, project) } do
+        # CI/CD Settings
+        expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
+        expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
+        expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
+        expose :ci_separated_caches, documentation: { type: 'boolean' }
+        expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }
+        expose :build_git_strategy, documentation: { type: 'string', example: 'fetch' } do |project, options|
+          project.build_allow_git_fetch ? 'fetch' : 'clone'
+        end
+        expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
+        expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
+        expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }
+        expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
+        expose :group_runners_enabled, documentation: { type: 'boolean' }
+        expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
+        expose :build_timeout, documentation: { type: 'integer', example: 3600 }
+        expose :auto_devops_enabled?, as: :auto_devops_enabled, documentation: { type: 'boolean' }
+        expose :auto_devops_deploy_strategy, documentation: { type: 'string', example: 'continuous' } do |project, options|
+          project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
+        end
       end
-      expose :build_timeout, documentation: { type: 'integer', example: 3600 }
-      expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
+
       expose :ci_config_path, documentation: { type: 'string', example: '' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :read_code, project) }
+      expose :public_builds, as: :public_jobs, documentation: { type: 'boolean' }
+
       expose :shared_with_groups, documentation: { is_array: true } do |project, options|
         user = options[:current_user]
 
         SharedGroupWithProject.represent(project.visible_group_links(for_user: user), options)
       end
+
       expose :only_allow_merge_if_pipeline_succeeds, documentation: { type: 'boolean' }
       expose :allow_merge_on_skipped_pipeline, documentation: { type: 'boolean' }
-      expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
       expose :request_access_enabled, documentation: { type: 'boolean' }
       expose :only_allow_merge_if_all_discussions_are_resolved, documentation: { type: 'boolean' }
       expose :remove_source_branch_after_merge, documentation: { type: 'boolean' }
@@ -142,20 +154,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
-      expose :auto_devops_enabled?, as: :auto_devops_enabled, documentation: { type: 'boolean' }
-      expose :auto_devops_deploy_strategy, documentation: { type: 'string', example: 'continuous' } do |project, options|
-        project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
-      end
+
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
       expose :repository_storage, documentation: { type: 'string', example: 'default' }, if: ->(project, options) {
         Ability.allowed?(options[:current_user], :change_repository_storage, project)
       }
-      expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
-      expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)
-        ActiveRecord::Associations::Preloader.new.preload(project, project_group_links: { group: :route })
+        ActiveRecord::Associations::Preloader.new(records: [project], associations: { project_group_links: { group: :route } }).call
       end
 
       def self.preload_relation(projects_relation, options = {})

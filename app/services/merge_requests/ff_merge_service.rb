@@ -14,10 +14,12 @@ module MergeRequests
 
     override :execute_git_merge
     def execute_git_merge
-      repository.ff_merge(current_user,
-                          source,
-                          merge_request.target_branch,
-                          merge_request: merge_request)
+      repository.ff_merge(
+        current_user,
+        source,
+        merge_request.target_branch,
+        merge_request: merge_request
+      )
     end
 
     override :merge_success_data

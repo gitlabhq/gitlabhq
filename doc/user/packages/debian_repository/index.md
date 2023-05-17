@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:
-The Debian package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
+The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
 work and timelines to make it production ready.
 
 Publish Debian packages in your project's Package Registry. Then install the
@@ -23,12 +22,21 @@ Project and Group packages are supported.
 For documentation of the specific API endpoints that Debian package manager
 clients use, see the [Debian API documentation](../../../api/packages/debian.md).
 
+Prerequisites:
+
+- The `dpkg-deb` binary must be installed on the GitLab instance.
+  This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
+  installed by default on Debian and derivatives.
+
 ## Enable the Debian API **(FREE SELF)**
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to enable it.
+
+WARNING:
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 
@@ -45,6 +53,9 @@ Feature.disable(:debian_packages)
 ## Enable the Debian group API **(FREE SELF)**
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
+
+WARNING:
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 
@@ -92,8 +103,11 @@ with one of the following:
 
 ## Create a Distribution
 
-On the project-level, Debian packages are published using *Debian Distributions*. To publish
-packages on the group level, create a distribution with the same `codename`.
+At the project level, Debian packages are published with **Debian distributions**. At the
+group level, Debian packages are aggregated from the projects in the group provided that:
+
+- The project visibility is set to `public`.
+- The Debian `codename` for the group matches the Debian `codename` for the project.
 
 To create a project-level distribution using a personal access token:
 
@@ -135,6 +149,7 @@ Once built, several files are created:
 
 - `.deb` files: the binary packages
 - `.udeb` files: lightened .deb files, used for Debian-Installer (if needed)
+- `.ddeb` files: Ubuntu debug .deb files (if needed)
 - `.tar.{gz,bz2,xz,...}` files: Source files
 - `.dsc` file: Source metadata, and list of source files (with hashes)
 - `.buildinfo` file: Used for Reproducible builds (optional)
@@ -155,9 +170,9 @@ EOF
 dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 ```
 
-## Directly upload a package
+## Upload a package with explicit distribution and component
 
-> Direct upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+> Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with
@@ -166,7 +181,8 @@ For example, to upload to component `main` of distribution `sid` using a persona
 
 ```shell
 curl --request PUT --user "<username>:<personal_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/?distribution=sid&component=main" \
+  --get --data "distribution=sid" --data "component=main" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/" \
   --upload-file  /path/to/your.deb
 ```
 
@@ -176,39 +192,39 @@ To install a package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
+   If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
 
-    ```shell
-    echo 'machine gitlab.example.com login <username> password <password>' \
-      | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
-    ```
+   ```shell
+   echo 'machine gitlab.example.com login <username> password <password>' \
+     | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
+   ```
 
-    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
+   Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
-    ```shell
-    sudo mkdir -p /usr/local/share/keyrings
-    curl --header "PRIVATE-TOKEN: <your_access_token>" \
-         "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
-         | \
-         gpg --dearmor \
-         | \
-         sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
-         > /dev/null
-    ```
+   ```shell
+   sudo mkdir -p /usr/local/share/keyrings
+   curl --header "PRIVATE-TOKEN: <your_access_token>" \
+        "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
+        | \
+        gpg --dearmor \
+        | \
+        sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
+        > /dev/null
+   ```
 
-    Add your project as a source:
+   Add your project as a source:
 
-    ```shell
-    echo 'deb [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
-      | sudo tee /etc/apt/sources.list.d/gitlab_project.list
-    sudo apt-get update
-    ```
+   ```shell
+   echo 'deb [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
+     | sudo tee /etc/apt/sources.list.d/gitlab_project.list
+   sudo apt-get update
+   ```
 
 1. Install the package:
 
-    ```shell
-    sudo apt-get -y install -t <codename> <package-name>
-    ```
+   ```shell
+   sudo apt-get -y install -t <codename> <package-name>
+   ```
 
 ## Download a source package
 
@@ -216,36 +232,36 @@ To download a source package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
+   If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
 
-    ```shell
-    echo 'machine gitlab.example.com login <username> password <password>' \
-      | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
-    ```
+   ```shell
+   echo 'machine gitlab.example.com login <username> password <password>' \
+     | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
+   ```
 
-    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
+   Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
-    ```shell
-    sudo mkdir -p /usr/local/share/keyrings
-    curl --header "PRIVATE-TOKEN: <your_access_token>" \
-         "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
-         | \
-         gpg --dearmor \
-         | \
-         sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
-         > /dev/null
-    ```
+   ```shell
+   sudo mkdir -p /usr/local/share/keyrings
+   curl --header "PRIVATE-TOKEN: <your_access_token>" \
+        "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
+        | \
+        gpg --dearmor \
+        | \
+        sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
+        > /dev/null
+   ```
 
-    Add your project as a source:
+   Add your project as a source:
 
-    ```shell
-    echo 'deb-src [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
-      | sudo tee /etc/apt/sources.list.d/gitlab_project-sources.list
-    sudo apt-get update
-    ```
+   ```shell
+   echo 'deb-src [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
+     | sudo tee /etc/apt/sources.list.d/gitlab_project-sources.list
+   sudo apt-get update
+   ```
 
 1. Download the source package:
 
-    ```shell
-    sudo apt-get source -t <codename> <package-name>
-    ```
+   ```shell
+   sudo apt-get source -t <codename> <package-name>
+   ```

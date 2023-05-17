@@ -19,7 +19,10 @@ RSpec.describe 'Maintainer deletes protected tag', :js, feature_category: :sourc
     it 'deletes the tag' do
       expect(page).to have_content "#{tag_name} protected"
 
-      page.find('.content .flex-row', text: tag_name).find('.js-delete-tag-button').click
+      page.within('[data-testid="tag-row"]', text: tag_name) do
+        click_button('Delete tag')
+      end
+
       assert_modal_content(tag_name)
       confirm_delete_tag(tag_name)
 
@@ -35,7 +38,7 @@ RSpec.describe 'Maintainer deletes protected tag', :js, feature_category: :sourc
     it 'deletes the tag' do
       expect(page).to have_current_path(project_tag_path(project, tag_name), ignore_query: true)
 
-      page.find('.js-delete-tag-button').click
+      click_button('Delete tag')
       assert_modal_content(tag_name)
       confirm_delete_tag(tag_name)
 

@@ -7,7 +7,6 @@ module UsageDataHelpers
     ci_external_pipelines
     ci_pipeline_config_auto_devops
     ci_pipeline_config_repository
-    ci_runners
     ci_triggers
     ci_pipeline_schedules
     auto_devops_enabled
@@ -54,8 +53,6 @@ module UsageDataHelpers
     projects_asana_active
     projects_jenkins_active
     projects_jira_active
-    projects_jira_server_active
-    projects_jira_cloud_active
     projects_jira_dvcs_cloud_active
     projects_jira_dvcs_server_active
     projects_slack_active
@@ -86,15 +83,9 @@ module UsageDataHelpers
   ).freeze
 
   USAGE_DATA_KEYS = %i(
-    active_user_count
     counts
     counts_monthly
     recorded_at
-    edition
-    version
-    installation_type
-    uuid
-    hostname
     mattermost_enabled
     signup_enabled
     ldap_enabled
@@ -122,14 +113,14 @@ module UsageDataHelpers
   end
 
   def stub_prometheus_queries
-    stub_request(:get, %r{^https?://::1:9090/-/ready})
+    stub_request(:get, %r{^https?://.*:9090/-/ready})
       .to_return(
         status: 200,
         body: [{}].to_json,
         headers: { 'Content-Type' => 'application/json' }
       )
 
-    stub_request(:get, %r{^https?://::1:9090/api/v1/query\?query=.*})
+    stub_request(:get, %r{^https?://.*:9090/api/v1/query\?query=.*})
       .to_return(
         status: 200,
         body: [{}].to_json,

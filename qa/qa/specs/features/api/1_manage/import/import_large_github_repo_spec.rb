@@ -7,7 +7,7 @@ require "etc"
 # rubocop:disable Rails/Pluck
 module QA
   RSpec.describe 'Manage', :github, requires_admin: 'creates users', only: { job: 'large-github-import' } do
-    describe 'Project import', product_group: :import do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
       let(:logger) { Runtime::Logger.logger }

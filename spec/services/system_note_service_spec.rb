@@ -692,10 +692,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:change_issue_type)
+        expect(service).to receive(:change_issue_type).with('issue')
       end
 
-      described_class.change_issue_type(incident, author)
+      described_class.change_issue_type(incident, author, 'issue')
     end
   end
 

@@ -132,6 +132,28 @@ RSpec.describe Gitlab do
     end
   end
 
+  describe '.com_except_jh?' do
+    subject { described_class.com_except_jh? }
+
+    before do
+      allow(described_class).to receive(:com?).and_return(com?)
+      allow(described_class).to receive(:jh?).and_return(jh?)
+    end
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:com?, :jh?, :expected) do
+      true  | true  | false
+      true  | false | true
+      false | true  | false
+      false | false | false
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
+    end
+  end
+
   describe '.com' do
     subject { described_class.com { true } }
 

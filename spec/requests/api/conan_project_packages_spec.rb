@@ -33,6 +33,29 @@ RSpec.describe API::ConanProjectPackages, feature_category: :package_registry do
 
       subject { get api(url), params: params }
     end
+
+    context 'with access to package registry for everyone' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+
+        get api(url), params: params
+      end
+
+      subject { json_response['results'] }
+
+      context 'with a matching name' do
+        let(:params) { { q: package.conan_recipe } }
+
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+      end
+
+      context 'with a * wildcard' do
+        let(:params) { { q: "#{package.name[0, 3]}*" } }
+
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v1/users/authenticate' do

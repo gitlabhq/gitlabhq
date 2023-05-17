@@ -27,12 +27,6 @@ describe('Pipeline Wizard - Text Widget', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('creates an input element with the correct label', () => {
     createComponent();
 
@@ -123,7 +117,7 @@ describe('Pipeline Wizard - Text Widget', () => {
     expect(findGlFormGroup().classes()).toContain('is-invalid');
   });
 
-  it('does not update validation if not required', async () => {
+  it('does not update validation if not required', () => {
     createComponent({
       pattern: null,
       validate: true,

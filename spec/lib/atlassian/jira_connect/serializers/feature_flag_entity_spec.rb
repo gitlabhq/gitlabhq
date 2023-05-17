@@ -47,10 +47,12 @@ RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity, feature_c
 
     context 'it has a percentage strategy' do
       let!(:scopes) do
-        strat = create(:operations_strategy,
-               feature_flag: feature_flag,
-               name: ::Operations::FeatureFlags::Strategy::STRATEGY_GRADUALROLLOUTUSERID,
-               parameters: { 'percentage' => '50', 'groupId' => 'abcde' })
+        strat = create(
+          :operations_strategy,
+          feature_flag: feature_flag,
+          name: ::Operations::FeatureFlags::Strategy::STRATEGY_GRADUALROLLOUTUSERID,
+          parameters: { 'percentage' => '50', 'groupId' => 'abcde' }
+        )
 
         [
           create(:operations_scope, strategy: strat, environment_scope: 'production in live'),

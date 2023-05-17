@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Developers Guide to Logging
+# Logging development guidelines
 
 [GitLab Logs](../administration/logs/index.md) play a critical role for both
 administrators and GitLab team members to diagnose problems in the field.
@@ -85,6 +85,28 @@ importer progresses. Here's what to do:
           end
          end
       end
+      ```
+
+      Note that by default, `Gitlab::JsonLogger` will include application context metadata in the log entry. If your
+      logger is expected to be called outside of an application request (for example, in a `rake` task) or by low-level
+      code that may be involved in building the application context (for example, database connection code), you should
+      call the class method `exclude_context!` for your logger class, like so:
+
+      ```ruby
+      module Gitlab
+        module Database
+          module LoadBalancing
+            class Logger < ::Gitlab::JsonLogger
+              exclude_context!
+
+              def self.file_name_noext
+                'database_load_balancing'
+              end
+            end
+          end
+        end
+      end
+
       ```
 
    1. In your class where you want to log, you might initialize the logger as an instance variable:
@@ -169,6 +191,28 @@ Resources:
 - [Elasticsearch mapping - avoiding type gotchas](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas)
 - [Elasticsearch mapping types]( https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
+#### Include a class attribute
+
+Structured logs should always include a `class` attribute to make all entries logged from a particular place in the code findable.
+To automatically add the `class` attribute, you can include the
+[`Gitlab::Loggable` module](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/loggable.rb) and use the `build_structured_payload` method.
+
+```ruby
+class MyClass
+  include ::Gitlab::Loggable
+
+  def my_method
+    logger.info(build_structured_payload(message: 'log message', project_id: project_id))
+  end
+
+  private
+
+  def logger
+    @logger ||= Gitlab::AppJsonLogger.build
+  end
+end
+```
+
 #### Logging durations
 
 Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever
@@ -180,7 +224,7 @@ suffix and `duration` within its name (for example, `view_duration_s`).
 
 ## Multi-destination Logging
 
-GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs are recorded in multiple formats through multi-destination logging.
+GitLab transitioned from structured to JSON logs. However, through multi-destination logging, the logs can be recorded in multiple formats.
 
 ### How to use multi-destination logging
 

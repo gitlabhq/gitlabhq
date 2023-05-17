@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 # We need to capture task state from a closure, which requires instance variables.
 # rubocop: disable RSpec/InstanceVariable
-RSpec.describe Gitlab::BackgroundTask do
+RSpec.describe Gitlab::BackgroundTask, feature_category: :build do
   let(:options) { {} }
   let(:task) do
     proc do

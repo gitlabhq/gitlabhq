@@ -8,7 +8,7 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import RevokeTokenButton from '~/clusters/agents/components/revoke_token_button.vue';
 import getClusterAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
 import revokeTokenMutation from '~/clusters/agents/graphql/mutations/revoke_token.mutation.graphql';
-import { TOKEN_STATUS_ACTIVE, MAX_LIST_COUNT } from '~/clusters/agents/constants';
+import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
 import { getTokenResponse, mockRevokeResponse, mockErrorRevokeResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -45,7 +45,7 @@ describe('RevokeTokenButton', () => {
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findPrimaryAction = () => findModal().props('actionPrimary');
-  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
 
   const createMockApolloProvider = ({ mutationResponse }) => {
     revokeSpy = jest.fn().mockResolvedValue(mutationResponse);
@@ -59,7 +59,6 @@ describe('RevokeTokenButton', () => {
       variables: {
         agentName,
         projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...cursor,
       },
       data: getTokenResponse.data,
@@ -105,7 +104,6 @@ describe('RevokeTokenButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     revokeSpy = null;
   });
@@ -121,7 +119,7 @@ describe('RevokeTokenButton', () => {
       });
 
       it('disabled the button', () => {
-        expect(findRevokeBtn().attributes('disabled')).toBe('true');
+        expect(findRevokeBtn().attributes('disabled')).toBeDefined();
       });
 
       it('shows a disabled tooltip', () => {
@@ -219,7 +217,7 @@ describe('RevokeTokenButton', () => {
 
       it('reenables the button', async () => {
         expect(findPrimaryActionAttributes('loading')).toBe(true);
-        expect(findRevokeBtn().attributes('disabled')).toBe('true');
+        expect(findRevokeBtn().attributes('disabled')).toBeDefined();
 
         await findModal().vm.$emit('hide');
 

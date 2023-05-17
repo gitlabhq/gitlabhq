@@ -39,10 +39,6 @@ describe('Pipeline Wizard - List Widget', () => {
   };
 
   describe('component setup and interface', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('prints the label inside the legend', () => {
       createComponent();
 
@@ -55,7 +51,7 @@ describe('Pipeline Wizard - List Widget', () => {
       expect(findGlFormGroup().attributes('labeldescription')).toBe(defaultProps.description);
     });
 
-    it('sets the input field type attribute to "text"', async () => {
+    it('sets the input field type attribute to "text"', () => {
       createComponent();
 
       expect(findFirstGlFormInputGroup().attributes('type')).toBe('text');
@@ -168,11 +164,7 @@ describe('Pipeline Wizard - List Widget', () => {
   });
 
   describe('form validation', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
-    it('does not show validation state when untouched', async () => {
+    it('does not show validation state when untouched', () => {
       createComponent({}, mountExtended);
       expect(findGlFormGroup().classes()).not.toContain('is-valid');
       expect(findGlFormGroup().classes()).not.toContain('is-invalid');

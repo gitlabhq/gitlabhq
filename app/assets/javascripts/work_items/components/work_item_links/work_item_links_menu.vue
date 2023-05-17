@@ -11,8 +11,13 @@ export default {
 </script>
 
 <template>
-  <span class="gl-ml-2">
-    <gl-dropdown category="tertiary" toggle-class="btn-icon" :right="true">
+  <div class="gl-ml-5">
+    <gl-dropdown
+      category="tertiary"
+      toggle-class="btn-icon btn-sm"
+      :right="true"
+      data-testid="work_items_links_menu"
+    >
       <template #button-content>
         <gl-icon name="ellipsis_v" :size="14" />
       </template>
@@ -20,5 +25,5 @@ export default {
         {{ s__('WorkItem|Remove') }}
       </gl-dropdown-item>
     </gl-dropdown>
-  </span>
+  </div>
 </template>

@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
+RSpec.describe Projects::PerformanceMonitoring::DashboardsController, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
 
-  let!(:project) { create(:project, :repository, name: 'dashboard-project', namespace: namespace) }
+  let_it_be(:project) { create(:project, :repository, namespace: namespace) }
   let(:repository) { project.repository }
   let(:branch) { double(name: branch_name) }
   let(:commit_message) { 'test' }
@@ -23,6 +23,10 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       branch: branch_name,
       format: :json
     }
+  end
+
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   describe 'POST #create' do
@@ -64,7 +68,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
                 post :create, params: params
 
                 expect(response).to have_gitlab_http_status :created
-                expect(controller).to set_flash[:notice].to eq("Your dashboard has been copied. You can <a href=\"/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
+                expect(controller).to set_flash[:notice].to eq("Your dashboard has been copied. You can <a href=\"/-/ide/project/#{project.full_path}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
                 expect(json_response).to eq('status' => 'success', 'dashboard' => { 'path' => ".gitlab/dashboards/#{file_name}" })
               end
 
@@ -102,6 +106,18 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
                   expect(json_response).to eq('error' => "Request parameter branch is missing.")
                 end
               end
+
+              context 'when metrics dashboard feature is unavailable' do
+                before do
+                  stub_feature_flags(remove_monitor_metrics: true)
+                end
+
+                it 'returns 404 not found' do
+                  post :create, params: params
+
+                  expect(response).to have_gitlab_http_status :not_found
+                end
+              end
             end
           end
         end
@@ -120,7 +136,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       end
 
       context 'project without repository feature' do
-        let!(:project) { create(:project, name: 'dashboard-project', namespace: namespace) }
+        let_it_be(:project) { create(:project, namespace: namespace) }
 
         it 'responds with :not_found status code' do
           post :create, params: params
@@ -203,7 +219,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
                 put :update, params: params
 
                 expect(response).to have_gitlab_http_status :created
-                expect(controller).to set_flash[:notice].to eq("Your dashboard has been updated. You can <a href=\"/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
+                expect(controller).to set_flash[:notice].to eq("Your dashboard has been updated. You can <a href=\"/-/ide/project/#{project.full_path}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
                 expect(json_response).to eq('status' => 'success', 'dashboard' => { 'default' => false, 'display_name' => "custom_dashboard.yml", 'path' => ".gitlab/dashboards/#{file_name}", 'system_dashboard' => false })
               end
 
@@ -215,6 +231,18 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
 
                   expect(response).to have_gitlab_http_status :bad_request
                   expect(json_response).to eq('error' => 'something went wrong')
+                end
+              end
+
+              context 'when metrics dashboard feature is unavailable' do
+                before do
+                  stub_feature_flags(remove_monitor_metrics: true)
+                end
+
+                it 'returns 404 not found' do
+                  put :update, params: params
+
+                  expect(response).to have_gitlab_http_status :not_found
                 end
               end
             end
@@ -246,7 +274,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       end
 
       context 'project without repository feature' do
-        let!(:project) { create(:project, name: 'dashboard-project', namespace: namespace) }
+        let_it_be(:project) { create(:project, namespace: namespace) }
 
         it 'responds with :not_found status code' do
           put :update, params: params

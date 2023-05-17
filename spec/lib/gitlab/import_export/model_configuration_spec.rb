@@ -5,11 +5,11 @@ require 'spec_helper'
 # Part of the test security suite for the Import/Export feature
 # Finds if a new model has been added that can potentially be part of the Import/Export
 # If it finds a new model, it will show a +failure_message+ with the options available.
-RSpec.describe 'Import/Export model configuration' do
+RSpec.describe 'Import/Export model configuration', feature_category: :importers do
   include ConfigurationHelper
 
   let(:all_models_yml) { 'spec/lib/gitlab/import_export/all_models.yml' }
-  let(:all_models_hash) { YAML.load_file(all_models_yml) }
+  let(:all_models_hash) { YAML.safe_load_file(all_models_yml, aliases: true) }
   let(:current_models) { setup_models }
   let(:model_names) { relation_names_for(:project) }
 

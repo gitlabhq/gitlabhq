@@ -117,17 +117,13 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def use_traversal_ids_for_root_ancestor?
-        return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor)
-
-        traversal_ids.present?
-      end
-
       def root_ancestor
-        return super unless use_traversal_ids_for_root_ancestor?
-
         strong_memoize(:root_ancestor) do
-          if parent_id.nil?
+          if association(:parent).loaded? && parent.present?
+            # This case is possible when parent has not been persisted or we're inside a transaction.
+            parent.root_ancestor
+          elsif parent_id.nil?
+            # There is no parent, so we are the root ancestor.
             self
           else
             Namespace.find_by(id: traversal_ids.first)
@@ -215,6 +211,16 @@ module Namespaces
         hierarchy_order == :desc ? traversal_ids : traversal_ids.reverse
       end
 
+      def parent=(obj)
+        super(obj)
+        set_traversal_ids
+      end
+
+      def parent_id=(id)
+        super(id)
+        set_traversal_ids
+      end
+
       private
 
       attr_accessor :transient_traversal_ids
@@ -232,10 +238,10 @@ module Namespaces
       end
 
       def set_traversal_ids
+        return if id.blank?
+
         # This is a temporary guard and will be removed.
         return if is_a?(Namespaces::ProjectNamespace)
-
-        return unless Feature.enabled?(:set_traversal_ids_on_save, root_ancestor)
 
         self.transient_traversal_ids = if parent_id
                                          parent.traversal_ids + [id]
@@ -244,7 +250,7 @@ module Namespaces
                                        end
 
         # Clear root_ancestor memo if changed.
-        if read_attribute(traversal_ids)&.first != transient_traversal_ids.first
+        if read_attribute(:traversal_ids)&.first != transient_traversal_ids.first
           clear_memoization(:root_ancestor)
         end
 

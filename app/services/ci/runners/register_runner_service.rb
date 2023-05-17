@@ -3,12 +3,23 @@
 module Ci
   module Runners
     class RegisterRunnerService
-      def execute(registration_token, attributes)
-        runner_type_attrs = extract_runner_type_attrs(registration_token)
+      include Gitlab::Utils::StrongMemoize
 
-        return ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden) unless runner_type_attrs
+      def initialize(registration_token, attributes)
+        @registration_token = registration_token
+        @attributes = attributes
+      end
 
-        runner = ::Ci::Runner.new(attributes.merge(runner_type_attrs))
+      def execute
+        return ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden) unless attrs_from_token
+
+        unless registration_token_allowed?(attrs_from_token)
+          return ServiceResponse.error(
+            message: 'runner registration disallowed',
+            reason: :runner_registration_disallowed)
+        end
+
+        runner = ::Ci::Runner.new(attributes.merge(attrs_from_token))
 
         Ci::BulkInsertableTags.with_bulk_insert_tags do
           Ci::Runner.transaction do
@@ -25,32 +36,30 @@ module Ci
 
       private
 
-      def extract_runner_type_attrs(registration_token)
-        @attrs_from_token ||= check_token(registration_token)
+      attr_reader :registration_token, :attributes
 
-        return unless @attrs_from_token
-
-        attrs = @attrs_from_token.clone
-        case attrs[:runner_type]
-        when :project_type
-          attrs[:projects] = [attrs.delete(:scope)]
-        when :group_type
-          attrs[:groups] = [attrs.delete(:scope)]
-        end
-
-        attrs
-      end
-
-      def check_token(registration_token)
+      def attrs_from_token
         if runner_registration_token_valid?(registration_token)
           # Create shared runner. Requires admin access
           { runner_type: :instance_type }
         elsif runner_registrar_valid?('project') && project = ::Project.find_by_runners_token(registration_token)
           # Create a project runner
-          { runner_type: :project_type, scope: project }
+          { runner_type: :project_type, projects: [project] }
         elsif runner_registrar_valid?('group') && group = ::Group.find_by_runners_token(registration_token)
           # Create a group runner
-          { runner_type: :group_type, scope: group }
+          { runner_type: :group_type, groups: [group] }
+        end
+      end
+      strong_memoize_attr :attrs_from_token
+
+      def registration_token_allowed?(attrs)
+        case attrs[:runner_type]
+        when :group_type
+          token_scope.allow_runner_registration_token?
+        when :project_type
+          token_scope.namespace.allow_runner_registration_token?
+        else
+          Gitlab::CurrentSettings.allow_runner_registration_token
         end
       end
 
@@ -63,7 +72,13 @@ module Ci
       end
 
       def token_scope
-        @attrs_from_token[:scope]
+        case attrs_from_token[:runner_type]
+        when :project_type
+          attrs_from_token[:projects]&.first
+        when :group_type
+          attrs_from_token[:groups]&.first
+          # No scope for instance type
+        end
       end
     end
   end

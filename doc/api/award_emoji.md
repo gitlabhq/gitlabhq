@@ -4,28 +4,30 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Award emojis API **(FREE)**
+# Emoji reactions API **(FREE)**
 
-An [awarded emoji](../user/award_emojis.md) tells a thousand words.
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emojis" to "emoji reactions" in GitLab 16.0.
 
-We call GitLab objects on which you can award an emoji "awardables". You can award emojis on the following:
+An [emoji reaction](../user/award_emojis.md) tells a thousand words.
+
+We call GitLab objects on which you can react with an emoji "awardables".
+You can react with emojis on the following:
 
 - [Epics](../user/group/epics/index.md) ([API](epics.md)). **(PREMIUM)**
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
-
-Emojis can also [be awarded](../user/award_emojis.md#award-emojis-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
+- [Comments](../user/award_emojis.md#emoji-reactions-for-comments) ([API](notes.md)).
 
 ## Issues, merge requests, and snippets
 
-See [Award emojis on comments](#award-emojis-on-comments) for information on using these endpoints with comments.
+For information on using these endpoints with comments, see [Add reactions to comments](#add-reactions-to-comments).
 
-### List an awardable's award emojis
+### List an awardable's emoji reactions
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
-Get a list of all award emojis for a specified awardable. This endpoint can
+Get a list of all emoji reactions for a specified awardable. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
@@ -86,11 +88,11 @@ Example response:
 ]
 ```
 
-### Get single award emoji
+### Get single emoji reaction
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
-Get a single award emoji from an issue, snippet, or merge request. This endpoint can
+Get a single emoji reaction from an issue, snippet, or merge request. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
@@ -105,7 +107,7 @@ Parameters:
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
-| `award_id`     | integer        | yes      | ID of the award emoji.                                                       |
+| `award_id`     | integer        | yes      | ID of the emoji reaction.                                                       |
 
 Example request:
 
@@ -134,9 +136,9 @@ Example response:
 }
 ```
 
-### Award a new emoji
+### Add a new emoji reaction
 
-Create an award emoji on the specified awardable.
+Add an emoji reaction on the specified awardable.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/award_emoji
@@ -177,11 +179,11 @@ Example Response:
 }
 ```
 
-### Delete an award emoji
+### Delete an emoji reaction
 
-Sometimes it's just not meant to be and you need to remove the award.
+Sometimes it's just not meant to be and you need to remove your reaction.
 
-Only an administrator or the author of the award can delete an award emoji.
+Only an administrator or the author of the reaction can delete an emoji reaction.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id
@@ -195,26 +197,26 @@ Parameters:
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
-| `award_id`     | integer        | yes      | ID of an award emoji.                                                        |
+| `award_id`     | integer        | yes      | ID of an emoji reaction.                                                        |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344"
 ```
 
-## Award emojis on comments
+## Add reactions to comments
 
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
 NOTE:
-The examples below describe working with award emojis on an issue's comments, but can be
+The examples below describe working with emoji reactions on an issue's comments, but can be
 adapted to comments on merge requests and snippets. Therefore, you have to replace
 `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
-### List a comment's award emojis
+### List a comment's emoji reactions
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
-Get all award emojis for a comment (note). This endpoint can
+Get all emoji reactions for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
@@ -258,11 +260,11 @@ Example response:
 ]
 ```
 
-### Get an award emoji for a comment
+### Get an emoji reaction for a comment
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
-Get a single award emoji for a comment (note). This endpoint can
+Get a single emoji reaction for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
@@ -276,7 +278,7 @@ Parameters:
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
 | `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
-| `award_id`  | integer        | yes      | ID of the award emoji.                                                       |
+| `award_id`  | integer        | yes      | ID of the emoji reaction.                                                       |
 
 Example request:
 
@@ -307,7 +309,7 @@ Example response:
 
 ### Award a new emoji on a comment
 
-Create an award emoji on the specified comment (note).
+Create an emoji reaction on the specified comment (note).
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -349,11 +351,11 @@ Example response:
 }
 ```
 
-### Delete an award emoji from a comment
+### Delete an emoji reaction from a comment
 
-Sometimes it's just not meant to be and you need to remove the award.
+Sometimes it's just not meant to be and you need to remove the reaction.
 
-Only an administrator or the author of the award can delete an award emoji.
+Only an administrator or the author of the reaction can delete an emoji reaction.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
@@ -366,7 +368,7 @@ Parameters:
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
 | `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
-| `award_id`  | integer        | yes      | ID of an award emoji.                                                        |
+| `award_id`  | integer        | yes      | ID of an emoji reaction.                                                        |
 
 Example request:
 

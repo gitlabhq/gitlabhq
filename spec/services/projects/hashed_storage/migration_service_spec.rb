@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HashedStorage::MigrationService do
+RSpec.describe Projects::HashedStorage::MigrationService, feature_category: :projects do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
   let(:logger) { double }
   let!(:project_attachment) { build(:file_uploader, project: project) }
@@ -16,9 +16,11 @@ RSpec.describe Projects::HashedStorage::MigrationService do
   describe '#execute' do
     context 'repository migration' do
       let(:repository_service) do
-        Projects::HashedStorage::MigrateRepositoryService.new(project: project,
-                                                              old_disk_path: project.full_path,
-                                                              logger: logger)
+        Projects::HashedStorage::MigrateRepositoryService.new(
+          project: project,
+          old_disk_path: project.full_path,
+          logger: logger
+        )
       end
 
       it 'delegates migration to Projects::HashedStorage::MigrateRepositoryService' do
@@ -53,9 +55,11 @@ RSpec.describe Projects::HashedStorage::MigrationService do
       let(:project) { create(:project, :empty_repo, :wiki_repo, storage_version: ::Project::HASHED_STORAGE_FEATURES[:repository]) }
 
       let(:attachments_service) do
-        Projects::HashedStorage::MigrateAttachmentsService.new(project: project,
-                                                               old_disk_path: project.full_path,
-                                                               logger: logger)
+        Projects::HashedStorage::MigrateAttachmentsService.new(
+          project: project,
+          old_disk_path: project.full_path,
+          logger: logger
+        )
       end
 
       it 'delegates migration to Projects::HashedStorage::MigrateRepositoryService' do

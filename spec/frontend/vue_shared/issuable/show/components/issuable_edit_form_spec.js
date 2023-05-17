@@ -43,6 +43,9 @@ describe('IssuableEditForm', () => {
   });
 
   afterEach(() => {
+    // note: the order of wrapper.destroy() and jest.resetAllMocks() matters.
+    // maybe it'll help with investigation on how to remove this wrapper.destroy() call
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
     jest.resetAllMocks();
   });
@@ -162,7 +165,7 @@ describe('IssuableEditForm', () => {
         stopPropagation: jest.fn(),
       };
 
-      it('component emits `keydown-title` event with event object and issuableMeta params via gl-form-input', async () => {
+      it('component emits `keydown-title` event with event object and issuableMeta params via gl-form-input', () => {
         const titleInputEl = wrapper.findComponent(GlFormInput);
 
         titleInputEl.vm.$emit('keydown', eventObj, 'title');
@@ -176,7 +179,7 @@ describe('IssuableEditForm', () => {
         ]);
       });
 
-      it('component emits `keydown-description` event with event object and issuableMeta params via textarea', async () => {
+      it('component emits `keydown-description` event with event object and issuableMeta params via textarea', () => {
         const descriptionInputEl = wrapper.find('[data-testid="description"] textarea');
 
         descriptionInputEl.trigger('keydown', eventObj, 'description');

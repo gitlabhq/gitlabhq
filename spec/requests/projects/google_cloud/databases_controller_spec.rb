@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_category: :kubernetes_management do
+RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_category: :deployment_management do
   shared_examples 'shared examples for database controller endpoints' do
     include_examples 'requires `admin_project_google_cloud` role'
 

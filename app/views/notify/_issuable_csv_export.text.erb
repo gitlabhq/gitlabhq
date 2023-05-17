@@ -1,0 +1,7 @@
+<% type = type.to_s.humanize.downcase %>
+
+<%= _('Your CSV export of %{exported_objects} from project %{project_name} (%{project_url}) has been added to this email as an attachment.') %  { exported_objects: pluralize(@written_count, type), project_name: @project.full_name, project_url: project_url(@project) } %>
+
+<% if @truncated %>
+  <%= _('This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{total_count} %{object_type} have been included. Consider re-exporting with a narrower selection of %{object_type}.') % { written_count: @written_count, total_count: @count, size_limit: @size_limit, object_type: type.pluralize } %>
+<% end %>

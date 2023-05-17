@@ -33,10 +33,6 @@ describe('RunnerAssignedItem', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Shows an avatar', () => {
     const avatar = findAvatar();
 

@@ -92,7 +92,7 @@ module MigrationsHelpers
   end
 
   def reset_column_information(klass)
-    klass.reset_column_information
+    klass.reset_column_information if klass.instance_variable_get(:@table_name)
   end
 
   # In some migration tests, we're using factories to create records,

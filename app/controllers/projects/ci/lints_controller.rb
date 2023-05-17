@@ -3,7 +3,7 @@
 class Projects::Ci::LintsController < Projects::ApplicationController
   before_action :authorize_create_pipeline!
 
-  feature_category :pipeline_authoring
+  feature_category :pipeline_composition
 
   respond_to :json, only: [:create]
   urgency :low, [:create]

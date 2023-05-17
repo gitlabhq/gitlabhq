@@ -5,7 +5,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
     instance_double(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, duplicate_key_ttl: Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DEFAULT_DUPLICATE_KEY_TTL)
   end
 
-  let(:expected_message) { "dropped #{strategy_name.to_s.humanize.downcase}" }
+  let(:humanized_strategy_name) { strategy_name.to_s.humanize.downcase }
 
   subject(:strategy) { Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies.for(strategy_name).new(fake_duplicate_job) }
 
@@ -155,7 +155,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         fake_logger = instance_double(Gitlab::SidekiqLogging::DeduplicationLogger)
 
         expect(Gitlab::SidekiqLogging::DeduplicationLogger).to receive(:instance).and_return(fake_logger)
-        expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), expected_message, {})
+        expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), humanized_strategy_name, {})
 
         strategy.schedule({ 'jid' => 'new jid' }) {}
       end
@@ -165,7 +165,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
         expect(Gitlab::SidekiqLogging::DeduplicationLogger).to receive(:instance).and_return(fake_logger)
         allow(fake_duplicate_job).to receive(:options).and_return({ foo: :bar })
-        expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), expected_message, { foo: :bar })
+        expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), humanized_strategy_name, { foo: :bar })
 
         strategy.schedule({ 'jid' => 'new jid' }) {}
       end

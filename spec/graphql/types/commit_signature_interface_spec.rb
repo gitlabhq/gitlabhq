@@ -18,6 +18,11 @@ RSpec.describe GitlabSchema.types['CommitSignature'] do
         Types::CommitSignatures::X509SignatureType)
     end
 
+    it 'resolves SSH signatures' do
+      expect(described_class.resolve_type(build(:ssh_signature), {})).to eq(
+        Types::CommitSignatures::SshSignatureType)
+    end
+
     it 'raises an error when type is not known' do
       expect { described_class.resolve_type(Class, {}) }.to raise_error('Unsupported commit signature type')
     end

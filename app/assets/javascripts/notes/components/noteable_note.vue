@@ -6,13 +6,14 @@ import { mapGetters, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -294,10 +295,9 @@ export default {
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
-      this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
-    formUpdateHandler({ noteText, callback, resolveDiscussion }) {
+    async formUpdateHandler({ noteText, callback, resolveDiscussion }) {
       const position = {
         ...this.note.position,
       };
@@ -319,6 +319,14 @@ export default {
       });
 
       if (this.isDraft) return;
+
+      if (containsSensitiveToken(noteText)) {
+        const confirmed = await confirmSensitiveAction();
+        if (!confirmed) {
+          callback();
+          return;
+        }
+      }
 
       const data = {
         endpoint: this.note.path,
@@ -383,7 +391,6 @@ export default {
         });
         if (!confirmed) return;
       }
-      this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
         // eslint-disable-next-line vue/no-mutating-props
         this.note.note_html = this.oldContent;
@@ -470,6 +477,7 @@ export default {
           :note-id="note.id"
           :is-internal-note="note.internal"
           :noteable-type="noteableType"
+          :email-participant="note.external_author"
         >
           <template #note-header-info>
             <slot name="note-header-info"></slot>

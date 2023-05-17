@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Monkey patch mail 2.7.1 to fix quoted-printable issues with newlines
+# Monkey patch mail 2.8.1 to fix quoted-printable issues with newlines
 # The issues upstream invalidate SMIME signatures under some conditions
 # This was working properly in 2.6.6
 #
@@ -8,22 +8,6 @@
 # See https://github.com/mikel/mail/issues/1190
 
 module Mail
-  module Encodings
-    # PATCH
-    # This reverts https://github.com/mikel/mail/pull/1113, which solves some
-    # encoding issues with binary attachments encoded in quoted-printable, but
-    # unfortunately breaks re-encoding of messages
-    class QuotedPrintable < SevenBit
-      def self.decode(str)
-        ::Mail::Utilities.to_lf str.gsub(/(?:=0D=0A|=0D|=0A)\r\n/, "\r\n").unpack1("M*")
-      end
-
-      def self.encode(str)
-        ::Mail::Utilities.to_crlf([::Mail::Utilities.to_lf(str)].pack("M"))
-      end
-    end
-  end
-
   class Body
     def encoded(transfer_encoding = nil, charset = nil)
       # PATCH

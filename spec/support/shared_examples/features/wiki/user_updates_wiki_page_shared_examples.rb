@@ -150,6 +150,7 @@ RSpec.shared_examples 'User updates wiki page' do
     end
 
     it_behaves_like 'edits content using the content editor'
+    it_behaves_like 'inserts diagrams.net diagram using the content editor'
     it_behaves_like 'autocompletes items'
   end
 

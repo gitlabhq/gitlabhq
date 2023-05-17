@@ -21,10 +21,6 @@ describe('IDE file templates bar component', () => {
     wrapper = mount(Bar, { store });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template type dropdown', () => {
     it('renders dropdown component', () => {
       expect(wrapper.find('.dropdown').text()).toContain('Choose a type');

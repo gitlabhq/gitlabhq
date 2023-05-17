@@ -41,7 +41,7 @@ module Gitlab
         end
 
         def average_in_seconds
-          Arel::Nodes::Extract.new(average, :epoch)
+          Arel::Nodes::NamedFunction.new('CAST', [Arel::Nodes::Extract.new(average, :epoch).as('double precision')])
         end
       end
     end

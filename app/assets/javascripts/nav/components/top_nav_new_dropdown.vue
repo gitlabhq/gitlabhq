@@ -1,5 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownDivider, GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import { TOP_NAV_INVITE_MEMBERS_COMPONENT } from '~/invite_members/constants';
 
 export default {
   components: {
@@ -7,6 +9,7 @@ export default {
     GlDropdownDivider,
     GlDropdownItem,
     GlDropdownSectionHeader,
+    InviteMembersTrigger,
   },
   props: {
     viewModel: {
@@ -20,6 +23,11 @@ export default {
     },
     showHeaders() {
       return this.sections.length > 1;
+    },
+  },
+  methods: {
+    isInvitedMembers(menuItem) {
+      return menuItem.component === TOP_NAV_INVITE_MEMBERS_COMPONENT;
     },
   },
 };
@@ -41,7 +49,16 @@ export default {
         {{ title }}
       </gl-dropdown-section-header>
       <template v-for="menuItem in menu_items">
+        <invite-members-trigger
+          v-if="isInvitedMembers(menuItem)"
+          :key="`${index}_item_${menuItem.id}`"
+          :trigger-element="`dropdown-${menuItem.data.trigger_element}`"
+          :display-text="menuItem.title"
+          :icon="menuItem.icon"
+          :trigger-source="menuItem.data.trigger_source"
+        />
         <gl-dropdown-item
+          v-else
           :key="`${index}_item_${menuItem.id}`"
           link-class="top-nav-menu-item"
           :href="menuItem.href"

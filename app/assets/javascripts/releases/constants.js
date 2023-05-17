@@ -49,3 +49,8 @@ export const SORT_MAP = {
 };
 
 export const DEFAULT_SORT = RELEASED_AT_DESC;
+
+export const i18n = {
+  tagNameIsRequiredMessage: __('Tag name is required.'),
+  tagIsAlredyInUseMessage: __('Selected tag is already in use. Choose another option.'),
+};

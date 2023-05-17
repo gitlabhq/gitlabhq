@@ -2,7 +2,6 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.html'
 type: reference, howto
 ---
 
@@ -71,7 +70,7 @@ is selected.
 
 ## Auto-cancel redundant pipelines
 
-You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
+You can set pending or running pipelines to cancel automatically when a pipeline for new changes runs on the same branch. You can enable this in the project settings:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -209,119 +208,7 @@ Jobs that exceed the timeout are marked as failed.
 
 You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
-## Merge request test coverage results
-
-If you use test coverage in your code, you can use a regular expression to
-find coverage results in the job log. You can then include these results
-in the merge request in GitLab.
-
-If the pipeline succeeds, the coverage is shown in the merge request widget and
-in the jobs table. If multiple jobs in the pipeline have coverage reports, they are
-averaged.
-
-![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
-
-![Build status coverage](img/pipelines_test_coverage_build.png)
-
-### Add test coverage results using `coverage` keyword
-
-To add test coverage results to a merge request using the project's `.gitlab-ci.yml` file, provide a regular expression
-using the [`coverage`](../yaml/index.md#coverage) keyword.
-
-### Test coverage examples
-
-Use this regex for commonly used test tools.
-
-<!-- vale gitlab.Spelling = NO -->
-
-- Simplecov (Ruby). Example: `/\(\d+.\d+\%\) covered/`.
-- pytest-cov (Python). Example: `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
-- Scoverage (Scala). Example: `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/`.
-- `pest --coverage --colors=never` (PHP). Example: `/^\s*Cov:\s*\d+\.\d+?%$/`.
-- `phpunit --coverage-text --colors=never` (PHP). Example: `/^\s*Lines:\s*\d+.\d+\%/`.
-- gcovr (C/C++). Example: `/^TOTAL.*\s+(\d+\%)$/`.
-- `tap --coverage-report=text-summary` (NodeJS). Example: `/^Statements\s*:\s*([^%]+)/`.
-- `nyc npm test` (NodeJS). Example: `/All files[^|]*\|[^|]*\s+([\d\.]+)/`.
-- `jest --ci --coverage` (NodeJS). Example: `/All files[^|]*\|[^|]*\s+([\d\.]+)/`.
-- excoveralls (Elixir). Example: `/\[TOTAL\]\s+(\d+\.\d+)%/`.
-- `mix test --cover` (Elixir). Example: `/\d+.\d+\%\s+\|\s+Total/`.
-- JaCoCo (Java/Kotlin). Example: `/Total.*?([0-9]{1,3})%/`.
-- `go test -cover` (Go). Example: `/coverage: \d+.\d+% of statements/`.
-- .NET (OpenCover). Example: `/(Visited Points).*\((.*)\)/`.
-- .NET (`dotnet test` line coverage). Example: `/Total\s*\|\s*(\d+(?:\.\d+)?)/`.
-- tarpaulin (Rust). Example: `/^\d+.\d+% coverage/`.
-- Pester (PowerShell). Example: `/Covered (\d+\.\d+%)/`.
-
-<!-- vale gitlab.Spelling = YES -->
-
-### View code coverage history
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
-> - Graph [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
-
-To see the evolution of your project code coverage over time,
-you can view a graph or download a CSV file with this data.
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Repository**.
-
-The historic data for each job is listed in the dropdown list above the graph.
-
-To view a CSV file of the data, select **Download raw data (`.csv`)**.
-
-![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
-
-Code coverage data is also [available at the group level](../../user/group/repositories_analytics/index.md).
-
-### Coverage check approval rule **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15765) in GitLab 14.0.
-> - [Made configurable in Project Settings](https://gitlab.com/gitlab-org/gitlab/-/issues/331001) in GitLab 14.1.
-
-You can implement merge request approvals to require approval by selected users or a group
-when merging a merge request would cause the project's test coverage to decline.
-
-Follow these steps to enable the `Coverage-Check` MR approval rule:
-
-1. Set up a [`coverage`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
-1. Go to your project and select **Settings > Merge requests**.
-1. Under **Merge request approvals**, select **Enable** next to the `Coverage-Check` approval rule.
-1. Select the **Target branch**.
-1. Set the number of **Approvals required** to greater than zero.
-1. Select the users or groups to provide approval.
-1. Select **Add approval rule**.
-
-![Coverage-Check approval rule](img/coverage_check_approval_rule_14_1.png)
-
-### Remove color codes from code coverage
-
-Some test coverage tools output with ANSI color codes that aren't
-parsed correctly by the regular expression. This causes coverage
-parsing to fail.
-
-Some coverage tools don't provide an option to disable color
-codes in the output. If so, pipe the output of the coverage tool through a
-small one line script that strips the color codes off.
-
-For example:
-
-```shell
-lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
-```
-
 ## Pipeline badges
 
 You can use [pipeline badges](../../user/project/badges.md) to indicate the pipeline status and
 test coverage of your projects. These badges are determined by the latest successful pipeline.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

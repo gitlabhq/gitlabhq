@@ -23,7 +23,7 @@ import {
   groupPackageSettingsMutationErrorMock,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');
 
 describe('Packages Settings', () => {
@@ -55,10 +55,6 @@ describe('Packages Settings', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findDescription = () => wrapper.findByTestId('description');
@@ -181,7 +177,7 @@ describe('Packages Settings', () => {
       });
     });
 
-    it('renders ExceptionsInput and assigns duplication allowness and exception props', async () => {
+    it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
       mountComponent({ mountFn: mountExtended });
 
       const { genericDuplicatesAllowed, genericDuplicateExceptionRegex } = packageSettings;
@@ -196,7 +192,7 @@ describe('Packages Settings', () => {
       });
     });
 
-    it('on update event calls the mutation', async () => {
+    it('on update event calls the mutation', () => {
       const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
       mountComponent({ mountFn: mountExtended, mutationResolver });
 

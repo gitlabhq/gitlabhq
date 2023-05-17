@@ -19,7 +19,8 @@ module Security
                               target: '_blank',
                               rel: 'noopener noreferrer'
           raise Gitlab::Graphql::Errors::MutationError,
-                _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe
+                Gitlab::Utils::ErrorMessage.to_user_facing(
+                  _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe)
         end
 
         project.repository.add_branch(current_user, branch_name, project.default_branch)
@@ -51,14 +52,15 @@ module Security
       end
 
       def existing_gitlab_ci_content
-        root_ref = root_ref_sha(project)
+        root_ref = root_ref_sha(project.repository)
         return if root_ref.nil?
 
         @gitlab_ci_yml ||= project.ci_config_for(root_ref)
         YAML.safe_load(@gitlab_ci_yml) if @gitlab_ci_yml
       rescue Psych::BadAlias
         raise Gitlab::Graphql::Errors::MutationError,
-              ".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."
+        Gitlab::Utils::ErrorMessage.to_user_facing(
+          _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."))
       rescue Psych::Exception => e
         Gitlab::AppLogger.error("Failed to process existing .gitlab-ci.yml: #{e.message}")
         raise Gitlab::Graphql::Errors::MutationError,
@@ -82,13 +84,10 @@ module Security
         )
       end
 
-      def root_ref_sha(project)
-        project.repository.root_ref_sha
-      rescue StandardError => e
-        # this might fail on the very first commit,
-        # and unfortunately it raises a StandardError
-        Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-        nil
+      def root_ref_sha(repository)
+        commit = repository.commit(repository.root_ref)
+
+        commit&.sha
       end
     end
   end

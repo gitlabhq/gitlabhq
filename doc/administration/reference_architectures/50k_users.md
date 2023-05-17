@@ -31,8 +31,8 @@ full list of reference architectures, see
 | Gitaly<sup>5 6</sup>                     | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` | `m5.16xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    |
-| Sidekiq                                  | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
-| GitLab Rails                             | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  |
+| Sidekiq<sup>7</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
+| GitLab Rails<sup>7</sup>                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  |
 | Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   |
 | Object storage<sup>4</sup>               | -     | -                       | -                | -             |
 
@@ -53,6 +53,8 @@ full list of reference architectures, see
 6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
    repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
    [Large repositories](index.md#large-repositories) for more information.
+7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -170,7 +172,7 @@ To set up GitLab and its components to accommodate up to 50,000 users:
    environment.
 1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
+1. [Configure advanced search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
 
 The servers start on the same 10.6.0.0/24 private network range, and can
@@ -318,7 +320,7 @@ Configure your load balancer to pass connections on port 443 as `TCP` rather
 than `HTTP(S)` protocol. This will pass the connection to the application node's
 NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 for details on managing SSL certificates and configuring NGINX.
 
 #### Load balancer terminates SSL without backend SSL
@@ -329,7 +331,7 @@ terminating SSL.
 
 Since communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 #### Load balancer terminates SSL with backend SSL
@@ -342,7 +344,7 @@ Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
@@ -425,6 +427,11 @@ spread connections equally in practice.
 </div>
 
 ## Configure Consul
+
+Next, we set up the Consul servers.
+
+NOTE:
+Consul must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 The following IPs will be used as an example:
 
@@ -811,6 +818,9 @@ Using [Redis](https://redis.io/) in scalable environment is possible using a **P
 topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
 start the failover procedure.
 
+NOTE:
+Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
+
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
@@ -844,9 +854,9 @@ to be used with GitLab. The following IPs will be used as an example:
 
 Managed Redis from cloud providers (such as AWS ElastiCache) will work. If these
 services support high availability, be sure it _isn't_ of the Redis Cluster type.
-Redis version 5.0 or higher is required, which is included with Omnibus GitLab
-packages starting with GitLab 13.0. Older Redis versions don't support an
-optional count argument to SPOP, which is required for [Merge Trains](../../ci/pipelines/merge_trains.md).
+
+Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or later is required. Older Redis versions have reached end-of-life.
+
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
 
@@ -1202,7 +1212,7 @@ For more advanced setups refer to the [standalone Gitaly Cluster documentation](
 Praefect, the routing and transaction manager for Gitaly Cluster, requires its own database server to store data on Gitaly Cluster status.
 
 If you want to have a highly available setup, Praefect requires a third-party PostgreSQL database.
-A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919).
+A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
 #### Praefect non-HA PostgreSQL standalone using Omnibus GitLab
 
@@ -1349,6 +1359,9 @@ This is how this would work with a Omnibus GitLab PostgreSQL setup:
 Praefect is the router and transaction manager for Gitaly Cluster and all connections to Gitaly go through
 it. This section details how to configure it.
 
+NOTE:
+Praefect must be deployed in an odd number of 3 nodes or later. This is to ensure the nodes can take votes as part of a quorum.
+
 Praefect requires several secret tokens to secure communications across the Cluster:
 
 - `<praefect_external_token>`: Used for repositories hosted on your Gitaly cluster and can only be accessed by Gitaly clients that carry this token.
@@ -1402,7 +1415,6 @@ Updates to example must be made at:
 
    # Praefect Configuration
    praefect['enable'] = true
-   praefect['listen_addr'] = '0.0.0.0:2305'
 
    # Prevent database migrations from running on upgrade automatically
    praefect['auto_migrate'] = false
@@ -1411,51 +1423,69 @@ Updates to example must be made at:
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
+   consul['monitoring_service_discovery'] = true
 
    # START user configuration
    # Please set the real values as explained in Required Information section
    #
 
-   # Praefect External Token
-   # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
-   praefect['auth_token'] = '<praefect_external_token>'
-
-   # Praefect Database Settings
-   praefect['database_host'] = '10.6.0.141'
-   praefect['database_port'] = 5432
-   # `no_proxy` settings must always be a direct connection for caching
-   praefect['database_direct_host'] = '10.6.0.141'
-   praefect['database_direct_port'] = 5432
-   praefect['database_dbname'] = 'praefect_production'
-   praefect['database_user'] = 'praefect'
-   praefect['database_password'] = '<praefect_postgresql_password>'
-
-   # Praefect Virtual Storage config
-   # Name of storage hash must match storage name in git_data_dirs on GitLab
-   # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
-   praefect['virtual_storages'] = {
-     'default' => {
-       'nodes' => {
-         'gitaly-1' => {
-           'address' => 'tcp://10.6.0.91:8075',
-           'token'   => '<praefect_internal_token>'
+   praefect['configuration'] = {
+      # ...
+      listen_addr: '0.0.0.0:2305',
+      auth: {
+        # ...
+        #
+        # Praefect External Token
+        # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
+        token: '<praefect_external_token>',
+      },
+      # Praefect Database Settings
+      database: {
+        # ...
+        host: '10.6.0.141',
+        port: 5432,
+        # `no_proxy` settings must always be a direct connection for caching
+        session_pooled: {
+           # ...
+           host: '10.6.0.141',
+           port: 5432,
+           dbname: 'praefect_production',
+           user: 'praefect',
+           password: '<praefect_postgresql_password>',
+        },
+      },
+      # Praefect Virtual Storage config
+      # Name of storage hash must match storage name in git_data_dirs on GitLab
+      # server ('praefect') and in gitaly['configuration'][:storage] on Gitaly nodes ('gitaly-1')
+      virtual_storage: [
+         {
+            # ...
+            name: 'default',
+            node: [
+               {
+                  storage: 'gitaly-1',
+                  address: 'tcp://10.6.0.91:8075',
+                  token: '<praefect_internal_token>'
+               },
+               {
+                  storage: 'gitaly-2',
+                  address: 'tcp://10.6.0.92:8075',
+                  token: '<praefect_internal_token>'
+               },
+               {
+                  storage: 'gitaly-3',
+                  address: 'tcp://10.6.0.93:8075',
+                  token: '<praefect_internal_token>'
+               },
+            ],
          },
-         'gitaly-2' => {
-           'address' => 'tcp://10.6.0.92:8075',
-           'token'   => '<praefect_internal_token>'
-         },
-         'gitaly-3' => {
-           'address' => 'tcp://10.6.0.93:8075',
-           'token'   => '<praefect_internal_token>'
-         },
-       }
-     }
+      ],
+      # Set the network address Praefect will listen on for monitoring
+      prometheus_listen_addr: '0.0.0.0:9652',
    }
 
-   # Set the network addresses that the exporters will listen on for monitoring
+   # Set the network address the node exporter will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
 
    ## The IPs of the Consul server nodes
    ## You can also use FQDNs and intermix them with IPs
@@ -1506,9 +1536,7 @@ Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
 should have a throughput of at least 8,000
 input/output operations per second (IOPS) for read operations and 2,000 IOPS for
-write operations. These IOPS values are initial recommendations, and may be
-adjusted to greater or lesser values depending on the scale of your
-environment's workload. If you're running the environment on a Cloud provider,
+write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
 Gitaly servers must not be exposed to the public internet, as Gitaly's network
@@ -1518,7 +1546,7 @@ to restrict access to the Gitaly server. Another option is to
 
 For configuring Gitaly you should note the following:
 
-- `git_data_dirs` should be configured to reflect the storage path for the specific Gitaly node
+- `gitaly['configuration'][:storage]` should be configured to reflect the storage path for the specific Gitaly node
 - `auth_token` should be the same as `praefect_internal_token`
 
 The following IPs will be used as an example:
@@ -1567,20 +1595,6 @@ Updates to example must be made at:
    # Gitaly
    gitaly['enable'] = true
 
-   # Make Gitaly accept connections on all network interfaces. You must use
-   # firewalls to restrict access to this address/port.
-   # Comment out following line if you only want to support TLS connections
-   gitaly['listen_addr'] = "0.0.0.0:8075"
-
-   # Gitaly Auth Token
-   # Should be the same as praefect_internal_token
-   gitaly['auth_token'] = '<praefect_internal_token>'
-
-   # Gitaly Pack-objects cache
-   # Recommended to be enabled for improved performance but can notably increase disk I/O
-   # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
-   gitaly['pack_objects_cache_enabled'] = true
-
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
@@ -1595,9 +1609,29 @@ Updates to example must be made at:
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
    }
 
-   # Set the network addresses that the exporters will listen on for monitoring
+   # Set the network address that the node exporter will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+
+   gitaly['configuration'] = {
+      # Make Gitaly accept connections on all network interfaces. You must use
+      # firewalls to restrict access to this address/port.
+      # Comment out following line if you only want to support TLS connections
+      listen_addr: '0.0.0.0:8075',
+      # Set the network address that Gitaly will listen on for monitoring
+      prometheus_listen_addr: '0.0.0.0:9236',
+      auth: {
+         # Gitaly Auth Token
+         # Should be the same as praefect_internal_token
+         token: '<praefect_internal_token>',
+      },
+      pack_objects_cache: {
+         # Gitaly Pack-objects cache
+         # Recommended to be enabled for improved performance but can notably increase disk I/O
+         # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+         enabled: true,
+      },
+   }
+
    #
    # END user configuration
    ```
@@ -1606,31 +1640,43 @@ Updates to example must be made at:
    - On Gitaly node 1:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-1" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-1',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
    - On Gitaly node 2:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-2" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-2',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
    - On Gitaly node 3:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-3" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-3',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
@@ -1650,7 +1696,7 @@ for secure connections, you must:
 
 Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
 and on all Praefect clients that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) (and repeated below).
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) (and repeated below).
 
 Note the following:
 
@@ -1659,7 +1705,7 @@ Note the following:
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
-  necessary. To disable the unencrypted listener, set `praefect['listen_addr'] = nil`.
+  necessary. To disable the unencrypted listener, set `praefect['configuration'][:listen_addr] = nil`.
 - The Internal Load Balancer will also access to the certificates and need to be configured
   to allow for TLS passthrough.
   Refer to the load balancers documentation on how to configure this.
@@ -1681,9 +1727,15 @@ To configure Praefect with TLS:
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   praefect['tls_listen_addr'] = "0.0.0.0:3305"
-   praefect['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-   praefect['key_path'] = "/etc/gitlab/ssl/key.pem"
+   praefect['configuration'] = {
+      # ...
+      tls_listen_addr: '0.0.0.0:3305',
+      tls: {
+         # ...
+         certificate_path: '/etc/gitlab/ssl/cert.pem',
+         key_path: '/etc/gitlab/ssl/key.pem',
+      },
+   }
    ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1764,7 +1816,7 @@ Updates to example must be made at:
 
    # Redis
    ## Redis connection details
-   ## First cluster that will host the cache
+   ## First cluster that will host the cache data
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
@@ -1773,22 +1825,11 @@ Updates to example must be made at:
      {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the persistent queues, shared state, and actioncable
-   gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
+   ## Second cluster that hosts all other persistent data
+   redis['master_name'] = 'gitlab-redis-persistent'
+   redis['master_password'] = '<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>'
 
-   gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_actioncable_sentinels'] = [
+   gitlab_rails['redis_sentinels'] = [
      {host: '10.6.0.61', port: 26379},
      {host: '10.6.0.62', port: 26379},
      {host: '10.6.0.63', port: 26379},
@@ -1958,7 +1999,7 @@ On each node perform the following:
    gitlab_rails['auto_migrate'] = false
 
    ## Redis connection details
-   ## First cluster that will host the cache
+   ## First cluster that will host the cache data
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
@@ -1967,22 +2008,11 @@ On each node perform the following:
      {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the persistent queues, shared state, and actionable
-   gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
+   ## Second cluster that hosts all other persistent data
+   redis['master_name'] = 'gitlab-redis-persistent'
+   redis['master_password'] = '<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>'
 
-   gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_actioncable_sentinels'] = [
+   gitlab_rails['redis_sentinels'] = [
      {host: '10.6.0.61', port: 26379},
      {host: '10.6.0.62', port: 26379},
      {host: '10.6.0.63', port: 26379},
@@ -2076,7 +2106,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 ### GitLab Rails post-configuration
 
@@ -2088,11 +2118,9 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
    sudo gitlab-rake gitlab:db:configure
    ```
 
-   If you encounter a `rake aborted!` error message stating that PgBouncer is
-   failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
-   address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
-   on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   Note that this requires the Rails node to be configured to connect to the primary database
+   directly, [bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+   After migrations have completed, you must configure the node to pass through PgBouncer again.
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
@@ -2187,15 +2215,15 @@ and scalable.
 
 There are two ways of specifying object storage configuration in GitLab:
 
-- [Consolidated form](../object_storage.md#consolidated-object-storage-configuration): A single credential is
+- [Consolidated form](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form): A single credential is
   shared by all supported object types.
-- [Storage-specific form](../object_storage.md#storage-specific-configuration): Every object defines its
-  own object storage [connection and configuration](../object_storage.md#connection-settings).
+- [Storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form): Every object defines its
+  own object storage [connection and configuration](../object_storage.md#configure-the-connection-settings).
 
 The consolidated form is used in the following examples when available.
 
 NOTE:
-When using the [storage-specific form](../object_storage.md#storage-specific-configuration)
+When using the [storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)
 in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
 The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
 which was deprecated in 14.9, requires shared storage such as NFS.
@@ -2217,9 +2245,9 @@ GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
-## Configure Advanced Search
+## Configure advanced search
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
+You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific

@@ -8,7 +8,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -17,7 +17,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 
 import { mockAuthorToken, mockUsers } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const defaultStubs = {
   Portal: true,
   GlFilteredSearchSuggestionList: {
@@ -57,6 +57,7 @@ function createComponent(options = {}) {
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
       suggestionsListClass: () => 'custom-class',
+      termsAsTokens: () => false,
     },
     data() {
       return { ...data };
@@ -67,99 +68,82 @@ function createComponent(options = {}) {
 }
 
 describe('UserToken', () => {
-  const originalGon = window.gon;
   const currentUserLength = 1;
   let mock;
   let wrapper;
 
-  const getBaseToken = () => wrapper.findComponent(BaseToken);
+  const findBaseToken = () => wrapper.findComponent(BaseToken);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    window.gon = originalGon;
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('methods', () => {
     describe('fetchUsers', () => {
+      const triggerFetchUsers = (searchTerm = null) => {
+        findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
+        return waitForPromises();
+      };
+
       beforeEach(() => {
         wrapper = createComponent();
       });
 
-      it('calls `config.fetchUsers` with provided searchTerm param', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchUsers');
-
-        getBaseToken().vm.$emit('fetch-suggestions', mockUsers[0].username);
-
-        expect(wrapper.vm.config.fetchUsers).toHaveBeenCalledWith(
-          mockAuthorToken.fetchPath,
-          mockUsers[0].username,
-        );
-      });
-
-      it('sets response to `users` when request is successful', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockResolvedValue(mockUsers);
-
-        getBaseToken().vm.$emit('fetch-suggestions', 'root');
-
-        return waitForPromises().then(() => {
-          expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
+      it('sets loading state', async () => {
+        wrapper = createComponent({
+          config: {
+            fetchUsers: jest.fn().mockResolvedValue(new Promise(() => {})),
+          },
         });
+        await nextTick();
+
+        expect(findBaseToken().props('suggestionsLoading')).toBe(true);
       });
 
-      // TODO: rm when completed https://gitlab.com/gitlab-org/gitlab/-/issues/345756
-      describe('when there are null users presents', () => {
-        const mockUsersWithNullUser = mockUsers.concat([null]);
+      describe('when request is successful', () => {
+        const searchTerm = 'foo';
 
         beforeEach(() => {
-          jest
-            .spyOn(wrapper.vm.config, 'fetchUsers')
-            .mockResolvedValue({ data: mockUsersWithNullUser });
-
-          getBaseToken().vm.$emit('fetch-suggestions', 'root');
+          wrapper = createComponent({
+            config: {
+              fetchUsers: jest.fn().mockResolvedValue({ data: mockUsers }),
+            },
+          });
+          return triggerFetchUsers(searchTerm);
         });
 
-        describe('when res.data is present', () => {
-          it('filters the successful response when null values are present', () => {
-            return waitForPromises().then(() => {
-              expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
-            });
-          });
+        it('calls `config.fetchUsers` with provided searchTerm param', () => {
+          expect(findBaseToken().props('config').fetchUsers).toHaveBeenCalledWith(searchTerm);
         });
 
-        describe('when response is an array', () => {
-          it('filters the successful response when null values are present', () => {
-            return waitForPromises().then(() => {
-              expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
-            });
-          });
+        it('sets response to `users` when request is successful', () => {
+          expect(findBaseToken().props('suggestions')).toEqual(mockUsers);
         });
       });
 
-      it('calls `createAlert` with flash error message when request fails', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockRejectedValue({});
+      describe('when request fails', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              fetchUsers: jest.fn().mockRejectedValue({}),
+            },
+          });
+          return triggerFetchUsers();
+        });
 
-        getBaseToken().vm.$emit('fetch-suggestions', 'root');
-
-        return waitForPromises().then(() => {
+        it('calls `createAlert`', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching users.',
           });
         });
-      });
 
-      it('sets `loading` to false when request completes', async () => {
-        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockRejectedValue({});
-
-        getBaseToken().vm.$emit('fetch-suggestions', 'root');
-
-        await waitForPromises();
-
-        expect(getBaseToken().props('suggestionsLoading')).toBe(false);
+        it('sets `loading` to false when request completes', () => {
+          expect(findBaseToken().props('suggestionsLoading')).toBe(false);
+        });
       });
     });
   });
@@ -178,12 +162,12 @@ describe('UserToken', () => {
         data: { users: mockUsers },
       });
 
-      const baseTokenEl = getBaseToken();
+      const baseTokenEl = findBaseToken();
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
         suggestions: mockUsers,
-        getActiveTokenValue: wrapper.vm.getActiveUser,
+        getActiveTokenValue: baseTokenEl.props('getActiveTokenValue'),
       });
     });
 
@@ -191,7 +175,6 @@ describe('UserToken', () => {
       wrapper = createComponent({
         value: { data: mockUsers[0].username },
         data: { users: mockUsers },
-        stubs: { Portal: true },
       });
 
       await nextTick();
@@ -205,7 +188,7 @@ describe('UserToken', () => {
       expect(tokenValue.text()).toBe(mockUsers[0].name); // "Administrator"
     });
 
-    it('renders token value with correct avatarUrl from user object', async () => {
+    it('renders token value with correct avatarUrl from user object', () => {
       const getAvatarEl = () =>
         wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
 
@@ -215,29 +198,12 @@ describe('UserToken', () => {
           users: [
             {
               ...mockUsers[0],
+              avatarUrl: mockUsers[0].avatar_url,
+              avatar_url: undefined,
             },
           ],
         },
-        stubs: { Portal: true },
       });
-
-      await nextTick();
-
-      expect(getAvatarEl().props('src')).toBe(mockUsers[0].avatar_url);
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        users: [
-          {
-            ...mockUsers[0],
-            avatarUrl: mockUsers[0].avatar_url,
-            avatar_url: undefined,
-          },
-        ],
-      });
-
-      await nextTick();
 
       expect(getAvatarEl().props('src')).toBe(mockUsers[0].avatar_url);
     });
@@ -264,7 +230,6 @@ describe('UserToken', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockAuthorToken, defaultUsers: [] },
-        stubs: { Portal: true },
       });
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);

@@ -22,7 +22,7 @@ In Google's side:
      the randomly generated ID or choose a new one.
 1. Refresh the page and you should see your new project in the list
 1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard)
-1. Select the previously created project in the upper left corner
+1. In the upper-left corner, select the previously created project
 1. Select **Credentials** from the sidebar
 1. Select **OAuth consent screen** and fill the form with the required information
 1. In the **Credentials** tab, select **Create credentials > OAuth client ID**
@@ -71,7 +71,7 @@ On your GitLab server:
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `google_oauth2` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. Add the provider configuration:

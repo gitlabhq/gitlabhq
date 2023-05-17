@@ -70,8 +70,9 @@ The following information is displayed:
 
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
-add and remove users during the subscription period, as long as the total users
-at any given time doesn't exceed the subscription count.
+add and remove users during the subscription period without incurring additional charges, as long as the total users
+at any given time doesn't exceed the subscription count. If the total users exceeds your subscription count, you will incur an overage
+which must be paid at your next [reconciliation](../quarterly_reconciliation.md).
 
 A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
 
@@ -163,20 +164,20 @@ Seats owed = 12 - 10 (Maximum users - users in subscription)
 ### Free Guest users **(ULTIMATE)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
-The user must not be assigned any other role, anywhere in the instance.
+The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.
 
 - If your project is private or internal, a user with the Guest role has
   [a set of permissions](../../user/permissions.md#project-members-permissions).
 - If your project is public, all users, including those with the Guest role
   can access your project.
 
-### Add users to your subscription
+### Add seats to your subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 Even if you reach the number of seats in your subscription, you can continue to add users.
 GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
-To add users to a subscription:
+To add seats to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
 1. Navigate to the **Manage Purchases** page.
@@ -236,16 +237,24 @@ amounts at which the alert displays.
 To change the namespace linked to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](../index.md#change-the-linked-account) GitLab.com account.
+   [linked](../customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
 1. Go to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown list. For a group to appear here, you must have the Owner role for that group.
-1. Select **Proceed to checkout**.
+1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
+1. If the [total number of users](#view-seat-usage) in your group exceeds the number of seats in your subscription,
+   you are prompted to pay for the additional users. Subscription charges are calculated based on
+   the total number of users in a group, including its subgroups and nested projects.
+
+   If you purchased your subscription through an authorized reseller, you are unable to pay for additional users.
+   You can either:
+
+   - Remove additional users, so that no overage is detected.
+   - Contact the partner to purchase additional seats now or at the end of your subscription term.
+
+1. Select **Confirm changes**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/qAq8pyFP-a0).
-
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
 
 Only one namespace can be linked to a subscription.
 
@@ -311,7 +320,7 @@ For details on upgrading your subscription tier, see
 ### Automatic subscription renewal
 
 When a subscription is set to auto-renew, it renews automatically on the
-expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the Customers Portal [View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your access is downgraded.
+expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the Customers Portal [View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your access is downgraded.
 
 #### Email notifications
 
@@ -326,7 +335,7 @@ expiration date without a gap in available service. Subscriptions purchased thro
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Resume subscription** button is displayed, your subscription was canceled
+- If a **Turn on auto-renew** button is displayed, your subscription was canceled
   previously. Select it to resume automatic renewal.
 - If a **Cancel subscription** button is displayed, your subscription is set to automatically
   renew at the end of the subscription period. Select it to cancel automatic renewal.

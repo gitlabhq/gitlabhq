@@ -27,10 +27,6 @@ describe('Jobs filtered search', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays filtered search', () => {
     createComponent();
 

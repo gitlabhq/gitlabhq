@@ -1,5 +1,16 @@
 import { s__ } from '~/locale';
 import * as getters from '~/releases/stores/modules/edit_new/getters';
+import { i18n } from '~/releases/constants';
+import { validateTag, ValidationResult } from '~/lib/utils/ref_validator';
+
+jest.mock('~/lib/utils/ref_validator', () => {
+  const original = jest.requireActual('~/lib/utils/ref_validator');
+  return {
+    __esModule: true,
+    ValidationResult: original.ValidationResult,
+    validateTag: jest.fn(() => new original.ValidationResult()),
+  };
+});
 
 describe('Release edit/new getters', () => {
   describe('releaseLinksToCreate', () => {
@@ -59,23 +70,23 @@ describe('Release edit/new getters', () => {
   });
 
   describe('validationErrors', () => {
+    const validState = {
+      release: {
+        tagName: 'test-tag-name',
+        assets: {
+          links: [
+            { id: 1, url: 'https://example.com/valid', name: 'Link 1' },
+            { id: 2, url: '', name: '' },
+            { id: 3, url: '', name: ' ' },
+            { id: 4, url: ' ', name: '' },
+            { id: 5, url: ' ', name: ' ' },
+          ],
+        },
+      },
+    };
     describe('when the form is valid', () => {
+      const state = validState;
       it('returns no validation errors', () => {
-        const state = {
-          release: {
-            tagName: 'test-tag-name',
-            assets: {
-              links: [
-                { id: 1, url: 'https://example.com/valid', name: 'Link 1' },
-                { id: 2, url: '', name: '' },
-                { id: 3, url: '', name: ' ' },
-                { id: 4, url: ' ', name: '' },
-                { id: 5, url: ' ', name: ' ' },
-              ],
-            },
-          },
-        };
-
         const expectedErrors = {
           assets: {
             links: {
@@ -88,7 +99,27 @@ describe('Release edit/new getters', () => {
           },
         };
 
-        expect(getters.validationErrors(state)).toEqual(expectedErrors);
+        expect(getters.validationErrors(state).assets).toEqual(expectedErrors.assets);
+        expect(getters.validationErrors(state).tagNameValidation.isValid).toBe(true);
+      });
+    });
+
+    describe('when validating tag', () => {
+      const state = validState;
+      it('validateTag is called with right parameters', () => {
+        getters.validationErrors(state);
+        expect(validateTag).toHaveBeenCalledWith(state.release.tagName);
+      });
+
+      it('validation error is correctly returned', () => {
+        const validationError = new ValidationResult();
+        const errorText = 'Tag format validation error';
+        validationError.addValidationError(errorText);
+        validateTag.mockReturnValue(validationError);
+
+        const result = getters.validationErrors(state);
+        expect(validateTag).toHaveBeenCalledWith(state.release.tagName);
+        expect(result.tagNameValidation.validationErrors).toContain(errorText);
       });
     });
 
@@ -140,19 +171,17 @@ describe('Release edit/new getters', () => {
       });
 
       it('returns a validation error if the tag name is empty', () => {
-        const expectedErrors = {
-          isTagNameEmpty: true,
-        };
-
-        expect(actualErrors).toMatchObject(expectedErrors);
+        expect(actualErrors.tagNameValidation.isValid).toBe(false);
+        expect(actualErrors.tagNameValidation.validationErrors).toContain(
+          i18n.tagNameIsRequiredMessage,
+        );
       });
 
       it('returns a validation error if the tag has an existing release', () => {
-        const expectedErrors = {
-          existingRelease: true,
-        };
-
-        expect(actualErrors).toMatchObject(expectedErrors);
+        expect(actualErrors.tagNameValidation.isValid).toBe(false);
+        expect(actualErrors.tagNameValidation.validationErrors).toContain(
+          i18n.tagIsAlredyInUseMessage,
+        );
       });
 
       it('returns a validation error if links share a URL', () => {
@@ -395,14 +424,27 @@ describe('Release edit/new getters', () => {
 
   describe('formattedReleaseNotes', () => {
     it.each`
-      description        | includeTagNotes | tagNotes       | included
-      ${'release notes'} | ${true}         | ${'tag notes'} | ${true}
-      ${'release notes'} | ${true}         | ${''}          | ${false}
-      ${'release notes'} | ${false}        | ${'tag notes'} | ${false}
+      description        | includeTagNotes | tagNotes       | included | showCreateFrom
+      ${'release notes'} | ${true}         | ${'tag notes'} | ${true}  | ${false}
+      ${'release notes'} | ${true}         | ${''}          | ${false} | ${false}
+      ${'release notes'} | ${false}        | ${'tag notes'} | ${false} | ${false}
+      ${'release notes'} | ${true}         | ${'tag notes'} | ${true}  | ${true}
+      ${'release notes'} | ${true}         | ${''}          | ${false} | ${true}
+      ${'release notes'} | ${false}        | ${'tag notes'} | ${false} | ${true}
     `(
-      'should include tag notes=$included when includeTagNotes=$includeTagNotes and tagNotes=$tagNotes',
-      ({ description, includeTagNotes, tagNotes, included }) => {
-        const state = { release: { description }, includeTagNotes, tagNotes };
+      'should include tag notes=$included when includeTagNotes=$includeTagNotes and tagNotes=$tagNotes and showCreateFrom=$showCreateFrom',
+      ({ description, includeTagNotes, tagNotes, included, showCreateFrom }) => {
+        let state;
+
+        if (showCreateFrom) {
+          state = {
+            release: { description, tagMessage: tagNotes },
+            includeTagNotes,
+            showCreateFrom,
+          };
+        } else {
+          state = { release: { description }, includeTagNotes, tagNotes, showCreateFrom };
+        }
 
         const text = `### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`;
         if (included) {

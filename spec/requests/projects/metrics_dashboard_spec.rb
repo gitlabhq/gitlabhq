@@ -11,6 +11,7 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
   before do
     project.add_developer(user)
     login_as(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   describe 'GET /:namespace/:project/-/metrics' do
@@ -35,6 +36,17 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
       send_request(params)
 
       expect(response).to redirect_to(dashboard_route(params.merge(environment: environment.id)))
+    end
+
+    context 'with remove_monitor_metrics returning true' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'renders 404 page' do
+        send_request
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     context 'with anonymous user and public dashboard visibility' do

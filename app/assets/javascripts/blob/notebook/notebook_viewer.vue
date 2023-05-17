@@ -83,4 +83,9 @@ export default {
 .output img {
   min-width: 0; /* https://www.w3.org/TR/css-flexbox-1/#min-size-auto */
 }
+
+.output .markdown {
+  display: block;
+  width: 100%;
+}
 </style>

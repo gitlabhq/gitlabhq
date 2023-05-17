@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds,
-               :suppress_gitlab_schemas_validate_connection, migration: :gitlab_ci, schema: 20220223112304 do
+  :suppress_gitlab_schemas_validate_connection, migration: :gitlab_ci, schema: 20220223112304 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:ci_runners) { table(:ci_runners) }

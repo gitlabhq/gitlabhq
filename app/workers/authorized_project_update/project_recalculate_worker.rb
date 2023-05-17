@@ -7,9 +7,7 @@ module AuthorizedProjectUpdate
     data_consistency :always
     include Gitlab::ExclusiveLeaseHelpers
 
-    prepend WaitableWorker
-
-    feature_category :authentication_and_authorization
+    feature_category :system_access
     urgency :high
     queue_namespace :authorized_project_update
 

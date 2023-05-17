@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client/core';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
-import { persistCacheSync, LocalStorageWrapper } from 'apollo3-cache-persist';
+import { persistCache } from 'apollo3-cache-persist';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import possibleTypes from '~/graphql_shared/possible_types.json';
@@ -52,6 +52,15 @@ export const typePolicies = {
   },
   TreeEntry: {
     keyFields: ['webPath'],
+  },
+  Subscription: {
+    fields: {
+      aiCompletionResponse: {
+        read(value) {
+          return value ?? null;
+        },
+      },
+    },
   },
 };
 
@@ -104,7 +113,7 @@ Object.defineProperty(window, 'pendingApolloRequests', {
   },
 });
 
-export default (resolvers = {}, config = {}) => {
+function createApolloClient(resolvers = {}, config = {}) {
   const {
     baseUrl,
     batchMax = 10,
@@ -113,8 +122,10 @@ export default (resolvers = {}, config = {}) => {
     typeDefs,
     path = '/api/graphql',
     useGet = false,
-    localCacheKey = null,
   } = config;
+
+  const shouldUnbatch = gon.features?.unbatchGraphqlQueries;
+
   let ac = null;
   let uri = `${gon.relative_url_root || ''}${path}`;
 
@@ -152,7 +163,7 @@ export default (resolvers = {}, config = {}) => {
   };
 
   const requestLink = ApolloLink.split(
-    () => useGet,
+    () => useGet || shouldUnbatch,
     new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
     new BatchHttpLink(httpOptions),
   );
@@ -171,6 +182,7 @@ export default (resolvers = {}, config = {}) => {
           config: {
             url: httpResponse.url,
             operationName: operation.operationName,
+            method: operation.getContext()?.fetchOptions?.method || 'POST', // If method is not explicitly set, we default to POST request
           },
           headers: {
             'x-request-id': httpResponse.headers.get('x-request-id'),
@@ -237,16 +249,6 @@ export default (resolvers = {}, config = {}) => {
     },
   });
 
-  if (localCacheKey) {
-    persistCacheSync({
-      cache: newCache,
-      // we leave NODE_ENV here temporarily for visibility so developers can easily see caching happening in dev mode
-      debug: process.env.NODE_ENV === 'development',
-      storage: new LocalStorageWrapper(window.localStorage),
-      persistenceMapper,
-    });
-  }
-
   ac = new ApolloClient({
     typeDefs,
     link: appLink,
@@ -262,5 +264,42 @@ export default (resolvers = {}, config = {}) => {
 
   acs.push(ac);
 
-  return ac;
+  return { client: ac, cache: newCache };
+}
+
+export async function createApolloClientWithCaching(resolvers = {}, config = {}) {
+  const { localCacheKey = null } = config;
+  const { client, cache } = createApolloClient(resolvers, config);
+
+  if (localCacheKey) {
+    let storage;
+
+    // Test that we can use IndexedDB. If not, no persisting for you!
+    try {
+      const { IndexedDBPersistentStorage } = await import(
+        /* webpackChunkName: 'indexed_db_persistent_storage' */ './apollo/indexed_db_persistent_storage'
+      );
+
+      storage = await IndexedDBPersistentStorage.create();
+    } catch (error) {
+      return client;
+    }
+
+    await persistCache({
+      cache,
+      // we leave NODE_ENV here temporarily for visibility so developers can easily see caching happening in dev mode
+      debug: process.env.NODE_ENV === 'development',
+      storage,
+      key: localCacheKey,
+      persistenceMapper,
+    });
+  }
+
+  return client;
+}
+
+export default (resolvers = {}, config = {}) => {
+  const { client } = createApolloClient(resolvers, config);
+
+  return client;
 };

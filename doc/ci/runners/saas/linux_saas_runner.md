@@ -28,6 +28,15 @@ CI/CD jobs that run on `medium` and `large` machine types consumes CI minutes at
 
 Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
 
+## GPU-enabled SaaS runners on Linux **(PREMIUM SAAS)**
+
+We offer GPU-enabled SaaS runners for heavy compute including ModelOps or HPC workloads. Available to Premium and Ultimate plan customers, jobs on these instances consume the CI/CD minutes allocated to your namespace.
+
+|                   | Standard                   |
+|-------------------|---------------------------|
+| Specs             | 4 vCPU, 16 GB RAM, 1 Nvidia Tesla T4 GPU (or similar) |
+| GitLab CI/CD tags | `saas-linux-medium-gpu-standard` |
+
 ## Example of how to tag a job
 
 To use a machine type other than `small`, add a `tags:` keyword to your job.
@@ -88,12 +97,15 @@ Below are the settings for SaaS runners on Linux.
   and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070).
 
 NOTE:
-The final disk space your jobs can use is less than 25 GB. Some disk space
-allocated to the instance is occupied by the operating system, the Docker image,
-and a copy of your cloned repository.
+SaaS runner instances are provisioned with a 25 GB storage volume. The underlying disk space of the storage volume
+is shared by the operating system, the Docker image, and a copy of your cloned repository.
+This means that the available free disk space that your jobs can use is **less than 25 GB**.
 
-## Pre-clone script
+## Pre-clone script (deprecated)
 
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
+and is planned for removal in 16.0. Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead. This change is a breaking change.
 With SaaS runners on Linux, you can run commands in a CI/CD
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The

@@ -26,15 +26,14 @@ RSpec.describe Projects::Snippets::BlobsController do
     let(:inline) { nil }
 
     subject do
-      get(:raw,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            snippet_id: snippet,
-            path: filepath,
-            ref: ref,
-            inline: inline
-          })
+      get :raw, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        snippet_id: snippet,
+        path: filepath,
+        ref: ref,
+        inline: inline
+      }
     end
 
     context 'with a snippet without a repository' do

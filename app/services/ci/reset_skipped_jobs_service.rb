@@ -4,8 +4,10 @@ module Ci
   # This service resets skipped jobs so they can be processed again.
   # It affects the jobs that depend on the passed in job parameter.
   class ResetSkippedJobsService < ::BaseService
-    def execute(processable)
-      @processable = processable
+    def execute(processables)
+      @processables = Array.wrap(processables)
+      @pipeline = @processables.first.pipeline
+      @processable = @processables.first # Remove with FF `ci_support_reset_skipped_jobs_for_multiple_jobs`
 
       process_subsequent_jobs
       reset_source_bridge
@@ -20,13 +22,13 @@ module Ci
     end
 
     def reset_source_bridge
-      @processable.pipeline.reset_source_bridge!(current_user)
+      @pipeline.reset_source_bridge!(current_user)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def dependent_jobs
       ordered_by_dag(
-        @processable.pipeline.processables
+        @pipeline.processables
           .from_union(needs_dependent_jobs, stage_dependent_jobs)
           .skipped
           .ordered_by_stage
@@ -41,13 +43,27 @@ module Ci
     end
 
     def stage_dependent_jobs
-      @processable.pipeline.processables.after_stage(@processable.stage_idx)
+      if ::Feature.enabled?(:ci_support_reset_skipped_jobs_for_multiple_jobs, project)
+        # Get all jobs after the earliest stage of the inputted jobs
+        min_stage_idx = @processables.map(&:stage_idx).min
+        @pipeline.processables.after_stage(min_stage_idx)
+      else
+        @pipeline.processables.after_stage(@processable.stage_idx)
+      end
     end
 
     def needs_dependent_jobs
-      ::Gitlab::Ci::ProcessableObjectHierarchy.new(
-        ::Ci::Processable.where(id: @processable.id)
-      ).descendants
+      if ::Feature.enabled?(:ci_support_reset_skipped_jobs_for_multiple_jobs, project)
+        # We must include the hierarchy base here because @processables may include both a parent job
+        # and its dependents, and we do not want to exclude those dependents from being processed.
+        ::Gitlab::Ci::ProcessableObjectHierarchy.new(
+          ::Ci::Processable.where(id: @processables.map(&:id))
+        ).base_and_descendants
+      else
+        ::Gitlab::Ci::ProcessableObjectHierarchy.new(
+          ::Ci::Processable.where(id: @processable.id)
+        ).descendants
+      end
     end
 
     def ordered_by_dag(jobs)

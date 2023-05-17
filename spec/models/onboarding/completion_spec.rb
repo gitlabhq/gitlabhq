@@ -2,24 +2,24 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::Completion do
+RSpec.describe Onboarding::Completion, feature_category: :onboarding do
+  let(:completed_actions) { {} }
+  let(:project) { build(:project, namespace: namespace) }
+  let!(:onboarding_progress) { create(:onboarding_progress, namespace: namespace, **completed_actions) }
+
+  let_it_be(:namespace) { create(:namespace) }
+
   describe '#percentage' do
-    let(:completed_actions) { {} }
-    let!(:onboarding_progress) { create(:onboarding_progress, namespace: namespace, **completed_actions) }
     let(:tracked_action_columns) do
-      [
-        *described_class::ACTION_ISSUE_IDS.keys,
-        *described_class::ACTION_PATHS,
-        :security_scan_enabled
-      ].map { |key| ::Onboarding::Progress.column_name(key) }
+      [*described_class::ACTION_PATHS, :security_scan_enabled].map do |key|
+        ::Onboarding::Progress.column_name(key)
+      end
     end
 
-    let_it_be(:namespace) { create(:namespace) }
-
-    subject { described_class.new(namespace).percentage }
+    subject(:percentage) { described_class.new(project).percentage }
 
     context 'when no onboarding_progress exists' do
-      subject { described_class.new(build(:namespace)).percentage }
+      subject(:percentage) { described_class.new(build(:project)).percentage }
 
       it { is_expected.to eq(0) }
     end
@@ -29,30 +29,55 @@ RSpec.describe Onboarding::Completion do
     end
 
     context 'when all tracked actions have been completed' do
+      let(:project) { build(:project, :stubbed_commit_count, namespace: namespace) }
+
       let(:completed_actions) do
         tracked_action_columns.index_with { Time.current }
       end
 
       it { is_expected.to eq(100) }
     end
+  end
 
-    context 'with security_actions_continuous_onboarding experiment' do
-      let(:completed_actions) { Hash[tracked_action_columns.first, Time.current] }
+  describe '#completed?' do
+    subject(:completed?) { described_class.new(project).completed?(column) }
 
-      context 'when control' do
-        before do
-          stub_experiments(security_actions_continuous_onboarding: :control)
-        end
+    context 'when code_added' do
+      let(:column) { :code_added }
 
-        it { is_expected.to eq(11) }
+      context 'when commit_count > 1' do
+        let(:project) { build(:project, :stubbed_commit_count, namespace: namespace) }
+
+        it { is_expected.to eq(true) }
       end
 
-      context 'when candidate' do
-        before do
-          stub_experiments(security_actions_continuous_onboarding: :candidate)
-        end
+      context 'when branch_count > 1' do
+        let(:project) { build(:project, :stubbed_branch_count, namespace: namespace) }
 
-        it { is_expected.to eq(9) }
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when empty repository' do
+        let(:project) { build(:project, namespace: namespace) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'when secure_dast_run' do
+      let(:column) { :secure_dast_run_at }
+      let(:completed_actions) { { secure_dast_run_at: secure_dast_run_at } }
+
+      context 'when is completed' do
+        let(:secure_dast_run_at) { Time.current }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when is not completed' do
+        let(:secure_dast_run_at) { nil }
+
+        it { is_expected.to eq(false) }
       end
     end
   end

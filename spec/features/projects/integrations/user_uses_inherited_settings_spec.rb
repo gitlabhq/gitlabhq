@@ -22,17 +22,17 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
 
         expect(page).not_to have_button('Use custom settings')
         expect(page).to have_field('Web URL', with: parent_settings[:url], readonly: true)
-        expect(page).to have_field('Enter new password or API token', with: '', readonly: true)
+        expect(page).to have_field('New API token, password, or Jira personal access token', with: '', readonly: true)
 
         click_on 'Use default settings'
         click_on 'Use custom settings'
 
         expect(page).not_to have_button('Use default settings')
         expect(page).to have_field('Web URL', with: project_settings[:url], readonly: false)
-        expect(page).to have_field('Enter new password or API token', with: '', readonly: false)
+        expect(page).to have_field('New API token, password, or Jira personal access token', with: '', readonly: false)
 
         fill_in 'Web URL', with: 'http://custom.com'
-        fill_in 'Enter new password or API token', with: 'custom'
+        fill_in 'New API token, password, or Jira personal access token', with: 'custom'
 
         click_save_integration
 
@@ -53,14 +53,14 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
 
         expect(page).not_to have_button('Use default settings')
         expect(page).to have_field('URL', with: project_settings[:url], readonly: false)
-        expect(page).to have_field('Enter new password or API token', with: '', readonly: false)
+        expect(page).to have_field('New API token, password, or Jira personal access token', with: '', readonly: false)
 
         click_on 'Use custom settings'
         click_on 'Use default settings'
 
         expect(page).not_to have_button('Use custom settings')
         expect(page).to have_field('URL', with: parent_settings[:url], readonly: true)
-        expect(page).to have_field('Enter new password or API token', with: '', readonly: true)
+        expect(page).to have_field('New API token, password, or Jira personal access token', with: '', readonly: true)
 
         click_save_integration
 

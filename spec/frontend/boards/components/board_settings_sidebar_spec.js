@@ -2,32 +2,42 @@ import { GlDrawer, GlLabel, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import { inactiveId, LIST } from '~/boards/constants';
+import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import actions from '~/boards/stores/actions';
 import getters from '~/boards/stores/getters';
 import mutations from '~/boards/stores/mutations';
 import sidebarEventHub from '~/sidebar/event_hub';
-import { mockLabelList } from '../mock_data';
+import { mockLabelList, destroyBoardListMutationResponse } from '../mock_data';
 
+Vue.use(VueApollo);
 Vue.use(Vuex);
 
 describe('BoardSettingsSidebar', () => {
   let wrapper;
+  let mockApollo;
   const labelTitle = mockLabelList.label.title;
   const labelColor = mockLabelList.label.color;
   const listId = mockLabelList.id;
   const modalID = 'board-settings-sidebar-modal';
+
+  const destroyBoardListMutationHandlerSuccess = jest
+    .fn()
+    .mockResolvedValue(destroyBoardListMutationResponse);
 
   const createComponent = ({
     canAdminList = false,
     list = {},
     sidebarType = LIST,
     activeId = inactiveId,
+    isApolloBoard = false,
   } = {}) => {
     const boardLists = {
       [listId]: list,
@@ -39,16 +49,30 @@ describe('BoardSettingsSidebar', () => {
       actions,
     });
 
+    mockApollo = createMockApollo([
+      [destroyBoardListMutation, destroyBoardListMutationHandlerSuccess],
+    ]);
+
     wrapper = extendedWrapper(
       shallowMount(BoardSettingsSidebar, {
         store,
+        apolloProvider: mockApollo,
         provide: {
           canAdminList,
           scopedLabelsAvailable: false,
           isIssueBoard: true,
+          boardType: 'group',
+          issuableType: 'issue',
+          isApolloBoard,
+        },
+        propsData: {
+          listId: list.id || '',
+          boardId: 'gid://gitlab/Board/1',
+          list,
+          queryVariables: {},
         },
         directives: {
-          GlModal: createMockDirective(),
+          GlModal: createMockDirective('gl-modal'),
         },
         stubs: {
           GlDrawer: stubComponent(GlDrawer, {
@@ -57,6 +81,9 @@ describe('BoardSettingsSidebar', () => {
         },
       }),
     );
+
+    // Necessary for cache update
+    mockApollo.clients.defaultClient.cache.updateQuery = jest.fn();
   };
   const findLabel = () => wrapper.findComponent(GlLabel);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
@@ -65,8 +92,6 @@ describe('BoardSettingsSidebar', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('finds a MountingPortal component', () => {
@@ -166,6 +191,21 @@ describe('BoardSettingsSidebar', () => {
       createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
 
       expect(findRemoveButton().exists()).toBe(true);
+    });
+
+    it('removes the list', () => {
+      createComponent({
+        canAdminList: true,
+        activeId: listId,
+        list: mockLabelList,
+        isApolloBoard: true,
+      });
+
+      findRemoveButton().vm.$emit('click');
+
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+
+      expect(destroyBoardListMutationHandlerSuccess).toHaveBeenCalled();
     });
 
     it('has the correct ID on the button', () => {

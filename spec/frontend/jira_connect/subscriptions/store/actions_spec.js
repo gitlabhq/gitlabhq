@@ -117,7 +117,7 @@ describe('JiraConnect actions', () => {
     });
 
     describe('when API request succeeds', () => {
-      it('commits the SET_ACCESS_TOKEN and SET_CURRENT_USER mutations', async () => {
+      it('commits the SET_ALERT mutation', async () => {
         jest.spyOn(api, 'addJiraConnectSubscription').mockResolvedValue({ success: true });
 
         await testAction(
@@ -125,7 +125,6 @@ describe('JiraConnect actions', () => {
           { namespacePath: mockNamespace, subscriptionsPath: mockSubscriptionsPath },
           mockedState,
           [
-            { type: types.ADD_SUBSCRIPTION_LOADING, payload: true },
             {
               type: types.SET_ALERT,
               payload: {
@@ -135,7 +134,6 @@ describe('JiraConnect actions', () => {
                 variant: 'success',
               },
             },
-            { type: types.ADD_SUBSCRIPTION_LOADING, payload: false },
           ],
           [{ type: 'fetchSubscriptions', payload: mockSubscriptionsPath }],
         );
@@ -148,20 +146,18 @@ describe('JiraConnect actions', () => {
     });
 
     describe('when API request fails', () => {
-      it('commits the SET_CURRENT_USER_ERROR mutation', async () => {
+      it('does not commit the SET_ALERT mutation', () => {
         jest.spyOn(api, 'addJiraConnectSubscription').mockRejectedValue();
 
-        await testAction(
+        // We need the empty catch(), since we are testing rejecting the promise,
+        // which would otherwise cause the test to fail.
+        testAction(
           addSubscription,
-          mockNamespace,
+          { namespacePath: mockNamespace, subscriptionsPath: mockSubscriptionsPath },
           mockedState,
-          [
-            { type: types.ADD_SUBSCRIPTION_LOADING, payload: true },
-            { type: types.ADD_SUBSCRIPTION_ERROR },
-            { type: types.ADD_SUBSCRIPTION_LOADING, payload: false },
-          ],
           [],
-        );
+          [],
+        ).catch(() => {});
       });
     });
   });

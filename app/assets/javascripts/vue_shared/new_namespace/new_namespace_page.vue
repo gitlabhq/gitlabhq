@@ -3,34 +3,31 @@ import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
+import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
+import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
 export default {
+  JS_TOGGLE_EXPAND_CLASS,
   components: {
     NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
     WelcomePage,
     LegacyContainer,
-    CreditCardVerification: () =>
-      import('ee_component/namespaces/verification/components/credit_card_verification.vue'),
+    SuperSidebarToggle,
   },
   directives: {
     SafeHtml,
-  },
-  inject: {
-    verificationRequired: {
-      default: false,
-    },
   },
   props: {
     title: {
       type: String,
       required: true,
     },
-    initialBreadcrumb: {
-      type: String,
+    initialBreadcrumbs: {
+      type: Array,
       required: true,
     },
     panels: {
@@ -51,13 +48,16 @@ export default {
   data() {
     return {
       activePanelName: null,
-      verificationCompleted: false,
     };
   },
 
   computed: {
     activePanel() {
       return this.panels.find((p) => p.name === this.activePanelName);
+    },
+
+    detailProps() {
+      return this.activePanel.detailProps || {};
     },
 
     details() {
@@ -69,18 +69,15 @@ export default {
     },
 
     breadcrumbs() {
-      if (!this.activePanel) {
-        return null;
-      }
-
-      return [
-        { text: this.initialBreadcrumb, href: '#' },
-        { text: this.activePanel.title, href: `#${this.activePanel.name}` },
-      ];
-    },
-
-    shouldVerify() {
-      return this.verificationRequired && !this.verificationCompleted;
+      return this.activePanel
+        ? [
+            ...this.initialBreadcrumbs,
+            {
+              text: this.activePanel.title,
+              href: `#${this.activePanel.name}`,
+            },
+          ]
+        : this.initialBreadcrumbs;
     },
 
     showNewTopLevelGroupAlert() {
@@ -89,6 +86,10 @@ export default {
       }
 
       return this.activePanel.detailProps.parentGroupName === '';
+    },
+
+    showSuperSidebarToggle() {
+      return gon.use_new_navigation && sidebarState.isCollapsed;
     },
   },
 
@@ -116,34 +117,45 @@ export default {
         localStorage.setItem(this.persistenceKey, this.activePanelName);
       }
     },
-    onVerified() {
-      this.verificationCompleted = true;
-    },
   },
 };
 </script>
 
 <template>
-  <credit-card-verification v-if="shouldVerify" @verified="onVerified" />
-  <welcome-page v-else-if="!activePanelName" :panels="panels" :title="title">
-    <template #footer>
-      <slot name="welcome-footer"> </slot>
+  <div>
+    <div
+      class="top-bar-container gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
+    >
+      <super-sidebar-toggle
+        v-if="showSuperSidebarToggle"
+        class="gl-mr-2"
+        :class="$options.JS_TOGGLE_EXPAND_CLASS"
+      />
+      <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
+    </div>
+
+    <template v-if="activePanel">
+      <div class="gl-display-flex gl-align-items-center gl-py-5">
+        <div v-safe-html="activePanel.illustration" class="gl-text-white col-auto"></div>
+        <div class="col">
+          <h4>{{ activePanel.title }}</h4>
+
+          <p v-if="hasTextDetails">{{ details }}</p>
+          <component :is="details" v-else v-bind="detailProps" />
+        </div>
+
+        <slot name="extra-description"></slot>
+      </div>
+      <div>
+        <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
+        <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
+      </div>
     </template>
-  </welcome-page>
-  <div v-else class="row">
-    <div class="col-lg-3">
-      <div v-safe-html="activePanel.illustration" class="gl-text-white"></div>
-      <h4>{{ activePanel.title }}</h4>
 
-      <p v-if="hasTextDetails">{{ details }}</p>
-      <component :is="details" v-else v-bind="activePanel.detailProps || {}" />
-
-      <slot name="extra-description"></slot>
-    </div>
-    <div class="col-lg-9">
-      <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
-      <gl-breadcrumb v-if="breadcrumbs" :items="breadcrumbs" />
-      <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
-    </div>
+    <welcome-page v-else :panels="panels" :title="title">
+      <template #footer>
+        <slot name="welcome-footer"></slot>
+      </template>
+    </welcome-page>
   </div>
 </template>

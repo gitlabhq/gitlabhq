@@ -15,10 +15,6 @@ describe('CreateGroupDescriptionDetails component', () => {
 
   const findLinkHref = (at) => wrapper.findAllComponents(GlLink).at(at);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('creates correct component for group creation', () => {
     createComponent();
 

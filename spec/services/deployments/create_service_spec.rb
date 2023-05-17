@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::CreateService do
+RSpec.describe Deployments::CreateService, feature_category: :continuous_delivery do
   let(:user) { create(:user) }
 
   describe '#execute' do

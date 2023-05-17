@@ -9,7 +9,6 @@ import {
   EVENT_ACTIONS_OPEN,
   EVENT_ACTIONS_CLICK,
   TOKEN_NAME_LIMIT,
-  TOKEN_STATUS_ACTIVE,
 } from '../constants';
 import createNewAgentToken from '../graphql/mutations/create_new_agent_token.mutation.graphql';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
@@ -66,7 +65,6 @@ export default {
       variables: {
         agentName: this.agentName,
         projectPath: this.projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...this.cursor,
       },
     };

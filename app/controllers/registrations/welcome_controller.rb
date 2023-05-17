@@ -4,13 +4,14 @@ module Registrations
   class WelcomeController < ApplicationController
     include OneTrustCSP
     include GoogleAnalyticsCSP
-    include RegistrationsTracking
 
     layout 'minimal'
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
     before_action :require_current_user
 
-    feature_category :authentication_and_authorization
+    helper_method :welcome_update_params
+
+    feature_category :user_management
 
     def show
       return redirect_to path_for_signed_in_user(current_user) if completed_welcome_step?
@@ -48,16 +49,7 @@ module Registrations
       params.require(:user).permit(:role, :setup_for_company)
     end
 
-    def requires_confirmation?(user)
-      return false if user.confirmed?
-      return false if Feature.enabled?(:soft_email_confirmation)
-
-      true
-    end
-
     def path_for_signed_in_user(user)
-      return users_almost_there_path(email: user.email) if requires_confirmation?(user)
-
       stored_location_for(user) || members_activity_path(user.members)
     end
 
@@ -98,6 +90,11 @@ module Registrations
 
     # overridden in EE
     def track_event(action); end
+
+    # overridden in EE
+    def welcome_update_params
+      {}
+    end
   end
 end
 

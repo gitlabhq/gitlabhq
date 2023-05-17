@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::Alerts::NotifyService do
+RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :metrics do
   include PrometheusHelpers
   using RSpec::Parameterized::TableSyntax
 
@@ -45,10 +45,8 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       before do
-        create(:clusters_integrations_prometheus,
-               cluster: prd_cluster, alert_manager_token: token)
-        create(:clusters_integrations_prometheus,
-               cluster: stg_cluster, alert_manager_token: nil)
+        create(:clusters_integrations_prometheus, cluster: prd_cluster, alert_manager_token: token)
+        create(:clusters_integrations_prometheus, cluster: stg_cluster, alert_manager_token: nil)
       end
 
       context 'without token' do
@@ -78,10 +76,12 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
           cluster.update!(enabled: cluster_enabled)
 
           unless integration_enabled.nil?
-            create(:clusters_integrations_prometheus,
-                   cluster: cluster,
-                   enabled: integration_enabled,
-                   alert_manager_token: configured_token)
+            create(
+              :clusters_integrations_prometheus,
+              cluster: cluster,
+              enabled: integration_enabled,
+              alert_manager_token: configured_token
+            )
           end
         end
 
@@ -118,9 +118,11 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
           create(:prometheus_integration, project: project)
 
           if alerting_setting
-            create(:project_alerting_setting,
-                   project: project,
-                   token: configured_token)
+            create(
+              :project_alerting_setting,
+              project: project,
+              token: configured_token
+            )
           end
         end
 

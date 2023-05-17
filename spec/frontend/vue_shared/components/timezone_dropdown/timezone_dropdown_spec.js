@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlDropdown } from '@gitlab/ui';
+import { GlDropdownItem, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -9,7 +9,9 @@ describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
   let store;
 
-  const createComponent = (searchTerm, selectedTimezone) => {
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+
+  const createComponent = async (searchTerm, selectedTimezone) => {
     wrapper = shallowMountExtended(TimezoneDropdown, {
       store,
       propsData: {
@@ -19,9 +21,8 @@ describe('Deploy freeze timezone dropdown', () => {
       },
     });
 
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({ searchTerm });
+    findSearchBox().vm.$emit('input', searchTerm);
+    await nextTick();
   };
 
   const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
@@ -29,14 +30,9 @@ describe('Deploy freeze timezone dropdown', () => {
   const findEmptyResultsItem = () => wrapper.findByTestId('noMatchingResults');
   const findHiddenInput = () => wrapper.find('input');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('No time zones found', () => {
-    beforeEach(() => {
-      createComponent('UTC timezone');
+    beforeEach(async () => {
+      await createComponent('UTC timezone');
     });
 
     it('renders empty results message', () => {
@@ -45,8 +41,8 @@ describe('Deploy freeze timezone dropdown', () => {
   });
 
   describe('Search term is empty', () => {
-    beforeEach(() => {
-      createComponent('');
+    beforeEach(async () => {
+      await createComponent('');
     });
 
     it('renders all timezones when search term is empty', () => {
@@ -55,8 +51,8 @@ describe('Deploy freeze timezone dropdown', () => {
   });
 
   describe('Time zones found', () => {
-    beforeEach(() => {
-      createComponent('Alaska');
+    beforeEach(async () => {
+      await createComponent('Alaska');
     });
 
     it('renders only the time zone searched for', () => {
@@ -87,8 +83,8 @@ describe('Deploy freeze timezone dropdown', () => {
   });
 
   describe('Selected time zone not found', () => {
-    beforeEach(() => {
-      createComponent('', 'Berlin');
+    beforeEach(async () => {
+      await createComponent('', 'Berlin');
     });
 
     it('renders empty selections', () => {
@@ -101,8 +97,8 @@ describe('Deploy freeze timezone dropdown', () => {
   });
 
   describe('Selected time zone found', () => {
-    beforeEach(() => {
-      createComponent('', 'Europe/Berlin');
+    beforeEach(async () => {
+      await createComponent('', 'Europe/Berlin');
     });
 
     it('renders selected time zone as dropdown label', () => {

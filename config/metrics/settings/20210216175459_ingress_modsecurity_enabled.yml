@@ -5,7 +5,6 @@ description: Whether or not ModSecurity is enabled within Ingress
 product_section: sec
 product_stage: protect_stage_was_removed
 product_group: container_security_group_was_removed
-product_category: web_firewall_category_was_removed
 value_type: boolean
 status: removed
 milestone_removed: 14.0

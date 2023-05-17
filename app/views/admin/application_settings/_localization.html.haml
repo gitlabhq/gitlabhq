@@ -20,7 +20,7 @@
         = _('Default language')
       = f.select :default_preferred_language, default_preferred_language_choices, {}, class: 'gl-form-select custom-select'
       .form-text.text-muted
-        = s_('Default language for users who are not logged in.')
+        = _('Default language for users who are not logged in.')
 
   = f.submit _('Save changes'), pajamas_button: true
 

@@ -1,4 +1,5 @@
 <script>
+import { GlLink, GlPopover } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -10,8 +11,10 @@ import RequestSelector from './request_selector.vue';
 
 export default {
   components: {
+    GlPopover,
     AddRequest,
     DetailedMetric,
+    GlLink,
     RequestSelector,
   },
   directives: {
@@ -27,6 +30,10 @@ export default {
       required: true,
     },
     requestId: {
+      type: String,
+      required: true,
+    },
+    requestMethod: {
       type: String,
       required: true,
     },
@@ -72,6 +79,11 @@ export default {
       keys: ['request', 'body'],
     },
     {
+      metric: 'zkt',
+      header: s__('PerformanceBar|Zoekt calls'),
+      keys: ['request', 'body'],
+    },
+    {
       metric: 'external-http',
       title: 'external',
       header: s__('PerformanceBar|External Http calls'),
@@ -103,9 +115,6 @@ export default {
         this.currentRequestId = requestId;
       },
     },
-    initialRequest() {
-      return this.currentRequestId === this.requestId;
-    },
     hasHost() {
       return this.currentRequest && this.currentRequest.details && this.currentRequest.details.host;
     },
@@ -124,23 +133,46 @@ export default {
       const fileName = this.requests[0].displayName;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
-    memoryReportPath() {
-      return mergeUrlParams({ performance_bar: 'memory' }, window.location.href);
+    showZoekt() {
+      return document.body.dataset.page === 'search:show';
     },
+    showFlamegraphButtons() {
+      return this.isGetRequest(this.currentRequestId);
+    },
+    showMemoryReportButton() {
+      return this.isGetRequest(this.currentRequestId) && this.env === 'development';
+    },
+    memoryReportPath() {
+      return mergeUrlParams(
+        { performance_bar: 'memory' },
+        this.store.findRequest(this.currentRequestId).fullUrl,
+      );
+    },
+  },
+  created() {
+    if (!this.showZoekt) {
+      this.$options.detailedMetrics = this.$options.detailedMetrics.filter(
+        (item) => item.metric !== 'zkt',
+      );
+    }
   },
   mounted() {
     this.currentRequest = this.requestId;
   },
   methods: {
+    glEmojiTag,
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
       this.$emit('change-request', newRequestId);
     },
-    flamegraphPath(mode) {
+    flamegraphPath(mode, requestId) {
       return mergeUrlParams(
         { performance_bar: 'flamegraph', stackprof_mode: mode },
-        window.location.href,
+        this.store.findRequest(requestId).fullUrl,
       );
+    },
+    isGetRequest(requestId) {
+      return this.store.findRequest(requestId)?.method?.toUpperCase() === 'GET';
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -159,8 +191,17 @@ export default {
           class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
-          <span v-safe-html:[$options.safeHtmlConfig]="birdEmoji"></span>
-          {{ currentRequest.details.host.hostname }}
+          <span id="canary-emoji" v-safe-html:[$options.safeHtmlConfig]="birdEmoji"></span>
+          <gl-popover placement="bottom" target="canary-emoji" content="Canary" />
+          <span
+            id="host-emoji"
+            v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('computer')"
+          ></span>
+          <gl-popover
+            placement="bottom"
+            target="host-emoji"
+            :content="currentRequest.details.host.hostname"
+          />
         </span>
       </div>
       <detailed-metric
@@ -177,41 +218,45 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a class="gl-text-blue-200" :href="currentRequest.details.tracing.tracing_url">{{
+        <gl-link class="gl-text-blue-200" :href="currentRequest.details.tracing.tracing_url">{{
           s__('PerformanceBar|Trace')
-        }}</a>
+        }}</gl-link>
       </div>
       <div v-if="currentRequest.details" id="peek-download" class="view">
-        <a class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
-          s__('PerformanceBar|Download')
-        }}</a>
+        <gl-link
+          class="gl-text-blue-200"
+          is-unsafe-link
+          :download="downloadName"
+          :href="downloadPath"
+          >{{ s__('PerformanceBar|Download') }}</gl-link
+        >
       </div>
-      <div
-        v-if="currentRequest.details && env === 'development'"
-        id="peek-memory-report"
-        class="view"
-      >
-        <a class="gl-text-blue-200" :href="memoryReportPath">{{
+      <div v-if="showMemoryReportButton" id="peek-memory-report" class="view">
+        <gl-link class="gl-text-blue-200" :href="memoryReportPath">{{
           s__('PerformanceBar|Memory report')
-        }}</a>
+        }}</gl-link>
       </div>
-      <div v-if="currentRequest.details" id="peek-flamegraph" class="view">
-        <span class="gl-text-white-200">{{ s__('PerformanceBar|Flamegraph with mode:') }}</span>
-        <a class="gl-text-blue-200" :href="flamegraphPath('wall')">{{
+      <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
+        <span id="flamegraph-emoji" class="gl-text-white-200">
+          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('fire')"></span>
+          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('bar_chart')"></span>
+        </span>
+        <gl-popover placement="bottom" target="flamegraph-emoji" content="Flamegraph" />
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('wall', currentRequestId)">{{
           s__('PerformanceBar|wall')
-        }}</a>
+        }}</gl-link>
         /
-        <a class="gl-text-blue-200" :href="flamegraphPath('cpu')">{{
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('cpu', currentRequestId)">{{
           s__('PerformanceBar|cpu')
-        }}</a>
+        }}</gl-link>
         /
-        <a class="gl-text-blue-200" :href="flamegraphPath('object')">{{
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('object', currentRequestId)">{{
           s__('PerformanceBar|object')
-        }}</a>
+        }}</gl-link>
       </div>
-      <a v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{
+      <gl-link v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{
         s__('PerformanceBar|Stats')
-      }}</a>
+      }}</gl-link>
       <request-selector
         v-if="currentRequest"
         :current-request="currentRequest"

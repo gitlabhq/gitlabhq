@@ -2,6 +2,15 @@ import { Heading } from '@tiptap/extension-heading';
 import { textblockTypeInputRule } from '@tiptap/core';
 
 export default Heading.extend({
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   addInputRules() {
     return this.options.levels.map((level) => {
       return textblockTypeInputRule({

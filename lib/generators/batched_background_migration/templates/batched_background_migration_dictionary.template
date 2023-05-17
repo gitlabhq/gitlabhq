@@ -1,0 +1,6 @@
+---
+migration_job_name: <%= class_name %>
+description: # Please capture what <%= class_name %> does
+feature_category: <%= feature_category %>
+introduced_by_url: # URL of the MR (or issue/commit) that introduced the migration
+milestone: <%= current_milestone %>

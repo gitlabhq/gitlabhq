@@ -63,11 +63,8 @@ describe('ProjectSelect', () => {
   };
   const openListbox = () => findListbox().vm.$emit('shown');
 
-  beforeAll(() => {
-    gon.api_version = apiVersion;
-  });
-
   beforeEach(() => {
+    gon.api_version = apiVersion;
     mock = new MockAdapter(axios);
   });
 
@@ -100,6 +97,7 @@ describe('ProjectSelect', () => {
       ${'defaultToggleText'} | ${PROJECT_TOGGLE_TEXT}
       ${'headerText'}        | ${PROJECT_HEADER_TEXT}
       ${'clearable'}         | ${true}
+      ${'block'}             | ${false}
     `('passes the $prop prop to entity-select', ({ prop, expectedValue }) => {
       expect(findEntitySelect().props(prop)).toBe(expectedValue);
     });
@@ -137,6 +135,18 @@ describe('ProjectSelect', () => {
       await waitForPromises();
 
       expect(mock.history.get[0].params.include_subgroups).toBe(true);
+    });
+
+    it('does not include shared projects if withShared prop is false', async () => {
+      createComponent({
+        props: {
+          withShared: false,
+        },
+      });
+      openListbox();
+      await waitForPromises();
+
+      expect(mock.history.get[0].params.with_shared).toBe(false);
     });
 
     it('fetches projects globally if no group ID is provided', async () => {

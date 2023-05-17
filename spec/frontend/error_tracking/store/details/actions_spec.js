@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
@@ -14,7 +14,7 @@ import Poll from '~/lib/utils/poll';
 let mockedAdapter;
 let mockedRestart;
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 describe('Sentry error details store actions', () => {
@@ -48,7 +48,7 @@ describe('Sentry error details store actions', () => {
       );
     });
 
-    it('should show flash on API error', async () => {
+    it('should show alert on API error', async () => {
       mockedAdapter.onGet().reply(HTTP_STATUS_BAD_REQUEST);
 
       await testAction(

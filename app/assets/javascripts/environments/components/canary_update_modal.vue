@@ -42,7 +42,7 @@ export default {
     modalId: CANARY_UPDATE_MODAL,
     actionPrimary: {
       text: s__('CanaryIngress|Change ratio'),
-      attributes: [{ variant: 'confirm' }],
+      attributes: { variant: 'confirm' },
     },
     actionCancel: { text: __('Cancel') },
     static: true,

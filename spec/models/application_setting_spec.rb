@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
+RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -30,6 +30,20 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     let(:https) { 'https://example.com' }
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
+
+    let_it_be(:valid_database_apdex_settings) do
+      {
+        prometheus_api_url: 'Prometheus URL',
+        apdex_sli_query: {
+          main: 'Apdex SLI query main',
+          ci: 'Apdex SLI query ci'
+        },
+        apdex_slo: {
+          main: 0.99,
+          ci: 0.98
+        }
+      }
+    end
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -132,6 +146,9 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value(false).for(:user_defaults_to_private_profile) }
     it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
 
+    it { is_expected.to allow_values([true, false]).for(:deny_all_requests_except_allowed) }
+    it { is_expected.not_to allow_value(nil).for(:deny_all_requests_except_allowed) }
+
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
@@ -182,7 +199,8 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
-    %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit].each do |setting|
+    %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit
+      projects_api_rate_limit_unauthenticated].each do |setting|
       it { is_expected.to allow_value(400).for(setting) }
       it { is_expected.not_to allow_value('two').for(setting) }
       it { is_expected.not_to allow_value(nil).for(setting) }
@@ -209,6 +227,12 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
     it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
 
+    it { is_expected.to allow_value('http://example.com/').for(:public_runner_releases_url) }
+    it { is_expected.not_to allow_value(nil).for(:public_runner_releases_url) }
+
+    it { is_expected.to allow_value([true, false]).for(:update_runner_versions_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:update_runner_versions_enabled) }
+
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
@@ -227,6 +251,27 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value(true).for(:allow_runner_registration_token) }
     it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
     it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
+
+    it { is_expected.to allow_value(true).for(:gitlab_dedicated_instance) }
+    it { is_expected.to allow_value(false).for(:gitlab_dedicated_instance) }
+    it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
+
+    it { is_expected.not_to allow_value(random: :value).for(:database_apdex_settings) }
+    it { is_expected.to allow_value(nil).for(:database_apdex_settings) }
+    it { is_expected.to allow_value(valid_database_apdex_settings).for(:database_apdex_settings) }
+
+    it { is_expected.to allow_value([true, false]).for(:silent_mode_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:silent_mode_enabled) }
+
+    it { is_expected.to allow_value(0).for(:ci_max_includes) }
+    it { is_expected.to allow_value(200).for(:ci_max_includes) }
+    it { is_expected.not_to allow_value('abc').for(:ci_max_includes) }
+    it { is_expected.not_to allow_value(nil).for(:ci_max_includes) }
+    it { is_expected.not_to allow_value(10.5).for(:ci_max_includes) }
+    it { is_expected.not_to allow_value(-1).for(:ci_max_includes) }
+
+    it { is_expected.to allow_value([true, false]).for(:remember_me_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:remember_me_enabled) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -265,6 +310,17 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
                                  .with_message('is too long (maximum is 255 characters)')
           end
         end
+      end
+    end
+
+    context 'import_sources validation' do
+      before do
+        subject.import_sources = %w[github bitbucket gitlab git gitlab_project gitea manifest phabricator]
+      end
+
+      it 'removes phabricator as an import source' do
+        subject.validate
+        expect(subject.import_sources).to eq(%w[github bitbucket git gitlab_project gitea manifest])
       end
     end
 
@@ -318,7 +374,7 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
       end
     end
 
-    describe 'default_branch_name validaitions' do
+    describe 'default_branch_name validations' do
       context "when javascript tags get sanitized properly" do
         it "gets sanitized properly" do
           setting.update!(default_branch_name: "hello<script>alert(1)</script>")
@@ -506,6 +562,13 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
         .is_less_than(65536)
     end
 
+    specify do
+      is_expected.to validate_numericality_of(:archive_builds_in_seconds)
+        .only_integer
+        .is_greater_than_or_equal_to(1.day.seconds.to_i)
+        .with_message('must be at least 1 day')
+    end
+
     describe 'usage_ping_enabled setting' do
       shared_examples 'usage ping enabled' do
         it do
@@ -582,6 +645,23 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
         end
 
         it_behaves_like 'usage ping enabled'
+      end
+    end
+
+    describe 'setting validated as `addressable_url` configured with external URI' do
+      before do
+        # Use any property that has the `addressable_url` validation.
+        setting.help_page_documentation_base_url = 'http://example.com'
+      end
+
+      it 'is valid by default' do
+        expect(setting).to be_valid
+      end
+
+      it 'is invalid when unpersisted `deny_all_requests_except_allowed` property is true' do
+        setting.deny_all_requests_except_allowed = true
+
+        expect(setting).not_to be_valid
       end
     end
 
@@ -1124,6 +1204,11 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
       it { is_expected.to allow_value(*Gitlab::I18n.available_locales).for(:default_preferred_language) }
       it { is_expected.not_to allow_value(nil, '', 'invalid_locale').for(:default_preferred_language) }
     end
+
+    context 'for default_syntax_highlighting_theme' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
+      it { is_expected.not_to allow_value(nil, 0, Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme) }
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -1141,6 +1226,17 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
 
     it 'raises an exception' do
       expect { described_class.create_from_defaults }.to raise_error(/table is missing a primary key constraint/)
+    end
+  end
+
+  describe 'ADDRESSABLE_URL_VALIDATION_OPTIONS' do
+    it 'is applied to all addressable_url validated properties' do
+      url_validators = described_class.validators.select { |validator| validator.is_a?(AddressableUrlValidator) }
+
+      url_validators.each do |validator|
+        expect(validator.options).to match(hash_including(described_class::ADDRESSABLE_URL_VALIDATION_OPTIONS)),
+          "#{validator.attributes} should use ADDRESSABLE_URL_VALIDATION_OPTIONS"
+      end
     end
   end
 
@@ -1451,7 +1547,7 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to validate_numericality_of(:inactive_projects_min_size_mb).is_greater_than_or_equal_to(0) }
 
     it "deletes the redis key used for tracking inactive projects deletion warning emails when setting is updated",
-       :clean_gitlab_redis_shared_state do
+      :clean_gitlab_redis_shared_state do
       Gitlab::Redis::SharedState.with do |redis|
         redis.hset("inactive_projects_deletion_warning_email_notified", "project:1", "2020-01-01")
       end

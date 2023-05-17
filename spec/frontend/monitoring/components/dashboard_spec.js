@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -33,7 +33,7 @@ import {
   setupStoreWithLinks,
 } from '../store_utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Dashboard', () => {
   let store;
@@ -75,7 +75,6 @@ describe('Dashboard', () => {
     if (store.dispatch.mockReset) {
       store.dispatch.mockReset();
     }
-    wrapper.destroy();
   });
 
   describe('request information to the server', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Topics::MergeService do
+RSpec.describe Topics::MergeService, feature_category: :shared do
   let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
   let_it_be(:target_topic) { create(:topic, name: 'target_topic') }
   let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name) }
@@ -47,7 +47,7 @@ RSpec.describe Topics::MergeService do
       where(:source_topic_parameter, :target_topic_parameter, :expected_message) do
         nil                | ref(:target_topic) | 'The source topic is not a topic.'
         ref(:source_topic) | nil                | 'The target topic is not a topic.'
-        ref(:target_topic) | ref(:target_topic) | 'The source topic and the target topic are identical.' # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        ref(:target_topic) | ref(:target_topic) | 'The source topic and the target topic are identical.'
       end
 
       with_them do

@@ -254,6 +254,27 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     end
 
     it_behaves_like 'has sync-ed traversal_ids'
+
+    context 'when project is an import' do
+      before do
+        stub_application_setting(import_sources: ['gitlab_project'])
+      end
+
+      context 'when user is not allowed to import projects' do
+        let(:group) do
+          create(:group).tap do |group|
+            group.add_developer(user)
+          end
+        end
+
+        it 'does not create the project' do
+          project = create_project(user, opts.merge!(namespace_id: group.id, import_type: 'gitlab_project'))
+
+          expect(project).not_to be_persisted
+          expect(project.errors.messages[:user].first).to eq('is not allowed to import projects')
+        end
+      end
+    end
   end
 
   context 'group sharing', :sidekiq_inline do
@@ -339,9 +360,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     before do
       group.add_maintainer(group_maintainer)
 
-      create(:group_group_link, shared_group: subgroup_for_projects,
-                                shared_with_group: subgroup_for_access,
-                                group_access: share_max_access_level)
+      create(
+        :group_group_link,
+        shared_group: subgroup_for_projects,
+        shared_with_group: subgroup_for_access,
+        group_access: share_max_access_level
+      )
     end
 
     context 'membership is higher from group hierarchy' do
@@ -716,16 +740,34 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
       end
     end
 
-    context 'and a default_branch_name is specified' do
+    context 'and default_branch is specified' do
+      before do
+        opts[:default_branch] = 'example_branch'
+      end
+
+      it 'creates the correct branch' do
+        expect(project.repository.branch_names).to contain_exactly('example_branch')
+      end
+
+      it_behaves_like 'a repo with a README.md' do
+        let(:expected_content) do
+          <<~MARKDOWN
+            cd existing_repo
+            git remote add origin #{project.http_url_to_repo}
+            git branch -M example_branch
+            git push -uf origin example_branch
+          MARKDOWN
+        end
+      end
+    end
+
+    context 'and the default branch setting is configured' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('example_branch')
       end
 
       it 'creates the correct branch' do
-        branches = project.repository.branches
-
-        expect(branches.size).to eq(1)
-        expect(branches.collect(&:name)).to contain_exactly('example_branch')
+        expect(project.repository.branch_names).to contain_exactly('example_branch')
       end
 
       it_behaves_like 'a repo with a README.md' do
@@ -956,11 +998,11 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
         receive(:perform_async).and_call_original
       )
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour,
-                array_including([user.id], [other_user.id]),
-                batch_delay: 30.seconds, batch_size: 100)
-          .and_call_original
+        receive(:bulk_perform_in).with(
+          1.hour,
+          array_including([user.id], [other_user.id]),
+          batch_delay: 30.seconds, batch_size: 100
+        ).and_call_original
       )
 
       project = create_project(user, opts)

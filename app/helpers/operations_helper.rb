@@ -12,7 +12,7 @@ module OperationsHelper
 
   def alerts_settings_data(disabled: false)
     setting = project_incident_management_setting
-    templates = setting.available_issue_templates.map { |t| { key: t.key, name: t.name } }
+    templates = setting.available_issue_templates.map { |t| { value: t.key, text: t.name } }
 
     {
       'prometheus_activated' => prometheus_integration.manual_configuration?.to_s,

@@ -25,6 +25,8 @@ module API
         end
 
         post ':id/metrics/user_starred_dashboards' do
+          not_found! if Feature.enabled?(:remove_monitor_metrics)
+
           result = ::Metrics::UsersStarredDashboards::CreateService.new(current_user, user_project, params[:dashboard_path]).execute
 
           if result.success?
@@ -50,6 +52,8 @@ module API
         end
 
         delete ':id/metrics/user_starred_dashboards' do
+          not_found! if Feature.enabled?(:remove_monitor_metrics)
+
           result = ::Metrics::UsersStarredDashboards::DeleteService.new(current_user, user_project, params[:dashboard_path]).execute
 
           if result.success?

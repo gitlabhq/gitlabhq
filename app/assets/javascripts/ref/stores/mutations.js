@@ -10,6 +10,9 @@ export default {
   [types.SET_USE_SYMBOLIC_REF_NAMES](state, useSymbolicRefNames) {
     state.useSymbolicRefNames = useSymbolicRefNames;
   },
+  [types.SET_PARAMS](state, params) {
+    state.params = params;
+  },
   [types.SET_PROJECT_ID](state, projectId) {
     state.projectId = projectId;
   },

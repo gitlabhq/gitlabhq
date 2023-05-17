@@ -221,11 +221,13 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with commit comment" do
         let_it_be(:note) do
-          create(:note_on_commit,
-                 author: user,
-                 project: project,
-                 commit_id: project.repository.commit.id,
-                 note: "a comment on a commit")
+          create(
+            :note_on_commit,
+            author: user,
+            project: project,
+            commit_id: project.repository.commit.id,
+            note: "a comment on a commit"
+          )
         end
 
         it_behaves_like "triggered #{integration_name} integration"
@@ -261,9 +263,11 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with failed pipeline" do
         let_it_be(:pipeline) do
-          create(:ci_pipeline,
-                 project: project, status: "failed",
-                 sha: project.commit.sha, ref: project.default_branch)
+          create(
+            :ci_pipeline,
+            project: project, status: "failed",
+            sha: project.commit.sha, ref: project.default_branch
+          )
         end
 
         it_behaves_like "triggered #{integration_name} integration"
@@ -271,9 +275,11 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with succeeded pipeline" do
         let_it_be(:pipeline) do
-          create(:ci_pipeline,
-                 project: project, status: "success",
-                 sha: project.commit.sha, ref: project.default_branch)
+          create(
+            :ci_pipeline,
+            project: project, status: "success",
+            sha: project.commit.sha, ref: project.default_branch
+          )
         end
 
         context "with default notify_only_broken_pipelines" do

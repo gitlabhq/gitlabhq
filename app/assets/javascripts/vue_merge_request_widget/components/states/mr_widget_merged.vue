@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
@@ -150,7 +150,13 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" :actions="actions" status="merged">
+  <state-container
+    :actions="actions"
+    status="merged"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <mr-widget-author-time
       :action-text="s__('mrWidget|Merged by')"
       :author="mr.metrics.mergedBy"

@@ -1,7 +1,12 @@
 <script>
 import { GlForm, GlFormInput, GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
+  i18n: {
+    buttonLabel: __('Add request manually'),
+    inputLabel: __('URL or request ID'),
+  },
   components: {
     GlForm,
     GlButton,
@@ -37,14 +42,16 @@ export default {
         variant="link"
         icon="plus"
         size="small"
-        :title="__('Add request manually')"
+        :title="$options.i18n.buttonLabel"
+        :aria-label="$options.i18n.buttonLabel"
         @click="toggleInput"
       />
       <gl-form-input
         v-if="inputEnabled"
         v-model="urlOrRequestId"
         type="text"
-        :placeholder="__(`URL or request ID`)"
+        :placeholder="$options.i18n.inputLabel"
+        :aria-label="$options.i18n.inputLabel"
         class="gl-ml-2"
         @keyup.enter="addRequest"
         @keyup.esc="clearForm"

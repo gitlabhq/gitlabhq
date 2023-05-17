@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
+export const ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL = 3000;
 export const ENVIRONMENT_DETAILS_PAGE_SIZE = 20;
 export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {
@@ -30,7 +31,7 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {
     key: 'job',
     label: __('Job'),
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-15p',
     tdClass: 'gl-vertical-align-middle!',
   },
   {
@@ -48,7 +49,7 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {
     key: 'actions',
     label: __('Actions'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-15p',
     tdClass: 'gl-vertical-align-middle! gl-white-space-nowrap',
   },
 ];
@@ -61,6 +62,8 @@ export const translations = {
   ),
   nextPageButtonLabel: __('Next'),
   previousPageButtonLabel: __('Prev'),
+  redeployButtonTitle: s__('Environments|Re-deploy to environment'),
+  rollbackButtonTitle: s__('Environments|Rollback environment'),
 };
 
 export const codeBlockPlaceholders = { code: ['code_open', 'code_close'] };

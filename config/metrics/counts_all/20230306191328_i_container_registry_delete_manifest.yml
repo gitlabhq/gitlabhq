@@ -1,0 +1,25 @@
+---
+key_path: counts.container_registry_events_i_container_registry_delete_manifest
+name: manifest_delete_events
+description: A count of manifests that have been deleted
+product_section: ops
+product_stage: package
+product_group: package
+value_type: number
+status: active
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113440
+time_frame: all
+data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: container_registry_events
+  event: i_container_registry_delete_manifest
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

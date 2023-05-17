@@ -293,10 +293,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_reference' do
+    let(:project_namespace) { build_stubbed(:project_namespace) }
+    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+
     context 'when show_full_reference truthy' do
       it 'display issuable full reference' do
         assign(:show_full_reference, true)
-        issue = build_stubbed(:issue)
+        issue = build_stubbed(:issue, project: project)
 
         expect(helper.issuable_reference(issue)).to eql(issue.to_reference(full: true))
       end
@@ -305,12 +308,10 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     context 'when show_full_reference falsey' do
       context 'when @group present' do
         it 'display issuable reference to @group' do
-          project = build_stubbed(:project)
-
           assign(:show_full_reference, nil)
           assign(:group, project.namespace)
 
-          issue = build_stubbed(:issue)
+          issue = build_stubbed(:issue, project: project)
 
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project.namespace))
         end
@@ -318,13 +319,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       context 'when @project present' do
         it 'display issuable reference to @project' do
-          project = build_stubbed(:project)
-
           assign(:show_full_reference, nil)
           assign(:group, nil)
           assign(:project, project)
 
-          issue = build_stubbed(:issue)
+          issue = build_stubbed(:issue, project: project)
 
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
         end
@@ -333,8 +332,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_project_reference' do
+    let(:project_namespace) { build_stubbed(:project_namespace) }
+    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+
     it 'display project name and simple reference with `#` to an issue' do
-      issue = build_stubbed(:issue)
+      issue = build_stubbed(:issue, project: project)
 
       expect(helper.issuable_project_reference(issue)).to eq("#{issue.project.full_name} ##{issue.iid}")
     end
@@ -414,7 +416,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
-        initialTaskStatus: '0 of 0 checklist items completed',
+        initialTaskCompletionStatus: { completed_count: 0, count: 0 },
         issueType: 'issue',
         iid: issue.iid.to_s,
         isHidden: false
@@ -430,7 +432,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           action: "show",
           namespace_id: "foo",
           project_id: "bar",
-          id: incident.iid
+          id: incident.iid,
+          incident_tab: 'timeline'
         }).permit!
       end
 
@@ -441,7 +444,9 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         expected_data = {
           issueType: 'incident',
           hasLinkedAlerts: false,
-          canUpdateTimelineEvent: true
+          canUpdateTimelineEvent: true,
+          currentPath: "/foo/bar/-/issues/incident/#{incident.iid}/timeline",
+          currentTab: 'timeline'
         }
 
         expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))
@@ -687,6 +692,96 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       it 'returns icon with tooltip' do
         expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This merge request is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
+    end
+  end
+
+  describe '#issuable_type_selector_data' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+
+    where(:issuable_type, :issuable_display_type, :is_issue_allowed, :is_incident_allowed) do
+      :issue         | 'issue'    | true  | false
+      :incident      | 'incident' | false | true
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      before do
+        allow(helper).to receive(:create_issue_type_allowed?).with(project, :issue).and_return(is_issue_allowed)
+        allow(helper).to receive(:create_issue_type_allowed?).with(project, :incident).and_return(is_incident_allowed)
+        assign(:project, project)
+      end
+
+      it 'returns the correct data for the issuable type selector' do
+        expected_data = {
+          selected_type: issuable_display_type,
+          is_issue_allowed: is_issue_allowed.to_s,
+          is_incident_allowed: is_incident_allowed.to_s,
+          issue_path: new_project_issue_path(project),
+          incident_path: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+        }
+
+        expect(helper.issuable_type_selector_data(issuable)).to match(expected_data)
+      end
+    end
+  end
+
+  describe '#issuable_label_selector_data' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'with a new issuable' do
+      let_it_be(:issuable) { build(:issue, project: project) }
+
+      it 'returns the expected data' do
+        expect(helper.issuable_label_selector_data(project, issuable)).to match({
+          field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
+          full_path: project.full_path,
+          initial_labels: '[]',
+          issuable_type: issuable.issuable_type,
+          labels_filter_base_path: project_issues_path(project),
+          labels_manage_path: project_labels_path(project)
+        })
+      end
+    end
+
+    context 'with an existing issuable' do
+      let_it_be(:label) { create(:label, name: 'Bug') }
+      let_it_be(:label2) { create(:label, name: 'Community contribution') }
+      let_it_be(:issuable) do
+        create(:merge_request, source_project: project, target_project: project, labels: [label, label2])
+      end
+
+      it 'returns the expected data' do
+        initial_labels = [
+          {
+            __typename: "Label",
+            id: label.id,
+            title: label.title,
+            description: label.description,
+            color: label.color,
+            text_color: label.text_color
+          },
+          {
+            __typename: "Label",
+            id: label2.id,
+            title: label2.title,
+            description: label2.description,
+            color: label2.color,
+            text_color: label2.text_color
+          }
+        ]
+
+        expect(helper.issuable_label_selector_data(project, issuable)).to match({
+          field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
+          full_path: project.full_path,
+          initial_labels: initial_labels.to_json,
+          issuable_type: issuable.issuable_type,
+          labels_filter_base_path: project_merge_requests_path(project),
+          labels_manage_path: project_labels_path(project)
+        })
       end
     end
   end

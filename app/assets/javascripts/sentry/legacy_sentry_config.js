@@ -1,7 +1,7 @@
 import * as Sentry5 from 'sentrybrowser5';
 import $ from 'jquery';
 import { __ } from '~/locale';
-import { IGNORE_ERRORS, DENY_URLS, SAMPLE_RATE } from './constants';
+import { IGNORE_ERRORS, DENY_URLS, SAMPLE_RATE } from './legacy_constants';
 
 const SentryConfig = {
   IGNORE_ERRORS,

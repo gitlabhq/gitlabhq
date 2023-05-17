@@ -20,7 +20,7 @@
 
 # Run all tests when framework changes present or explicitly enabled full suite execution
 .qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true"
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true"
 
 .default-branch: &default-branch
   if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

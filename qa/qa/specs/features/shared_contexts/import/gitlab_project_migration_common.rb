@@ -25,7 +25,6 @@ module QA
     end
 
     before do
-      Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
       source_project # fabricate source group and project
     end
   end

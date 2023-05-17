@@ -40,6 +40,23 @@ module API
         attrs.delete(:repository_storage) unless can?(current_user, :use_project_statistics_filters)
       end
 
+      def validate_updated_at_order_and_filter!
+        return unless filter_by_updated_at? && provided_order_is_not_updated_at?
+
+        # This is necessary as not pairing this filter and ordering will produce an inneficient query
+        bad_request!('`updated_at` filter and `updated_at` sorting must be paired')
+      end
+
+      def provided_order_is_not_updated_at?
+        order_by_param = declared_params[:order_by]
+
+        order_by_param.present? && order_by_param.to_s != 'updated_at'
+      end
+
+      def filter_by_updated_at?
+        declared_params[:updated_before].present? || declared_params[:updated_after].present?
+      end
+
       def verify_statistics_order_by_projects!
         return unless Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.include?(params[:order_by])
 
@@ -80,9 +97,8 @@ module API
       # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
       def project_attachment_size(user_project)
         return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
-        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project)
 
-        PROJECT_ATTACHMENT_SIZE_EXEMPT
+        user_project.max_attachment_size
       end
 
       # This is to help determine which projects to use in https://gitlab.com/gitlab-org/gitlab/-/issues/325788
@@ -93,6 +109,10 @@ module API
           allowed = exempt_from_global_attachment_size?(user_project)
           Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
+      end
+
+      def validate_projects_api_rate_limit_for_unauthenticated_users!
+        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
       end
     end
 
@@ -139,6 +159,8 @@ module API
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Limit results to projects having all topics'
         optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
+        optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
 
         use :optional_filter_params_ee
       end
@@ -256,6 +278,9 @@ module API
 
       desc 'Get a list of visible projects for authenticated user' do
         success code: 200, model: Entities::BasicProjectDetails
+        failure [
+          { code: 400, message: 'Bad request' }
+        ]
         tags %w[projects]
         is_array true
       end
@@ -266,6 +291,9 @@ module API
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
       get feature_category: :projects, urgency: :low do
+        validate_projects_api_rate_limit_for_unauthenticated_users!
+        validate_updated_at_order_and_filter!
+
         present_projects load_projects
       end
 
@@ -701,7 +729,7 @@ module API
         requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
-      post ":id/share", feature_category: :authentication_and_authorization do
+      post ":id/share", feature_category: :projects do
         authorize! :admin_project, user_project
         shared_with_group = Group.find_by_id(params[:group_id])
 
@@ -731,7 +759,7 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ":id/share/:group_id", feature_category: :authentication_and_authorization do
+      delete ":id/share/:group_id", feature_category: :projects do
         authorize! :admin_project, user_project
 
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
@@ -822,7 +850,7 @@ module API
         optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
-      get ':id/users', urgency: :low, feature_category: :authentication_and_authorization do
+      get ':id/users', urgency: :low, feature_category: :system_access do
         users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
         users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?

@@ -13,40 +13,40 @@ RSpec.shared_context 'when releases and group releases shared context' do
 
   let(:query) do
     graphql_query_for(resource_type, { fullPath: resource.full_path },
-    %(
-      releases {
-        count
-        nodes {
-          tagName
-          tagPath
-          name
-          commit {
-            sha
-          }
-          assets {
-            count
-            sources {
-              nodes {
-                url
-              }
-            }
-          }
-          evidences {
-            nodes {
+      %(
+        releases {
+          count
+          nodes {
+            tagName
+            tagPath
+            name
+            commit {
               sha
             }
-          }
-          links {
-            selfUrl
-            openedMergeRequestsUrl
-            mergedMergeRequestsUrl
-            closedMergeRequestsUrl
-            openedIssuesUrl
-            closedIssuesUrl
+            assets {
+              count
+              sources {
+                nodes {
+                  url
+                }
+              }
+            }
+            evidences {
+              nodes {
+                sha
+              }
+            }
+            links {
+              selfUrl
+              openedMergeRequestsUrl
+              mergedMergeRequestsUrl
+              closedMergeRequestsUrl
+              openedIssuesUrl
+              closedIssuesUrl
+            }
           }
         }
-      }
-    ))
+      ))
   end
 
   let(:params_for_issues_and_mrs) { { scope: 'all', state: 'opened', release_tag: release.tag } }

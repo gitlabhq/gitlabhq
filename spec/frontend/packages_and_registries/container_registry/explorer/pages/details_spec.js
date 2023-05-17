@@ -22,22 +22,15 @@ import {
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
-import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
-import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
-import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 
 import component from '~/packages_and_registries/container_registry/explorer/pages/details.vue';
 import Tracking from '~/tracking';
 
 import {
   graphQLImageDetailsMock,
-  graphQLDeleteImageRepositoryTagsMock,
-  graphQLProjectImageRepositoriesDetailsMock,
   containerRepositoryMock,
   graphQLEmptyImageDetailsMock,
-  tagsMock,
-  imageTagsMock,
 } from '../mock_data';
 import { DeleteModal } from '../stubs';
 
@@ -69,13 +62,6 @@ describe('Details Page', () => {
     isGroupPage: false,
   };
 
-  const cleanTags = tagsMock.map((t) => {
-    const result = { ...t };
-    // eslint-disable-next-line no-underscore-dangle
-    delete result.__typename;
-    return result;
-  });
-
   const waitForApolloRequestRender = async () => {
     await waitForPromises();
     await nextTick();
@@ -83,20 +69,12 @@ describe('Details Page', () => {
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
-    mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
-    tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock())),
-    detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock),
     options,
     config = defaultConfig,
   } = {}) => {
     Vue.use(VueApollo);
 
-    const requestHandlers = [
-      [getContainerRepositoryDetailsQuery, resolver],
-      [deleteContainerRepositoryTagsMutation, mutationResolver],
-      [getContainerRepositoryTagsQuery, tagsResolver],
-      [getContainerRepositoriesDetails, detailsResolver],
-    ];
+    const requestHandlers = [[getContainerRepositoryDetailsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -125,11 +103,6 @@ describe('Details Page', () => {
 
   beforeEach(() => {
     jest.spyOn(Tracking, 'event');
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('when isLoading is true', () => {
@@ -189,50 +162,6 @@ describe('Details Page', () => {
         isMobile: false,
       });
     });
-
-    describe('deleteEvent', () => {
-      describe('single item', () => {
-        let tagToBeDeleted;
-        beforeEach(async () => {
-          mountComponent();
-
-          await waitForApolloRequestRender();
-
-          [tagToBeDeleted] = cleanTags;
-          findTagsList().vm.$emit('delete', [tagToBeDeleted]);
-        });
-
-        it('open the modal', async () => {
-          expect(DeleteModal.methods.show).toHaveBeenCalled();
-        });
-
-        it('tracks a single delete event', () => {
-          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
-            label: 'registry_tag_delete',
-          });
-        });
-      });
-
-      describe('multiple items', () => {
-        beforeEach(async () => {
-          mountComponent();
-
-          await waitForApolloRequestRender();
-
-          findTagsList().vm.$emit('delete', cleanTags);
-        });
-
-        it('open the modal', () => {
-          expect(DeleteModal.methods.show).toHaveBeenCalled();
-        });
-
-        it('tracks a single delete event', () => {
-          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
-            label: 'bulk_registry_tag_delete',
-          });
-        });
-      });
-    });
   });
 
   describe('modal', () => {
@@ -253,61 +182,24 @@ describe('Details Page', () => {
         findDeleteModal().vm.$emit('cancel');
 
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'cancel_delete', {
-          label: 'registry_tag_delete',
+          label: 'registry_image_delete',
         });
       });
     });
 
-    describe('confirmDelete event', () => {
-      let mutationResolver;
-      let tagsResolver;
-      let detailsResolver;
-
+    describe('tags list delete event', () => {
       beforeEach(() => {
-        mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
-        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock()));
-        detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
-        mountComponent({ mutationResolver, tagsResolver, detailsResolver });
+        mountComponent();
 
         return waitForApolloRequestRender();
       });
 
-      describe('when one item is selected to be deleted', () => {
-        it('calls apollo mutation with the right parameters and refetches the tags list query', async () => {
-          findTagsList().vm.$emit('delete', [cleanTags[0]]);
+      it('sets delete alert modal deleteAlertType value', async () => {
+        findTagsList().vm.$emit('delete', 'success_tag');
 
-          await nextTick();
+        await nextTick();
 
-          findDeleteModal().vm.$emit('confirmDelete');
-
-          expect(mutationResolver).toHaveBeenCalledWith(
-            expect.objectContaining({ tagNames: [cleanTags[0].name] }),
-          );
-
-          await waitForPromises();
-
-          expect(tagsResolver).toHaveBeenCalled();
-          expect(detailsResolver).toHaveBeenCalled();
-        });
-      });
-
-      describe('when more than one item is selected to be deleted', () => {
-        it('calls apollo mutation with the right parameters and refetches the tags list query', async () => {
-          findTagsList().vm.$emit('delete', tagsMock);
-
-          await nextTick();
-
-          findDeleteModal().vm.$emit('confirmDelete');
-
-          expect(mutationResolver).toHaveBeenCalledWith(
-            expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),
-          );
-
-          await waitForPromises();
-
-          expect(tagsResolver).toHaveBeenCalled();
-          expect(detailsResolver).toHaveBeenCalled();
-        });
+        expect(findDeleteAlert().props('deleteAlertType')).toBe('success_tag');
       });
     });
   });

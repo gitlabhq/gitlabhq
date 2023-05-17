@@ -9,14 +9,15 @@ module Backup
     # @param [StringIO] progress IO interface to output progress
     # @param [Integer] max_parallelism max parallelism when running backups
     # @param [Integer] storage_parallelism max parallelism per storage (is affected by max_parallelism)
-    def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false, backup_id: nil)
+    # @param [Boolean] incremental if incremental backups should be created.
+    def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false)
       @progress = progress
       @max_parallelism = max_parallelism
       @storage_parallelism = storage_parallelism
       @incremental = incremental
     end
 
-    def start(type, backup_repos_path, backup_id: nil)
+    def start(type, backup_repos_path, backup_id: nil, remove_all_repositories: nil)
       raise Error, 'already started' if started?
 
       if type == :create && !incremental?
@@ -35,9 +36,13 @@ module Backup
       args = ['-layout', 'pointer']
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
       args += ['-parallel-storage', @storage_parallelism.to_s] if @storage_parallelism
-      if type == :create
+
+      case type
+      when :create
         args += ['-incremental'] if incremental?
         args += ['-id', backup_id] if backup_id
+      when :restore
+        args += ['-remove-all-repositories', remove_all_repositories.join(',')] if remove_all_repositories
       end
 
       @input_stream, stdout, @thread = Open3.popen2(build_env, bin_path, command, '-path', backup_repos_path, *args)
@@ -77,11 +82,7 @@ module Backup
     #
     # @see https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/gitaly-backup.md
     def schedule_backup_job(repository, always_create:)
-      connection_params = Gitlab::GitalyClient.connection_data(repository.storage)
-
       json_job = {
-        address: connection_params['address'],
-        token: connection_params['token'],
         storage_name: repository.storage,
         relative_path: repository.relative_path,
         gl_project_path: repository.gl_project_path,
@@ -91,10 +92,21 @@ module Backup
       @input_stream.puts(json_job)
     end
 
+    def gitaly_servers
+      Gitlab.config.repositories.storages.keys.index_with do |storage_name|
+        Gitlab::GitalyClient.connection_data(storage_name)
+      end
+    end
+
+    def gitaly_servers_encoded
+      Base64.strict_encode64(Gitlab::Json.dump(gitaly_servers))
+    end
+
     def build_env
       {
         'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
+        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir,
+        'GITALY_SERVERS' => gitaly_servers_encoded
       }.merge(ENV)
     end
 

@@ -10,12 +10,12 @@ import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import AdminUserAvatar from '~/admin/users/components/user_avatar.vue';
 import AdminUsersTable from '~/admin/users/components/users_table.vue';
 import getUsersGroupCountsQuery from '~/admin/users/graphql/queries/get_users_group_counts.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import AdminUserDate from '~/vue_shared/components/user_date.vue';
 
 import { users, paths, createGroupCountResponse } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -56,11 +56,6 @@ describe('AdminUsersTable component', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('when there are users', () => {
     beforeEach(() => {
@@ -134,7 +129,7 @@ describe('AdminUsersTable component', () => {
         await waitForPromises();
       });
 
-      it('creates a flash message and captures the error', () => {
+      it('creates an alert message and captures the error', () => {
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Could not load user group counts. Please refresh the page to try again.',
           captureError: true,
