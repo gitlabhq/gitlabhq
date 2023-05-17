@@ -525,12 +525,14 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     let(:has_length) { true }
     let(:maximum_size) { nil }
     let(:use_final_store_path) { false }
+    let(:final_store_path_root_id) { nil }
 
     subject do
       uploader_class.workhorse_authorize(
         has_length: has_length,
         maximum_size: maximum_size,
-        use_final_store_path: use_final_store_path
+        use_final_store_path: use_final_store_path,
+        final_store_path_root_id: final_store_path_root_id
       )
     end
 
@@ -615,51 +617,30 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     shared_examples 'handling object storage final upload path' do |multipart|
       context 'when use_final_store_path is true' do
         let(:use_final_store_path) { true }
-        let(:final_store_path) { File.join('@final', 'abc', '123', 'somefilename') }
+        let(:final_store_path_root_id) { 12345 }
+        let(:final_store_path) { File.join('@final', 'myprefix', 'abc', '123', 'somefilename') }
         let(:escaped_path) { escape_path(final_store_path) }
 
-        before do
-          stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{final_store_path}") if multipart
+        context 'and final_store_path_root_id was not given' do
+          let(:final_store_path_root_id) { nil }
 
-          allow(uploader_class).to receive(:generate_final_store_path).and_return(final_store_path)
-        end
-
-        it 'uses the full path instead of the temporary one' do
-          expect(subject[:RemoteObject][:ID]).to eq(final_store_path)
-
-          expect(subject[:RemoteObject][:GetURL]).to include(escaped_path)
-          expect(subject[:RemoteObject][:StoreURL]).to include(escaped_path)
-
-          if multipart
-            expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(escaped_path))
-            expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(escaped_path)
-            expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
+          it 'raises an error' do
+            expect { subject }.to raise_error(ObjectStorage::MissingFinalStorePathRootId)
           end
-
-          expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
-
-          expect(
-            ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
-          ).to eq(true)
         end
 
-        context 'and bucket prefix is configured' do
-          let(:prefixed_final_store_path) { "my/prefix/#{final_store_path}" }
-          let(:escaped_path) { escape_path(prefixed_final_store_path) }
-
+        context 'and final_store_path_root_id was given' do
           before do
-            allow(uploader_class.object_store_options).to receive(:bucket_prefix).and_return('my/prefix')
+            stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{final_store_path}") if multipart
 
-            if multipart
-              stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{prefixed_final_store_path}")
-            end
+            allow(uploader_class).to receive(:generate_final_store_path)
+              .with(root_id: final_store_path_root_id)
+              .and_return(final_store_path)
           end
 
-          it 'sets the remote object ID to the final path without prefix' do
+          it 'uses the full path instead of the temporary one' do
             expect(subject[:RemoteObject][:ID]).to eq(final_store_path)
-          end
 
-          it 'returns the final path with prefix' do
             expect(subject[:RemoteObject][:GetURL]).to include(escaped_path)
             expect(subject[:RemoteObject][:StoreURL]).to include(escaped_path)
 
@@ -668,14 +649,48 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(escaped_path)
               expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
             end
-          end
 
-          it 'creates the pending upload entry without the prefix' do
-            is_expected.to have_key(:RemoteObject)
+            expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
 
             expect(
               ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
             ).to eq(true)
+          end
+
+          context 'and bucket prefix is configured' do
+            let(:prefixed_final_store_path) { "my/prefix/#{final_store_path}" }
+            let(:escaped_path) { escape_path(prefixed_final_store_path) }
+
+            before do
+              allow(uploader_class.object_store_options).to receive(:bucket_prefix).and_return('my/prefix')
+
+              if multipart
+                stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{prefixed_final_store_path}")
+              end
+            end
+
+            it 'sets the remote object ID to the final path without prefix' do
+              expect(subject[:RemoteObject][:ID]).to eq(final_store_path)
+            end
+
+            it 'returns the final path with prefix' do
+              expect(subject[:RemoteObject][:GetURL]).to include(escaped_path)
+              expect(subject[:RemoteObject][:StoreURL]).to include(escaped_path)
+
+              if multipart
+                expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(escaped_path))
+                expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(escaped_path)
+                expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
+              end
+            end
+
+            it 'creates the pending upload entry without the bucket prefix' do
+              is_expected.to have_key(:RemoteObject)
+
+              expect(
+                ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
+              ).to eq(true)
+            end
           end
         end
       end
@@ -716,7 +731,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           end
 
           before do
-            expect_next_instance_of(ObjectStorage::Config) do |instance|
+            allow_next_instance_of(ObjectStorage::Config) do |instance|
               allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
@@ -767,7 +782,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           end
 
           before do
-            expect_next_instance_of(ObjectStorage::Config) do |instance|
+            allow_next_instance_of(ObjectStorage::Config) do |instance|
               allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
@@ -812,7 +827,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           end
 
           before do
-            expect_next_instance_of(ObjectStorage::Config) do |instance|
+            allow_next_instance_of(ObjectStorage::Config) do |instance|
               allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
@@ -1184,14 +1199,17 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
   end
 
   describe '.generate_final_store_path' do
-    subject(:final_path) { uploader_class.generate_final_store_path }
+    let(:root_id) { 12345 }
+    let(:expected_root_hashed_path) { Gitlab::HashedPath.new(root_hash: root_id) }
+
+    subject(:final_path) { uploader_class.generate_final_store_path(root_id: root_id) }
 
     before do
       allow(Digest::SHA2).to receive(:hexdigest).and_return('somehash1234')
     end
 
-    it 'returns the generated hashed path' do
-      expect(final_path).to eq('@final/so/me/hash1234')
+    it 'returns the generated hashed path nested under the hashed path of the root ID' do
+      expect(final_path).to eq(File.join(expected_root_hashed_path, '@final/so/me/hash1234'))
     end
   end
 

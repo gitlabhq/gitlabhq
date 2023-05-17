@@ -31559,6 +31559,8 @@ CREATE INDEX index_notes_on_created_at ON notes USING btree (created_at);
 
 CREATE INDEX index_notes_on_discussion_id ON notes USING btree (discussion_id);
 
+CREATE UNIQUE INDEX index_notes_on_id_convert_to_bigint ON notes USING btree (id_convert_to_bigint);
+
 CREATE INDEX index_notes_on_id_where_confidential ON notes USING btree (id) WHERE (confidential = true);
 
 CREATE INDEX index_notes_on_id_where_internal ON notes USING btree (id) WHERE (internal = true);
@@ -35156,6 +35158,9 @@ ALTER TABLE ONLY protected_tags
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY todos
+    ADD CONSTRAINT fk_91d1f47b13_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY dast_site_profiles_builds
     ADD CONSTRAINT fk_94e80df60e FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
 
@@ -35447,6 +35452,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_d606a2a890_tmp FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE SET NULL NOT VALID;
+
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_d6cf4279f7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -35467,6 +35475,9 @@ ALTER TABLE ONLY ci_pipelines
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_d83a918cb1 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY system_note_metadata
+    ADD CONSTRAINT fk_d83a918cb1_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_d857c6edc1 FOREIGN KEY (component_id) REFERENCES sbom_components(id) ON DELETE CASCADE;
@@ -35783,6 +35794,9 @@ ALTER TABLE ONLY bulk_imports
 ALTER TABLE ONLY diff_note_positions
     ADD CONSTRAINT fk_rails_13c7212859 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY diff_note_positions
+    ADD CONSTRAINT fk_rails_13c7212859_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY analytics_cycle_analytics_aggregations
     ADD CONSTRAINT fk_rails_13c8374c7a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -35845,6 +35859,9 @@ ALTER TABLE ONLY board_assignees
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_rails_1c65976a49 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY epic_user_mentions
+    ADD CONSTRAINT fk_rails_1c65976a49_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY approver_groups
     ADD CONSTRAINT fk_rails_1cdcbd7723 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -36005,6 +36022,9 @@ ALTER TABLE ONLY alert_management_alert_metric_images
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT fk_rails_33b03a535c FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY suggestions
+    ADD CONSTRAINT fk_rails_33b03a535c_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY requirements
     ADD CONSTRAINT fk_rails_33fed8aa4e FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -36035,6 +36055,9 @@ ALTER TABLE ONLY packages_debian_project_distribution_keys
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_rails_3861d9fefa FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY issue_user_mentions
+    ADD CONSTRAINT fk_rails_3861d9fefa_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36061,6 +36084,9 @@ ALTER TABLE ONLY cluster_groups
 
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT fk_rails_3d66047aeb FOREIGN KEY (diff_note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY note_diff_files
+    ADD CONSTRAINT fk_rails_3d66047aeb_tmp FOREIGN KEY (diff_note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
@@ -36166,6 +36192,9 @@ ALTER TABLE ONLY scim_identities
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_4d3f96b2cb FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY snippet_user_mentions
+    ADD CONSTRAINT fk_rails_4d3f96b2cb_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
@@ -36596,6 +36625,9 @@ ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
 ALTER TABLE ONLY design_user_mentions
     ADD CONSTRAINT fk_rails_8de8c6d632 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY design_user_mentions
+    ADD CONSTRAINT fk_rails_8de8c6d632_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_8df789f3ab FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE SET NULL;
 
@@ -36725,6 +36757,9 @@ ALTER TABLE ONLY project_aliases
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_a18600f210 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY vulnerability_user_mentions
+    ADD CONSTRAINT fk_rails_a18600f210_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_rails_a27c483435 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36751,6 +36786,9 @@ ALTER TABLE ONLY cluster_projects
 
 ALTER TABLE ONLY commit_user_mentions
     ADD CONSTRAINT fk_rails_a6760813e0 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY commit_user_mentions
+    ADD CONSTRAINT fk_rails_a6760813e0_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY vulnerability_identifiers
     ADD CONSTRAINT fk_rails_a67a16c885 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -36962,6 +37000,9 @@ ALTER TABLE ONLY project_wiki_repositories
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_request_user_mentions
+    ADD CONSTRAINT fk_rails_c440b9ea31_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_rails_c44f5b3b25 FOREIGN KEY (achievement_id) REFERENCES achievements(id) ON DELETE CASCADE;
 
@@ -37078,6 +37119,9 @@ ALTER TABLE ONLY packages_rpm_metadata
 
 ALTER TABLE ONLY note_metadata
     ADD CONSTRAINT fk_rails_d853224d37 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY note_metadata
+    ADD CONSTRAINT fk_rails_d853224d37_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
@@ -37219,6 +37263,9 @@ ALTER TABLE ONLY protected_branch_unprotect_access_levels
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY alert_management_alert_user_mentions
+    ADD CONSTRAINT fk_rails_eb2de0cdef_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
@@ -37369,6 +37416,9 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_note_id FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY timelogs
+    ADD CONSTRAINT fk_timelogs_note_id_tmp FOREIGN KEY (note_id) REFERENCES notes(id_convert_to_bigint) ON DELETE SET NULL NOT VALID;
 
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

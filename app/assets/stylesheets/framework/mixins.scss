@@ -156,6 +156,12 @@
   background: linear-gradient(to $gradient-direction,
   $gradient-color 45%,
   rgba($gradient-color, 0.4));
+  border: 0;
+  padding: 0;
+
+  &:hover {
+    @include gl-focus;
+  }
 
   &.scrolling {
     visibility: visible;
@@ -164,8 +170,8 @@
   }
 
   svg {
-    position: relative;
-    top: 5px;
+    position: absolute;
+    top: 12px;
     font-size: 18px;
   }
 }

@@ -82,7 +82,11 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
         before do
           stub_artifacts_object_storage(JobArtifactUploader, direct_upload: true)
-          allow(JobArtifactUploader).to receive(:generate_final_store_path).and_return(final_store_path)
+
+          allow(JobArtifactUploader)
+            .to receive(:generate_final_store_path)
+            .with(root_id: project.id)
+            .and_return(final_store_path)
         end
 
         it 'includes the authorize headers' do

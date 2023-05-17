@@ -26,7 +26,8 @@ module Ci
         headers = JobArtifactUploader.workhorse_authorize(
           has_length: false,
           maximum_size: max_size(artifact_type),
-          use_final_store_path: Feature.enabled?(:ci_artifacts_upload_to_final_location, project)
+          use_final_store_path: Feature.enabled?(:ci_artifacts_upload_to_final_location, project),
+          final_store_path_root_id: project.id
         )
 
         if lsif?(artifact_type)

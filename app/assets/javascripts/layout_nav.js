@@ -16,6 +16,21 @@ export function initScrollingTabs() {
   const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
   $scrollingTabs.addClass('is-initialized');
 
+  const el = $scrollingTabs.get(0);
+  const parentElement = el?.parentNode;
+  if (el && parentElement) {
+    parentElement
+      .querySelector('button.fade-left')
+      .addEventListener('click', function scrollLeft() {
+        el.scrollBy({ left: -200, behavior: 'smooth' });
+      });
+    parentElement
+      .querySelector('button.fade-right')
+      .addEventListener('click', function scrollRight() {
+        el.scrollBy({ left: 200, behavior: 'smooth' });
+      });
+  }
+
   $(window)
     .on('resize.nav', () => {
       hideEndFade($scrollingTabs);

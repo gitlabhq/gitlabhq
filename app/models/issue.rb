@@ -758,6 +758,12 @@ class Issue < ApplicationRecord
     end
   end
 
+  def unsubscribe_email_participant(email)
+    return if email.blank?
+
+    issue_email_participants.find_by_email(email)&.destroy
+  end
+
   private
 
   def check_issue_type_in_sync!

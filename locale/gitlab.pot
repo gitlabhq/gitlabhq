@@ -11098,9 +11098,6 @@ msgstr ""
 msgid "Committed-before"
 msgstr ""
 
-msgid "CommonJS module"
-msgstr ""
-
 msgid "Community forum"
 msgstr ""
 
@@ -16183,9 +16180,6 @@ msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "E-mail:"
-msgstr ""
-
-msgid "ESM module"
 msgstr ""
 
 msgid "Each project can also have an issue tracker and a wiki."
@@ -21777,9 +21771,6 @@ msgid "HAR file URL"
 msgstr ""
 
 msgid "HAR file path or URL"
-msgstr ""
-
-msgid "HTML script tag"
 msgstr ""
 
 msgid "HTTP Archive (HAR)"
@@ -34090,13 +34081,25 @@ msgstr ""
 msgid "Product analytics"
 msgstr ""
 
+msgid "ProductAnalytics|1. Add the NPM package to your package.json using your preferred package manager"
+msgstr ""
+
+msgid "ProductAnalytics|2. Import the new package into your JS code"
+msgstr ""
+
+msgid "ProductAnalytics|3. Initiate the tracking"
+msgstr ""
+
 msgid "ProductAnalytics|Add another dimension"
 msgstr ""
 
-msgid "ProductAnalytics|Add the NPM package to your package.json using your preferred package manager:"
+msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window"
 msgstr ""
 
 msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window:"
+msgstr ""
+
+msgid "ProductAnalytics|After your application has been instrumented and data is being collected, you can visualize and monitor behaviors in your %{linkStart}analytics dashboards%{linkEnd}."
 msgstr ""
 
 msgid "ProductAnalytics|All Clicks Compared"
@@ -34198,12 +34201,6 @@ msgstr ""
 msgid "ProductAnalytics|How often sessions are repeated"
 msgstr ""
 
-msgid "ProductAnalytics|Identifies the sender of tracking events"
-msgstr ""
-
-msgid "ProductAnalytics|Import the new package into your JS code:"
-msgstr ""
-
 msgid "ProductAnalytics|Instrument your application"
 msgstr ""
 
@@ -34234,10 +34231,13 @@ msgstr ""
 msgid "ProductAnalytics|Repeat Visit Percentage"
 msgstr ""
 
-msgid "ProductAnalytics|SDK App ID"
+msgid "ProductAnalytics|SDK application ID"
 msgstr ""
 
-msgid "ProductAnalytics|SDK Host"
+msgid "ProductAnalytics|SDK clients"
+msgstr ""
+
+msgid "ProductAnalytics|SDK host"
 msgstr ""
 
 msgid "ProductAnalytics|Sessions"
@@ -34252,16 +34252,10 @@ msgstr ""
 msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
 msgstr ""
 
-msgid "ProductAnalytics|Steps to add product analytics as a CommonJS module"
-msgstr ""
-
-msgid "ProductAnalytics|Steps to add product analytics as a HTML script tag"
-msgstr ""
-
-msgid "ProductAnalytics|Steps to add product analytics as an ESM module"
-msgstr ""
-
 msgid "ProductAnalytics|The host to send all tracking events to"
+msgstr ""
+
+msgid "ProductAnalytics|The sender of tracking events"
 msgstr ""
 
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
@@ -34288,10 +34282,16 @@ msgstr ""
 msgid "ProductAnalytics|Users"
 msgstr ""
 
+msgid "ProductAnalytics|Using JS module"
+msgstr ""
+
 msgid "ProductAnalytics|Waiting for events"
 msgstr ""
 
 msgid "ProductAnalytics|What do you want to measure?"
+msgstr ""
+
+msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."
 msgstr ""
 
 msgid "Productivity"
@@ -35314,10 +35314,10 @@ msgstr ""
 msgid "ProjectSettings|Configure analytics features for this project"
 msgstr ""
 
-msgid "ProjectSettings|Configure product analytics to track events within your project applications."
+msgid "ProjectSettings|Configure your infrastructure."
 msgstr ""
 
-msgid "ProjectSettings|Configure your infrastructure."
+msgid "ProjectSettings|Connect to your instance"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
@@ -35419,6 +35419,9 @@ msgstr ""
 msgid "ProjectSettings|Infrastructure"
 msgstr ""
 
+msgid "ProjectSettings|Instrument your application to track events and behaviors."
+msgstr ""
+
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -35503,6 +35506,9 @@ msgstr ""
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr ""
 
+msgid "ProjectSettings|Override instance analytics configuration for this project"
+msgstr ""
+
 msgid "ProjectSettings|Override user notification preferences for all project members."
 msgstr ""
 
@@ -35519,6 +35525,9 @@ msgid "ProjectSettings|Prevents direct linking to potentially sensitive media fi
 msgstr ""
 
 msgid "ProjectSettings|Private"
+msgstr ""
+
+msgid "ProjectSettings|Product analytics needs to be set up before your application can be instrumented. Follow the %{link_start}set up process%{link_end}."
 msgstr ""
 
 msgid "ProjectSettings|Project visibility"
@@ -49052,6 +49061,9 @@ msgid "Uses GitLab as an alternative to Sentry."
 msgstr ""
 
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"
+msgstr ""
+
+msgid "Using HTML script"
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"

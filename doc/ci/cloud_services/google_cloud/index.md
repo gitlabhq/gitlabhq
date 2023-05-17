@@ -114,6 +114,17 @@ the assertion in the previous section.
 After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from the
 [Google Cloud Security Token Service (STS)](https://cloud.google.com/iam/docs/reference/sts/rest).
 
+Add `id_tokens` to your CI/CD job:
+
+```yaml
+job:
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.example.com
+```
+
+Get temporary credentials using the ID token:
+
 ```shell
 PAYLOAD="$(cat <<EOF
 {
@@ -122,7 +133,7 @@ PAYLOAD="$(cat <<EOF
   "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
   "scope": "https://www.googleapis.com/auth/cloud-platform",
   "subjectTokenType": "urn:ietf:params:oauth:token-type:jwt",
-  "subjectToken": "${CI_JOB_JWT_V2}"
+  "subjectToken": "${GITLAB_OIDC_TOKEN}"
 }
 EOF
 )"
@@ -142,8 +153,7 @@ Where:
 - `PROJECT_NUMBER` is your Google Cloud project number (not name).
 - `POOL_ID` is the ID of the Workload Identity Pool created in the first section.
 - `PROVIDER_ID` is the ID of the Workload Identity Provider created in the second section.
-- `CI_JOB_JWT_V2` is injected into the CI/CD job by GitLab. For more information about
-  this variable, read [Connect to cloud services](../index.md).
+- `GITLAB_OIDC_TOKEN` is an OIDC [ID token](../../yaml/index.md#id_tokens).
 
 You can then use the resulting federated token to impersonate the service account created
 in the previous section:

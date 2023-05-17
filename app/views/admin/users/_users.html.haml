@@ -9,9 +9,9 @@
 
 .top-area
   .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
-    .fade-left
+    %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
       = sprite_icon('chevron-lg-left', size: 12)
-    .fade-right
+    %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
       = sprite_icon('chevron-lg-right', size: 12)
     = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full' }) do
       = gl_tab_link_to admin_users_path, { item_active: active_when(params[:filter].nil?), class: 'gl-border-0!' } do

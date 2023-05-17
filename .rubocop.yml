@@ -1007,3 +1007,8 @@ SidekiqLoadBalancing/WorkerDataConsistency:
 # This cop is disabled for Ruby 3.0+ anyway.
 Lint/NonDeterministicRequireOrder:
   Enabled: false
+
+Graphql/ResourceNotAvailableError:
+  Exclude:
+    # Definition of `raise_resource_not_available_error!`
+    - 'lib/gitlab/graphql/authorize/authorize_resource.rb'

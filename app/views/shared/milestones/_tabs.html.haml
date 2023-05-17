@@ -1,8 +1,10 @@
 - show_project_name = local_assigns.fetch(:show_project_name, false)
 
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-  .fade-left= sprite_icon('chevron-lg-left', size: 12)
-  .fade-right= sprite_icon('chevron-lg-right', size: 12)
+  %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
+    = sprite_icon('chevron-lg-left', size: 12)
+  %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
+    = sprite_icon('chevron-lg-right', size: 12)
   = gl_tabs_nav({ class: %w[scrolling-tabs js-milestone-tabs] }) do
     = gl_tab_link_to '#tab-issues', item_active: true, data: { endpoint: milestone_tab_path(milestone, 'issues', show_project_name: show_project_name) } do
       = _('Issues')
