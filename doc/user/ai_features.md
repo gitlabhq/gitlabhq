@@ -11,7 +11,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 
 ## Enable AI/ML features
 
-> Introduced in GitLab 16.0 and is [actively being rolled out](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222).
+> Introduced in GitLab 16.0 and [actively being rolled out](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222).
 
 Prerequisites:
 
@@ -133,7 +133,11 @@ To give feedback, select the **Give Feedback** link.
 
 This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
 
-You can generate a merge request summary by using the `/summarize_diff` quick action in a merge request comment. This action posts a comment from a GitLab bot. The comment provides a summary of the changes and the related SHA for when that summary was generated.
+You can generate a merge request summary in a merge request comment.
+
+- In a comment, type `/summarize_diff`.
+
+This action posts a comment from a GitLab bot. The comment provides a summary of the changes and the related SHA for when that summary was generated.
 
 Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
 
@@ -146,12 +150,15 @@ and the target branch is sent to the large language model referenced above.
 
 This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
 
-When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review) you can choose to have summary generated for you. To generate the summary:
+When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review), you can have a summary generated for you.
 
-1. Select the AI Actions dropdown list.
+To generate the summary:
+
+1. When you are ready to submit your review, select **Finish review**.
+1. Select **AI Actions** (**{tanuki}**).
 1. Select **Summarize my code review**.
 
-The summary is generated and entered in to the comment box where you can edit and refine prior to submitting with your review.
+The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
@@ -166,12 +173,15 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
 
-When in a merge request you can choose to have GitLab suggest tests for the file you are reviewing. This can help to determine if appropriate test coverage has been provided or help with writing tests to provide more coverage for your project. To generate a test suggestion:
+In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 
-1. Select the menu icon on the header of a file.
+To generate a test suggestion:
+
+1. In a merge request, select the **Changes** tab.
+1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
 1. Select **Generate test with AI**.
 
-A sidebar opens where the test suggestion is generated. From there you can choose to copy that suggestion in to your editor as the start of your tests.
+The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
 
 Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
 

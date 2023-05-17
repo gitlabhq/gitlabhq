@@ -86,7 +86,7 @@ module Gitlab
         end
 
         def inconsistency_record
-          schema_inconsistency_model.find_by(
+          schema_inconsistency_model.with_open_issues.find_by(
             object_name: inconsistency.object_name,
             table_name: inconsistency.table_name,
             valitador_name: inconsistency.type

@@ -123,7 +123,6 @@ module Gitlab
                 uuid: uuid,
                 report_type: report.type,
                 name: finding_name(data, identifiers, location),
-                compare_key: data['cve'] || '',
                 location: location,
                 evidence: evidence,
                 severity: parse_severity_level(data['severity']),

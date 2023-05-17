@@ -1,12 +1,18 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { __ } from '~/locale';
 import { getTopFrequentItems, formatContextSwitcherItems } from '../utils';
 import ItemsList from './items_list.vue';
 
 export default {
   components: {
+    GlButton,
     ItemsList,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     title: {
@@ -68,6 +74,9 @@ export default {
       }
     },
   },
+  i18n: {
+    removeItem: __('Remove'),
+  },
 };
 </script>
 
@@ -87,7 +96,20 @@ export default {
     >
       {{ pristineText }}
     </div>
-    <items-list :aria-label="title" :items="cachedFrequentItems" @remove-item="handleItemRemove">
+    <items-list :aria-label="title" :items="cachedFrequentItems">
+      <template #actions="{ item }">
+        <gl-button
+          v-gl-tooltip.right.viewport
+          size="small"
+          category="tertiary"
+          icon="dash"
+          :aria-label="$options.i18n.removeItem"
+          :title="$options.i18n.removeItem"
+          class="gl-align-self-center gl-p-1! gl-absolute gl-right-4"
+          data-testid="item-remove"
+          @click.stop.prevent="handleItemRemove(item)"
+        />
+      </template>
       <template #view-all-items>
         <slot name="view-all-items"></slot>
       </template>

@@ -97,8 +97,8 @@ This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
-For more technical details on CI/CD setup and documentation on adding new test jobs to `package-and-test` pipeline, see
-[`package_and_test` setup documentation](package_and_test_pipeline.md).
+For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:package-and-test` pipeline, see
+[`e2e:package_and_test` setup documentation](package_and_test_pipeline.md).
 
 #### With merged results pipelines
 
@@ -198,7 +198,7 @@ Use these environment variables to configure metrics export:
 | -------- | -------- | ----------- |
 | `QA_INFLUXDB_URL` | `true` | Should be set to `https://influxdb.quality.gitlab.net`. No default value. |
 | `QA_INFLUXDB_TOKEN` | `true` | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value. |
-| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `package-and-test`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `e2e:package-and-test`. Automatically inferred from the project name for live environment test executions. No default value. |
 | `QA_EXPORT_TEST_METRICS` | `false` | Flag to enable or disable metrics export to InfluxDB. Defaults to `false`. |
 | `QA_SAVE_TEST_METRICS` | `false` | Flag to enable or disable saving metrics as JSON file. Defaults to `false`. |
 

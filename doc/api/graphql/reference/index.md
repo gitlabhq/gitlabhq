@@ -3060,6 +3060,29 @@ Input type: `EnvironmentStopInput`
 | <a id="mutationenvironmentstopenvironment"></a>`environment` | [`Environment`](#environment) | Environment after attempt to stop. |
 | <a id="mutationenvironmentstoperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.environmentUpdate`
+
+Update an environment.
+
+Input type: `EnvironmentUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentupdateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
+| <a id="mutationenvironmentupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to update. |
+| <a id="mutationenvironmentupdatetier"></a>`tier` | [`DeploymentTier`](#deploymenttier) | Tier of the environment. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentupdateenvironment"></a>`environment` | [`Environment`](#environment) | Environment after attempt to update. |
+| <a id="mutationenvironmentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.environmentsCanaryIngressUpdate`
 
 **Deprecated** This endpoint is planned to be removed along with certificate-based clusters. [See this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) for more information.

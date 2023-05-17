@@ -15,7 +15,8 @@ module SafeFormatHelper
   def safe_format(format, **args)
     raise ArgumentError, 'Argument `format` must not be marked as html_safe!' if format.html_safe?
 
-    format(
+    # Use `Kernel.format` to avoid conflicts with ViewComponent's `format`.
+    Kernel.format(
       html_escape(format),
       args.transform_values { |value| html_escape(value) }
     ).html_safe

@@ -5645,6 +5645,9 @@ msgstr ""
 msgid "ApprovalRule|Name"
 msgstr ""
 
+msgid "ApprovalRule|Need triage"
+msgstr ""
+
 msgid "ApprovalRule|Needs triage"
 msgstr ""
 
@@ -29460,6 +29463,9 @@ msgstr ""
 msgid "Navigation|Leave admin mode"
 msgstr ""
 
+msgid "Navigation|Main navigation"
+msgstr ""
+
 msgid "Navigation|Manage"
 msgstr ""
 
@@ -40367,6 +40373,9 @@ msgstr ""
 msgid "SecurityOrchestration| and "
 msgstr ""
 
+msgid "SecurityOrchestration| and all the following apply:"
+msgstr ""
+
 msgid "SecurityOrchestration| or "
 msgstr ""
 
@@ -40397,7 +40406,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
-msgid "SecurityOrchestration|%{scanners} %{vulnerabilitiesAllowed} %{severities} in an open merge request targeting %{branches}."
+msgid "SecurityOrchestration|%{state} and %{statuses}"
 msgstr ""
 
 msgid "SecurityOrchestration|, and %{count} more"
@@ -40440,9 +40449,6 @@ msgid "SecurityOrchestration|An error occurred unassigning your security policy 
 msgstr ""
 
 msgid "SecurityOrchestration|An error occurred while fetching the scan result policies."
-msgstr ""
-
-msgid "SecurityOrchestration|Any security scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
@@ -40545,9 +40551,6 @@ msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
 msgid "SecurityOrchestration|License Scan"
-msgstr ""
-
-msgid "SecurityOrchestration|License scanner finds any license %{matching} %{licenses}%{detection} in an open merge request targeting %{branches}."
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
@@ -40703,6 +40706,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select users"
 msgstr ""
 
+msgid "SecurityOrchestration|Severity is %{severity}."
+msgstr ""
+
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr ""
 
@@ -40778,6 +40784,15 @@ msgstr ""
 msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Vulnerabilities are %{vulnerabilityStates}."
+msgstr ""
+
+msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request targeting %{branches}%{criteriaApply}"
+msgstr ""
+
+msgid "SecurityOrchestration|When license scanner finds any license %{matching} %{licenses}%{detection} in an open merge request targeting %{branches}."
+msgstr ""
+
 msgid "SecurityOrchestration|YAML"
 msgstr ""
 
@@ -40791,6 +40806,9 @@ msgid "SecurityOrchestration|all protected branches"
 msgstr ""
 
 msgid "SecurityOrchestration|any"
+msgstr ""
+
+msgid "SecurityOrchestration|any security scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|branch"
@@ -40824,12 +40842,6 @@ msgid "SecurityOrchestration|the %{namespaces} and %{lastNamespace} namespaces"
 msgstr ""
 
 msgid "SecurityOrchestration|the %{namespaces} namespace"
-msgstr ""
-
-msgid "SecurityOrchestration|vulnerabilities"
-msgstr ""
-
-msgid "SecurityOrchestration|vulnerability"
 msgstr ""
 
 msgid "SecurityPolicies|Invalid or empty policy"
@@ -47832,6 +47844,9 @@ msgid "Unauthenticated requests"
 msgstr ""
 
 msgid "Unauthenticated web rate limit period in seconds"
+msgstr ""
+
+msgid "Unauthorized to update the environment"
 msgstr ""
 
 msgid "Unavailable"

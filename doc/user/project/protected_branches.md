@@ -122,8 +122,10 @@ To protect a branch:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
+1. From the **Allowed to merge** list, select a role that can merge into this branch.
+   In GitLab Premium and Ultimate, you can also add groups or individual users.
+1. From the **Allowed to push and merge** list, select a role that can push to this branch.
+   In GitLab Premium and Ultimate, you can also add groups or individual users.
 1. Select **Protect**.
 
 The protected branch displays in the list of protected branches.
@@ -152,8 +154,10 @@ To protect multiple branches at the same time:
    | `production/*`            | `production/app-server`, `production/load-balancer`    |
    | `*gitlab*`                | `gitlab`, `gitlab/staging`, `master/gitlab/production` |
 
-1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
+1. From the **Allowed to merge** list, select a role that can merge into
+   this branch.
+1. From the **Allowed to push and merge** list, select a role that can
+   push to this branch. In GitLab Premium or Ultimate, you can also add groups or individual users.
 1. Select **Protect**.
 
 The protected branch displays in the list of protected branches.

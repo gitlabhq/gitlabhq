@@ -391,6 +391,7 @@ export default {
           @filterPipelines="filterPipelines"
         />
         <gl-collapsible-listbox
+          v-model="visibilityPipelineIdType"
           data-testid="pipeline-key-collapsible-box"
           :toggle-text="selectedPipelineKeyOption.text"
           :items="$options.PipelineKeyOptions"

@@ -4,7 +4,7 @@ import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { DOMAIN, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL, FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { helpCenterState } from '~/super_sidebar/constants';
@@ -52,7 +52,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.docs,
-      href: `https://docs.${DOMAIN}`,
+      href: DOCS_URL,
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
@@ -62,7 +62,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.forum,
-      href: `https://forum.${DOMAIN}/`,
+      href: FORUM_URL,
       extraAttrs: trackingAttrs('community_forum'),
     },
     {

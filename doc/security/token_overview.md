@@ -20,6 +20,10 @@ You can create [Personal access tokens](../user/profile/personal_access_tokens.m
 You can limit the scope and expiration date of your personal access tokens. By default,
 they inherit permissions from the user who created them.
 
+You can use the [personal access tokens API](../api/personal_access_tokens.md) to
+programmatically take action, such as
+[rotating a personal access token](../api/personal_access_tokens.md#rotate-a-personal-access-token).
+
 ## OAuth2 tokens
 
 GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user's behalf.
@@ -47,6 +51,10 @@ You can limit the scope and expiration date of project access tokens. When you
 create a project access token, GitLab creates a [bot user for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
 Bot users for projects are service accounts and do not count as licensed seats.
 
+You can use the [project access tokens API](../api/project_access_tokens.md) to
+programmatically take action, such as
+[rotating a project access token](../api/project_access_tokens.md#rotate-a-project-access-token).
+
 ## Group access tokens
 
 [Group access tokens](../user/group/settings/group_access_tokens.md#group-access-tokens)
@@ -59,6 +67,10 @@ are scoped to a group. As with [Personal access tokens](#personal-access-tokens)
 You can limit the scope and expiration date of group access tokens. When you
 create a group access token, GitLab creates a [bot user for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 Bot users for groups are service accounts and do not count as licensed seats.
+
+You can use the [group access tokens API](../api/group_access_tokens.md) to
+programmatically take action, such as
+[rotating a project access token](../api/group_access_tokens.md#rotate-a-group-access-token).
 
 ## Deploy tokens
 

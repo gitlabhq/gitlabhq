@@ -39,6 +39,7 @@ GitLab Runners use a set of globally scoped endpoints to:
 
 - registration of a new runner via registration token `https://gitlab.com/api/v4/runners`
   ([subject for removal](../runner_tokens/index.md)) (`registration token`)
+- creation of a new runner in the context of a user `https://gitlab.com/api/v4/user/runners` (`runner token`)
 - requests jobs via an authenticated `https://gitlab.com/api/v4/jobs/request` endpoint (`runner token`)
 - upload job status via `https://gitlab.com/api/v4/jobs/:job_id` (`build token`)
 - upload trace via `https://gitlab.com/api/v4/jobs/:job_id/trace` (`build token`)

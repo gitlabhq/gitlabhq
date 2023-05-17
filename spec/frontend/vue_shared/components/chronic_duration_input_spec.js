@@ -310,12 +310,11 @@ describe('vue_shared/components/chronic_duration_input', () => {
       });
 
       it('passes updated prop via v-model', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ value: MOCK_VALUE });
+        textElement.value = '2hr20min';
+        textElement.dispatchEvent(new Event('input'));
         await nextTick();
 
-        expect(textElement.value).toBe('2 hrs 20 mins');
+        expect(textElement.value).toBe('2hr20min');
         expect(hiddenElement.value).toBe(MOCK_VALUE.toString());
       });
     });

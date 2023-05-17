@@ -8,10 +8,14 @@ const SHA_REGEX = /[\da-f]{40}/gi;
 // GitLab default domain (override in jh)
 export const DOMAIN = 'gitlab.com';
 
-// About GitLab default host (overwrite in jh)
+// Following URLs will be overwritten in jh
+export const FORUM_URL = `https://forum.${DOMAIN}/`; // forum.gitlab.com
+export const DOCS_URL = `https://docs.${DOMAIN}`; // docs.gitlab.com
+
+// About GitLab default host
 export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 
-// About Gitlab default url (overwrite in jh)
+// About Gitlab default url
 export const PROMO_URL = `https://${PROMO_HOST}`;
 
 // Reset the cursor in a Regex so that multiple uses before a recompile don't fail

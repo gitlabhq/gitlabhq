@@ -37,5 +37,22 @@ RSpec.describe SafeFormatHelper, feature_category: :shared do
           .to raise_error ArgumentError, message
       end
     end
+
+    context 'with a view component' do
+      let(:view_component) do
+        Class.new(ViewComponent::Base) do
+          include SafeFormatHelper
+
+          def call
+            safe_format('<b>%{value}</b>', value: '<br>')
+          end
+        end
+      end
+
+      it 'safetly formats' do
+        expect(view_component.new.call)
+          .to eq('&lt;b&gt;&lt;br&gt;&lt;/b&gt;')
+      end
+    end
   end
 end

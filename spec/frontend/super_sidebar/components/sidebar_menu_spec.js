@@ -1,4 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { s__ } from '~/locale';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import { PANELS_WITH_PINS } from '~/super_sidebar/constants';
@@ -179,6 +180,13 @@ describe('SidebarMenu component', () => {
         panel_type: 'explore',
       });
       expect(findMainMenuSeparator().exists()).toBe(false);
+    });
+  });
+
+  describe('template', () => {
+    it('adds aria-label attribute to nav element', () => {
+      createWrapper({ ...sidebarData });
+      expect(wrapper.find('nav').attributes('aria-label')).toBe(s__('Navigation|Main navigation'));
     });
   });
 });

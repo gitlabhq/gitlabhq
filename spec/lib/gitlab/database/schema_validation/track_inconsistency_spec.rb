@@ -63,19 +63,31 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
     end
 
     context 'when the schema inconsistency already exists' do
-      before do
-        project.add_developer(user)
-      end
-
       let!(:schema_inconsistency) do
         create(:schema_inconsistency, object_name: 'index_name', table_name: 'achievements',
           valitador_name: 'different_definition_indexes')
       end
 
-      it 'does not create a schema inconsistency record' do
-        allow(Gitlab).to receive(:com?).and_return(true)
+      before do
+        project.add_developer(user)
+      end
 
-        expect { execute }.not_to change { Gitlab::Database::SchemaValidation::SchemaInconsistency.count }
+      context 'when the GitLab issue is open' do
+        it 'does not create a new schema inconsistency record' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          schema_inconsistency.issue.update!(state_id: Issue.available_states[:opened])
+
+          expect { execute }.not_to change { Gitlab::Database::SchemaValidation::SchemaInconsistency.count }
+        end
+      end
+
+      context 'when the GitLab is not open' do
+        it 'creates a new schema inconsistency record' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          schema_inconsistency.issue.update!(state_id: Issue.available_states[:closed])
+
+          expect { execute }.to change { Gitlab::Database::SchemaValidation::SchemaInconsistency.count }
+        end
       end
     end
   end
