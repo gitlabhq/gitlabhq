@@ -139,7 +139,7 @@ export default {
       :form-options="$options.formOptions.keepNDuplicatedPackageFiles"
       :label="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL"
       :description="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION"
-      dropdown-class="gl-md-max-w-50p gl-sm-pr-5"
+      dropdown-class="gl-md-max-w-50p"
       name="keep-n-duplicated-package-files"
       data-testid="keep-n-duplicated-package-files-dropdown"
       @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"

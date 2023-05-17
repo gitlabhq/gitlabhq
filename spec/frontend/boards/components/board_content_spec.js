@@ -11,6 +11,7 @@ import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
+import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { mockLists, mockListsById } from '../mock_data';
 
 Vue.use(Vuex);
@@ -76,6 +77,9 @@ describe('BoardContent', () => {
     });
   };
 
+  const findBoardColumns = () => wrapper.findAllComponents(BoardColumn);
+  const findBoardAddNewColumn = () => wrapper.findComponent(BoardAddNewColumn);
+
   describe('default', () => {
     beforeEach(() => {
       createComponent();
@@ -99,6 +103,10 @@ describe('BoardContent', () => {
 
       expect(listEl.attributes('delay')).toBe('100');
       expect(listEl.attributes('delayontouchonly')).toBe('true');
+    });
+
+    it('does not show the "add column" form', () => {
+      expect(findBoardAddNewColumn().exists()).toBe(false);
     });
   });
 
@@ -153,6 +161,22 @@ describe('BoardContent', () => {
       await waitForPromises();
 
       expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
+    });
+  });
+
+  describe('when "add column" form is visible', () => {
+    beforeEach(() => {
+      createComponent({ state: { addColumnForm: { visible: true } } });
+    });
+
+    it('shows the "add column" form', () => {
+      expect(findBoardAddNewColumn().exists()).toBe(true);
+    });
+
+    it('hides other columns on mobile viewports', () => {
+      findBoardColumns().wrappers.forEach((column) => {
+        expect(column.classes()).toEqual(['gl-display-none!', 'gl-sm-display-inline-block!']);
+      });
     });
   });
 });

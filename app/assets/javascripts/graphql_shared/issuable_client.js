@@ -47,6 +47,16 @@ export const config = {
           },
         },
       },
+      DescriptionVersion: {
+        fields: {
+          startVersionId: {
+            read() {
+              // we need to set this when fetching the diff in the last 10 mins , the starting diff will be the very first one , so need to save it
+              return '';
+            },
+          },
+        },
+      },
       WorkItem: {
         fields: {
           // widgets policy because otherwise the subscriptions invalidate the cache

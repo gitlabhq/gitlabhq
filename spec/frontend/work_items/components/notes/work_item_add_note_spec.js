@@ -225,7 +225,7 @@ describe('Work item add note', () => {
   });
 
   it('skips calling the work item query when missing workItemIid', async () => {
-    await createComponent({ workItemIid: null, isEditing: false });
+    await createComponent({ workItemIid: '', isEditing: false });
 
     expect(workItemResponseHandler).not.toHaveBeenCalled();
   });

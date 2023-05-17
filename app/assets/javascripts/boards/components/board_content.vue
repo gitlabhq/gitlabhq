@@ -130,7 +130,7 @@ export default {
         :list="list"
         :filters="filterParams"
         :data-draggable-item-type="$options.draggableItemTypes.list"
-        :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
+        :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"
       />
 

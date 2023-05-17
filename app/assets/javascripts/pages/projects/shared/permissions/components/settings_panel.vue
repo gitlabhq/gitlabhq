@@ -552,7 +552,7 @@ export default {
 <template>
   <div>
     <div
-      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5"
+      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-5"
     >
       <project-setting-row
         ref="project-visibility-settings"
@@ -647,7 +647,7 @@ export default {
     </div>
     <div
       :class="{ 'highlight-changes': highlightChangesClass }"
-      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5 gl-bg-gray-10"
+      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-5 gl-bg-gray-10"
     >
       <project-setting-row
         ref="issues-settings"
@@ -693,7 +693,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
+      <div class="project-feature-setting-group gl-pl-5 gl-md-pl-7">
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
@@ -875,7 +875,7 @@ export default {
         />
         <div
           v-if="packageRegistryApiForEveryoneEnabledShown"
-          class="project-feature-setting-group gl-pl-7 gl-sm-pl-5 gl-my-3"
+          class="project-feature-setting-group gl-pl-5 gl-md-pl-7 gl-my-3"
         >
           <project-setting-row
             :label="$options.i18n.packageRegistryForEveryoneLabel"
@@ -932,7 +932,7 @@ export default {
       </project-setting-row>
       <div
         v-if="!glFeatures.removeMonitorMetrics"
-        class="project-feature-setting-group gl-pl-7 gl-sm-pl-5"
+        class="project-feature-setting-group gl-pl-5 gl-md-pl-7"
       >
         <project-setting-row
           ref="metrics-visibility-settings"

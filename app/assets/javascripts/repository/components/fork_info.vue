@@ -314,7 +314,7 @@ export default {
         >
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <div class="gl-display-flex gl-xs-display-none!">
+        <div class="gl-display-none gl-sm-display-flex">
           <gl-button
             v-if="hasCreateMrButton"
             class="gl-ml-4"

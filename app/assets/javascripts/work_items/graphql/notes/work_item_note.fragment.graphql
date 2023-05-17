@@ -28,4 +28,11 @@ fragment WorkItemNote on Note {
     resolveNote
     repositionNote
   }
+  systemNoteMetadata {
+    id
+    descriptionVersion {
+      id
+      description
+    }
+  }
 }

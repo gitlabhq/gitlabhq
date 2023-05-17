@@ -229,13 +229,13 @@ export default {
   <div>
     <gl-form-group
       v-if="isEditing"
-      class="gl-mb-5 gl-border-t gl-pt-6"
+      class="gl-mb-5 gl-border-t gl-pt-6 common-note-form"
       :label="__('Description')"
       label-for="work-item-description"
     >
       <markdown-editor
         v-if="glFeatures.workItemsMvc"
-        class="gl-my-3 common-note-form"
+        class="gl-my-5"
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"

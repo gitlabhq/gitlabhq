@@ -6,15 +6,14 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
   let!(:public_snippet) { create(:personal_snippet, :public) }
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }
-  let(:user) { nil }
-
-  before do
-    sign_in(user) if user
-    visit explore_snippets_path
-  end
 
   context 'User' do
     let(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+      visit explore_snippets_path
+    end
 
     it 'see snippets that are not private' do
       expect(page).to have_content(public_snippet.title)
@@ -30,6 +29,11 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
 
   context 'External user' do
     let(:user) { create(:user, :external) }
+
+    before do
+      sign_in(user)
+      visit explore_snippets_path
+    end
 
     it 'see only public snippets' do
       expect(page).to have_content(public_snippet.title)
@@ -55,6 +59,10 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
   end
 
   context 'Not authenticated user' do
+    before do
+      visit explore_snippets_path
+    end
+
     it 'see only public snippets' do
       expect(page).to have_content(public_snippet.title)
       expect(page).not_to have_content(internal_snippet.title)

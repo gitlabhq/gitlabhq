@@ -804,6 +804,16 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 | `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
 
+### `POST /projects/:id/merge_requests/:merge_request_iid/approvals` removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">12.3</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353097).
+</div>
+
+The `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. To change the approvals required for a merge request via the API, use the `/approval_rules` endpoint described in [Create merge request level rule](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule).
+
 ### `POST ci/lint` API endpoint removed
 
 <div class="deprecation-notes">

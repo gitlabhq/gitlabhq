@@ -83,7 +83,7 @@
             = _('Updated')
             = updated_tooltip
 
-  .project-cell{ class: "#{css_class} gl-xs-display-none!" }
+  .project-cell{ class: "#{css_class} gl-display-none! gl-sm-display-table-cell!" }
     .project-controls.gl-display-flex.gl-flex-direction-column.gl-align-items-flex-end.gl-w-full{ data: { testid: 'project_controls'} }
       .controls.gl-display-flex.gl-align-items-center.gl-mb-2{ class: "#{css_controls_class} gl-pr-0!" }
         - if show_pipeline_status_icon && last_pipeline.present?
