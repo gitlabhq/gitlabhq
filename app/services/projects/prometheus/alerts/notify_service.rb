@@ -36,7 +36,7 @@ module Projects
 
           truncate_alerts! if max_alerts_exceeded?
 
-          process_prometheus_alerts
+          process_prometheus_alerts(integration)
 
           created
         end
@@ -151,10 +151,10 @@ module Projects
           ActiveSupport::SecurityUtils.secure_compare(expected, actual)
         end
 
-        def process_prometheus_alerts
+        def process_prometheus_alerts(integration)
           alerts.map do |alert|
             AlertManagement::ProcessPrometheusAlertService
-              .new(project, alert)
+              .new(project, alert, integration: integration)
               .execute
           end
         end

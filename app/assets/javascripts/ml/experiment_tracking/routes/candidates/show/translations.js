@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const TITLE_LABEL = s__('MlExperimentTracking|Model candidate details');
 export const INFO_LABEL = s__('MlExperimentTracking|Info');
@@ -15,3 +15,7 @@ export const DELETE_CANDIDATE_CONFIRMATION_MESSAGE = s__(
 );
 export const DELETE_CANDIDATE_PRIMARY_ACTION_LABEL = s__('MlExperimentTracking|Delete candidate');
 export const DELETE_CANDIDATE_MODAL_TITLE = s__('MLExperimentTracking|Delete candidate?');
+export const CI_SECTION_LABEL = __('CI');
+export const JOB_LABEL = __('Job');
+export const CI_USER_LABEL = s__('MlExperimentTracking|Triggered by');
+export const CI_MR_LABEL = __('Merge request');

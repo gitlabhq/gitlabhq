@@ -224,12 +224,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
     end
 
     context 'process Alert Management alerts' do
-      let(:process_service) { instance_double(AlertManagement::ProcessPrometheusAlertService) }
+      let(:integration) { build_stubbed(:alert_management_http_integration, project: project, token: token) }
 
-      before do
-        create(:prometheus_integration, project: project)
-        create(:project_alerting_setting, project: project, token: token)
-      end
+      subject { service.execute(token_input, integration) }
 
       context 'with multiple firing alerts and resolving alerts' do
         let(:payload_raw) do
@@ -239,7 +236,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
         it 'processes Prometheus alerts' do
           expect(AlertManagement::ProcessPrometheusAlertService)
             .to receive(:new)
-            .with(project, kind_of(Hash))
+            .with(project, kind_of(Hash), integration: integration)
             .exactly(3).times
             .and_call_original
 

@@ -1,0 +1,10 @@
+query CommitContainingTags($fullPath: ID!, $commitSha: String!) {
+  project(fullPath: $fullPath) {
+    id
+    commitReferences(commitSha: $commitSha) {
+      containingTags(excludeTipped: true) {
+        names
+      }
+    }
+  }
+}

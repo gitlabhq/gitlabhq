@@ -48,7 +48,7 @@ describe('JobCheckbox component', () => {
       });
 
       it('selects the unselected artifacts on click', () => {
-        findCheckbox().vm.$emit('input', true);
+        findCheckbox().vm.$emit('change', true);
 
         expect(wrapper.emitted('selectArtifact')).toMatchObject([
           [mockUnselectedArtifacts[0], true],
@@ -83,7 +83,7 @@ describe('JobCheckbox component', () => {
     });
 
     it('deselects the selected artifacts on click', () => {
-      findCheckbox().vm.$emit('input', false);
+      findCheckbox().vm.$emit('change', false);
 
       expect(wrapper.emitted('selectArtifact')).toMatchObject([
         [mockSelectedArtifacts[0], false],
@@ -105,7 +105,7 @@ describe('JobCheckbox component', () => {
       });
 
       it('selects the artifacts on click', () => {
-        findCheckbox().vm.$emit('input', true);
+        findCheckbox().vm.$emit('change', true);
 
         expect(wrapper.emitted('selectArtifact')).toMatchObject([
           [mockUnselectedArtifacts[0], true],

@@ -9,6 +9,7 @@ import {
   GlIcon,
   GlPagination,
   GlFormCheckbox,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
@@ -43,6 +44,7 @@ import {
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
   SELECTED_ARTIFACTS_MAX_COUNT,
+  I18N_BULK_DELETE_MAX_SELECTED,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
@@ -77,6 +79,9 @@ export default {
     BulkDeleteModal,
     ArtifactsTableRowDetails,
     FeedbackBanner,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts'],
@@ -164,6 +169,25 @@ export default {
     artifactsToDelete() {
       return this.isDeletingArtifactsForJob ? this.jobArtifactsToDelete : this.selectedArtifacts;
     },
+    isAnyVisibleArtifactSelected() {
+      return this.jobArtifacts.some((job) =>
+        job.artifacts.nodes.some((artifactNode) =>
+          this.selectedArtifacts.includes(artifactNode.id),
+        ),
+      );
+    },
+    areAllVisibleArtifactsSelected() {
+      return this.jobArtifacts.every((job) =>
+        job.artifacts.nodes.every((artifactNode) =>
+          this.selectedArtifacts.includes(artifactNode.id),
+        ),
+      );
+    },
+    selectAllTooltipText() {
+      return this.isSelectedArtifactsLimitReached && !this.isAnyVisibleArtifactSelected
+        ? I18N_BULK_DELETE_MAX_SELECTED
+        : '';
+    },
   },
   methods: {
     refetchArtifacts() {
@@ -205,11 +229,11 @@ export default {
       }
     },
     selectArtifact(artifactNode, checked) {
-      if (checked) {
-        if (!this.isSelectedArtifactsLimitReached) {
-          this.selectedArtifacts.push(artifactNode.id);
-        }
-      } else {
+      const isSelected = this.selectedArtifacts.includes(artifactNode.id);
+
+      if (checked && !isSelected && !this.isSelectedArtifactsLimitReached) {
+        this.selectedArtifacts.push(artifactNode.id);
+      } else if (isSelected) {
         this.selectedArtifacts.splice(this.selectedArtifacts.indexOf(artifactNode.id), 1);
       }
     },
@@ -273,6 +297,11 @@ export default {
     handleBulkDeleteModalHidden() {
       this.isBulkDeleteModalVisible = false;
       this.jobArtifactsToDelete = [];
+    },
+    handleSelectAllChecked(checked) {
+      this.jobArtifacts.map((job) =>
+        job.artifacts.nodes.map((artifactNode) => this.selectArtifact(artifactNode, checked)),
+      );
     },
     clearSelectedArtifacts() {
       this.selectedArtifacts = [];
@@ -369,10 +398,12 @@ export default {
       </template>
       <template v-if="canBulkDestroyArtifacts" #head(checkbox)>
         <gl-form-checkbox
-          :disabled="!anyArtifactsSelected"
-          :checked="anyArtifactsSelected"
-          :indeterminate="anyArtifactsSelected"
-          @change="clearSelectedArtifacts"
+          v-gl-tooltip.right
+          :title="selectAllTooltipText"
+          :checked="isAnyVisibleArtifactSelected"
+          :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
+          :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
+          @change="handleSelectAllChecked"
         />
       </template>
       <template

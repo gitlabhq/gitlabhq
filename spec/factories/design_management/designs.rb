@@ -26,7 +26,7 @@ FactoryBot.define do
       sequence(:relative_position) { |n| n * 1000 }
     end
 
-    create_versions = ->(design, evaluator, commit_version) do
+    create_versions = ->(design, evaluator, commit_version) do # rubocop:disable RSpec/FactoryBot/LocalStaticAssignment
       unless evaluator.versions_count == 0
         project = design.project
         issue = design.issue

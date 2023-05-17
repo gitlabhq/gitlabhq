@@ -17,6 +17,10 @@ import {
   DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
   DELETE_CANDIDATE_MODAL_TITLE,
   MLFLOW_ID_LABEL,
+  CI_SECTION_LABEL,
+  JOB_LABEL,
+  CI_USER_LABEL,
+  CI_MR_LABEL,
 } from './translations';
 
 export default {
@@ -43,10 +47,17 @@ export default {
     DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
     DELETE_CANDIDATE_MODAL_TITLE,
     MLFLOW_ID_LABEL,
+    CI_SECTION_LABEL,
+    JOB_LABEL,
+    CI_USER_LABEL,
+    CI_MR_LABEL,
   },
   computed: {
     info() {
       return Object.freeze(this.candidate.info);
+    },
+    ciJob() {
+      return Object.freeze(this.info.ci_job);
     },
     sections() {
       return [
@@ -105,6 +116,31 @@ export default {
           :href="info.path_to_artifact"
           :text="$options.i18n.ARTIFACTS_LABEL"
         />
+
+        <template v-if="ciJob">
+          <tr class="divider"></tr>
+
+          <detail-row
+            :label="$options.i18n.JOB_LABEL"
+            :text="ciJob.name"
+            :href="ciJob.path"
+            :section-label="$options.i18n.CI_SECTION_LABEL"
+          />
+
+          <detail-row
+            v-if="ciJob.user"
+            :label="$options.i18n.CI_USER_LABEL"
+            :href="ciJob.user.path"
+            :text="ciJob.user.username"
+          />
+
+          <detail-row
+            v-if="ciJob.merge_request"
+            :label="$options.i18n.CI_MR_LABEL"
+            :text="ciJob.merge_request.title"
+            :href="ciJob.merge_request.path"
+          />
+        </template>
 
         <template v-for="{ sectionName, sectionValues } in sections">
           <tr v-if="sectionValues" :key="sectionName" class="divider"></tr>

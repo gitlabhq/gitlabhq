@@ -48,6 +48,14 @@ describe('MlCandidatesShow', () => {
         ['', 'Status', CANDIDATE.info.status, ''],
         ['', 'Experiment', CANDIDATE.info.experiment_name, CANDIDATE.info.path_to_experiment],
         ['', 'Artifacts', 'Artifacts', CANDIDATE.info.path_to_artifact],
+        ['CI', 'Job', CANDIDATE.info.ci_job.name, CANDIDATE.info.ci_job.path],
+        ['', 'Triggered by', CANDIDATE.info.ci_job.user.username, CANDIDATE.info.ci_job.user.path],
+        [
+          '',
+          'Merge request',
+          CANDIDATE.info.ci_job.merge_request.title,
+          CANDIDATE.info.ci_job.merge_request.path,
+        ],
         ['Parameters', CANDIDATE.params[0].name, CANDIDATE.params[0].value, ''],
         ['', CANDIDATE.params[1].name, CANDIDATE.params[1].value, ''],
         ['Metrics', CANDIDATE.metrics[0].name, CANDIDATE.metrics[0].value, ''],
@@ -75,6 +83,9 @@ describe('MlCandidatesShow', () => {
         expect(findSectionLabel('Parameters').exists()).toBe(true);
         expect(findSectionLabel('Metadata').exists()).toBe(true);
         expect(findSectionLabel('Metrics').exists()).toBe(true);
+        expect(findSectionLabel('CI').exists()).toBe(true);
+        expect(findLabel('Merge request').exists()).toBe(true);
+        expect(findLabel('Triggered by').exists()).toBe(true);
       });
     });
 
@@ -99,6 +110,7 @@ describe('MlCandidatesShow', () => {
           delete candidate.params;
           delete candidate.metrics;
           delete candidate.metadata;
+          delete candidate.info.ci_job;
           return candidate;
         }),
       );
@@ -113,6 +125,29 @@ describe('MlCandidatesShow', () => {
 
       it('does not render metrics', () => {
         expect(findSectionLabel('Metrics').exists()).toBe(false);
+      });
+
+      it('does not render CI info', () => {
+        expect(findSectionLabel('CI').exists()).toBe(false);
+      });
+    });
+
+    describe('Has CI, but no user or mr', () => {
+      beforeEach(() =>
+        createWrapper(() => {
+          const candidate = newCandidate();
+          delete candidate.info.ci_job.user;
+          delete candidate.info.ci_job.merge_request;
+          return candidate;
+        }),
+      );
+
+      it('does not render MR info', () => {
+        expect(findLabel('Merge request').exists()).toBe(false);
+      });
+
+      it('does not render CI user info', () => {
+        expect(findLabel('Triggered by').exists()).toBe(false);
       });
     });
   });

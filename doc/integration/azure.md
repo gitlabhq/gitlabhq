@@ -29,9 +29,13 @@ You must set the `uid_field`, which differs across the providers:
 | [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field                              |
 
 To migrate from `omniauth-azure-oauth2` to `omniauth_openid_connect` you
-must change the configuration:
+must change the configuration.
 
-- **For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Remove some of the existing configuration and add new configuration as shown.
 
 ```diff
 gitlab_rails['omniauth_providers'] = [
@@ -60,7 +64,9 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-- **For installations from source**
+:::TabTitle Self-compiled (source)
+
+Remove some of the existing configuration and add new configuration as shown.
 
 ```diff
   - { name: 'azure_oauth2',
@@ -88,10 +94,16 @@ gitlab_rails['omniauth_providers'] = [
     }
 ```
 
-To migrate for example from `omniauth-azure-activedirectory-v2` to `omniauth_openid_connect` you
-must change the configuration:
+::EndTabs
 
-- **For Omnibus installations**
+To migrate for example from `omniauth-azure-activedirectory-v2` to `omniauth_openid_connect` you
+must change the configuration.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Remove some of the existing configuration and add new configuration as shown.
 
 ```diff
 gitlab_rails['omniauth_providers'] = [
@@ -120,7 +132,9 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-- **For installations from source**
+:::TabTitle Self-compiled (source)
+
+Remove some of the existing configuration and add new configuration as shown.
 
 ```diff
   - { name: 'azure_activedirectory_v2',
@@ -147,6 +161,8 @@ gitlab_rails['omniauth_providers'] = [
 +      }
     }
 ```
+
+::EndTabs
 
 For more information on other customizations, see [`gitlab_username_claim`](index.md#authentication-sources).
 

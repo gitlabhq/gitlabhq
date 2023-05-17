@@ -1,0 +1,10 @@
+query CommitContainingBranches($fullPath: ID!, $commitSha: String!) {
+  project(fullPath: $fullPath) {
+    id
+    commitReferences(commitSha: $commitSha) {
+      containingBranches(excludeTipped: true) {
+        names
+      }
+    }
+  }
+}

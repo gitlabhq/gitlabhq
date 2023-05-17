@@ -1012,3 +1012,8 @@ Graphql/ResourceNotAvailableError:
   Exclude:
     # Definition of `raise_resource_not_available_error!`
     - 'lib/gitlab/graphql/authorize/authorize_resource.rb'
+
+RSpec/FactoryBot/LocalStaticAssignment:
+  Include:
+    - spec/factories/**/*.rb
+    - ee/spec/factories/**/*.rb

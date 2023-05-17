@@ -513,24 +513,63 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         project.add_developer(user)
       end
 
+      shared_context 'with env passed as a JSON' do
+        let(:obj_dir_relative) { './objects' }
+        let(:alt_obj_dirs_relative) { ['./alt-objects-1', './alt-objects-2'] }
+        let(:env) do
+          {
+            GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
+            GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
+          }
+        end
+      end
+
       shared_examples 'sets hook env' do
-        context 'with env passed as a JSON' do
-          let(:obj_dir_relative) { './objects' }
-          let(:alt_obj_dirs_relative) { ['./alt-objects-1', './alt-objects-2'] }
-          let(:env) do
-            {
-              GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
-              GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
-            }
-          end
+        include_context 'with env passed as a JSON'
 
-          it 'sets env in RequestStore' do
-            expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
+        it 'sets env in RequestStore' do
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
 
-            subject
+          subject
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      shared_examples 'sets hook env and routes to primary' do
+        include_context 'with env passed as a JSON'
+
+        let(:interceptor) do
+          Class.new(::GRPC::ClientInterceptor) do
+            def route_to_primary_received?
+              @route_to_primary_count.to_i > 0
+            end
+
+            def request_response(request:, call:, method:, metadata:) # rubocop:disable Lint/UnusedMethodArgument
+              @route_to_primary_count ||= 0
+              @route_to_primary_count += 1 if metadata['gitaly-route-repository-accessor-policy'] == 'primary-only'
+
+              yield
+            end
+          end.new
+        end
+
+        before do
+          Gitlab::GitalyClient.clear_stubs!
+          allow(::Gitlab::GitalyClient).to receive(:interceptors).and_return([interceptor])
+        end
+
+        after do
+          Gitlab::GitalyClient.clear_stubs!
+        end
+
+        it 'sets env in RequestStore and routes gRPC messages to primary', :request_store do
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys).and_call_original
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(interceptor.route_to_primary_received?).to be_truthy
         end
       end
 
@@ -549,6 +588,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
+        # Wiki repositories don't invoke any Gitaly RPCs to check for changes, so we can only test for the
+        # hook environment being set.
         it_behaves_like 'sets hook env' do
           let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_container(project.wiki) }
         end
@@ -588,7 +629,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
-        it_behaves_like 'sets hook env' do
+        it_behaves_like 'sets hook env and routes to primary' do
           let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(personal_snippet) }
         end
       end
@@ -620,7 +661,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
-        it_behaves_like 'sets hook env' do
+        it_behaves_like 'sets hook env and routes to primary' do
           let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(project_snippet) }
         end
       end

@@ -181,7 +181,6 @@ module Gitlab
           end
         end
 
-        # Overriden in EE::Gitlab::AlertManagement::Payload::Generic
         def value_for_paths(paths)
           target_path = paths.find { |path| payload&.dig(*path) }
 

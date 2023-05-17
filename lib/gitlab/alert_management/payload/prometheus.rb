@@ -94,6 +94,10 @@ module Gitlab
           project && title && starts_at_raw
         end
 
+        def source
+          integration&.name || monitoring_tool
+        end
+
         private
 
         override :severity_mapping
@@ -131,3 +135,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::AlertManagement::Payload::Prometheus.prepend_mod

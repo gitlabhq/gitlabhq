@@ -4,6 +4,9 @@ module Sidebars
   module UserProfile
     class Panel < ::Sidebars::Panel
       include UsersHelper
+      include Gitlab::Allowable
+
+      delegate :current_user, to: :@context
 
       override :configure_menus
       def configure_menus

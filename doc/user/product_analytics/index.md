@@ -23,9 +23,9 @@ For more information, see the [group direction page](https://about.gitlab.com/di
 
 Product analytics uses several tools:
 
-- [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -34,19 +34,21 @@ The following diagram illustrates the product analytics flow:
 title: Product Analytics flow
 ---
 flowchart TB
-    subgraph Adding data
-        A([SDK]) --Send user data--> B[Analytics Proxy]
-        B --Transform data and pass it through--> C[Snowplow]
-        C --Pass the data to the associated database--> D([Clickhouse])
+    subgraph Event collection
+        A([SDK]) --Send user data--> B[Snowplow Collector]
+        B --Pass data through--> C[Snowplow Enricher]
     end
-    subgraph Showing dashboards
-        E([Dashboards]) --Generated from the YAML definition--> F[Dashboard]
+    subgraph Data warehouse
+        C --Transform and enrich data--> D([Clickhouse])
+    end
+    subgraph Data visualization with dashboards
+        E([Dashboards]) --Generated from the YAML definition--> F[Panels/Visualizations]
         F --Request data--> G[Product Analytics API]
-        G --Run Cube queries with pre-aggregations--> H[Cube.js]
+        G --Run Cube queries with pre-aggregations--> H[Cube]
         H --Get data from database--> D
         D --Return results--> H
-        H --> G
-        G --Transform data to be rendered--> F
+        H --Transform data to be rendered--> G
+        G --Return data--> F
     end
 ```
 
@@ -73,20 +75,6 @@ Prerequisite:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Analytics** tab and find the **Product analytics** section.
 1. Select **Enable product analytics** and enter the configuration values.
-   The following table shows the required configuration parameters and example values:
-
-    | Name                           | Value                                                      |
-    |--------------------------------|------------------------------------------------------------|
-    | Configurator connection string | `https://test:test@configurator.gitlab.com`                |
-    | Jitsu host                     | `https://jitsu.gitlab.com`                                 |
-    | Jitsu project ID               | `g0maofw84gx5sjxgse2k`                                     |
-    | Jitsu administrator email      | `jitsu.admin@gitlab.com`                                   |
-    | Jitsu administrator password   | `<your_password>`                                          |
-    | Collector host                 | `https://collector.gitlab.com`                             |
-    | ClickHouse URL                 | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
-    | Cube API URL                   | `https://cube.gitlab.com`                                  |
-    | Cube API key                   | `25718201b3e9...ae6bbdc62dbb`                              |
-
 1. Select **Save changes**.
 
 ## Product analytics dashboards
