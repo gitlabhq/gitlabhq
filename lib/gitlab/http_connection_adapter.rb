@@ -24,10 +24,17 @@ module Gitlab
 
     override :connection
     def connection
-      @uri, hostname = validate_url!(uri)
+      result = validate_url_with_proxy!(uri)
+      @uri = result.uri
+      hostname = result.hostname
 
       http = super
       http.hostname_override = hostname if hostname
+
+      unless result.use_proxy
+        http.proxy_from_env = false
+        http.proxy_address = nil
+      end
 
       gitlab_http = Gitlab::NetHttpAdapter.new(http.address, http.port)
 
@@ -40,12 +47,13 @@ module Gitlab
 
     private
 
-    def validate_url!(url)
-      Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?,
-                                        allow_localhost: allow_local_requests?,
-                                        allow_object_storage: allow_object_storage?,
-                                        dns_rebind_protection: dns_rebind_protection?,
-                                        schemes: %w[http https])
+    def validate_url_with_proxy!(url)
+      Gitlab::UrlBlocker.validate_url_with_proxy!(
+        url, allow_local_network: allow_local_requests?,
+        allow_localhost: allow_local_requests?,
+        allow_object_storage: allow_object_storage?,
+        dns_rebind_protection: dns_rebind_protection?,
+        schemes: %w[http https])
     rescue Gitlab::UrlBlocker::BlockedUrlError => e
       raise Gitlab::HTTP::BlockedUrlError, "URL is blocked: #{e.message}"
     end
