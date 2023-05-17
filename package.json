@@ -182,7 +182,7 @@
     "rehype-raw": "^6.1.1",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
-    "remark-parse": "^10.0.1",
+    "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
     "scrollparent": "^2.0.1",
     "semver": "^7.3.4",

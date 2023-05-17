@@ -3,7 +3,7 @@
 module QA
   module Flow
     module Purchase
-      include QA::Support::Helpers::Plan
+      include Support::Helpers::Plan
 
       extend self
 

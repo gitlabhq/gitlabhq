@@ -34,7 +34,9 @@ module Gitlab
           #
           # @param subscription_plan [String]
           def wait_for_subscription(subscription_plan, page:)
-            ::QA::Support::Waiter.wait_until(max_duration: 30, sleep_interval: 3, reload_page: page) do
+            ::QA::Support::Waiter.wait_until(
+              max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT, sleep_interval: 2, reload_page: page,
+              message: "Subscription plan '#{subscription_plan}' failed to appear") do
               billing_plan_header.match?(/currently using the #{subscription_plan} saas plan/i)
             end
           end

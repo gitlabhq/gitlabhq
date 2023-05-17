@@ -856,6 +856,9 @@
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
     - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        ARCH: amd64,arm64
 
 # We want to rebuild the master image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
 .build-images:rules:build-qa-on-gdk-master-image:

@@ -50,6 +50,12 @@ module Gitlab
             additional_ci_minutes[/(\d+){2}/]
           end
 
+          def additional_ci_minutes_added?
+            #  When opening the Usage quotas page, Seats quota tab is opened briefly even when url is to a different tab
+            ::QA::Support::WaitForRequests.wait_for_requests
+            additional_ci_minutes?
+          end
+
           # Waits and Checks if storage available alert presents on the page
           #
           # @return [Boolean] True if the alert presents, false if not after 5 second wait
@@ -75,12 +81,6 @@ module Gitlab
             additional_storage_alert_element.wait_until(&:present?)
 
             purchased_usage_total[/(\d+){2}.\d+/].to_f
-          end
-
-          def additional_ci_minutes_added?
-            # When opening the Usage quotas page, Seats quota tab is opened briefly even when url is to a different tab
-            ::QA::Support::WaitForRequests.wait_for_requests
-            additional_ci_minutes?
           end
         end
       end

@@ -1862,7 +1862,7 @@ msgstr ""
 msgid "AISummary|Experiment"
 msgstr ""
 
-msgid "AISummary|Generates a summary of all public comments"
+msgid "AISummary|Generates a summary of all comments"
 msgstr ""
 
 msgid "AISummary|See summary"

@@ -279,7 +279,7 @@ export default {
       // Once more types are moved to have Work Items involved
       // we need to handle this properly.
       if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
-        return `../../issues/${this.parentWorkItem?.iid}`;
+        return `../../-/issues/${this.parentWorkItem?.iid}`;
       }
       return this.parentWorkItem?.webUrl;
     },

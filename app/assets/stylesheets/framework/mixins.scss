@@ -436,8 +436,7 @@
 
   &:last-child {
     &::after {
-      content: '';
-      padding: 0;
+      display: none;
     }
   }
 }

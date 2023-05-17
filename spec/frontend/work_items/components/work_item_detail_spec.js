@@ -437,7 +437,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
-        expect(findParentButton().attributes().href).toBe('../../issues/5');
+        expect(findParentButton().attributes().href).toBe('../../-/issues/5');
       });
 
       it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {

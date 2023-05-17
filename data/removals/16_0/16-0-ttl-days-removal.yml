@@ -1,0 +1,16 @@
+- title: "Default value of `ttl_days` now 30 days"
+  announcement_milestone: "15.4"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: tlinz
+  stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369122  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    From GitLab 16.0, any personal, project, or group access token [must have an expiration date](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96594). If you create a personal access token with the GitLab Shell command `personal_access_token` without specifying `ttl_days`, a default value of 30 days is now applied.
+#
+# OPTIONAL FIELDS
+#
+  tiers: [Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+  image_url:
+  video_url:

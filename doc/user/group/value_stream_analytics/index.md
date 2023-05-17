@@ -51,6 +51,9 @@ Value stream analytics offers different features at the project and group level 
 |Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
 |Authorization|At least reporter|At least reporter|Can be public|
 
+NOTE:
+Feature parity of project-level with group-level value stream analytics is achieved by using the new record `ProjectNamespace`. For details about this consolidation initiative, see the [Organization documentation](../../../development/organization/index.md).
+
 ## How value stream analytics works
 
 Value stream analytics calculates the duration of every stage of your software development process.

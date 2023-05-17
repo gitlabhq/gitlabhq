@@ -162,6 +162,16 @@ Instead, use the [new variable names](https://docs.gitlab.com/ee/user/applicatio
 - `CS_REGISTRY_USER`
 - `CS_DOCKERFILE_PATH`
 
+### Default value of `ttl_days` now 30 days
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.4</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
+</div>
+
+From GitLab 16.0, any personal, project, or group access token [must have an expiration date](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96594). If you create a personal access token with the GitLab Shell command `personal_access_token` without specifying `ttl_days`, a default value of 30 days is now applied.
+
 ### Dependency Scanning ends support for Java 13, 14, 15, and 16
 
 <div class="deprecation-notes">
