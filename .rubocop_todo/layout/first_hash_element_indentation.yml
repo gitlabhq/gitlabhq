@@ -56,7 +56,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/lib/ee/gitlab/ci/parsers.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
     - 'ee/lib/gitlab/ci/parsers/security/formatters/dependency_list.rb'

@@ -1,6 +1,6 @@
 <script>
-import importGroupIllustration from '@gitlab/svgs/dist/illustrations/group-import.svg';
-import newGroupIllustration from '@gitlab/svgs/dist/illustrations/group-new.svg';
+import importGroupIllustration from '@gitlab/svgs/dist/illustrations/group-import.svg?raw';
+import newGroupIllustration from '@gitlab/svgs/dist/illustrations/group-new.svg?raw';
 
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnerability_management do
+RSpec.describe Gitlab::Ci::Reports::Security::Report do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   let(:created_at) { 2.weeks.ago }
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
     let(:other_report) do
       create(
         :ci_reports_security_report,
-        findings: [create(:ci_reports_security_finding)],
+        findings: [create(:ci_reports_security_finding, compare_key: 'other_finding')],
         scanners: [create(:ci_reports_security_scanner, external_id: 'other_scanner', name: 'Other Scanner')],
         identifiers: [create(:ci_reports_security_identifier, external_id: 'other_id', name: 'other_scanner')]
       )

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import gitlabLogo from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg';
+import gitlabLogo from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?raw';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';

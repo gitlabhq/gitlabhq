@@ -8,7 +8,7 @@
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-foss/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  */
-import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg';
+import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg?raw';
 import {
   GlIcon,
   GlLoadingIcon,

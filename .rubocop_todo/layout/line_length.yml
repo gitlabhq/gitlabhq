@@ -1287,7 +1287,6 @@ Layout/LineLength:
     - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/ee/sidebars/groups/panel.rb'
     - 'ee/lib/ee/sidebars/projects/menus/security_compliance_menu.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/config.rb'
     - 'ee/lib/elastic/latest/custom_language_analyzers.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'

@@ -182,11 +182,12 @@ module QA
         raise NotImplementedError
       end
 
-      def visit!(skip_resp_code_check: false)
+      def visit!(skip_finished_loading_check: false, skip_resp_code_check: false)
         Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
 
         # Just in case an async action is not yet complete
-        Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
+        Support::WaitForRequests.wait_for_requests(skip_finished_loading_check: skip_finished_loading_check,
+          skip_resp_code_check: skip_resp_code_check)
 
         Support::Retrier.retry_until do
           visit(web_url)
@@ -194,7 +195,8 @@ module QA
         end
 
         # Wait until the new page is ready for us to interact with it
-        Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
+        Support::WaitForRequests.wait_for_requests(skip_finished_loading_check: skip_finished_loading_check,
+          skip_resp_code_check: skip_resp_code_check)
       end
 
       def populate(*attribute_names)

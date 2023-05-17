@@ -406,7 +406,6 @@ Style/GuardClause:
     - 'ee/lib/ee/gitlab/gon_helper.rb'
     - 'ee/lib/ee/gitlab/omniauth_initializer.rb'
     - 'ee/lib/ee/sidebars/projects/panel.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/base_time.rb'
     - 'ee/lib/gitlab/ci/config/security_orchestration_policies/processor.rb'
     - 'ee/lib/gitlab/ci/minutes/cost_factor.rb'

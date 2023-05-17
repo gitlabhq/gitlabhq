@@ -1,5 +1,5 @@
 <script>
-import chartEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/chart-empty-state.svg';
+import chartEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/chart-empty-state.svg?raw';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { chartHeight } from '../../constants';
 

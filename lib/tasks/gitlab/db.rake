@@ -473,7 +473,7 @@ namespace :gitlab do
           Gitlab::Database::SchemaValidation::TrackInconsistency.new(
             inconsistency,
             Project.find_by_full_path(gitlab_url),
-            User.support_bot
+            User.automation_bot
           ).execute
 
           puts inconsistency.inspect

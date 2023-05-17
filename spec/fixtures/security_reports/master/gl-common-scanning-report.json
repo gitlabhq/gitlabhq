@@ -90,7 +90,6 @@
       "message": "Remediation for this vulnerability should remediate CVE-2140 as well",
       "description": "",
       "cve": "CVE-2139",
-      "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d4",
       "severity": "High",
       "solution": "Upgrade to latest version.",
       "scanner": {
@@ -133,7 +132,6 @@
       "message": "Remediation for this vulnerability should remediate CVE-2139 as well",
       "description": "",
       "cve": "CVE-2140",
-      "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d5",
       "severity": "High",
       "solution": "Upgrade to latest version.",
       "scanner": {
@@ -441,10 +439,10 @@
     {
       "fixes": [
         {
-          "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d4"
+          "cve": "CVE-2139"
         },
         {
-          "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d5"
+          "cve": "CVE-2140"
         }
       ],
       "summary": "this remediates CVE-2139 and CVE-2140",

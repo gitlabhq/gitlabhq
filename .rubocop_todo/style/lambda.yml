@@ -27,7 +27,6 @@ Style/Lambda:
     - 'ee/lib/ee/api/entities/group_push_rule.rb'
     - 'ee/lib/ee/banzai/filter/sanitization_filter.rb'
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/adapter/active_record/importing.rb'
     - 'ee/spec/elastic_integration/global_search_spec.rb'
     - 'ee/spec/lib/gitlab/geo/event_gap_tracking_spec.rb'

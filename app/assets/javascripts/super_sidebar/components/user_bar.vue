@@ -7,7 +7,7 @@ import {
   createUserCountsManager,
   userCounts,
 } from '~/super_sidebar/user_counts_manager';
-import logo from '../../../../views/shared/_logo.svg';
+import logo from '../../../../views/shared/_logo.svg?raw';
 import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';

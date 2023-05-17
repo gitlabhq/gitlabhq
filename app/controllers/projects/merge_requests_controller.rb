@@ -196,10 +196,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  # documented in doc/development/rails_endpoints/index.md
   def codequality_mr_diff_reports
     reports_response(@merge_request.find_codequality_mr_diff_reports, head_pipeline)
   end
 
+  # documented in doc/development/rails_endpoints/index.md
   def codequality_reports
     reports_response(@merge_request.compare_codequality_reports)
   end

@@ -17,7 +17,7 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 
 |                   | Small                     | Medium                    | Large                    |
 |-------------------|---------------------------|---------------------------|--------------------------|
-| Specs             | 1 vCPU, 3.75 GB RAM        | 2 vCPUs, 8 GB RAM          | 4 vCPUs, 16 GB RAM        |
+| Specs             | 2 vCPU, 8 GB RAM        | 4 vCPUs, 16 GB RAM          | 8 vCPUs, 32 GB RAM        |
 | GitLab CI/CD tags | `saas-linux-small-amd64` | `saas-linux-medium-amd64` | `saas-linux-large-amd64` |
 | Subscription      | Free, Premium, Ultimate   | Free, Premium, Ultimate   | Premium, Ultimate        |
 

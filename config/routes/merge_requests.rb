@@ -17,7 +17,10 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     get :accessibility_reports
     get :coverage_reports
     get :terraform_reports
+
+    # documented in doc/development/rails_endpoints/index.md
     get :codequality_reports
+    # documented in doc/development/rails_endpoints/index.md
     get :codequality_mr_diff_reports
 
     scope constraints: ->(req) { req.format == :json }, as: :json do

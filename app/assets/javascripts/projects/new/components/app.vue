@@ -1,8 +1,8 @@
 <script>
-import createFromTemplateIllustration from '@gitlab/svgs/dist/illustrations/project-create-from-template-sm.svg';
-import blankProjectIllustration from '@gitlab/svgs/dist/illustrations/project-create-new-sm.svg';
-import importProjectIllustration from '@gitlab/svgs/dist/illustrations/project-import-sm.svg';
-import ciCdProjectIllustration from '@gitlab/svgs/dist/illustrations/project-run-CICD-pipelines-sm.svg';
+import createFromTemplateIllustration from '@gitlab/svgs/dist/illustrations/project-create-from-template-sm.svg?raw';
+import blankProjectIllustration from '@gitlab/svgs/dist/illustrations/project-create-new-sm.svg?raw';
+import importProjectIllustration from '@gitlab/svgs/dist/illustrations/project-import-sm.svg?raw';
+import ciCdProjectIllustration from '@gitlab/svgs/dist/illustrations/project-run-CICD-pipelines-sm.svg?raw';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
