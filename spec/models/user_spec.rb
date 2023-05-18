@@ -5846,7 +5846,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#delete_async' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, note: "existing note") }
     let(:deleted_by) { create(:user) }
 
     it 'blocks the user then schedules them for deletion if a hard delete is specified' do
@@ -5878,6 +5878,14 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
+      it 'updates note to indicate the action (account was deleted by the user) and timestamp' do
+        freeze_time do
+          expected_note = "User deleted own account on #{Time.zone.now}\n#{user.note}"
+
+          expect { user.delete_async(deleted_by: deleted_by) }.to change { user.note }.to(expected_note)
+        end
+      end
+
       context 'when delay_delete_own_user feature flag is disabled' do
         before do
           stub_feature_flags(delay_delete_own_user: false)
@@ -5889,6 +5897,10 @@ RSpec.describe User, feature_category: :user_profile do
           user.delete_async(deleted_by: deleted_by)
 
           expect(user).not_to be_blocked
+        end
+
+        it 'does not update the note' do
+          expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
         end
       end
     end

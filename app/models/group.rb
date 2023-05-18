@@ -160,7 +160,7 @@ class Group < Namespace
   validates :group_feature, presence: true
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
+                                 encrypted: :required,
                                  format_with_prefix: :runners_token_prefix,
                                  require_prefix_for_validation: true
 

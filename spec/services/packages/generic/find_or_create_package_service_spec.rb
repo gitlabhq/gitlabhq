@@ -27,7 +27,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
           expect(package.creator).to eq(user)
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.original_build_info).to be_nil
+          expect(package.last_build_info).to be_nil
         end
       end
 
@@ -42,7 +42,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
           expect(package.creator).to eq(user)
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
+          expect(package.last_build_info.pipeline).to eq(ci_build.pipeline)
         end
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
             expect(found_package).to eq(package)
           end.not_to change { project.packages.generic.count }
 
-          expect(package.reload.original_build_info).to be_nil
+          expect(package.reload.last_build_info).to be_nil
         end
       end
 
@@ -80,7 +80,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
             expect(found_package).to eq(package)
           end.not_to change { project.packages.generic.count }
 
-          expect(package.reload.original_build_info.pipeline).to eq(pipeline)
+          expect(package.reload.last_build_info.pipeline).to eq(pipeline)
         end
       end
 
@@ -97,7 +97,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
           expect(package.creator).to eq(user)
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.original_build_info).to be_nil
+          expect(package.last_build_info).to be_nil
         end
       end
     end

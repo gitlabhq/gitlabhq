@@ -1667,7 +1667,11 @@ class User < ApplicationRecord
     is_deleting_own_record = deleted_by.id == id
 
     if is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
+      new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
+      self.note = "#{new_note}\n#{note}".strip
+
       block
+
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
     else
       block if params[:hard_delete]

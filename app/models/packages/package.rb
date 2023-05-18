@@ -297,16 +297,14 @@ class Packages::Package < ApplicationRecord
   end
 
   # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
-  # TODO: rename the method https://gitlab.com/gitlab-org/gitlab/-/issues/410352
-  def original_build_info
-    strong_memoize(:original_build_info) do
-      build_infos.last
-    end
+  def last_build_info
+    build_infos.last
   end
+  strong_memoize_attr :last_build_info
 
   # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
   def pipeline
-    original_build_info&.pipeline
+    last_build_info&.pipeline
   end
 
   def tag_names

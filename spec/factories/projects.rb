@@ -57,6 +57,7 @@ FactoryBot.define do
       restrict_user_defined_variables { nil }
       ci_outbound_job_token_scope_enabled { nil }
       ci_inbound_job_token_scope_enabled { nil }
+      runners_token { nil }
       runner_token_expiration_interval { nil }
       runner_token_expiration_interval_human_readable { nil }
     end
@@ -93,6 +94,8 @@ FactoryBot.define do
 
       project.build_project_namespace(project_namespace_hash)
       project.build_project_feature(project_feature_hash)
+
+      project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
     end
 
     after(:create) do |project, evaluator|

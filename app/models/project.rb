@@ -111,7 +111,7 @@ class Project < ApplicationRecord
   attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
+                                 encrypted: :required,
                                  format_with_prefix: :runners_token_prefix,
                                  require_prefix_for_validation: true
 

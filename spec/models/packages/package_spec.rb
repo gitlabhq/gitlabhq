@@ -1235,12 +1235,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
-  describe '#original_build_info' do
+  describe '#last_build_info' do
     let_it_be_with_refind(:package) { create(:npm_package) }
 
     context 'without build_infos' do
       it 'returns nil' do
-        expect(package.original_build_info).to be_nil
+        expect(package.last_build_info).to be_nil
       end
     end
 
@@ -1249,7 +1249,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:second_build_info) { create(:package_build_info, :with_pipeline, package: package) }
 
       it 'returns the last build info' do
-        expect(package.original_build_info).to eq(second_build_info)
+        expect(package.last_build_info).to eq(second_build_info)
       end
     end
   end

@@ -9,11 +9,11 @@ type: howto
 
 > - GraphQL support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352956) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `saved_replies`. Disabled by default.
 > - User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113232) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `saved_replies`. Disabled by default. Enabled for GitLab team members only.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119468) in GitLab 16.0.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119468) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `saved_replies`.
-On GitLab.com, this feature is not available by default, but enabled for GitLab team members.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `saved_replies`.
+On GitLab.com, this feature is available.
 
 With comment templates, create and reuse text for any text area in:
 
@@ -26,8 +26,6 @@ Comment templates can be small, like approving a merge request and unassigning y
 or large, like chunks of boilerplate text you use frequently:
 
 ![Comment templates dropdown list](img/saved_replies_dropdown_v16_0.png)
-
-For more information about the rollout plan for this feature, see [issue 352956](https://gitlab.com/gitlab-org/gitlab/-/issues/352956).
 
 ## Use comment templates in a text area
 

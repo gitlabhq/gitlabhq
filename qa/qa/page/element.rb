@@ -13,9 +13,7 @@ module QA
         @attributes[:pattern] ||= selector
 
         options.each do |option|
-          if option.is_a?(String) || option.is_a?(Regexp)
-            @attributes[:pattern] = option
-          end
+          @attributes[:pattern] = option if option.is_a?(String) || option.is_a?(Regexp)
         end
       end
 
@@ -28,7 +26,7 @@ module QA
       end
 
       def selector_css
-        %Q([data-qa-selector="#{@name}"]#{additional_selectors},.#{selector})
+        %(#{qa_selector},.#{selector})
       end
 
       def expression
@@ -40,14 +38,19 @@ module QA
       end
 
       def matches?(line)
-        !!(line =~ /["']#{name}['"]|#{expression}/)
+        !!(line =~ /["']#{name}['"]|["']#{name.to_s.tr('_', '-')}['"]|#{expression}/)
       end
 
       private
 
+      def qa_selector
+        %([data-testid="#{@name}"]#{additional_selectors},[data-testid="#{@name.to_s.tr('_',
+          '-')}"]#{additional_selectors},[data-qa-selector="#{@name}"]#{additional_selectors})
+      end
+
       def additional_selectors
         @attributes.dup.delete_if { |attr| attr == :pattern || attr == :required }.map do |key, value|
-          %Q([data-qa-#{key.to_s.tr('_', '-')}="#{value}"])
+          %([data-qa-#{key.to_s.tr('_', '-')}="#{value}"])
         end.join
       end
     end

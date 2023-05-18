@@ -276,9 +276,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             expect(package.version).to eq('0.0.1')
 
             if should_set_build_info
-              expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
+              expect(package.last_build_info.pipeline).to eq(ci_build.pipeline)
             else
-              expect(package.original_build_info).to be_nil
+              expect(package.last_build_info).to be_nil
             end
 
             package_file = package.package_files.last

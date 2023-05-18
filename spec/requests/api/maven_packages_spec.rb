@@ -1020,7 +1020,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         upload_file(params: params.merge(job_token: job.token))
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(project.reload.packages.last.original_build_info.pipeline).to eq job.pipeline
+        expect(project.reload.packages.last.last_build_info.pipeline).to eq job.pipeline
       end
 
       it 'rejects upload without running job token' do
