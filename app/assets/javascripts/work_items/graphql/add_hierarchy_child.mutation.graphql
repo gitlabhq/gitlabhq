@@ -1,3 +1,3 @@
-mutation addHierarchyChild($id: WorkItemID!, $workItem: WorkItem!) {
-  addHierarchyChild(id: $id, workItem: $workItem) @client
+mutation addHierarchyChild($fullPath: ID!, $iid: String!, $workItem: WorkItem!) {
+  addHierarchyChild(fullPath: $fullPath, iid: $iid, workItem: $workItem) @client
 }

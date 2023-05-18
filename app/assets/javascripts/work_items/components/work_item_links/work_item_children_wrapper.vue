@@ -7,8 +7,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { defaultSortableOptions } from '~/sortable/constants';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
-import { findHierarchyWidgets, getWorkItemQuery } from '../../utils';
-import workItemQuery from '../../graphql/work_item.query.graphql';
+import { findHierarchyWidgets } from '../../utils';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
@@ -38,11 +37,6 @@ export default {
       required: true,
     },
     canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    fetchByIid: {
       type: Boolean,
       required: false,
       default: false,
@@ -78,44 +72,27 @@ export default {
         .map((child) => findHierarchyWidgets(child.widgets) || {})
         .some((hierarchy) => hierarchy.hasChildren);
     },
-    queryVariables() {
-      return this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid: this.workItemIid,
-          }
-        : {
-            id: this.workItemId,
-          };
-    },
   },
   methods: {
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.fullPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
         },
       });
     },
-    prefetchWorkItem({ id, iid }) {
+    prefetchWorkItem({ iid }) {
       if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
         this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ id, iid }),
+          () => this.addWorkItemQuery({ iid }),
           DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
         );
       }
@@ -180,12 +157,13 @@ export default {
           },
           update: (store) => {
             store.updateQuery(
-              { query: getWorkItemQuery(this.fetchByIid), variables: this.queryVariables },
+              {
+                query: workItemByIidQuery,
+                variables: { fullPath: this.fullPath, iid: this.workItemIid },
+              },
               (sourceData) =>
                 produce(sourceData, (draftData) => {
-                  const widgets = this.fetchByIid
-                    ? draftData.workspace.workItems.nodes[0].widgets
-                    : draftData.workItem.widgets;
+                  const { widgets } = draftData.workspace.workItems.nodes[0];
                   const hierarchyWidget = findHierarchyWidgets(widgets);
                   hierarchyWidget.children.nodes = updatedChildren;
                 }),

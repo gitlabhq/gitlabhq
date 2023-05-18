@@ -98,7 +98,7 @@ end
 The `view` DSL method corresponds to the Rails view, partial, or Vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
-`data-qa-selector=element_name_snaked` data attribute must be added to the view file.
+`testid=element_name` data attribute must be added, if not already, to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
 code but **this is deprecated** in favor of the above method for two reasons:
@@ -112,7 +112,7 @@ view 'app/views/my/view.html.haml' do
 
   ### Good ###
 
-  # Implicitly require the CSS selector `[data-qa-selector="logout_button"]` to be present in the view
+  # Implicitly require the CSS selector `[data-testid="logout_button"]` to be present in the view
   element :logout_button
 
   ### Bad ###
@@ -140,38 +140,38 @@ view 'app/views/my/view.html.haml' do
 end
 ```
 
-To add these elements to the view, you must change the Rails view, partial, or Vue component by adding a `data-qa-selector` attribute
+To add these elements to the view, you must change the Rails view, partial, or Vue component by adding a `data-testid` attribute
 for each element defined.
 
-In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field"` and `data-qa-selector="sign_in_button"`
+In our case, `data-testid="login_field"`, `data-testid="password_field"` and `data-testid="sign_in_button"`
 
 `app/views/my/view.html.haml`
 
 ```haml
-= f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { qa_selector: 'login_field' }
-= f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { qa_selector: 'password_field' }
-= f.submit "Sign in", class: "btn btn-confirm", data: { qa_selector: 'sign_in_button' }
+= f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { testid: 'login_field' }
+= f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { testid: 'password_field' }
+= f.submit "Sign in", class: "btn btn-confirm", data: { testid: 'sign_in_button' }
 ```
 
 Things to note:
 
-- The name of the element and the `qa_selector` must match and be snake cased
+- The name of the element and the `data-testid` must match and be either snake cased or kebab cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
-- You may see `.qa-selector` classes in existing Page Objects. We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector)
-  method of definition over the `.qa-selector` CSS class
+- You may see `data-qa-selector` classes in existing Page Objects. We should prefer the [`data-testid`](#data-testid-vs-data-qa-selector)
+  method of definition over the `data-qa-selector` CSS class
 
-### `data-qa-selector` vs `.qa-selector`
+### `data-testid` vs `data-qa-selector`
 
-> Introduced in GitLab 12.1
+> Introduced in GitLab 16.1
 
 There are two supported methods of defining elements within a view.
 
+1. `data-testid`
 1. `data-qa-selector` attribute
-1. `.qa-selector` class
 
-Any existing `.qa-selector` class should be considered deprecated
-and we should prefer the `data-qa-selector` method of definition.
+Any existing `data-qa-selector` class should be considered deprecated
+and we should prefer the `data-testid` method of definition.
 
 ### Dynamic element selection
 
@@ -193,7 +193,7 @@ Given the following Rails view (using GitLab Issues as an example):
 ```haml
 %ul.issues-list
  - @issues.each do |issue|
-   %li.issue{data: { qa_selector: 'issue', qa_issue_title: issue.title } }= link_to issue
+   %li.issue{data: { testid: 'issue', qa_issue_title: issue.title } }= link_to issue
 ```
 
 We can select on that specific issue by matching on the Rails model.
@@ -225,7 +225,7 @@ end
 ```haml
 %ol
   - @some_model.each_with_index do |model, idx|
-    %li.model{ data: { qa_selector: 'model', qa_index: idx } }
+    %li.model{ data: { testid: 'model', qa_index: idx } }
 ```
 
 ```ruby

@@ -78,6 +78,11 @@ export default {
       required: false,
       default: null,
     },
+    issueIid: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     isUpdating: {
       type: Boolean,
       required: false,
@@ -330,29 +335,31 @@ export default {
     async createTask({ taskTitle, taskDescription, oldDescription }) {
       try {
         const { title, description } = extractTaskTitleAndDescription(taskTitle, taskDescription);
+
         const iterationInput = {
           iterationWidget: {
             iterationId: this.issueDetails.iteration?.id ?? null,
           },
         };
-        const input = {
-          confidential: this.issueDetails.confidential,
-          description,
-          hierarchyWidget: {
-            parentId: this.issueGid,
-          },
-          ...(this.hasIterationsFeature && iterationInput),
-          milestoneWidget: {
-            milestoneId: this.issueDetails.milestone?.id ?? null,
-          },
-          projectPath: this.fullPath,
-          title,
-          workItemTypeId: this.taskWorkItemTypeId,
-        };
 
         const { data } = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
-          variables: { input },
+          variables: {
+            input: {
+              confidential: this.issueDetails.confidential,
+              description,
+              hierarchyWidget: {
+                parentId: this.issueGid,
+              },
+              ...(this.hasIterationsFeature && iterationInput),
+              milestoneWidget: {
+                milestoneId: this.issueDetails.milestone?.id ?? null,
+              },
+              projectPath: this.fullPath,
+              title,
+              workItemTypeId: this.taskWorkItemTypeId,
+            },
+          },
         });
 
         const { workItem, errors } = data.workItemCreate;
@@ -363,7 +370,7 @@ export default {
 
         await this.$apollo.mutate({
           mutation: addHierarchyChildMutation,
-          variables: { id: this.issueGid, workItem },
+          variables: { fullPath: this.fullPath, iid: String(this.issueIid), workItem },
         });
 
         this.$toast.show(s__('WorkItem|Converted to task'), {
@@ -396,7 +403,7 @@ export default {
 
         await this.$apollo.mutate({
           mutation: removeHierarchyChildMutation,
-          variables: { id: this.issueGid, workItem: { id } },
+          variables: { fullPath: this.fullPath, iid: String(this.issueIid), workItem: { id } },
         });
 
         this.$toast.show(s__('WorkItem|Task reverted'));

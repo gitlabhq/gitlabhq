@@ -43,11 +43,15 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
 
 ### Create a workspace
 
-To create a workspace in GitLab:
+Prepare your projects and create a [devfile](#devfile):
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. In the root directory of your project, create a file named `.devfile.yaml`.
-1. On the left sidebar, select **Workspaces**.
+   - Optional: For a quick demo, you can use one of the [example configurations](#example-definition) below.
+
+Next, go to the main menu to create a workspace:
+
+1. Go to **Main Menu > Your Work > Workspaces**.
 1. In the upper right, select **New workspace**.
 1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.

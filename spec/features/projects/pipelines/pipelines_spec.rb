@@ -10,6 +10,10 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
   let(:project) { create(:project) }
   let(:expected_detached_mr_tag) { 'merge request' }
 
+  before do
+    stub_feature_flags(pipeline_details_header_vue: false)
+  end
+
   context 'when user is logged in' do
     let(:user) { create(:user) }
 

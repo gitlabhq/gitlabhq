@@ -28,6 +28,7 @@ export default {
     :description="$options.i18n.noSearchResultsDescription"
     :title="$options.i18n.noSearchResultsTitle"
     :svg-path="emptyStateSvgPath"
+    :svg-height="150"
   >
     <template #actions>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
@@ -49,5 +50,10 @@ export default {
     </template>
   </gl-empty-state>
 
-  <gl-empty-state v-else :title="$options.i18n.noClosedIssuesTitle" :svg-path="emptyStateSvgPath" />
+  <gl-empty-state
+    v-else
+    :title="$options.i18n.noClosedIssuesTitle"
+    :svg-path="emptyStateSvgPath"
+    :svg-height="150"
+  />
 </template>

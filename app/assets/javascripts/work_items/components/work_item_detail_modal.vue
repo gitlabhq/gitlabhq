@@ -31,16 +31,12 @@ export default {
   data() {
     return {
       error: undefined,
-      updatedWorkItemId: null,
       updatedWorkItemIid: null,
       isModalShown: false,
       hasNotes: false,
     };
   },
   computed: {
-    displayedWorkItemId() {
-      return this.updatedWorkItemId || this.workItemId;
-    },
     displayedWorkItemIid() {
       return this.updatedWorkItemIid || this.workItemIid;
     },
@@ -72,7 +68,6 @@ export default {
         });
     },
     closeModal() {
-      this.updatedWorkItemId = null;
       this.updatedWorkItemIid = null;
       this.error = '';
       this.isModalShown = false;
@@ -88,7 +83,6 @@ export default {
       this.$refs.modal.show();
     },
     updateModal($event, workItem) {
-      this.updatedWorkItemId = workItem.id;
       this.updatedWorkItemIid = workItem.iid;
       this.$emit('update-modal', $event, workItem);
     },
@@ -126,7 +120,6 @@ export default {
 
     <work-item-detail
       is-modal
-      :work-item-id="displayedWorkItemId"
       :work-item-iid="displayedWorkItemIid"
       class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolation-isolate"
       @close="hide"

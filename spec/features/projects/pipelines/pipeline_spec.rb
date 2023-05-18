@@ -13,6 +13,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
   let(:role) { :developer }
 
   before do
+    stub_feature_flags(pipeline_details_header_vue: false)
     sign_in(user)
     project.add_role(user, role)
   end

@@ -26,9 +26,6 @@ export default function initWorkItemLinks() {
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
     apolloProvider,
-    components: {
-      WorkItemLinks,
-    },
     provide: {
       fullPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
@@ -39,9 +36,10 @@ export default function initWorkItemLinks() {
       reportAbusePath: wiReportAbusePath,
     },
     render: (createElement) =>
-      createElement('work-item-links', {
+      createElement(WorkItemLinks, {
         props: {
           issuableId: parseInt(workItemLinksRoot.dataset.issuableId, 10),
+          issuableIid: parseInt(workItemLinksRoot.dataset.issuableIid, 10),
         },
       }),
   });

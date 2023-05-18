@@ -9,18 +9,12 @@ import {
   WORK_ITEM_TYPENAME,
   WORK_ITEM_UPDATE_PAYLOAD_TYPENAME,
 } from '~/work_items/constants';
-import workItemQuery from './graphql/work_item.query.graphql';
-import workItemByIidQuery from './graphql/work_item_by_iid.query.graphql';
-
-export function getWorkItemQuery(isFetchedByIid) {
-  return isFetchedByIid ? workItemByIidQuery : workItemQuery;
-}
 
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
 export const findHierarchyWidgetChildren = (workItem) =>
-  findHierarchyWidgets(workItem.widgets).children.nodes;
+  findHierarchyWidgets(workItem?.widgets)?.children.nodes;
 
 const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
   return `${

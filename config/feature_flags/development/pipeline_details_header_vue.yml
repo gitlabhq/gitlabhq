@@ -1,0 +1,8 @@
+---
+name: pipeline_details_header_vue
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120634
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/411442
+milestone: '16.0'
+type: development
+group: group::pipeline execution
+default_enabled: false

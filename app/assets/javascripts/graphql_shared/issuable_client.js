@@ -6,7 +6,7 @@ import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.grap
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { findHierarchyWidgetChildren } from '~/work_items/utils';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
@@ -191,22 +191,24 @@ export const config = {
 
 export const resolvers = {
   Mutation: {
-    addHierarchyChild: (_, { id, workItem }, { cache }) => {
-      const queryArgs = { query: workItemQuery, variables: { id } };
+    addHierarchyChild: (_, { fullPath, iid, workItem }, { cache }) => {
+      const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
       const sourceData = cache.readQuery(queryArgs);
 
       const data = produce(sourceData, (draftState) => {
-        findHierarchyWidgetChildren(draftState.workItem).push(workItem);
+        findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]).push(workItem);
       });
 
       cache.writeQuery({ ...queryArgs, data });
     },
-    removeHierarchyChild: (_, { id, workItem }, { cache }) => {
-      const queryArgs = { query: workItemQuery, variables: { id } };
+    removeHierarchyChild: (_, { fullPath, iid, workItem }, { cache }) => {
+      const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
       const sourceData = cache.readQuery(queryArgs);
 
       const data = produce(sourceData, (draftState) => {
-        const hierarchyChildren = findHierarchyWidgetChildren(draftState.workItem);
+        const hierarchyChildren = findHierarchyWidgetChildren(
+          draftState.workspace.workItems.nodes[0],
+        );
         const index = hierarchyChildren.findIndex((child) => child.id === workItem.id);
         hierarchyChildren.splice(index, 1);
       });

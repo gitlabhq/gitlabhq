@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'profiles/preferences/show' do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { build(:user) }
+  let_it_be(:user) { create_default(:user) }
 
   before do
     assign(:user, user)

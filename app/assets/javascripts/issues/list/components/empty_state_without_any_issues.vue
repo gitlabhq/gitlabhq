@@ -56,7 +56,11 @@ export default {
 
 <template>
   <div v-if="isSignedIn">
-    <gl-empty-state :title="$options.i18n.noIssuesTitle" :svg-path="emptyStateSvgPath">
+    <gl-empty-state
+      :title="$options.i18n.noIssuesTitle"
+      :svg-path="emptyStateSvgPath"
+      :svg-height="150"
+    >
       <template #description>
         <gl-link :href="$options.issuesHelpPagePath">
           {{ $options.i18n.noIssuesDescription }}

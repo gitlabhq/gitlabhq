@@ -1,3 +1,3 @@
-mutation removeHierarchyChild($id: WorkItemID!, $workItem: WorkItem!) {
-  removeHierarchyChild(id: $id, workItem: $workItem) @client
+mutation removeHierarchyChild($fullPath: ID!, $iid: String!, $workItem: WorkItem!) {
+  removeHierarchyChild(fullPath: $fullPath, iid: $iid, workItem: $workItem) @client
 }

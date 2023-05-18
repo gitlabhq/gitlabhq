@@ -24,7 +24,6 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
 export default {
@@ -43,7 +42,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [descriptionVersionHistoryMixin, glFeatureFlagsMixin()],
+  mixins: [descriptionVersionHistoryMixin],
   props: {
     note: {
       type: Object,

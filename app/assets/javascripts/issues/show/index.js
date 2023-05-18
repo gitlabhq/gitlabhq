@@ -133,6 +133,7 @@ export function initIssueApp(issueData, store) {
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
           issueId: this.getNoteableData?.id,
+          issueIid: this.getNoteableData?.iid,
         },
       });
     },

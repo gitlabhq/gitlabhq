@@ -8,6 +8,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
   describe 'CI' do
     before do
+      stub_feature_flags(pipeline_details_header_vue: false)
       sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
     end

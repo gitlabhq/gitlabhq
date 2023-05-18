@@ -36,7 +36,6 @@ describe('WorkItemChildrenWrapper', () => {
         workItemId: 'gid://gitlab/WorkItem/515',
         confidential,
         children,
-        fetchByIid: true,
       },
     });
   };

@@ -15,11 +15,9 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
-import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import {
@@ -111,11 +109,6 @@ export default {
       required: false,
       default: false,
     },
-    workItemId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     workItemIid: {
       type: String,
       required: false,
@@ -128,16 +121,12 @@ export default {
     },
   },
   data() {
-    const workItemId = getParameterByName('work_item_id');
-
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
-        : null,
+      modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       isReportDrawerOpen: false,
       reportedUrl: '',
@@ -347,10 +336,10 @@ export default {
     },
   },
   mounted() {
-    if (this.modalWorkItemId || this.modalWorkItemIid) {
+    if (this.modalWorkItemIid) {
       this.openInModal({
         event: undefined,
-        modalWorkItem: { id: this.modalWorkItemId, iid: this.modalWorkItemIid },
+        modalWorkItem: { iid: this.modalWorkItemIid },
       });
     }
   },

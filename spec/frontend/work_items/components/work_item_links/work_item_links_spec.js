@@ -14,7 +14,6 @@ import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   getIssueDetailsResponse,
@@ -45,14 +44,12 @@ describe('WorkItemLinks', () => {
   const mutationChangeParentHandler = jest
     .fn()
     .mockResolvedValue(changeWorkItemParentMutationResponse);
-  const childWorkItemByIidHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
   const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
   const responseWithoutAddChildPermission = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ adminParentLink: false }));
 
   const createComponent = async ({
-    data = {},
     fetchHandler = responseWithAddChildPermission,
     mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
@@ -60,27 +57,24 @@ describe('WorkItemLinks', () => {
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [workItemQuery, fetchHandler],
+        [workItemByIidQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
-        [workItemByIidQuery, childWorkItemByIidHandler],
       ],
       resolvers,
       { addTypename: true },
     );
 
     wrapper = shallowMountExtended(WorkItemLinks, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       provide: {
         fullPath: 'project/path',
         hasIterationsFeature,
         reportAbusePath: '/report/abuse/path',
       },
-      propsData: { issuableId: 1 },
+      propsData: {
+        issuableId: 1,
+        issuableIid: 1,
+      },
       apolloProvider: mockApollo,
       mocks: {
         $toast,
@@ -286,16 +280,6 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().props('parentConfidential')).toBe(true);
-    });
-  });
-
-  it('starts prefetching work item by iid if URL contains work_item_iid query parameter', async () => {
-    setWindowLocation('?work_item_iid=5');
-    await createComponent();
-
-    expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
-      iid: '5',
-      fullPath: 'project/path',
     });
   });
 

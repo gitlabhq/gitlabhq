@@ -928,49 +928,57 @@ export const workItemMilestoneSubscriptionResponse = {
 
 export const workItemHierarchyEmptyResponse = {
   data: {
-    workItem: {
-      id: 'gid://gitlab/WorkItem/1',
-      iid: '1',
-      state: 'OPEN',
-      workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/1',
-        name: 'Issue',
-        iconName: 'issue-type-issue',
-        __typename: 'WorkItemType',
-      },
-      title: 'New title',
-      description: '',
-      createdAt: '2022-08-03T12:41:54Z',
-      updatedAt: null,
-      closedAt: null,
-      author: mockAssignees[0],
-      project: {
-        __typename: 'Project',
-        id: '1',
-        fullPath: 'test-project-path',
-        archived: false,
-      },
-      userPermissions: {
-        deleteWorkItem: false,
-        updateWorkItem: false,
-        setWorkItemMetadata: false,
-        adminParentLink: false,
-        __typename: 'WorkItemPermissions',
-      },
-      confidential: false,
-      widgets: [
-        {
-          type: 'HIERARCHY',
-          parent: null,
-          hasChildren: false,
-          children: {
-            nodes: [],
-            __typename: 'WorkItemConnection',
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/1',
+            iid: '1',
+            state: 'OPEN',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/1',
+              name: 'Issue',
+              iconName: 'issue-type-issue',
+              __typename: 'WorkItemType',
+            },
+            title: 'New title',
+            description: '',
+            createdAt: '2022-08-03T12:41:54Z',
+            updatedAt: null,
+            closedAt: null,
+            author: mockAssignees[0],
+            project: {
+              __typename: 'Project',
+              id: '1',
+              fullPath: 'test-project-path',
+              archived: false,
+            },
+            userPermissions: {
+              deleteWorkItem: false,
+              updateWorkItem: false,
+              setWorkItemMetadata: false,
+              adminParentLink: false,
+              __typename: 'WorkItemPermissions',
+            },
+            confidential: false,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                parent: null,
+                hasChildren: false,
+                children: {
+                  nodes: [],
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+            ],
+            __typename: 'WorkItem',
           },
-          __typename: 'WorkItemWidgetHierarchy',
-        },
-      ],
-      __typename: 'WorkItem',
+        ],
+      },
     },
   },
 };
@@ -1126,51 +1134,59 @@ export const childrenWorkItems = [
 
 export const workItemHierarchyResponse = {
   data: {
-    workItem: {
-      id: 'gid://gitlab/WorkItem/1',
-      iid: '1',
-      workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/1',
-        name: 'Issue',
-        iconName: 'issue-type-issue',
-        __typename: 'WorkItemType',
-      },
-      title: 'New title',
-      userPermissions: {
-        deleteWorkItem: true,
-        updateWorkItem: true,
-        setWorkItemMetadata: true,
-        adminParentLink: true,
-        __typename: 'WorkItemPermissions',
-      },
-      author: {
-        ...mockAssignees[0],
-      },
-      confidential: false,
-      project: {
-        __typename: 'Project',
-        id: '1',
-        fullPath: 'test-project-path',
-        archived: false,
-      },
-      description: 'Issue description',
-      state: 'OPEN',
-      createdAt: '2022-08-03T12:41:54Z',
-      updatedAt: null,
-      closedAt: null,
-      widgets: [
-        {
-          type: 'HIERARCHY',
-          parent: null,
-          hasChildren: true,
-          children: {
-            nodes: childrenWorkItems,
-            __typename: 'WorkItemConnection',
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/1',
+            iid: '1',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/1',
+              name: 'Issue',
+              iconName: 'issue-type-issue',
+              __typename: 'WorkItemType',
+            },
+            title: 'New title',
+            userPermissions: {
+              deleteWorkItem: true,
+              updateWorkItem: true,
+              setWorkItemMetadata: true,
+              adminParentLink: true,
+              __typename: 'WorkItemPermissions',
+            },
+            author: {
+              ...mockAssignees[0],
+            },
+            confidential: false,
+            project: {
+              __typename: 'Project',
+              id: '1',
+              fullPath: 'test-project-path',
+              archived: false,
+            },
+            description: 'Issue description',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            updatedAt: null,
+            closedAt: null,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                parent: null,
+                hasChildren: true,
+                children: {
+                  nodes: childrenWorkItems,
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+            ],
+            __typename: 'WorkItem',
           },
-          __typename: 'WorkItemWidgetHierarchy',
-        },
-      ],
-      __typename: 'WorkItem',
+        ],
+      },
     },
   },
 };

@@ -1,7 +1,7 @@
 function getRoutes() {
   const routes = [
     {
-      path: '/:id',
+      path: '/:iid',
       name: 'workItem',
       component: () => import('../pages/work_item_root.vue'),
       props: true,

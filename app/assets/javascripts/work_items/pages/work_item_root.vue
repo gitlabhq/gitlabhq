@@ -1,7 +1,5 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ZenMode from '~/zen_mode';
 import WorkItemDetail from '../components/work_item_detail.vue';
@@ -19,7 +17,7 @@ export default {
   },
   inject: ['issuesListPath'],
   props: {
-    id: {
+    iid: {
       type: String,
       required: true,
     },
@@ -28,11 +26,6 @@ export default {
     return {
       error: '',
     };
-  },
-  computed: {
-    gid() {
-      return convertToGraphQLId(TYPENAME_WORK_ITEM, this.id);
-    },
   },
   mounted() {
     this.ZenMode = new ZenMode();
@@ -70,10 +63,6 @@ export default {
 <template>
   <div>
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
-    <work-item-detail
-      :work-item-id="gid"
-      :work-item-iid="id"
-      @deleteWorkItem="deleteWorkItem($event)"
-    />
+    <work-item-detail :work-item-iid="iid" @deleteWorkItem="deleteWorkItem($event)" />
   </div>
 </template>

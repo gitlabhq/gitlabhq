@@ -6,7 +6,6 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '../../constants';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -64,7 +63,6 @@ export default {
       isShownAddForm: false,
       formType: null,
       childType: null,
-      prefetchedWorkItem: null,
     };
   },
   computed: {
@@ -94,25 +92,6 @@ export default {
     },
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
-    },
-    addWorkItemQuery(iid) {
-      if (!iid) {
-        return;
-      }
-
-      this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
-        variables: {
-          fullPath: this.fullPath,
-          iid,
-        },
-        update(data) {
-          return data.workspace.workItems.nodes[0];
-        },
-        context: {
-          isSingleRequest: true,
-        },
-      });
     },
   },
 };
@@ -165,7 +144,6 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
-        fetch-by-iid
         @removeChild="$emit('removeChild', $event)"
         @show-modal="showModal"
       />

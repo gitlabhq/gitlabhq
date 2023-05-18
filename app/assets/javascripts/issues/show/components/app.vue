@@ -188,6 +188,11 @@ export default {
       required: false,
       default: null,
     },
+    issueIid: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const store = new Store({
@@ -560,6 +565,7 @@ export default {
       <component
         :is="descriptionComponent"
         :issue-id="issueId"
+        :issue-iid="issueIid"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"

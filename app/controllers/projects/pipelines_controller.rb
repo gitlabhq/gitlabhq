@@ -22,6 +22,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
+  before_action :push_frontend_feature_flags, only: [:show]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -348,6 +349,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def tracking_project_source
     project
+  end
+
+  def push_frontend_feature_flags
+    push_frontend_feature_flag(:pipeline_details_header_vue, @project)
   end
 end
 

@@ -2,27 +2,33 @@ import VueRouter from 'vue-router';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { pipelineTabName } from './constants';
-import { createPipelineHeaderApp } from './pipeline_details_header';
+import { createPipelineHeaderApp, createPipelineDetailsHeaderApp } from './pipeline_details_header';
 import { apolloProvider } from './pipeline_shared_client';
 
 const SELECTORS = {
   PIPELINE_HEADER: '#js-pipeline-header-vue',
+  PIPELINE_DETAILS_HEADER: '#js-pipeline-details-header-vue',
   PIPELINE_TABS: '#js-pipeline-tabs',
 };
 
-export default async function initPipelineDetailsBundle() {
-  const { dataset: headerDataset } = document.querySelector(SELECTORS.PIPELINE_HEADER);
+export default async function initPipelineDetailsBundle(flagEnabled) {
+  const headerSelector = flagEnabled
+    ? SELECTORS.PIPELINE_DETAILS_HEADER
+    : SELECTORS.PIPELINE_HEADER;
+  const headerApp = flagEnabled ? createPipelineDetailsHeaderApp : createPipelineHeaderApp;
 
-  try {
-    createPipelineHeaderApp(
-      SELECTORS.PIPELINE_HEADER,
-      apolloProvider,
-      headerDataset.graphqlResourceEtag,
-    );
-  } catch {
-    createAlert({
-      message: __('An error occurred while loading a section of this page.'),
-    });
+  const headerEl = document.querySelector(headerSelector);
+
+  if (headerEl) {
+    const { dataset: headerDataset } = headerEl;
+
+    try {
+      headerApp(headerSelector, apolloProvider, headerDataset.graphqlResourceEtag);
+    } catch {
+      createAlert({
+        message: __('An error occurred while loading a section of this page.'),
+      });
+    }
   }
 
   const tabsEl = document.querySelector(SELECTORS.PIPELINE_TABS);
