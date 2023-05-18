@@ -860,8 +860,8 @@
       variables:
         ARCH: amd64,arm64
 
-# We want to rebuild the master image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
-.build-images:rules:build-qa-on-gdk-master-image:
+# We want to rebuild the base image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
+.build-images:rules:build-gdk-image:
   rules:
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: never
@@ -869,9 +869,24 @@
       when: never
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-schedule
+    # We want to also rebuild the base image if MRs change certain components.
+    - <<: *if-merge-request
+      variables:
+        BUILD_GDK_BASE: "true"
+      changes:
+        - qa/gdk/**/*
+        - Gemfile.lock
+        - yarn.lock
+        - workhorse/**/*
+        - VERSION
+        - GITLAB_METRICS_EXPORTER_VERSION
+        - GITLAB_SHELL_VERSION
+        - GITALY_SERVER_VERSION
+    - <<: *if-merge-request
+    - <<: *if-default-branch-refs
       variables:
         ARCH: amd64,arm64
+        BUILD_GDK_BASE: "true"
 
 .build-images:rules:build-assets-image:
   rules:

@@ -90,6 +90,7 @@ start-review-app-pipeline:
       - REVIEW_APPS_GCP_REGION
       - REVIEW_APPS_IMAGE
       - RUBY_VERSION
+      - DEBIAN_VERSION
 
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.

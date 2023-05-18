@@ -29,32 +29,16 @@ build-qa-image as-if-foss:
     - .as-if-foss
     - .build-images:rules:build-qa-image-as-if-foss
 
-# Prepares an image with GDK configured based on code in master. This saves some time in MRs because some installation
-# and complilation will have already been performed.
-build-qa-on-gdk-master-image:
+build-gdk-image:
   extends:
     - .base-image-build-buildx
-    - .build-images:rules:build-qa-on-gdk-master-image
+    - .build-images:rules:build-gdk-image
   tags:
-    - e2e
+    - high-cpu
   stage: build-images
   needs: []
-  variables:
-    QA_GDK_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-qa-gdk"
-  before_script:
-    - !reference [.use-buildx, before_script]
-    - sysctl -n -w fs.inotify.max_user_watches=524288
   script:
-    - |
-      docker buildx build \
-        --cache-to=type=inline \
-        --cache-from ${QA_GDK_IMAGE}:master \
-        --platform=${ARCH:-amd64} \
-        --add-host gdk.test:127.0.0.1 \
-        --tag ${QA_GDK_IMAGE}:master \
-        --file="qa/gdk/Dockerfile" \
-        --push \
-        ${CI_PROJECT_DIR}
+    - run_timed_command "scripts/build_gdk_image"
 
 build-assets-image:
   extends:

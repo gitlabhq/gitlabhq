@@ -101,6 +101,43 @@ SaaS runner instances are provisioned with a 25 GB storage volume. The underlyin
 is shared by the operating system, the Docker image, and a copy of your cloned repository.
 This means that the available free disk space that your jobs can use is **less than 25 GB**.
 
+## RAM disk (tmpfs)
+
+If your workloads generate a lot of disk input/output, you can run them from a RAM disk instead.
+
+Add a `tmpfs` mount point as part of your CI job, and ensure that these operations run from that location:
+
+```yaml
+myjob:
+  before_script:
+    - mkdir -p mount/point
+    - mount -t tmpfs -o size=1G tmpfs mount/point
+```
+
+`tmpfs` stores any data written in RAM, and is paged out to swap if necessary, which generates input/output.
+To avoid this I/O, ensure that the combined memory needed by the workload plus the data written to `tmpfs` does not exceed
+the amount of RAM in the [runner machine type](#machine-types-available-for-private-projects-x86-64)
+selected for the job.
+
+The `free` command can be used to observe the state of memory use and potentially help explain why jobs
+intermittently run slowly or fail.
+
+```yaml
+  script:
+    - run_tests --workdir mount/point/
+    - free
+```
+
+If `buff/cache` is lower than normal or there is any swap used, this suggests that the server was under
+memory pressure. In the following example, `Swap: used` is not zero, and additionally
+compares `buff/cache` to a job which ran without any issues.
+
+```plaintext
+              total        used        free      shared  buff/cache   available
+Mem:        4396380      334028     3678404        3884      383948     3799128
+Swap:       1048572       69632      978940
+```
+
 ## Pre-clone script (deprecated)
 
 WARNING:

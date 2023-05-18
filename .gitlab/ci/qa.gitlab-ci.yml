@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   extends:
     - .default-retry
     - .qa-cache
@@ -32,6 +32,7 @@
       - CHROME_VERSION
       - RUBY_VERSION
       - DOCKER_VERSION
+      - DEBIAN_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
       - OMNIBUS_GITLAB_CACHE_EDITION
@@ -151,10 +152,7 @@ e2e:test-on-gdk:
     - .qa:rules:e2e:test-on-gdk
   stage: qa
   needs:
-    # In scheduled master pipelines we wait for the image to be built.
-    # In MRs we assume the last scheduled master pipeline built the image already.
-    - job: build-qa-on-gdk-master-image
-      optional: true
+    - build-gdk-image
     - job: e2e-test-pipeline-generate
       artifacts: true
   variables:
@@ -163,4 +161,5 @@ e2e:test-on-gdk:
     PIPELINE_NAME: E2E GDK
     DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
+    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
   allow_failure: true

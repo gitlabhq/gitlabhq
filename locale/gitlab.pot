@@ -19034,7 +19034,7 @@ msgstr ""
 msgid "Forbidden"
 msgstr ""
 
-msgid "Forecast horizon must be %{max_horizon} days at the most."
+msgid "Forecast horizon must be positive and %{max_horizon} days at the most."
 msgstr ""
 
 msgid "Forgot your password?"
@@ -24273,7 +24273,7 @@ msgstr ""
 msgid "Invalid URL: %{url}"
 msgstr ""
 
-msgid "Invalid context. Project is expected."
+msgid "Invalid context type. %{type} is expected."
 msgstr ""
 
 msgid "Invalid date"
@@ -48014,7 +48014,7 @@ msgstr ""
 msgid "Unsubscribes from this %{quick_action_target}."
 msgstr ""
 
-msgid "Unsupported forecast type. Supported types: %{types}"
+msgid "Unsupported forecast type."
 msgstr ""
 
 msgid "Unsupported sort value."

@@ -1,0 +1,141 @@
+# Multi-stage Dockerfile for packaging gdk as executable docker image
+# Each stage can be executed in parallel and cached separately based on changes for respective component
+# Caches are cleaned for each stage to reduce the footprint of exported cache layers
+
+ARG BASE_TAG=master
+
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-slim-ruby-3.0-golang-1.19-rust-1.65-node-16.14-postgresql-12:rubygems-3.4-git-2.36-lfs-2.9-yarn-1.22 as gdk-base
+
+RUN set -eux; \
+    groupadd gdk -g 1000; \
+    useradd gdk -m -s /bin/bash -u 1000 -g 1000
+
+ENV GEM_HOME=/home/gdk/.gem \
+    GEM_PATH=/home/gdk/.gem \
+    PATH=$PATH:/home/gdk/.gem/bin
+
+WORKDIR /home/gdk
+
+# Reinstall libpcre2 and install postgresql
+# See: https://gitlab.com/gitlab-org/gitaly/-/issues/4085
+RUN set -eux; \
+    rm -f /usr/lib/libpcre2*; \
+    apt-get update && apt-get install -y --reinstall --no-install-recommends \
+    libpcre2-16-0 \
+    libpcre2-32-0 \
+    libpcre2-8-0 \
+    libpcre2-dev \
+    libpcre2-posix2 \
+    && apt-get install -y --no-install-recommends postgresql-12; \
+    apt-get autoclean -y
+
+# Clone GDK and install system dependencies, purge system git
+RUN set -eux; \
+    git -c advice.detachedHead=false clone --depth 1 --branch ${GDK_BRANCH_OR_TAG:-main} https://gitlab.com/gitlab-org/gitlab-development-kit.git; \
+    mkdir -p gitlab-development-kit/gitlab && chown -R gdk:gdk gitlab-development-kit; \
+    apt-get update && apt-get install -y --no-install-recommends $(grep -o '^[^#]*' gitlab-development-kit/packages_debian.txt); \
+    apt-get remove -y git git-lfs; \
+    apt-get autoclean -y && apt-get autoremove -y
+
+# Allow passwordless /etc/hosts update by gdk user
+RUN echo "gdk ALL=(ALL) NOPASSWD: /usr/bin/tee -a /etc/hosts" >> /etc/sudoers
+
+USER gdk
+WORKDIR /home/gdk/gitlab-development-kit
+
+# Install GDK and gem dependencies
+ARG GDK_VERSION
+ENV GDK_VERSION=${GDK_VERSION:-0.2.16}
+RUN set -eux; \
+    gem install gitlab-development-kit -v ${GDK_VERSION} && touch .gitlab-gdk-gem; \
+    bundle install; \
+    rm -rf ${GEM_HOME}/cache
+
+COPY --chown=gdk:gdk qa/gdk/gdk.yml ./
+
+# Build gitaly
+#
+COPY --chown=gdk:gdk GITALY_SERVER_VERSION ./gitlab/
+RUN set -eux; \
+    make gitaly-setup; \
+    rm -rf gitaly/_build/cache \
+           gitaly/_build/deps/git/source \
+           gitaly/_build/deps/libgit2/source \
+           gitaly/_build/deps \
+           gitaly/_build/intermediate \
+           ${GEM_HOME}/cache \
+    && go clean -cache
+
+# Build gitlab-shell
+#
+COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
+RUN set -eux; \
+    make gitlab-shell-setup; \
+    rm -rf ${GEM_HOME}/cache \
+    && go clean -cache
+
+# Build gitlab-workhorse
+#
+COPY --chown=gdk:gdk VERSION GITLAB_WORKHORSE_VERSION ./gitlab/
+COPY --chown=gdk:gdk workhorse ./gitlab/workhorse
+RUN set -eux; \
+    make gitlab-workhorse-setup \
+    && mv gitlab/workhorse ./; \
+    rm -rf ${GEM_HOME}/cache \
+    && go clean -cache
+
+# Build metrics-exporter
+#
+COPY --chown=gdk:gdk GITLAB_METRICS_EXPORTER_VERSION ./gitlab/
+RUN set -eux; \
+    make gitlab-metrics-exporter-setup; \
+    go clean -cache
+
+# Install gitlab gem dependencies
+#
+COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
+COPY --chown=gdk:gdk vendor/gems ./gitlab/vendor/gems
+RUN make .gitlab-bundle && rm -rf ${GEM_HOME}/cache
+
+# Install gitlab npm dependencies
+#
+COPY --chown=gdk:gdk package.json yarn.lock ./gitlab/
+COPY --chown=gdk:gdk scripts/frontend/postinstall.js ./gitlab/scripts/frontend/postinstall.js
+RUN make .gitlab-yarn && yarn cache clean
+
+# Executable gdk image
+#
+FROM registry.gitlab.com/gitlab-org/gitlab/gitlab-qa-gdk-base:${BASE_TAG} as gdk
+
+ENV GITLAB_LICENSE_MODE=test \
+    GDK_KILL_CONFIRM=true
+
+# Copy code
+COPY --chown=gdk:gdk ./ ./gitlab/
+COPY --chown=gdk:gdk qa/gdk/entrypoint ../
+
+# Create missing pids folder and sync compiled workhorse
+RUN mkdir -p gitlab/tmp/pids \
+    && rsync -a --remove-source-files workhorse/ gitlab/workhorse/
+
+# Set up GDK
+RUN make \
+    redis/redis.conf \
+    all \
+    && gdk kill \
+    && rm -rf ${GEM_HOME}/cache \
+           gitaly/_build/cache \
+           gitaly/_build/deps/git/source \
+           gitaly/_build/deps/libgit2/source \
+           gitaly/_build/deps \
+           gitaly/_build/intermediate \
+    && go clean -modcache \
+    && go clean -cache
+
+ENTRYPOINT [ "/home/gdk/entrypoint" ]
+CMD [ "gdk", "tail" ]
+
+HEALTHCHECK --interval=10s --timeout=1s --start-period=5s --retries=17 \
+    CMD curl --fail http://0.0.0.0:3000/users/sign_in || exit 1
+
+EXPOSE 3000

@@ -1348,6 +1348,31 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.buildForecast`
+
+WARNING:
+**Introduced** in 16.0.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `BuildForecastInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbuildforecastclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbuildforecastcontextid"></a>`contextId` | [`GlobalID!`](#globalid) | Global ID of the context for the forecast to pick an appropriate model. |
+| <a id="mutationbuildforecasthorizon"></a>`horizon` | [`Int!`](#int) | Number of data points to forecast. |
+| <a id="mutationbuildforecasttype"></a>`type` | [`String!`](#string) | Type of the forecast. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbuildforecastclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbuildforecasterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationbuildforecastforecast"></a>`forecast` | [`Forecast!`](#forecast) | Created forecast. |
+
 ### `Mutation.bulkDestroyJobArtifacts`
 
 WARNING:
@@ -3037,6 +3062,26 @@ Input type: `EnableDevopsAdoptionNamespaceInput`
 | <a id="mutationenabledevopsadoptionnamespaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenabledevopsadoptionnamespaceenablednamespace"></a>`enabledNamespace` | [`DevopsAdoptionEnabledNamespace`](#devopsadoptionenablednamespace) | Enabled namespace after mutation. |
 | <a id="mutationenabledevopsadoptionnamespaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.environmentDelete`
+
+Delete an environment.
+
+Input type: `EnvironmentDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentdeleteid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to Delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.environmentStop`
 
@@ -8931,6 +8976,29 @@ The edge type for [`ExternalStatusCheck`](#externalstatuscheck).
 | <a id="externalstatuscheckedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="externalstatuscheckedgenode"></a>`node` | [`ExternalStatusCheck`](#externalstatuscheck) | The item at the end of the edge. |
 
+#### `ForecastDatapointConnection`
+
+The connection type for [`ForecastDatapoint`](#forecastdatapoint).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="forecastdatapointconnectionedges"></a>`edges` | [`[ForecastDatapointEdge]`](#forecastdatapointedge) | A list of edges. |
+| <a id="forecastdatapointconnectionnodes"></a>`nodes` | [`[ForecastDatapoint]`](#forecastdatapoint) | A list of nodes. |
+| <a id="forecastdatapointconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ForecastDatapointEdge`
+
+The edge type for [`ForecastDatapoint`](#forecastdatapoint).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="forecastdatapointedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="forecastdatapointedgenode"></a>`node` | [`ForecastDatapoint`](#forecastdatapoint) | The item at the end of the edge. |
+
 #### `GroupConnection`
 
 The connection type for [`Group`](#group).
@@ -14672,6 +14740,28 @@ Describes an external status check.
 | <a id="fileuploadid"></a>`id` | [`UploadID!`](#uploadid) | Global ID of the upload. |
 | <a id="fileuploadpath"></a>`path` | [`String!`](#string) | Path of the upload. |
 | <a id="fileuploadsize"></a>`size` | [`Int!`](#int) | Size of the upload in bytes. |
+
+### `Forecast`
+
+Information about specific forecast created.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="forecaststatus"></a>`status` | [`ForecastStatus!`](#forecaststatus) | Status of the forecast. |
+| <a id="forecastvalues"></a>`values` | [`ForecastDatapointConnection`](#forecastdatapointconnection) | Actual forecast values. (see [Connections](#connections)) |
+
+### `ForecastDatapoint`
+
+Information about specific forecast datapoint.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="forecastdatapointdatapoint"></a>`datapoint` | [`String!`](#string) | Datapoint of the forecast. Usually a date. |
+| <a id="forecastdatapointvalue"></a>`value` | [`Float`](#float) | Value of the given datapoint. |
 
 ### `ForkDetails`
 
@@ -24443,6 +24533,15 @@ Event action.
 | <a id="eventactionpushed"></a>`PUSHED` | Pushed action. |
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
+
+### `ForecastStatus`
+
+List of statuses for forecasting model.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="forecaststatusready"></a>`READY` | Forecast is ready. |
+| <a id="forecaststatusunavailable"></a>`UNAVAILABLE` | Forecast is unavailable. |
 
 ### `GeoRegistryAction`
 

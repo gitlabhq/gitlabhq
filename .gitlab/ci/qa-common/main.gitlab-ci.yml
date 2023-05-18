@@ -28,7 +28,7 @@ stages:
 .ruby-image:
   # Because this pipeline template can be included directly in other projects,
   # image path and registry needs to be defined explicitly
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
 
 .qa-install:
   variables:
