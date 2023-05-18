@@ -7,7 +7,7 @@ require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
 
 # Give CI some extra time
-timeout = ENV['CI'] || ENV['CI_SERVER'] ? 45 : 10
+timeout = ENV['CI'] || ENV['CI_SERVER'] ? 30 : 10
 
 # Support running Capybara on a specific port to allow saving commonly used pages
 Capybara.server_port = ENV['CAPYBARA_PORT'] if ENV['CAPYBARA_PORT']

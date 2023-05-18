@@ -29269,7 +29269,22 @@ msgstr ""
 msgid "NamespaceLimits|Confirm limits change"
 msgstr ""
 
+msgid "NamespaceLimits|Exclude"
+msgstr ""
+
+msgid "NamespaceLimits|Exclude namespace"
+msgstr ""
+
+msgid "NamespaceLimits|Exclusion added successfully"
+msgstr ""
+
 msgid "NamespaceLimits|Free Tier"
+msgstr ""
+
+msgid "NamespaceLimits|Reason"
+msgstr ""
+
+msgid "NamespaceLimits|Reason for excluding this namespace"
 msgstr ""
 
 msgid "NamespaceLimits|Storage Phased Notification"
@@ -29282,6 +29297,9 @@ msgid "NamespaceLimits|This will limit the amount of notifications your namespac
 msgstr ""
 
 msgid "NamespaceLimits|Update limit"
+msgstr ""
+
+msgid "NamespaceLimits|You must select a namespace and add a reason for excluding it"
 msgstr ""
 
 msgid "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked project"

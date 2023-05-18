@@ -65,6 +65,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
 /.gitlab/ci/package-and-test/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/qa-common/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
 /.gitlab/ci/reports.gitlab-ci.yml @gl-quality/eng-prod @gitlab-com/gl-security/appsec
 /.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers

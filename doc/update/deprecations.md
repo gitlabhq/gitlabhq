@@ -737,6 +737,19 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 
 ## GitLab 16.5
 
+<div class="deprecation " data-milestone="16.5">
+
+### Adding non-LDAP synced members to a locked LDAP group is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213311).
+</div>
+
+Enabling the `ldap_settings_unlock_groups_by_owners` feature flag allowed non-LDAP synced users to be added to a locked LDAP group. This [feature](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) has always been disabled by default and behind a feature flag. We are removing this feature to keep continuity with our SAML integration, and because allowing non-synced group members defeats the "single source of truth" principle of using a directory service. Once this feature is removed, any LDAP group members that are not synced with LDAP will lose access to that group.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="16.5">
 
 ### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
