@@ -35,6 +35,7 @@ class UserPreference < ApplicationRecord
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
   attribute :render_whitespace_in_code, default: false
+  attribute :project_shortcut_buttons, default: true
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
 

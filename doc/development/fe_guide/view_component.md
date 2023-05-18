@@ -66,7 +66,7 @@ In its simplest form the banner component looks like this:
 ```haml
 = render Pajamas::BannerComponent.new(button_text: 'Learn more', button_link: example_path,
   svg_path: 'illustrations/example.svg') do |c|
-  - c.title { 'Hello world!' }
+  - c.with_title { 'Hello world!' }
   %p Content of your banner goes here...
 ```
 
@@ -75,11 +75,11 @@ instead of `svg_path` and the `primary_action` slot instead of `button_text` and
 
 ```haml
 = render Pajamas::BannerComponent.new do |c|
-  - c.illustration do
+  - c.with_illustration do
     = custom_icon('my_inline_svg')
-  - c.title do
+  - c.with_title do
     Hello world!
-  - c.primary_action do
+  - c.with_primary_action do
     = render 'my_button_in_a_partial'
 ```
 
@@ -133,12 +133,12 @@ The card has one mandatory `body` slot and optional `header` and `footer` slots:
 
 ```haml
 = render Pajamas::CardComponent.new do |c|
-  - c.header do
+  - c.with_header do
     I'm the header.
-  - c.body do
+  - c.with_body do
     %p Multiple line
     %p body content.
-  - c.footer do
+  - c.with_footer do
     Footer goes here.
 ```
 
@@ -164,9 +164,9 @@ For example:
 ```haml
 = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
   checkbox_options: { data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
-  = c.label do
+  - c.with_label do
     = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-  = c.help_text do
+  - c.with_help_text do
     = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
     = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 ```
@@ -219,11 +219,11 @@ Many of the settings pages use a layout where the title and description are on t
 
 ```haml
 = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-mb-6' }) do |c|
-  = c.title { _('Naming, visibility') }
-  = c.description do
+  - c.with_title { _('Naming, visibility') }
+  - c.with_description do
     = _('Update your group name, description, avatar, and visibility.')
     = link_to _('Learn more about groups.'), help_page_path('user/group/index')
-  = c.body do
+  - c.with_body do
     .form-group.gl-form-group
       = f.label :name, _('New group name')
       = f.text_field :name

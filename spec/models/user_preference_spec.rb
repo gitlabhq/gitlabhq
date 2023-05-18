@@ -225,6 +225,20 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
+  describe '#project_shortcut_buttons' do
+    it 'is set to true by default' do
+      pref = described_class.new
+
+      expect(pref.project_shortcut_buttons).to eq(true)
+    end
+
+    it 'returns assigned value' do
+      pref = described_class.new(project_shortcut_buttons: false)
+
+      expect(pref.project_shortcut_buttons).to eq(false)
+    end
+  end
+
   describe '#render_whitespace_in_code' do
     it 'is set to false by default' do
       pref = described_class.new

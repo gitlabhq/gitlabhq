@@ -67,10 +67,10 @@ For example:
 
     .form-group.gl-mb-3
       = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
-        = c.label do
+        - c.with_label do
           = _('Allow projects within this group to use Git LFS')
           = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
-        = c.help_text do
+        - c.with_help_text do
           = _('This setting can be overridden in each project.')
   ```
 

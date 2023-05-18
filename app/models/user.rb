@@ -361,6 +361,7 @@ class User < ApplicationRecord
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
     :setup_for_company, :setup_for_company=,
+    :project_shortcut_buttons, :project_shortcut_buttons=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,

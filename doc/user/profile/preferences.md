@@ -129,6 +129,8 @@ You can choose between 2 options:
 The **Project overview content** setting allows you to choose what content you want to
 see on a project's home page.
 
+If **Files and Readme** is selected, you can show or hide the shortcut buttons above the file list on the project overview with the **Show shortcut buttons above files on project overview** setting.
+
 ### Tab width
 
 You can set the displayed width of tab characters across various parts of

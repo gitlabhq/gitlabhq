@@ -2,6 +2,7 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
+- has_project_shortcut_buttons = !current_user || current_user.project_shortcut_buttons
 - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
@@ -18,7 +19,7 @@
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
-  - if is_project_overview
+  - if is_project_overview && has_project_shortcut_buttons
     .project-buttons.gl-mb-5.js-show-on-project-root{ data: { qa_selector: 'project_buttons' } }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout), project_buttons: true
 

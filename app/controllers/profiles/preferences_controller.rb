@@ -54,6 +54,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :sourcegraph_enabled,
       :gitpod_enabled,
       :render_whitespace_in_code,
+      :project_shortcut_buttons,
       :markdown_surround_selection,
       :markdown_automatic_lists,
       :use_new_navigation

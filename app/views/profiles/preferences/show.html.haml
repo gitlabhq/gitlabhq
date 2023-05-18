@@ -90,6 +90,8 @@
         .form-text.text-muted
           = s_('Preferences|Choose what content you want to see on a project’s overview page.')
       .form-group
+        = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
+      .form-group
         = f.gitlab_ui_checkbox_component :render_whitespace_in_code, s_('Preferences|Render whitespace characters in the Web IDE')
       .form-group
         = f.gitlab_ui_checkbox_component :show_whitespace_in_diffs, s_('Preferences|Show whitespace changes in diffs')

@@ -8760,7 +8760,7 @@ msgstr ""
 msgid "Cannot create the abuse report. The user has been deleted."
 msgstr ""
 
-msgid "Cannot create the abuse report. This user has been blocked."
+msgid "Cannot create the abuse report. This user has been banned."
 msgstr ""
 
 msgid "Cannot delete %{profile_name} referenced in security policy"
@@ -33955,6 +33955,9 @@ msgstr ""
 msgid "Preferences|Show one file at a time on merge request's Changes tab"
 msgstr ""
 
+msgid "Preferences|Show shortcut buttons above files on project overview"
+msgstr ""
+
 msgid "Preferences|Show whitespace changes in diffs"
 msgstr ""
 
@@ -48686,6 +48689,9 @@ msgid "User OAuth applications"
 msgstr ""
 
 msgid "User Settings"
+msgstr ""
+
+msgid "User Status"
 msgstr ""
 
 msgid "User and IP rate limits"

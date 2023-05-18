@@ -192,6 +192,18 @@ module UsersHelper
     }
   end
 
+  def moderation_status(user)
+    return unless user.present?
+
+    if user.banned?
+      _('Banned')
+    elsif user.blocked?
+      _('Blocked')
+    else
+      _('Active')
+    end
+  end
+
   private
 
   def admin_users_paths

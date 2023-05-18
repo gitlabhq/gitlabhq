@@ -561,4 +561,36 @@ RSpec.describe UsersHelper do
       end
     end
   end
+
+  describe '#moderation_status', feature_category: :instance_resiliency do
+    let(:user) { create(:user) }
+
+    subject { moderation_status(user) }
+
+    context 'when user is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when a user is banned' do
+      before do
+        user.ban!
+      end
+
+      it { is_expected.to eq('Banned') }
+    end
+
+    context 'when a user is blocked' do
+      before do
+        user.block!
+      end
+
+      it { is_expected.to eq('Blocked') }
+    end
+
+    context 'when a user is active' do
+      it { is_expected.to eq('Active') }
+    end
+  end
 end

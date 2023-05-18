@@ -1437,6 +1437,8 @@
 
 .qa:rules:package-and-test-ee:
   rules:
+    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
+      when: never
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
 
@@ -1456,6 +1458,12 @@
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
+      variables:
+        SKIP_REPORT_IN_ISSUES: "false"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false"
 
 .qa:rules:e2e:test-on-gdk:
   rules:
@@ -1487,6 +1495,7 @@
 .qa:rules:package-and-test-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
         SKIP_REPORT_IN_ISSUES: "false"
