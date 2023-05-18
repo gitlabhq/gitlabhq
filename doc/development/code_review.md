@@ -576,8 +576,7 @@ WARNING:
   messy commit history, it will be more efficient to squash commits instead of
   circling back with the author about that. Otherwise, if the MR only has a few commits, we'll
   be respecting the author's setting by not squashing them.
-- Start a new merge request pipeline with the `Run pipeline` button in the merge
-  request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).
+- Go to the merge request's **Pipelines** tab, and select **Run pipeline**. Then, on the **Overview** tab, enable **Auto-merge**.
   Note that:
   - If **[the default branch is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
     do not merge the merge request** except for
@@ -587,7 +586,7 @@ WARNING:
   - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 6 hours ago**, and **finished less than 2 hours ago**, you
     may merge without starting a new pipeline as the merge request is close
     enough to `main`.
-- When you set the MR to "Merge When Pipeline Succeeds", you should take over
+- When you set the MR to auto-merge, you should take over
   subsequent revisions for anything that would be spotted after that.
 - For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge) set,
   the squashed commit's default commit message is taken from the merge request title.
@@ -597,7 +596,7 @@ Thanks to **merged results pipelines**, authors no longer have to rebase their
 branch as frequently anymore (only when there are conflicts) because the Merge
 Results Pipeline already incorporate the latest changes from `main`.
 This results in faster review/merge cycles because maintainers don't have to ask
-for a final rebase: instead, they only have to start a MR pipeline and set MWPS.
+for a final rebase: instead, they only have to start a MR pipeline and set auto-merge.
 This step brings us very close to the actual Merge Trains feature by testing the
 Merge Results against the latest `main` at the time of the pipeline creation.
 

@@ -300,7 +300,7 @@ For a software developer working in a team:
 1. Your manager:
    1. Pushes a commit with their final review.
    1. [Approves the merge request](approvals/index.md).
-   1. Sets it to [merge when pipeline succeeds](merge_when_pipeline_succeeds.md).
+   1. Sets it to [auto-merge](merge_when_pipeline_succeeds.md) (formerly **Merge when pipeline succeeds**).
 1. Your changes get deployed to production with [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
 

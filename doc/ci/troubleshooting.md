@@ -396,7 +396,7 @@ Earlier jobs are already canceled by a periodic background worker (`StuckCiJobsW
 The following commands are run in the [rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions.  
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
 We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 ### Cancel stuck pending pipelines

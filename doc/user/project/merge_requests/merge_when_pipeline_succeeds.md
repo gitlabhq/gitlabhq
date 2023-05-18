@@ -9,23 +9,23 @@ type: reference, concepts
 
 > **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 
-NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** become **Set to auto-merge**.
-
 If you review a merge request and it's ready to merge, but the pipeline hasn't
-completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't
+completed yet, you can set it to auto-merge. You don't
 have to remember later to merge the work manually:
 
-![Enable MWPS on a merge request](img/mwps_v15_4.png)
+![Auto-merge a merge request](img/mwps_v15_4.png)
+
+NOTE:
+[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** are renamed **Set to auto-merge**.
 
 If the pipeline succeeds, the merge request is merged. If the pipeline fails, the
 author can either retry any failed jobs, or push new commits to fix the failure:
 
 - If a retried job succeeds on the second try, the merge request is merged.
-- If new commits are added to the merge request, GitLab cancels the MWPS request
+- If new commits are added to the merge request, GitLab cancels the request
   to ensure the new changes are reviewed before merge.
 
-## Set a merge request to MWPS
+## Auto-merge a merge request
 
 Prerequisites:
 
@@ -44,15 +44,15 @@ To do this from the GitLab user interface:
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
-1. Select **Merge when pipeline succeeds**.
+1. Select **Auto-merge**.
 
-If a new comment is added to the merge request after you select **Merge when pipeline succeeds**,
+If a new comment is added to the merge request after you select **Auto-merge**,
 but before the pipeline completes, GitLab blocks the merge until you
 resolve all existing threads.
 
 ## Cancel an auto-merge
 
-If a merge request is set to MWPS, you can cancel it.
+If a merge request is set to auto-merge, you can cancel it.
 
 Prerequisites:
 

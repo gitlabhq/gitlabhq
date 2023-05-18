@@ -216,6 +216,12 @@ You can find reason the merge request was dropped from the merge train in the sy
 notes. Check the **Activity** section in the **Overview** tab for a message similar to:
 `User removed this merge request from the merge train because ...`
 
+### Cannot use auto-merge
+
+You cannot use [auto-merge](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+(formerly **Merge when pipeline succeeds**) to skip the merge train, when merge trains are enabled.
+See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more information.
+
 ### Cannot retry merge train pipeline cannot
 
 When a merge train pipeline fails, the merge request is dropped from the train and the pipeline can't be retried.

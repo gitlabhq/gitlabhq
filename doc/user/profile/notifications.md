@@ -263,7 +263,7 @@ epics:
 | Issue | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
 | Issue | Reopened | Subscribers and participants. |
 | Merge Request | Closed | Subscribers and participants. |
-| Merge Request | Conflict | Author and any user that has set the merge request to automatically merge when pipeline succeeds. |
+| Merge Request | Conflict | Author and any user that has set the merge request to auto-merge. |
 | Merge Request | [Marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
 | Merge Request | Merged | Subscribers and participants. |
 | Merge Request | Merged when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |

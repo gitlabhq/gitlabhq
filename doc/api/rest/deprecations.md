@@ -26,7 +26,7 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/3
 
 The `merged_by` field in the [merge request API](../merge_requests.md#list-merge-requests)
 has been deprecated in favor of the `merge_user` field which more correctly identifies who merged a merge request when
-performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge.
+performing actions (set to auto-merge, add to merge train) other than a simple merge.
 
 API users are encouraged to use the new `merge_user` field instead. The `merged_by` field will be removed in v5 of the GitLab REST API.
 

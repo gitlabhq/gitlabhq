@@ -45,7 +45,7 @@ disabled. If the pipeline fails to deploy, the deployment information is hidden.
 
 For more information, [read about pipelines](../../../ci/pipelines/index.md).
 
-## Merge when pipeline succeeds (MWPS)
+## Set auto-merge
 
 Set a merge request that looks ready to merge to
 [merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).

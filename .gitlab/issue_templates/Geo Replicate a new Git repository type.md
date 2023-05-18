@@ -511,13 +511,13 @@ That's all of the required database changes.
   FactoryBot.modify do
     factory :cool_widget do
       trait :verification_succeeded do
-          with_file
+          repository
           verification_checksum { 'abc' }
           verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
       end
 
       trait :verification_failed do
-          with_file
+          repository
           verification_failure { 'Could not calculate the checksum' }
           verification_state { CoolWidget.verification_state_value(:verification_failed) }
       end
