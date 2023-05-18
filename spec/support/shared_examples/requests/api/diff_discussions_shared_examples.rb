@@ -18,10 +18,12 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
     it "returns a discussion by id" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{diff_note.discussion_id}", user)
 
+      position = diff_note.position.to_h.except(:ignore_whitespace_change)
+
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(diff_note.discussion_id)
       expect(json_response['notes'].first['body']).to eq(diff_note.note)
-      expect(json_response['notes'].first['position']).to eq(diff_note.position.to_h.stringify_keys)
+      expect(json_response['notes'].first['position']).to eq(position.stringify_keys)
       expect(json_response['notes'].first['line_range']).to eq(nil)
     end
   end
@@ -39,7 +41,7 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
         }
       }
 
-      position = diff_note.position.to_h.merge({ line_range: line_range })
+      position = diff_note.position.to_h.merge({ line_range: line_range }).except(:ignore_whitespace_change)
 
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
         params: { body: 'hi!', position: position }

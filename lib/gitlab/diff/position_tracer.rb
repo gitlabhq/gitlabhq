@@ -21,6 +21,7 @@ module Gitlab
         return unless old_diff_refs&.complete? && new_diff_refs&.complete?
         return unless old_position.diff_refs == old_diff_refs
 
+        @ignore_whitespace_change = old_position.ignore_whitespace_change
         strategy = old_position.on_text? ? LineStrategy : ImageStrategy
 
         strategy.new(self).trace(old_position)
@@ -50,7 +51,7 @@ module Gitlab
 
       def compare(start_sha, head_sha, straight: false)
         compare = CompareService.new(project, head_sha).execute(project, start_sha, straight: straight)
-        compare.diffs(paths: paths, expanded: true)
+        compare.diffs(paths: paths, expanded: true, ignore_whitespace_change: @ignore_whitespace_change)
       end
     end
   end

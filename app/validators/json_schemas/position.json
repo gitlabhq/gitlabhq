@@ -146,6 +146,12 @@
         { "type": "integer" },
         { "type": "string", "maxLength": 10 }
       ]
+    },
+    "ignore_whitespace_change": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" }
+      ]
     }
   }
 }

@@ -73,7 +73,7 @@ RSpec.describe QA::Page::Element do
       subject { described_class.new(:something, /link_to 'something'/) }
 
       it 'has an attribute[pattern] of the pattern' do
-        expect(subject.attributes[:pattern]).to eq(/link_to 'something'/)
+        expect(subject.attributes[:pattern]).to eq /link_to 'something'/
       end
 
       it 'is not required by default' do
@@ -98,7 +98,7 @@ RSpec.describe QA::Page::Element do
       subject { described_class.new(:something, /link_to 'something_else_entirely'/, required: true) }
 
       it 'has an attribute[pattern] of the passed pattern' do
-        expect(subject.attributes[:pattern]).to eq(/link_to 'something_else_entirely'/)
+        expect(subject.attributes[:pattern]).to eq /link_to 'something_else_entirely'/
       end
 
       it 'is required' do
@@ -116,10 +116,6 @@ RSpec.describe QA::Page::Element do
 
     it 'properly translates to a data-qa-selector' do
       expect(subject.selector_css).to include(%q([data-qa-selector="my_element"]))
-    end
-
-    it 'properly translates to a data-testid' do
-      expect(subject.selector_css).to include(%q([data-testid="my_element"]))
     end
 
     context 'additional selectors' do

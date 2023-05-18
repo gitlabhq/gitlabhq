@@ -577,6 +577,7 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
   const postData = getNoteFormData({
     commit: state.commit,
     note,
+    showWhitespace: state.showWhitespace,
     ...formData,
   });
 

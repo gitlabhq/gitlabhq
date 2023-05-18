@@ -140,6 +140,7 @@ describe('DiffsStoreUtils', () => {
         old_line: options.noteTargetLine.old_line,
         new_line: options.noteTargetLine.new_line,
         line_range: options.lineRange,
+        ignore_whitespace_change: true,
       });
 
       const postData = {
@@ -198,6 +199,7 @@ describe('DiffsStoreUtils', () => {
         position_type: TEXT_DIFF_POSITION_TYPE,
         old_line: options.noteTargetLine.old_line,
         new_line: options.noteTargetLine.new_line,
+        ignore_whitespace_change: true,
       });
 
       const postData = {

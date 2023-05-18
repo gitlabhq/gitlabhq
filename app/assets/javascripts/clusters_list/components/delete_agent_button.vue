@@ -39,11 +39,6 @@ export default {
       required: false,
       type: String,
     },
-    maxAgents: {
-      default: null,
-      required: false,
-      type: Number,
-    },
   },
   data() {
     return {
@@ -64,8 +59,6 @@ export default {
     getAgentsQueryVariables() {
       return {
         defaultBranchName: this.defaultBranchName,
-        first: this.maxAgents,
-        last: null,
         projectPath: this.projectPath,
       };
     },

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'delegates AI request to Workhorse' do |provider_flag|
+RSpec.shared_examples 'behind AI related feature flags' do |provider_flag|
   context "when #{provider_flag} is disabled" do
     before do
       stub_feature_flags(provider_flag => false)
@@ -24,7 +24,9 @@ RSpec.shared_examples 'delegates AI request to Workhorse' do |provider_flag|
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
+end
 
+RSpec.shared_examples 'delegates AI request to Workhorse' do
   it 'responds with Workhorse send-url headers' do
     post api(url, current_user), params: input_params
 

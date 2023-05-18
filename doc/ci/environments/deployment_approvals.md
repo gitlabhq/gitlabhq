@@ -119,6 +119,41 @@ NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
 
+#### Migrate to multiple approval rules
+
+You can migrate a protected environment from unified approval rules to multiple
+approval rules. Unified approval rules allow all entities that can deploy to an
+environment to approve deployment jobs. To migrate to multiple approval rules,
+create a new approval rule for each entity allowed to deploy to the environment.
+
+To migrate with the UI:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Environment** list, select your environment.
+1. For each entity allowed to deploy to the environment:
+   1. Select **Add approval rules**.
+   1. In the modal window, select which entity is allowed to approve the
+      deployment job.
+   1. Enter the number of required approvals.
+   1. Select **Save**.
+
+Each deployment requires the specified number of approvals from each entity.
+
+For example, the `Production` environment below requires five total approvals,
+and allows deployments from only the group `Very Important Group` and the user
+`Administrator`:
+
+![unified approval rules](img/unified_approval_rules_v16_0.png)
+
+To migrate, create rules for the `Very Important Group` and `Administrator`. To
+preserve the number of required approvals, set the number of required approvals
+for `Very Important Group` to four and `Administrator` to one. The new rules
+require `Administrator` to approve every deployment job in `Production`.
+
+![multiple approval rules](img/multiple_approval_rules_v16_0.png)
+
 ### Allow self-approval **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.

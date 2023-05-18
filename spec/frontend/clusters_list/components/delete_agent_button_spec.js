@@ -8,7 +8,7 @@ import deleteAgentMutation from '~/clusters_list/graphql/mutations/delete_agent.
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
-import { MAX_LIST_COUNT, DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
+import { DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getAgentResponse, mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
 
@@ -16,7 +16,6 @@ Vue.use(VueApollo);
 
 const projectPath = 'path/to/project';
 const defaultBranchName = 'default';
-const maxAgents = MAX_LIST_COUNT;
 const agent = {
   id: 'agent-id',
   name: 'agent-name',
@@ -53,8 +52,6 @@ describe('DeleteAgentButton', () => {
       variables: {
         projectPath,
         defaultBranchName,
-        first: maxAgents,
-        last: null,
       },
       data: getAgentResponse.data,
     });
@@ -71,7 +68,6 @@ describe('DeleteAgentButton', () => {
     };
     const propsData = {
       defaultBranchName,
-      maxAgents,
       agent,
     };
 

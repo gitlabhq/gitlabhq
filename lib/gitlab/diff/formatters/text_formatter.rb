@@ -12,6 +12,7 @@ module Gitlab
           @old_line = attrs[:old_line]
           @new_line = attrs[:new_line]
           @line_range = attrs[:line_range]
+          @ignore_whitespace_change = !!attrs[:ignore_whitespace_change]
 
           super(attrs)
         end
@@ -25,7 +26,8 @@ module Gitlab
         end
 
         def to_h
-          super.merge(old_line: old_line, new_line: new_line, line_range: line_range)
+          super.merge(old_line: old_line, new_line: new_line, line_range: line_range,
+            ignore_whitespace_change: ignore_whitespace_change)
         end
 
         def line_age

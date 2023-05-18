@@ -140,6 +140,7 @@ export function getFormData(params) {
     linePosition,
     positionType,
     lineRange,
+    showWhitespace,
   } = params;
 
   const position = JSON.stringify({
@@ -156,6 +157,7 @@ export function getFormData(params) {
     width: params.width,
     height: params.height,
     line_range: lineRange,
+    ignore_whitespace_change: !showWhitespace,
   });
 
   const postData = {

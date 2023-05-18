@@ -13,7 +13,7 @@ If you review a merge request and it's ready to merge, but the pipeline hasn't
 completed yet, you can set it to auto-merge. You don't
 have to remember later to merge the work manually:
 
-![Auto-merge a merge request](img/mwps_v15_4.png)
+![Auto-merge is ready](img/auto_merge_ready_v16_0.png)
 
 NOTE:
 [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** are renamed **Set to auto-merge**.

@@ -1,7 +1,7 @@
 import { __, s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-export const MAX_LIST_COUNT = 25;
+export const MAX_LIST_COUNT = 20;
 export const INSTALL_AGENT_MODAL_ID = 'install-agent';
 export const ACTIVE_CONNECTION_TIME = 480000;
 export const NAME_MAX_LENGTH = 50;
@@ -86,6 +86,8 @@ export const I18N_AGENT_TABLE = {
   viewDocsText: s__('ClusterAgents|How to update an agent?'),
   defaultConfigText: s__('ClusterAgents|Default configuration'),
   defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
+  sharedBadgeText: s__('ClusterAgents|shared'),
+  externalConfigText: s__('ClusterAgents|External project'),
 };
 
 export const I18N_AGENT_TOKEN = {

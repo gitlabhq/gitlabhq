@@ -14,6 +14,7 @@ module Gitlab
           @y = attrs[:y]
           @width = attrs[:width]
           @height = attrs[:height]
+          @ignore_whitespace_change = false
 
           super(attrs)
         end

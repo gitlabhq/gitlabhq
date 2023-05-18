@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     class TablesTruncate
-      GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_geo].freeze
+      GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_geo gitlab_embedding].freeze
 
       def initialize(database_name:, min_batch_size:, logger: nil, until_table: nil, dry_run: false)
         @database_name = database_name

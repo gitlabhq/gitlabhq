@@ -41,7 +41,7 @@ for environments. If it's the first time the branch is deployed, the link
 returns a `404` error until done. During the deployment, the stop button is
 disabled. If the pipeline fails to deploy, the deployment information is hidden.
 
-![Merge request pipeline](img/merge_request_pipeline.png)
+![Merge request pipeline](img/post_merge_pipeline_v16_0.png)
 
 For more information, [read about pipelines](../../../ci/pipelines/index.md).
 

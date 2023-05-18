@@ -153,46 +153,32 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/packages/npm/-/package/*package_name/dist-tags' do
-    let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags") }
-
-    subject { get(url) }
-
-    it_behaves_like 'returning response status', :not_found
+    it_behaves_like 'handling get dist tags requests', scope: :group do
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags") }
+    end
   end
 
   describe 'PUT /api/v4/packages/npm/-/package/*package_name/dist-tags/:tag' do
-    let(:tag_name) { 'test' }
-    let(:headers) { build_token_auth_header(personal_access_token.token) }
-    let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
-
-    subject { put(url, headers: headers) }
-
-    it_behaves_like 'returning response status', :not_found
+    it_behaves_like 'handling create dist tag requests', scope: :group do
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
   end
 
   describe 'DELETE /api/v4/packages/npm/-/package/*package_name/dist-tags/:tag' do
-    let(:tag_name) { 'test' }
-    let(:headers) { build_token_auth_header(personal_access_token.token) }
-    let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
-
-    subject { delete(url, headers: headers) }
-
-    it_behaves_like 'returning response status', :not_found
+    it_behaves_like 'handling delete dist tag requests', scope: :group do
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
   end
 
   describe 'POST /api/v4/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk' do
-    let(:url) { api("/groups/#{group.id}/-/packages/npm/-/npm/v1/security/advisories/bulk") }
-
-    subject { post(url) }
-
-    it_behaves_like 'returning response status', :not_found
+    it_behaves_like 'handling audit request', path: 'advisories/bulk', scope: :group do
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/npm/v1/security/advisories/bulk") }
+    end
   end
 
   describe 'POST /api/v4/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick' do
-    let(:url) { api("/groups/#{group.id}/-/packages/npm/-/npm/v1/security/audits/quick") }
-
-    subject { post(url) }
-
-    it_behaves_like 'returning response status', :not_found
+    it_behaves_like 'handling audit request', path: 'audits/quick', scope: :group do
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/npm/v1/security/audits/quick") }
+    end
   end
 end

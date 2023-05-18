@@ -122,7 +122,7 @@ export default {
         v-if="isNotSastIACTemporaryHack"
         :class="statusClasses"
         data-testid="feature-status"
-        :data-qa-feature="`${feature.type}_${hasEnabledStatus}_status`"
+        :data-qa-selector="`${feature.type}_status`"
       >
         <feature-card-badge
           v-if="hasBadge"
@@ -164,7 +164,7 @@ export default {
         :href="feature.configurationPath"
         variant="confirm"
         :category="configurationButton.category"
-        :data-testid="`${feature.type}_enable_button`"
+        :data-qa-selector="`${feature.type}_enable_button`"
         class="gl-mt-5"
       >
         {{ configurationButton.text }}
@@ -176,7 +176,7 @@ export default {
         variant="confirm"
         :category="manageViaMrButtonCategory"
         class="gl-mt-5"
-        :data-testid="`${feature.type}_mr_button`"
+        :data-qa-selector="`${feature.type}_mr_button`"
         @error="onError"
       />
 

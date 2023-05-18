@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Diff::PositionTracer do
     let(:project) { double }
     let(:old_diff_refs) { diff_refs }
     let(:new_diff_refs) { diff_refs }
-    let(:position) { double(on_text?: on_text?, diff_refs: diff_refs) }
+    let(:position) { double(on_text?: on_text?, diff_refs: diff_refs, ignore_whitespace_change: false) }
     let(:tracer) { double }
 
     context 'position is on text' do

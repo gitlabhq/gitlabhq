@@ -160,7 +160,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             new_path: file_path,
             old_path: file_path,
             position_type: 'text',
-            line_range: nil
+            line_range: nil,
+            ignore_whitespace_change: false
           })
           expect(note.note)
             .to eq <<~NOTE

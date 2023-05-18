@@ -449,7 +449,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
         project.send("add_#{user_role}", user) if user_role
         project.update!(visibility: visibility.to_s)
 
-        if scope == :instance
+        if %i[instance group].include?(scope)
           allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
         else
           allow_fetch_cascade_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
@@ -459,7 +459,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
       example_name = "#{params[:expected_result]} audit request"
       status = params[:expected_status]
 
-      if scope == :instance && params[:expected_status] != :unauthorized
+      if %i[instance group].include?(scope) && params[:expected_status] != :unauthorized
         if params[:request_forward]
           example_name = 'redirect audit request'
           status = :temporary_redirect
@@ -637,6 +637,8 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
         example_name = 'reject package tags request'
         status = :not_found
       end
+
+      status = :not_found if scope == :group && params[:package_name_type] == :non_existing
 
       it_behaves_like example_name, status: status
     end
@@ -853,6 +855,8 @@ RSpec.shared_examples 'handling different package names, visibilities and user r
       # are rejected with unauthorized status
       status = params[:auth].nil? ? :unauthorized : :not_found
     end
+
+    status = :not_found if scope == :group && params[:package_name_type] == :non_existing && params[:auth].present?
 
     it_behaves_like example_name, status: status
   end

@@ -1,4 +1,4 @@
-import { GlLink, GlIcon } from '@gitlab/ui';
+import { GlLink, GlIcon, GlBadge, GlTable, GlPagination } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
@@ -17,6 +17,7 @@ const provideData = {
 };
 const defaultProps = {
   agents: clusterAgents,
+  maxAgents: null,
 };
 
 const DeleteAgentButtonStub = stubComponent(DeleteAgentButton, {
@@ -39,7 +40,11 @@ describe('AgentTable', () => {
   const findAgentId = (at) => wrapper.findAllByTestId('cluster-agent-id').at(at);
   const findConfiguration = (at) =>
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
-  const findDeleteAgentButton = () => wrapper.findAllComponents(DeleteAgentButton);
+  const findDeleteAgentButtons = () => wrapper.findAllComponents(DeleteAgentButton);
+  const findTableRow = (at) => wrapper.findComponent(GlTable).find('tbody').findAll('tr').at(at);
+  const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
+  const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
+  const findPagination = () => wrapper.findComponent(GlPagination);
 
   const createWrapper = ({ provide = provideData, propsData = defaultProps } = {}) => {
     wrapper = mountExtended(AgentTable, {
@@ -64,6 +69,11 @@ describe('AgentTable', () => {
       `('displays agent link for $agentName', ({ agentName, link, lineNumber }) => {
         expect(findAgentLink(lineNumber).text()).toBe(agentName);
         expect(findAgentLink(lineNumber).attributes('href')).toBe(link);
+        expect(findSharedBadgeByRow(lineNumber).exists()).toBe(false);
+      });
+
+      it('displays "shared" badge if the agent is shared', () => {
+        expect(findSharedBadgeByRow(9).text()).toBe(I18N_AGENT_TABLE.sharedBadgeText);
       });
 
       it.each`
@@ -116,8 +126,9 @@ describe('AgentTable', () => {
         },
       );
 
-      it('displays actions menu for each agent', () => {
-        expect(findDeleteAgentButton()).toHaveLength(clusterAgents.length);
+      it('displays actions menu for each agent except the shared agents', () => {
+        expect(findDeleteAgentButtons()).toHaveLength(clusterAgents.length - 1);
+        expect(findDeleteAgentButtonByRow(9).exists()).toBe(false);
       });
     });
 
@@ -132,6 +143,7 @@ describe('AgentTable', () => {
       ${6}         | ${'14.8.0'}  | ${'15.0.0'}     | ${false}        | ${true}         | ${outdatedTitle}
       ${7}         | ${'14.8.0'}  | ${'15.0.0-rc1'} | ${false}        | ${true}         | ${outdatedTitle}
       ${8}         | ${'14.8.0'}  | ${'14.8.10'}    | ${false}        | ${false}        | ${''}
+      ${9}         | ${''}        | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
     `(
       'when agent version is "$agentVersion", KAS version is "$kasVersion" and version mismatch is "$versionMismatch"',
       ({ agentMockIdx, agentVersion, kasVersion, versionMismatch, versionOutdated, title }) => {
@@ -181,5 +193,32 @@ describe('AgentTable', () => {
         }
       },
     );
+
+    describe('pagination', () => {
+      it('should not render pagination buttons when there are no additional pages', () => {
+        createWrapper();
+
+        expect(findPagination().exists()).toBe(false);
+      });
+
+      it('should render pagination buttons when there are additional pages', () => {
+        createWrapper({
+          propsData: { agents: [...clusterAgents, ...clusterAgents, ...clusterAgents] },
+        });
+
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      it('should not render pagination buttons when maxAgents is passed from the parent component', () => {
+        createWrapper({
+          propsData: {
+            agents: [...clusterAgents, ...clusterAgents, ...clusterAgents],
+            maxAgents: 6,
+          },
+        });
+
+        expect(findPagination().exists()).toBe(false);
+      });
+    });
   });
 });

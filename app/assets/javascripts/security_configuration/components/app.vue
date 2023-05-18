@@ -164,7 +164,7 @@ export default {
 
     <gl-tabs
       content-class="gl-pt-0"
-      data-testid="security-configuration-container"
+      data-qa-selector="security_configuration_container"
       sync-active-tab-with-query-params
       lazy
     >
@@ -196,9 +196,12 @@ export default {
               {{ $options.i18n.description }}
             </p>
             <p v-if="canViewCiHistory">
-              <gl-link data-testid="security-view-history-link" :href="gitlabCiHistoryPath">{{
-                $options.i18n.configurationHistory
-              }}</gl-link>
+              <gl-link
+                data-testid="security-view-history-link"
+                data-qa-selector="security_configuration_history_link"
+                :href="gitlabCiHistoryPath"
+                >{{ $options.i18n.configurationHistory }}</gl-link
+              >
             </p>
           </template>
 

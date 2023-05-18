@@ -1,9 +1,9 @@
 <script>
-import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlBanner } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlBanner } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import { MAX_LIST_COUNT, AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
+import { AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
@@ -27,7 +27,6 @@ export default {
         return {
           defaultBranchName: this.defaultBranchName,
           projectPath: this.projectPath,
-          ...this.cursor,
         };
       },
       update(data) {
@@ -37,13 +36,15 @@ export default {
       result() {
         this.emitAgentsLoaded();
       },
+      error() {
+        this.queryErrored = true;
+      },
     },
   },
   components: {
     AgentEmptyState,
     AgentTable,
     GlAlert,
-    GlKeysetPagination,
     GlLoadingIcon,
     GlBanner,
     LocalStorageSync,
@@ -69,40 +70,40 @@ export default {
   },
   data() {
     return {
-      cursor: {
-        first: this.limit ? this.limit : MAX_LIST_COUNT,
-        last: null,
-      },
       folderList: {},
       feedbackBannerDismissed: false,
+      queryErrored: false,
     };
   },
   computed: {
     agentList() {
-      let list = this.agents?.project?.clusterAgents?.nodes;
+      const localAgents = this.agents?.project?.clusterAgents?.nodes || [];
+      const sharedAgents = [
+        ...(this.agents?.project?.ciAccessAuthorizedAgents?.nodes || []),
+        ...(this.agents?.project?.userAccessAuthorizedAgents?.nodes || []),
+      ].map((node) => {
+        return {
+          ...node.agent,
+          isShared: true,
+        };
+      });
 
-      if (list) {
-        list = list.map((agent) => {
+      const filteredList = [...localAgents, ...sharedAgents]
+        .filter((node, index, list) => {
+          return node && index === list.findIndex((agent) => agent.id === node.id);
+        })
+        .map((agent) => {
           const configFolder = this.folderList[agent.name];
           const lastContact = getAgentLastContact(agent?.tokens?.nodes);
           const status = getAgentStatus(lastContact);
           return { ...agent, configFolder, lastContact, status };
-        });
-      }
+        })
+        .sort((a, b) => b.lastUsedAt - a.lastUsedAt);
 
-      return list;
-    },
-    agentPageInfo() {
-      return this.agents?.project?.clusterAgents?.pageInfo || {};
+      return filteredList;
     },
     isLoading() {
       return this.$apollo.queries.agents.loading;
-    },
-    showPagination() {
-      return !this.limit && (this.agentPageInfo.hasPreviousPage || this.agentPageInfo.hasNextPage);
-    },
-    treePageInfo() {
-      return this.agents?.project?.repository?.tree?.trees?.pageInfo || {};
     },
     feedbackBannerEnabled() {
       return this.glFeatures.showGitlabAgentFeedback;
@@ -112,22 +113,6 @@ export default {
     },
   },
   methods: {
-    nextPage() {
-      this.cursor = {
-        first: MAX_LIST_COUNT,
-        last: null,
-        afterAgent: this.agentPageInfo.endCursor,
-        afterTree: this.treePageInfo.endCursor,
-      };
-    },
-    prevPage() {
-      this.cursor = {
-        first: null,
-        last: MAX_LIST_COUNT,
-        beforeAgent: this.agentPageInfo.startCursor,
-        beforeTree: this.treePageInfo.endCursor,
-      };
-    },
     updateTreeList(data) {
       const configFolders = data?.project?.repository?.tree?.trees?.nodes;
 
@@ -138,8 +123,7 @@ export default {
       }
     },
     emitAgentsLoaded() {
-      const count = this.agents?.project?.clusterAgents?.count;
-      this.$emit('onAgentsLoad', count);
+      this.$emit('onAgentsLoad', this.agentList?.length);
     },
     handleBannerClose() {
       this.feedbackBannerDismissed = true;
@@ -151,7 +135,7 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" size="lg" />
 
-  <section v-else-if="agentList">
+  <section v-else-if="!queryErrored">
     <div v-if="agentList.length">
       <local-storage-sync
         v-if="feedbackBannerEnabled"
@@ -174,12 +158,8 @@ export default {
       <agent-table
         :agents="agentList"
         :default-branch-name="defaultBranchName"
-        :max-agents="cursor.first"
+        :max-agents="limit"
       />
-
-      <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
-        <gl-keyset-pagination v-bind="agentPageInfo" @prev="prevPage" @next="nextPage" />
-      </div>
     </div>
 
     <agent-empty-state v-else />

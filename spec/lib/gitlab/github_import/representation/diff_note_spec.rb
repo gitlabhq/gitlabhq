@@ -104,7 +104,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
               old_line: nil,
               old_path: 'README.md',
               position_type: 'text',
-              start_sha: 'start'
+              start_sha: 'start',
+              ignore_whitespace_change: false
             )
           end
         end
@@ -122,7 +123,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
               new_line: nil,
               old_path: 'README.md',
               position_type: 'text',
-              start_sha: 'start'
+              start_sha: 'start',
+              ignore_whitespace_change: false
             )
           end
         end

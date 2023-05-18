@@ -1853,9 +1853,6 @@ msgstr ""
 msgid "AI actions"
 msgstr ""
 
-msgid "AI generated this test"
-msgstr ""
-
 msgid "AI-generated test file"
 msgstr ""
 
@@ -10236,6 +10233,9 @@ msgstr ""
 msgid "ClusterAgents|Event occurred"
 msgstr ""
 
+msgid "ClusterAgents|External project"
+msgstr ""
+
 msgid "ClusterAgents|Failed to create a token"
 msgstr ""
 
@@ -10404,6 +10404,9 @@ msgid "ClusterAgents|Your agent version is out of sync with your GitLab version 
 msgstr ""
 
 msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it."
+msgstr ""
+
+msgid "ClusterAgents|shared"
 msgstr ""
 
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
@@ -29311,36 +29314,54 @@ msgstr ""
 msgid "NamespaceLimits|You must select a namespace and add a reason for excluding it"
 msgstr ""
 
-msgid "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked project"
-msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked projects"
+msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Your ability to write new data to this namespace is restricted. %{read_only_link_start}Which actions are restricted?%{link_end}"
+msgstr ""
+
+msgid "NamespaceStorageSize|For more information about storage limits, see our %{faq_link_start}FAQ%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, your ability to write new data to this namespace will be restricted. %{read_only_link_start}Which actions become restricted?%{link_end}"
+msgstr ""
+
+msgid "NamespaceStorageSize|If a project reaches 100%% of the storage quota (%{free_size_limit}) the project will be in a read-only state, and you won't be able to push to your repository or add large files."
+msgstr ""
+
+msgid "NamespaceStorageSize|To prevent your projects from being in a read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|To prevent your projects from being in a read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|To reduce storage usage, reduce git repository and git LFS storage."
+msgstr ""
+
+msgid "NamespaceStorageSize|To remove the read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|To remove the read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end}  and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
+msgstr ""
+
+msgid "NamespaceStorageSize|You have consumed all available storage and you can't push or add large files to projects over the free tier limit (%{free_size_limit})."
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} for %{namespace_name}"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{readonly_project_count} project"
+msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{readonly_project_count} projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Projects under this namespace are locked and actions are restricted. %{actions_restricted_link}"
-msgstr ""
-
-msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted. %{actions_restricted_link}"
-msgstr ""
-
-msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{repository_limits_description}"
-msgstr ""
-
-msgid "NamespaceStorageSize|Manage your storage usage or, if you are a namespace Owner, purchase additional storage. %{learn_more_link}."
-msgstr ""
-
-msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{repository_limits_description}"
-msgstr ""
-
-msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{repository_limits_description}"
-msgstr ""
-
-msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on one or more projects"
+msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name}"
 msgstr ""
 
 msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
-msgstr ""
-
-msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines. %{learn_more_link}."
 msgstr ""
 
 msgid "NamespaceStorage|%{name_with_link} is now read-only. Projects under this namespace are locked and actions are restricted."
@@ -44752,6 +44773,9 @@ msgid_plural "Test coverage: %d hits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Test generated by AI"
+msgstr ""
+
 msgid "Test settings"
 msgstr ""
 
@@ -50627,12 +50651,6 @@ msgid "When:"
 msgstr ""
 
 msgid "Which API requests are affected?"
-msgstr ""
-
-msgid "Which actions are restricted?"
-msgstr ""
-
-msgid "Which actions become restricted?"
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

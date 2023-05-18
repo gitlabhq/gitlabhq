@@ -885,7 +885,6 @@
     - <<: *if-merge-request
     - <<: *if-default-branch-refs
       variables:
-        ARCH: amd64,arm64
         BUILD_GDK_BASE: "true"
 
 .build-images:rules:build-assets-image:

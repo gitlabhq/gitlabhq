@@ -11,9 +11,9 @@ module QA
           end
 
           view 'app/views/protected_branches/_create_protected_branch.html.haml' do
-            element :select_allowed_to_push_dropdown
+            element :allowed_to_push_dropdown
             element :allowed_to_push_dropdown_content
-            element :select_allowed_to_merge_dropdown
+            element :allowed_to_merge_dropdown
             element :allowed_to_merge_dropdown_content
           end
 
@@ -45,7 +45,7 @@ module QA
           private
 
           def select_allowed(action, allowed)
-            click_element :"select_allowed_to_#{action}_dropdown"
+            click_element :"allowed_to_#{action}_dropdown"
 
             allowed[:roles] = Resource::ProtectedBranch::Roles::NO_ONE unless allowed.key?(:roles)
 

@@ -93,6 +93,8 @@ or:
 
 To filter the list of merge requests:
 
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
 1. Above the list of merge requests, select **Search or filter results...**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
@@ -132,17 +134,15 @@ Projects using a [fast-forward merge method](methods/index.md#fast-forward-merge
 do not return results, as this method does not create a merge commit.
 
 When filtering by an environment, a dropdown list presents all environments that
-you can choose from:
+you can choose from.
 
-![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
+When filtering by `Deployed-before` or `Deployed-after`:
 
-When filtering by `Deployed-before` or `Deployed-after`, the date refers to when
-the deployment to an environment (triggered by the merge commit) completed successfully.
-You must enter the deploy date manually. Deploy dates
-use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
-both a date and time (`"YYYY-MM-DD HH:MM"`):
-
-![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v14_6.png)
+- The date refers to when the deployment to an environment (triggered by the
+  merge commit) completed successfully.
+- You must enter the deploy date manually.
+- Deploy dates use the format `YYYY-MM-DD`, and must be wrapped in double quotes (`"`)
+  if you want to specify both a date and time (`"YYYY-MM-DD HH:MM"`).
 
 ## Add changes to a merge request
 
@@ -182,7 +182,7 @@ The merge request is added to the user's assigned merge request list.
 GitLab enables multiple assignees for merge requests, if multiple people are
 accountable for it:
 
-![multiple assignees for merge requests sidebar](img/multiple_assignees_for_merge_requests_sidebar.png)
+![multiple assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
 
 To assign multiple assignees to a merge request, use the `/assign @user`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area, or:

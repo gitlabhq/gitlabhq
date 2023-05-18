@@ -1,4 +1,4 @@
-import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlBanner } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
@@ -19,6 +19,7 @@ Vue.use(VueApollo);
 
 describe('Agents', () => {
   let wrapper;
+  let testDate = new Date();
 
   const defaultProps = {
     defaultBranchName: 'default',
@@ -31,9 +32,9 @@ describe('Agents', () => {
     props = {},
     glFeatures = {},
     agents = [],
-    pageInfo = null,
+    ciAccessAuthorizedAgentsNodes = [],
+    userAccessAuthorizedAgentsNodes = [],
     trees = [],
-    count = 0,
     queryResponse = null,
   }) => {
     const provide = provideData;
@@ -43,12 +44,16 @@ describe('Agents', () => {
           id: '1',
           clusterAgents: {
             nodes: agents,
-            pageInfo,
             connections: { nodes: [] },
             tokens: { nodes: [] },
-            count,
           },
-          repository: { tree: { trees: { nodes: trees, pageInfo } } },
+          ciAccessAuthorizedAgents: {
+            nodes: ciAccessAuthorizedAgentsNodes,
+          },
+          userAccessAuthorizedAgents: {
+            nodes: userAccessAuthorizedAgentsNodes,
+          },
+          repository: { tree: { trees: { nodes: trees } } },
         },
       },
     };
@@ -78,7 +83,6 @@ describe('Agents', () => {
 
   const findAgentTable = () => wrapper.findComponent(AgentTable);
   const findEmptyState = () => wrapper.findComponent(AgentEmptyState);
-  const findPaginationButtons = () => wrapper.findComponent(GlKeysetPagination);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findBanner = () => wrapper.findComponent(GlBanner);
 
@@ -87,13 +91,13 @@ describe('Agents', () => {
   });
 
   describe('when there is a list of agents', () => {
-    let testDate = new Date();
     const agents = [
       {
         __typename: 'ClusterAgent',
         id: '1',
         name: 'agent-1',
         webPath: '/agent-1',
+        createdAt: testDate,
         connections: null,
         tokens: null,
       },
@@ -102,6 +106,7 @@ describe('Agents', () => {
         id: '2',
         name: 'agent-2',
         webPath: '/agent-2',
+        createdAt: testDate,
         connections: null,
         tokens: {
           nodes: [
@@ -113,8 +118,26 @@ describe('Agents', () => {
         },
       },
     ];
-
-    const count = 2;
+    const ciAccessAuthorizedAgentsNodes = [
+      {
+        agent: {
+          __typename: 'ClusterAgent',
+          id: '3',
+          name: 'ci-agent-1',
+          webPath: 'shared-project/agent-1',
+          createdAt: testDate,
+          connections: null,
+          tokens: null,
+        },
+      },
+    ];
+    const userAccessAuthorizedAgentsNodes = [
+      {
+        agent: {
+          ...agents[0],
+        },
+      },
+    ];
 
     const trees = [
       {
@@ -156,10 +179,26 @@ describe('Agents', () => {
           ],
         },
       },
+      {
+        id: '3',
+        name: 'ci-agent-1',
+        configFolder: undefined,
+        webPath: 'shared-project/agent-1',
+        status: 'unused',
+        isShared: true,
+        lastContact: null,
+        connections: null,
+        tokens: null,
+      },
     ];
 
     beforeEach(() => {
-      return createWrapper({ agents, count, trees });
+      return createWrapper({
+        agents,
+        ciAccessAuthorizedAgentsNodes,
+        userAccessAuthorizedAgentsNodes,
+        trees,
+      });
     });
 
     it('should render agent table', () => {
@@ -172,7 +211,7 @@ describe('Agents', () => {
     });
 
     it('should emit agents count to the parent component', () => {
-      expect(wrapper.emitted().onAgentsLoad).toEqual([[count]]);
+      expect(wrapper.emitted().onAgentsLoad).toEqual([[expectedAgentsList.length]]);
     });
 
     describe.each`
@@ -192,7 +231,7 @@ describe('Agents', () => {
             localStorage.setItem(AGENT_FEEDBACK_KEY, true);
           }
 
-          return createWrapper({ glFeatures, agents, count, trees });
+          return createWrapper({ glFeatures, agents, trees });
         });
 
         it(`should ${bannerShown ? 'show' : 'hide'} the feedback banner`, () => {
@@ -206,7 +245,7 @@ describe('Agents', () => {
         showGitlabAgentFeedback: true,
       };
       beforeEach(() => {
-        return createWrapper({ glFeatures, agents, count, trees });
+        return createWrapper({ glFeatures, agents, trees });
       });
 
       it('should render the correct title', () => {
@@ -238,51 +277,6 @@ describe('Agents', () => {
         expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
       });
     });
-
-    it('should not render pagination buttons when there are no additional pages', () => {
-      expect(findPaginationButtons().exists()).toBe(false);
-    });
-
-    describe('when the list has additional pages', () => {
-      const pageInfo = {
-        hasNextPage: true,
-        hasPreviousPage: false,
-        startCursor: 'prev',
-        endCursor: 'next',
-      };
-
-      beforeEach(() => {
-        return createWrapper({
-          agents,
-          pageInfo: {
-            ...pageInfo,
-            __typename: 'PageInfo',
-          },
-        });
-      });
-
-      it('should render pagination buttons', () => {
-        expect(findPaginationButtons().exists()).toBe(true);
-      });
-
-      it('should pass pageInfo to the pagination component', () => {
-        expect(findPaginationButtons().props()).toMatchObject(pageInfo);
-      });
-
-      describe('when limit is passed from the parent component', () => {
-        beforeEach(() => {
-          return createWrapper({
-            props: { limit: 6 },
-            agents,
-            pageInfo,
-          });
-        });
-
-        it('should not render pagination buttons', () => {
-          expect(findPaginationButtons().exists()).toBe(false);
-        });
-      });
-    });
   });
 
   describe('when the agent list is empty', () => {
@@ -302,7 +296,10 @@ describe('Agents', () => {
 
   describe('when agents query has errored', () => {
     beforeEach(() => {
-      return createWrapper({ agents: null });
+      createWrapper({
+        queryResponse: jest.fn().mockRejectedValue({}),
+      });
+      return waitForPromises();
     });
 
     it('displays an alert message', () => {
