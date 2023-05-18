@@ -13,7 +13,7 @@
   = render Pajamas::AlertComponent.new(title: _('Internal error occurred while delivering this webhook.'),
     variant: :danger,
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       = _('Error: %{error}') % { error: hook_log.internal_error_message }
 
 %h4= _('Response')
@@ -41,6 +41,3 @@
   - hook_log.request_headers.each do |k, v|
     <span class="gl-font-weight-bold">#{k}:</span> #{v}
     %br
-
-
-

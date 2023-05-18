@@ -19,10 +19,6 @@ module QA
             open_manage_submenu('Labels')
           end
 
-          def go_to_milestones
-            open_manage_submenu('Milestones')
-          end
-
           private
 
           def open_manage_submenu(sub_menu)

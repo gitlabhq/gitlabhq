@@ -6,7 +6,7 @@
   = render Pajamas::AlertComponent.new(alert_options: { id: 'error_explanation', class: 'gl-mb-3'},
     dismissible: false,
     variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       %ul.gl-pl-4
         = @error
 

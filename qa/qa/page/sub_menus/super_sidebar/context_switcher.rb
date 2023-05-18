@@ -30,12 +30,21 @@ module QA
             go_to_context("Admin Area")
           end
 
+          def has_admin_area_link?(wait: Capybara.default_max_wait_time)
+            open_context_switcher
+
+            has_element?(:nav_item_link, submenu_item: "Admin Area", wait: wait)
+          end
+
           private
 
           def go_to_context(sub_menu)
-            click_element(:context_switcher) unless has_element?(:context_navigation, wait: 0)
-
+            open_context_switcher
             click_element(:nav_item_link, submenu_item: sub_menu)
+          end
+
+          def open_context_switcher
+            click_element(:context_switcher) unless has_element?(:context_navigation, wait: 0)
           end
         end
       end

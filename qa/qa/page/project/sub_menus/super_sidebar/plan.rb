@@ -25,6 +25,10 @@ module QA
             def go_to_open_jira
               open_plan_submenu("Open Jira")
             end
+
+            def go_to_issues
+              open_plan_submenu("Issues")
+            end
           end
         end
       end

@@ -17,12 +17,20 @@ Deleting a user deletes all projects in that user namespace.
 
 ## Delete your own account
 
+> Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available.
+
 As a user, to delete your own account:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
+
+NOTE:
+On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../admin_area/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created.
 
 ## Delete users and user contributions **(FREE SELF)**
 

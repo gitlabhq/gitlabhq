@@ -569,7 +569,7 @@ module QA
       end
 
       def super_sidebar_enabled?
-        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: false)
+        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: true)
       end
 
       def require_slack_env!

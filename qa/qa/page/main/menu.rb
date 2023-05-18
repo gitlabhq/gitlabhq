@@ -17,11 +17,11 @@ module QA
           # Define alternative navbar (super sidebar) which does not yet implement all the same elements
           view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
             element :navbar, required: true # TODO: rename to sidebar once it's default implementation
-            element :user_menu, required: !Runtime::Env.phone_layout?
-            element :user_avatar_content, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
+            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
             element :sign_out_link
             element :edit_profile_link
           end
@@ -32,6 +32,7 @@ module QA
 
           view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
             element :global_search_button
+            element :stop_impersonation_link
           end
 
           view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
@@ -252,16 +253,11 @@ module QA
         end
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
+          return super if Runtime::Env.super_sidebar_enabled?
+
           within_top_menu do
             click_element(:navbar_dropdown, title: 'Menu')
             has_element?(:admin_area_link, wait: wait)
-          end
-        end
-
-        def has_no_admin_area_link?(wait: Capybara.default_max_wait_time)
-          within_top_menu do
-            click_element(:navbar_dropdown, title: 'Menu')
-            has_no_element?(:admin_area_link, wait: wait)
           end
         end
 

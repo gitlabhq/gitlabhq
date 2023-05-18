@@ -167,7 +167,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         accept_pending_invitations(user: user) if new_user
         persist_accepted_terms_if_required(user) if new_user
 
-        store_after_sign_up_path_for_user if intent_to_register?
+        perform_registration_tasks(user, oauth['provider']) if intent_to_register?
         sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
       end
     else
@@ -295,8 +295,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Users::RespondToTermsService.new(user, terms).execute(accepted: true)
   end
 
-  def store_after_sign_up_path_for_user
-    store_location_for(:user, users_sign_up_welcome_path)
+  def perform_registration_tasks(_user, _provider)
+    store_location_for(:user, after_sign_up_path)
+  end
+
+  def after_sign_up_path
+    users_sign_up_welcome_path
   end
 
   # overridden in EE

@@ -42,7 +42,7 @@
 
 - if source_level < target_level
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
-    = c.body do
+    - c.with_body do
       = visibilityMismatchString
       %br
       = _('Review the target project before submitting to avoid exposing %{source} changes.') % { source: source_visibility }

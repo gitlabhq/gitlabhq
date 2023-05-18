@@ -1,9 +1,9 @@
 - return unless custom_attributes.present?
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0' }) do |c|
-  - c.header do
+  - c.with_header do
     = link_to(_('Custom Attributes'), help_page_path('api/custom_attributes.md'))
-  - c.body do
+  - c.with_body do
     %ul.content-list
       - custom_attributes.each do |custom_attribute|
         %li

@@ -12,9 +12,9 @@
   .col-lg-8.gl-mb-3
     - if file_hooks.any?
       = render Pajamas::CardComponent.new do |c|
-        - c.header do
+        - c.with_header do
           = _('File Hooks (%{count})') % { count: file_hooks.count }
-        - c.body do
+        - c.with_body do
           %ul.content-list
             - file_hooks.each do |file|
               %li
@@ -22,5 +22,5 @@
                   = File.basename(file)
     - else
       = render Pajamas::CardComponent.new do |c|
-        - c.body do
+        - c.with_body do
           .nothing-here-block= _('No file hooks found.')

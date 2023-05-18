@@ -4,5 +4,5 @@
   = render Pajamas::AlertComponent.new(variant: :success,
     alert_options: { data: { testid: 'all-issues-closed-alert' }},
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       = yield

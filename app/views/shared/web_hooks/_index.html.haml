@@ -1,9 +1,9 @@
 %hr
 = render Pajamas::CardComponent.new(card_options: { id: 'webhooks-index' }, body_options: { class: 'gl-py-0'}) do |c|
-  - c.header do
+  - c.with_header do
     = hook_class.underscore.humanize.titleize.pluralize
     (#{hooks.size})
-  - c.body do
+  - c.with_body do
     - if hooks.any?
       %ul.content-list
         - hooks.each do |hook|

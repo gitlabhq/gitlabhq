@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.configure do |config|
-  %i[saas saas_registration].each do |metadata|
+  %i[saas saas_registration saas_sso_registration].each do |metadata|
     config.before(:context, metadata) do
       # Ensure Gitlab.com? returns true during context.
       # This is needed for let_it_be which is shared across examples,

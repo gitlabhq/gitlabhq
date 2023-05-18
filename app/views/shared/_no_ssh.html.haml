@@ -2,8 +2,8 @@
   = render Pajamas::AlertComponent.new(variant: :warning,
     alert_options: { class: 'js-no-ssh-message' },
     close_button_options: { class: 'js-hide-no-ssh-message'}) do |c|
-    = c.body do
+    - c.with_body do
       = s_("MissingSSHKeyWarningLink|You can't push or pull repositories using SSH until you add an SSH key to your profile.")
-    = c.actions do
+    - c.with_actions do
       = link_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: "gl-alert-action btn btn-confirm btn-md gl-button"
       = link_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: { hide_no_ssh_key: true }), method: :put, role: 'button', class: 'gl-alert-action btn btn-default btn-md gl-button'

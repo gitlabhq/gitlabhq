@@ -1,3 +1,3 @@
 = render Pajamas::AlertComponent.new(variant: :info, dismissible: true) do |c|
-  = c.body do
+  - c.with_body do
     = body

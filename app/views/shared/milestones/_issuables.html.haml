@@ -2,7 +2,7 @@
 - primary = local_assigns.fetch(:primary, false)
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: milestone_header_class(primary, issuables) }) do |c|
-  - c.header do
+  - c.with_header do
     .gl-flex-grow-2
       = title
     .gl-ml-3.gl-flex-shrink-0.gl-font-weight-bold.gl-white-space-nowrap{ class: milestone_counter_class(primary) }
@@ -11,7 +11,7 @@
           = sprite_icon('issues', css_class: 'gl-vertical-align-text-bottom')
           = number_with_delimiter(issuables.length)
       = render_if_exists "shared/milestones/issuables_weight", issuables: issuables
-  = c.body do
+  - c.with_body do
     - class_prefix = dom_class(issuables).pluralize
     %ul{ class: "content-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
       = render partial: 'shared/milestones/issuable',

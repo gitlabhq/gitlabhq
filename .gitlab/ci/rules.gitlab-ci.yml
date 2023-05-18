@@ -1385,7 +1385,7 @@
     - <<: *if-force-ci
       allow_failure: true
 
-.qa:rules:package-and-test-common:
+.qa:rules:package-and-test-never-run:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
@@ -1393,6 +1393,10 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+
+.qa:rules:package-and-test-common:
+  rules:
+    - !reference [.qa:rules:package-and-test-never-run, rules]
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
     - <<: *if-ruby2-branch
@@ -1459,12 +1463,7 @@
 
 .qa:rules:package-and-test-ce:
   rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
+    - !reference [.qa:rules:package-and-test-never-run, rules]
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
       when: manual
@@ -1487,14 +1486,9 @@
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
 
-.qa:rules:package-and-test-sidebar:
+.qa:rules:package-and-test-old-nav:
   rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
+    - !reference [.qa:rules:package-and-test-never-run, rules]
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual

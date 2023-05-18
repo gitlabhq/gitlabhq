@@ -168,6 +168,7 @@ export default {
         category="tertiary"
         data-method="delete"
         data-testid="stop-impersonation-btn"
+        data-qa-selector="stop_impersonation_link"
       />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">

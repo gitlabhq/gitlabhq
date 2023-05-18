@@ -6,12 +6,12 @@
 - return if requesters.empty?
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { testid: 'access-requests' } }, body_options: { class: 'gl-p-0' }) do |c|
-  - c.header do
+  - c.with_header do
     = _('Users requesting access to')
     %strong= membership_source.name
     = gl_badge_tag requesters.size
     = render 'shared/members/manage_access_button', path: membership_source.is_a?(Project) ? project_project_members_path(@project, tab: 'access_requests') : group_group_members_path(@group, tab: 'access_requests')
-  - c.body do
+  - c.with_body do
     %ul.content-list.members-list
       = render partial: 'shared/members/member',
               collection: requesters, as: :member,
