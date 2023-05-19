@@ -45,28 +45,8 @@ module Gitlab
         super.merge(
           runner_id: runner&.id,
           runner_environment: runner_environment,
-          sha: pipeline.sha,
-          pipeline_ref: pipeline_ref,
-          pipeline_sha: pipeline.repository_source? ? pipeline.sha : nil
+          sha: pipeline.sha
         )
-      end
-
-      def pipeline_ref
-        project_config = Gitlab::Ci::ProjectConfig.new(
-          project: project,
-          sha: pipeline.sha,
-          pipeline_source: pipeline.source&.to_sym,
-          pipeline_source_bridge: pipeline.source_bridge,
-          pipeline: pipeline
-        )
-
-        project_config&.url
-
-        # Errors are rescued to mitigate risk. This can be removed if no errors are observed.
-        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117923#note_1387660746 for context.
-      rescue StandardError => e
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, pipeline_id: pipeline.id)
-        nil
       end
 
       def runner_environment

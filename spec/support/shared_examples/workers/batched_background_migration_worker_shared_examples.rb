@@ -64,8 +64,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
 
       it 'does nothing' do
-        expect(worker).not_to receive(:active_migration)
-        expect(worker).not_to receive(:run_active_migration)
+        expect(worker).not_to receive(:queue_migrations_for_execution)
 
         expect { worker.perform }.not_to raise_error
       end
@@ -94,8 +93,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         end
 
         it 'does nothing' do
-          expect(worker).not_to receive(:active_migration)
-          expect(worker).not_to receive(:run_active_migration)
+          expect(worker).not_to receive(:queue_migrations_for_execution)
 
           worker.perform
         end
@@ -106,66 +104,47 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           skip_if_shared_database(tracking_database)
         end
 
-        context 'when the feature flag is disabled' do
+        context 'when the execute_batched_migrations_on_schedule feature flag is disabled' do
           before do
             stub_feature_flags(execute_batched_migrations_on_schedule: false)
           end
 
           it 'does nothing' do
-            expect(worker).not_to receive(:active_migration)
-            expect(worker).not_to receive(:run_active_migration)
+            expect(worker).not_to receive(:queue_migrations_for_execution)
 
             worker.perform
           end
         end
 
-        context 'when the feature flag is enabled' do
+        context 'when the execute_batched_migrations_on_schedule feature flag is enabled' do
           let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
           let(:connection) { base_model.connection }
 
           before do
             stub_feature_flags(execute_batched_migrations_on_schedule: true)
-
-            allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
-                                                                                .with(connection: connection)
-                                                                                .and_return(nil)
           end
 
           context 'when database config is shared' do
             it 'does nothing' do
               expect(Gitlab::Database).to receive(:db_config_share_with)
-                                            .with(base_model.connection_db_config).and_return('main')
+                .with(base_model.connection_db_config).and_return('main')
 
-              expect(worker).not_to receive(:active_migration)
-              expect(worker).not_to receive(:run_active_migration)
+              expect(worker).not_to receive(:queue_migrations_for_execution)
 
               worker.perform
             end
           end
 
           context 'when no active migrations exist' do
-            context 'when parallel execution is disabled' do
-              before do
-                stub_feature_flags(batched_migrations_parallel_execution: false)
-              end
+            it 'does nothing' do
+              allow(Gitlab::Database::BackgroundMigration::BatchedMigration)
+                .to receive(:active_migrations_distinct_on_table)
+                .with(connection: connection, limit: worker.execution_worker_class.max_running_jobs)
+                .and_return([])
 
-              it 'does nothing' do
-                expect(worker).not_to receive(:run_active_migration)
+              expect(worker).not_to receive(:queue_migrations_for_execution)
 
-                worker.perform
-              end
-            end
-
-            context 'when parallel execution is enabled' do
-              before do
-                stub_feature_flags(batched_migrations_parallel_execution: true)
-              end
-
-              it 'does nothing' do
-                expect(worker).not_to receive(:queue_migrations_for_execution)
-
-                worker.perform
-              end
+              worker.perform
             end
           end
 
@@ -190,75 +169,20 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
               end
             end
 
-            before do
-              allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
-                                                                                  .with(connection: connection)
-                                                                                  .and_return(migration)
-            end
+            it 'delegetes the execution to ExecutionWorker' do
+              expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
+                .to receive(:active_migrations_distinct_on_table).with(
+                  connection: base_model.connection,
+                  limit: execution_worker_class.max_running_jobs
+                ).and_return([migration])
 
-            context 'when parallel execution is disabled' do
-              before do
-                stub_feature_flags(batched_migrations_parallel_execution: false)
-              end
+              expected_arguments = [
+                [tracking_database.to_s, migration_id]
+              ]
 
-              let(:execution_worker) { instance_double(execution_worker_class) }
+              expect(execution_worker_class).to receive(:perform_with_capacity).with(expected_arguments)
 
-              context 'when the calculated timeout is less than the minimum allowed' do
-                let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
-                let(:job_interval) { 2.minutes }
-
-                it 'sets the lease timeout to the minimum value' do
-                  expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
-
-                  expect(execution_worker_class).to receive(:new).and_return(execution_worker)
-                  expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
-
-                  expect(worker).to receive(:run_active_migration).and_call_original
-
-                  worker.perform
-                end
-              end
-
-              it 'always cleans up the exclusive lease' do
-                lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
-
-                expect(lease).to receive(:try_obtain).and_return(true)
-
-                expect(worker).to receive(:run_active_migration).and_raise(RuntimeError, 'I broke')
-                expect(lease).to receive(:cancel)
-
-                expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
-              end
-
-              it 'delegetes the execution to ExecutionWorker' do
-                expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(connection).and_yield
-                expect(execution_worker_class).to receive(:new).and_return(execution_worker)
-                expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
-
-                worker.perform
-              end
-            end
-
-            context 'when parallel execution is enabled' do
-              before do
-                stub_feature_flags(batched_migrations_parallel_execution: true)
-              end
-
-              it 'delegetes the execution to ExecutionWorker' do
-                expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
-                  .to receive(:active_migrations_distinct_on_table).with(
-                    connection: base_model.connection,
-                    limit: execution_worker_class.max_running_jobs
-                  ).and_return([migration])
-
-                expected_arguments = [
-                  [tracking_database.to_s, migration_id]
-                ]
-
-                expect(execution_worker_class).to receive(:perform_with_capacity).with(expected_arguments)
-
-                worker.perform
-              end
+              worker.perform
             end
           end
         end
@@ -266,67 +190,68 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     end
   end
 
-  describe 'executing an entire migration', :freeze_time, if: Gitlab::Database.has_database?(tracking_database) do
-    include Gitlab::Database::DynamicModelHelpers
-    include Database::DatabaseHelpers
+  describe 'executing an entire migration', :freeze_time, :sidekiq_inline,
+    if: Gitlab::Database.has_database?(tracking_database) do
+      include Gitlab::Database::DynamicModelHelpers
+      include Database::DatabaseHelpers
 
-    let(:migration_class) do
-      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
-        job_arguments :matching_status
-        operation_name :update_all
-        feature_category :code_review_workflow
+      let(:migration_class) do
+        Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+          job_arguments :matching_status
+          operation_name :update_all
+          feature_category :code_review_workflow
 
-        def perform
-          each_sub_batch(
-            batching_scope: -> (relation) { relation.where(status: matching_status) }
-          ) do |sub_batch|
-            sub_batch.update_all(some_column: 0)
+          def perform
+            each_sub_batch(
+              batching_scope: -> (relation) { relation.where(status: matching_status) }
+            ) do |sub_batch|
+              sub_batch.update_all(some_column: 0)
+            end
           end
         end
       end
-    end
 
-    let(:gitlab_schema) { "gitlab_#{tracking_database}" }
-    let!(:migration) do
-      create(
-        :batched_background_migration,
-        :active,
-        table_name: new_table_name,
-        column_name: :id,
-        max_value: migration_records,
-        batch_size: batch_size,
-        sub_batch_size: sub_batch_size,
-        job_class_name: 'ExampleDataMigration',
-        job_arguments: [1],
-        gitlab_schema: gitlab_schema
-      )
-    end
-
-    let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
-    let(:new_table_name) { '_test_example_data' }
-    let(:batch_size) { 5 }
-    let(:sub_batch_size) { 2 }
-    let(:number_of_batches) { 10 }
-    let(:migration_records) { batch_size * number_of_batches }
-
-    let(:connection) { Gitlab::Database.database_base_models[tracking_database].connection }
-    let(:example_data) { define_batchable_model(new_table_name, connection: connection) }
-
-    around do |example|
-      Gitlab::Database::SharedModel.using_connection(connection) do
-        example.run
+      let(:gitlab_schema) { "gitlab_#{tracking_database}" }
+      let!(:migration) do
+        create(
+          :batched_background_migration,
+          :active,
+          table_name: new_table_name,
+          column_name: :id,
+          max_value: migration_records,
+          batch_size: batch_size,
+          sub_batch_size: sub_batch_size,
+          job_class_name: 'ExampleDataMigration',
+          job_arguments: [1],
+          gitlab_schema: gitlab_schema
+        )
       end
-    end
 
-    before do
-      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+      let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
+      let(:new_table_name) { '_test_example_data' }
+      let(:batch_size) { 5 }
+      let(:sub_batch_size) { 2 }
+      let(:number_of_batches) { 10 }
+      let(:migration_records) { batch_size * number_of_batches }
 
-      # Create example table populated with test data to migrate.
-      #
-      # Test data should have two records that won't be updated:
-      #   - one record beyond the migration's range
-      #   - one record that doesn't match the migration job's batch condition
-      connection.execute(<<~SQL)
+      let(:connection) { Gitlab::Database.database_base_models[tracking_database].connection }
+      let(:example_data) { define_batchable_model(new_table_name, connection: connection) }
+
+      around do |example|
+        Gitlab::Database::SharedModel.using_connection(connection) do
+          example.run
+        end
+      end
+
+      before do
+        stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+        # Create example table populated with test data to migrate.
+        #
+        # Test data should have two records that won't be updated:
+        #   - one record beyond the migration's range
+        #   - one record that doesn't match the migration job's batch condition
+        connection.execute(<<~SQL)
         CREATE TABLE #{new_table_name} (
           id integer primary key,
           some_column integer,
@@ -339,21 +264,20 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         UPDATE #{new_table_name}
           SET status = 0
         WHERE some_column = #{migration_records - 5};
-      SQL
+        SQL
 
-      stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
-    end
-
-    subject(:full_migration_run) do
-      # process all batches, then do an extra execution to mark the job as finished
-      (number_of_batches + 1).times do
-        described_class.new.perform
-
-        travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
+        stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
       end
-    end
 
-    shared_examples 'batched background migration execution' do
+      subject(:full_migration_run) do
+        # process all batches, then do an extra execution to mark the job as finished
+        (number_of_batches + 1).times do
+          described_class.new.perform
+
+          travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
+        end
+      end
+
       it 'marks the migration record as finished' do
         expect { full_migration_run }.to change { migration.reload.status }.from(1).to(3) # active -> finished
       end
@@ -416,30 +340,4 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         end
       end
     end
-
-    context 'when parallel execution is disabled' do
-      before do
-        stub_feature_flags(batched_migrations_parallel_execution: false)
-      end
-
-      it_behaves_like 'batched background migration execution'
-
-      it 'assigns proper feature category to the context and the worker' do
-        expected_feature_category = migration_class.feature_category.to_s
-
-        expect { full_migration_run }.to change {
-          Gitlab::ApplicationContext.current["meta.feature_category"]
-        }.to(expected_feature_category)
-         .and change { described_class.get_feature_category }.from(:database).to(expected_feature_category)
-      end
-    end
-
-    context 'when parallel execution is enabled', :sidekiq_inline do
-      before do
-        stub_feature_flags(batched_migrations_parallel_execution: true)
-      end
-
-      it_behaves_like 'batched background migration execution'
-    end
-  end
 end

@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continuous_integration do
-  let(:files) { { 'README.md' => 'hello' } }
   let(:project) { create(:project, :custom_repo, files: files) }
   let(:sha) { project.repository.head_commit.sha }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:files) { { 'README.md' => 'hello' } }
 
-  subject(:config) { described_class.new(project, sha, nil, nil, nil, pipeline) }
+  subject(:config) { described_class.new(project, sha, nil, nil, nil) }
 
   describe '#content' do
     subject(:content) { config.content }
@@ -50,11 +49,5 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continu
     subject { config.internal_include_prepended? }
 
     it { is_expected.to eq(true) }
-  end
-
-  describe '#url' do
-    subject { config.url }
-
-    it { is_expected.to eq("#{Settings.gitlab.base_url}/#{project.full_path}/-/blob/#{sha}/.gitlab-ci.yml") }
   end
 end

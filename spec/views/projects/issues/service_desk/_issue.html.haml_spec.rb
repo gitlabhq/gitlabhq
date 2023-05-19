@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/issues/_issue.html.haml' do
+RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category: :service_desk do
   before do
     assign(:project, issue.project)
     assign(:issuable_meta_data, {
       issue.id => Gitlab::IssuableMetadata::IssuableMeta.new(1, 1, 1, 1)
     })
 
-    render partial: 'projects/issues/issue', locals: { issue: issue }
+    render partial: 'projects/issues/service_desk/issue', locals: { issue: issue }
   end
 
   describe 'timestamp', :freeze_time do
     context 'when issue is open' do
-      let(:issue) { create(:issue, updated_at: 1.day.ago) }
+      let(:issue) { create(:issue, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       it 'shows last updated date' do
         expect(rendered).to have_content("updated #{format_timestamp(1.day.ago)}")
@@ -22,7 +22,7 @@ RSpec.describe 'projects/issues/_issue.html.haml' do
     end
 
     context 'when issue is closed' do
-      let(:issue) { create(:issue, :closed, closed_at: 2.days.ago, updated_at: 1.day.ago) }
+      let(:issue) { create(:issue, :closed, closed_at: 2.days.ago, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       it 'shows closed date' do
         expect(rendered).to have_content("closed #{format_timestamp(2.days.ago)}")
@@ -30,7 +30,7 @@ RSpec.describe 'projects/issues/_issue.html.haml' do
     end
 
     context 'when issue is closed but closed_at is empty' do
-      let(:issue) { create(:issue, :closed, closed_at: nil, updated_at: 1.day.ago) }
+      let(:issue) { create(:issue, :closed, closed_at: nil, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       it 'shows last updated date' do
         expect(rendered).to have_content("updated #{format_timestamp(1.day.ago)}")
@@ -40,7 +40,7 @@ RSpec.describe 'projects/issues/_issue.html.haml' do
     context 'when issue is service desk issue' do
       let_it_be(:email) { 'user@example.com' }
       let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
-      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) }
+      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       context 'with anonymous user' do
         it 'obfuscates service_desk_reply_to email for anonymous user' do
@@ -49,7 +49,7 @@ RSpec.describe 'projects/issues/_issue.html.haml' do
       end
 
       context 'with signed in user' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
         before do
           allow(view).to receive(:current_user).and_return(user)

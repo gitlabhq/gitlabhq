@@ -19,10 +19,6 @@ module Gitlab
         def source
           :remote_source
         end
-
-        def url
-          ci_config_path
-        end
       end
     end
   end

@@ -350,37 +350,54 @@ status in the output of the `sudo gitlab-rake db:migrate:status` command.
    sudo gitlab-ctl restart sidekiq
    ```
 
-## Rebuild database indexes
+## Rebuild database indexes (Experiment)
 
 WARNING:
-This is an experimental feature that isn't enabled by default. It requires PostgreSQL 12 or later.
+This feature is experimental, and isn't enabled by default. Use caution when
+running in a production environment, and run during off-peak times.
 
-Database indexes can be rebuilt regularly to reclaim space and maintain healthy levels of index bloat over time.
+Database indexes can be rebuilt regularly to reclaim space and maintain healthy
+levels of index bloat over time. Reindexing can also be run as a
+[regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).
+A "healthy" level of bloat is highly dependent on the specific index, but generally
+should be below 30%.
 
-To rebuild the two indexes with the highest estimated bloat, use the following Rake task:
+Prerequisites:
 
-```shell
-sudo gitlab-rake gitlab:db:reindex
-```
+- This feature requires PostgreSQL 12 or later.
+- These index types are not supported: expression indexes, partitioned indexes,
+  and indexes used for constraint exclusion.
 
-To target a specific index, use the following Rake task:
+To manually rebuild a database index:
 
-```shell
-sudo gitlab-rake gitlab:db:reindex['public.a_specific_index']
-```
+1. Optional. To send annotations to a Grafana (4.6 or later) endpoint, enable annotations
+   with these custom environment variables (see [setting custom environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html)):
 
-The following index types are not supported:
+   1. `GRAFANA_API_URL`: The base URL for Grafana, such as `http://some-host:3000`.
+   1. `GRAFANA_API_KEY`: A Grafana API key with at least `Editor role`.
 
-1. Indexes used for constraint exclusion
-1. Partitioned indexes
-1. Expression indexes
+1. Run the Rake task to rebuild the two indexes with the highest estimated bloat:
 
-Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables to enable annotations:
+   ```shell
+   sudo gitlab-rake gitlab:db:reindex
+   ```
 
-1. `GRAFANA_API_URL` - The base URL for Grafana, for example `http://some-host:3000`.
-1. `GRAFANA_API_KEY` - Grafana API key with at least `Editor role`.
+1. The reindexing task (`gitlab:db:reindex`) rebuilds only the two indexes in each database
+   with the highest bloat. To rebuild more than two indexes, run the task again
+   until all desired indexes have been rebuilt.
 
-You can also [enable reindexing as a regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).
+### Notes
+
+- Rebuilding database indexes is a disk-intensive task, so you should perform the
+task during off-peak hours. Running the task during peak hours can lead to
+_increased_ bloat, and can also cause certain queries to perform slowly.
+
+- The task requires free disk space for the index being restored. The created
+indexes are appended with `_ccnew`. If the reindexing task fails, re-running the
+task cleans up the temporary indexes.
+
+- The time it takes for database index rebuilding to complete depends on the size
+of the target database. It can take between several hours and several days.
 
 ## Import common metrics
 

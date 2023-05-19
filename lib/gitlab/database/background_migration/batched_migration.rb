@@ -92,10 +92,6 @@ module Gitlab
           for_configuration(gitlab_schema, job_class_name, table_name, column_name, job_arguments).first
         end
 
-        def self.active_migration(connection:)
-          active_migrations_distinct_on_table(connection: connection, limit: 1).first
-        end
-
         def self.find_executable(id, connection:)
           for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
             .executable.find_by_id(id)

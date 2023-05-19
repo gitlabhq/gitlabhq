@@ -16,7 +16,6 @@ module Database
       included do
         data_consistency :always
         feature_category :database
-        prefer_calling_context_feature_category true
         idempotent!
       end
 
@@ -58,37 +57,17 @@ module Database
         Gitlab::Database::SharedModel.using_connection(base_model.connection) do
           break unless self.class.enabled?
 
-          if parallel_execution_enabled?
-            migrations = Gitlab::Database::BackgroundMigration::BatchedMigration
-              .active_migrations_distinct_on_table(connection: base_model.connection, limit: max_running_migrations).to_a
+          migrations = Gitlab::Database::BackgroundMigration::BatchedMigration
+            .active_migrations_distinct_on_table(connection: base_model.connection, limit: max_running_migrations).to_a
 
-            queue_migrations_for_execution(migrations) if migrations.any?
-          else
-            break unless active_migration
-
-            with_exclusive_lease(active_migration.interval) do
-              run_active_migration
-            end
-          end
+          queue_migrations_for_execution(migrations) if migrations.any?
         end
       end
 
       private
 
-      def parallel_execution_enabled?
-        Feature.enabled?(:batched_migrations_parallel_execution)
-      end
-
       def max_running_migrations
         execution_worker_class.max_running_jobs
-      end
-
-      def active_migration
-        @active_migration ||= Gitlab::Database::BackgroundMigration::BatchedMigration.active_migration(connection: base_model.connection)
-      end
-
-      def run_active_migration
-        execution_worker_class.new.perform_work(tracking_database, active_migration.id)
       end
 
       def tracking_database

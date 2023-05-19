@@ -19,12 +19,6 @@ module Gitlab
         Gitlab::Utils.append_path(host_url, path)
       end
 
-      def blob_url(source_file_path)
-        blob_id = File.join(ref, source_file_path)
-
-        host_url + url_helpers.namespace_project_blob_path(group, project, blob_id)
-      end
-
       private
 
       def host_url

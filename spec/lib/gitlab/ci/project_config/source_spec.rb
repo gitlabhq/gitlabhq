@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Source, feature_category: :continuous_
   let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:sha) { '123456' }
 
-  subject(:custom_config) { custom_config_class.new(project, sha, nil, nil, nil, nil) }
+  subject(:custom_config) { custom_config_class.new(project, sha, nil, nil, nil) }
 
   describe '#content' do
     subject(:content) { custom_config.content }
@@ -25,11 +25,5 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Source, feature_category: :continuous_
     subject(:internal_include_prepended) { custom_config.internal_include_prepended? }
 
     it { expect(internal_include_prepended).to eq(false) }
-  end
-
-  describe '#url' do
-    subject(:url) { custom_config.url }
-
-    it { expect { url }.to raise_error(NotImplementedError) }
   end
 end

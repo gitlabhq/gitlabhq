@@ -20,10 +20,6 @@ module Gitlab
           :repository_source
         end
 
-        def url
-          Rails.application.routes.url_helpers.project_blob_url(project, File.join(sha, ci_config_path))
-        end
-
         private
 
         def file_in_repository?

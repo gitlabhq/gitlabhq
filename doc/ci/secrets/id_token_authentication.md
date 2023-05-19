@@ -74,8 +74,6 @@ The token also includes custom claims provided by GitLab:
 | `runner_id`             | Always                       | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `runner_environment`    | Always                       | The type of runner used by the job. Can be either `gitlab-hosted` or `self-hosted`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `sha`                   | Always                       | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
-| `pipeline_ref`          | Always                       | Fully qualified URL for the pipeline definition (e.g. `https://gitlab.example.com/my-group/my-project/-/blob/714a629c0b401fdce83e847fc9589983fc6f46bc/.gitlab-ci.yml`). Might point to a remote location [depending on project configuration](../pipelines/settings.md#specify-a-custom-cicd-configuration-file). |
-| `pipeline_sha`          | Always                       | Git commit SHA for the project where the pipeline definition is stored. Only populated when the pipeline definition is stored in the project running the job. |
 
 ```json
 {
@@ -103,8 +101,6 @@ The token also includes custom claims provided by GitLab:
   "runner_id": 1,
   "runner_environment": "self-hosted",
   "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
-  "pipeline_ref": "https://gitlab.example.com/my-group/my-project/-/blob/714a629c0b401fdce83e847fc9589983fc6f46bc/.gitlab-ci.yml",
-  "pipeline_sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
   "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
   "iss": "https://gitlab.example.com",
   "iat": 1681395193,

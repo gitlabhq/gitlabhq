@@ -44,7 +44,7 @@
           - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
             = link_to_label(label, small: true)
 
-        = render "projects/issues/issue_estimate", issue: issue
+        = render 'projects/issues/service_desk/issue_estimate', issue: issue
 
     .issuable-meta
       %ul.controls

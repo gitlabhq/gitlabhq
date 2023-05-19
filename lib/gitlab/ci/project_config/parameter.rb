@@ -15,10 +15,6 @@ module Gitlab
         def source
           :parameter_source
         end
-
-        def url
-          nil
-        end
       end
     end
   end
