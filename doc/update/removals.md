@@ -627,6 +627,18 @@ From GitLab 15.9, all Release links are external. The `external` field of the `R
 
 From GitLab 15.9, all Release links are external. The `external` field in the Releases and Release link APIs was deprecated in 15.9, and removed in GitLab 16.0.
 
+### Secure JWT token setting is removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
+</div>
+
+As part of [the deprecation of old versions of JSON web tokens](https://docs.gitlab.com/ee/update/deprecations.html#old-versions-of-json-web-tokens-are-deprecated), the **Limit JSON Web Token (JWT)** project setting has been removed. This setting was a temporary solution to help users transition to [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html), as a way to switch between the old and new tokens, but the setting is no longer needed. In GitLab 16.0 and later, you can simply start using ID tokens in any job. When you use the `id_tokens` keyword in a job, that job uses only ID tokens and the old `CI_JOB_JWT*` tokens are not available. In jobs that do not use the `id_tokens` keyword, the old behavior remains unchanged.
+
+The old `CI_JOB_JWT*` tokens will be completely removed in GitLab 16.5, so you must switch to ID tokens before that release.
+
 ### Secure scanning `_DISABLED` variables now require the value `"true"`
 
 <div class="deprecation-notes">

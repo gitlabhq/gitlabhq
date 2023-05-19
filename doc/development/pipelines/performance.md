@@ -139,12 +139,3 @@ and `compile-production-assets` jobs to:
    This task is responsible for deciding if assets need to be compiled or not.
    It [compares the `HEAD` `SHA256` hexdigest from `$GITLAB_ASSETS_HASH` with the `master` hexdigest from `cached-assets-hash.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L86).
 1. If the hashes are the same, we don't compile anything. If they're different, we compile the assets.
-
-## Pre-clone step
-
-NOTE:
-We no longer use this optimization for `gitlab-org/gitlab` because the [pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
-allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching](#git-fetch-caching).
-
-The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../../ci/runners/saas/linux_saas_runner.md#pre-clone-script-deprecated).

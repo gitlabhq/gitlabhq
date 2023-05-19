@@ -192,8 +192,6 @@ Example response:
 
 Updates settings of an existing Geo node.
 
-_This can only be run against a primary Geo node._
-
 ```plaintext
 PUT /geo_nodes/:id
 ```

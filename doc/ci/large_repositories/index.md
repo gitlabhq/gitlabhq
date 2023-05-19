@@ -245,19 +245,11 @@ concurrent = 4
 This makes the cloning configuration to be part of the given runner
 and does not require us to update each `.gitlab-ci.yml`.
 
-## Git fetch caching or pre-clone step
+## Git fetch caching step
 
-For very active repositories with a large number of references and files, you can either (or both):
+For very active repositories with a large number of references and files, consider using the
+[Gitaly pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache).
+The pack-objects cache:
 
-- Consider using the [Gitaly pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache) instead of a
-  pre-clone step. This is easier to set up and it benefits all repositories on your GitLab server, unlike the pre-clone step that
-  must be configured per-repository. The pack-objects cache also automatically works for forks. On GitLab.com, where the pack-objects cache is
-  enabled on all Gitaly servers, we found that we no longer need a pre-clone step for `gitlab-org/gitlab` development.
-- Optimize your CI/CD jobs by seeding repository data in a pre-clone step with the
-  [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) of GitLab Runner. See
-  [SaaS runners on Linux](../runners/saas/linux_saas_runner.md#pre-clone-script-deprecated) for details.
-  Besides speeding up pipelines in large and active projects,
-  seeding the repository data also helps avoid
-  `429 Too many requests` errors from Cloudflare.
-  This error can occur if you have many runners behind a single,
-  IP address using NAT, that pulls from GitLab.com.
+- Benefits all repositories on your GitLab server.
+- Automatically works for forks.

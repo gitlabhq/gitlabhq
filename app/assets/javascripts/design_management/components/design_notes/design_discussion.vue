@@ -311,7 +311,6 @@ export default {
             :loading="isResolving"
             category="tertiary"
             data-testid="resolve-button"
-            size="small"
             @click.stop="toggleResolvedStatus"
           />
         </template>

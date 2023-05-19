@@ -101,123 +101,15 @@ SaaS runner instances are provisioned with a 25 GB storage volume. The underlyin
 is shared by the operating system, the Docker image, and a copy of your cloned repository.
 This means that the available free disk space that your jobs can use is **less than 25 GB**.
 
-## RAM disk (tmpfs)
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-If your workloads generate a lot of disk input/output, you can run them from a RAM disk instead.
+## Pre-clone script (removed)
 
-Add a `tmpfs` mount point as part of your CI job, and ensure that these operations run from that location:
-
-```yaml
-myjob:
-  before_script:
-    - mkdir -p mount/point
-    - mount -t tmpfs -o size=1G tmpfs mount/point
-```
-
-`tmpfs` stores any data written in RAM, and is paged out to swap if necessary, which generates input/output.
-To avoid this I/O, ensure that the combined memory needed by the workload plus the data written to `tmpfs` does not exceed
-the amount of RAM in the [runner machine type](#machine-types-available-for-private-projects-x86-64)
-selected for the job.
-
-The `free` command can be used to observe the state of memory use and potentially help explain why jobs
-intermittently run slowly or fail.
-
-```yaml
-  script:
-    - run_tests --workdir mount/point/
-    - free
-```
-
-If `buff/cache` is lower than normal or there is any swap used, this suggests that the server was under
-memory pressure. In the following example, `Swap: used` is not zero, and additionally
-compares `buff/cache` to a job which ran without any issues.
-
-```plaintext
-              total        used        free      shared  buff/cache   available
-Mem:        4396380      334028     3678404        3884      383948     3799128
-Swap:       1048572       69632      978940
-```
-
-## Pre-clone script (deprecated)
-
-WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
-and is planned for removal in 16.0. Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead. This change is a breaking change.
-With SaaS runners on Linux, you can run commands in a CI/CD
-job before the runner attempts to run `git init` and `git fetch` to
-download a GitLab repository. The
-[`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
-can be used for:
+and [removed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405) in 16.0.
+Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead.
 
-- Seeding the build directory with repository data
-- Sending a request to a server
-- Downloading assets from a CDN
-- Any other commands that must run before the `git init`
-
-To use this feature, define a [CI/CD variable](../../../ci/variables/index.md) called
-`CI_PRE_CLONE_SCRIPT` that contains a bash script.
-
-NOTE:
-The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS runners.
-
-### Pre-clone script example
-
-This example was used in the `gitlab-org/gitlab` project until November 2021.
-The project no longer uses this optimization because the
-[pack-objects cache](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
-lets Gitaly serve the full CI/CD fetch traffic. See [Git fetch caching](../../../development/pipelines/performance.md#git-fetch-caching).
-
-The `CI_PRE_CLONE_SCRIPT` was defined as a project CI/CD variable:
-
-```shell
-(
-  echo "Downloading archived master..."
-  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-
-  if [ ! -f /tmp/gitlab.tar.gz ]; then
-      echo "Repository cache not available, cloning a new directory..."
-      exit
-  fi
-
-  rm -rf $CI_PROJECT_DIR
-  echo "Extracting tarball into $CI_PROJECT_DIR..."
-  mkdir -p $CI_PROJECT_DIR
-  cd $CI_PROJECT_DIR
-  tar xzf /tmp/gitlab.tar.gz
-  rm -f /tmp/gitlab.tar.gz
-  chmod a+w $CI_PROJECT_DIR
-)
-```
-
-The first step of the script downloads `gitlab-master.tar.gz` from Google Cloud Storage.
-There was a [GitLab CI/CD job named `cache-repo`](https://gitlab.com/gitlab-org/gitlab/-/blob/5fb40526c8c8aaafc5f92eab36d5bbddaca3893d/.gitlab/ci/cache-repo.gitlab-ci.yml)
-that was responsible for keeping that archive up-to-date. Every two hours on a scheduled pipeline,
-it did the following:
-
-1. Create a fresh clone of the `gitlab-org/gitlab` repository on GitLab.com.
-1. Save the data as a `.tar.gz`.
-1. Upload it into the Google Cloud Storage bucket.
-
-When a job ran with this configuration, the output looked similar to:
-
-```shell
-$ eval "$CI_PRE_CLONE_SCRIPT"
-Downloading archived master...
-Extracting tarball into /builds/gitlab-org/gitlab...
-Fetching changes...
-Reinitialized existing Git repository in /builds/gitlab-org/gitlab/.git/
-```
-
-The `Reinitialized existing Git repository` message shows that
-the pre-clone step worked. The runner runs `git init`, which
-overwrites the Git configuration with the appropriate settings to fetch
-from the GitLab repository.
-
-`CI_REPO_CACHE_CREDENTIALS` must contain the Google Cloud service account
-JSON for uploading to the `gitlab-ci-git-repo-cache` bucket.
-
-This bucket should be located in the same continent as the
-runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
+<!--- end_remove -->
 
 ## `config.toml`
 
