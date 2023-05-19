@@ -1,0 +1,8 @@
+---
+name: enable_rails_cache_pipeline_patch
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119724
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410115
+milestone: '16.1'
+type: development
+group: group::scalability
+default_enabled: false

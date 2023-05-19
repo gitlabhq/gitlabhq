@@ -29,6 +29,8 @@ module Clusters
 
     has_many :activity_events, -> { in_timeline_order }, class_name: 'Clusters::Agents::ActivityEvent', inverse_of: :agent
 
+    has_many :environments, class_name: '::Environment', inverse_of: :cluster_agent, foreign_key: :cluster_agent_id
+
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
     scope :has_vulnerabilities, -> (value = true) { where(has_vulnerabilities: value) }

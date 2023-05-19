@@ -34,3 +34,5 @@ module DesignManagement
     end
   end
 end
+
+DesignManagement::Repository.prepend_mod_with('DesignManagement::Repository')

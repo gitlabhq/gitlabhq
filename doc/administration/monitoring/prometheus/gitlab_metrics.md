@@ -372,6 +372,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9    | Total number of times Sidekiq process memory violations were handled                                                                                       | |
 | `sidekiq_watchdog_running_jobs_total`                | Counter | 15.9    | Current running jobs when RSS limit was reached                                                                                                            | `worker_class`                                                                                          |
 | `gitlab_maintenance_mode`                            | Gauge   | 15.11   | Is GitLab Maintenance Mode enabled? | |
+| `geo_design_management_repositories`                     | Gauge   | 16.1  | Number of design repositories on primary | `url` |
+| `geo_design_management_repositories_checksum_total`      | Gauge   | 16.1 | Number of design repositories tried to checksum on primary | `url` |
+| `geo_design_management_repositories_checksummed`         | Gauge   | 16.1 | Number of design repositories successfully checksummed on primary | `url` |
+| `geo_design_management_repositories_checksum_failed`     | Gauge   | 16.1 | Number of design repositories failed to calculate the checksum on primary | `url` |
+| `geo_design_management_repositories_synced`              | Gauge   | 16.1 | Number of syncable design repositories synced on secondary | `url` |
+| `geo_design_management_repositories_failed`              | Gauge   | 16.1 | Number of syncable design repositories failed to sync on secondary | `url` |
+| `geo_design_management_repositories_registry`            | Gauge   | 16.1 | Number of design repositories in the registry | `url` |
+| `geo_design_management_repositories_verification_total`  | Gauge   | 16.1 | Number of design repositories verifications tried on secondary | `url` |
+| `geo_design_management_repositories_verified`            | Gauge   | 16.1 | Number of design repositories verified on secondary | `url` |
+| `geo_design_management_repositories_verification_failed` | Gauge   | 16.1 | Number of design repositories verifications failed on secondary | `url` |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 

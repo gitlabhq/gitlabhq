@@ -491,16 +491,26 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
     end
   end
 
-  describe 'processing design changes' do
-    let(:gl_repository) { "design-#{project.id}" }
+  describe '#process_design_management_repository_changes' do
+    let(:gl_repository) { "design-#{project.design_management_repository.id}" }
 
-    it 'does not do anything' do
-      worker = described_class.new
+    before do
+      project.create_design_management_repository
+      project.design_management_repository.repository.create_if_not_exists
+    end
 
-      expect(worker).not_to receive(:process_wiki_changes)
-      expect(worker).not_to receive(:process_project_changes)
+    it 'does not log an error' do
+      expect(Gitlab::GitLogger).not_to receive(:error)
+      expect(Gitlab::GitPostReceive).to receive(:new).and_call_original
+      expect_next(described_class).to receive(:process_design_management_repository_changes)
 
-      described_class.new.perform(gl_repository, key_id, base64_changes)
+      perform
+    end
+
+    it 'expires cache' do
+      expect_next(described_class).to receive(:expire_caches).with(anything, project.design_management_repository.repository)
+
+      perform
     end
 
     it_behaves_like 'an idempotent worker'

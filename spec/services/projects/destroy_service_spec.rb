@@ -113,7 +113,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       destroy_project(project, user, {})
 
       expect(project.reload.delete_error).to be_present
-      expect(project.delete_error).to include(error_message)
+      expect(project.delete_error).to match(error_message)
     end
   end
 
@@ -287,7 +287,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
             .to receive(:remove_legacy_registry_tags).and_return(false)
         end
 
-        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove some tags"
+        it_behaves_like 'handles errors thrown during async destroy', /Failed to remove some tags/
       end
 
       context 'when `remove_repository` fails' do
@@ -296,7 +296,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
             .to receive(:remove_repository).and_return(false)
         end
 
-        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove project repository"
+        it_behaves_like 'handles errors thrown during async destroy', /Failed to remove/
       end
 
       context 'when `execute` raises expected error' do
@@ -305,7 +305,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
             .to receive(:destroy!).and_raise(StandardError.new("Other error message"))
         end
 
-        it_behaves_like 'handles errors thrown during async destroy', "Other error message"
+        it_behaves_like 'handles errors thrown during async destroy', /Other error message/
       end
 
       context 'when `execute` raises unexpected error' do
@@ -456,6 +456,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'repository removal' do
+    # 1. Project repository
+    # 2. Wiki repository
     it 'removal of existing repos' do
       expect_next_instances_of(Repositories::DestroyService, 2) do |instance|
         expect(instance).to receive(:execute).and_return(status: :success)
@@ -529,7 +531,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         end
       end
 
-      it_behaves_like 'handles errors thrown during async destroy', "Failed to remove webhooks"
+      it_behaves_like 'handles errors thrown during async destroy', /Failed to remove webhooks/
     end
   end
 

@@ -15,6 +15,7 @@ class Environment < ApplicationRecord
 
   belongs_to :project, optional: false
   belongs_to :merge_request, optional: true
+  belongs_to :cluster_agent, class_name: 'Clusters::Agent', optional: true, inverse_of: :environments
 
   use_fast_destroy :all_deployments
   nullify_if_blank :external_url

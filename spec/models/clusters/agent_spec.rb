@@ -13,6 +13,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
   it { is_expected.to have_many(:ci_access_authorized_groups).through(:ci_access_group_authorizations) }
   it { is_expected.to have_many(:ci_access_project_authorizations).class_name('Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization') }
   it { is_expected.to have_many(:ci_access_authorized_projects).through(:ci_access_project_authorizations).class_name('::Project') }
+  it { is_expected.to have_many(:environments).class_name('::Environment') }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_length_of(:name).is_at_most(63) }

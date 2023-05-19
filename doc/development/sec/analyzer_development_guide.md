@@ -361,3 +361,9 @@ This issue will guide you through the whole release process. In general, you hav
     - Max role: `Developer`
     - Scope of the associated `GITLAB_TOKEN`:
     - Expiry Date of the associated `GITLAB_TOKEN`:
+
+#### Dependency updates
+
+All dependencies and upstream scanners (if any) used in the analyzer source are updated on a monthly cadence which primarily includes security fixes and non-breaking changes.
+
+- Static Analysis team uses a custom internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of all the SAST analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among Static Analysis team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).

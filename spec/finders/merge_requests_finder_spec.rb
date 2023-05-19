@@ -295,7 +295,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         {
-          wip: ["WIP:", "wip", "[wip]"],
           draft: ["Draft:", "Draft -", "[Draft]", "(Draft)"]
         }.each do |draft_param_key, title_prefixes|
           title_prefixes.each do |title_prefix|

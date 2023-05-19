@@ -555,7 +555,7 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   - `cool_widgets_synced_in_percentage`
   - `cool_widgets_verified_in_percentage`
 - [ ] Add the same fields to `GET /geo_nodes/status` example response in
-  `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json`.
+  `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json` and `ee/spec/fixtures/api/schemas/public_api/v4/geo_site_status.json`.
 - [ ] Add the following fields to the `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md`:
 
   ```markdown

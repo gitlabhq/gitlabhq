@@ -8628,6 +8628,29 @@ The edge type for [`Design`](#design).
 | <a id="designedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="designedgenode"></a>`node` | [`Design`](#design) | The item at the end of the edge. |
 
+#### `DesignManagementRepositoryRegistryConnection`
+
+The connection type for [`DesignManagementRepositoryRegistry`](#designmanagementrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="designmanagementrepositoryregistryconnectionedges"></a>`edges` | [`[DesignManagementRepositoryRegistryEdge]`](#designmanagementrepositoryregistryedge) | A list of edges. |
+| <a id="designmanagementrepositoryregistryconnectionnodes"></a>`nodes` | [`[DesignManagementRepositoryRegistry]`](#designmanagementrepositoryregistry) | A list of nodes. |
+| <a id="designmanagementrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DesignManagementRepositoryRegistryEdge`
+
+The edge type for [`DesignManagementRepositoryRegistry`](#designmanagementrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="designmanagementrepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="designmanagementrepositoryregistryedgenode"></a>`node` | [`DesignManagementRepositoryRegistry`](#designmanagementrepositoryregistry) | The item at the end of the edge. |
+
 #### `DesignVersionConnection`
 
 The connection type for [`DesignVersion`](#designversion).
@@ -13868,6 +13891,25 @@ Returns [`DesignVersion`](#designversion).
 | ---- | ---- | ----------- |
 | <a id="designmanagementversionid"></a>`id` | [`DesignManagementVersionID!`](#designmanagementversionid) | Global ID of the version. |
 
+### `DesignManagementRepositoryRegistry`
+
+Represents the Geo replication and verification state of a Design Management Repository.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="designmanagementrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DesignManagementRepositoryRegistry was created. |
+| <a id="designmanagementrepositoryregistrydesignmanagementrepositoryid"></a>`designManagementRepositoryId` | [`ID!`](#id) | ID of the Design Management Repository. |
+| <a id="designmanagementrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is resynced. |
+| <a id="designmanagementrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is reverified. |
+| <a id="designmanagementrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DesignManagementRepositoryRegistry. |
+
 ### `DesignVersion`
 
 A specific version in which designs were added, modified or deleted.
@@ -14879,6 +14921,29 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodedependencyproxymanifestregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodedependencyproxymanifestregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxymanifestregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+##### `GeoNode.designManagementRepositoryRegistries`
+
+Find Design Repository registries on this Geo node. Ignored if `geo_design_management_repository_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementrepositoryregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodedesignmanagementrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedesignmanagementrepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
+| <a id="geonodedesignmanagementrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodedesignmanagementrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 
@@ -24562,6 +24627,7 @@ Geo registry class.
 | <a id="georegistryclasscontainer_repository_registry"></a>`CONTAINER_REPOSITORY_REGISTRY` | Geo::ContainerRepositoryRegistry registry class. |
 | <a id="georegistryclassdependency_proxy_blob_registry"></a>`DEPENDENCY_PROXY_BLOB_REGISTRY` | Geo::DependencyProxyBlobRegistry registry class. |
 | <a id="georegistryclassdependency_proxy_manifest_registry"></a>`DEPENDENCY_PROXY_MANIFEST_REGISTRY` | Geo::DependencyProxyManifestRegistry registry class. |
+| <a id="georegistryclassdesign_management_repository_registry"></a>`DESIGN_MANAGEMENT_REPOSITORY_REGISTRY` | Geo::DesignManagementRepositoryRegistry registry class. |
 | <a id="georegistryclassjob_artifact_registry"></a>`JOB_ARTIFACT_REGISTRY` | Geo::JobArtifactRegistry registry class. |
 | <a id="georegistryclasslfs_object_registry"></a>`LFS_OBJECT_REGISTRY` | Geo::LfsObjectRegistry registry class. |
 | <a id="georegistryclassmerge_request_diff_registry"></a>`MERGE_REQUEST_DIFF_REGISTRY` | Geo::MergeRequestDiffRegistry registry class. |

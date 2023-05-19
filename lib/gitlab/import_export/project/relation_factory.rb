@@ -23,6 +23,7 @@ module Gitlab
                       design: 'DesignManagement::Design',
                       designs: 'DesignManagement::Design',
                       design_management_repository: 'DesignManagement::Repository',
+                      design_management_repository_state: 'Geo::DesignManagementRepositoryState',
                       design_versions: 'DesignManagement::Version',
                       actions: 'DesignManagement::Action',
                       labels: :project_labels,

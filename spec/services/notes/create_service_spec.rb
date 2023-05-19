@@ -482,7 +482,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
                   expect(noteable.target_branch == "fix").to eq(can_use_quick_action)
                 }
               ),
-              # Set WIP status
+              # Set Draft status
               QuickAction.new(
                 action_text: "/draft",
                 before_action: -> {

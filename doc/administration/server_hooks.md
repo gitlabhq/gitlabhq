@@ -201,7 +201,7 @@ The following GitLab environment variables are supported for all server hooks:
 
 | Environment variable | Description                                                                                                                                                |
 |:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GL_ID`              | GitLab identifier of user that initiated the push. For example, `user-2234`.                                                                               |
+| `GL_ID`              | GitLab identifier of user or SSH key that initiated the push. For example, `user-2234` or `key-4`.                                                         |
 | `GL_PROJECT_PATH`    | (GitLab 13.2 and later) GitLab project path.                                                                                                               |
 | `GL_PROTOCOL`        | (GitLab 13.2 and later) Protocol used for this change. One of: `http` (Git `push` using HTTP), `ssh` (Git `push` using SSH), or `web` (all other actions). |
 | `GL_REPOSITORY`      | `project-<id>` where `id` is the ID of the project.                                                                                                        |

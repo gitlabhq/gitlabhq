@@ -15661,7 +15661,8 @@ CREATE TABLE environments (
     auto_stop_at timestamp with time zone,
     auto_delete_at timestamp with time zone,
     tier smallint,
-    merge_request_id bigint
+    merge_request_id bigint,
+    cluster_agent_id bigint
 );
 
 CREATE SEQUENCE environments_id_seq
@@ -30635,6 +30636,8 @@ CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
 
+CREATE INDEX index_environments_cluster_agent_id ON environments USING btree (cluster_agent_id) WHERE (cluster_agent_id IS NOT NULL);
+
 CREATE INDEX index_environments_for_name_search_within_folder ON environments USING btree (project_id, lower(ltrim((name)::text, ((environment_type)::text || '/'::text))) varchar_pattern_ops, state);
 
 CREATE INDEX index_environments_on_merge_request_id ON environments USING btree (merge_request_id);
@@ -35055,6 +35058,9 @@ ALTER TABLE ONLY index_statuses
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_75008f3553 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY environments
+    ADD CONSTRAINT fk_75c2098045 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_76bc5f5455 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;

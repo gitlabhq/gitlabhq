@@ -798,6 +798,7 @@ project:
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
 - design_management_repository
+- design_management_repository_state
 award_emoji:
 - awardable
 - user

@@ -1205,8 +1205,8 @@ class Project < ApplicationRecord
     @repository ||= Gitlab::GlRepository::PROJECT.repository_for(self)
   end
 
-  def design_management_repository
-    super || create_design_management_repository
+  def find_or_create_design_management_repository
+    design_management_repository || create_design_management_repository
   end
 
   def design_repository

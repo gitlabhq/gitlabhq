@@ -1,7 +1,7 @@
 ---
 table_name: design_management_repository_states
 classes:
-classes: []
+- Geo::DesignManagementRepositoryState
 feature_categories:
 - geo_replication
 description: Separate table for Design Repository verification states

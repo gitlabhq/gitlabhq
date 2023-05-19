@@ -158,19 +158,15 @@ class MergeRequestsFinder < IssuableFinder
     return items if draft_param.nil?
 
     if draft_param
-      items.where(wip_match(items.arel_table))
+      items.where(draft_match(items.arel_table))
     else
-      items.where.not(wip_match(items.arel_table))
+      items.where.not(draft_match(items.arel_table))
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # WIP is deprecated in favor of Draft. Currently both options are supported
-  def wip_match(table)
-    table[:title].matches('WIP:%')
-      .or(table[:title].matches('WIP %'))
-      .or(table[:title].matches('[WIP]%'))
-      .or(table[:title].matches('Draft - %'))
+  def draft_match(table)
+    table[:title].matches('Draft - %')
       .or(table[:title].matches('Draft:%'))
       .or(table[:title].matches('[Draft]%'))
       .or(table[:title].matches('(Draft)%'))
