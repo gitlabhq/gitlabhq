@@ -17,7 +17,7 @@ See [Starting a Rails console session](../../administration/operations/rails_con
 
 To list all available attributes:
 
-1. Open the Rails console (`gitlab rails c`).
+1. Open the Rails console (`sudo gitlab-rails console`).
 1. Run the following command:
 
 ```ruby

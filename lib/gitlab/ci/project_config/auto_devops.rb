@@ -21,6 +21,10 @@ module Gitlab
           :auto_devops_source
         end
 
+        def url
+          Gitlab::Source.blob_url('lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml')
+        end
+
         private
 
         def template_name

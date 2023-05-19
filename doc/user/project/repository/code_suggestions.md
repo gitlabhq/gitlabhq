@@ -11,14 +11,15 @@ type: index, reference
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](/ee/policy/alpha-beta-support.md#beta).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1.
 
 WARNING:
 This feature is in [Beta](/ee/policy/alpha-beta-support.md#beta).
-Code Suggestions use generative AI to suggest code while you're developing.
-Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed.
+Due to high demand, this feature may have unscheduled downtime and code suggestions in IDEs may be delayed.
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
 
+Code Suggestions use generative AI to suggest code while you're developing.
 Use Code Suggestions to write code more efficiently by viewing code suggestions
 as you type. Depending on the cursor position, the extension either:
 
@@ -27,11 +28,13 @@ as you type. Depending on the cursor position, the extension either:
 
 To accept a suggestion, press <kbd>Tab</kbd>.
 
-Code Suggestions are available in Visual Studio Code when you have the GitLab Workflow extension installed.
+Code Suggestions are available in Visual Studio Code when you have the GitLab Workflow extension installed. [Additional IDE extension support](https://gitlab.com/groups/gitlab-org/-/epics/10542) is planned for the near future.
 
 ## Supported languages
 
-Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). The best results from Code Suggestions are expected for these languages:
+Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
+
+The best results from Code Suggestions are expected for these languages:
 
 - C/C++
 - C#
@@ -47,7 +50,9 @@ Code Suggestions may produce [low-quality or incomplete suggestions](#model-accu
 
 Suggestions may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
 
-GitLab is continuously improving the model and expects to support an additional seven languages soon, as well as natural language code comments.
+Suggestions are best when writing new code. Editing existing functions or 'fill in the middle' of a function may not perform as expected.
+
+We are making improvements to the Code Suggestions underlying AI model weekly to improve the quality of suggestions. Please remember that AI is non-deterministic, so you may not get the same suggestion week to week.
 
 Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/). Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
 
@@ -56,7 +61,7 @@ Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://
 Prerequisites:
 
 - Your group owner must enable the [group level code suggestions setting](../../group/manage.md#group-code-suggestions).
-- You must have [a personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) with the `read_api` and `read_user` scopes.
+- If using a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token), the token must have the `read_api` and `read_user` scopes.
 
 To enable Code Suggestions in VS Code:
 
@@ -66,9 +71,20 @@ To enable Code Suggestions in VS Code:
 1. In **GitLab: Add Account to VS Code on Mac**, add your GitLab work account to the VS Code extension:
    - In macOS, press <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>P</kbd>.
    - In Windows, press <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>P</kbd>.
-1. Provide your GitLab instance URL. A default is provided.
-1. Provide your personal access token.
-1. After your GitLab account connects successfully, in the left sidebar, select **Extensions**.
+1. You can Authenticate with OAuth to GitLab.com or you can use a personal access token.
+
+   1. To use OAuth (recommended):
+
+      1. Type `GitLab: Authenticate with GitLab.com`. It appears as a quick action. Select it.
+      1. Follow the alert links to open a GitLab authorization URL in your browser.
+      1. In your browser, select the alert to open the URL with VS Code.
+
+   1. To use a personal access token:
+
+      1. Type `GitLab: Add Account to VS Code`. It appears as a quick action. Select it.
+      1. Provide your GitLab instance URL. A default is provided.
+      1. Provide your personal access token.
+1. Regardless of the method you use to authenticate, after your GitLab account connects successfully, in the left sidebar, select **Extensions**.
 1. Find the **GitLab workflow** extension, select **Settings** (**{settings}**), and select **Extension Settings**.
 1. Enable **GitLab > AI Assisted Code Suggestions**.
 
@@ -80,6 +96,14 @@ Start typing and receive suggestions for your GitLab projects.
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+## Stability and performance
+
+This feature is currently in [Beta](/ee/policy/alpha-beta-support.md#beta).
+While the Code Suggestions inference API operates completely within the GitLab.com enterprise infrastructure,
+we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime
+of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to
+mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ## Code Suggestions data usage
 
@@ -113,35 +137,17 @@ We then process this raw dataset against heuristics that aim to increase the qua
 
 The Code Suggestions model is not trained on GitLab customer data.
 
-### Off by default
-
-Code Suggestions are off by default and require a group owner to enable the feature with a group-level setting.
-
-After the group-level setting is enabled, developers using Visual Studio Code with the
-[GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) can connect
-to GitLab.com by using a GitLab
-[personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) with the `read_api`
-and `read_user` scopes.
-
 ## Progressive enhancement
 
-This feature is designed as a progressive enhancement to the existing VS Code GitLab Workflow plugin.
+This feature is designed as a progressive enhancement to developers IDEs.
 Code Suggestions offer a completion if the machine learning engine can generate a recommendation.
 In the event of a connection issue or model inference failure, the feature gracefully degrades.
-Code Suggestions do not prevent you from writing code in VS Code.
+Code Suggestions do not prevent you from writing code in your IDE.
 
 ### Internet connectivity
 
 Code Suggestions only work when you have internet connectivity and can access GitLab.com.
 Code Suggestions are not available for self-managed customers, nor customers operating within an offline environment.
-
-### Stability and performance
-
-This feature is currently in [Beta](/ee/policy/alpha-beta-support.md#beta).
-While the Code Suggestions inference API operates completely within the GitLab.com enterprise infrastructure,
-we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime
-of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to
-mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ### Model accuracy and quality
 
@@ -174,6 +180,7 @@ However, Code Suggestions may generate suggestions that are:
 
 We are also aware of specific situations that can produce unexpected or incoherent results including:
 
+- Suggestions written in the middle of existing functions, or "fill in the middle."
 - Suggestions based on natural language code comments.
 - Suggestions that mixed programming languages in unexpected ways.
 

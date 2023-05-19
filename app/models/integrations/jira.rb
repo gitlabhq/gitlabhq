@@ -81,13 +81,13 @@ module Integrations
           section: SECTION_TYPE_CONNECTION,
           required: false,
           title: -> { s_('JiraService|Email or username') },
-          help: -> { s_('JiraService|Only required for Basic authentication. Email for Jira Cloud or username for Jira Data Center and Jira Server') }
+          help: -> { s_('JiraService|Email for Jira Cloud or username for Jira Data Center and Jira Server') }
 
     field :password,
           section: SECTION_TYPE_CONNECTION,
           required: true,
-          title: -> { s_('JiraService|Password or API token') },
-          non_empty_password_title: -> { s_('JiraService|New API token, password, or Jira personal access token') },
+          title: -> { s_('JiraService|API token or password') },
+          non_empty_password_title: -> { s_('JiraService|New API token or password') },
           non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
           help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
           is_secret: true

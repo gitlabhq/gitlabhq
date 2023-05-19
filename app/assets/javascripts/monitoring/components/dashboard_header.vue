@@ -105,7 +105,7 @@ export default {
       return (
         this.customMetricsAvailable &&
         !this.shouldShowEmptyState &&
-        // Custom metrics only avaialble on system dashboards because
+        // Custom metrics only available on system dashboards because
         // they are stored in the database. This can be improved. See:
         // https://gitlab.com/gitlab-org/gitlab/-/issues/28241
         this.selectedDashboard?.out_of_the_box_dashboard

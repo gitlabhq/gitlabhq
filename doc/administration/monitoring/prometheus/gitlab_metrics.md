@@ -221,9 +221,6 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_lfs_objects_verified`                     | Gauge   | 14.6  | Number of LFS objects successfully verified on secondary | `url` |
 | `geo_lfs_objects_verification_failed`          | Gauge   | 14.6  | Number of LFS objects that failed verifications on secondary | `url` |
 | `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects to attempt to verify on secondary | `url` |
-| `geo_attachments`                              | Gauge   | 10.2  | Total number of file attachments available on primary | `url` |
-| `geo_attachments_synced`                       | Gauge   | 10.2  | Number of attachments synced on secondary | `url` |
-| `geo_attachments_failed`                       | Gauge   | 10.2  | Number of attachments failed to sync on secondary | `url` |
 | `geo_last_event_id`                            | Gauge   | 10.2  | Database ID of the latest event log entry on the primary | `url` |
 | `geo_last_event_timestamp`                     | Gauge   | 10.2  | UNIX timestamp of the latest event log entry on the primary | `url` |
 | `geo_cursor_last_event_id`                     | Gauge   | 10.2  | Last database ID of the event log processed by the secondary | `url` |

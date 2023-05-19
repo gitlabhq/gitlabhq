@@ -814,6 +814,16 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 | `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
 
+### `CI_PRE_CLONE_SCRIPT` variable on GitLab SaaS Runners has been removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405).
+</div>
+
+In GitLab 16.0 and later, the `CI_PRE_CLONE_SCRIPT` variable option on GitLab SaaS Runners has been removed. The `CI_PRE_CLONE_SCRIPT` variable enabled you to run commands in your CI/CD job before the runner executed `git-init` and `git-fetch`. You should use the `pre_get_sources_script` hook instead. For more information, see the blog post, [Guide to pre_clone_script changes on GitLab SaaS Linux Runners](https://about.gitlab.com/blog/2023/03/27/changes-to-the-preclonescript/).
+
 ### `POST /projects/:id/merge_requests/:merge_request_iid/approvals` removed
 
 <div class="deprecation-notes">

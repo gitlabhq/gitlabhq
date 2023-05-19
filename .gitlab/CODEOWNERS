@@ -1465,6 +1465,11 @@ ee/lib/ee/api/entities/project.rb
 /lib/sidebars/
 /ee/lib/sidebars/
 
+[Global Search] @gitlab-org/search-team/migration-maintainers
+/ee/elastic/migrate
+/ee/spec/elastic/migrate
+/ee/spec/support/elastic.rb
+
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
 [JH Frontend] @jihulab/maintainers/frontend

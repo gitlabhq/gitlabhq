@@ -7,6 +7,8 @@ module API
 
       content_type :txt, 'text/plain'
 
+      before { check_if_backoff_required! }
+
       resource :runners do
         desc 'Register a new runner' do
           detail "Register a new runner for the instance"

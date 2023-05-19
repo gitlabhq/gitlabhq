@@ -104,4 +104,25 @@ export const placeholderForType = {
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
 
+export const INTEGRATION_FORM_TYPE_JIRA = 'jira';
 export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';
+
+export const jiraIntegrationAuthFields = {
+  AUTH_TYPE: 'jira_auth_type',
+  USERNAME: 'username',
+  PASSWORD: 'password',
+};
+export const jiraAuthTypeFieldProps = [
+  {
+    username: s__('JiraService|Email or username'),
+    password: s__('JiraService|API token or password'),
+    passwordHelp: s__(
+      'JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server',
+    ),
+    nonEmptyPassword: s__('JiraService|New API token or password'),
+  },
+  {
+    password: s__('JiraService|Jira personal access token'),
+    nonEmptyPassword: s__('JiraService|New Jira personal access token'),
+  },
+];

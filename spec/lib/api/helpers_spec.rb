@@ -952,6 +952,42 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#too_many_requests!', :aggregate_failures do
+    let(:headers) { instance_double(Hash) }
+
+    before do
+      allow(helper).to receive(:header).and_return(headers)
+    end
+
+    it 'renders 429' do
+      expect(helper).to receive(:render_api_error!).with('429 Too Many Requests', 429)
+      expect(headers).to receive(:[]=).with('Retry-After', 60)
+
+      helper.too_many_requests!
+    end
+
+    it 'renders 429 with a custom message' do
+      expect(helper).to receive(:render_api_error!).with('custom message', 429)
+      expect(headers).to receive(:[]=).with('Retry-After', 60)
+
+      helper.too_many_requests!('custom message')
+    end
+
+    it 'renders 429 with a custom Retry-After value' do
+      expect(helper).to receive(:render_api_error!).with('429 Too Many Requests', 429)
+      expect(headers).to receive(:[]=).with('Retry-After', 120)
+
+      helper.too_many_requests!(retry_after: 2.minutes)
+    end
+
+    it 'renders 429 without a Retry-After value' do
+      expect(helper).to receive(:render_api_error!).with('429 Too Many Requests', 429)
+      expect(headers).not_to receive(:[]=)
+
+      helper.too_many_requests!(retry_after: nil)
+    end
+  end
+
   describe '#authenticate_by_gitlab_shell_token!' do
     include GitlabShellHelpers
 

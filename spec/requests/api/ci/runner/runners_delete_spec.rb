@@ -21,6 +21,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     end
 
     describe 'DELETE /api/v4/runners' do
+      it_behaves_like 'runner migrations backoff' do
+        let(:request) { delete api('/runners') }
+      end
+
       context 'when no token is provided' do
         it 'returns 400 error' do
           delete api('/runners')

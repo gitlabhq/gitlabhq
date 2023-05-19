@@ -146,6 +146,12 @@ module API
           # noop: overridden in EE
         end
 
+        def check_if_backoff_required!
+          return unless Gitlab::Database::Migrations::RunnerBackoff::Communicator.backoff_runner?
+
+          too_many_requests!('Executing database migrations. Please retry later.', retry_after: 1.minute)
+        end
+
         private
 
         def get_runner_config_from_request

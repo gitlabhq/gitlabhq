@@ -137,6 +137,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:send_request) { subject }
             end
 
+            it_behaves_like 'runner migrations backoff' do
+              let(:request) { subject }
+            end
+
             it "doesn't update runner info" do
               expect { subject }.not_to change { runner.reload.contacted_at }
             end
@@ -297,6 +301,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           let(:send_request) do
             upload_artifacts(file_upload, headers_with_token)
           end
+        end
+
+        it_behaves_like 'runner migrations backoff' do
+          let(:request) { upload_artifacts(file_upload, headers_with_token) }
         end
 
         it "doesn't update runner info" do
@@ -899,6 +907,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         it_behaves_like 'API::CI::Runner application context metadata', 'GET /api/:version/jobs/:id/artifacts' do
           let(:send_request) { download_artifact }
+        end
+
+        it_behaves_like 'runner migrations backoff' do
+          let(:request) { download_artifact }
         end
 
         it "doesn't update runner info" do

@@ -25,6 +25,17 @@ module Gitlab
           :external_project_source
         end
 
+        def url
+          path_file, path_project, ref = extract_location_tokens
+          ref ||= 'HEAD'
+
+          namespace, _, project = path_project.partition('/')
+          return unless namespace.present? && project.present?
+
+          blob = File.join(ref, path_file)
+          Rails.application.routes.url_helpers.namespace_project_blob_url(namespace, project, blob)
+        end
+
         private
 
         # Example: path/to/.gitlab-ci.yml@another-group/another-project

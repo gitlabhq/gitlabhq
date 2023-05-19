@@ -34,6 +34,7 @@ describe('MessageForm', () => {
   const findDismissable = () => wrapper.findComponent('[data-testid=dismissable-checkbox]');
   const findTargetRoles = () => wrapper.findComponent('[data-testid=target-roles-checkboxes]');
   const findSubmitButton = () => wrapper.findComponent('[data-testid=submit-button]');
+  const findCancelButton = () => wrapper.findComponent('[data-testid=cancel-button]');
   const findForm = () => wrapper.findComponent(GlForm);
 
   function createComponent({ broadcastMessage = {} } = {}) {
@@ -124,6 +125,14 @@ describe('MessageForm', () => {
     it('is not disabled when the user message is present', () => {
       createComponent({ broadcastMessage: { message: 'alsdjfkldsj' } });
       expect(findSubmitButton().props().disabled).toBe(false);
+    });
+  });
+
+  describe('form cancel button', () => {
+    it('renders when the editing a message and has href back to message index page', () => {
+      createComponent({ broadcastMessage: { id: 100 } });
+      expect(wrapper.text()).toContain('Cancel');
+      expect(findCancelButton().attributes('href')).toBe(wrapper.vm.messagesPath);
     });
   });
 

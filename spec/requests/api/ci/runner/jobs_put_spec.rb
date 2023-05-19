@@ -38,6 +38,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:send_request) { update_job(state: 'success') }
       end
 
+      it_behaves_like 'runner migrations backoff' do
+        let(:request) { update_job(state: 'success') }
+      end
+
       it 'updates runner info' do
         expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
                                                .and change { runner_manager.reload.contacted_at }

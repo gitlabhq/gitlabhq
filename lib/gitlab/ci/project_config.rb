@@ -21,11 +21,14 @@ module Gitlab
         ProjectConfig::AutoDevops
       ].freeze
 
-      def initialize(project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil)
-        @config = find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
+      def initialize(
+        project:, sha:, custom_content: nil, pipeline_source: nil,
+        pipeline_source_bridge: nil, pipeline: nil
+      )
+        @config = find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge, pipeline)
       end
 
-      delegate :content, :source, to: :@config, allow_nil: true
+      delegate :content, :source, :url, to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?
@@ -34,9 +37,9 @@ module Gitlab
 
       private
 
-      def find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
+      def find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge, pipeline)
         sources.each do |source|
-          config = source.new(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
+          config = source.new(project, sha, custom_content, pipeline_source, pipeline_source_bridge, pipeline)
           return config if config.exists?
         end
 

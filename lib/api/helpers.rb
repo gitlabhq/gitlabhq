@@ -486,6 +486,12 @@ module API
       render_api_error!('413 Request Entity Too Large', 413)
     end
 
+    def too_many_requests!(message = nil, retry_after: 1.minute)
+      header['Retry-After'] = retry_after.to_i if retry_after
+
+      render_api_error!(message || '429 Too Many Requests', 429)
+    end
+
     def not_modified!
       render_api_error!('304 Not Modified', 304)
     end

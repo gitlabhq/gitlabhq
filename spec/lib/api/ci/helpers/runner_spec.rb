@@ -134,4 +134,36 @@ RSpec.describe API::Ci::Helpers::Runner do
         .and not_change { success_counter.get(runner_type: 'project_type') }
     end
   end
+
+  describe '#check_if_backoff_required!' do
+    subject { helper.check_if_backoff_required! }
+
+    let(:backoff_runner) { false }
+
+    before do
+      allow(Gitlab::Database::Migrations::RunnerBackoff::Communicator)
+        .to receive(:backoff_runner?)
+        .and_return(backoff_runner)
+    end
+
+    context 'when migrations are running' do
+      let(:backoff_runner) { true }
+
+      it 'denies requests' do
+        expect(helper).to receive(:too_many_requests!)
+
+        subject
+      end
+    end
+
+    context 'when migrations are not running' do
+      let(:backoff_runner) { false }
+
+      it 'allows requests' do
+        expect(helper).not_to receive(:too_many_requests!)
+
+        subject
+      end
+    end
+  end
 end

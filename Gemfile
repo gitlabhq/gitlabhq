@@ -172,7 +172,7 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.172.0'
+gem 'aws-sdk-core', '~> 3.173.0'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1.122.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
@@ -510,7 +510,7 @@ gem 'gitaly', '~> 15.9.0-rc3'
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.1.0'
 
-gem 'grpc', '~> 1.42.0'
+gem 'grpc', '~> 1.54.2'
 
 gem 'google-protobuf', '~> 3.23', '>= 3.23.1'
 

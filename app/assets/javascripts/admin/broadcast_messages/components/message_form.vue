@@ -12,7 +12,7 @@ import {
   GlFormTextarea,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -71,6 +71,7 @@ export default {
     addError: s__('BroadcastMessages|There was an error adding broadcast message.'),
     update: s__('BroadcastMessages|Update broadcast message'),
     updateError: s__('BroadcastMessages|There was an error updating broadcast message.'),
+    cancel: __('Cancel'),
   },
   messageThemes: THEMES,
   messageTypes: TYPES,
@@ -256,8 +257,12 @@ export default {
         :loading="loading"
         :disabled="messageBlank"
         data-testid="submit-button"
+        class="gl-mr-2"
       >
         {{ isAddForm ? $options.i18n.add : $options.i18n.update }}
+      </gl-button>
+      <gl-button v-if="!isAddForm" :href="messagesPath" data-testid="cancel-button">
+        {{ $options.i18n.cancel }}
       </gl-button>
     </div>
   </gl-form>

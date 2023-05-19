@@ -25316,6 +25316,9 @@ msgstr ""
 msgid "JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server"
 msgstr ""
 
+msgid "JiraService|API token or password"
+msgstr ""
+
 msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
@@ -25344,6 +25347,9 @@ msgid "JiraService|Define the type of Jira issue to create from a vulnerability.
 msgstr ""
 
 msgid "JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used."
+msgstr ""
+
+msgid "JiraService|Email for Jira Cloud or username for Jira Data Center and Jira Server"
 msgstr ""
 
 msgid "JiraService|Email or username"
@@ -25415,6 +25421,9 @@ msgstr ""
 msgid "JiraService|Jira issues"
 msgstr ""
 
+msgid "JiraService|Jira personal access token"
+msgstr ""
+
 msgid "JiraService|Jira personal access token (Jira Data Center and Jira Server only)"
 msgstr ""
 
@@ -25427,22 +25436,22 @@ msgstr ""
 msgid "JiraService|Move to Done"
 msgstr ""
 
-msgid "JiraService|New API token, password, or Jira personal access token"
+msgid "JiraService|New API token or password"
 msgstr ""
 
-msgid "JiraService|Only required for Basic authentication. Email for Jira Cloud or username for Jira Data Center and Jira Server"
+msgid "JiraService|New Jira personal access token"
 msgstr ""
 
 msgid "JiraService|Open Jira"
-msgstr ""
-
-msgid "JiraService|Password or API token"
 msgstr ""
 
 msgid "JiraService|Project key changed, refresh list"
 msgstr ""
 
 msgid "JiraService|Project key is required to generate issue types"
+msgstr ""
+
+msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
 msgstr ""
 
 msgid "JiraService|Select issue type"

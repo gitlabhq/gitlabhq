@@ -6,12 +6,13 @@ module Gitlab
       class Source
         include Gitlab::Utils::StrongMemoize
 
-        def initialize(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
+        def initialize(project, sha, custom_content, pipeline_source, pipeline_source_bridge, pipeline)
           @project = project
           @sha = sha
           @custom_content = custom_content
           @pipeline_source = pipeline_source
           @pipeline_source_bridge = pipeline_source_bridge
+          @pipeline = pipeline
         end
 
         def exists?
@@ -33,9 +34,14 @@ module Gitlab
           raise NotImplementedError
         end
 
+        # Used to populate the pipeline_ref claim in Ci::JwtV2
+        def url
+          raise NotImplementedError
+        end
+
         private
 
-        attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge
+        attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge, :pipeline
 
         def ci_config_path
           @ci_config_path ||= project.ci_config_path_or_default

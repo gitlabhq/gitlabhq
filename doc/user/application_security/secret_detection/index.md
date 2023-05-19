@@ -160,7 +160,7 @@ your GitLab CI/CD configuration file is complex.
 
    ```yaml
    include:
-     - template: Jobs/Secret-Detection.gitlab-ci.yml
+     - template: Security/Secret-Detection.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
