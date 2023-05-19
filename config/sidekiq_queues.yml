@@ -311,6 +311,8 @@
   - 2
 - - llm_completion
   - 1
+- - llm_tanuki_bot_update
+  - 1
 - - mail_scheduler
   - 2
 - - mailers

@@ -18,7 +18,7 @@ module Search
         group: group,
         order_by: params[:order_by],
         sort: params[:sort],
-        filters: { state: params[:state], confidential: params[:confidential] }
+        filters: filters
       )
     end
 

@@ -6,8 +6,7 @@ module Gitlab
       module GrpcErrorProcessor
         extend Gitlab::ErrorTracking::Processor::Concerns::ProcessesExceptions
 
-        # Braces added by gRPC Ruby code: https://github.com/grpc/grpc/blob/0e38b075ffff72ab2ad5326e3f60ba6dcc234f46/src/ruby/lib/grpc/errors.rb#L46
-        DEBUG_ERROR_STRING_REGEX = RE2('(.*) debug_error_string:\{(.*)\}')
+        DEBUG_ERROR_STRING_REGEX = RE2('(.*) debug_error_string:(.*)')
 
         class << self
           def call(event)

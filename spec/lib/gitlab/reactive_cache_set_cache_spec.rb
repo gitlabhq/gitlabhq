@@ -68,6 +68,20 @@ RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
       it_behaves_like 'clears cache'
     end
 
+    context 'when key size is large' do
+      before do
+        1001.times { |i| cache.write(cache_prefix, i) }
+      end
+
+      it 'sends multiple pipelines of 1000 unlinks' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:pipelined).twice.and_call_original
+        end
+
+        cache.clear_cache!(cache_prefix)
+      end
+    end
+
     it_behaves_like 'clears cache'
   end
 

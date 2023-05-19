@@ -10,9 +10,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+> - Snowplow integration introduced in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+FLAG:
+On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -164,6 +170,52 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+## Dashboards editor
+
+> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+NOTE:
+This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
+
+You can use the dashboards editor to:
+
+- Create dashboards
+- Rename dashboards
+- Add visualizations to new and existing dashboards
+- Resize or move panels within dashboards
+
+### Create a dashboard
+
+To create a dashboard:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Dashboards**.
+1. Select **New dashboard**.
+1. In the **New dashboard** input, enter the name of the dashboard.
+1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
+1. Optional. Drag or resize the selected visualizations how you prefer.
+1. Select **Save**.
+
+### Edit a dashboard
+
+You can rename your created dashboards and add or resize visualizations within them.
+
+To edit an existing dashboard:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Dashboards**.
+1. From the list of available dashboards, select the dashboard you want to edit.
+1. Select **Edit**.
+1. Optional. Change the name of the dashboard.
+1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
+1. Optional. In the dashboard, select a visualization and drag or resize it how you prefer.
+1. Select **Save**.
 
 ## Funnel analysis
 

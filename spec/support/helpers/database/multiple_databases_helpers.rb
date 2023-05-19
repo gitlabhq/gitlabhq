@@ -69,8 +69,10 @@ module Database
             config_model: base_model
           )
 
-          delete_from_all_tables!(except: deletion_except_tables)
+          # Delete after migrating so that rows created during migration don't impact other
+          # specs (for example, async foreign key creation rows)
           schema_migrate_up!
+          delete_from_all_tables!(except: deletion_except_tables)
         end
       end
 

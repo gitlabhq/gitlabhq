@@ -66,9 +66,13 @@ module Gitlab
 
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
             if ::Feature.enabled?(:use_pipeline_over_multikey)
-              redis.pipelined do |pipeline|
-                keys.each { |key| pipeline.unlink(key) }
-              end.sum
+              expired_count = 0
+              keys.each_slice(1000) do |subset|
+                expired_count += redis.pipelined do |pipeline|
+                  subset.each { |key| pipeline.unlink(key) }
+                end.sum
+              end
+              expired_count
             else
               redis.unlink(*keys)
             end

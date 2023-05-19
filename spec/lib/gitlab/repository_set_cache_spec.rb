@@ -117,6 +117,16 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
       end
     end
 
+    context 'when deleting over 1000 keys' do
+      it 'deletes in batches of 1000' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          expect(redis).to receive(:pipelined).twice.and_call_original
+        end
+
+        cache.expire(*(Array.new(1001) { |i| i }))
+      end
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(use_pipeline_over_multikey: false)

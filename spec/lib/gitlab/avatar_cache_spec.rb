@@ -100,6 +100,16 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
       end
     end
 
+    context 'when deleting over 1000 emails' do
+      it 'deletes in batches of 1000' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:pipelined).twice.and_call_original
+        end
+
+        described_class.delete_by_email(*(Array.new(1001) { |i| i }))
+      end
+    end
+
     context 'when feature flag disabled' do
       before do
         stub_feature_flags(use_pipeline_over_multikey: false)

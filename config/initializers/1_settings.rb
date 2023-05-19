@@ -789,6 +789,12 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker'] ||= {}
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['job_class'] ||= 'Llm::TanukiBot::RecreateRecordsWorker'
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker'] ||= {}
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['cron'] ||= '0 0 * * *'
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['job_class'] ||= 'Llm::TanukiBot::RemovePreviousRecordsWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'

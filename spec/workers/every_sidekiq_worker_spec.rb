@@ -345,6 +345,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'JiraConnect::SyncProjectWorker' => 3,
         'LdapGroupSyncWorker' => 3,
         'Licenses::ResetSubmitLicenseUsageDataBannerWorker' => 13,
+        'Llm::TanukiBot::UpdateWorker' => 1,
+        'Llm::TanukiBot::RecreateRecordsWorker' => 3,
         'MailScheduler::IssueDueWorker' => 3,
         'MailScheduler::NotificationServiceWorker' => 3,
         'MembersDestroyer::UnassignIssuablesWorker' => 3,

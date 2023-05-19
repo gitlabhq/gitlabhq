@@ -597,6 +597,29 @@ For example: index the content of `spec:` section for CI components.
 
 See an [example of development workflow](dev_workflow.md) for a components repository.
 
+## Availability of CI catalog as a feature
+
+We plan to introduce 2 features of CI catalog as separate views:
+
+1. **Namespace Catalog (GitLab Ultimate):** allows organizations to share and discover catalog resources
+   created inside the top-level namespace.
+   Users will be able to access the Namespace Catalog from a project or subgroup inside the top-level
+   namespace.
+1. **Community Catalog (GitLab free):** allows anyone in a GitLab instance to share and discover catalog
+   resources. The Community Catalog presents only resources/projects that are public.
+
+If a resource in a Namespace Catalog is made public (changing the project's visibility) the resource is
+available in both Namespace Catalog (because it comes from there) as well as the Community Catalog
+(because it's public).
+
+![Namespace and Community Catalogs](img/catalogs.png)
+
+There is only 1 CI catalog. The Namespace and Community Catalogs are different views of the CI catalog.
+
+Project admins are responsible for setting the project private or public.
+The CI Catalog should not provide security functionalities like prevent projects from appearing in the Community Catalog.
+If the project is public it's visible to the world anyway.
+
 ## Note about future resource types
 
 In the future, to support multiple types of resources in the Catalog we could

@@ -1,0 +1,5 @@
+- name: users_updating_workspaces
+  aggregation: weekly
+
+- name: users_creating_workspaces
+  aggregation: weekly

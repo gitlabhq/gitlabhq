@@ -2,8 +2,8 @@
 
 module Search
   class ProjectService
+    include Search::Filter
     include Gitlab::Utils::StrongMemoize
-
     ALLOWED_SCOPES = %w(notes issues merge_requests milestones wiki_blobs commits users).freeze
 
     attr_accessor :project, :current_user, :params
@@ -21,7 +21,7 @@ module Search
                                        repository_ref: params[:repository_ref],
                                        order_by: params[:order_by],
                                        sort: params[:sort],
-                                       filters: { confidential: params[:confidential], state: params[:state] }
+                                       filters: filters
                                       )
     end
 

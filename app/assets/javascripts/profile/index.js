@@ -13,10 +13,22 @@ export const initProfileTabs = () => {
 
   if (!el) return false;
 
-  const { followees, followers, userCalendarPath, utcOffset, userId } = el.dataset;
+  const {
+    followees,
+    followers,
+    userCalendarPath,
+    utcOffset,
+    userId,
+    snippetsEmptyState,
+  } = el.dataset;
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
 
   return new Vue({
     el,
+    apolloProvider,
     name: 'ProfileRoot',
     provide: {
       followees: parseInt(followers, 10),
@@ -24,6 +36,7 @@ export const initProfileTabs = () => {
       userCalendarPath,
       utcOffset,
       userId,
+      snippetsEmptyState,
     },
     render(createElement) {
       return createElement(ProfileTabs);

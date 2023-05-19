@@ -502,12 +502,13 @@ RSpec.describe UsersHelper do
     end
 
     it 'returns expected hash' do
-      expect(helper.user_profile_tabs_app_data(user)).to eq({
+      expect(helper.user_profile_tabs_app_data(user)).to match({
         followees: 3,
         followers: 2,
         user_calendar_path: '/users/root/calendar.json',
         utc_offset: 0,
-        user_id: user.id
+        user_id: user.id,
+        snippets_empty_state: match_asset_path('illustrations/empty-state/empty-snippets-md.svg')
       })
     end
   end

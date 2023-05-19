@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, feature_category: :integrations do
+RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry do
   describe '.call' do
     let(:raven_required_options) do
       {

@@ -2,6 +2,7 @@
 
 module Search
   class GlobalService
+    include Search::Filter
     include Gitlab::Utils::StrongMemoize
 
     ALLOWED_SCOPES = %w(issues merge_requests milestones users).freeze
@@ -19,7 +20,7 @@ module Search
                                 projects,
                                 order_by: params[:order_by],
                                 sort: params[:sort],
-                                filters: { state: params[:state], confidential: params[:confidential] })
+                                filters: filters)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -5,3 +5,5 @@ export const CALENDAR_PERIOD_12_MONTHS = 12;
  * (see activity_calendar.js)
  */
 export const OVERVIEW_CALENDAR_BREAKPOINT = 918;
+
+export const SNIPPET_MAX_LIST_COUNT = 20;

@@ -188,7 +188,8 @@ module UsersHelper
       followers: user.followers.count,
       user_calendar_path: user_calendar_path(user, :json),
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
-      user_id: user.id
+      user_id: user.id,
+      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg')
     }
   end
 

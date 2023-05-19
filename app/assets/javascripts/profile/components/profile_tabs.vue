@@ -11,7 +11,7 @@ import GroupsTab from './groups_tab.vue';
 import ContributedProjectsTab from './contributed_projects_tab.vue';
 import PersonalProjectsTab from './personal_projects_tab.vue';
 import StarredProjectsTab from './starred_projects_tab.vue';
-import SnippetsTab from './snippets_tab.vue';
+import SnippetsTab from './snippets/snippets_tab.vue';
 import FollowersTab from './followers_tab.vue';
 import FollowingTab from './following_tab.vue';
 
