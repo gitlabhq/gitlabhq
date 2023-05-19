@@ -646,7 +646,7 @@ Support for group-level settings for merge request approval rules is tracked in 
 WARNING:
 This feature is in [Beta](../../policy/alpha-beta-support.md#beta).
 Code Suggestions use generative AI to suggest code while you're developing.
-Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed.
+Due to high demand, this feature may have unscheduled downtime and code suggestions in VS Code may be delayed.
 Code Suggestions may produce
 [low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
 Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
@@ -655,6 +655,8 @@ We look forward to hearing your feedback.
 This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
+
+However, each user can enable or disable Code Suggestions for themselves. 
 
 To enable Code Suggestions for a group:
 

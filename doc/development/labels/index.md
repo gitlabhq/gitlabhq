@@ -194,6 +194,8 @@ The current department labels are:
 
 - `~"UX"`
 - `~"Quality"`
+- `~"infrastructure"`
+- `~"security"`
 
 ## Team labels
 
@@ -206,8 +208,10 @@ people.
 
 The current team labels are:
 
-- `~"Delivery"~`
+- `~"Delivery"`
 - `~"Technical Writing"`
+- `~"Engineering Productivity"`
+- `~"Contributor Success"`
 
 ### Naming and color convention
 

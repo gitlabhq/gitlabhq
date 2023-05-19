@@ -7760,4 +7760,26 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
   end
+
+  describe '#telesign_score' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    context 'when the user has a telesign risk score' do
+      before do
+        create(:abuse_trust_score, user: user1, score: 12.0, source: :telesign)
+        create(:abuse_trust_score, user: user1, score: 24.0, source: :telesign)
+      end
+
+      it 'returns the latest score' do
+        expect(user1.telesign_score).to be(24.0)
+      end
+    end
+
+    context 'when the user does not have a telesign risk score' do
+      it 'defaults to zero' do
+        expect(user2.telesign_score).to be(0.0)
+      end
+    end
+  end
 end

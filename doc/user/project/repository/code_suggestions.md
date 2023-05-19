@@ -56,11 +56,25 @@ We are making improvements to the Code Suggestions underlying AI model weekly to
 
 Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/). Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
 
+## Enable Code Suggestions for an individual user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](/ee/policy/alpha-beta-support.md#beta).
+
+Each user can enable Code Suggestions for themselves: 
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select **Preferences**.
+1. In the **Code Suggestions** section, enable the setting.
+
+NOTE:
+If Code Suggestions is [enabled for the group](../../group/manage.md#group-code-suggestions), the group setting overrides the user setting.
+
 ## Enable Code Suggestions in VS Code
 
 Prerequisites:
 
 - Your group owner must enable the [group level code suggestions setting](../../group/manage.md#group-code-suggestions).
+- Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
 - If using a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token), the token must have the `read_api` and `read_user` scopes.
 
 To enable Code Suggestions in VS Code:

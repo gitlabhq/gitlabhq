@@ -21,10 +21,8 @@ import { packageTypeToTrackCategory } from '~/packages_and_registries/package_re
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
-import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
-import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import {
   PACKAGE_TYPE_NUGET,
@@ -76,9 +74,13 @@ export default {
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
-    PackageFiles,
+    PackageFiles: () =>
+      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     DeletePackages,
-    PackageVersionsList,
+    PackageVersionsList: () =>
+      import(
+        '~/packages_and_registries/package_registry/components/details/package_versions_list.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

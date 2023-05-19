@@ -34,20 +34,14 @@ export default {
     lastReleaseLink() {
       return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
     },
-    firstCommitLink() {
-      return `${this.error.externalBaseUrl}/-/commit/${this.error.firstReleaseVersion}`;
-    },
-    lastCommitLink() {
-      return `${this.error.externalBaseUrl}/-/commit/${this.error.lastReleaseVersion}`;
-    },
     shortFirstReleaseVersion() {
-      return this.error.firstReleaseVersion.substr(0, 10);
+      return this.error.firstReleaseVersion?.substr(0, 10);
     },
     shortLastReleaseVersion() {
-      return this.error.lastReleaseVersion.substr(0, 10);
+      return this.error.lastReleaseVersion?.substr(0, 10);
     },
     shortGitlabCommit() {
-      return this.error.gitlabCommit.substr(0, 10);
+      return this.error.gitlabCommit?.substr(0, 10);
     },
   },
   methods: {
@@ -72,11 +66,11 @@ export default {
         data-testid="error-count-card"
       >
         <template #header>
-          <span>{{ __('Events') }}</span>
+          {{ __('Events') }}
         </template>
 
         <template #default>
-          <span>{{ error.count }}</span>
+          {{ error.count }}
         </template>
       </gl-card>
 
@@ -87,61 +81,66 @@ export default {
         data-testid="user-count-card"
       >
         <template #header>
-          <span>{{ __('Users') }}</span>
+          {{ __('Users') }}
         </template>
 
         <template #default>
-          <span>{{ error.userCount }}</span>
+          {{ error.userCount }}
         </template>
       </gl-card>
 
       <gl-card
-        v-if="error.firstReleaseVersion"
+        v-if="error.firstSeen"
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
         :header-class="$options.HEADER_CLASS"
         data-testid="first-release-card"
       >
         <template #header>
-          <gl-icon v-gl-tooltip :title="shortFirstReleaseVersion" name="commit" class="gl-mr-1" />
-          <span>{{ __('First seen') }}</span>
+          {{ __('First seen') }}
         </template>
 
-        <template #default>
-          <gl-link v-if="error.integrated" :href="firstCommitLink" class="gl-font-lg">
-            <time-ago-tooltip :time="error.firstSeen" />
-          </gl-link>
+        <template v-if="error.integrated" #default>
+          <time-ago-tooltip :time="error.firstSeen" />
+          <span v-if="shortFirstReleaseVersion" class="gl-font-sm gl-text-secondary">
+            <gl-icon name="commit" class="gl-mr-1" :size="12" />{{ shortFirstReleaseVersion }}
+          </span>
+        </template>
 
-          <gl-link v-else :href="firstReleaseLink" target="_blank" class="gl-font-lg">
+        <template v-else #default>
+          <gl-link :href="firstReleaseLink" target="_blank" class="gl-font-lg">
             <time-ago-tooltip :time="error.firstSeen" />
           </gl-link>
         </template>
       </gl-card>
 
       <gl-card
-        v-if="error.lastReleaseVersion"
+        v-if="error.lastSeen"
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
         :header-class="$options.HEADER_CLASS"
         data-testid="last-release-card"
       >
         <template #header>
-          <gl-icon v-gl-tooltip :title="shortLastReleaseVersion" name="commit" class="gl-mr-1" />
           {{ __('Last seen') }}
         </template>
 
-        <template #default>
-          <gl-link v-if="error.integrated" :href="lastCommitLink" class="gl-font-lg">
-            <time-ago-tooltip :time="error.lastSeen" />
-          </gl-link>
-          <gl-link v-else :href="lastReleaseLink" target="_blank" class="gl-font-lg">
+        <template v-if="error.integrated" #default>
+          <time-ago-tooltip :time="error.lastSeen" />
+          <span v-if="shortLastReleaseVersion" class="gl-font-sm gl-text-secondary">
+            <gl-icon name="commit" class="gl-mr-1" :size="12" />{{ shortLastReleaseVersion }}
+          </span>
+        </template>
+
+        <template v-else #default>
+          <gl-link :href="lastReleaseLink" target="_blank" class="gl-font-lg">
             <time-ago-tooltip :time="error.lastSeen" />
           </gl-link>
         </template>
       </gl-card>
 
       <gl-card
-        v-if="error.gitlabCommit"
+        v-if="!error.integrated && error.gitlabCommit"
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
         :header-class="$options.HEADER_CLASS"

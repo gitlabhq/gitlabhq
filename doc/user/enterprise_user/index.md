@@ -43,11 +43,18 @@ Prerequisites:
 
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
+- A project in the group.
+- You must have the Owner role in the top-level group.
 
 Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you must:
 
-- Link the domain to a project. For more information on group-level domain verification, see [issue 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
-- Configure the DNS `TXT` record to verify the domain's ownership.
+- Link the domain to a single project.
+- Configure the `TXT` only in the DNS record to verify the domain's ownership.
+
+Domain verification is tied to the project you choose. A project is required because domain verification reuses the GitLab Pages verification feature, which requires a project. Domain verification applies at the top-level group and to all subgroups and projects nested under that top-level parent group.
+A member in the chosen project with [at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove the domain verification.
+If needed, you can create a new project to set up domain verification directly under your top-level group. This limits the ability to modify the domain verification to members with at least the Maintainer role.
+For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
 
 Steps:
 

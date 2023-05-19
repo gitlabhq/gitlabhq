@@ -35,7 +35,7 @@ Access to the review app is made available as a link on the [merge request](../.
 
 The following is an example of a merge request with an environment set dynamically.
 
-![review app in merge request](img/review_apps_preview_in_mr.png)
+![review app in merge request](img/review_apps_preview_in_mr_v16_0.png)
 
 In this example, a branch was:
 
@@ -185,13 +185,9 @@ After you have the route mapping set up, it takes effect in the following locati
 
     ![View app file list in merge request widget](img/view_on_mr_widget.png)
 
-- In the diff for a comparison or commit.
+- In the diff for a comparison or commit, by selecting **View** (**{external-link}**) next to the file.
 
-  ![View on environment button in merge request diff](img/view_on_env_mr.png)
-
-- In the blob file view.
-
-  ![View on environment button in file view](img/view_on_env_blob.png)
+- In the blob file view, by selecting **View** (**{external-link}**) next to the file.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 ## Visual Reviews (deprecated) **(PREMIUM)**

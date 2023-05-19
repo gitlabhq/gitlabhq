@@ -244,15 +244,22 @@ To compare branches in a repository:
 
 ## Delete merged branches
 
-![Delete merged branches](img/delete_merged_branches.png)
+Merged branches can be deleted in bulk if they meet all of these criteria:
 
-This feature allows merged branches to be deleted in bulk. Only branches that
-have been merged into the project's default branch and
-[are not protected](../../protected_branches.md) are deleted as part of
-this operation.
+- They are not [protected branches](../../protected_branches.md).
+- They have been merged into the project's default branch.
 
-It's particularly useful to clean up old branches that were not deleted
-automatically when a merge request was merged.
+Prerequisites:
+
+- You must have at least the Developer role in the project.
+
+To do this:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Branches**.
+1. On the upper right corner of the page, select **More** **{ellipsis_v}**.
+1. Select **Delete merged branches**.
+1. In the modal window, enter the word `delete` to confirm, then select **Delete merged branches**.
 
 ## Related topics
 

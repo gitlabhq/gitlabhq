@@ -2260,6 +2260,10 @@ class User < ApplicationRecord
     abuse_trust_scores.spamcheck.average(:score) || 0.0
   end
 
+  def telesign_score
+    abuse_trust_scores.telesign.order(created_at: :desc).first&.score || 0.0
+  end
+
   def trust_scores_for_source(source)
     abuse_trust_scores.where(source: source)
   end
