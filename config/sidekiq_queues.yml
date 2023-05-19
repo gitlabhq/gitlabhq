@@ -529,6 +529,8 @@
   - 1
 - - security_process_scan_result_policy
   - 1
+- - security_scan_result_policies_sync_opened_merge_requests
+  - 1
 - - security_scans
   - 2
 - - security_scans_purge_by_job_id

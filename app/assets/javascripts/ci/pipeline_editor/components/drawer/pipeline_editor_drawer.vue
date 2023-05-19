@@ -1,5 +1,6 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
 import { DRAWER_CONTAINER_CLASS } from '../job_assistant_drawer/constants';
@@ -31,7 +32,7 @@ export default {
     zIndex: {
       type: Number,
       required: false,
-      default: 200,
+      default: DRAWER_Z_INDEX,
     },
   },
   computed: {

@@ -12,6 +12,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   feature_category :pages
 
   def show
+    return unless domain_presenter.needs_verification?
+
+    flash.now[:warning] = _("This domain is not verified. You will need to verify ownership before access is enabled.")
   end
 
   def new

@@ -2,6 +2,7 @@
 import { GlDrawer, GlAccordion, GlButton } from '@gitlab/ui';
 import { stringify, parse } from 'yaml';
 import { get, omit, toPath } from 'lodash';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
 import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
@@ -34,7 +35,7 @@ export default {
     zIndex: {
       type: Number,
       required: false,
-      default: 200,
+      default: DRAWER_Z_INDEX,
     },
     ciConfigData: {
       type: Object,

@@ -1,18 +1,16 @@
 import MockAdapter from 'axios-mock-adapter';
 import { memoize, cloneDeep } from 'lodash';
 import usersFixture from 'test_fixtures/autocomplete/users.json';
-import { getFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import UsersSelect from '~/users_select';
 
 // fixtures -------------------------------------------------------------------
-const getUserSearchHTML = memoize((fixturePath) => {
-  const html = getFixture(fixturePath);
+const getUserSearchHTML = memoize((fixture) => {
   const parser = new DOMParser();
 
-  const el = parser.parseFromString(html, 'text/html').querySelector('.assignee');
+  const el = parser.parseFromString(fixture, 'text/html').querySelector('.assignee');
 
   return el.outerHTML;
 });
@@ -22,13 +20,13 @@ const getUsersFixture = () => usersFixture;
 export const getUsersFixtureAt = (idx) => getUsersFixture()[idx];
 
 // test context ---------------------------------------------------------------
-export const createTestContext = ({ fixturePath }) => {
+export const createTestContext = ({ fixture }) => {
   let mock = null;
   let subject = null;
 
   const setup = () => {
     const rootEl = document.createElement('div');
-    rootEl.innerHTML = getUserSearchHTML(fixturePath);
+    rootEl.innerHTML = getUserSearchHTML(fixture);
     document.body.appendChild(rootEl);
 
     mock = new MockAdapter(axios);

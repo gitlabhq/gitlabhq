@@ -40457,16 +40457,10 @@ msgstr ""
 msgid "SecurityOrchestration|%{branches} branch"
 msgstr ""
 
+msgid "SecurityOrchestration|%{cadence} on the %{branches}"
+msgstr ""
+
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
-msgstr ""
-
-msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd}"
-msgstr ""
-
-msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd} on runners with the %{tags} and %{lastTag} tags"
-msgstr ""
-
-msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd} on runners with the %{tags} tag"
 msgstr ""
 
 msgid "SecurityOrchestration|%{scanners}"
@@ -40515,6 +40509,9 @@ msgid "SecurityOrchestration|An error occurred unassigning your security policy 
 msgstr ""
 
 msgid "SecurityOrchestration|An error occurred while fetching the scan result policies."
+msgstr ""
+
+msgid "SecurityOrchestration|And scans to be performed:"
 msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
@@ -40694,13 +40691,15 @@ msgstr ""
 msgid "SecurityOrchestration|Rules"
 msgstr ""
 
+msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} on runners with tag:"
+msgid_plural "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} on runners with the tags:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityOrchestration|Run a DAST scan with Scan Profile A and Site Profile A when a pipeline run against the main branch."
-msgstr ""
-
-msgid "SecurityOrchestration|Runs %{actions} and %{lastAction} scans"
-msgstr ""
-
-msgid "SecurityOrchestration|Runs a %{action} scan"
 msgstr ""
 
 msgid "SecurityOrchestration|Save changes"
@@ -40728,15 +40727,6 @@ msgid "SecurityOrchestration|Scan result policies can only be created by project
 msgstr ""
 
 msgid "SecurityOrchestration|Scan result policy"
-msgstr ""
-
-msgid "SecurityOrchestration|Scan to be performed %{cadence} on the %{branches}"
-msgstr ""
-
-msgid "SecurityOrchestration|Scan to be performed by the agent named %{agents} %{cadence}"
-msgstr ""
-
-msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
@@ -40883,6 +40873,9 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
+msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}"
+msgstr ""
+
 msgid "SecurityOrchestration|group level branch input"
 msgstr ""
 
@@ -40890,6 +40883,9 @@ msgid "SecurityOrchestration|group level branch selector"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|on every pipeline on the %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|or from:"

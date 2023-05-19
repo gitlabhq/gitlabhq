@@ -1,6 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
@@ -73,9 +74,9 @@ export default {
       showDrawer: false,
       showJobAssistantDrawer: false,
       showAiAssistantDrawer: false,
-      drawerIndex: 200,
-      jobAssistantIndex: 200,
-      aiAssistantIndex: 200,
+      drawerIndex: DRAWER_Z_INDEX,
+      jobAssistantIndex: DRAWER_Z_INDEX,
+      aiAssistantIndex: DRAWER_Z_INDEX,
       showFileTree: false,
       showSwitchBranchModal: false,
     };

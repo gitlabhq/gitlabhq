@@ -1,22 +1,21 @@
+import htmlRedirectListbox from 'test_fixtures/listbox/redirect_listbox.html';
 import { initListbox } from '~/listbox';
 import { initRedirectListboxBehavior } from '~/listbox/redirect_behavior';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import { getFixture, setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/listbox', () => ({
   initListbox: jest.fn().mockReturnValue({ foo: true }),
 }));
 
-const fixture = getFixture('listbox/redirect_listbox.html');
-
 describe('initRedirectListboxBehavior', () => {
   let instances;
 
   beforeEach(() => {
     setHTMLFixture(`
-      ${fixture}
-      ${fixture}
+      ${htmlRedirectListbox}
+      ${htmlRedirectListbox}
     `);
 
     instances = initRedirectListboxBehavior();

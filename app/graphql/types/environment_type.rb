@@ -79,6 +79,13 @@ module Types
           null: true,
           description: 'Deployment freeze periods of the environment.'
 
+    field :cluster_agent,
+          Types::Clusters::AgentType,
+          description: 'Cluster agent of the environment.',
+          null: true do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
+
     def tier
       object.tier.to_sym
     end

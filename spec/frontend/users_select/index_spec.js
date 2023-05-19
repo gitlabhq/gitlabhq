@@ -1,4 +1,5 @@
 import { escape } from 'lodash';
+import htmlCeMrSingleAssignees from 'test_fixtures/merge_requests/merge_request_with_single_assignee_feature.html';
 import UsersSelect from '~/users_select/index';
 import {
   createInputsModelExpectation,
@@ -15,9 +16,7 @@ import {
 } from './test_helper';
 
 describe('~/users_select/index', () => {
-  const context = createTestContext({
-    fixturePath: 'merge_requests/merge_request_with_single_assignee_feature.html',
-  });
+  const context = createTestContext({ fixture: htmlCeMrSingleAssignees });
 
   beforeEach(() => {
     context.setup();

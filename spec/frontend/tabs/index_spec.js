@@ -1,11 +1,10 @@
+import htmlTabs from 'test_fixtures/tabs/tabs.html';
 import { GlTabsBehavior, TAB_SHOWN_EVENT, HISTORY_TYPE_HASH } from '~/tabs';
 import { ACTIVE_PANEL_CLASS, ACTIVE_TAB_CLASSES } from '~/tabs/constants';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
-import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
-
-const tabsFixture = getFixture('tabs/tabs.html');
 
 global.CSS = {
   escape: (val) => val,
@@ -107,7 +106,7 @@ describe('GlTabsBehavior', () => {
     });
 
     beforeEach(() => {
-      setHTMLFixture(tabsFixture);
+      setHTMLFixture(htmlTabs);
 
       const tabsEl = findByTestId('tabs');
       tabShownEventSpy = jest.fn();
@@ -247,7 +246,7 @@ describe('GlTabsBehavior', () => {
 
   describe('using aria-controls instead of href to link tabs to panels', () => {
     beforeEach(() => {
-      setHTMLFixture(tabsFixture);
+      setHTMLFixture(htmlTabs);
 
       const tabsEl = findByTestId('tabs');
       ['foo', 'bar', 'qux'].forEach((name) => {
@@ -279,7 +278,7 @@ describe('GlTabsBehavior', () => {
     let tabsEl;
 
     beforeEach(() => {
-      setHTMLFixture(tabsFixture);
+      setHTMLFixture(htmlTabs);
       tabsEl = findByTestId('tabs');
     });
 

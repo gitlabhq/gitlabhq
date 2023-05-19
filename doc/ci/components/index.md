@@ -173,6 +173,7 @@ For example, for a component repository located at `gitlab-org/dast` on `gitlab.
 
 **Additional notes:**
 
+- You can only reference components in the same GitLab instance as your project.
 - If a tag and branch exist with the same name, the tag takes precedence over the branch.
 - If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
   the commit SHA takes precedence over the tag.

@@ -6,6 +6,11 @@ RSpec.describe Organization, type: :model, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:default_organization) { create(:organization, :default) }
 
+  describe 'associations' do
+    it { is_expected.to have_many :namespaces }
+    it { is_expected.to have_many :groups }
+  end
+
   describe 'validations' do
     subject { create(:organization) }
 

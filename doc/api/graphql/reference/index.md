@@ -3521,6 +3521,29 @@ Input type: `GitlabSubscriptionActivateInput`
 | <a id="mutationgitlabsubscriptionactivatefuturesubscriptions"></a>`futureSubscriptions` | [`[SubscriptionFutureEntry!]`](#subscriptionfutureentry) | Array of future subscriptions. |
 | <a id="mutationgitlabsubscriptionactivatelicense"></a>`license` | [`CurrentLicense`](#currentlicense) | Current license. |
 
+### `Mutation.googleCloudLoggingConfigurationCreate`
+
+Input type: `GoogleCloudLoggingConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgooglecloudloggingconfigurationcreateclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
+| <a id="mutationgooglecloudloggingconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgooglecloudloggingconfigurationcreategoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
+| <a id="mutationgooglecloudloggingconfigurationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationgooglecloudloggingconfigurationcreatelogidname"></a>`logIdName` | [`String`](#string) | Log ID. (defaults to `audit_events`). |
+| <a id="mutationgooglecloudloggingconfigurationcreateprivatekey"></a>`privateKey` | [`String!`](#string) | Private key. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgooglecloudloggingconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgooglecloudloggingconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgooglecloudloggingconfigurationcreategooglecloudloggingconfiguration"></a>`googleCloudLoggingConfiguration` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | configuration created. |
+
 ### `Mutation.groupMemberBulkUpdate`
 
 Input type: `GroupMemberBulkUpdateInput`
@@ -14170,6 +14193,7 @@ Describes where code is deployed for a project.
 | ---- | ---- | ----------- |
 | <a id="environmentautodeleteat"></a>`autoDeleteAt` | [`Time`](#time) | When the environment is going to be deleted automatically. |
 | <a id="environmentautostopat"></a>`autoStopAt` | [`Time`](#time) | When the environment is going to be stopped automatically. |
+| <a id="environmentclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent of the environment. |
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
 | <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
@@ -15153,6 +15177,21 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodeuploadregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+### `GoogleCloudLoggingConfigurationType`
+
+Stores Google Cloud Logging configurations associated with IAM service accounts,used for generating access tokens.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="googlecloudloggingconfigurationtypeclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
+| <a id="googlecloudloggingconfigurationtypegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
+| <a id="googlecloudloggingconfigurationtypegroup"></a>`group` | [`Group!`](#group) | Group the configuration belongs to. |
+| <a id="googlecloudloggingconfigurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="googlecloudloggingconfigurationtypelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
+| <a id="googlecloudloggingconfigurationtypeprivatekey"></a>`privateKey` | [`String!`](#string) | Private key. |
 
 ### `GpgSignature`
 

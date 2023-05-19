@@ -259,10 +259,6 @@ module Ci
         !build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
-      before_transition on: :enqueue do |build|
-        !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
-      end
-
       before_transition any => [:pending] do |build|
         build.ensure_token
         true
@@ -428,11 +424,7 @@ module Ci
     end
 
     def playable?
-      action? && !archived? && (manual? || scheduled? || retryable?) && !waiting_for_deployment_approval?
-    end
-
-    def waiting_for_deployment_approval?
-      manual? && deployment_job? && deployment&.blocked?
+      action? && !archived? && (manual? || scheduled? || retryable?)
     end
 
     def outdated_deployment?

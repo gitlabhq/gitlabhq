@@ -581,8 +581,7 @@ html {
 .layout-page {
   padding-top: calc(
     var(--header-height, 48px) +
-      calc(var(--system-header-height) + var(--performance-bar-height)) +
-      var(--top-bar-height)
+      calc(var(--system-header-height) + var(--performance-bar-height))
   );
   padding-bottom: var(--system-footer-height);
 }

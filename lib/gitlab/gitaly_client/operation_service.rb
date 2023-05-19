@@ -8,6 +8,8 @@ module Gitlab
 
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
+      CUSTOM_HOOK_FALLBACK_MESSAGE = 'Prevented by server hooks'
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -52,7 +54,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: e.details)
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :reference_exists
           raise Gitlab::Git::Repository::TagExistsError
         else
@@ -85,7 +87,7 @@ module Gitlab
         case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: e.details)
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         else
           if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
             raise Gitlab::Git::Repository::InvalidRef, e
@@ -127,7 +129,7 @@ module Gitlab
         case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: e.details)
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         else
           raise
         end
@@ -195,7 +197,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: e.details)
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference
@@ -465,7 +467,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: e.details)
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :index_update
           raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
         else
@@ -583,8 +585,7 @@ module Gitlab
 
       def custom_hook_error_message(custom_hook_error)
         # Custom hooks may return messages via either stdout or stderr which have a specific prefix. If
-        # that prefix is present we'll want to print the hook's output, otherwise we'll want to print the
-        # Gitaly error as a fallback.
+        # that prefix is present we'll want to print the hook's output.
         custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
         EncodingHelper.encode!(custom_hook_output)
       end
