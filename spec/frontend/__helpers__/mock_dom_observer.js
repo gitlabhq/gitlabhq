@@ -22,9 +22,9 @@ class MockObserver {
 
   takeRecords() {}
 
-  $_triggerObserve(node, { entry = {}, options = {} } = {}) {
+  $_triggerObserve(node, { entry = {}, observer = {}, options = {} } = {}) {
     if (this.$_hasObserver(node, options)) {
-      this.$_cb([{ target: node, ...entry }]);
+      this.$_cb([{ target: node, ...entry }], observer);
     }
   }
 

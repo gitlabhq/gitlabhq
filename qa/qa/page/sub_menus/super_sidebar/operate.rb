@@ -16,7 +16,7 @@ module QA
           end
 
           def go_to_dependency_proxy
-            open_operate_submenu('Dependency proxy')
+            open_operate_submenu('Dependency Proxy')
           end
 
           private

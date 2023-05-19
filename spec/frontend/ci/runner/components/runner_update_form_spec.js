@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import {
   INSTANCE_TYPE,
@@ -23,7 +23,10 @@ import { runnerFormData } from '../mock_data';
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
 
 const mockRunner = runnerFormData.data.runner;
 const mockRunnerPath = '/admin/runners/1';
@@ -86,7 +89,7 @@ describe('RunnerUpdateForm', () => {
         variant: VARIANT_SUCCESS,
       }),
     );
-    expect(redirectTo).toHaveBeenCalledWith(mockRunnerPath); // eslint-disable-line import/no-deprecated
+    expect(visitUrl).toHaveBeenCalledWith(mockRunnerPath);
   };
 
   beforeEach(() => {
@@ -278,7 +281,7 @@ describe('RunnerUpdateForm', () => {
 
       expect(captureException).not.toHaveBeenCalled();
       expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
-      expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).not.toHaveBeenCalled();
     });
   });
 });

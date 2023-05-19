@@ -774,6 +774,16 @@ entry.
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
 
+## 15.11.5 (2023-05-19)
+
+### Fixed (5 changes)
+
+- [Makes roadmap current day indicator & timeline locale aware](gitlab-org/gitlab@2dc71e59e277d017118d77743d8658be5b05ddf3) ([merge request](gitlab-org/gitlab!121104)) **GitLab Enterprise Edition**
+- [Fix height calculations with roadmap to prevent extra scrollers](gitlab-org/gitlab@58080e99cb0a551c41b557d5a0000d686c512fdf) ([merge request](gitlab-org/gitlab!120965)) **GitLab Enterprise Edition**
+- [Update by_parent filter in EpicsFinder](gitlab-org/gitlab@97115082a328bc01d04abc651e3b54913a19832a) ([merge request](gitlab-org/gitlab!120966)) **GitLab Enterprise Edition**
+- [Fix no_proxy not working when DNS rebinding protection enabled](gitlab-org/gitlab@84012b21559126cde51cfe341ebff44eda9b3d62) ([merge request](gitlab-org/gitlab!120809))
+- [Remove epic date fields authorization](gitlab-org/gitlab@5c36e497d1e43e4ccf05a0684c3388385b247e45) ([merge request](gitlab-org/gitlab!120290)) **GitLab Enterprise Edition**
+
 ## 15.11.4 (2023-05-16)
 
 ### Fixed (2 changes)

@@ -30,8 +30,8 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
 
     context 'when one configuration setting is missing' do
       before do
-        missing_key = ProductAnalytics::Settings::CONFIG_KEYS.last
-        mock_settings('test', ProductAnalytics::Settings::CONFIG_KEYS - [missing_key])
+        missing_key = ProductAnalytics::Settings::ALL_CONFIG_KEYS.last
+        mock_settings('test', ProductAnalytics::Settings::ALL_CONFIG_KEYS - [missing_key])
         allow(::Gitlab::CurrentSettings).to receive(missing_key).and_return('')
       end
 
@@ -40,7 +40,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
     end
 
-    ProductAnalytics::Settings::CONFIG_KEYS.each do |key|
+    ProductAnalytics::Settings::ALL_CONFIG_KEYS.each do |key|
       it "can read #{key}" do
         expect(::Gitlab::CurrentSettings).to receive(key).and_return('test')
 
@@ -93,7 +93,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
 
   private
 
-  def mock_settings(setting, keys = ProductAnalytics::Settings::CONFIG_KEYS)
+  def mock_settings(setting, keys = ProductAnalytics::Settings::ALL_CONFIG_KEYS)
     keys.each do |key|
       allow(::Gitlab::CurrentSettings).to receive(key).and_return(setting)
     end

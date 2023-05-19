@@ -258,7 +258,7 @@ export default {
         :markdown-docs-path="$options.markdownDocsPath"
         :quick-actions-docs-path="$options.quickActionsDocsPath"
         :autocomplete-data-sources="autocompleteDataSources"
-        class="gl-px-3 bordered-box gl-mt-5"
+        class="gl-my-5"
       >
         <template #textarea>
           <textarea

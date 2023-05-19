@@ -1,13 +1,12 @@
 <script>
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   destroyUserCountsManager,
   createUserCountsManager,
   userCounts,
 } from '~/super_sidebar/user_counts_manager';
-import logo from '../../../../views/shared/_logo.svg?raw';
+import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
@@ -20,7 +19,6 @@ export default {
   // "GitLab Next" is a proper noun, so don't translate "Next"
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   NEXT_LABEL: 'Next',
-  logo,
   JS_TOGGLE_COLLAPSE_CLASS,
   SEARCH_MODAL_ID,
   components: {
@@ -35,6 +33,7 @@ export default {
         /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
       ),
     SuperSidebarToggle,
+    BrandLogo,
   },
   i18n: {
     createNew: __('Create new...'),
@@ -53,9 +52,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
-    SafeHtml,
   },
-  inject: ['rootPath', 'isImpersonating'],
+  inject: ['isImpersonating'],
   props: {
     hasCollapseButton: {
       default: true,
@@ -107,23 +105,7 @@ export default {
 <template>
   <div class="user-bar">
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2">
-      <a
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
-        class="tanuki-logo-container"
-        :href="rootPath"
-        :title="$options.i18n.homepage"
-        data-track-action="click_link"
-        data-track-label="gitlab_logo_link"
-        data-track-property="nav_core_menu"
-      >
-        <img
-          v-if="sidebarData.logo_url"
-          data-testid="brand-header-custom-logo"
-          :src="sidebarData.logo_url"
-          class="gl-h-6"
-        />
-        <span v-else v-safe-html="$options.logo"></span>
-      </a>
+      <brand-logo :logo-url="sidebarData.logo_url" />
       <gl-badge
         v-if="sidebarData.gitlab_com_and_canary"
         variant="success"

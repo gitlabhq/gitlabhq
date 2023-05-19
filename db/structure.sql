@@ -21169,6 +21169,8 @@ CREATE TABLE project_settings (
     cube_api_base_url text,
     encrypted_cube_api_key bytea,
     encrypted_cube_api_key_iv bytea,
+    encrypted_product_analytics_configurator_connection_string bytea,
+    encrypted_product_analytics_configurator_connection_string_iv bytea,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),

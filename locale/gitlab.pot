@@ -35611,6 +35611,9 @@ msgstr ""
 msgid "ProjectSettings|Private"
 msgstr ""
 
+msgid "ProjectSettings|Product analytics configurator connection string"
+msgstr ""
+
 msgid "ProjectSettings|Product analytics needs to be set up before your application can be instrumented. Follow the %{link_start}set up process%{link_end}."
 msgstr ""
 
@@ -35714,6 +35717,9 @@ msgid "ProjectSettings|The commit message used when merging, if the merge method
 msgstr ""
 
 msgid "ProjectSettings|The commit message used when squashing commits."
+msgstr ""
+
+msgid "ProjectSettings|The connection string of your product analytics configurator instance for Snowplow configuration."
 msgstr ""
 
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."

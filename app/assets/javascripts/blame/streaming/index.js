@@ -1,5 +1,6 @@
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { handleStreamedAnchorLink } from '~/streaming/handle_streamed_anchor_link';
+import { handleStreamedRelativeTimestamps } from '~/streaming/handle_streamed_relative_timestamps';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { rateLimitStreamRequests } from '~/streaming/rate_limit_stream_requests';
@@ -11,6 +12,7 @@ export async function renderBlamePageStreams(firstStreamPromise) {
   if (!element || !firstStreamPromise) return;
 
   const stopAnchorObserver = handleStreamedAnchorLink(element);
+  const relativeTimestampsHandler = handleStreamedRelativeTimestamps(element);
   const { dataset } = document.querySelector('#blob-content-holder');
   const totalExtraPages = parseInt(dataset.totalExtraPages, 10);
   const { pagesUrl } = dataset;
@@ -50,6 +52,8 @@ export async function renderBlamePageStreams(firstStreamPromise) {
     });
     throw error;
   } finally {
+    const stopTimestampObserver = await relativeTimestampsHandler;
+    stopTimestampObserver();
     stopAnchorObserver();
     document.querySelector('#blame-stream-loading').remove();
   }

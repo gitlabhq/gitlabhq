@@ -5,19 +5,17 @@ module Gitlab
     module Hook
       class SilentModeInterceptor
         def self.delivering_email(message)
-          if Gitlab::CurrentSettings.silent_mode_enabled?
+          if ::Gitlab::SilentMode.enabled?
             message.perform_deliveries = false
 
-            Gitlab::AppJsonLogger.info(
+            ::Gitlab::SilentMode.log_info(
               message: "SilentModeInterceptor prevented sending mail",
-              mail_subject: message.subject,
-              silent_mode_enabled: true
+              mail_subject: message.subject
             )
           else
-            Gitlab::AppJsonLogger.debug(
+            ::Gitlab::SilentMode.log_debug(
               message: "SilentModeInterceptor did nothing",
-              mail_subject: message.subject,
-              silent_mode_enabled: false
+              mail_subject: message.subject
             )
           end
         end

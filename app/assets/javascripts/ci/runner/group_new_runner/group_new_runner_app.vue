@@ -1,6 +1,6 @@
 <script>
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { redirectTo, setUrlParams } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
@@ -38,7 +38,7 @@ export default {
         message: s__('Runners|Runner created.'),
         variant: VARIANT_SUCCESS,
       });
-      redirectTo(ephemeralRegisterUrl); // eslint-disable-line import/no-deprecated
+      visitUrl(ephemeralRegisterUrl);
     },
     onError(error) {
       createAlert({ message: error.message });

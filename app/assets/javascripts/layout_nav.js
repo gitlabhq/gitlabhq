@@ -21,12 +21,12 @@ export function initScrollingTabs() {
   if (el && parentElement) {
     parentElement
       .querySelector('button.fade-left')
-      .addEventListener('click', function scrollLeft() {
+      ?.addEventListener('click', function scrollLeft() {
         el.scrollBy({ left: -200, behavior: 'smooth' });
       });
     parentElement
       .querySelector('button.fade-right')
-      .addEventListener('click', function scrollRight() {
+      ?.addEventListener('click', function scrollRight() {
         el.scrollBy({ left: 200, behavior: 'smooth' });
       });
   }

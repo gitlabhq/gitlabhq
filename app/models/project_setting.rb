@@ -31,6 +31,13 @@ class ProjectSetting < ApplicationRecord
     encode: false,
     encode_iv: false
 
+  attr_encrypted :product_analytics_configurator_connection_string,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: false,
+    encode_iv: false
+
   enum squash_option: {
     never: 0,
     always: 1,
