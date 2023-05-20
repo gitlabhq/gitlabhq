@@ -51325,7 +51325,7 @@ msgstr ""
 msgid "Workspaces|Workspaces"
 msgstr ""
 
-msgid "Workspaces|You can create a workspace for public Premium projects only."
+msgid "Workspaces|You can create a workspace for public projects only."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"

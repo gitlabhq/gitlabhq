@@ -3,6 +3,8 @@
 require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
 require 'active_support/testing/time_helpers'
+require './spec/support/helpers/cycle_analytics_helpers.rb'
+require './ee/db/seeds/shared/dora_metrics.rb' if Gitlab.ee?
 
 # Usage:
 #
@@ -21,6 +23,7 @@ require 'active_support/testing/time_helpers'
 # rubocop:disable Rails/Output
 class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChildren
   include ActiveSupport::Testing::TimeHelpers
+  include CycleAnalyticsHelpers
 
   attr_reader :project, :issues, :merge_requests, :developers
 
@@ -78,11 +81,29 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
     seed_review_stage!
     seed_staging_stage!
 
+    if Gitlab.ee?
+      seed_dora_metrics!
+      create_custom_value_stream!
+      create_value_stream_aggregation(project.group)
+    end
+
     puts "Successfully seeded '#{project.full_path}' for Value Stream Management!"
     puts "URL: #{Rails.application.routes.url_helpers.project_url(project)}"
   end
 
   private
+
+  def create_custom_value_stream!
+    Analytics::CycleAnalytics::ValueStreams::CreateService.new(
+      current_user: admin,
+      namespace: project.group,
+      params: { name: "vs #{suffix}", stages: Gitlab::Analytics::CycleAnalytics::DefaultStages.all }
+    ).execute
+  end
+
+  def seed_dora_metrics!
+    Gitlab::Seeder::DoraMetrics.new(project: project).execute
+  end
 
   def seed_issue_stage!
     issues.each do |issue|
