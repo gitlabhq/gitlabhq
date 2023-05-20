@@ -39805,9 +39805,6 @@ msgstr ""
 msgid "ScanResultPolicy|%{count} licenses"
 msgstr ""
 
-msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"
-msgstr ""
-
 msgid "ScanResultPolicy|Add new criteria"
 msgstr ""
 
@@ -39854,9 +39851,6 @@ msgid "ScanResultPolicy|When %{scanType} find any license %{matchType} %{license
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} and match %{boldDescription} of the following criteria"
-msgstr ""
-
-msgid "ScanResultPolicy|add an approver"
 msgstr ""
 
 msgid "ScanResultPolicy|except"

@@ -91,6 +91,12 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'db/structure.sql'
       run: scripts/validate_schema_changes
+    static-verification:
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{rb}'
+      run: bundle exec rake lint:static_verification
 
   scripts:
     "merge_conflicts":

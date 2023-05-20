@@ -247,6 +247,18 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         .and change { table_exists?(table_names.last) }.from(true).to(false)
     end
 
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'does not call the DetachedPartitionDropper' do
+        expect(Gitlab::Database::Partitioning::DetachedPartitionDropper).not_to receive(:new)
+
+        described_class.drop_detached_partitions
+      end
+    end
+
     def table_exists?(table_name)
       table_oid(table_name).present?
     end

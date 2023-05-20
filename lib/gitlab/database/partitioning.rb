@@ -60,6 +60,8 @@ module Gitlab
         end
 
         def drop_detached_partitions
+          return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
+
           Gitlab::AppLogger.info(message: 'Dropping detached postgres partitions')
 
           Gitlab::Database::EachDatabase.each_database_connection do

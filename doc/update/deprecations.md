@@ -631,6 +631,26 @@ In some cases, like when a downstream pipeline had the `passed with warnings` st
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Unified approval rules are deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.1</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9662).
+</div>
+
+Unified approval rules are deprecated in favor of multiple approval rules, which provide more flexibility.
+You might not be able to migrate your Unified approval rules to multiple approval rules without breaking changes.
+To help you migrate manually, we introduced migration documentation. If you don't migrate manually before unified approval
+rules are removed, GitLab will automatically migrate your settings.
+
+In GitLab 15.11, UI support for unified approval rules was removed.
+You can still access unified approval rules with the API.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 <div class="deprecation-notes">
