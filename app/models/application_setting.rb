@@ -379,6 +379,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobytes }
+  validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
   validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
