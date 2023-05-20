@@ -29,6 +29,27 @@ module Gitlab
       RE2.GlobalReplace(text, regexp, rewrite)
     end
 
+    # There is no built-in replace with block support (like `gsub`).  We can accomplish
+    # the same thing by parsing and rebuilding the string with the substitutions.
+    def replace_gsub(text)
+      new_text = +''
+      remainder = text
+
+      matched = match(remainder)
+
+      until matched.nil? || matched.to_a.compact.empty?
+        partitioned = remainder.partition(matched.to_s)
+        new_text << partitioned.first
+        remainder = partitioned.last
+
+        new_text << yield(matched)
+
+        matched = match(remainder)
+      end
+
+      new_text << remainder
+    end
+
     def scan(text)
       matches = scan_regexp.scan(text).to_a
       matches.map!(&:first) if regexp.number_of_capturing_groups == 0

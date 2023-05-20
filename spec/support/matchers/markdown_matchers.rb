@@ -202,7 +202,7 @@ module MarkdownMatchers
 
     match do |actual|
       expect(actual).to have_selector('[data-math-style="inline"]', count: 4)
-      expect(actual).to have_selector('[data-math-style="display"]', count: 4)
+      expect(actual).to have_selector('[data-math-style="display"]', count: 6)
     end
   end
 

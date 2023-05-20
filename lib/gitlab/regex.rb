@@ -459,7 +459,7 @@ module Gitlab
     # ```
     MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED =
       '(?P<code>' \
-        '^```\n' \
+        '^```.*?\n' \
         '(?:\n|.)*?' \
         '\n```\ *$' \
       ')'.freeze
@@ -476,6 +476,17 @@ module Gitlab
         \n<\/[^>]+?>\ *$
       )
     }mx.freeze
+
+    # HTML block:
+    # <tag>
+    # Anything, including `>>>` blocks which are ignored by this filter
+    # </tag>
+    MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED =
+      '(?P<html>' \
+        '^<[^>]+?>\ *\n' \
+        '(?:\n|.)*?' \
+        '\n<\/[^>]+?>\ *$' \
+      ')'.freeze
 
     # HTML comment line:
     # <!-- some commented text -->
@@ -499,9 +510,27 @@ module Gitlab
       }mx.freeze
     end
 
+    def markdown_code_or_html_blocks_untrusted
+      @markdown_code_or_html_blocks_untrusted ||=
+        "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED}"
+    end
+
     def markdown_code_or_html_comments_untrusted
       @markdown_code_or_html_comments_untrusted ||=
         "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED}"
+    end
+
+    def markdown_code_or_html_blocks_or_html_comments_untrusted
+      @markdown_code_or_html_comments_untrusted ||=
+        "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED}" \
         "|" \
         "#{MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED}" \
         "|" \

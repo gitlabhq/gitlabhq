@@ -101,6 +101,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
     context 'with valid syntax' do
       where(:text, :result_template) do
         "$$\n2+2\n$$"      | "<math>2+2\n</math>"
+        "$$  \n2+2\n$$"    | "<math>2+2\n</math>"
         "$$\n2+2\n3+4\n$$" | "<math>2+2\n3+4\n</math>"
       end
 
