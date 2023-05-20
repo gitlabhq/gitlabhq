@@ -4,7 +4,7 @@
 
 ARG BASE_TAG=master
 
-FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-slim-ruby-3.0-golang-1.19-rust-1.65-node-16.14-postgresql-13:rubygems-3.4-git-2.36-lfs-2.9-yarn-1.22 as gdk-base
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-slim-ruby-3.1-golang-1.19-rust-1.65-node-16.14-postgresql-13:rubygems-3.4-git-2.36-lfs-2.9-yarn-1.22 as gdk-base
 
 RUN set -eux; \
     groupadd gdk -g 1000; \
