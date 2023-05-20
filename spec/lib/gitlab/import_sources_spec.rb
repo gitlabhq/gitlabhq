@@ -59,7 +59,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
     import_sources = {
       'github' => Gitlab::GithubImport::ParallelImporter,
       'bitbucket' => Gitlab::BitbucketImport::Importer,
-      'bitbucket_server' => Gitlab::BitbucketServerImport::Importer,
+      'bitbucket_server' => Gitlab::BitbucketServerImport::ParallelImporter,
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
@@ -70,6 +70,46 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
     import_sources.each do |name, klass|
       it "returns #{klass} when given #{name}" do
         expect(described_class.importer(name)).to eq(klass)
+      end
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(bitbucket_server_parallel_importer: false)
+      end
+
+      it 'returns Gitlab::BitbucketServerImport::Importer when given bitbucket_server' do
+        expect(described_class.importer('bitbucket_server')).to eq(Gitlab::BitbucketServerImport::Importer)
+      end
+    end
+  end
+
+  describe '.import_table' do
+    subject { described_class.import_table }
+
+    it 'returns the ParallelImporter for Bitbucket server' do
+      is_expected.to include(
+        described_class::ImportSource.new(
+          'bitbucket_server',
+          'Bitbucket Server',
+          Gitlab::BitbucketServerImport::ParallelImporter
+        )
+      )
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(bitbucket_server_parallel_importer: false)
+      end
+
+      it 'returns the legacy Importer for Bitbucket server' do
+        is_expected.to include(
+          described_class::ImportSource.new(
+            'bitbucket_server',
+            'Bitbucket Server',
+            Gitlab::BitbucketServerImport::Importer
+          )
+        )
       end
     end
   end
