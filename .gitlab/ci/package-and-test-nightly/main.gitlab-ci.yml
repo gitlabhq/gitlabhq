@@ -167,7 +167,6 @@ e2e-test-report:
 upload-knapsack-report:
   extends:
     - .upload-knapsack-report
-    - .rules:report:process-results
 
 export-test-metrics:
   extends:
@@ -176,6 +175,10 @@ export-test-metrics:
 relate-test-failures:
   extends:
     - .relate-test-failures
+
+generate-test-session:
+  extends:
+    - .generate-test-session
 
 notify-slack:
   extends:

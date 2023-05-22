@@ -16,6 +16,8 @@ module QA
         end
 
         def click_group_members_item
+          return go_to_members if Runtime::Env.super_sidebar_enabled?
+
           hover_group_information do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Members')

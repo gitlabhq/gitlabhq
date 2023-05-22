@@ -2848,6 +2848,56 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#spammer?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when the user is a spammer' do
+      before do
+        allow(user).to receive(:spam_score).and_return(0.9)
+      end
+
+      it 'classifies the user as a spammer' do
+        expect(user).to be_spammer
+      end
+    end
+
+    context 'when the user is not a spammer' do
+      before do
+        allow(user).to receive(:spam_score).and_return(0.1)
+      end
+
+      it 'does not classify the user as a spammer' do
+        expect(user).not_to be_spammer
+      end
+    end
+  end
+
+  describe '#spam_score' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when the user is a spammer' do
+      before do
+        create(:abuse_trust_score, user: user, score: 0.8)
+        create(:abuse_trust_score, user: user, score: 0.9)
+      end
+
+      it 'returns the expected score' do
+        expect(user.spam_score).to be_within(0.01).of(0.85)
+      end
+    end
+
+    context 'when the user is not a spammer' do
+      before do
+        create(:abuse_trust_score, user: user, score: 0.1)
+        create(:abuse_trust_score, user: user, score: 0.0)
+      end
+
+      it 'returns the expected score' do
+        expect(user.spam_score).to be_within(0.01).of(0.05)
+      end
+    end
+  end
+
   describe '.find_for_database_authentication' do
     it 'strips whitespace from login' do
       user = create(:user)
@@ -5868,13 +5918,90 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when target user is the same as deleted_by' do
       let(:deleted_by) { user }
 
-      it 'blocks the user and schedules the record for deletion with the correct delay' do
-        freeze_time do
-          expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
+      subject { user.delete_async(deleted_by: deleted_by) }
 
-          user.delete_async(deleted_by: deleted_by)
+      shared_examples 'schedules the record for deletion with the correct delay' do
+        it 'schedules the record for deletion with the correct delay' do
+          freeze_time do
+            expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
 
-          expect(user).to be_blocked
+            subject
+          end
+        end
+      end
+
+      it_behaves_like 'schedules the record for deletion with the correct delay'
+
+      it 'blocks the user' do
+        subject
+
+        expect(user).to be_blocked
+        expect(user).not_to be_banned
+      end
+
+      context 'when the user is a spammer' do
+        before do
+          allow(user).to receive(:spammer?).and_return(true)
+        end
+
+        context 'when the user acount is less than 7 days old' do
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          it 'creates an abuse report with the correct data' do
+            expect { subject }.to change { AbuseReport.count }.from(0).to(1)
+            expect(AbuseReport.last.attributes).to include({
+              reporter_id: User.security_bot.id,
+              user_id: user.id,
+              category: "spam",
+              message: 'Potential spammer account deletion'
+            }.stringify_keys)
+          end
+
+          it 'adds custom attribute to the user with the correct values' do
+            subject
+
+            custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+            expect(custom_attribute.value).to eq(AbuseReport.last.id.to_s)
+          end
+
+          it 'bans the user' do
+            subject
+
+            expect(user).to be_banned
+          end
+
+          context 'when there is an existing abuse report' do
+            let!(:abuse_report) { create(:abuse_report, user: user, reporter: User.security_bot, message: 'Existing') }
+
+            it 'updates the abuse report' do
+              subject
+              abuse_report.reload
+
+              expect(abuse_report.message).to eq("Existing\n\nPotential spammer account deletion")
+            end
+
+            it 'adds custom attribute to the user with the correct values' do
+              subject
+
+              custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+              expect(custom_attribute.value).to eq(abuse_report.id.to_s)
+            end
+          end
+        end
+
+        context 'when the user acount is greater than 7 days old' do
+          before do
+            allow(user).to receive(:account_age_in_days).and_return(8)
+          end
+
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          it 'blocks the user' do
+            subject
+
+            expect(user).to be_blocked
+            expect(user).not_to be_banned
+          end
         end
       end
 
@@ -5894,7 +6021,7 @@ RSpec.describe User, feature_category: :user_profile do
         it 'schedules user for deletion without blocking them' do
           expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
 
-          user.delete_async(deleted_by: deleted_by)
+          subject
 
           expect(user).not_to be_blocked
         end

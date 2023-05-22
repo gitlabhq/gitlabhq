@@ -35,6 +35,14 @@ class UserCustomAttribute < ApplicationRecord
         .select(:value)
     end
 
+    def set_banned_by_abuse_report(abuse_report)
+      return unless abuse_report
+
+      custom_attribute = { user_id: abuse_report.user.id, key: AUTO_BANNED_BY_ABUSE_REPORT_ID, value: abuse_report.id }
+
+      upsert_custom_attributes([custom_attribute])
+    end
+
     private
 
     def blocked_users

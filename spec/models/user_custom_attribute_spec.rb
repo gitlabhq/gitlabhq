@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserCustomAttribute do
+RSpec.describe UserCustomAttribute, feature_category: :user_profile do
   describe 'assocations' do
     it { is_expected.to belong_to(:user) }
   end
@@ -37,6 +37,31 @@ RSpec.describe UserCustomAttribute do
       subject { UserCustomAttribute.by_key('blocked_at') }
 
       it { is_expected.to match_array([custom_attribute]) }
+    end
+  end
+
+  describe '.set_banned_by_abuse_report' do
+    let_it_be(:user) { create(:user) }
+    let(:abuse_report) { create(:abuse_report, user: user) }
+
+    subject { UserCustomAttribute.set_banned_by_abuse_report(abuse_report) }
+
+    it 'adds the abuse report ID to user custom attributes' do
+      subject
+
+      custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+      expect(custom_attribute.value).to eq(abuse_report.id.to_s)
+    end
+
+    context 'when abuse report is nil' do
+      let(:abuse_report) { nil }
+
+      it 'does not update custom attributes' do
+        subject
+
+        custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+        expect(custom_attribute).to be_nil
+      end
     end
   end
 

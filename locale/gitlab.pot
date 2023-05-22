@@ -39754,7 +39754,7 @@ msgstr ""
 msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} with tags %{tags}"
+msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} on runner that %{tags}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Scanner profile"

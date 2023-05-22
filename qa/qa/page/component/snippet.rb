@@ -70,6 +70,10 @@ module QA
             element :note_author_content
           end
 
+          base.view 'app/views/shared/notes/_notes_with_form.html.haml' do
+            element :notes_list
+          end
+
           base.view 'app/views/projects/notes/_more_actions_dropdown.html.haml' do
             element :more_actions_dropdown
             element :delete_comment_button
@@ -214,6 +218,10 @@ module QA
           within_element(:note_content) do
             has_text?(comment_content)
           end
+        end
+
+        def within_notes_list(&block)
+          within_element :notes_list, &block
         end
 
         def has_syntax_highlighting?(language)

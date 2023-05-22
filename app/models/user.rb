@@ -1670,7 +1670,7 @@ class User < ApplicationRecord
       new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
       self.note = "#{new_note}\n#{note}".strip
 
-      block
+      block_or_ban
 
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
     else
@@ -2256,6 +2256,10 @@ class User < ApplicationRecord
       namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
+  def spammer?
+    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+  end
+
   def spam_score
     abuse_trust_scores.spamcheck.average(:score) || 0.0
   end
@@ -2312,6 +2316,30 @@ class User < ApplicationRecord
   end
 
   private
+
+  def block_or_ban
+    if spammer? && account_age_in_days < 7
+      ban_and_report
+    else
+      block
+    end
+  end
+
+  def ban_and_report
+    msg = 'Potential spammer account deletion'
+    attrs = { user_id: id, reporter: User.security_bot, category: 'spam' }
+    abuse_report = AbuseReport.find_by(attrs)
+
+    if abuse_report.nil?
+      abuse_report = AbuseReport.create!(attrs.merge(message: msg))
+    else
+      abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
+    end
+
+    UserCustomAttribute.set_banned_by_abuse_report(abuse_report)
+
+    ban
+  end
 
   def pbkdf2?
     return false unless otp_backup_codes&.any?

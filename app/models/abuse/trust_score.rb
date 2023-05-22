@@ -3,6 +3,7 @@
 module Abuse
   class TrustScore < ApplicationRecord
     MAX_EVENTS = 100
+    SPAMCHECK_HAM_THRESHOLD = 0.5
 
     self.table_name = 'abuse_trust_scores'
 
