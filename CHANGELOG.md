@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.1 (2023-05-22)
+
+### Security (1 change)
+
+- [Fix arbitary file read via filename param](gitlab-org/security/gitlab@2ddbf5464954addce7b8c82102377f0f137b604f) ([merge request](gitlab-org/security/gitlab!3265))
+
 ## 16.0.0 (2023-05-18)
 
 ### Added (168 changes)
