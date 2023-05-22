@@ -334,7 +334,7 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 By default artifacts are always kept for successful pipelines for the most recent commit on
 each ref. This means that the latest artifacts do not immediately expire according
-to the `expire_in` specification.
+to the `expire_in` configuration.
 
 If a pipeline for a new commit on the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
@@ -349,6 +349,10 @@ a project, you can disable this behavior to save space:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
+
+After disabling this setting, all new artifacts expire according to the `expire_in` configuration.
+Artifacts in old pipelines continue to be kept until a new pipeline runs for the same ref.
+Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).

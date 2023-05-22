@@ -33,6 +33,7 @@ variables:
     FF_NETWORK_PER_BUILD: 1
     GDK_URL: http://gdk.test:3000
   before_script:
+    - echo "SUITE_RAN=true" > suite_status.env
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
     - docker pull ${GDK_IMAGE}
     - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
@@ -55,7 +56,6 @@ variables:
     - cd qa && bundle install
     - retry_exponential test_url ${GDK_URL}/users/sign_in
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
-    - echo "SUITE_RAN=true" > suite_status.env
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
     - QA_COMMAND="bundle exec bin/qa Test::Instance::All ${GDK_URL} -- ${RSPEC_TAGS} ${RSPEC_REPORT_OPTS}"

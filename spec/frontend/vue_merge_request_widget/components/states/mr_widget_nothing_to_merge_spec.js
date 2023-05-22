@@ -4,26 +4,15 @@ import NothingToMerge from '~/vue_merge_request_widget/components/states/nothing
 
 describe('NothingToMerge', () => {
   let wrapper;
-  const newBlobPath = '/foo';
 
-  const defaultProps = {
-    mr: {
-      newBlobPath,
-    },
-  };
-
-  const createComponent = (props = defaultProps) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(NothingToMerge, {
-      propsData: {
-        ...props,
-      },
       stubs: {
         GlSprintf,
       },
     });
   };
 
-  const findCreateButton = () => wrapper.findByTestId('createFileButton');
   const findNothingToMergeTextBody = () => wrapper.findByTestId('nothing-to-merge-body');
 
   describe('With Blob link', () => {
@@ -32,27 +21,10 @@ describe('NothingToMerge', () => {
     });
 
     it('shows the component with the correct text and highlights', () => {
-      expect(wrapper.text()).toContain('This merge request contains no changes.');
+      expect(wrapper.text()).toContain('Merge request contains no changes');
       expect(findNothingToMergeTextBody().text()).toContain(
-        'Use merge requests to propose changes to your project and discuss them with your team. To make changes, push a commit or edit this merge request to use a different branch.',
+        'Use merge requests to propose changes to your project and discuss them with your team. To make changes, use the Code dropdown list above, then test them with CI/CD before merging.',
       );
-    });
-
-    it('shows the Create file button with the correct attributes', () => {
-      const createButton = findCreateButton();
-
-      expect(createButton.exists()).toBe(true);
-      expect(createButton.attributes('href')).toBe(newBlobPath);
-    });
-  });
-
-  describe('Without Blob link', () => {
-    beforeEach(() => {
-      createComponent({ mr: { newBlobPath: '' } });
-    });
-
-    it('does not show the Create file button', () => {
-      expect(findCreateButton().exists()).toBe(false);
     });
   });
 });

@@ -35,6 +35,15 @@ DB_MIGRATION_TESTING_REQUIRED_MESSAGE = <<~MSG
    requesting review to test your migrations against production data.
 MSG
 
+DB_OLD_MIGRATIONS_MESSAGE = <<~MSG
+  ⌛ **Migration Timestamp Out of Date**
+  The following migrations have timestamps that are over three weeks old:
+
+  %<old_migrations>s
+
+  Please double check the timestamps and update them if possible. [Why does this matter?](https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-timestamp-age)
+MSG
+
 DATABASE_APPROVED_LABEL = 'database::approved'
 
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
@@ -76,4 +85,12 @@ if helper.mr_labels.include?('database') || db_paths_to_review.any?
   unless helper.has_scoped_label_with_scope?("database")
     helper.labels_to_add << 'database::review pending'
   end
+end
+
+cutoff = Date.today - 21 # Three weeks ago
+
+old_migrations = database.find_migration_files_before(git.added_files, cutoff)
+
+if old_migrations.present?
+  warn format(DB_OLD_MIGRATIONS_MESSAGE, old_migrations: old_migrations.map { |m| "* #{m}" }.join("\n"))
 end

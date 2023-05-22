@@ -35950,6 +35950,9 @@ msgstr ""
 msgid "ProjectView|Readme"
 msgstr ""
 
+msgid "ProjectView|Wiki"
+msgstr ""
+
 msgid "Projects"
 msgstr ""
 
@@ -50651,10 +50654,10 @@ msgstr ""
 msgid "When enabled, cleanup policies execute faster but put more load on Redis."
 msgstr ""
 
-msgid "When enabled, existing access tokens may be revoked. Leave blank for no limit."
+msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
 msgstr ""
 
-msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
+msgid "When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked."
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
@@ -53788,10 +53791,10 @@ msgstr ""
 msgid "mrWidgetCommitsAdded|The changes were not merged into %{targetBranch}."
 msgstr ""
 
-msgid "mrWidgetNothingToMerge|This merge request contains no changes."
+msgid "mrWidgetNothingToMerge|Merge request contains no changes"
 msgstr ""
 
-msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your project and discuss them with your team. To make changes, push a commit or edit this merge request to use a different branch. With %{linkStart}CI/CD%{linkEnd}, automatically test your changes before merging."
+msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your project and discuss them with your team. To make changes, use the %{boldStart}Code%{boldEnd} dropdown list above, then test them with %{linkStart}CI/CD%{linkEnd} before merging."
 msgstr ""
 
 msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"

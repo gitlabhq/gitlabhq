@@ -6,7 +6,7 @@ query projectUsersSearch($search: String!, $fullPath: ID!, $after: String, $firs
     id
     users: projectMembers(
       search: $search
-      relations: [DIRECT, INHERITED, INVITED_GROUPS]
+      relations: [DIRECT, INHERITED, INVITED_GROUPS, SHARED_INTO_ANCESTORS]
       first: $first
       after: $after
       sort: USER_FULL_NAME_ASC

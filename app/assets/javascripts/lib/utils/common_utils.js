@@ -689,21 +689,6 @@ export const getCookie = (name) => Cookies.get(name);
 export const removeCookie = (name) => Cookies.remove(name);
 
 /**
- * Returns the status of a feature flag.
- * Currently, there is no way to access feature
- * flags in Vuex other than directly tapping into
- * window.gon.
- *
- * This should only be used on Vuex. If feature flags
- * need to be accessed in Vue components consider
- * using the Vue feature flag mixin.
- *
- * @param {String} flag Feature flag
- * @returns {Boolean} on/off
- */
-export const isFeatureFlagEnabled = (flag) => window.gon.features?.[flag];
-
-/**
  * This method takes in array with snake_case strings
  * and returns a new array with camelCase strings
  *

@@ -38,6 +38,11 @@ import {
 } from '../utils/error_messages';
 import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
 
+export const i18n = {
+  dropzoneDescriptionText: __('Drag your designs here or %{linkStart}click to upload%{linkEnd}.'),
+  designLoadingError: __('An error occurred while loading designs. Please try again.'),
+};
+
 export default {
   components: {
     GlLoadingIcon,
@@ -346,9 +351,7 @@ export default {
     animation: 200,
     ghostClass: 'gl-visibility-hidden',
   },
-  i18n: {
-    dropzoneDescriptionText: __('Drag your designs here or %{linkStart}click to upload%{linkEnd}.'),
-  },
+  i18n,
 };
 </script>
 
@@ -427,7 +430,7 @@ export default {
     <div :class="designContentWrapperClass">
       <gl-loading-icon v-if="isLoading" size="lg" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
-        {{ __('An error occurred while loading designs. Please try again.') }}
+        {{ $options.i18n.designLoadingError }}
       </gl-alert>
       <header
         v-else-if="isDesignCollectionCopying"

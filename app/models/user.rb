@@ -344,7 +344,7 @@ class User < ApplicationRecord
   enum dashboard: { projects: 0, stars: 1, your_activity: 10, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
 
   # User's Project preference
-  enum project_view: { readme: 0, activity: 1, files: 2 }
+  enum project_view: { readme: 0, activity: 1, files: 2, wiki: 3 }
 
   # User's role
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true

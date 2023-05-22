@@ -168,9 +168,7 @@ When you use merge request pipelines, you can use:
 - All the same [predefined variables](../variables/predefined_variables.md) that are
   available in branch pipelines.
 - [Additional predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
-  available only to jobs in merge request pipelines. These variables contain
-  information from the associated merge request, which can be when calling the
-  [GitLab Merge Request API endpoint](../../api/merge_requests.md) from a job.
+  available only to jobs in merge request pipelines.
 
 ## Troubleshooting
 

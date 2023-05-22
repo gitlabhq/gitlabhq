@@ -54,6 +54,36 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
       end
     end
 
+    describe '#code_suggestions' do
+      context 'when group namespaces' do
+        let(:settings) { group.namespace_settings }
+        let(:group) { create(:group) }
+
+        context 'when group is created' do
+          it 'sets default code_suggestions value to true' do
+            expect(settings.code_suggestions).to eq true
+          end
+        end
+
+        context 'when setting is updated' do
+          it 'persists the code suggestions setting' do
+            settings.update!(code_suggestions: false)
+
+            expect(settings.code_suggestions).to eq false
+          end
+        end
+      end
+
+      context 'when user namespace' do
+        let(:user) { create(:user) }
+        let(:settings) { user.namespace.namespace_settings }
+
+        it 'defaults to false' do
+          expect(settings.code_suggestions).to eq false
+        end
+      end
+    end
+
     describe '#allow_mfa_for_group' do
       let(:settings) {  group.namespace_settings }
 
