@@ -26,7 +26,8 @@ RSpec.describe Ci::Runners::StaleMachinesCleanupCronWorker, feature_category: :r
 
         expect(worker.logging_extras).to eq({
           "extra.ci_runners_stale_machines_cleanup_cron_worker.status" => :success,
-          "extra.ci_runners_stale_machines_cleanup_cron_worker.deleted_managers" => true
+          "extra.ci_runners_stale_machines_cleanup_cron_worker.total_deleted" => 1,
+          "extra.ci_runners_stale_machines_cleanup_cron_worker.batch_counts" => [1, 0]
         })
       end
 

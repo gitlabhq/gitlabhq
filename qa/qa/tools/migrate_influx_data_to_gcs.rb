@@ -31,6 +31,7 @@ module QA
       def self.run(range: 1)
         migrator = new(range)
 
+        QA::Runtime::Logger.info("Fetching Influx data for the last #{range} hours")
         migrator.migrate_data
       end
 
@@ -102,9 +103,20 @@ module QA
       # @param [String] bucket to be uploaded to
       # @param [String] path of file to be uploaded
       # return void
-      def upload_to_gcs(bucket, file_path)
+      def upload_to_gcs(bucket, backup_file_path)
         client = Fog::Storage::Google.new(google_project: QA_GCS_PROJECT_ID, **gcs_credentials)
-        file = client.put_object(bucket, file_path, File.new(file_path, "r"))
+        file_path = backup_file_path.tr('_0-9', '')
+
+        # Backup older file
+        begin
+          QA::Runtime::Logger.info("Backing up older file to #{backup_file_path}")
+          client.copy_object(bucket, file_path, bucket, backup_file_path)
+        rescue Google::Apis::ClientError
+          QA::Runtime::Logger.warn("File #{file_path} is not found in GCS bucket, continuing with upload...")
+        end
+
+        # Upload new file
+        file = client.put_object(bucket, file_path, File.new(backup_file_path, "r"), force: true)
         QA::Runtime::Logger.info("File #{file_path} uploaded to gs://#{bucket}/#{file.name}")
       end
     end

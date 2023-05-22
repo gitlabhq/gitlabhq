@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard (Beta) **(ULTIMATE)**
+# Value Streams Dashboard **(ULTIMATE)**
 
 > - Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/alpha-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
@@ -21,17 +21,18 @@ For more information, see the [Value Stream Management category direction page](
 Our initial use case is focused on providing the ability to compare software delivery metrics.
 This comparison can help decision-makers understand whether projects and groups are improving.
 
-The beta version of the Value Streams Dashboard includes the following metrics:
+The Value Streams Dashboard includes the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
+- [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics.
 
 The Value Streams Dashboard allows you to:
 
 - Aggregate data records from different APIs.
 - Track software performance (DORA) and flow of value (VSA) across the organization.
 
-## DevOps metrics comparison
+## DevOps metrics comparison panel
 
 The DevOps metrics comparison displays DORA4 and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.

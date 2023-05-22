@@ -21,10 +21,10 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
 NOTE:
-Self-managed customers should create a top-level group so you can see an overview of
-your organization. For more information about efforts to create an
+For self-managed customers it could be beneficial to create one single top-level group, so you can see an overview of
+your entire organization. For more information about efforts to create an
 organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A top-level group can also have one complete
+A single top-level group provides insights in your entire organization via a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
 [Compliance Report](../compliance/compliance_report/index.md), and

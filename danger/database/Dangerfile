@@ -91,6 +91,6 @@ cutoff = Date.today - 21 # Three weeks ago
 
 old_migrations = database.find_migration_files_before(git.added_files, cutoff)
 
-if old_migrations.present?
+if old_migrations.any?
   warn format(DB_OLD_MIGRATIONS_MESSAGE, old_migrations: old_migrations.map { |m| "* #{m}" }.join("\n"))
 end

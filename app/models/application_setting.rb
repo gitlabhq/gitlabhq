@@ -669,6 +669,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
 
+  validates :namespace_aggregation_schedule_lease_duration_in_seconds,
+    numericality: { only_integer: true, greater_than: 0 }
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
