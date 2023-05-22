@@ -65,7 +65,7 @@ faster to preview proposed modifications.
 
 ## License compliance **(ULTIMATE)**
 
-If you have configured [License Compliance](../../compliance/license_compliance/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
+If you have configured [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
 
 ![Merge request pipeline](img/license_compliance_widget_v15_3.png)
 

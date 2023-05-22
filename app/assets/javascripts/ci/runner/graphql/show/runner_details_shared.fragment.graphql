@@ -2,7 +2,7 @@ fragment RunnerDetailsShared on CiRunner {
   id
   shortSha
   runnerType
-  active
+  paused
   accessLevel
   runUntagged
   locked

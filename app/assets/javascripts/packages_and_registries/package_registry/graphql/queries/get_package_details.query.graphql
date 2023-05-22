@@ -52,13 +52,7 @@ query getPackageDetails($id: PackagesPackageID!) {
       }
       nodes {
         id
-        fileMd5
-        fileName
-        fileSha1
-        fileSha256
         size
-        createdAt
-        downloadPath
       }
     }
     versions {

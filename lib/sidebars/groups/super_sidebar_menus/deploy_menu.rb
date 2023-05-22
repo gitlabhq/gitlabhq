@@ -1,28 +1,23 @@
 # frozen_string_literal: true
 
 module Sidebars
-  module Projects
+  module Groups
     module SuperSidebarMenus
-      class BuildMenu < ::Sidebars::Menu
+      class DeployMenu < ::Sidebars::Menu
         override :title
         def title
-          s_('Navigation|Build')
+          s_('Navigation|Deploy')
         end
 
         override :sprite_icon
         def sprite_icon
-          'rocket'
+          'deployments'
         end
 
         override :configure_menu_items
         def configure_menu_items
           [
-            :pipelines,
-            :jobs,
-            :pipelines_editor,
-            :pipeline_schedules,
-            :test_cases,
-            :artifacts
+            :packages_registry
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

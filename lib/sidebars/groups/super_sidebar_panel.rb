@@ -17,6 +17,7 @@ module Sidebars
         add_menu(Sidebars::Groups::SuperSidebarMenus::PlanMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::CodeMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::BuildMenu.new(context))
+        add_menu(Sidebars::Groups::SuperSidebarMenus::DeployMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::SecureMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::OperationsMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::MonitorMenu.new(context))

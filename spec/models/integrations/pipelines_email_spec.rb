@@ -84,7 +84,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
     end
 
     it 'sends email' do
-      emails = receivers.map { |r| double(notification_email_or_default: r) }
+      emails = receivers.map { |r| double(notification_email_or_default: r, username: r, id: r) }
 
       should_only_email(*emails)
     end
@@ -206,10 +206,6 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
     end
 
     context 'with recipients' do
-      context 'with failed pipeline' do
-        it_behaves_like 'sending email'
-      end
-
       context 'with succeeded pipeline' do
         before do
           data[:object_attributes][:status] = 'success'
@@ -240,10 +236,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
 
       context 'when the pipeline failed' do
         context 'on default branch' do
-          before do
-            data[:object_attributes][:ref] = project.default_branch
-            pipeline.update!(ref: project.default_branch)
-          end
+          it_behaves_like 'sending email'
 
           context 'notifications are enabled only for default branch' do
             it_behaves_like 'sending email', branches_to_be_notified: "default"
@@ -253,7 +246,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
             it_behaves_like 'not sending email', branches_to_be_notified: "protected"
           end
 
-          context 'notifications are enabled only for default and protected branches ' do
+          context 'notifications are enabled only for default and protected branches' do
             it_behaves_like 'sending email', branches_to_be_notified: "default_and_protected"
           end
 
@@ -273,11 +266,13 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
             it_behaves_like 'not sending email', branches_to_be_notified: "default"
           end
 
-          context 'notifications are enabled only for protected branch' do
+          context 'notifications are enabled only for protected branch',
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
             it_behaves_like 'sending email', branches_to_be_notified: "protected"
           end
 
-          context 'notifications are enabled only for default and protected branches ' do
+          context 'notifications are enabled only for default and protected branches',
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
             it_behaves_like 'sending email', branches_to_be_notified: "default_and_protected"
           end
 

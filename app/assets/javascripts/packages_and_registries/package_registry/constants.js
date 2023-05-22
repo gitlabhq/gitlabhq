@@ -102,6 +102,9 @@ export const FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE = s__(
 export const FETCH_PACKAGE_METADATA_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while fetching the package metadata.',
 );
+export const FETCH_PACKAGE_FILES_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while fetching package assets.',
+);
 
 export const DELETE_PACKAGES_TRACKING_ACTION = 'delete_packages';
 export const REQUEST_DELETE_PACKAGES_TRACKING_ACTION = 'request_delete_packages';
@@ -232,3 +235,4 @@ export const REQUEST_FORWARDING_HELP_PAGE_PATH = helpPagePath(
 );
 
 export const GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE = 10;
+export const GRAPHQL_PACKAGE_FILES_PAGE_SIZE = 100;

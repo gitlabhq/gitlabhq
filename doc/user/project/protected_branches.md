@@ -81,6 +81,31 @@ Administrators can set a default branch protection level in the
 
 Configure protected branches for all projects in a group, or just for a project.
 
+### For a project
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+- When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
+  on a protected branch, the group must be added to the project.
+
+To protect a branch:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. From the **Branch** dropdown list, select the branch you want to protect.
+1. From the **Allowed to merge** list, select a role that can merge into this branch.
+1. From the **Allowed to push and merge** list, select a role that can push to this branch.
+
+   NOTE:
+   In GitLab Premium and Ultimate, you can also add groups or individual users
+   to **Allowed to merge** and **Allowed to push and merge**.
+
+1. Select **Protect**.
+
+The protected branch displays in the list of protected branches.
+
 ### For all projects in a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
@@ -107,28 +132,6 @@ To protect a branch for all the projects in a group:
 1. Select **Protect**.
 
 The protected branch is added to the list of protected branches.
-
-### For a project
-
-Prerequisite:
-
-- You must have at least the Maintainer role.
-- When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
-  on a protected branch, the group must be added to the project.
-
-To protect a branch:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Protected branches**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to merge** list, select a role that can merge into this branch.
-   In GitLab Premium and Ultimate, you can also add groups or individual users.
-1. From the **Allowed to push and merge** list, select a role that can push to this branch.
-   In GitLab Premium and Ultimate, you can also add groups or individual users.
-1. Select **Protect**.
-
-The protected branch displays in the list of protected branches.
 
 ## Configure multiple protected branches by using a wildcard
 

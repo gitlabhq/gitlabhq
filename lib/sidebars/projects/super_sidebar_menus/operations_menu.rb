@@ -11,14 +11,13 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'deployments'
+          'cloud-pod'
         end
 
         override :configure_menu_items
         def configure_menu_items
           [
-            :packages_registry,
-            :container_registry,
+            :environments,
             :kubernetes,
             :terraform_states,
             :infrastructure_registry,

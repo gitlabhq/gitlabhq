@@ -12,7 +12,7 @@ const mockRunner = {
   description: mockDescription,
   maximumTimeout: 100,
   accessLevel: ACCESS_LEVEL_NOT_PROTECTED,
-  active: true,
+  paused: false,
   locked: true,
   runUntagged: true,
   tagList: ['tag-1', 'tag-2'],
@@ -79,7 +79,7 @@ describe('~/ci/runner/runner_update_form_utils', () => {
       ${',,,,, commas'}             | ${['commas']}
       ${'more ,,,,, commas'}        | ${['more', 'commas']}
       ${'  trimmed  ,  trimmed2  '} | ${['trimmed', 'trimmed2']}
-    `('collect tags separated by commas for "$value"', ({ tagList, tagListInput }) => {
+    `('collect comma-separated tags "$tagList" as $tagListInput', ({ tagList, tagListInput }) => {
       const variables = modelToUpdateMutationVariables({
         ...mockModel,
         tagList,

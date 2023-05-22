@@ -374,9 +374,9 @@ module Integrations
     private
 
     def jira_issue_match_regex
-      match_regex = (jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex)
+      return /\b#{jira_issue_prefix}(?<issue>#{Gitlab::Regex.jira_issue_key_regex})/ if jira_issue_regex.blank?
 
-      /\b#{jira_issue_prefix}(?<issue>#{match_regex})/
+      Gitlab::UntrustedRegexp.new("\\b#{jira_issue_prefix}(?P<issue>#{jira_issue_regex})")
     end
 
     def parse_project_from_issue_key(issue_key)

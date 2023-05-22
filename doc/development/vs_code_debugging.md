@@ -6,12 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # VS Code debugging
 
-This document describes how to set up Rails debugging in [VS Code](https://code.visualstudio.com/).
+This document describes how to set up Rails debugging in [Visual Studio Code (VSCode)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution.md#step-1-configure-the-gitlab-development-kit).
 
 ## Setup
 
 1. Install the `debug` gem by running `gem install debug` inside your `gitlab` folder.
-1. Add the following configuration to your `.vscode/tasks.json` file:
+1. Install the [VSCode Ruby rdbg Debugger](https://marketplace.visualstudio.com/items?itemName=KoichiSasada.vscode-rdbg) extension to add support for the `rdbg` debugger type to VSCode.
+1. In case you want to automatically stop and start GitLab and its associated Ruby Rails server, you may add the following VSCode task to your configuration under the `.vscode/tasks.json` file:
 
     ```json
     {
@@ -20,7 +21,7 @@ This document describes how to set up Rails debugging in [VS Code](https://code.
           {
             "label": "start rdbg",
             "type": "shell",
-            "command": "gdk stop rails-web && GITLAB_RAILS_RACK_TIMEOUT_ENABLE_LOGGING=false PUMA_SINGLE_MODE=true rdbg --open -c -- bin/rails s",
+            "command": "gdk stop rails-web && GITLAB_RAILS_RACK_TIMEOUT_ENABLE_LOGGING=false PUMA_SINGLE_MODE=true rdbg --open -c bin/rails server",
             "isBackground": true,
             "problemMatcher": {
               "owner": "rails",
@@ -42,26 +43,29 @@ This document describes how to set up Rails debugging in [VS Code](https://code.
 
     ```json
     {
-        // Use IntelliSense to learn about possible attributes.
-        // Hover to view descriptions of existing attributes.
-        // For more information, see https://go.microsoft.com/fwlink/?linkid=830387.
         "version": "0.2.0",
         "configurations": [
           {
             "type": "rdbg",
             "name": "Attach with rdbg",
             "request": "attach",
+
+            // remove the following "preLaunchTask" if you do not wish to stop and start
+            // GitLab via VS Code but manually on a separate terminal.
             "preLaunchTask": "start rdbg"
           }
         ]
     }
     ```
 
+WARNING:
+The VSCode Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
+
 ## Debugging
 
-Prerequisite:
+### Prerequisites
 
-- You must have a running GDK instance.
+- You must have a running [GDK](contributing/first_contribution.md#step-1-configure-the-gitlab-development-kit) instance.
 
 To start debugging, do one of the following:
 

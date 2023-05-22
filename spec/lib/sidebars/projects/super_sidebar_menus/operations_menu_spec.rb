@@ -9,14 +9,13 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::OperationsMenu, feature_ca
 
   it 'has title and sprite_icon' do
     expect(subject.title).to eq(s_("Navigation|Operate"))
-    expect(subject.sprite_icon).to eq("deployments")
+    expect(subject.sprite_icon).to eq("cloud-pod")
   end
 
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
-      :packages_registry,
-      :container_registry,
+      :environments,
       :kubernetes,
       :terraform_states,
       :infrastructure_registry,

@@ -10862,6 +10862,15 @@ msgstr ""
 msgid "CodeQuality|New code quality degradations on this line"
 msgstr ""
 
+msgid "CodeSuggestionsAlert|Code faster and more efficiently with AI-powered code suggestions in VS Code. 13 languages are supported, including Javascript, Python, Go, Java, and Kotlin. Enable Code Suggestions in your %{preference_link_start}user profile preferences%{link_end} or %{docs_link_start}see the documentation%{link_end} to learn more."
+msgstr ""
+
+msgid "CodeSuggestionsAlert|Enable Code Suggestions"
+msgstr ""
+
+msgid "CodeSuggestionsAlert|Get started with Code Suggestions, available for free during the beta period."
+msgstr ""
+
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 
@@ -27707,6 +27716,9 @@ msgstr ""
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
 msgstr ""
 
+msgid "MemberRole|minimal base access level must be %{min_access_level}."
+msgstr ""
+
 msgid "MemberRole|must be top-level namespace"
 msgstr ""
 
@@ -29512,6 +29524,9 @@ msgid "Navigation|Code"
 msgstr ""
 
 msgid "Navigation|Context navigation"
+msgstr ""
+
+msgid "Navigation|Deploy"
 msgstr ""
 
 msgid "Navigation|Enter admin mode"
@@ -32139,6 +32154,9 @@ msgid "PackageRegistry|Something went wrong while deleting the package assets."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while deleting the package."
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while fetching package assets."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while fetching the package history."

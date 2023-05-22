@@ -36,7 +36,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Package Registry'),
             link: group_packages_path(context.group),
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/packages' },
             item_id: :packages_registry
           )

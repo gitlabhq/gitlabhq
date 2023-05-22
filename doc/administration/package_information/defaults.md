@@ -53,6 +53,8 @@ by default:
 |        Gitaly        |      Yes      |      Socket      | Port (8075) |                8075 or 9999 (TLS)          |
 |   Gitaly exporter    |      Yes      |       Port       |      X      |                    9236                    |
 |       Praefect       |      No       |       Port       |      X      |                2305 or 3305 (TLS)          |
+| GitLab Workhorse exporter |      Yes      |       Port       |      X      |                     9229                   |
+|  Registry exporter   |      No       |       Port       |      X      |                     5001                   |
 
 Legend:
 

@@ -236,7 +236,7 @@ describe('RunnerDeleteButton', () => {
       createComponent({
         props: {
           runner: {
-            active: true,
+            paused: false,
           },
           compact: true,
         },

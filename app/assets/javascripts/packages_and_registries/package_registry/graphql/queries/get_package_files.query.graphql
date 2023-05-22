@@ -1,0 +1,17 @@
+query getPackageFiles($id: PackagesPackageID!, $first: Int) {
+  package(id: $id) {
+    id
+    packageFiles(first: $first) {
+      nodes {
+        id
+        fileMd5
+        fileName
+        fileSha1
+        fileSha256
+        size
+        createdAt
+        downloadPath
+      }
+    }
+  }
+}

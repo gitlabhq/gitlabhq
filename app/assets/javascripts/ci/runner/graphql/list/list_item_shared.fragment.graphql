@@ -7,7 +7,7 @@ fragment ListItemShared on CiRunner {
   shortSha
   version
   ipAddress
-  active
+  paused
   locked
   jobCount
   tagList

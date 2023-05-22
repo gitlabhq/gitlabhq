@@ -189,7 +189,7 @@ GitLab can display the results of one or more reports in:
 The `dotenv` report collects a set of environment variables as artifacts.
 
 The collected variables are registered as runtime-created variables of the job,
-which you can use to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
+which you can use to [set dynamic environment URLs after a job finishes](../environments/index.md#set-a-dynamic-environment-url).
 
 If duplicate environment variables are present in a `dotenv` report:
 

@@ -21,6 +21,9 @@ export const apolloProvider = new VueApollo({
                 keyArgs: false,
                 merge: mergeVariables,
               },
+              packageFiles: {
+                merge: mergeVariables,
+              },
             },
           },
         },

@@ -134,12 +134,7 @@ export default {
     </template>
     <template v-else>
       <div class="gl-mb-5">
-        <gl-form-checkbox
-          v-model="model.active"
-          data-testid="runner-field-paused"
-          :value="false"
-          :unchecked-value="true"
-        >
+        <gl-form-checkbox v-model="model.paused" data-testid="runner-field-paused">
           {{ __('Paused') }}
           <template #help>
             {{ s__('Runners|Stop the runner from accepting new jobs.') }}

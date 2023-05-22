@@ -158,8 +158,8 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
-    packageFilesLoading() {
-      return this.isLoading || this.mutationLoading;
+    packageFilesMutationLoading() {
+      return this.mutationLoading;
     },
     isValidPackage() {
       return this.isLoading || Boolean(this.packageEntity.name);
@@ -360,7 +360,7 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <div v-if="!isLoading" data-qa-selector="package_information_content">
+        <div data-qa-selector="package_information_content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
 
           <installation-commands :package-entity="packageEntity" />
@@ -370,16 +370,17 @@ export default {
             :package-id="packageEntity.id"
             :package-type="packageType"
           />
-        </div>
 
-        <package-files
-          v-if="showFiles"
-          :can-delete="packageEntity.canDestroy"
-          :is-loading="packageFilesLoading"
-          :package-files="packageFiles"
-          @download-file="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
-          @delete-files="handleFileDelete"
-        />
+          <package-files
+            v-if="showFiles"
+            :can-delete="packageEntity.canDestroy"
+            :is-loading="packageFilesMutationLoading"
+            :package-id="packageEntity.id"
+            :package-type="packageType"
+            @download-file="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
+            @delete-files="handleFileDelete"
+          />
+        </div>
       </gl-tab>
 
       <gl-tab v-if="showDependencies">

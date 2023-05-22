@@ -1,5 +1,14 @@
 <script>
-import { GlLink, GlTable, GlDropdownItem, GlDropdown, GlButton, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlLink,
+  GlTable,
+  GlDropdownItem,
+  GlDropdown,
+  GlButton,
+  GlFormCheckbox,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, s__ } from '~/locale';
@@ -9,21 +18,26 @@ import { packageTypeToTrackCategory } from '~/packages_and_registries/package_re
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
+  FETCH_PACKAGE_FILES_ERROR_MESSAGE,
+  GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
   REQUEST_DELETE_SELECTED_PACKAGE_FILE_TRACKING_ACTION,
   SELECT_PACKAGE_FILE_TRACKING_ACTION,
   TRACKING_LABEL_PACKAGE_ASSET,
   TRACKING_ACTION_EXPAND_PACKAGE_ASSET,
 } from '~/packages_and_registries/package_registry/constants';
+import getPackageFilesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 
 export default {
   name: 'PackageFiles',
   components: {
+    GlAlert,
     GlLink,
     GlTable,
     GlDropdown,
     GlDropdownItem,
     GlFormCheckbox,
     GlButton,
+    GlLoadingIcon,
     FileIcon,
     TimeAgoTooltip,
     FileSha,
@@ -40,14 +54,36 @@ export default {
       required: false,
       default: false,
     },
+    packageId: {
+      type: String,
+      required: true,
+    },
+    packageType: {
+      type: String,
+      required: true,
+    },
+  },
+  apollo: {
     packageFiles: {
-      type: Array,
-      required: false,
-      default: () => [],
+      query: getPackageFilesQuery,
+      context: {
+        isSingleRequest: true,
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data.package?.packageFiles?.nodes || [];
+      },
+      error() {
+        this.fetchPackageFilesError = true;
+      },
     },
   },
   data() {
     return {
+      fetchPackageFilesError: false,
+      packageFiles: [],
       selectedReferences: [],
     };
   },
@@ -56,7 +92,7 @@ export default {
       return this.selectedReferences.length > 0;
     },
     areAllFilesSelected() {
-      return this.packageFiles.every(this.isSelected);
+      return this.packageFiles.length > 0 && this.packageFiles.every(this.isSelected);
     },
     filesTableRows() {
       return this.packageFiles.map((pf) => ({
@@ -68,10 +104,8 @@ export default {
     hasSelectedSomeFiles() {
       return this.areFilesSelected && !this.areAllFilesSelected;
     },
-    showCommitColumn() {
-      // note that this is always false for now since we do not return
-      // pipelines associated to files for performance concerns
-      return this.filesTableRows.some((row) => Boolean(row.pipeline?.id));
+    loading() {
+      return this.$apollo.queries.packageFiles.loading || this.isLoading;
     },
     filesTableHeaderFields() {
       return [
@@ -84,11 +118,6 @@ export default {
         {
           key: 'name',
           label: __('Name'),
-        },
-        {
-          key: 'commit',
-          label: __('Commit'),
-          hide: !this.showCommitColumn,
         },
         {
           key: 'size',
@@ -107,6 +136,12 @@ export default {
           tdClass: 'gl-w-4 gl-pt-3!',
         },
       ].filter((c) => !c.hide);
+    },
+    queryVariables() {
+      return {
+        id: this.packageId,
+        first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
+      };
     },
     tracking() {
       return {
@@ -142,6 +177,7 @@ export default {
     deleteFile: __('Delete asset'),
     deleteSelected: s__('PackageRegistry|Delete selected'),
     moreActionsText: __('More actions'),
+    fetchPackageFilesErrorMessage: FETCH_PACKAGE_FILES_ERROR_MESSAGE,
   },
 };
 </script>
@@ -151,8 +187,8 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
       <h3 class="gl-font-lg gl-mt-5">{{ __('Assets') }}</h3>
       <gl-button
-        v-if="canDelete"
-        :disabled="isLoading || !areFilesSelected"
+        v-if="!fetchPackageFilesError && canDelete"
+        :disabled="loading || !areFilesSelected"
         category="secondary"
         variant="danger"
         data-testid="delete-selected"
@@ -161,7 +197,16 @@ export default {
         {{ $options.i18n.deleteSelected }}
       </gl-button>
     </div>
+    <gl-alert
+      v-if="fetchPackageFilesError"
+      variant="danger"
+      @dismiss="fetchPackageFilesError = false"
+    >
+      {{ $options.i18n.fetchPackageFilesErrorMessage }}
+    </gl-alert>
     <gl-table
+      v-else
+      :busy="loading"
       :fields="filesTableHeaderFields"
       :items="filesTableRows"
       show-empty
@@ -171,6 +216,9 @@ export default {
       :tbody-tr-attr="{ 'data-testid': 'file-row' }"
       @row-selected="updateSelectedReferences"
     >
+      <template #table-busy>
+        <gl-loading-icon size="lg" class="gl-my-5" />
+      </template>
       <template #head(checkbox)="{ selectAllRows, clearSelected }">
         <gl-form-checkbox
           v-if="canDelete"
@@ -215,16 +263,6 @@ export default {
             class="gl-mr-1 gl-relative"
           />
           <span>{{ item.fileName }}</span>
-        </gl-link>
-      </template>
-
-      <template #cell(commit)="{ item }">
-        <gl-link
-          v-if="item.pipeline && item.pipeline"
-          :href="item.pipeline.commitPath"
-          class="gl-text-gray-500"
-          data-testid="commit-link"
-          >{{ item.pipeline.sha }}
         </gl-link>
       </template>
 

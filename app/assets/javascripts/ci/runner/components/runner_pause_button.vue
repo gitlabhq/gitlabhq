@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import runnerToggleActiveMutation from '~/ci/runner/graphql/shared/runner_toggle_active.mutation.graphql';
+import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import { createAlert } from '~/alert';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { I18N_PAUSE, I18N_PAUSE_TOOLTIP, I18N_RESUME, I18N_RESUME_TOOLTIP } from '../constants';
@@ -31,14 +31,14 @@ export default {
     };
   },
   computed: {
-    isActive() {
-      return this.runner.active;
+    isPaused() {
+      return this.runner.paused;
     },
     icon() {
-      return this.isActive ? 'pause' : 'play';
+      return this.isPaused ? 'play' : 'pause';
     },
     label() {
-      return this.isActive ? I18N_PAUSE : I18N_RESUME;
+      return this.isPaused ? I18N_RESUME : I18N_PAUSE;
     },
     buttonContent() {
       if (this.compact) {
@@ -56,7 +56,7 @@ export default {
       // Prevent a "sticky" tooltip: If this button is disabled,
       // mouseout listeners don't run leaving the tooltip stuck
       if (!this.updating) {
-        return this.isActive ? I18N_PAUSE_TOOLTIP : I18N_RESUME_TOOLTIP;
+        return this.isPaused ? I18N_RESUME_TOOLTIP : I18N_PAUSE_TOOLTIP;
       }
       return '';
     },
@@ -67,7 +67,7 @@ export default {
       try {
         const input = {
           id: this.runner.id,
-          active: !this.isActive,
+          paused: !this.isPaused,
         };
 
         const {
@@ -75,7 +75,7 @@ export default {
             runnerUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: runnerToggleActiveMutation,
+          mutation: runnerTogglePausedMutation,
           variables: {
             input,
           },

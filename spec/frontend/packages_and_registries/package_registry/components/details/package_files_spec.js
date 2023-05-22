@@ -1,22 +1,34 @@
-import { GlDropdown, GlButton, GlFormCheckbox } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlAlert, GlDropdown, GlButton, GlFormCheckbox, GlLoadingIcon } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { packageFiles as packageFilesMock } from 'jest/packages_and_registries/package_registry/mock_data';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { s__ } from '~/locale';
+import {
+  packageFiles as packageFilesMock,
+  packageFilesQuery,
+} from 'jest/packages_and_registries/package_registry/mock_data';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
+import getPackageFiles from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
+
+Vue.use(VueApollo);
+
 describe('Package Files', () => {
   let wrapper;
+  let apolloProvider;
 
   const findAllRows = () => wrapper.findAllByTestId('file-row');
   const findDeleteSelectedButton = () => wrapper.findByTestId('delete-selected');
   const findFirstRow = () => extendedWrapper(findAllRows().at(0));
   const findSecondRow = () => extendedWrapper(findAllRows().at(1));
+  const findPackageFilesAlert = () => wrapper.findComponent(GlAlert);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
-  const findFirstRowCommitLink = () => findFirstRow().findByTestId('commit-link');
-  const findSecondRowCommitLink = () => findSecondRow().findByTestId('commit-link');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
   const findFirstActionMenu = () => extendedWrapper(findFirstRow().findComponent(GlDropdown));
@@ -30,16 +42,23 @@ describe('Package Files', () => {
   const [file] = files;
 
   const createComponent = ({
-    packageFiles = [file],
+    packageId = '1',
+    packageType = 'NPM',
     isLoading = false,
     canDelete = true,
     stubs,
+    resolver = jest.fn().mockResolvedValue(packageFilesQuery([file])),
   } = {}) => {
+    const requestHandlers = [[getPackageFiles, resolver]];
+    apolloProvider = createMockApollo(requestHandlers);
+
     wrapper = mountExtended(PackageFiles, {
+      apolloProvider,
       propsData: {
         canDelete,
         isLoading,
-        packageFiles,
+        packageId,
+        packageType,
       },
       stubs: {
         GlTable: false,
@@ -49,35 +68,61 @@ describe('Package Files', () => {
   };
 
   describe('rows', () => {
-    it('renders a single file for an npm package', () => {
+    it('do not get rendered when query is loading', () => {
       createComponent();
 
-      expect(findAllRows()).toHaveLength(1);
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findDeleteSelectedButton().props('disabled')).toBe(true);
     });
 
-    it('renders multiple files for a package that contains more than one file', () => {
-      createComponent({ packageFiles: files });
+    it('renders a single file for an npm package', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findAllRows()).toHaveLength(1);
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('renders multiple files for a package that contains more than one file', async () => {
+      createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
+      await waitForPromises();
 
       expect(findAllRows()).toHaveLength(2);
+    });
+
+    it('does not render gl-alert', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findPackageFilesAlert().exists()).toBe(false);
+    });
+
+    it('renders gl-alert if load fails', async () => {
+      createComponent({ resolver: jest.fn().mockRejectedValue() });
+      await waitForPromises();
+
+      expect(findPackageFilesAlert().exists()).toBe(true);
+      expect(findPackageFilesAlert().text()).toBe(
+        s__('PackageRegistry|Something went wrong while fetching package assets.'),
+      );
     });
   });
 
   describe('link', () => {
-    it('exists', () => {
+    beforeEach(async () => {
       createComponent();
+      await waitForPromises();
+    });
 
+    it('exists', () => {
       expect(findFirstRowDownloadLink().exists()).toBe(true);
     });
 
     it('has the correct attrs bound', () => {
-      createComponent();
-
       expect(findFirstRowDownloadLink().attributes('href')).toBe(file.downloadPath);
     });
 
     it('emits "download-file" event on click', () => {
-      createComponent();
-
       findFirstRowDownloadLink().vm.$emit('click');
 
       expect(wrapper.emitted('download-file')).toEqual([[]]);
@@ -85,90 +130,43 @@ describe('Package Files', () => {
   });
 
   describe('file-icon', () => {
-    it('exists', () => {
+    beforeEach(async () => {
       createComponent();
+      await waitForPromises();
+    });
 
+    it('exists', () => {
       expect(findFirstRowFileIcon().exists()).toBe(true);
     });
 
     it('has the correct props bound', () => {
-      createComponent();
-
       expect(findFirstRowFileIcon().props('fileName')).toBe(file.fileName);
     });
   });
 
   describe('time-ago tooltip', () => {
-    it('exists', () => {
+    beforeEach(async () => {
       createComponent();
+      await waitForPromises();
+    });
 
+    it('exists', () => {
       expect(findFirstRowCreatedAt().exists()).toBe(true);
     });
 
     it('has the correct props bound', () => {
-      createComponent();
-
       expect(findFirstRowCreatedAt().props('time')).toBe(file.createdAt);
-    });
-  });
-
-  describe('commit', () => {
-    const withPipeline = {
-      ...file,
-      pipelines: [
-        {
-          sha: 'sha',
-          id: 1,
-          commitPath: 'commitPath',
-        },
-      ],
-    };
-
-    describe('when package file has a pipeline associated', () => {
-      it('exists', () => {
-        createComponent({ packageFiles: [withPipeline] });
-
-        expect(findFirstRowCommitLink().exists()).toBe(true);
-      });
-
-      it('the link points to the commit path', () => {
-        createComponent({ packageFiles: [withPipeline] });
-
-        expect(findFirstRowCommitLink().attributes('href')).toBe(
-          withPipeline.pipelines[0].commitPath,
-        );
-      });
-
-      it('the text is the pipeline sha', () => {
-        createComponent({ packageFiles: [withPipeline] });
-
-        expect(findFirstRowCommitLink().text()).toBe(withPipeline.pipelines[0].sha);
-      });
-    });
-
-    describe('when package file has no pipeline associated', () => {
-      it('does not exist', () => {
-        createComponent();
-
-        expect(findFirstRowCommitLink().exists()).toBe(false);
-      });
-    });
-
-    describe('when only one file lacks an associated pipeline', () => {
-      it('renders the commit when it exists and not otherwise', () => {
-        createComponent({ packageFiles: [withPipeline, file] });
-
-        expect(findFirstRowCommitLink().exists()).toBe(true);
-        expect(findSecondRowCommitLink().exists()).toBe(false);
-      });
     });
   });
 
   describe('action menu', () => {
     describe('when the user can delete', () => {
-      it('exists', () => {
+      beforeEach(async () => {
         createComponent();
+        await waitForPromises();
+      });
 
+      it('exists', () => {
         expect(findFirstActionMenu().exists()).toBe(true);
         expect(findFirstActionMenu().props('icon')).toBe('ellipsis_v');
         expect(findFirstActionMenu().props('textSrOnly')).toBe(true);
@@ -178,14 +176,10 @@ describe('Package Files', () => {
       describe('menu items', () => {
         describe('delete file', () => {
           it('exists', () => {
-            createComponent();
-
             expect(findActionMenuDelete().exists()).toBe(true);
           });
 
           it('emits a delete event when clicked', async () => {
-            createComponent();
-
             await findActionMenuDelete().trigger('click');
 
             const [[items]] = wrapper.emitted('delete-files');
@@ -199,8 +193,9 @@ describe('Package Files', () => {
     describe('when the user can not delete', () => {
       const canDelete = false;
 
-      it('does not exist', () => {
+      it('does not exist', async () => {
         createComponent({ canDelete });
+        await waitForPromises();
 
         expect(findFirstActionMenu().exists()).toBe(false);
       });
@@ -209,22 +204,33 @@ describe('Package Files', () => {
 
   describe('multi select', () => {
     describe('when user can delete', () => {
-      it('delete selected button exists & is disabled', () => {
+      it('delete selected button exists & is disabled', async () => {
         createComponent();
+        await waitForPromises();
 
         expect(findDeleteSelectedButton().exists()).toBe(true);
         expect(findDeleteSelectedButton().text()).toMatchInterpolatedText('Delete selected');
         expect(findDeleteSelectedButton().props('disabled')).toBe(true);
       });
 
-      it('delete selected button exists & is disabled when isLoading prop is true', () => {
-        createComponent({ isLoading: true });
+      it('delete selected button exists & is disabled when isLoading prop is true', async () => {
+        createComponent();
+        await waitForPromises();
+        const first = findAllRowCheckboxes().at(0);
+
+        await first.setChecked(true);
+
+        expect(findDeleteSelectedButton().props('disabled')).toBe(false);
+
+        await wrapper.setProps({ isLoading: true });
 
         expect(findDeleteSelectedButton().props('disabled')).toBe(true);
+        expect(findLoadingIcon().exists()).toBe(true);
       });
 
-      it('checkboxes to select file are visible', () => {
-        createComponent({ packageFiles: files });
+      it('checkboxes to select file are visible', async () => {
+        createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
+        await waitForPromises();
 
         expect(findCheckAllCheckbox().exists()).toBe(true);
         expect(findAllRowCheckboxes()).toHaveLength(2);
@@ -232,6 +238,7 @@ describe('Package Files', () => {
 
       it('selecting a checkbox enables delete selected button', async () => {
         createComponent();
+        await waitForPromises();
 
         const first = findAllRowCheckboxes().at(0);
 
@@ -244,7 +251,8 @@ describe('Package Files', () => {
         it('will toggle between selecting all and deselecting all files', async () => {
           const getChecked = () => findAllRowCheckboxes().filter((x) => x.element.checked === true);
 
-          createComponent({ packageFiles: files });
+          createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
+          await waitForPromises();
 
           expect(getChecked()).toHaveLength(0);
 
@@ -262,9 +270,10 @@ describe('Package Files', () => {
             expect(findCheckAllCheckbox().props('indeterminate')).toBe(state);
 
           createComponent({
-            packageFiles: files,
+            resolver: jest.fn().mockResolvedValue(packageFilesQuery()),
             stubs: { GlFormCheckbox: stubComponent(GlFormCheckbox, { props: ['indeterminate'] }) },
           });
+          await waitForPromises();
 
           expectIndeterminateState(false);
 
@@ -288,6 +297,7 @@ describe('Package Files', () => {
 
       it('emits a delete event when selected', async () => {
         createComponent();
+        await waitForPromises();
 
         const first = findAllRowCheckboxes().at(0);
 
@@ -301,7 +311,8 @@ describe('Package Files', () => {
       });
 
       it('emits delete event with both items when all are selected', async () => {
-        createComponent({ packageFiles: files });
+        createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
+        await waitForPromises();
 
         await findCheckAllCheckbox().setChecked(true);
 
@@ -315,14 +326,16 @@ describe('Package Files', () => {
     describe('when user cannot delete', () => {
       const canDelete = false;
 
-      it('delete selected button does not exist', () => {
+      it('delete selected button does not exist', async () => {
         createComponent({ canDelete });
+        await waitForPromises();
 
         expect(findDeleteSelectedButton().exists()).toBe(false);
       });
 
-      it('checkboxes to select file are not visible', () => {
-        createComponent({ packageFiles: files, canDelete });
+      it('checkboxes to select file are not visible', async () => {
+        createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()), canDelete });
+        await waitForPromises();
 
         expect(findCheckAllCheckbox().exists()).toBe(false);
         expect(findAllRowCheckboxes()).toHaveLength(0);
@@ -332,24 +345,27 @@ describe('Package Files', () => {
 
   describe('additional details', () => {
     describe('details toggle button', () => {
-      it('exists', () => {
+      it('exists', async () => {
         createComponent();
+        await waitForPromises();
 
         expect(findFirstToggleDetailsButton().exists()).toBe(true);
       });
 
-      it('is hidden when no details is present', () => {
+      it('is hidden when no details is present', async () => {
         const { ...noShaFile } = file;
         noShaFile.fileSha256 = null;
         noShaFile.fileMd5 = null;
         noShaFile.fileSha1 = null;
-        createComponent({ packageFiles: [noShaFile] });
+        createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery([noShaFile])) });
+        await waitForPromises();
 
         expect(findFirstToggleDetailsButton().exists()).toBe(false);
       });
 
       it('toggles the details row', async () => {
         createComponent();
+        await waitForPromises();
 
         expect(findFirstToggleDetailsButton().props('icon')).toBe('chevron-down');
 
@@ -380,6 +396,7 @@ describe('Package Files', () => {
         ${'sha-1'}   | ${'SHA-1'}   | ${'be93151dc23ac34a82752444556fe79b32c7a1ad'}
       `('has a $title row', async ({ selector, title, sha }) => {
         createComponent();
+        await waitForPromises();
 
         await showShaFiles();
 
@@ -393,7 +410,8 @@ describe('Package Files', () => {
         const { ...missingMd5 } = file;
         missingMd5.fileMd5 = null;
 
-        createComponent({ packageFiles: [missingMd5] });
+        createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery([missingMd5])) });
+        await waitForPromises();
 
         await showShaFiles();
 

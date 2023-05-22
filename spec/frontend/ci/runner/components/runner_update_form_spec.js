@@ -56,7 +56,7 @@ describe('RunnerUpdateForm', () => {
   const submitFormAndWait = () => submitForm().then(waitForPromises);
 
   const getFieldsModel = () => ({
-    active: !findPausedCheckbox().element.checked,
+    paused: findPausedCheckbox().element.checked,
     accessLevel: findProtectedCheckbox().element.checked
       ? ACCESS_LEVEL_REF_PROTECTED
       : ACCESS_LEVEL_NOT_PROTECTED,
@@ -179,8 +179,8 @@ describe('RunnerUpdateForm', () => {
   describe('On submit, runner gets updated', () => {
     it.each`
       test                      | initialValue                                   | findCheckbox               | checked  | submitted
-      ${'pauses'}               | ${{ active: true }}                            | ${findPausedCheckbox}      | ${true}  | ${{ active: false }}
-      ${'activates'}            | ${{ active: false }}                           | ${findPausedCheckbox}      | ${false} | ${{ active: true }}
+      ${'pauses'}               | ${{ paused: false }}                           | ${findPausedCheckbox}      | ${true}  | ${{ paused: true }}
+      ${'activates'}            | ${{ paused: true }}                            | ${findPausedCheckbox}      | ${false} | ${{ paused: false }}
       ${'unprotects'}           | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED }} | ${findProtectedCheckbox}   | ${true}  | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED }}
       ${'protects'}             | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED }} | ${findProtectedCheckbox}   | ${false} | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED }}
       ${'"runs untagged jobs"'} | ${{ runUntagged: true }}                       | ${findRunUntaggedCheckbox} | ${false} | ${{ runUntagged: false }}

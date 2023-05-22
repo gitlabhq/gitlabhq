@@ -36,6 +36,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
         Sidebars::Groups::SuperSidebarMenus::PlanMenu,
         Sidebars::Groups::SuperSidebarMenus::CodeMenu,
         Sidebars::Groups::SuperSidebarMenus::BuildMenu,
+        Sidebars::Groups::SuperSidebarMenus::DeployMenu,
         Sidebars::Groups::SuperSidebarMenus::SecureMenu,
         Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
         Sidebars::Groups::SuperSidebarMenus::MonitorMenu,

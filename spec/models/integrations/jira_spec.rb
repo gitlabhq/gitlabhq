@@ -326,6 +326,18 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         end
       end
     end
+
+    context 'with long running regex' do
+      let(:key) { "JIRAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1\nanother line\n" }
+
+      before do
+        jira_integration.jira_issue_regex = '((a|b)+|c)+$'
+      end
+
+      it 'handles long inputs' do
+        expect(jira_integration.reference_pattern.match(key).to_s).to eq('')
+      end
+    end
   end
 
   describe '.valid_jira_cloud_url?' do

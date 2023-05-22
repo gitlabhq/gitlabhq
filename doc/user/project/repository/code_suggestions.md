@@ -64,7 +64,7 @@ Each user can enable Code Suggestions for themselves:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. On the left sidebar, select **Preferences**.
-1. In the **Code Suggestions** section, enable the setting.
+1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
 
 NOTE:
 If Code Suggestions is [enabled for the group](../../group/manage.md#group-code-suggestions), the group setting overrides the user setting.
@@ -110,6 +110,21 @@ Start typing and receive suggestions for your GitLab projects.
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+## Why can't I see any code suggestions?
+
+If Code Suggestions are not displayed, try the following troubleshooting steps.
+
+In GitLab, ensure Code Suggestions is enabled:
+
+- [For your user account](#enable-code-suggestions-for-an-individual-user).
+- [For *all* top-level groups your account belongs to](../../group/manage.md#group-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+
+In VS Code:
+
+- Ensure [your IDE is configured properly](#enable-code-suggestions-in-vs-code).
+
+To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
 
 ## Stability and performance
 

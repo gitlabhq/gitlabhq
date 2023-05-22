@@ -25,9 +25,6 @@ export default {
     },
   },
   computed: {
-    paused() {
-      return !this.runner.active;
-    },
     heading() {
       const id = getIdFromGraphQLId(this.runner.id);
       return sprintf(I18N_DETAILS_TITLE, { runner_id: id });

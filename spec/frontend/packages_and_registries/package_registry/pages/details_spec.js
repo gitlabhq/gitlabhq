@@ -328,18 +328,18 @@ describe('PackagesApp', () => {
 
   describe('package files', () => {
     it('renders the package files component and has the right props', async () => {
-      const expectedFile = { ...packageFiles()[0] };
-      // eslint-disable-next-line no-underscore-dangle
-      delete expectedFile.__typename;
       createComponent();
 
       await waitForPromises();
 
       expect(findPackageFiles().exists()).toBe(true);
 
-      expect(findPackageFiles().props('packageFiles')[0]).toMatchObject(expectedFile);
-      expect(findPackageFiles().props('canDelete')).toBe(packageData().canDestroy);
-      expect(findPackageFiles().props('isLoading')).toEqual(false);
+      expect(findPackageFiles().props()).toMatchObject({
+        canDelete: packageData().canDestroy,
+        isLoading: false,
+        packageId: packageData().id,
+        packageType: packageData().packageType,
+      });
     });
 
     it('does not render the package files table when the package is composer', async () => {

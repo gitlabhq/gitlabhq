@@ -6,12 +6,12 @@
 
 - if @add_related_issue
   .form-group
-    .form-check
-      = check_box_tag :add_related_issue, @add_related_issue.iid, true, class: 'form-check-input'
-      = label_tag :add_related_issue, class: 'form-check-label' do
+    = render Pajamas::CheckboxTagComponent.new(name: :add_related_issue, value: @add_related_issue.iid, checked: true) do |c|
+      = c.label do
         - add_related_issue_link = link_to "\##{@add_related_issue.iid}", issue_path(@add_related_issue), class: ['has-tooltip'], title: @add_related_issue.title
         #{_('Relate to %{issuable_type} %{add_related_issue_link}').html_safe % { issuable_type: @add_related_issue.issue_type, add_related_issue_link: add_related_issue_link }}
-        %p.text-muted= _('Adds this %{issuable_type} as related to the %{issuable_type} it was created from') % { issuable_type: @add_related_issue.issue_type }
+      = c.help_text do
+        = _('Adds this %{issuable_type} as related to the %{issuable_type} it was created from') % { issuable_type: @add_related_issue.issue_type }
 
 - if issuable.respond_to?(:confidential) && can?(current_user, :set_confidentiality, issuable)
   .form-group

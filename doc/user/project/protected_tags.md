@@ -40,7 +40,11 @@ Prerequisites:
    1. Enter the string to use for tag matching. Wildcards (`*`) are supported.
    1. Select **Create wildcard**.
 1. In **Allowed to create** , select roles that may create protected tags.
-   In GitLab Premium and Ultimate, you can also select groups or individual users.
+
+   NOTE:
+   In GitLab Premium and Ultimate, you can also add groups or individual users
+   to **Allowed to create**.
+
 1. Select **Protect**.
 
 The protected tag (or wildcard) displays in the **Protected tags** list.

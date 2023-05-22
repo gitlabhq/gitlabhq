@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     paused() {
-      return !this.runner.active;
+      return this.runner.paused;
     },
   },
 };
