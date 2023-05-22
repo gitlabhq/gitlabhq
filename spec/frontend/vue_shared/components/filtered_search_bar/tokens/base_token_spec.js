@@ -71,8 +71,9 @@ const defaultScopedSlots = {
   'suggestions-list': `<div data-testid="${mockSuggestionListTestId}" :data-suggestions="JSON.stringify(props.suggestions)"></div>`,
 };
 
+const mockConfig = { ...mockLabelToken, recentSuggestionsStorageKey: mockStorageKey };
 const mockProps = {
-  config: { ...mockLabelToken, recentSuggestionsStorageKey: mockStorageKey },
+  config: mockConfig,
   value: { data: '' },
   active: false,
   suggestions: [],
@@ -221,6 +222,20 @@ describe('BaseToken', () => {
           });
         },
       );
+
+      it('limits the length of the rendered list using config.maxSuggestions', () => {
+        mockSuggestions = ['a', 'b', 'c', 'd'].map((id) => ({ id }));
+
+        const maxSuggestions = 2;
+        const config = { ...mockConfig, maxSuggestions };
+        const props = { defaultSuggestions: [], suggestions: mockSuggestions, config };
+
+        getRecentlyUsedSuggestions.mockReturnValue([]);
+        wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
+
+        expect(findMockSuggestionList().exists()).toBe(true);
+        expect(getMockSuggestionListSuggestions().length).toEqual(maxSuggestions);
+      });
     });
 
     describe('with preloaded suggestions', () => {

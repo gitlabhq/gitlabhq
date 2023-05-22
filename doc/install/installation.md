@@ -51,7 +51,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
 | [Go](#4-go)             | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
-| [Node.js](#5-node)      | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                |
+| [Node.js](#5-node)      | `18.16.x`       | From GitLab 16.1, Node.js 18.16 or later is required.                                                                                                                                                                                                                                |
 
 ## GitLab directory structure
 
@@ -262,8 +262,8 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` 16.x releases (v16.15.0 or later).
-  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 16.x.
+- `node` 18.x releases (v18.16.0 or later).
+  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 18.x.
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,
@@ -271,8 +271,8 @@ the versions provided by the official package repositories are out of date, so
 we must install through the following commands:
 
 ```shell
-# install node v16.x
-curl --location "https://deb.nodesource.com/setup_16.x" | sudo bash -
+# install node v18.x
+curl --location "https://deb.nodesource.com/setup_18.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 npm install --global yarn

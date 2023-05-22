@@ -187,6 +187,8 @@ class Group < Namespace
     Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])
   end
 
+  scope :excluding_groups, ->(groups) { where.not(id: groups) }
+
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })

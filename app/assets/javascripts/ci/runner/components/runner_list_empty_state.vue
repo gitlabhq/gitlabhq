@@ -1,6 +1,6 @@
 <script>
-import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
-import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/magnifying-glass.svg?url';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
+import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
 
 import { GlEmptyState, GlLink, GlSprintf, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

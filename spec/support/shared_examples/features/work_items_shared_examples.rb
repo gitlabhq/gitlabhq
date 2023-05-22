@@ -67,7 +67,7 @@ RSpec.shared_examples 'work items comments' do |type|
         find('[data-testid="work-item-note-actions"]', match: :first).click
 
         expect(page).to have_selector('[data-testid="copy-link-action"]')
-        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+        expect(page).to have_selector('[data-testid="assign-note-action"]')
       end
     end
   end

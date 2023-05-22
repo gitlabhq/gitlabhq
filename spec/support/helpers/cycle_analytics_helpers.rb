@@ -86,8 +86,7 @@ module CycleAnalyticsHelpers
 
   def select_value_stream(value_stream_name)
     toggle_value_stream_dropdown
-
-    page.find('[data-testid="dropdown-value-streams"]').all('li button').find { |item| item.text == value_stream_name.to_s }.click
+    page.find('[data-testid="dropdown-value-streams"]').all('li span').find { |item| item.text == value_stream_name.to_s }.click
     wait_for_requests
   end
 

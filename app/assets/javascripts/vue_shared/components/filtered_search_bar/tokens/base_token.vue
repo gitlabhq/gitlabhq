@@ -113,13 +113,15 @@ export default {
      * present in "Recently used"
      */
     availableSuggestions() {
-      return this.searchKey
+      const suggestions = this.searchKey
         ? this.suggestions
         : this.suggestions.filter(
             (tokenValue) =>
               !this.recentTokenIds.includes(tokenValue[this.valueIdentifier]) &&
               !this.preloadedTokenIds.includes(tokenValue[this.valueIdentifier]),
           );
+
+      return this.applyMaxSuggestions(suggestions);
     },
     showDefaultSuggestions() {
       return this.availableDefaultSuggestions.length > 0;
@@ -195,6 +197,12 @@ export default {
       ) {
         setTokenValueToRecentlyUsed(this.config.recentSuggestionsStorageKey, activeTokenValue);
       }
+    },
+    applyMaxSuggestions(suggestions) {
+      const { maxSuggestions } = this.config;
+      if (!maxSuggestions || maxSuggestions <= 0) return suggestions;
+
+      return suggestions.slice(0, maxSuggestions);
     },
   },
 };

@@ -4,35 +4,42 @@ group: Pipeline Security
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Project job token scope API **(FREE)**
+# Project CI/CD job token scope API **(FREE)**
+
+You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md)
 
 NOTE:
 
-- Every calls to the project token scope API must be authenticated, for example, with a personal access token.
-- The authenticated user (personal access token) needs to have at least Maintainer role for the project.
-- Depending on the usage, the personal access token requires read access (scope `read_api`) or read/write access (scope `api`) to the API.
+All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/index.md#authentication), and the authenticated user must have at least the Maintainer role for the project.
 
-## Get a project job token scope
+## Get a project's CI/CD job token access settings
 
-Fetch CI_JOB_TOKEN access settings (job token scope) of a project.
+Fetch the [CI/CD job token access settings](../ci/jobs/ci_job_token.md#configure-cicd-job-token-access) (job token scope) of a project.
 
 ```plaintext
 GET /projects/:id/job_token_scope
 ```
 
-Parameters
+Supported attributes:
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
-Example of request
+If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
+
+| Attribute          | Type     | Description           |
+|:-------------------|:---------|:----------------------|
+| `inbound_enabled`  | boolean  | Indicates if the CI/CD job token generated in other projects has access to this project. |
+| `outbound_enabled` | boolean  | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0 .](../update/removals.md#limit-ci_job_token-scope-is-disabled) |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
 ```
 
-Example of response
+Example response:
 
 ```json
 {
@@ -41,22 +48,24 @@ Example of response
 }
 ```
 
-## Patch a project job token scope
+## Patch a project's CI/CD job token access settings
 
-Patch CI_JOB_TOKEN access settings of a project.
+Patch the [**Allow access to this project with a CI_JOB_TOKEN** setting](../ci/jobs/ci_job_token.md#disable-the-job-token-scope-allowlist) (job token scope) of a project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
 ```
 
-Parameters
+Supported attributes:
 
 | Attribute | Type           | Required                | Description |
 |-----------|----------------|-------------------------|-------------|
 | `id`      | integer/string | **{check-circle}** Yes  | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `enabled` | boolean        | **{dotted-circle}** Yes | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
+| `enabled` | boolean        | **{check-circle}** Yes | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
 
-Example of request
+If successful, returns [`204`](rest/index.md#status-codes) and no response body.
+
+Example request:
 
 ```shell
 curl --request PATCH \
@@ -66,6 +75,69 @@ curl --request PATCH \
   --data '{ "enabled": false }'
 ```
 
-Example of response
+## Get a project's CI/CD job token inbound allowlist
 
-There is no response body.
+Fetch the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) (job token scope) of a project.
+
+```plaintext
+GET /projects/:id/job_token_scope/allowlist
+```
+
+Supported attributes:
+
+| Attribute | Type           | Required               | Description |
+|-----------|----------------|------------------------|-------------|
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+
+This endpoint supports [offset-based pagination](rest/index.md#offset-based-pagination).
+
+If successful, returns [`200`](rest/index.md#status-codes) and a list of project with limited fields for each project.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "created_at": "2013-09-30T13:46:02Z",
+    "default_branch": "main",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "topics": [
+      "example",
+      "disapora client"
+    ],
+    "ssh_url_to_repo": "git@gitlab.example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "https://gitlab.example.com/diaspora/diaspora-client.git",
+    "web_url": "https://gitlab.example.com/diaspora/diaspora-client",
+    "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "star_count": 0,
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "namespace": {
+      "id": 2,
+      "name": "Diaspora",
+      "path": "diaspora",
+      "kind": "group",
+      "full_path": "diaspora",
+      "parent_id": null,
+      "avatar_url": null,
+      "web_url": "https://gitlab.example.com/diaspora"
+    }
+  },
+  {
+    ...
+  }
+```

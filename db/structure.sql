@@ -23548,7 +23548,6 @@ CREATE TABLE user_preferences (
     first_day_of_week integer,
     timezone character varying,
     time_display_relative boolean,
-    time_format_in_24h boolean,
     projects_sort character varying(64),
     show_whitespace_in_diffs boolean DEFAULT true NOT NULL,
     sourcegraph_enabled boolean,

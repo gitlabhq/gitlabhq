@@ -38,6 +38,7 @@ import {
   userPermissionsMock,
   propsMock,
   refMock,
+  axiosMockResponse,
 } from '../mock_data';
 
 jest.mock('~/repository/components/blob_viewers');
@@ -61,6 +62,8 @@ const mockRouter = {
   push: mockRouterPush,
 };
 
+const legacyViewerUrl = 'some_file.js?format=json&viewer=simple';
+
 const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute = {}) => {
   Vue.use(VueApollo);
 
@@ -79,8 +82,12 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
   const blobInfo = {
     ...projectMock,
     repository: {
+      __typename: 'Repository',
       empty,
-      blobs: { nodes: [blob] },
+      blobs: {
+        __typename: 'RepositoryBlobConnection',
+        nodes: [blob],
+      },
     },
   };
 
@@ -148,10 +155,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     }),
   );
 
-  // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-  // eslint-disable-next-line no-restricted-syntax
-  wrapper.setData({ project: blobInfo, isBinary });
-
   await waitForPromises();
 };
 
@@ -216,7 +219,6 @@ describe('Blob content viewer component', () => {
     });
 
     describe('legacy viewers', () => {
-      const legacyViewerUrl = 'some_file.js?format=json&viewer=simple';
       const fileType = 'text';
       const highlightJs = false;
 
@@ -437,8 +439,8 @@ describe('Blob content viewer component', () => {
     });
 
     it('renders WebIdeLink button for binary files', async () => {
-      await createComponent({ blob: richViewerMock, isBinary: true }, mount);
-
+      mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, axiosMockResponse);
+      await createComponent({}, mount);
       expect(findWebIdeLink().props()).toMatchObject({
         editUrl: editBlobPath,
         webIdeUrl: ideEditPath,
@@ -448,7 +450,8 @@ describe('Blob content viewer component', () => {
 
     describe('blob header binary file', () => {
       it('passes the correct isBinary value when viewing a binary file', async () => {
-        await createComponent({ blob: richViewerMock, isBinary: true });
+        mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, axiosMockResponse);
+        await createComponent();
 
         expect(findBlobHeader().props('isBinary')).toBe(true);
       });

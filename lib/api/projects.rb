@@ -978,7 +978,7 @@ module API
         args[:permission_scope] = :transfer_projects
 
         groups = ::Groups::UserGroupsFinder.new(current_user, current_user, args).execute
-        groups = groups.with_route
+        groups = groups.excluding_groups(user_project.group).with_route
 
         present_groups(groups)
       end

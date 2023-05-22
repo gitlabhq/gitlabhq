@@ -1040,6 +1040,28 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe 'excluding_groups' do
+      let!(:another_group) { create(:group) }
+
+      subject { described_class.excluding_groups(excluded_groups) }
+
+      context 'when passing a single group' do
+        let(:excluded_groups) { group }
+
+        it 'does not return excluded group' do
+          expect(subject).not_to include(group)
+        end
+      end
+
+      context 'when passing an array with groups' do
+        let(:excluded_groups) { [group, another_group] }
+
+        it 'does not return excluded groups' do
+          expect(subject).not_to include(group, another_group)
+        end
+      end
+    end
+
     describe 'accessible_to_user' do
       subject { described_class.accessible_to_user(user) }
 

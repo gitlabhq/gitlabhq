@@ -3,7 +3,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-16.14:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-18.16:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"

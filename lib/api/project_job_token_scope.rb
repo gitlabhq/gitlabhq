@@ -2,6 +2,8 @@
 
 module API
   class ProjectJobTokenScope < ::API::Base
+    include PaginationParams
+
     before { authenticate! }
 
     feature_category :secrets_management
@@ -50,6 +52,26 @@ module API
         break bad_request!(result[:message]) if result[:status] == :error
 
         no_content!
+      end
+
+      desc 'Fetch project inbound allowlist for CI_JOB_TOKEN access settings.' do
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        success status: 200, model: Entities::BasicProjectDetails
+        tags %w[projects_job_token_scope]
+      end
+      params do
+        use :pagination
+      end
+      get ':id/job_token_scope/allowlist' do
+        authorize_admin_project
+
+        inbound_projects = ::Ci::JobToken::Scope.new(user_project).inbound_projects
+
+        present paginate(inbound_projects), with: Entities::BasicProjectDetails
       end
     end
   end

@@ -92,14 +92,6 @@ export const config = {
               });
             },
           },
-          userPermissions: {
-            read(permission = {}) {
-              return {
-                ...permission,
-                setWorkItemMetadata: false,
-              };
-            },
-          },
         },
       },
       MemberInterfaceConnection: {

@@ -60,7 +60,7 @@ describe('Pipelines', () => {
   const paths = {
     emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
-    noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
+    noPipelinesSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     ciLintPath: '/ci/lint',
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
@@ -71,7 +71,7 @@ describe('Pipelines', () => {
   const noPermissions = {
     emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
-    noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
+    noPipelinesSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
   };
 
   const defaultProps = {

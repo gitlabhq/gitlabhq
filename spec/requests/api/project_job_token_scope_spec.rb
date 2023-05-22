@@ -193,4 +193,74 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
       end
     end
   end
+
+  describe "GET /projects/:id/job_token_scope/allowlist" do
+    let_it_be(:project) { create(:project, :public) }
+
+    let_it_be(:user) { create(:user) }
+
+    let(:get_job_token_scope_allowlist_path) { "/projects/#{project.id}/job_token_scope/allowlist" }
+
+    subject { get api(get_job_token_scope_allowlist_path, user) }
+
+    context 'when unauthenticated user (missing user)' do
+      context 'for public project' do
+        it 'does not return ci cd settings of job token' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          get api(get_job_token_scope_allowlist_path)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when authenticated user as maintainer' do
+      before_all { project.add_maintainer(user) }
+
+      it 'returns allowlist containing only the source projects' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_present
+        expect(json_response).to include hash_including("id" => project.id)
+      end
+
+      it 'returns allowlist of project' do
+        create(:ci_job_token_project_scope_link, source_project: project, direction: :inbound)
+        create(:ci_job_token_project_scope_link, source_project: project, direction: :outbound)
+
+        ci_job_token_project_scope_link =
+          create(
+            :ci_job_token_project_scope_link,
+            source_project: project,
+            direction: :inbound
+          )
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq 3
+        expect(json_response).to include(
+          hash_including("id" => project.id),
+          hash_including("id" => ci_job_token_project_scope_link.target_project.id)
+        )
+      end
+
+      context 'when authenticated user as developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'returns forbidden and no ci cd settings for public project' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
 end

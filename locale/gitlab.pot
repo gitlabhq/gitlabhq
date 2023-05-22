@@ -989,7 +989,7 @@ msgstr ""
 msgid "%{project_name}"
 msgstr ""
 
-msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more.%{help_link_end}"
+msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
 msgid "%{ref} cannot be added: %{error}"

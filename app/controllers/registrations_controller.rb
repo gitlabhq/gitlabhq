@@ -10,6 +10,7 @@ class RegistrationsController < Devise::RegistrationsController
   include GoogleAnalyticsCSP
   include PreferredLanguageSwitcher
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
+  include SkipsAlreadySignedInMessage
 
   layout 'devise'
 

@@ -5154,13 +5154,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
       it 'includes groups where the user has permissions to transfer a project to' do
         request
 
-        expect(project_ids_from_response).to include(maintainer_group.id, owner_group.id)
+        expect(project_ids_from_response).to match_array [maintainer_group.id, owner_group.id]
       end
 
       it 'does not include groups where the user doesn not have permissions to transfer a project' do
         request
 
         expect(project_ids_from_response).not_to include(guest_group.id)
+      end
+
+      it 'does not include the group id of the current project' do
+        request
+
+        expect(project_ids_from_response).not_to include(project.group.id)
       end
 
       context 'with search' do

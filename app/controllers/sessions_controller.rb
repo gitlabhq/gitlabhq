@@ -14,12 +14,10 @@ class SessionsController < Devise::SessionsController
   include VerifiesWithEmail
   include GoogleAnalyticsCSP
   include PreferredLanguageSwitcher
+  include SkipsAlreadySignedInMessage
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
-
-  # replaced with :require_no_authentication_without_flash
-  skip_before_action :require_no_authentication, only: [:new, :create]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
@@ -29,7 +27,6 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
   prepend_before_action :check_forbidden_password_based_login, if: -> { action_name == 'create' && password_based_login? }
   prepend_before_action :ensure_password_authentication_enabled!, if: -> { action_name == 'create' && password_based_login? }
-
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :init_preferred_language, only: :new
   before_action :store_unauthenticated_sessions, only: [:new]
@@ -95,14 +92,6 @@ class SessionsController < Devise::SessionsController
   end
 
   private
-
-  def require_no_authentication_without_flash
-    require_no_authentication
-
-    if flash[:alert] == I18n.t('devise.failure.already_authenticated')
-      flash[:alert] = nil
-    end
-  end
 
   def captcha_enabled?
     request.headers[CAPTCHA_HEADER] && helpers.recaptcha_enabled?

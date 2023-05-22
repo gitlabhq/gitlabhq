@@ -198,3 +198,5 @@ export const paginatedTreeResponseFactory = ({
     },
   },
 });
+
+export const axiosMockResponse = { html: 'text', binary: true };
