@@ -3064,6 +3064,30 @@ Input type: `EnableDevopsAdoptionNamespaceInput`
 | <a id="mutationenabledevopsadoptionnamespaceenablednamespace"></a>`enabledNamespace` | [`DevopsAdoptionEnabledNamespace`](#devopsadoptionenablednamespace) | Enabled namespace after mutation. |
 | <a id="mutationenabledevopsadoptionnamespaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.environmentCreate`
+
+Create an environment.
+
+Input type: `EnvironmentCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentcreateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
+| <a id="mutationenvironmentcreatename"></a>`name` | [`String!`](#string) | Name of the environment. |
+| <a id="mutationenvironmentcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationenvironmentcreatetier"></a>`tier` | [`DeploymentTier`](#deploymenttier) | Tier of the environment. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentcreateenvironment"></a>`environment` | [`Environment`](#environment) | Created environment. |
+| <a id="mutationenvironmentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.environmentDelete`
 
 Delete an environment.

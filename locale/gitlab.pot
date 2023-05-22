@@ -9684,6 +9684,9 @@ msgid_plural "Clear %{count} images from cache?"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Clear All"
+msgstr ""
+
 msgid "Clear all repository checks"
 msgstr ""
 
@@ -41512,6 +41515,9 @@ msgstr ""
 msgid "Select type"
 msgstr ""
 
+msgid "Selected"
+msgstr ""
+
 msgid "Selected commits"
 msgstr ""
 
@@ -47922,6 +47928,9 @@ msgstr ""
 msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
+msgid "Unauthorized to create an environment"
+msgstr ""
+
 msgid "Unauthorized to update the environment"
 msgstr ""
 
@@ -48061,6 +48070,9 @@ msgid "Unselect \"Expand variable reference\" if you want to use the variable va
 msgstr ""
 
 msgid "Unselect all"
+msgstr ""
+
+msgid "Unselected"
 msgstr ""
 
 msgid "Unstar"
