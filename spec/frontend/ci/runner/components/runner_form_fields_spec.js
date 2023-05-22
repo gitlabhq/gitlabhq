@@ -1,7 +1,11 @@
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
-import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED } from '~/ci/runner/constants';
+import {
+  ACCESS_LEVEL_NOT_PROTECTED,
+  ACCESS_LEVEL_REF_PROTECTED,
+  PROJECT_TYPE,
+} from '~/ci/runner/constants';
 
 const mockDescription = 'My description';
 const mockMaxTimeout = 60;
@@ -60,6 +64,30 @@ describe('RunnerFormFields', () => {
       paused: true,
       accessLevel: ACCESS_LEVEL_REF_PROTECTED,
       runUntagged: true,
+    });
+  });
+
+  it('locked checkbox is not shown', () => {
+    createComponent();
+
+    expect(findInput('locked').exists()).toBe(false);
+  });
+
+  it('when runner is of project type, locked checkbox can be checked', async () => {
+    createComponent({
+      runner: {
+        runnerType: PROJECT_TYPE,
+        locked: false,
+      },
+    });
+
+    findInput('locked').setChecked(true);
+
+    await nextTick();
+
+    expect(wrapper.emitted('input')[0][0]).toEqual({
+      runnerType: PROJECT_TYPE,
+      locked: true,
     });
   });
 

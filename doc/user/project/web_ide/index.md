@@ -89,17 +89,17 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 
 ## Upload a new file
 
-To upload a new file and add it to the Git repository:
+To upload a new file in the Web IDE:
 
-1. In the **Explorer** file tree, navigate to the directory where you want to upload the file.
-1. Optional. If the directory does not exist yet, select the directory path where you want to have a new directory and either:
-   - Right-click on the directory path, and select **New Folder...**. You can create a nested directory path with the `/` separator, for example `parentdir/subdir1/subdir2`.
-   - In the **Explorer** panel, in the upper-right corner, select the new folder (**{folder-new}**) icon.
-1. Enter the name of the new directory, and press <kbd>Enter/Return</kbd> to create it. 
-1. Right-click on the directory path and select `Upload...`.
-1. Select the file you want to upload, then select `Open`. You can select and add multiple files at once.
+1. On the activity bar on the left, select **Explorer** and go to the directory where you want to upload the file.
+1. Optional. For a new directory, go to the path where you want to have the directory and do one of the following:
+   - Right-click the path, and select **New Folder...**. You can create a nested path with `/` (for example, `parentdir/subdir1/subdir2`).
+   - In the upper right of the **Explorer** panel, select **New Folder...** (**{folder-new}**).
+1. Enter the name of the new directory, and press <kbd>Enter</kbd>.
+1. Right-click the path, and select **Upload...**.
+1. Select the file you want to upload, then select **Open**. You can upload multiple files at once.
 
-The file is uploaded and automatically added as a new file to the Git repository.
+The new file is uploaded and automatically added to the repository.
 
 ## Switch branches
 
@@ -129,17 +129,17 @@ To commit changes in the Web IDE:
    or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
 1. Select **Commit & Push**.
-1. Commit to the current branch, or create a new branch.
+1. Commit to the current branch, or [create a new branch](#create-a-branch).
 
 ## Create a merge request
 
-To create a merge request:
+To create a merge request in the Web IDE:
 
-1. [Commit the changes](index.md#commit-changes).
-1. In the pop-up notification in the lower-right corner, select `Create Merge Request`.
-This action opens a new window with the [merge request creation form](../merge_requests/index.md).
+1. [Commit the changes](#commit-changes).
+1. In the pop-up notification in the lower-right corner, select **Create Merge Request**.
+   A new window opens for you to create the [merge request](../merge_requests/index.md).
 
-To access missed notifications, see the [IDE notification tips](index.md#access-missed-ide-notifications).
+To access missed notifications, see [Access notifications](#access-notifications).
 
 ## Use the command palette
 
@@ -188,6 +188,13 @@ To change the Web IDE theme:
 
 The active color theme is stored in the [user settings](#edit-settings).
 
+## Access notifications
+
+When you perform actions in the Web IDE, notifications appear in the lower-right corner. To access missed notifications:
+
+1. On the status bar, in the lower-right corner, select the bell (**{notifications}**) for a list of notifications.
+1. Select the notification you want to access.
+
 <!-- ## Privacy and data collection for extensions
 
 The Web IDE Extension Marketplace is based on Open VSX. Open VSX does not collect any
@@ -204,6 +211,9 @@ To protect your privacy and data:
 
 ## Interactive web terminals for the Web IDE (Beta)
 
+WARNING:
+This feature is in [Beta](../../../policy/alpha-beta-support.md#beta) and subject to change without notice.
+
 When you set up a remote development server in the Web IDE, you can use interactive web terminals to:
 
 - Access a remote shell on the server.
@@ -213,10 +223,3 @@ You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
 For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
-
-## Access missed IDE notifications
-
-Actions that you take in the Web IDE trigger notifications that pop up in the lower-right corner. If you missed the pop-up:
-
-1. In the lower-right corner, select the bell icon (**{notifications}**). This opens a list of notifications.
-1. Select the notification you want to access.

@@ -45,7 +45,7 @@ module InviteMembersHelper
       full_path: source.full_path
     }
 
-    if current_user && show_invite_members_for_task?(source)
+    if current_user && show_invite_members_for_task?
       dataset.merge!(
         tasks_to_be_done_options: tasks_to_be_done_options.to_json,
         projects: projects_for_source(source).to_json,
@@ -71,8 +71,7 @@ module InviteMembersHelper
     {}
   end
 
-  # Overridden in EE
-  def show_invite_members_for_task?(_source)
+  def show_invite_members_for_task?
     params[:open_modal] == 'invite_members_for_task'
   end
 

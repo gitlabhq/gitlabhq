@@ -4,7 +4,6 @@ module Gitlab
   module GithubGistsImport
     class ImportGistWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
-      include Gitlab::NotifyUponDeath
 
       GISTS_ERRORS_BY_ID = 'gitlab:github-gists-import:%{user_id}:errors'
 
@@ -14,28 +13,73 @@ module Gitlab
 
       sidekiq_options dead: false, retry: 5
 
-      sidekiq_retries_exhausted do |msg, _|
-        new.track_gist_import('failed', msg['args'][0])
+      sidekiq_retries_exhausted do |msg|
+        args = msg['args']
+        user_id = args[0]
+        gist_hash = args[1]
+        jid = msg['jid']
+
+        new.perform_failure(user_id, gist_hash, msg['error_class'], msg['error_message'], msg['correlation_id'])
+
+        # If a job is being exhausted we still want to notify the
+        # Gitlab::GithubGistsImport::FinishImportWorker to prevent
+        # the entire import from getting stuck
+        if args.length == 3 && (key = args.last) && key.is_a?(String)
+          JobWaiter.notify(key, jid)
+        end
       end
 
       def perform(user_id, gist_hash, notify_key)
-        gist = ::Gitlab::GithubGistsImport::Representation::Gist.from_json_hash(gist_hash)
+        gist = representation_class.from_json_hash(gist_hash)
+        github_identifiers = gist.github_identifiers
 
-        with_logging(user_id, gist.github_identifiers) do
+        with_logging(user_id, github_identifiers) do
           result = importer_class.new(gist, user_id).execute
           if result.success?
             track_gist_import('success', user_id)
           else
-            error(user_id, result.errors, gist.github_identifiers)
-            track_gist_import('failed', user_id)
+            error(user_id, result.errors, github_identifiers)
+
+            perform_failure(
+              user_id,
+              gist_hash,
+              importer_class::FileCountLimitError.name,
+              importer_class::FILE_COUNT_LIMIT_MESSAGE
+            )
           end
 
           JobWaiter.notify(notify_key, jid)
         end
       rescue StandardError => e
-        log_and_track_error(user_id, e, gist.github_identifiers)
+        log_and_track_error(user_id, e, github_identifiers)
 
         raise
+      end
+
+      def perform_failure(user_id, gist_hash, exception_class, exception_message, correlation_id = nil)
+        track_gist_import('failed', user_id)
+
+        github_identifiers = representation_class.from_json_hash(gist_hash).github_identifiers
+
+        persist_failure(user_id, exception_class, exception_message, github_identifiers, correlation_id)
+      end
+
+      private
+
+      def importer_class
+        ::Gitlab::GithubGistsImport::Importer::GistImporter
+      end
+
+      def representation_class
+        ::Gitlab::GithubGistsImport::Representation::Gist
+      end
+
+      def with_logging(user_id, github_identifiers)
+        info(user_id, 'start importer', github_identifiers)
+
+        yield
+
+        info(user_id, 'importer finished', github_identifiers)
       end
 
       def track_gist_import(status, user_id)
@@ -48,20 +92,6 @@ module Gitlab
           user: user,
           status: status
         )
-      end
-
-      private
-
-      def importer_class
-        ::Gitlab::GithubGistsImport::Importer::GistImporter
-      end
-
-      def with_logging(user_id, github_identifiers)
-        info(user_id, 'start importer', github_identifiers)
-
-        yield
-
-        info(user_id, 'importer finished', github_identifiers)
       end
 
       def log_and_track_error(user_id, exception, github_identifiers)
@@ -100,6 +130,17 @@ module Gitlab
         key = format(GISTS_ERRORS_BY_ID, user_id: user_id)
 
         ::Gitlab::Cache::Import::Caching.hash_add(key, gist_id, error_message)
+      end
+
+      def persist_failure(user_id, exception_class, exception_message, github_identifiers, correlation_id = nil)
+        ImportFailure.create!(
+          source: importer_class.name,
+          exception_class: exception_class,
+          exception_message: exception_message.truncate(255),
+          correlation_id_value: correlation_id || Labkit::Correlation::CorrelationId.current_or_new_id,
+          user_id: user_id,
+          external_identifiers: github_identifiers
+        )
       end
     end
   end

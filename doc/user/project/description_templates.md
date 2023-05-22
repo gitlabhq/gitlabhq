@@ -118,8 +118,8 @@ that you can use when creating a new project in the instance.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
 
-With **group-level** description templates, you can store your templates in a single repository and
-configure the group file templates setting to point to that repository.
+With **group-level** description templates, you can select a repository within the group to store
+your templates. Then, you can access these templates from other projects in the group.
 As a result, you can use the same templates in issues and merge requests in all the group's projects.
 
 To re-use templates [you've created](../project/description_templates.md#create-an-issue-template):

@@ -56,41 +56,56 @@ Changelog: feature
 
 ## Create a changelog
 
-To generate changelog data based on commits in a repository, see
+Changelogs are generated from the command line, using either the API or the
+GitLab CLI. The changelog output is formatted in Markdown, and
+[you can customize it](#customize-the-changelog-output).
+
+### From the API
+
+To generate changelogs via the API with a `curl` command, see
 [Add changelog data to a changelog file](../../api/repositories.md#add-changelog-data-to-a-changelog-file)
 in the API documentation.
 
-The changelog output is formatted in Markdown, and [you can customize it](#customize-the-changelog-output).
+### From the GitLab CLI
 
-### Reverted commits
+> [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
+Prerequisites:
 
-To be treated as a revert commit, the commit message must contain the string
-`This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.
+- You have installed and configured the [GitLab CLI](../../integration/glab/index.md),
+  version 1.30.0 or later.
+- Your repository's tag naming schema matches
+  [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).
+- Commits include [changelog trailers](../../development/changelog.md).
 
-When generating a changelog for a range, GitLab ignores commits both added and
-reverted in that range. In this example, commit C reverts commit B. Because
-commit C has no other trailer, only commit A is added to the changelog:
+To generate the changelog:
 
-```mermaid
-graph LR
-    A[Commit A<br>Changelog: changed] --> B[Commit B<br>Changelog: changed]
-    B --> C[Commit C<br>Reverts commit B]
-```
+1. Update your local copy of your repository with `git fetch`.
+1. To generate a changelog for the current version (as determined by `git describe --tags`)
+   with the default options:
+   - Run the command `glab changelog generate`.
+   - To save the output to a file, run the command `glab changelog generate > <filename>.md`.
+1. To generate a changelog with customized options, run the command `glab changelog generate`
+   and append your desired options. Some options include:
 
-However, if the revert commit (commit C) _also_ contains a changelog trailer,
-both commits A and C are included in the changelog:
+   - `--config-file [string]`: The path to the changelog configuration file in your project's
+     Git repository. Defaults to `.gitlab/changelog_config.yml`.
+   - Commit range:
+     - `--from [string]`: The start of the range of commits (as a SHA) to use for
+       generating the changelog. This commit itself isn't included in the changelog.
+     - `--to [string]`: The end of the range of commits (as a SHA) to use for
+       generating the changelog. This commit _is_ included in the list. Defaults to the `HEAD`
+       of the default project branch.
+   - `--date [string]`: The date and time of the release, in ISO 8601 (`2016-03-11T03:45:40Z`)
+     format. Defaults to the current time.
+   - `--trailer [string]`: The Git trailer to use for including commits. Defaults to `Changelog`.
+   - `--version [string]`: The version to generate the changelog for.
 
-```mermaid
-graph LR
-    A[Commit A<br><br>Changelog: changed] --> B[Commit B<br><br>Changelog: changed]
-    B --> C[Commit C<br>Reverts commit B<br>Changelog: changed]
-```
+To learn more about the parameters available in GitLab CLI, run `glab changelog generate --help`. See the
+[API documentation](../../api/repositories.md#add-changelog-data-to-a-changelog-file)
+for definitions and usage.
 
-Commit B is skipped.
-
-### Customize the changelog output
+## Customize the changelog output
 
 To customize the changelog output, edit the changelog configuration file. The default
 location for this configuration is `.gitlab/changelog_config.yml`. The file supports
@@ -310,6 +325,34 @@ tag_regex: '^version-(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)$'
 To test if your regular expression is working, you can use websites such as
 [regex101](https://regex101.com/). If the regular expression syntax is invalid,
 an error is produced when generating a changelog.
+
+## Reverted commit handling
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
+
+To be treated as a revert commit, the commit message must contain the string
+`This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.
+
+When generating a changelog for a range, GitLab ignores commits both added and
+reverted in that range. In this example, commit C reverts commit B. Because
+commit C has no other trailer, only commit A is added to the changelog:
+
+```mermaid
+graph LR
+    A[Commit A<br>Changelog: changed] --> B[Commit B<br>Changelog: changed]
+    B --> C[Commit C<br>Reverts commit B]
+```
+
+However, if the revert commit (commit C) _also_ contains a changelog trailer,
+both commits A and C are included in the changelog:
+
+```mermaid
+graph LR
+    A[Commit A<br><br>Changelog: changed] --> B[Commit B<br><br>Changelog: changed]
+    B --> C[Commit C<br>Reverts commit B<br>Changelog: changed]
+```
+
+Commit B is skipped.
 
 ## Related topics
 

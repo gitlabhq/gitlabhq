@@ -84,7 +84,7 @@ read the documentation on [reducing repository size](../../user/project/reposito
 
 ## Allow URI includes for AsciiDoc
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.X (TBD)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
 
 Include directives import content from separate pages or external URLs,
 and display them as part of the content of the current document. To enable

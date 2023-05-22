@@ -119,6 +119,10 @@ describe('Filter bar', () => {
     it('renders FilteredSearchBar component', () => {
       expect(findFilteredSearch().exists()).toBe(true);
     });
+
+    it('passes the `terms-as-tokens` prop', () => {
+      expect(findFilteredSearch().props('termsAsTokens')).toBe(true);
+    });
   });
 
   describe('when the state has data', () => {

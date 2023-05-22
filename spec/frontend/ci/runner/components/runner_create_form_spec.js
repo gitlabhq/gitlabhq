@@ -21,12 +21,14 @@ jest.mock('~/ci/runner/sentry_utils');
 const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
 const defaultRunnerModel = {
+  runnerType: INSTANCE_TYPE,
   description: '',
   accessLevel: DEFAULT_ACCESS_LEVEL,
   paused: false,
   maintenanceNote: '',
   maximumTimeout: '',
   runUntagged: false,
+  locked: false,
   tagList: '',
 };
 
@@ -81,6 +83,7 @@ describe('RunnerCreateForm', () => {
 
       findRunnerFormFields().vm.$emit('input', {
         ...defaultRunnerModel,
+        runnerType: props.runnerType,
         description: 'My runner',
         maximumTimeout: 0,
         tagList: 'tag1, tag2',

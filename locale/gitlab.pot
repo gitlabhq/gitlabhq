@@ -38926,6 +38926,9 @@ msgstr ""
 msgid "Runners|Create an instance runner to generate a command that registers the runner with all its configurations."
 msgstr ""
 
+msgid "Runners|Create runner"
+msgstr ""
+
 msgid "Runners|Created %{timeAgo}"
 msgstr ""
 

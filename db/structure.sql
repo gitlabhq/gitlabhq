@@ -16777,7 +16777,8 @@ CREATE TABLE import_failures (
     retry_count integer,
     group_id integer,
     source character varying(128),
-    external_identifiers jsonb DEFAULT '{}'::jsonb NOT NULL
+    external_identifiers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    user_id bigint
 );
 
 CREATE SEQUENCE import_failures_id_seq
@@ -30984,6 +30985,8 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
+CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_id ON projects USING btree (import_type, id) WHERE (import_type IS NOT NULL);
@@ -35210,6 +35213,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_99e097b079 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_failures
+    ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_9b9afb1916 FOREIGN KEY (repository_created_event_id) REFERENCES geo_repository_created_events(id) ON DELETE CASCADE;

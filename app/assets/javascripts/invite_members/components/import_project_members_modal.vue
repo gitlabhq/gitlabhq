@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId, isEmpty } from 'lodash';
 import { importProjectMembers } from '~/api/projects_api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
@@ -10,6 +10,7 @@ import {
   reloadOnInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
 import { PROJECT_SELECT_LABEL_ID } from '../constants';
+import UserLimitNotification from './user_limit_notification.vue';
 import ProjectSelect from './project_select.vue';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     GlFormGroup,
     GlModal,
     GlSprintf,
+    UserLimitNotification,
     ProjectSelect,
   },
   props: {
@@ -33,6 +35,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    usersLimitDataset: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -53,6 +60,12 @@ export default {
     },
     validationState() {
       return this.invalidFeedbackMessage === '' ? null : false;
+    },
+    showUserLimitNotification() {
+      return !isEmpty(this.usersLimitDataset.alertVariant);
+    },
+    limitVariant() {
+      return this.usersLimitDataset.alertVariant;
     },
     actionPrimary() {
       return {
@@ -154,6 +167,12 @@ export default {
     @primary="submitImport"
     @hidden="resetFields"
   >
+    <user-limit-notification
+      v-if="showUserLimitNotification"
+      class="gl-mb-5"
+      :limit-variant="limitVariant"
+      :users-limit-dataset="usersLimitDataset"
+    />
     <p ref="modalIntro">
       <gl-sprintf :message="modalIntro">
         <template #strong="{ content }">

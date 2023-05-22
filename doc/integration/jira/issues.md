@@ -27,7 +27,7 @@ git commit -m "GIT-1 this is a test commit"
 
 GitLab adds to that Jira issue:
 
-- A reference in the **Web links** section
+- A reference in the **Web links** section.
 - A comment in the **Activity** section that follows this format:
 
   ```plaintext
@@ -41,9 +41,9 @@ GitLab adds to that Jira issue:
   - `COMMENTLINK`: Link to where the Jira issue is mentioned.
   - `ENTITY_TITLE`: Title of the GitLab commit (first line), issue, or merge request.
 
-Only a single cross-reference comment appears in Jira per GitLab issue, merge request, or commit.
+Only a single cross-reference appears in Jira per GitLab issue, merge request, or commit.
 For example, multiple comments on a GitLab merge request that reference a Jira issue
-create only a single cross-reference comment back to that merge request in Jira.
+create only a single cross-reference back to that merge request in Jira.
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 

@@ -50,11 +50,9 @@ After you add a group, the following data is synced to Jira for all projects in 
 
 ## Update the GitLab for Jira Cloud app
 
-Most updates to the app are fully automated and don't require any user interaction. See the
-[Atlassian Marketplace documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/)
-for details.
-
-If the app requires additional permissions, [the update must first be manually approved in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
+Most updates to the app are automatic. For more information, see the
+[Atlassian documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/).
+If the app requires additional permissions, [you must manually approve the update in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
 
 ## Set up OAuth authentication for self-managed instances **(FREE SELF)**
 

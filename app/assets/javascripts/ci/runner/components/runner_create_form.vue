@@ -4,13 +4,7 @@ import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { captureException } from '../sentry_utils';
-import {
-  RUNNER_TYPES,
-  DEFAULT_ACCESS_LEVEL,
-  PROJECT_TYPE,
-  GROUP_TYPE,
-  INSTANCE_TYPE,
-} from '../constants';
+import { RUNNER_TYPES, DEFAULT_ACCESS_LEVEL, PROJECT_TYPE, GROUP_TYPE } from '../constants';
 
 export default {
   name: 'RunnerCreateForm',
@@ -40,11 +34,13 @@ export default {
     return {
       saving: false,
       runner: {
+        runnerType: this.runnerType,
         description: '',
         maintenanceNote: '',
         paused: false,
         accessLevel: DEFAULT_ACCESS_LEVEL,
         runUntagged: false,
+        locked: false,
         tagList: '',
         maximumTimeout: '',
       },
@@ -57,26 +53,22 @@ export default {
       if (this.runnerType === GROUP_TYPE) {
         return {
           ...input,
-          runnerType: GROUP_TYPE,
           groupId: this.groupId,
         };
       }
       if (this.runnerType === PROJECT_TYPE) {
         return {
           ...input,
-          runnerType: PROJECT_TYPE,
           projectId: this.projectId,
         };
       }
-      return {
-        ...input,
-        runnerType: INSTANCE_TYPE,
-      };
+      return input;
     },
   },
   methods: {
     async onSubmit() {
       this.saving = true;
+
       try {
         const {
           data: {
@@ -113,7 +105,7 @@ export default {
 
     <div class="gl-display-flex">
       <gl-button type="submit" variant="confirm" class="js-no-auto-disable" :loading="saving">
-        {{ __('Submit') }}
+        {{ s__('Runners|Create runner') }}
       </gl-button>
     </div>
   </gl-form>

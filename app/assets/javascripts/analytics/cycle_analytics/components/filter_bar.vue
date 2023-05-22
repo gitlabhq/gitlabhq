@@ -148,6 +148,7 @@ export default {
       :search-input-placeholder="__('Filter results')"
       :tokens="tokens"
       :initial-filter-value="initialFilterValue()"
+      terms-as-tokens
       @onFilter="handleFilter"
     />
     <url-sync :query="query" />

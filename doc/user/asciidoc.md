@@ -244,15 +244,20 @@ pages, change the filename from `.adoc` to `.asciidoc`.
 
 ```plaintext
 include::basics.adoc[]
-
-// define -a allow-uri-read to allow content to be read from URI
-include::https://example.org/installation.adoc[]
 ```
 
 To guarantee good system performance and prevent malicious documents from causing
 problems, GitLab enforces a maximum limit on the number of include directives
 processed in any one document. You can include up to 32 documents, which is
 inclusive of transitive dependencies.
+
+To use includes from separate pages or external URLs, enable the `allow-uri-read`
+in [application settings](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).
+
+```plaintext
+// define application setting allow-uri-read to true to allow content to be read from URI
+include::https://example.org/installation.adoc[]
+```
 
 ### Blocks
 

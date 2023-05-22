@@ -19,28 +19,18 @@ Prerequisites:
   the email address you used to create the token.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
-  - Jira personal access token.
+  - Jira personal access token (GitLab 16.0 and later).
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
-You can also configure these settings at the:
-
-- [Group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration)
-- [Instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab
+You can also configure these settings at the [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
 
 To configure your project settings in GitLab:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Jira**.
-1. Select **Enable integration**.
-1. Select **Trigger** actions. Your choice determines whether a mention of Jira issue
-   (in a GitLab commit, merge request, or both) creates a cross-link in Jira back to GitLab.
-1. To comment in the Jira issue when a **Trigger** action is made in GitLab, select
-   **Enable comments**.
-1. To transition Jira issues when a
-   [closing reference](../../user/project/issues/managing_issues.md#closing-issues-automatically)
-   is made in GitLab, select **Enable Jira transitions**.
-1. Provide Jira configuration information:
+1. In **Enable integration**, select the **Active** checkbox.
+1. Provide connection details:
    - **Web URL**: Base URL for the Jira instance web interface you're linking to
      this GitLab project (for example, `https://jira.example.com`).
    - **Jira API URL**: Base URL for the Jira instance API (for example, `https://jira-api.example.com`).
@@ -54,18 +44,26 @@ To configure your project settings in GitLab:
           - For Jira Cloud, enter an API token.
           - For Jira Data Center or Jira Server, enter a password.
      - **Jira personal access token** (only available for Jira Data Center and Jira Server): Enter a personal access token.
-1. To enable users to [view Jira issues](issues.md#view-jira-issues) inside the GitLab project, select **Enable Jira issues** and
-   enter a Jira project key.
-
-   You can display issues only from a single Jira project in a given GitLab project.
+1. Provide trigger settings:
+   - Select **Commit**, **Merge request**, or both as triggers. When you mention a Jira issue ID in GitLab,
+   GitLab links to that issue.
+   - To add a comment to the Jira issue that links back to GitLab, select the
+   **Enable comments** checkbox and the information that the comment displays.
+   - To [transition Jira issues automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically) in GitLab,
+   select the **Enable Jira transitions** checkbox.
+1. In the **Jira issue matching** section:
+   - For **Jira issue regex**, [enter a regex pattern](issues.md#use-regular-expression).
+   - For **Jira issue prefix**, [enter a prefix](issues.md#use-a-prefix).
+1. In the **Issues** section:
+   - To [view Jira issues](issues.md#view-jira-issues) in a GitLab project, select the **Enable Jira issues** checkbox and
+   enter a Jira project key. You can only view issues from a single Jira project in a GitLab project.
 
    WARNING:
-   If you enable Jira issues with this setting, all users with access to this GitLab project
-   can view all issues from the specified Jira project.
+   When you enable this setting, all users with access to that GitLab project
+   can view all issues from the Jira project you've specified.
 
-1. To enable [issue creation for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select **Enable Jira issue creation from vulnerabilities**.
-1. Select the **Jira issue type**. If the dropdown list is empty, select **Refresh** (**{retry}**) and try again.
-1. To verify the Jira connection is working, select **Test settings**.
+   - To [create Jira issues for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select the **Enable Jira issue creation from vulnerabilities** checkbox.
+1. Optional. Select **Test settings** to verify the connection.
 1. Select **Save changes**.
 
 Your GitLab project can now interact with all Jira projects in your instance, and the project
@@ -77,7 +75,7 @@ To configure the Jira issue integration for Jira Cloud, you must have a Jira Clo
 To create a Jira Cloud API token:
 
 1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)
-   from an account with **write** access to Jira projects.
+   from an account with write access to Jira projects.
 
    The link opens the **API tokens** page. Alternatively, from your Atlassian
    profile, select **Account Settings > Security > Create and manage API tokens**.
@@ -95,10 +93,10 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Jira**.
 1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
-1. In **Username or Email**, enter the username or email registered on your Jira profile.
+1. In **Email or username**, enter the email or username registered on your Jira profile.
 1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.
-1. In **Password or API token**, paste the API token value.
-1. Optional. Select **Test settings** to check if the connection is working.
+1. In **API token or password**, paste the API token value.
+1. Optional. Select **Test settings** to verify the connection.
 1. Select **Save changes**.
 
 To update existing Jira issue references in GitLab to use the new Jira site URL, you must [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

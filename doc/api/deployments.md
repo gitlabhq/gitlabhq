@@ -279,7 +279,7 @@ Example response:
 }
 ```
 
-When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting) is configured, deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
+When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting-deprecated) is configured, deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
 
 ```json
 {

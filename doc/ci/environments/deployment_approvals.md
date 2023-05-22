@@ -51,7 +51,7 @@ Example:
 
 There are two ways to configure the approval requirements:
 
-- [Unified approval setting](#unified-approval-setting) ... You can define who can execute **and** approve deployments.
+- [Unified approval setting](#unified-approval-setting-deprecated) ... You can define who can execute **and** approve deployments.
   This is useful when there is no separation of duties between executors and approvers in your organization.
 - [Multiple approval rules](#multiple-approval-rules) ... You can define who can execute **or** approve deployments.
   This is useful when there is a separation of duties between executors and approvers in your organization.
@@ -60,10 +60,17 @@ NOTE:
 Multiple approval rules is a more flexible option than the unified approval setting, thus both configurations shouldn't
 co-exist and multiple approval rules takes the precedence over the unified approval setting if it happens.
 
-#### Unified approval setting
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+
+#### Unified approval setting (deprecated)
 
 > - UI configuration [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/378447) in GitLab
 >   15.11.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/9662) in GitLab 16.1 and is planned for removal
+in 17.0. Use [multiple approval rules](https://gitlab.com/gitlab-org/gitlab/-/issues/404579) instead. This change
+is a breaking change.
 
 To configure approvals for a protected environment:
 
@@ -84,6 +91,8 @@ curl --header 'Content-Type: application/json' --request POST \
 NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
+
+<!--- end_remove -->
 
 #### Multiple approval rules
 
@@ -252,7 +261,7 @@ The approval status details are shown:
 Use the [Deployments API](../../api/deployments.md#get-a-specific-deployment) to see deployments.
 
 - The `status` field indicates if a deployment is blocked.
-- When the [unified approval setting](#unified-approval-setting) is configured:
+- When the [unified approval setting](#unified-approval-setting-deprecated) is configured:
   - The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
   - The `approvals` field contains the deployment's approvals.
 - When the [multiple approval rules](#multiple-approval-rules) is configured:

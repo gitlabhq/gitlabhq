@@ -1,7 +1,7 @@
 <script>
-import { GlFormGroup, GlFormCheckbox, GlFormInput, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox, GlFormInput, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED } from '../constants';
+import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
 
 export default {
   name: 'RunnerFormFields',
@@ -9,6 +9,7 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
     GlFormInput,
+    GlIcon,
     GlLink,
     GlSprintf,
     RunnerMaintenanceNoteField: () =>
@@ -27,6 +28,11 @@ export default {
         ...this.value,
       },
     };
+  },
+  computed: {
+    canBeLockedToProject() {
+      return this.value?.runnerType === PROJECT_TYPE;
+    },
   },
   watch: {
     model: {
@@ -86,6 +92,17 @@ export default {
         {{ __('Run untagged jobs') }}
         <template #help>
           {{ s__('Runners|Use the runner for jobs without tags in addition to tagged jobs.') }}
+        </template>
+      </gl-form-checkbox>
+
+      <gl-form-checkbox v-if="canBeLockedToProject" v-model="model.locked" name="locked">
+        {{ __('Lock to current projects') }} <gl-icon name="lock" />
+        <template #help>
+          {{
+            s__(
+              'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
+            )
+          }}
         </template>
       </gl-form-checkbox>
     </div>

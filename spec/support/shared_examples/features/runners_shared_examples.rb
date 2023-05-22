@@ -232,7 +232,7 @@ RSpec.shared_examples 'creates runner and shows register page' do
     before do
       fill_in s_('Runners|Runner description'), with: 'runner-foo'
       fill_in s_('Runners|Tags'), with: 'tag1'
-      click_on _('Submit')
+      click_on s_('Runners|Create runner')
       wait_for_requests
     end
 
