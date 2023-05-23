@@ -94,9 +94,9 @@ module Gitlab
             raise RedisClusterValidator::CrossSlotError, "Redis command #{result[:command_name]} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
           end
 
-          increment_allowed_cross_slot_request_count if result[:allowed]
+          increment_allowed_cross_slot_request_count if result[:allowed] && !result[:valid]
 
-          result[:valid]
+          result[:valid] || result[:allowed]
         end
 
         def enable_redis_cluster_validation

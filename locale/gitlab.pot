@@ -2234,6 +2234,9 @@ msgstr ""
 msgid "Access Tokens"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
 msgid "Access denied for your LDAP account."
 msgstr ""
 
@@ -29137,9 +29140,6 @@ msgstr ""
 msgid "Monitor your errors directly in GitLab."
 msgstr ""
 
-msgid "Monitoring"
-msgstr ""
-
 msgid "Month"
 msgstr ""
 
@@ -41384,9 +41384,6 @@ msgid "SecurityTraining|Training from this partner takes precedence when more th
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."
-msgstr ""
-
-msgid "See metrics"
 msgstr ""
 
 msgid "See our website for help"

@@ -99,7 +99,10 @@ the global fallback cache is fetched every time a cache is not found.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
 
-Each cache entry supports up-to 5 fallback keys:
+Each cache entry supports up to five fallback keys with the [`fallback_keys` keyword](../yaml/index.md#cachefallback_keys).
+When a job does not find a cache key, the job attempts to retrieve a fallback cache instead.
+Fallback keys are searched in order until a cache is found. If no cache is found,
+the job runs without using a cache. For example:
 
 ```yaml
 test-job:
@@ -114,11 +117,25 @@ test-job:
   script:
     - bundle config set --local path 'vendor/ruby'
     - bundle install
-    - yarn install --cache-folder .yarn-cache
     - echo Run tests...
 ```
 
-Fallback keys follows the same processing logic as `cache:key`, meaning that the fullname may include a `-$index` (based on cache clearance) and `-protected`/`-non_protected` (if cache separation enabled on protected branches) suffixes.
+In this example:
+
+1. The job looks for the `cache-$CI_COMMIT_REF_SLUG` cache.
+1. If `cache-$CI_COMMIT_REF_SLUG` is not found, the job looks for `cache-$CI_DEFAULT_BRANCH`
+   as a fallback option.
+1. If `cache-$CI_DEFAULT_BRANCH` is also not found, the job looks for `cache-default`
+   as a second fallback option.
+1. If none are found, the job downloads all the Ruby dependencies without using a cache,
+   but creates a new cache for `cache-$CI_COMMIT_REF_SLUG` when the job completes.
+
+Fallback keys follow the same processing logic as `cache:key`:
+
+- If you [clear caches manually](#clear-the-cache-manually), per-cache fallback keys are appended
+  with an index like other cache keys.
+- If the [**Use separate caches for protected branches** setting](#cache-key-names) is enabled,
+  per-cache fallback keys are appended with `-protected` or `-non_protected`.
 
 ### Global fallback key
 
@@ -485,7 +502,7 @@ be overwritten because caches are restored before artifacts.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
 
-A suffix is added to the cache key, with the exception of the [fallback cache key](#use-a-fallback-cache-key).
+A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
 
 As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:

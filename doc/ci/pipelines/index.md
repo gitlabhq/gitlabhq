@@ -109,10 +109,9 @@ Select a pipeline to open the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
 retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 
-[Starting in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50499), a link to the
-latest pipeline for the last commit of a given branch is available at `/project/pipelines/[branch]/latest`.
-Also, `/project/pipelines/latest` redirects you to the latest pipeline for the last commit
-on the project's default branch.
+A link to the latest pipeline for the last commit of a given branch is available at
+`/project/-/pipelines/[branch]/latest`. Also, `/project/-/pipelines/latest` redirects
+you to the latest pipeline for the last commit on the project's default branch.
 
 [Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
 you can filter the pipeline list by:

@@ -173,10 +173,6 @@ of these filters:
 Enhancements to use these filters through the user interface
 [are planned](https://gitlab.com/groups/gitlab-org/-/epics/3622).
 
-## Create a Jira issue for a vulnerability **(ULTIMATE)**
-
-You can create a Jira issue for a vulnerability from a [Vulnerability Page](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability).
-
 ## Automatic issue transitions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55773) in GitLab 13.11.
@@ -217,3 +213,7 @@ adding a comment to the Jira issue:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Clear the **Enable comments** checkbox.
+
+## Related topics
+
+- [Create a Jira issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability)

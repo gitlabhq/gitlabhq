@@ -107,6 +107,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'pypi_max_file_size': 60,
             'terraform_module_max_file_size': 70,
             'storage_size_limit': 80,
+            'notification_limit': 90,
             'pipeline_hierarchy_size': 250
           }
 
@@ -127,6 +128,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['pypi_max_file_size']).to eq(60)
           expect(json_response['terraform_module_max_file_size']).to eq(70)
           expect(json_response['storage_size_limit']).to eq(80)
+          expect(json_response['notification_limit']).to eq(90)
           expect(json_response['pipeline_hierarchy_size']).to eq(250)
         end
 
@@ -171,6 +173,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'pypi_max_file_size': 'f',
             'terraform_module_max_file_size': 'g',
             'storage_size_limit': 'j',
+            'notification_limit': 'm',
             'pipeline_hierarchy_size': 'r'
           }
 
@@ -192,6 +195,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'pypi_max_file_size is invalid',
             'terraform_module_max_file_size is invalid',
             'storage_size_limit is invalid',
+            'notification_limit is invalid',
             'pipeline_hierarchy_size is invalid'
           )
         end

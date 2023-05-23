@@ -4,7 +4,6 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 import DeployFreezeAlert from './deploy_freeze_alert.vue';
@@ -24,7 +23,7 @@ export default {
     GlModalDirective,
     GlTooltip,
   },
-  mixins: [timeagoMixin, glFeatureFlagsMixin()],
+  mixins: [timeagoMixin],
   props: {
     environment: {
       type: Object,
@@ -51,11 +50,6 @@ export default {
       required: false,
       default: '',
     },
-    metricsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     updatePath: {
       type: String,
       required: false,
@@ -69,8 +63,6 @@ export default {
   },
   i18n: {
     autoStopAtText: s__('Environments|Auto stops %{autoStopAt}'),
-    metricsButtonTitle: __('See metrics'),
-    metricsButtonText: __('Monitoring'),
     editButtonText: __('Edit'),
     stopButtonText: s__('Environments|Stop'),
     deleteButtonText: s__('Environments|Delete'),
@@ -90,9 +82,6 @@ export default {
     },
     shouldShowTerminalButton() {
       return this.canAdminEnvironment && this.environment.hasTerminals;
-    },
-    shouldShowMetricsButton() {
-      return Boolean(!this.glFeatures.removeMonitorMetrics && this.shouldShowExternalUrlButton);
     },
   },
 };
@@ -146,17 +135,6 @@ export default {
           target="_blank"
           >{{ $options.i18n.externalButtonText }}</gl-button
         >
-        <gl-button
-          v-if="shouldShowMetricsButton"
-          v-gl-tooltip.hover
-          data-testid="metrics-button"
-          :href="metricsPath"
-          :title="$options.i18n.metricsButtonTitle"
-          icon="chart"
-          class="gl-mr-2"
-        >
-          {{ $options.i18n.metricsButtonText }}
-        </gl-button>
         <gl-button v-if="canUpdateEnvironment" data-testid="edit-button" :href="updatePath">
           {{ $options.i18n.editButtonText }}
         </gl-button>

@@ -14,4 +14,6 @@
     to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
     Omnibus, the Helm chart, and Operator will handle this configuration
     automatically from GitLab 16.0 onwards.
+
+    This change is a preparation to deprecate two connections in favor of two databases in 16.1.
   documentation_url: https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings

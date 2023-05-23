@@ -18,7 +18,6 @@ import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
 import Rollback from './environment_rollback.vue';
 import Pin from './environment_pin.vue';
-import Monitoring from './environment_monitoring.vue';
 import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
 import Deployment from './deployment.vue';
@@ -39,7 +38,6 @@ export default {
     ExternalUrl,
     StopComponent,
     Rollback,
-    Monitoring,
     Pin,
     Terminal,
     TimeAgoTooltip,
@@ -133,7 +131,6 @@ export default {
       return Boolean(
         this.retryPath ||
           this.canShowAutoStopDate ||
-          this.canShowMetricsLink ||
           this.terminalPath ||
           this.canDeleteEnvironment,
       );
@@ -153,12 +150,6 @@ export default {
     },
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
-    },
-    metricsPath() {
-      return this.environment?.metricsPath ?? '';
-    },
-    canShowMetricsLink() {
-      return Boolean(!this.glFeatures.removeMonitorMetrics && this.metricsPath);
     },
     terminalPath() {
       return this.environment?.terminalPath ?? '';
@@ -307,14 +298,6 @@ export default {
               graphql
               data-track-action="click_button"
               data-track-label="environment_pin"
-            />
-
-            <monitoring
-              v-if="canShowMetricsLink"
-              :monitoring-url="metricsPath"
-              data-track-action="click_button"
-              data-track-label="environment_monitoring"
-              data-testid="environment-monitoring"
             />
 
             <terminal

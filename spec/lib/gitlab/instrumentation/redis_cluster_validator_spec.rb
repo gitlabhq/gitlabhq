@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'support/helpers/rails_helpers'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
+RSpec.describe Gitlab::Instrumentation::RedisClusterValidator, feature_category: :scalability do
   include RailsHelpers
 
   describe '.validate' do
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
         described_class.allow_cross_slot_commands do
           described_class.validate([[:mget, 'foo', 'bar']])
         end
-      ).to eq({ valid: true, key_count: 2, command_name: 'MGET', allowed: true })
+      ).to eq({ valid: false, key_count: 2, command_name: 'MGET', allowed: true })
     end
 
     it 'allows nested invocation' do
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
 
           described_class.validate([[:mget, 'foo', 'bar']])
         end
-      ).to eq({ valid: true, key_count: 2, command_name: 'MGET', allowed: true })
+      ).to eq({ valid: false, key_count: 2, command_name: 'MGET', allowed: true })
     end
   end
 end

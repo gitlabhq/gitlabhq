@@ -51,7 +51,6 @@ export const initHeader = () => {
           canAdminEnvironment: dataset.canAdminEnvironment,
           cancelAutoStopPath: dataset.environmentCancelAutoStopPath,
           terminalPath: dataset.environmentTerminalPath,
-          metricsPath: dataset.environmentMetricsPath,
           updatePath: dataset.environmentEditPath,
         },
       });

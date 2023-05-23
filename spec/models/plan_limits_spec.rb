@@ -12,6 +12,10 @@ RSpec.describe PlanLimits do
     create_list(:project_hook, project_hooks_count, project: project)
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_numericality_of(:notification_limit).only_integer }
+  end
+
   describe '#exceeded?' do
     let(:alternate_limit) { double('an alternate limit value') }
 

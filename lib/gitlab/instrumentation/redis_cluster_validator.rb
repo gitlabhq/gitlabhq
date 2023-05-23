@@ -193,8 +193,7 @@ module Gitlab
           keys = commands.map { |command| extract_keys(command) }.flatten
 
           {
-            # calculate key-slots only if not allowed
-            valid: allow_cross_slot_commands? || !has_cross_slot_keys?(keys),
+            valid: !has_cross_slot_keys?(keys),
             command_name: command_name,
             key_count: keys.size,
             allowed: allow_cross_slot_commands?

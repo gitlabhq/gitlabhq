@@ -1424,52 +1424,59 @@ Praefect does not store the actual replication factor, but assigns enough storag
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
 the replication factor of repositories assigned to the storage is decreased accordingly.
 
-You can configure:
+You can configure either:
 
-- A default replication factor for each virtual storage that is applied to newly-created repositories.
-  The configuration is added to the `/etc/gitlab/gitlab.rb` file:
+- A default replication factor for each virtual storage that is applied to newly created repositories.
+- A replication factor for an existing repository with the `set-replication-factor` subcommand.
 
-  ```ruby
-   praefect['configuration'] = {
-      # ...
-      virtual_storage: [
-         {
-            # ...
-            name: 'default',
-            default_replication_factor: 1,
-         },
-      ],
-   }
-  ```
+### Configure default replication factor
 
-- A replication factor for an existing repository using the `set-replication-factor` sub-command.
-  `set-replication-factor` automatically assigns or unassigns random storage nodes as
-  necessary to reach the desired replication factor. The repository's primary node is
-  always assigned first and is never unassigned.
+If `default_replication_factor` is unset, the repositories are always replicated on every node defined in
+`virtual_storages`. If a new node is introduced to the virtual storage, both new and existing repositories are
+replicated to the node automatically.
 
-  ```shell
-  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
-  ```
+For large Gitaly Cluster deployments with many Gitaly nodes, replicating a repository to every storage is often not
+sensible and can cause problems. The higher the replication factor, the higher the pressure on the primary repository.
+You should explicitly set the default replication factor for large Gitaly Cluster deployments.
 
-  - `-virtual-storage` is the virtual storage the repository is located in.
-  - `-repository` is the repository's relative path in the storage.
-  - `-replication-factor` is the desired replication factor of the repository. The minimum value is
-    `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
-    storages in the virtual storage.
+To configure a default replication factor, add configuration to the `/etc/gitlab/gitlab.rb` file:
 
-  On success, the assigned host storages are printed. For example:
+```ruby
+praefect['configuration'] = {
+   # ...
+   virtual_storage: [
+      {
+         # ...
+         name: 'default',
+         default_replication_factor: 1,
+      },
+   ],
+}
+```
 
-  ```shell
-  $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+### Configure replication factor for existing repositories
 
-  current assignments: gitaly-1, gitaly-2
-  ```
+The `set-replication-factor` subcommand automatically assigns or unassigns random storage nodes as
+necessary to reach the desired replication factor. The repository's primary node is
+always assigned first and is never unassigned.
 
-If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
-node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically. For large Gitaly
-Cluster deployments with many Gitaly nodes, replicating a repository to every storage is often not sensible and can cause problems.
-The higher the replication factor, the higher the pressure on the primary repository. You should explicitly set the default
-replication factor for large Gitaly Cluster deployments.
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
+```
+
+- `-virtual-storage` is the virtual storage the repository is located in.
+- `-repository` is the repository's relative path in the storage.
+- `-replication-factor` is the desired replication factor of the repository. The minimum value is
+ `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
+ storages in the virtual storage.
+
+On success, the assigned host storages are printed. For example:
+
+```shell
+$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+
+current assignments: gitaly-1, gitaly-2
+```
 
 ### Repository storage recommendations
 
