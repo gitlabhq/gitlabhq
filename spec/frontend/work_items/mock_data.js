@@ -51,6 +51,7 @@ export const mockAwardEmojiThumbsUp = {
   __typename: 'AwardEmoji',
   user: {
     id: 'gid://gitlab/User/5',
+    name: 'Dave Smith',
     __typename: 'UserCore',
   },
 };
@@ -60,6 +61,7 @@ export const mockAwardEmojiThumbsDown = {
   __typename: 'AwardEmoji',
   user: {
     id: 'gid://gitlab/User/5',
+    name: 'Dave Smith',
     __typename: 'UserCore',
   },
 };

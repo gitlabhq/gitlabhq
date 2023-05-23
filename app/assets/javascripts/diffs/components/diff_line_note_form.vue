@@ -240,6 +240,7 @@ export default {
       :show-suggest-popover="showSuggestPopover"
       :save-button-title="__('Comment')"
       :autosave-key="autosaveKey"
+      :autofocus="false"
       class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"

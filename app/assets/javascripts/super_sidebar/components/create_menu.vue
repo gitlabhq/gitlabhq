@@ -42,9 +42,6 @@ export default {
     isInvitedMembers(groupItem) {
       return groupItem.component === TOP_NAV_INVITE_MEMBERS_COMPONENT;
     },
-    closeAndFocus() {
-      this.$refs.dropdown.closeAndFocus();
-    },
   },
   toggleId: 'create-menu-toggle',
   popperOptions: {
@@ -64,7 +61,6 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
-      ref="dropdown"
       category="tertiary"
       icon="plus"
       no-caret
@@ -89,7 +85,6 @@ export default {
             :key="`${groupItem.text}-trigger`"
             trigger-source="top-nav"
             :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
-            @modal-opened="closeAndFocus"
           />
           <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
         </template>

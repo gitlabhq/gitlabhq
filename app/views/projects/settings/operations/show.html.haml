@@ -2,14 +2,7 @@
 - breadcrumb_title _('Monitor Settings')
 - @force_desktop_expanded_sidebar = true
 
-- if Feature.disabled?(:remove_monitor_metrics)
-  = render 'projects/settings/operations/metrics_dashboard'
-
 = render 'projects/settings/operations/error_tracking'
 = render 'projects/settings/operations/alert_management'
 = render 'projects/settings/operations/incidents'
-
-- if Feature.disabled?(:remove_monitor_metrics)
-  = render 'projects/settings/operations/grafana_integration'
-
 = render_if_exists 'projects/settings/operations/status_page'

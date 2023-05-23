@@ -2,7 +2,7 @@ import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
@@ -25,7 +25,7 @@ describe('AbuseReportActions', () => {
   const report = mockAbuseReports[0];
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMountExtended(AbuseReportActions, {
+    wrapper = mountExtended(AbuseReportActions, {
       propsData: {
         report,
         ...props,

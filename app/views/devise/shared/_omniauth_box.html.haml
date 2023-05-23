@@ -18,5 +18,5 @@
         = label_for_provider(provider)
   - if render_remember_me
     = render Pajamas::CheckboxTagComponent.new(name: 'remember_me_omniauth', value: nil) do |c|
-      = c.label do
+      - c.with_label do
         = _('Remember me')

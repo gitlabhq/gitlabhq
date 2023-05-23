@@ -28,7 +28,7 @@ module Terraform
 
     validates :project_id, :name, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },
-                     format: { with: HEX_REGEXP, message: 'only allows hex characters' }
+      format: { with: HEX_REGEXP, message: 'only allows hex characters' }
 
     attribute :uuid, default: -> { SecureRandom.hex(UUID_LENGTH / 2) }
 

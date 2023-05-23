@@ -17,9 +17,9 @@
         %div{ class: "#{container_class} limit-container-width" }
           .content{ id: "content-body" }
             = render Pajamas::CardComponent.new do |c|
-              = c.header do
+              - c.with_header do
                 = brand_header_logo({add_gitlab_black_text: true})
-              = c.body do
+              - c.with_body do
                 - if header_link?(:user_dropdown)
                   .navbar-collapse
                     %ul.nav.navbar-nav

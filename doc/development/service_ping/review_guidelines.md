@@ -42,7 +42,7 @@ are regular backend changes.
   - Assign both the `~backend` and `~analytics instrumentation` reviews to another Analytics Instrumentation team member.
   - Assign the maintainer review to someone outside of the Analytics Instrumentation group.
 - Assign an
-  [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Analytics Instrumentation team for a review.
+  [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/analytics-instrumentation/engineers/-/group_members?with_inherited_permissions=exclude) from the Analytics Instrumentation team for a review.
 - Set the correct attributes in the metric's YAML definition:
   - `product_section`, `product_stage`, `product_group`
   - Provide a clear description of the metric.
@@ -76,7 +76,7 @@ are regular backend changes.
 
 [Danger bot](../dangerbot.md) adds the list of changed Analytics Instrumentation files
 and pings the
-[`@gitlab-org/analytics-section/product-intelligence/engineers`](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) group for merge requests
+[`@gitlab-org/analytics-section/analytics-instrumentation/engineers`](https://gitlab.com/groups/gitlab-org/analytics-section/analytics-instrumentation/engineers/-/group_members?with_inherited_permissions=exclude) group for merge requests
 that are not drafts.
 
 Any of the Analytics Instrumentation engineers can be assigned for the Analytics Instrumentation review.

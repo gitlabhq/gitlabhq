@@ -132,7 +132,7 @@ export default {
           items: [
             {
               text: this.$options.i18n.shortcuts,
-              action: this.showKeyboardShortcuts,
+              action: () => {},
               extraAttrs: {
                 class: 'js-shortcuts-modal-trigger',
                 'data-track-action': 'click_button',
@@ -172,18 +172,11 @@ export default {
       return true;
     },
 
-    showKeyboardShortcuts() {
-      this.$refs.dropdown.close();
-    },
-
     showTanukiBotChat() {
-      this.$refs.dropdown.close();
-
       this.helpCenterState.showTanukiBotChatDrawer = true;
     },
 
     async showWhatsNew() {
-      this.$refs.dropdown.close();
       this.showWhatsNewNotification = false;
 
       if (!this.toggleWhatsNewDrawer) {
@@ -226,7 +219,6 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    ref="dropdown"
     :popper-options="$options.popperOptions"
     @shown="trackDropdownToggle(true)"
     @hidden="trackDropdownToggle(false)"

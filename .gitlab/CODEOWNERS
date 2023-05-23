@@ -279,7 +279,7 @@ Dangerfile
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/
 
-^[Analytics Instrumentation] @gitlab-org/analytics-section/product-intelligence/engineers
+^[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /ee/lib/gitlab/usage_data_counters/
 /ee/lib/ee/gitlab/usage_data.rb
 /lib/gitlab/usage_data.rb

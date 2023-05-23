@@ -10793,9 +10793,14 @@ CREATE TABLE abuse_reports (
     status smallint DEFAULT 1 NOT NULL,
     resolved_at timestamp with time zone,
     screenshot text,
+    resolved_by_id integer,
+    assignee_id integer,
+    mitigation_steps text,
+    evidence jsonb,
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
     CONSTRAINT check_4b0a5120e0 CHECK ((char_length(screenshot) <= 255)),
-    CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512))
+    CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512)),
+    CONSTRAINT check_f3c0947a2d CHECK ((char_length(mitigation_steps) <= 1000))
 );
 
 CREATE SEQUENCE abuse_reports_id_seq
@@ -20324,7 +20329,7 @@ CREATE TABLE postgres_async_indexes (
     CONSTRAINT check_083b21157b CHECK ((char_length(definition) <= 2048)),
     CONSTRAINT check_45dc23c315 CHECK ((char_length(last_error) <= 10000)),
     CONSTRAINT check_b732c6cd1d CHECK ((char_length(name) <= 63)),
-    CONSTRAINT check_e64ff4359e CHECK ((char_length(table_name) <= 63))
+    CONSTRAINT check_schema_and_name_length CHECK ((char_length(table_name) <= 127))
 );
 
 CREATE SEQUENCE postgres_async_indexes_id_seq
@@ -29645,6 +29650,10 @@ CREATE INDEX index_abuse_report_events_on_abuse_report_id ON abuse_report_events
 
 CREATE INDEX index_abuse_report_events_on_user_id ON abuse_report_events USING btree (user_id);
 
+CREATE INDEX index_abuse_reports_on_assignee_id ON abuse_reports USING btree (assignee_id);
+
+CREATE INDEX index_abuse_reports_on_resolved_by_id ON abuse_reports USING btree (resolved_by_id);
+
 CREATE INDEX index_abuse_reports_on_status_and_created_at ON abuse_reports USING btree (status, created_at);
 
 CREATE INDEX index_abuse_reports_on_status_and_id ON abuse_reports USING btree (status, id);
@@ -34902,6 +34911,9 @@ ALTER TABLE ONLY bulk_import_export_uploads
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY abuse_reports
+    ADD CONSTRAINT fk_3fe6467b93 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -35615,6 +35627,9 @@ ALTER TABLE ONLY vulnerability_external_issue_links
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_f081aa4489 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_reports
+    ADD CONSTRAINT fk_f10de8b524 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

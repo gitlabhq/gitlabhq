@@ -904,7 +904,7 @@ RSpec.describe Admin::UsersController do
       it "shows a notice" do
         post :impersonate, params: { id: user.username }
 
-        expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
+        expect(flash[:notice]).to eq("You are now impersonating #{user.username}")
       end
 
       it 'clears token session keys' do

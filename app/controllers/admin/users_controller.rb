@@ -56,7 +56,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       log_impersonation_event
 
-      flash[:alert] = format(_("You are now impersonating %{username}"), username: user.username)
+      flash[:notice] = format(_("You are now impersonating %{username}"), username: user.username)
 
       redirect_to root_path
     else

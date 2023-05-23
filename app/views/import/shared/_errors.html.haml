@@ -2,6 +2,6 @@
   = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false,
     alert_options: { class: 'gl-mb-5' }) do |c|
-    = c.body do
+    - c.with_body do
       - @errors.each do |error|
         = error

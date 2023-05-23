@@ -8,12 +8,12 @@
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'hidden js-cluster-api-unreachable' }) do |c|
-  = c.body do
+  - c.with_body do
     = s_('ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct.')
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'hidden js-cluster-authentication-failure js-cluster-api-unreachable' }) do |c|
-  = c.body do
+  - c.with_body do
     = s_('ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid.')
 
 .hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }

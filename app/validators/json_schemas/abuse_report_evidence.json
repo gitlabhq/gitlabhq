@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Evidence to support an abuse report",
+  "type": "object",
+  "properties": {
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description"
+        ]
+      }
+    },
+    "snippets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "content"
+        ]
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "content"
+        ]
+      }
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "login_count": {
+          "type": "integer"
+        },
+        "account_age": {
+          "type": "integer"
+        },
+        "spam_score": {
+          "type": "number"
+        },
+        "telesign_score": {
+          "type": "number"
+        },
+        "arkos_score": {
+          "type": "number"
+        },
+        "pvs_score": {
+          "type": "number"
+        },
+        "product_coverage": {
+          "type": "number"
+        },
+        "virus_total_score": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "login_count",
+        "account_age",
+        "spam_score",
+        "telesign_score",
+        "arkos_score",
+        "pvs_score",
+        "product_coverage",
+        "virus_total_score"
+      ]
+    }
+  },
+  "required": [
+    "user"
+  ]
+}

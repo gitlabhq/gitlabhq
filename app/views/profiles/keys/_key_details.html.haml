@@ -2,9 +2,9 @@
 .row.gl-mt-3
   .col-md-4
     = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0'}) do |c|
-      - c.header do
+      - c.with_header do
         = _('SSH Key')
-      - c.body do
+      - c.with_body do
         %ul.content-list
           %li
             %span.light= _('Title:')
@@ -27,9 +27,9 @@
     %pre.well-pre
       = @key.key
     = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0'}) do |c|
-      - c.header do
+      - c.with_header do
         = _('Fingerprints')
-      - c.body do
+      - c.with_body do
         %ul.content-list
           %li
             %span.light= 'MD5:'

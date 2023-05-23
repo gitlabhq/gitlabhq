@@ -497,13 +497,13 @@ GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_wri
 
 ## Monitoring
 
-Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
+Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489).
 
 ## Related topics
 
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+- [Analytics Instrumentation Guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
 - [Snowplow Guide](../snowplow/index.md)
-- [Product Intelligence Direction](https://about.gitlab.com/direction/analytics/product-intelligence/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

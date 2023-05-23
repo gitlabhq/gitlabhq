@@ -461,6 +461,26 @@ export const setParallelDiffViewType = ({ commit }) => {
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
   commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: true });
+
+  // The comment form for diffs gets focussed differently due to the way the virtual scroller
+  // works. If we focus the comment form on mount and the comment form gets removed and then
+  // added again the page will scroll in unexpected ways
+  setTimeout(() => {
+    const el = document.querySelector(`[data-line-code="${lineCode}"] textarea`);
+
+    if (!el) return;
+
+    const { bottom } = el.getBoundingClientRect();
+    const overflowBottom = bottom - window.innerHeight;
+
+    // Prevent the browser scrolling for us
+    // We handle the scrolling to not break the diffs virtual scroller
+    el.focus({ preventScroll: true });
+
+    if (overflowBottom > 0) {
+      window.scrollBy(0, Math.floor(Math.abs(overflowBottom)) + 150);
+    }
+  });
 };
 
 export const cancelCommentForm = ({ commit }, { lineCode, fileHash }) => {

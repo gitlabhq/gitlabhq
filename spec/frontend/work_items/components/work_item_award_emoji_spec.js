@@ -53,6 +53,15 @@ describe('WorkItemAwardEmoji component', () => {
   );
   const workItemUpdateFailureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
   const mockWorkItem = workItemQueryResponse.data.workspace.workItems.nodes[0];
+  const mockAwardEmojiDifferentUserThumbsUp = {
+    name: 'thumbsup',
+    __typename: 'AwardEmoji',
+    user: {
+      id: 'gid://gitlab/User/1',
+      name: 'John Doe',
+      __typename: 'UserCore',
+    },
+  };
 
   const createComponent = ({
     mockWorkItemUpdateMutationHandler = [updateWorkItemMutation, workItemSuccessHandler],
@@ -74,7 +83,8 @@ describe('WorkItemAwardEmoji component', () => {
   beforeEach(() => {
     isLoggedIn.mockReturnValue(true);
     window.gon = {
-      current_user_id: 1,
+      current_user_id: 5,
+      current_user_fullname: 'Dave Smith',
     };
 
     createComponent();
@@ -85,7 +95,7 @@ describe('WorkItemAwardEmoji component', () => {
     expect(findAwardsList().props()).toEqual({
       boundary: '',
       canAwardEmoji: true,
-      currentUserId: 1,
+      currentUserId: 5,
       defaultAwards: [EMOJI_THUMBSUP, EMOJI_THUMBSDOWN],
       selectedClass: 'selected',
       awards: [],
@@ -101,6 +111,7 @@ describe('WorkItemAwardEmoji component', () => {
         name: EMOJI_THUMBSUP,
         user: {
           id: 5,
+          name: 'Dave Smith',
         },
       },
       {
@@ -108,6 +119,35 @@ describe('WorkItemAwardEmoji component', () => {
         name: EMOJI_THUMBSDOWN,
         user: {
           id: 5,
+          name: 'Dave Smith',
+        },
+      },
+    ]);
+  });
+
+  it('renders awards list given by multiple users', () => {
+    createComponent({
+      awardEmoji: {
+        ...mockAwardsWidget,
+        nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiDifferentUserThumbsUp],
+      },
+    });
+
+    expect(findAwardsList().props('awards')).toEqual([
+      {
+        id: 1,
+        name: EMOJI_THUMBSUP,
+        user: {
+          id: 5,
+          name: 'Dave Smith',
+        },
+      },
+      {
+        id: 2,
+        name: EMOJI_THUMBSUP,
+        user: {
+          id: 1,
+          name: 'John Doe',
         },
       },
     ]);
@@ -165,6 +205,51 @@ describe('WorkItemAwardEmoji component', () => {
 
     it('renders the component with required props and canAwardEmoji false', () => {
       expect(findAwardsList().props('canAwardEmoji')).toBe(false);
+    });
+  });
+
+  describe('when a different users awards same emoji', () => {
+    const awardEmojiDifferentUserSuccessHandler = jest.fn().mockResolvedValue(
+      updateWorkItemMutationResponseFactory({
+        awardEmoji: {
+          ...mockAwardsWidget,
+          nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiDifferentUserThumbsUp],
+        },
+      }),
+    );
+
+    beforeEach(() => {
+      window.gon = {
+        current_user_id: 1,
+        current_user_fullname: 'John Doe',
+      };
+    });
+
+    it('calls mutation succesfully', async () => {
+      createComponent({
+        mockWorkItemUpdateMutationHandler: [
+          updateWorkItemMutation,
+          awardEmojiDifferentUserSuccessHandler,
+        ],
+        awardEmoji: {
+          ...mockAwardsWidget,
+          nodes: [mockAwardEmojiThumbsUp],
+        },
+      });
+
+      findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
+
+      await waitForPromises();
+
+      expect(awardEmojiDifferentUserSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: mockWorkItem.id,
+          awardEmojiWidget: {
+            action: EMOJI_ACTION_ADD,
+            name: EMOJI_THUMBSUP,
+          },
+        },
+      });
     });
   });
 });

@@ -7,12 +7,12 @@ class ProjectImportData < ApplicationRecord
 
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
-                 key: Settings.attr_encrypted_db_key_base,
-                 marshal: true,
-                 encode: true,
-                 mode: :per_attribute_iv_and_salt,
-                 insecure_mode: true,
-                 algorithm: 'aes-256-cbc'
+    key: Settings.attr_encrypted_db_key_base,
+    marshal: true,
+    encode: true,
+    mode: :per_attribute_iv_and_salt,
+    insecure_mode: true,
+    algorithm: 'aes-256-cbc'
 
   # NOTE
   # We are serializing a project as `data` in an "unsafe" way here

@@ -17,7 +17,6 @@ RSpec.describe 'Comment sort direction', feature_category: :team_planning do
       # open dropdown, and select 'Newest first'
       page.within('.issuable-details') do
         click_button('Sort or filter')
-        click_button('Oldest first')
         click_button('Newest first')
       end
 

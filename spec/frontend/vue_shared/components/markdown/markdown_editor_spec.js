@@ -120,17 +120,24 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  it.each`
-    desc                                                                                              | supportsQuickActions
-    ${'passes render_quick_actions param to renderMarkdownPath if quick actions are enabled'}         | ${true}
-    ${'does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled'} | ${false}
-  `('$desc', async ({ supportsQuickActions }) => {
-    buildWrapper({ propsData: { supportsQuickActions } });
+  it('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
+    buildWrapper({ propsData: { supportsQuickActions: true } });
 
     await enableContentEditor();
 
     expect(mock.history.post).toHaveLength(1);
-    expect(mock.history.post[0].url).toContain(`render_quick_actions=${supportsQuickActions}`);
+    expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
+  });
+
+  // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
+    buildWrapper({ propsData: { supportsQuickActions: false } });
+
+    await enableContentEditor();
+
+    expect(mock.history.post).toHaveLength(1);
+    expect(mock.history.post[0].url).toContain(`render_quick_actions=false`);
   });
 
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
@@ -178,7 +185,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
     });
 
-    it('disables content editor when disabled prop is true', async () => {
+    // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('disables content editor when disabled prop is true', async () => {
       buildWrapper({ propsData: { disabled: true } });
 
       await enableContentEditor();

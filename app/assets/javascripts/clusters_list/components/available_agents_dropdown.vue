@@ -58,8 +58,6 @@ export default {
     selectAgent(agent) {
       this.$emit('agentSelected', agent);
       this.selectedAgent = agent;
-
-      this.$refs.dropdown.closeAndFocus();
     },
     onKeyEnter() {
       if (!this.searchTerm?.length) {
@@ -76,7 +74,6 @@ export default {
 <template>
   <div @keydown.enter.stop.prevent="onKeyEnter">
     <gl-collapsible-listbox
-      ref="dropdown"
       v-model="selectedAgent"
       class="gl-w-full"
       toggle-class="select-agent-dropdown"

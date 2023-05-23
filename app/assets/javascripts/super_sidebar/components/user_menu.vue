@@ -241,6 +241,7 @@ export default {
       :popper-options="$options.popperOptions"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
+      :auto-close="false"
       @shown="onShow"
     >
       <template #toggle>

@@ -267,6 +267,7 @@ export default {
             :css-classes="['diff-suggest-popover']"
             placement="bottom"
             :show="suggestPopoverVisible"
+            triggers=""
           >
             <strong>{{ __('New! Suggest changes directly') }}</strong>
             <p class="mb-2">

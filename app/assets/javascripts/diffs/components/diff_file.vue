@@ -187,6 +187,9 @@ export default {
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
         if (
+          this.viewDiffsFileByFile &&
+          !this.isCollapsed &&
+          !this.glFeatures.singleFileFileByFile &&
           newHash &&
           oldHash &&
           !this.hasDiff &&

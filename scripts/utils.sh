@@ -290,13 +290,6 @@ function fail_pipeline_early() {
   fi
 }
 
-function danger_as_local() {
-  # Force danger to skip CI source GitLab and fallback to "local only git repo".
-  unset GITLAB_CI
-  # We need to base SHA to help danger determine the base commit for this shallow clone.
-  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}" --dangerfile="${DANGER_DANGERFILE:-Dangerfile}"
-}
-
 # We're inlining this function in `.gitlab/ci/package-and-test/main.gitlab-ci.yml` so make sure to reflect any changes there
 function assets_image_tag() {
   local cache_assets_hash_file="cached-assets-hash.txt"

@@ -40,5 +40,5 @@ events or touches Snowplow related files.
 - Check that an event definition file was created or updated in accordance with the [Event Dictionary Guide](event_dictionary_guide.md).
 - If needed, check that the events are firing locally using one of the
 [testing tools](implementation.md#develop-and-test-snowplow) available.
-- Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
+- Approve the MR, and relabel the MR with `~"analytics instrumentation::approved"`.
 - If the snowplow event mirrors a RedisHLL event, then tag @mdrussell to review if the payload is usable for this purpose.

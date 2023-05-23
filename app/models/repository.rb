@@ -880,10 +880,12 @@ class Repository
   end
 
   def merge(user, source_sha, merge_request, message)
-    merge_to_branch(user,
-                    source_sha: source_sha,
-                    target_branch: merge_request.target_branch,
-                    message: message) do |commit_id|
+    merge_to_branch(
+      user,
+      source_sha: source_sha,
+      target_branch: merge_request.target_branch,
+      message: message
+    ) do |commit_id|
       merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
       nil # Return value does not matter.
     end
@@ -1136,10 +1138,13 @@ class Repository
   end
 
   def squash(user, merge_request, message)
-    raw.squash(user, start_sha: merge_request.diff_start_sha,
-                     end_sha: merge_request.diff_head_sha,
-                     author: merge_request.author,
-                     message: message)
+    raw.squash(
+      user,
+      start_sha: merge_request.diff_start_sha,
+      end_sha: merge_request.diff_head_sha,
+      author: merge_request.author,
+      message: message
+    )
   end
 
   def submodule_links
@@ -1271,11 +1276,13 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(shard,
-                                disk_path + '.git',
-                                repo_type.identifier_for_container(container),
-                                container.full_path,
-                                container: container)
+    Gitlab::Git::Repository.new(
+      shard,
+      disk_path + '.git',
+      repo_type.identifier_for_container(container),
+      container.full_path,
+      container: container
+    )
   end
 end
 

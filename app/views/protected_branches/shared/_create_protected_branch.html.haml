@@ -1,9 +1,9 @@
 = gitlab_ui_form_for [protected_branch_entity, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   = render Pajamas::CardComponent.new(card_options: { class: "gl-mb-5" }) do |c|
-    - c.header do
+    - c.with_header do
       = s_("ProtectedBranch|Protect a branch")
-    - c.body do
+    - c.with_body do
       = form_errors(@protected_branch)
       .form-group.row
         = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
@@ -38,7 +38,7 @@
             - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
             = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
       = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity
-    - c.footer do
+    - c.with_footer do
       = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { qa_selector: 'protect_button' }, pajamas_button: true
 
   .js-alert-protected-branch-created-container.gl-mb-5

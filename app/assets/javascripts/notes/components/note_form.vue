@@ -94,6 +94,11 @@ export default {
       required: false,
       default: false,
     },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -359,7 +364,7 @@ export default {
           :autocomplete-data-sources="autocompleteDataSources"
           :disabled="isSubmitting"
           supports-quick-actions
-          autofocus
+          :autofocus="autofocus"
           @keydown.meta.enter="handleKeySubmit()"
           @keydown.ctrl.enter="handleKeySubmit()"
           @keydown.exact.up="editMyLastNote()"

@@ -3,7 +3,9 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getEnvironment from '../graphql/queries/environment.query.graphql';
+import updateEnvironment from '../graphql/mutations/update_environment.mutation.graphql';
 import EnvironmentForm from './environment_form.vue';
 
 export default {
@@ -11,6 +13,7 @@ export default {
     GlLoadingIcon,
     EnvironmentForm,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectEnvironmentsPath', 'updateEnvironmentPath', 'projectPath', 'environmentName'],
   apollo: {
     environment: {
@@ -42,6 +45,44 @@ export default {
       this.formEnvironment = environment;
     },
     onSubmit() {
+      if (this.glFeatures?.environmentSettingsToGraphql) {
+        this.updateWithGraphql();
+      } else {
+        this.updateWithAxios();
+      }
+    },
+    async updateWithGraphql() {
+      this.loading = true;
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateEnvironment,
+          variables: {
+            input: {
+              id: this.formEnvironment.id,
+              externalUrl: this.formEnvironment.externalUrl,
+            },
+          },
+        });
+
+        const { errors } = data.environmentUpdate;
+
+        if (errors.length > 0) {
+          throw new Error(errors[0]?.message ?? errors[0]);
+        }
+
+        const { path } = data.environmentUpdate.environment;
+
+        if (path) {
+          visitUrl(path);
+        }
+      } catch (error) {
+        const { message } = error;
+        createAlert({ message });
+      } finally {
+        this.loading = false;
+      }
+    },
+    updateWithAxios() {
       this.loading = true;
       axios
         .put(this.updateEnvironmentPath, {

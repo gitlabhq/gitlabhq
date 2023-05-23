@@ -695,11 +695,11 @@ Create a merge request for the new Service Ping metric, and do the following:
 
 ## Verify your metric
 
-On GitLab.com, the Product Intelligence team regularly [monitors Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
+On GitLab.com, the Analytics Instrumentation team regularly [monitors Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
 They may alert you that your metrics need further optimization to run quicker and with greater success.
 
 The Service Ping JSON payload for GitLab.com is shared in the
-[#g_product_intelligence](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
+[#g_analyze_analytics_instrumentation](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
 
 You may also use the [Service Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs.
 The dashboard allows filtering by GitLab version, by "Self-managed" and "SaaS", and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you can re-optimize your metric.

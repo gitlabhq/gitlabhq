@@ -23,7 +23,7 @@
                 'aria-live' => 'assertive',
                 data: { testid: 'welcome-form' } }) do |f|
         = render Pajamas::CardComponent.new do |c|
-          - c.body do
+          - c.with_body do
             .devise-errors
               = render 'devise/shared/error_messages', resource: current_user
             .row

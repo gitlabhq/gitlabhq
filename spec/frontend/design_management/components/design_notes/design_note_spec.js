@@ -1,7 +1,7 @@
 import { ApolloMutation } from 'vue-apollo';
 import { nextTick } from 'vue';
 import { GlAvatar, GlAvatarLink, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -44,7 +44,7 @@ describe('Design note component', () => {
   const findDeleteDropdownItem = () => findDropdownItems().at(1);
 
   function createComponent(props = {}, data = { isEditing: false }) {
-    wrapper = shallowMountExtended(DesignNote, {
+    wrapper = mountExtended(DesignNote, {
       propsData: {
         note: {},
         noteableId: 'gid://gitlab/DesignManagement::Design/6',
@@ -65,6 +65,11 @@ describe('Design note component', () => {
         ApolloMutation,
         GlDisclosureDropdown,
         GlDisclosureDropdownItem,
+        TimelineEntryItem: true,
+        TimeAgoTooltip: true,
+        GlAvatarLink: true,
+        GlAvatar: true,
+        GlLink: true,
       },
     });
   }

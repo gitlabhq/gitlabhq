@@ -142,25 +142,11 @@ module Gitlab
         # primary.
         #
         # This method will return nil if no lag size could be calculated.
-        def replication_lag_size(location = primary_write_location)
-          location = connection.quote(location)
-
-          # The following is necessary to handle a mix of logical and physical replicas. We assume that if they have
-          # pg_replication_origin_status then they are a logical replica. In a logical replica we need to use
-          # `remote_lsn` rather than `pg_last_wal_replay_lsn` in order for our LSN to be comparable to the source
-          # cluster. This logic would be broken if we have 2 logical subscriptions or if we have a logical subscription
-          # in the source primary cluster. Read more at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121208
+        def replication_lag_size
+          location = connection.quote(primary_write_location)
           row = query_and_release(<<-SQL.squish)
-            SELECT pg_wal_lsn_diff(#{location}, (
-              CASE
-              WHEN (SELECT TRUE FROM pg_replication_origin_status) THEN
-                (SELECT remote_lsn FROM pg_replication_origin_status)
-              WHEN pg_is_in_recovery() THEN
-                pg_last_wal_replay_lsn()
-              ELSE
-                pg_current_wal_insert_lsn()
-              END
-            ))::float AS diff
+            SELECT pg_wal_lsn_diff(#{location}, pg_last_wal_replay_lsn())::float
+              AS diff
           SQL
 
           row['diff'].to_i if row.any?
@@ -187,8 +173,22 @@ module Gitlab
         #
         # location - The transaction write location as reported by a primary.
         def caught_up?(location)
-          lag = replication_lag_size(location)
-          lag.present? && lag.to_i <= 0
+          string = connection.quote(location)
+
+          # In case the host is a primary pg_last_wal_replay_lsn/pg_last_xlog_replay_location() returns
+          # NULL. The recovery check ensures we treat the host as up-to-date in
+          # such a case.
+          query = <<-SQL.squish
+            SELECT NOT pg_is_in_recovery()
+              OR pg_wal_lsn_diff(pg_last_wal_replay_lsn(), #{string}) >= 0
+              AS result
+          SQL
+
+          row = query_and_release(query)
+
+          ::Gitlab::Utils.to_boolean(row['result'])
+        rescue *CONNECTION_ERRORS
+          false
         end
 
         def query_and_release(sql)

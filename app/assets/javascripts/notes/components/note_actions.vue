@@ -214,22 +214,18 @@ export default {
   methods: {
     ...mapActions(['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
     onEdit() {
-      this.closeMoreActionsDropdown();
       this.$emit('handleEdit');
     },
     onDelete() {
-      this.closeMoreActionsDropdown();
       this.$emit('handleDelete');
     },
     onResolve() {
       this.$emit('handleResolve');
     },
     onAbuse() {
-      this.closeMoreActionsDropdown();
       this.toggleReportAbuseDrawer(true);
     },
     onCopyUrl() {
-      this.closeMoreActionsDropdown();
       this.$toast.show(__('Link copied to clipboard.'));
     },
     handleAssigneeUpdate(assignees) {
@@ -240,8 +236,6 @@ export default {
     assignUser() {
       let { assignees } = this;
       const { project_id, iid } = this.getNoteableData;
-
-      this.closeMoreActionsDropdown();
 
       if (this.isUserAssigned) {
         assignees = assignees.filter((assignee) => assignee.id !== this.author.id);
@@ -270,11 +264,6 @@ export default {
     },
     toggleReportAbuseDrawer(isOpen) {
       this.isReportAbuseDrawerOpen = isOpen;
-    },
-    closeMoreActionsDropdown() {
-      if (this.shouldShowActionsDropdown && this.$refs.moreActionsDropdown) {
-        this.$refs.moreActionsDropdown.close();
-      }
     },
   },
 };
@@ -374,7 +363,6 @@ export default {
     />
     <div v-else-if="shouldShowActionsDropdown" class="more-actions dropdown">
       <gl-disclosure-dropdown
-        ref="moreActionsDropdown"
         v-gl-tooltip
         :title="$options.i18n.moreActionsLabel"
         :aria-label="$options.i18n.moreActionsLabel"

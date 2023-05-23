@@ -34,11 +34,11 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
 
 WARNING:
 If a metric is not used in Sisense or any other system after 6 months, the
-Product Intelligence team marks it as inactive and assigns it to the group owner for review.
+Analytics Instrumentation team marks it as inactive and assigns it to the group owner for review.
 
 We are working on automating this process. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8988) for details.
 
-Product Intelligence removes metrics from Service Ping if they are not used in any Sisense dashboard.
+Analytics Instrumentation removes metrics from Service Ping if they are not used in any Sisense dashboard.
 
 For an example of the metric removal process, see this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388236).
 
@@ -88,7 +88,7 @@ To remove a metric:
 
    Do not remove the metric's YAML definition altogether. Some self-managed
    instances might not immediately update to the latest version of GitLab, and
-   therefore continue to report the removed metric. The Product Intelligence team
+   therefore continue to report the removed metric. The Analytics Instrumentation team
    requires a record of all removed metrics to identify and filter them.
 
    For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).

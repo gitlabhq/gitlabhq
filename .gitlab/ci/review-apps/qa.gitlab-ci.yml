@@ -1,10 +1,5 @@
 include:
-  - project: gitlab-org/quality/pipeline-common
-    ref: 5.1.1
-    file:
-      - /ci/base.gitlab-ci.yml
-      - /ci/allure-report.yml
-      - /ci/knapsack-report.yml
+  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - template: Verify/Browser-Performance.gitlab-ci.yml
 
 .test-variables:
@@ -21,7 +16,7 @@ include:
 .bundle-base:
   extends:
     - .qa-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
+    - .ruby-image
   before_script:
     - cd qa && bundle install
 
@@ -75,8 +70,6 @@ review-qa-smoke:
     - .rules:qa-smoke
   variables:
     QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: review-qa-smoke
-  retry: 1
 
 review-qa-blocking:
   extends:
@@ -84,7 +77,6 @@ review-qa-blocking:
     - .rules:qa-blocking
   variables:
     QA_SCENARIO: Test::Instance::ReviewBlocking
-    QA_RUN_TYPE: review-qa-blocking
   retry: 1
 review-qa-blocking-parallel:
   extends:
@@ -98,7 +90,6 @@ review-qa-non-blocking:
     - .rules:qa-non-blocking
   variables:
     QA_SCENARIO: Test::Instance::ReviewNonBlocking
-    QA_RUN_TYPE: review-qa-non-blocking
   when: manual
   allow_failure: true
 review-qa-non-blocking-parallel:
@@ -118,18 +109,12 @@ browser_performance:
 
 e2e-test-report:
   extends:
-    - .generate-allure-report-base
+    - .e2e-test-report
     - .rules:prepare-report
   stage: post-qa
   variables:
-    ALLURE_JOB_NAME: e2e-review-qa
-    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_RESULTS_GLOB: qa/tmp/allure-results
-    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
-    GIT_STRATEGY: none
-  allow_failure: true
-  when: always
+    ALLURE_JOB_NAME: $QA_RUN_TYPE
 
 upload-knapsack-report:
   extends:
@@ -145,38 +130,29 @@ delete-test-resources:
     - .rules:prepare-report
   stage: post-qa
   variables:
-    QA_TEST_RESOURCES_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-resources-*.json
     GITLAB_QA_ACCESS_TOKEN: $REVIEW_APPS_ROOT_TOKEN
   script:
     - export GITLAB_ADDRESS="$QA_GITLAB_URL"
-    - bundle exec rake "test_resources:delete[$QA_TEST_RESOURCES_FILE_PATTERN]"
+    - bundle exec rake "test_resources:delete[$CI_PROJECT_DIR/qa/tmp/test-resources-*.json]"
   allow_failure: true
-  when: always
 
 notify-slack:
   extends:
-    - .notify-slack-qa
-    - .qa-cache
+    - .notify-slack
     - .rules:main-run
   stage: post-qa
   variables:
+    QA_RSPEC_XML_FILE_PATTERN: ${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml
     RUN_WITH_BUNDLE: "true"
-    QA_PATH: qa
-    ALLURE_JOB_NAME: e2e-review-qa
-    SLACK_ICON_EMOJI: ci_failing
-    STATUS_SYM: ☠️
-    STATUS: failed
-    TYPE: "(review-app) "
+    ALLURE_JOB_NAME: $QA_RUN_TYPE
   when: on_failure
-  script:
-    - bundle exec prepare-stage-reports --input-files "${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml"
-    - !reference [.notify-slack-qa, script]
 
 export-test-metrics:
   extends:
+    - .export-test-metrics
     - .bundle-base
     - .rules:main-run
   stage: post-qa
+  variables:
+    QA_METRICS_REPORT_FILE_PATTERN: tmp/test-metrics-*.json
   when: always
-  script:
-    - bundle exec rake "ci:export_test_metrics[tmp/test-metrics-*.json]"

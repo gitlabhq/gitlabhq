@@ -6,7 +6,7 @@ import eventHub from '~/issues/show/event_hub';
 describe('TaskListItemActions component', () => {
   let wrapper;
 
-  const findGlDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findConvertToTaskItem = () => wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
   const findDeleteItem = () => wrapper.findAllComponents(GlDisclosureDropdownItem).at(1);
 
@@ -20,7 +20,6 @@ describe('TaskListItemActions component', () => {
       provide: { canUpdate: true },
       attachTo: document.querySelector('div'),
     });
-    wrapper.vm.$refs.dropdown.close = jest.fn();
   };
 
   beforeEach(() => {
@@ -28,7 +27,7 @@ describe('TaskListItemActions component', () => {
   });
 
   it('renders dropdown', () => {
-    expect(findGlDropdown().props()).toMatchObject({
+    expect(findGlDisclosureDropdown().props()).toMatchObject({
       category: 'tertiary',
       icon: 'ellipsis_v',
       placement: 'right',

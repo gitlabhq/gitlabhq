@@ -35,8 +35,10 @@ class Release < ApplicationRecord
 
   scope :sorted, -> { order(released_at: :desc) }
   scope :preloaded, -> {
-    includes(:author, :evidences, :milestones, :links, :sorted_links,
-             project: [:project_feature, :route, { namespace: :route }])
+    includes(
+      :author, :evidences, :milestones, :links, :sorted_links,
+      project: [:project_feature, :route, { namespace: :route }]
+    )
   }
   scope :with_milestones, -> { joins(:milestone_releases) }
   scope :with_group_milestones, -> { joins(:milestones).where.not(milestones: { group_id: nil }) }

@@ -3,7 +3,7 @@
     variant: :danger,
     dismissible: false,
     alert_options: { id: 'error_explanation', class: 'gl-mb-3'}) do |c|
-    = c.body do
+    - c.with_body do
       %ul.gl-pl-4
         - resource.errors.full_messages.each do |message|
           %li= message

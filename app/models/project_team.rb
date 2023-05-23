@@ -179,9 +179,11 @@ class ProjectTeam
   #
   # Returns a Hash mapping user ID -> maximum access level.
   def max_member_access_for_user_ids(user_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: project.max_member_access_for_resource_key(User),
-                                      resource_ids: user_ids,
-                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: project.max_member_access_for_resource_key(User),
+      resource_ids: user_ids,
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |user_ids|
       project.project_authorizations
              .where(user: user_ids)
              .group(:user_id)
@@ -202,9 +204,11 @@ class ProjectTeam
   end
 
   def contribution_check_for_user_ids(user_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: "contribution_check_for_users:#{project.id}",
-                                      resource_ids: user_ids,
-                                      default_value: false) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: "contribution_check_for_users:#{project.id}",
+      resource_ids: user_ids,
+      default_value: false
+    ) do |user_ids|
       project.merge_requests
              .merged
              .where(author_id: user_ids, target_branch: project.default_branch.to_s)

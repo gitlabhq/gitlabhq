@@ -6,9 +6,9 @@
                    data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
                            dismiss_endpoint: callouts_path }},
   close_button_options: { data: { testid: 'close-registration-enabled-callout' }}) do |c|
-  = c.body do
+  - c.with_body do
     = _("Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account.")
-  = c.actions do
+  - c.with_actions do
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: general_admin_application_settings_path(anchor: 'js-signup-settings')) do
       = _('Deactivate')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close gl-ml-3'}) do

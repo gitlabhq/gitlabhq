@@ -670,7 +670,7 @@ To enable Code Suggestions for a group:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
 
-You can give all users in the group access to Experiment features.
+You can give all users in a top-level group access to Experiment features.
 
 WARNING:
 [Experiment features](../../policy/alpha-beta-support.md#experiment) may produce unexpected results
@@ -680,7 +680,7 @@ and might include insecure code or failed pipelines).
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
-To enable Experiment features for a group:
+To enable Experiment features for a top-level group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

@@ -12,7 +12,7 @@
   - if render_remember_me
     .gl-px-5
       = render Pajamas::CheckboxTagComponent.new(name: 'remember_me') do |c|
-        = c.label do
+        - c.with_label do
           = _('Remember me')
 
   .submit-container.move-submit-down.gl-px-5.gl-pb-5

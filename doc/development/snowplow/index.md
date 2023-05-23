@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Snowplow development guidelines
 
-Snowplow is an enterprise-grade marketing and Product Intelligence platform that tracks how users engage with our website and application.
+Snowplow is an enterprise-grade marketing and Analytics Instrumentation platform that tracks how users engage with our website and application.
 
 [Snowplow](https://snowplow.io/) consists of several loosely-coupled sub-systems:
 
@@ -194,9 +194,9 @@ Snowplow JavaScript adds [web-specific parameters](https://docs.snowplow.io/docs
 - [Snowplow data structure](https://docs.snowplow.io/docs/understanding-your-pipeline/canonical-event/)
 - [Our Iglu schema registry](https://gitlab.com/gitlab-org/iglu)
 - [List of events used in our codebase (Event Dictionary)](https://metrics.gitlab.com/snowplow/)
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+- [Analytics Instrumentation Guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
 - [Service Ping Guide](../service_ping/index.md)
-- [Product Intelligence Direction](https://about.gitlab.com/direction/analytics/product-intelligence/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

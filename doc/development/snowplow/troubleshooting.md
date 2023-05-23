@@ -31,14 +31,14 @@ While on CloudWatch dashboard set time range to last 4 weeks, to get better pict
 
 ### Troubleshooting GitLab application layer
 
-Drop occurring at application layer can be symptom of some issue, but it might be also a result of normal application lifecycle, intended changes done to product intelligence or experiments tracking
+Drop occurring at application layer can be symptom of some issue, but it might be also a result of normal application lifecycle, intended changes done to analytics instrumentation or experiments tracking
 or even a result of a public holiday in some regions of the world with a larger user-base. To verify if there is an underlying problem to solve, you can check following things:
 
 1. Check `about.gitlab.com` website traffic on [Google Analytics](https://analytics.google.com/analytics/web/) to verify if some public holiday might impact overall use of GitLab system
    1. You may require to open an access request for Google Analytics access first, for example: [access request internal issue](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/1772)
 1. Plot `select date(dvce_created_tstamp) , event , count(*) from legacy.snowplow_unnested_events_90 where dvce_created_tstamp > '2021-06-15' and dvce_created_tstamp < '2021-07-10' group by 1 , 2 order by 1 , 2` in SiSense to see what type of events was responsible for drop
 1. Plot `select date(dvce_created_tstamp) ,se_category , count(*) from legacy.snowplow_unnested_events_90 where dvce_created_tstamp > '2021-06-15' and dvce_created_tstamp < '2021-07-31' and event = 'struct' group by  1 , 2 order by  1, 2` what events recorded the biggest drops in suspected category
-1. Check if there was any MR merged that might cause reduction in reported events, pay an attention to ~"product intelligence" and ~"growth experiment" labeled MRs
+1. Check if there was any MR merged that might cause reduction in reported events, pay an attention to ~"analytics instrumentation" and ~"growth experiment" labeled MRs
 1. Check (via [Grafana explore tab](https://dashboards.gitlab.net/explore) ) following Prometheus counters `gitlab_snowplow_events_total`, `gitlab_snowplow_failed_events_total` and `gitlab_snowplow_successful_events_total` to see how many events were fired correctly from GitLab.com. Example query to use `sum(rate(gitlab_snowplow_successful_events_total{env="gprd"}[5m])) / sum(rate(gitlab_snowplow_events_total{env="gprd"}[5m]))` would chart rate at which number of good events rose in comparison to events sent in total. If number drops from 1 it means that problem might be in communication between GitLab and AWS collectors fleet.
 1. Check [logs in Kibana](https://log.gprd.gitlab.net/app/discover#) and filter with `{ "query": { "match_phrase": { "json.message": "failed to be reported to collector at" } } }` if there are some failed events logged
 

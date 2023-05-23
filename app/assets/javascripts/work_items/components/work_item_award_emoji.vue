@@ -33,6 +33,9 @@ export default {
     currentUserId() {
       return window.gon.current_user_id;
     },
+    currentUserFullName() {
+      return window.gon.current_user_fullname;
+    },
     /**
      * Parse and convert award emoji list to a format that AwardsList can understand
      */
@@ -42,15 +45,18 @@ export default {
         name: emoji.name,
         user: {
           id: getIdFromGraphQLId(emoji.user.id),
+          name: emoji.user.name,
         },
       }));
     },
   },
   methods: {
     handleAward(name) {
-      // Decide action based on emoji is already present
+      // Decide action based on emoji given by current user.
       const action =
-        this.awards.findIndex((emoji) => emoji.name === name) > -1
+        this.awards.findIndex(
+          (emoji) => emoji.name === name && emoji.user.id === this.currentUserId,
+        ) > -1
           ? EMOJI_ACTION_REMOVE
           : EMOJI_ACTION_ADD;
       const inputVariables = {
@@ -96,13 +102,19 @@ export default {
           __typename: 'AwardEmoji',
           user: {
             id: convertToGraphQLId(TYPENAME_USER, this.currentUserId),
+            name: this.currentUserFullName,
             __typename: 'UserCore',
           },
         },
       ];
       // Exclude the award emoji node in case of remove action
       if (action === EMOJI_ACTION_REMOVE) {
-        awardEmojiNodes = [...this.awardEmoji.nodes.filter((emoji) => emoji.name !== name)];
+        awardEmojiNodes = [
+          ...this.awardEmoji.nodes.filter(
+            (emoji) =>
+              !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
+          ),
+        ];
       }
       return {
         workItemUpdate: {

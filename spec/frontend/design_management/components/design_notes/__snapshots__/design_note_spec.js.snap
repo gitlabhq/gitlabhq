@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design note component should match the snapshot 1`] = `
-<timeline-entry-item-stub
+<timelineentryitem-stub
   class="design-note note-form"
   id="note_123"
 >
-  <gl-avatar-link-stub
+  <glavatarlink-stub
     class="gl-float-left gl-mr-3"
     href="https://gitlab.com/user"
   >
-    <gl-avatar-stub
+    <glavatar-stub
       alt="avatar"
       entityid="0"
       entityname="foo-bar"
@@ -17,13 +17,13 @@ exports[`Design note component should match the snapshot 1`] = `
       size="32"
       src="https://gitlab.com/avatar"
     />
-  </gl-avatar-link-stub>
+  </glavatarlink-stub>
    
   <div
     class="gl-display-flex gl-justify-content-space-between"
   >
     <div>
-      <gl-link-stub
+      <gllink-stub
         class="js-user-link"
         data-testid="user-link"
         data-user-id="1"
@@ -43,7 +43,7 @@ exports[`Design note component should match the snapshot 1`] = `
         >
           @foo-bar
         </span>
-      </gl-link-stub>
+      </gllink-stub>
        
       <span
         class="note-headline-light note-headline-meta"
@@ -52,17 +52,17 @@ exports[`Design note component should match the snapshot 1`] = `
           class="system-note-message"
         />
          
-        <gl-link-stub
+        <gllink-stub
           class="note-timestamp system-note-separator gl-display-block gl-mb-2"
           href="#note_123"
         >
-          <time-ago-tooltip-stub
+          <timeagotooltip-stub
             cssclass=""
             datetimeformat="DATE_WITH_TIME_FORMAT"
             time="2019-07-26T15:02:20Z"
             tooltipplacement="bottom"
           />
-        </gl-link-stub>
+        </gllink-stub>
       </span>
     </div>
      
@@ -82,5 +82,5 @@ exports[`Design note component should match the snapshot 1`] = `
     data-testid="note-text"
   />
    
-</timeline-entry-item-stub>
+</timelineentryitem-stub>
 `;

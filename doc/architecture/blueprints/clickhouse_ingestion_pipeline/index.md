@@ -95,9 +95,9 @@ The following case-studies describe how each group intends to solve the underlyi
 
   - In addition, [ClickHouse: Investigate client-side buffering to batch writes into ClickHouse](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2044) talks about their experimentation with using application-local queueing/batching to work around the problems mentioned above.
 
-- ~"group::product intelligence" has been working on building our analytics offering and recently looking at building and/or improving parts of the system.
+- ~"group::analytics instrumentation" has been working on building our analytics offering and recently looking at building and/or improving parts of the system.
 
-  - [Product Analytics Collector Component](https://gitlab.com/groups/gitlab-org/-/epics/9346) talks about replacing Jitsu with Snowplow for collecting and processing tracking events. For more details of the proposal, see [Jitsu replacement](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/proposals/-/blob/62d332baf5701810d9e7a0b2c00df18431e82f22/doc/jitsu_replacement.md).
+  - [Product Analytics Collector Component](https://gitlab.com/groups/gitlab-org/-/epics/9346) talks about replacing Jitsu with Snowplow for collecting and processing tracking events. For more details of the proposal, see [Jitsu replacement](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/proposals/-/blob/62d332baf5701810d9e7a0b2c00df18431e82f22/doc/jitsu_replacement.md).
 
   - The initial design was prototyped with [Snowplow as Jitsu Replacement PoC](https://gitlab.com/gitlab-org/analytics-section/product-analytics/devkit/-/merge_requests/37).
 

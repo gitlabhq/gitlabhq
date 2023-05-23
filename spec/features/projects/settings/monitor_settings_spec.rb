@@ -11,7 +11,6 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
   before do
     sign_in(user)
-    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   describe 'Sidebar > Monitor' do
@@ -190,31 +189,6 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           expect(page).to have_content('Paste this DSN into your Sentry SDK')
         end
-      end
-    end
-
-    describe 'grafana integration settings form' do
-      it 'successfully fills and completes the form' do
-        visit project_settings_operations_path(project)
-
-        wait_for_requests
-
-        within '.js-grafana-integration' do
-          click_button('Expand')
-        end
-
-        expect(page).to have_content('Grafana URL')
-        expect(page).to have_content('API token')
-        expect(page).to have_button('Save changes')
-
-        fill_in('grafana-url', with: 'http://gitlab-test.grafana.net')
-        fill_in('grafana-token', with: 'token')
-
-        click_button('Save changes')
-
-        wait_for_requests
-
-        assert_text('Your changes have been saved')
       end
     end
   end

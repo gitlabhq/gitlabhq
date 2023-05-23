@@ -9472,6 +9472,9 @@ msgstr ""
 msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
 msgstr ""
 
+msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
+msgstr ""
+
 msgid "CiCdAnalytics|Date range: %{range}"
 msgstr ""
 
@@ -16647,9 +16650,6 @@ msgstr ""
 msgid "Enable authenticated web request rate limit"
 msgstr ""
 
-msgid "Enable authentication"
-msgstr ""
-
 msgid "Enable automatic repository housekeeping"
 msgstr ""
 
@@ -20474,6 +20474,9 @@ msgstr ""
 msgid "Gitpod|https://gitpod.example.com"
 msgstr ""
 
+msgid "Give us some feedback"
+msgstr ""
+
 msgid "Given access %{time_ago}"
 msgstr ""
 
@@ -20874,27 +20877,6 @@ msgid "Grafana URL"
 msgstr ""
 
 msgid "Grafana response contains invalid json"
-msgstr ""
-
-msgid "GrafanaIntegration|API token"
-msgstr ""
-
-msgid "GrafanaIntegration|Active"
-msgstr ""
-
-msgid "GrafanaIntegration|Enter the %{docLinkStart}Grafana API token%{docLinkEnd}."
-msgstr ""
-
-msgid "GrafanaIntegration|Enter the base URL of the Grafana instance."
-msgstr ""
-
-msgid "GrafanaIntegration|Grafana URL"
-msgstr ""
-
-msgid "GrafanaIntegration|Grafana authentication"
-msgstr ""
-
-msgid "GrafanaIntegration|Set up Grafana authentication to embed Grafana panels in GitLab Flavored Markdown."
 msgstr ""
 
 msgid "Grant access"
@@ -28423,30 +28405,6 @@ msgid "MetricsDashboardAnnotation|You are not authorized to delete this annotati
 msgstr ""
 
 msgid "MetricsDashboardAnnotation|can't be before starting_at time"
-msgstr ""
-
-msgid "MetricsSettings|Add a button to the metrics dashboard linking directly to your existing external dashboard."
-msgstr ""
-
-msgid "MetricsSettings|Choose whether to display dashboard metrics in UTC or the user's local timezone."
-msgstr ""
-
-msgid "MetricsSettings|Dashboard timezone"
-msgstr ""
-
-msgid "MetricsSettings|External dashboard URL"
-msgstr ""
-
-msgid "MetricsSettings|Manage metrics dashboard settings."
-msgstr ""
-
-msgid "MetricsSettings|Metrics"
-msgstr ""
-
-msgid "MetricsSettings|UTC (Coordinated Universal Time)"
-msgstr ""
-
-msgid "MetricsSettings|User's local timezone"
 msgstr ""
 
 msgid "MetricsUsersStarredDashboards|Dashboard with requested path can not be found"
@@ -46706,6 +46664,9 @@ msgstr ""
 msgid "Time spent must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
+msgid "Time to Merge"
+msgstr ""
+
 msgid "Time to Restore Service"
 msgstr ""
 
@@ -49395,6 +49356,9 @@ msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Merge request analytics"
 msgstr ""
 
 msgid "ValueStreamAnalytics|New Value Stream"
@@ -52418,6 +52382,9 @@ msgid "Your device needs to be set up. Plug it in (if needed) and click the butt
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
+msgstr ""
+
+msgid "Your feedback is important to us 👋"
 msgstr ""
 
 msgid "Your file must contain a column named %{codeStart}title%{codeEnd}. A %{codeStart}description%{codeEnd} column is optional. The maximum file size allowed is 10 MB."

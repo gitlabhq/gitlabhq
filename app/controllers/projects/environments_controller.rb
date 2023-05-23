@@ -25,6 +25,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:kas_user_access_project, @project)
   end
 
+  before_action only: [:edit, :new] do
+    push_frontend_feature_flag(:environment_settings_to_graphql, @project)
+  end
+
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

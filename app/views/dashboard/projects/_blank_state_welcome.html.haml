@@ -12,7 +12,7 @@
           = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
   - else
     = render Pajamas::AlertComponent.new(variant: :info, alert_options: { class: 'gl-mb-5 gl-w-full' }) do |c|
-      = c.body do
+      - c.with_body do
         = _("You see projects here when you're added to a group or project.").html_safe
 
   - if current_user.can_create_group?

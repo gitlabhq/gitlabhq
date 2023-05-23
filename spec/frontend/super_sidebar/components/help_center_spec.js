@@ -100,7 +100,6 @@ describe('HelpCenter component', () => {
     describe('with show_tanuki_bot true', () => {
       beforeEach(() => {
         createWrapper({ ...sidebarData, show_tanuki_bot: true });
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
       });
 
       it('shows Ask GitLab Chat with the help items', () => {
@@ -117,10 +116,6 @@ describe('HelpCenter component', () => {
       describe('when Ask GitLab Chat button is clicked', () => {
         beforeEach(() => {
           findButton('Ask GitLab Chat').click();
-        });
-
-        it('closes the dropdown', () => {
-          expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
         });
 
         it('sets helpCenterState.showTanukiBotChatDrawer to true', () => {
@@ -150,14 +145,7 @@ describe('HelpCenter component', () => {
       let button;
 
       beforeEach(() => {
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
-
         button = findButton('Keyboard shortcuts ?');
-      });
-
-      it('closes the dropdown', () => {
-        button.click();
-        expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
       });
 
       it('shows the keyboard shortcuts modal', () => {
@@ -179,15 +167,10 @@ describe('HelpCenter component', () => {
 
     describe('showWhatsNew', () => {
       beforeEach(() => {
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
         beforeEach(() => {
           createWrapper({ ...sidebarData, show_version_check: true });
         });
         findButton("What's new 5").click();
-      });
-
-      it('closes the dropdown', () => {
-        expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
       });
 
       it('shows the "What\'s new" slideout', () => {
