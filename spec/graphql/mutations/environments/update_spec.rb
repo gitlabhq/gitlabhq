@@ -18,10 +18,10 @@ RSpec.describe Mutations::Environments::Update, feature_category: :environment_m
   end
 
   describe '#resolve' do
-    subject { mutation.resolve(id: environment_id, external_url: external_url) }
+    subject { mutation.resolve(id: environment_id, **kwargs) }
 
     let(:environment_id) { environment.to_global_id }
-    let(:external_url) { 'https://gitlab.com/' }
+    let(:kwargs) { { external_url: 'https://gitlab.com/' } }
 
     context 'when service execution succeeded' do
       it 'returns no errors' do
@@ -29,12 +29,12 @@ RSpec.describe Mutations::Environments::Update, feature_category: :environment_m
       end
 
       it 'updates the environment' do
-        expect(subject[:environment][:external_url]).to eq(external_url)
+        expect(subject[:environment][:external_url]).to eq('https://gitlab.com/')
       end
     end
 
     context 'when service cannot update the attribute' do
-      let(:external_url) { 'http://${URL}' }
+      let(:kwargs) { { external_url: 'http://${URL}' } }
 
       it 'returns an error' do
         expect(subject)
@@ -42,6 +42,46 @@ RSpec.describe Mutations::Environments::Update, feature_category: :environment_m
             environment: environment,
             errors: ['External url URI is invalid']
           })
+      end
+    end
+
+    context 'when setting cluster agent ID to the environment' do
+      let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+
+      let!(:authorization) { create(:agent_user_access_project_authorization, project: project, agent: cluster_agent) }
+
+      let(:kwargs) { { cluster_agent_id: cluster_agent.to_global_id } }
+
+      it 'sets the cluster agent to the environment' do
+        expect(subject[:environment].cluster_agent).to eq(cluster_agent)
+      end
+    end
+
+    context 'when unsetting cluster agent ID to the environment' do
+      let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+
+      let(:kwargs) { { cluster_agent_id: nil } }
+
+      before do
+        environment.update!(cluster_agent: cluster_agent)
+      end
+
+      it 'removes the cluster agent from the environment' do
+        expect(subject[:environment].cluster_agent).to be_nil
+      end
+    end
+
+    context 'when the cluster agent is not updated' do
+      let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+
+      let(:kwargs) { { external_url: 'https://dev.gitlab.com/' } }
+
+      before do
+        environment.update!(cluster_agent: cluster_agent)
+      end
+
+      it 'does not change the environment cluster agent' do
+        expect(subject[:environment].cluster_agent).to eq(cluster_agent)
       end
     end
 

@@ -7,7 +7,8 @@ module Types
       description 'Check permissions for the current user on a work item'
 
       abilities :read_work_item, :update_work_item, :delete_work_item,
-        :admin_work_item, :admin_parent_link, :set_work_item_metadata
+        :admin_work_item, :admin_parent_link, :set_work_item_metadata,
+        :create_note
     end
   end
 end

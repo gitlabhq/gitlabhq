@@ -23,6 +23,11 @@ module Mutations
         required: false,
         description: 'Tier of the environment.'
 
+      argument :cluster_agent_id,
+        ::Types::GlobalIDType[::Clusters::Agent],
+        required: false,
+        description: 'Cluster agent of the environment.'
+
       field :environment,
         Types::EnvironmentType,
         null: true,
@@ -31,6 +36,8 @@ module Mutations
       def resolve(id:, **kwargs)
         environment = authorized_find!(id: id)
 
+        convert_cluster_agent_id(kwargs)
+
         response = ::Environments::UpdateService.new(environment.project, current_user, kwargs).execute(environment)
 
         if response.success?
@@ -38,6 +45,16 @@ module Mutations
         else
           { environment: response.payload[:environment], errors: response.errors }
         end
+      end
+
+      private
+
+      def convert_cluster_agent_id(kwargs)
+        return unless kwargs.key?(:cluster_agent_id)
+
+        kwargs[:cluster_agent] = if kwargs[:cluster_agent_id]
+                                   ::Clusters::Agent.find_by_id(kwargs[:cluster_agent_id].model_id)
+                                 end
       end
     end
   end

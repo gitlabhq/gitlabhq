@@ -51,4 +51,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::CloseService.prepend_mod_with('MergeRequests::CloseService')
+MergeRequests::CloseService.prepend_mod

@@ -39811,10 +39811,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
+msgid "ScanExecutionPolicy|%{rules} %{period} for %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|A pipeline is run"
+msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Add condition"
@@ -39835,10 +39835,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|Scanner profile"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Schedule"
+msgid "ScanExecutionPolicy|Schedule rule component"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Schedule rule component"
+msgid "ScanExecutionPolicy|Schedules:"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select agent"
@@ -39860,6 +39860,9 @@ msgid "ScanExecutionPolicy|Site profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Tags"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Triggers:"
 msgstr ""
 
 msgid "ScanExecutionPolicy|agent"
@@ -48001,6 +48004,9 @@ msgid "Unauthenticated requests"
 msgstr ""
 
 msgid "Unauthenticated web rate limit period in seconds"
+msgstr ""
+
+msgid "Unauthorized to access the cluster agent in this project"
 msgstr ""
 
 msgid "Unauthorized to create an environment"

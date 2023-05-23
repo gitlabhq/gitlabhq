@@ -860,15 +860,22 @@
       variables:
         ARCH: amd64,arm64
 
-# We want to rebuild the base image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
+# We use a multi-stage image to:
+# - (re)build the first stage in master pipelines (including scheduled pipelines), and
+# - build the final stage in code-change pipelines (including MRs), and scheduled pipelines
+# This has to match ".qa:rules:e2e:test-on-gdk" otherwise there won't be an image available to run GDK in the test jobs.
+# Unfortunately, we can't just include ".qa:rules:e2e:test-on-gdk" because some of the conditions are manual
 .build-images:rules:build-gdk-image:
   rules:
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: never
-    - <<: *if-not-canonical-namespace
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
       when: never
-    - <<: *if-not-ee
-      when: never
+    - <<: *if-default-branch-refs # Includes scheduled pipelines
+      variables:
+        BUILD_GDK_BASE: "true"
+      allow_failure: true
     # We want to also rebuild the base image if MRs change certain components.
     - <<: *if-merge-request
       variables:
@@ -882,10 +889,36 @@
         - GITLAB_METRICS_EXPORTER_VERSION
         - GITLAB_SHELL_VERSION
         - GITALY_SERVER_VERSION
+      allow_failure: true
+    # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
+    - <<: *if-merge-request-targeting-stable-branch
+      allow_failure: true
+    - <<: *if-ruby2-branch
+      allow_failure: true
+    # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
+    # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
     - <<: *if-merge-request
-    - <<: *if-default-branch-refs
-      variables:
-        BUILD_GDK_BASE: "true"
+      changes: *dependency-patterns
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *initializers-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-qa-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *code-qa-patterns
+      allow_failure: true
+    - <<: *if-force-ci
+      allow_failure: true
 
 .build-images:rules:build-assets-image:
   rules:
@@ -1325,6 +1358,13 @@
 ############
 # QA rules #
 ############
+.qa:rules:code-merge-request-manual:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+
 .qa:rules:internal:
   rules:
     - <<: *if-default-refs
@@ -1395,7 +1435,7 @@
 
 .qa:rules:package-and-test-common:
   rules:
-    - !reference [.qa:rules:package-and-test-never-run, rules]
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
     - <<: *if-ruby2-branch
@@ -1436,10 +1476,9 @@
     - <<: *if-force-ci
       when: manual
       allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
+    # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
+    # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
+    # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
 
 .qa:rules:package-and-test-schedule:
   rules:
@@ -1459,10 +1498,11 @@
       when: never
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
+    - !reference [".qa:rules:code-merge-request-manual", rules]
 
 .qa:rules:package-and-test-ce:
   rules:
-    - !reference [.qa:rules:package-and-test-never-run, rules]
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
       when: manual
@@ -1487,10 +1527,14 @@
       when: never
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
+    # Run automatically in all other code MRs that weren't included in ".qa:rules:package-and-test-common".
+    - <<: *if-merge-request
+      changes: *code-patterns
+      allow_failure: true
 
 .qa:rules:package-and-test-old-nav:
   rules:
-    - !reference [.qa:rules:package-and-test-never-run, rules]
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual
