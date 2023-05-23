@@ -14,6 +14,7 @@ export const TYPE_EPIC = 'epic';
 export const TYPE_INCIDENT = 'incident';
 export const TYPE_ISSUE = 'issue';
 export const TYPE_MERGE_REQUEST = 'merge_request';
+export const TYPE_MILESTONE = 'milestone';
 export const TYPE_TEST_CASE = 'test_case';
 
 export const WORKSPACE_GROUP = 'group';

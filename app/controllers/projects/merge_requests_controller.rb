@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:deprecate_vulnerabilities_feedback, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
-    push_frontend_feature_flag(:single_file_file_by_file, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
     push_frontend_feature_flag(:realtime_approvals, project)

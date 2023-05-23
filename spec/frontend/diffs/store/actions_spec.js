@@ -1117,67 +1117,50 @@ describe('DiffsStoreActions', () => {
     });
 
     describe('when the app is in fileByFile mode', () => {
-      describe('when the singleFileFileByFile feature flag is enabled', () => {
-        it('commits SET_CURRENT_DIFF_FILE', () => {
-          diffActions.goToFile(
-            { state, commit, dispatch, getters },
-            { path: file.path, singleFile: true },
-          );
+      it('commits SET_CURRENT_DIFF_FILE', () => {
+        diffActions.goToFile({ state, commit, dispatch, getters }, file);
 
-          expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
+        expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
+      });
+
+      it('does nothing more if the path has already been loaded', () => {
+        getters.isTreePathLoaded = () => true;
+
+        diffActions.goToFile({ state, dispatch, getters, commit }, file);
+
+        expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
+        expect(dispatch).toHaveBeenCalledTimes(0);
+      });
+
+      describe('when the tree entry has not been loaded', () => {
+        it('updates location hash', () => {
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
+
+          expect(document.location.hash).toBe('#test');
         });
 
-        it('does nothing more if the path has already been loaded', () => {
-          getters.isTreePathLoaded = () => true;
+        it('loads the file and then scrolls to it', async () => {
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
 
-          diffActions.goToFile(
-            { state, dispatch, getters, commit },
-            { path: file.path, singleFile: true },
-          );
+          // Wait for the fetchFileByFile dispatch to return, to trigger scrollToFile
+          await waitForPromises();
 
-          expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
-          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
+          expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
+          expect(dispatch).toHaveBeenCalledTimes(2);
         });
 
-        describe('when the tree entry has not been loaded', () => {
-          it('updates location hash', () => {
-            diffActions.goToFile(
-              { state, commit, getters, dispatch },
-              { path: file.path, singleFile: true },
-            );
+        it('shows an alert when there was an error fetching the file', async () => {
+          dispatch = jest.fn().mockRejectedValue();
 
-            expect(document.location.hash).toBe('#test');
-          });
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
 
-          it('loads the file and then scrolls to it', async () => {
-            diffActions.goToFile(
-              { state, commit, getters, dispatch },
-              { path: file.path, singleFile: true },
-            );
+          // Wait for the fetchFileByFile dispatch to return, to trigger the catch
+          await waitForPromises();
 
-            // Wait for the fetchFileByFile dispatch to return, to trigger scrollToFile
-            await waitForPromises();
-
-            expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
-            expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
-            expect(dispatch).toHaveBeenCalledTimes(2);
-          });
-
-          it('shows an alert when there was an error fetching the file', async () => {
-            dispatch = jest.fn().mockRejectedValue();
-
-            diffActions.goToFile(
-              { state, commit, getters, dispatch },
-              { path: file.path, singleFile: true },
-            );
-
-            // Wait for the fetchFileByFile dispatch to return, to trigger the catch
-            await waitForPromises();
-
-            expect(createAlert).toHaveBeenCalledTimes(1);
-            expect(createAlert).toHaveBeenCalledWith({
-              message: expect.stringMatching(LOAD_SINGLE_DIFF_FAILED),
-            });
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledWith({
+            message: expect.stringMatching(LOAD_SINGLE_DIFF_FAILED),
           });
         });
       });
@@ -1798,17 +1781,17 @@ describe('DiffsStoreActions', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
       return testAction(
         diffActions.navigateToDiffFileIndex,
-        { index: 0, singleFile: false },
+        0,
         { flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
         [],
       );
     });
 
-    it('dispatches the fetchFileByFile action when the state value viewDiffsFileByFile is true and the single-file file-by-file feature flag is enabled', () => {
+    it('dispatches the fetchFileByFile action when the state value viewDiffsFileByFile is true', () => {
       return testAction(
         diffActions.navigateToDiffFileIndex,
-        { index: 0, singleFile: true },
+        0,
         { viewDiffsFileByFile: true, flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
         [{ type: 'fetchFileByFile' }],

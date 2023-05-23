@@ -75,8 +75,7 @@ module Gitlab
         # We do not want to risk cycles of feature code calling redis calling feature code.
         # Also, we only want to benchmark redis-cache, hence repository-cache and rate-limiting are excluded.
         !is_a?(Gitlab::Redis::FeatureFlag::FeatureFlagStore) &&
-          !is_a?(Gitlab::Redis::RepositoryCache::RepositoryCacheStore) &&
-          !is_a?(Gitlab::Redis::RateLimiting::RateLimitingStore)
+          !is_a?(Gitlab::Redis::RepositoryCache::RepositoryCacheStore)
       end
     end
   end

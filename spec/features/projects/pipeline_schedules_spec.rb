@@ -413,8 +413,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :projects do
   end
 
   def select_timezone
-    find('[data-testid="schedule-timezone"] .dropdown-toggle').click
-    find("button", text: "Arizona").click
+    find('[data-testid="schedule-timezone"] .gl-new-dropdown-toggle').click
+    find("li", text: "Arizona").click
   end
 
   def select_target_branch

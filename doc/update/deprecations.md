@@ -479,6 +479,20 @@ that is available now. We recommend this alternative solution because it provide
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Running a single database is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.1</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
+</div>
+
+The option to run self-managed installations of GitLab on a single database is now deprecated. From GitLab 17.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509). With this change, self-managed versions of GitLab will behave similarly to GitLab.com. This change applies to installation methods with Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source. Before upgrading to GitLab 17.0, please ensure [migration](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Self-managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">
@@ -513,6 +527,8 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
 </div>
 
+This deprecation is now superseded by another [deprecation notice](#running-a-single-database-is-deprecated).
+
 Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
 configuration had a single `main:` section. This is being deprecated. The new
 configuration has both a `main:` and a `ci:` section.
@@ -521,8 +537,6 @@ This deprecation affects users compiling GitLab from source, who will need
 to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
 Omnibus, the Helm chart, and Operator will handle this configuration
 automatically from GitLab 16.0 onwards.
-
-This change is a preparation to deprecate two connections in favor of two databases in 16.1.
 
 </div>
 

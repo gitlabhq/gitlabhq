@@ -452,10 +452,10 @@ group :test do
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
 
-  gem 'capybara', '~> 3.39'
+  gem 'capybara', '~> 3.39', '>= 3.39.1'
   gem 'capybara-screenshot', '~> 1.0.26'
   # 4.9.1 drops Ruby 2.7 support. We can upgrade further after we drop Ruby 2.7 support.
-  gem 'selenium-webdriver', '= 4.9.0'
+  gem 'selenium-webdriver', '= 4.9.1'
 
   gem 'graphlyte', '~> 1.0.0'
 

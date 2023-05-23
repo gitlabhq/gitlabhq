@@ -27,15 +27,8 @@ RSpec.describe SafeFormatHelper, feature_category: :shared do
       result: '<b>strong</b> &lt;a href=&quot;&quot;&gt;link&lt;/a&gt;'
 
     context 'when format is marked as html_safe' do
-      let(:format) { '<b>strong</b>'.html_safe }
-      let(:args) { {} }
-
-      it 'raises an error' do
-        message = 'Argument `format` must not be marked as html_safe!'
-
-        expect { helper.safe_format(format, **args) }
-          .to raise_error ArgumentError, message
-      end
+      it_behaves_like 'safe formatting', '<b>strong</b>'.html_safe, args: {},
+        result: '&lt;b&gt;strong&lt;/b&gt;'
     end
 
     context 'with a view component' do
@@ -53,6 +46,20 @@ RSpec.describe SafeFormatHelper, feature_category: :shared do
         expect(view_component.new.call)
           .to eq('&lt;b&gt;&lt;br&gt;&lt;/b&gt;')
       end
+    end
+
+    context 'with format containing escaped entities' do
+      it_behaves_like 'safe formatting', 'In &lt; hour',
+        args: {},
+        result: 'In &lt; hour'
+
+      it_behaves_like 'safe formatting', '&quot;air&quot;',
+        args: {},
+        result: '&quot;air&quot;'
+
+      it_behaves_like 'safe formatting', 'Mix & match &gt; all',
+        args: {},
+        result: 'Mix &amp; match &gt; all'
     end
   end
 end

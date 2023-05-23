@@ -176,6 +176,11 @@ module Emails
         .gsub(/%\{\s*SYSTEM_FOOTER\s*\}/, text_footer_message.to_s)
         .gsub(/%\{\s*UNSUBSCRIBE_URL\s*\}/, unsubscribe_sent_notification_url(@sent_notification))
         .gsub(/%\{\s*ADDITIONAL_TEXT\s*\}/, service_desk_email_additional_text.to_s)
+        .gsub(/%\{\s*ISSUE_URL\s*\}/, full_issue_url)
+    end
+
+    def full_issue_url
+      issue_url(@issue)
     end
 
     def issue_id

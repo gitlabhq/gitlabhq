@@ -102,13 +102,13 @@ RSpec.describe CustomerRelations::Organization, type: :model do
       )
     end
 
-    subject(:found_organizations) { group.organizations.search(search_term) }
+    subject(:found_crm_organizations) { group.crm_organizations.search(search_term) }
 
     context 'when search term is empty' do
       let(:search_term) { "" }
 
-      it 'returns all group organizations' do
-        expect(found_organizations).to contain_exactly(crm_organization_a, crm_organization_b)
+      it 'returns all group crm_organizations' do
+        expect(found_crm_organizations).to contain_exactly(crm_organization_a, crm_organization_b)
       end
     end
 
@@ -137,13 +137,13 @@ RSpec.describe CustomerRelations::Organization, type: :model do
     let_it_be(:crm_organization_a) { create(:crm_organization, group: group, state: "inactive") }
     let_it_be(:crm_organization_b) { create(:crm_organization, group: group, state: "active") }
 
-    context 'when searching for organizations state' do
-      it 'returns only inactive organizations' do
-        expect(group.organizations.search_by_state(:inactive)).to contain_exactly(crm_organization_a)
+    context 'when searching for crm_organizations state' do
+      it 'returns only inactive crm_organizations' do
+        expect(group.crm_organizations.search_by_state(:inactive)).to contain_exactly(crm_organization_a)
       end
 
-      it 'returns only active organizations' do
-        expect(group.organizations.search_by_state(:active)).to contain_exactly(crm_organization_b)
+      it 'returns only active crm_organizations' do
+        expect(group.crm_organizations.search_by_state(:active)).to contain_exactly(crm_organization_b)
       end
     end
   end
@@ -154,15 +154,15 @@ RSpec.describe CustomerRelations::Organization, type: :model do
       create_list(:crm_organization, 2, group: group, state: 'inactive')
     end
 
-    it 'returns correct organization counts' do
-      counts = group.organizations.counts_by_state
+    it 'returns correct crm_organization counts' do
+      counts = group.crm_organizations.counts_by_state
 
       expect(counts['active']).to be(3)
       expect(counts['inactive']).to be(2)
     end
 
     it 'returns 0 with no results' do
-      counts = group.organizations.where(id: non_existing_record_id).counts_by_state
+      counts = group.crm_organizations.where(id: non_existing_record_id).counts_by_state
 
       expect(counts['active']).to be(0)
       expect(counts['inactive']).to be(0)
@@ -176,13 +176,13 @@ RSpec.describe CustomerRelations::Organization, type: :model do
 
     describe '.sort_by_name' do
       it 'sorts them by name in ascendent order' do
-        expect(group.organizations.sort_by_name).to eq([crm_organization_b, crm_organization_c, crm_organization_a])
+        expect(group.crm_organizations.sort_by_name).to eq([crm_organization_b, crm_organization_c, crm_organization_a])
       end
     end
 
     describe '.sort_by_field' do
       it 'sorts them by description in descending order' do
-        expect(group.organizations.sort_by_field('description', :desc))
+        expect(group.crm_organizations.sort_by_field('description', :desc))
           .to eq([crm_organization_c, crm_organization_a, crm_organization_b])
       end
     end

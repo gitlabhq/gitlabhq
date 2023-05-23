@@ -608,8 +608,8 @@ export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 
-export const goToFile = ({ state, commit, dispatch, getters }, { path, singleFile }) => {
-  if (!state.viewDiffsFileByFile || !singleFile) {
+export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
+  if (!state.viewDiffsFileByFile) {
     dispatch('scrollToFile', { path });
   } else {
     if (!state.treeEntries[path]) return;
@@ -943,16 +943,13 @@ export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, n
   }
 };
 
-export const navigateToDiffFileIndex = (
-  { state, getters, commit, dispatch },
-  { index, singleFile },
-) => {
+export const navigateToDiffFileIndex = ({ state, getters, commit, dispatch }, index) => {
   const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);
 
-  if (state.viewDiffsFileByFile && singleFile) {
+  if (state.viewDiffsFileByFile) {
     dispatch('fetchFileByFile');
   }
 };

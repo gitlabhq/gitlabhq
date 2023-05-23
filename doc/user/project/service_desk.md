@@ -101,7 +101,8 @@ visible in the email template. For more information, see
 
 #### Thank you email
 
-> `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
 
@@ -110,20 +111,23 @@ directory in your repository, create a file named `thank_you.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
-- `%{ISSUE_ID}`: issue IID
-- `%{ISSUE_PATH}`: project path appended with the issue IID
-- `%{ISSUE_DESCRIPTION}`: issue description based on the original email
-- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
-- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
+- `%{ISSUE_ID}`: Issue IID.
+- `%{ISSUE_PATH}`: Project path appended with the issue IID.
+- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
+   and issue is not confidential (Service Desk issues are confidential by default).
+- `%{ISSUE_DESCRIPTION}`: Issue description based on the original email.
+- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
+- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
 
 Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
 the response email does not contain the issue link.
 
 #### New note email
 
-> `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
 When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
 
@@ -132,17 +136,19 @@ directory in your repository, create a file named `new_note.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
-- `%{ISSUE_ID}`: issue IID
-- `%{ISSUE_PATH}`: project path appended with the issue IID
-- `%{ISSUE_DESCRIPTION}`: issue description at the time email is generated.
+- `%{ISSUE_ID}`: Issue IID.
+- `%{ISSUE_PATH}`: Project path appended with the issue IID.
+- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
+   and issue is not confidential (Service Desk issues are confidential by default).
+- `%{ISSUE_DESCRIPTION}`: Issue description at the time email is generated.
   If a user has edited the description, it might contain sensitive information that is not intended
   to be delivered to external participants. Use this placeholder only if you never modify
   descriptions or your team is aware of the template design.
-- `%{NOTE_TEXT}`: note text
-- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
-- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
+- `%{NOTE_TEXT}`: Note text.
+- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
+- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
 
 ### Use a custom template for Service Desk issues
 

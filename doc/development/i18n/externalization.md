@@ -589,7 +589,7 @@ instead:
 - In Ruby/HAML:
 
    ```ruby
-   html_escape_once(_('In &lt; 1 hour')).html_safe
+   safe_format(_('In &lt; 1 hour'))
 
    # => 'In < 1 hour'
    ```

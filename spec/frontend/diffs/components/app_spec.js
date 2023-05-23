@@ -711,27 +711,19 @@ describe('diffs/components/app', () => {
       });
 
       it.each`
-        currentDiffFileId | targetFile | newFileByFile
-        ${'123'}          | ${2}       | ${false}
-        ${'312'}          | ${1}       | ${true}
+        currentDiffFileId | targetFile
+        ${'123'}          | ${2}
+        ${'312'}          | ${1}
       `(
         'calls navigateToDiffFileIndex with $index when $link is clicked',
-        async ({ currentDiffFileId, targetFile, newFileByFile }) => {
-          createComponent(
-            { fileByFileUserPreference: true },
-            ({ state }) => {
-              state.diffs.treeEntries = {
-                123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
-                312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
-              };
-              state.diffs.currentDiffFileId = currentDiffFileId;
-            },
-            {
-              glFeatures: {
-                singleFileFileByFile: newFileByFile,
-              },
-            },
-          );
+        async ({ currentDiffFileId, targetFile }) => {
+          createComponent({ fileByFileUserPreference: true }, ({ state }) => {
+            state.diffs.treeEntries = {
+              123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
+              312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
+            };
+            state.diffs.currentDiffFileId = currentDiffFileId;
+          });
 
           await nextTick();
 
@@ -741,10 +733,7 @@ describe('diffs/components/app', () => {
 
           await nextTick();
 
-          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith({
-            index: targetFile - 1,
-            singleFile: newFileByFile,
-          });
+          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
     });

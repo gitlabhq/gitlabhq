@@ -1,18 +1,12 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { formatTimezone } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'TimezoneDropdown',
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlSearchBoxByType,
-  },
-  directives: {
-    autofocusonshow,
+    GlCollapsibleListbox,
   },
   props: {
     value: {
@@ -52,11 +46,10 @@ export default {
         identifier: timezone.identifier,
       }));
     },
-    filteredResults() {
-      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.timezones.filter((timezone) =>
-        timezone.formattedTimezone.toLowerCase().includes(lowerCasedSearchTerm),
-      );
+    filteredListboxItems() {
+      return this.timezones
+        .filter((timezone) => timezone.formattedTimezone.toLowerCase().includes(this.searchTerm))
+        .map(({ formattedTimezone }) => ({ value: formattedTimezone, text: formattedTimezone }));
     },
     selectedTimezoneLabel() {
       return this.tzValue || __('Select timezone');
@@ -68,13 +61,13 @@ export default {
     },
   },
   methods: {
-    selectTimezone(selectedTimezone) {
-      this.tzValue = selectedTimezone.formattedTimezone;
+    selectTimezone(formattedTimezone) {
+      const selectedTimezone = this.timezones.find(
+        (timezone) => timezone.formattedTimezone === formattedTimezone,
+      );
+      this.tzValue = formattedTimezone;
       this.$emit('input', selectedTimezone);
       this.searchTerm = '';
-    },
-    isSelected(timezone) {
-      return this.tzValue === timezone.formattedTimezone;
     },
     initialTimezone(timezones, value) {
       if (!value) {
@@ -89,6 +82,9 @@ export default {
 
       return undefined;
     },
+    setSearchTerm(value) {
+      this.searchTerm = value?.toLowerCase();
+    },
   },
 };
 </script>
@@ -101,31 +97,16 @@ export default {
       :value="timezoneIdentifier || value"
       type="hidden"
     />
-    <gl-dropdown
-      :text="selectedTimezoneLabel"
-      :class="additionalClass"
+    <gl-collapsible-listbox
+      :items="filteredListboxItems"
+      :toggle-text="selectedTimezoneLabel"
+      :toggle-class="additionalClass"
+      :no-results-text="$options.translations.noResultsText"
+      :selected="tzValue"
       block
-      lazy
-      menu-class="gl-w-full!"
-      v-bind="$attrs"
-    >
-      <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
-      <gl-dropdown-item
-        v-for="timezone in filteredResults"
-        :key="timezone.formattedTimezone"
-        :is-checked="isSelected(timezone)"
-        is-check-item
-        @click="selectTimezone(timezone)"
-      >
-        {{ timezone.formattedTimezone }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
-        v-if="!filteredResults.length"
-        class="gl-pointer-events-none"
-        data-testid="noMatchingResults"
-      >
-        {{ $options.translations.noResultsText }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      searchable
+      @search="setSearchTerm"
+      @select="selectTimezone"
+    />
   </div>
 </template>

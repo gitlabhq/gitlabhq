@@ -42725,6 +42725,9 @@ msgstr ""
 msgid "Someone edited this merge request at the same time you did. Please refresh the page to see changes."
 msgstr ""
 
+msgid "Someone edited this milestone at the same time you did. Please refresh the page to see changes."
+msgstr ""
+
 msgid "Someone edited this test case at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 

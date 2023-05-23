@@ -5,7 +5,6 @@ import micromatch from 'micromatch';
 import { debounce } from 'lodash';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import DiffFileRow from './diff_file_row.vue';
 
@@ -20,7 +19,6 @@ export default {
     DiffFileRow,
     RecycleScroller,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     hideFileStats: {
       type: Boolean,
@@ -177,7 +175,7 @@ export default {
             :class="{ 'tree-list-parent': item.level > 0 }"
             class="gl-relative"
             @toggleTreeOpen="toggleTreeOpen"
-            @clickFile="(path) => goToFile({ singleFile: glFeatures.singleFileFileByFile, path })"
+            @clickFile="(path) => goToFile({ path })"
           />
         </template>
         <template #after>

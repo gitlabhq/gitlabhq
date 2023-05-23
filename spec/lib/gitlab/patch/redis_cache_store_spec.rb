@@ -77,7 +77,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     context 'when reading from non redis-cache stores' do
       it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::RepositoryCache
       it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::FeatureFlag
-      it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::RateLimiting
     end
 
     context 'when feature flag is disabled' do
@@ -133,7 +132,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     context 'when deleting from non redis-cache stores' do
       it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::RepositoryCache
       it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::FeatureFlag
-      it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::RateLimiting
     end
 
     context 'when deleting large amount of keys' do

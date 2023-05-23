@@ -49,7 +49,7 @@ RSpec.describe Group, feature_category: :subgroups do
     end
 
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
-    it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_many(:crm_organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
@@ -3176,13 +3176,13 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '.organizations' do
-    it 'returns organizations belonging to the group' do
+  describe '.crm_organizations' do
+    it 'returns crm_organizations belonging to the group' do
       crm_organization1 = create(:crm_organization, group: group)
       create(:crm_organization)
       crm_organization3 = create(:crm_organization, group: group)
 
-      expect(group.organizations).to contain_exactly(crm_organization1, crm_organization3)
+      expect(group.crm_organizations).to contain_exactly(crm_organization1, crm_organization3)
     end
   end
 

@@ -325,7 +325,7 @@ export default {
       this.adjustView();
     },
     viewDiffsFileByFile(newViewFileByFile) {
-      if (!newViewFileByFile && this.diffsIncomplete && this.glFeatures.singleFileFileByFile) {
+      if (!newViewFileByFile && this.diffsIncomplete) {
         this.refetchDiffData({ refetchMeta: false });
       }
     },
@@ -467,26 +467,19 @@ export default {
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
-      if (this.glFeatures.singleFileFileByFile) {
-        diffsEventHub.$on('diffFilesModified', this.setDiscussions);
-        notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
-      }
+      notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
-      if (this.glFeatures.singleFileFileByFile) {
-        notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
-        diffsEventHub.$off('diffFilesModified', this.setDiscussions);
-      }
+      diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
     navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex({
-        index: number - 1,
-        singleFile: this.glFeatures.singleFileFileByFile,
-      });
+      this.navigateToDiffFileIndex(number - 1);
     },
     refetchDiffData({ refetchMeta = true } = {}) {
       this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
@@ -506,7 +499,7 @@ export default {
             if (data) {
               realSize = data.real_size;
 
-              if (this.viewDiffsFileByFile && this.glFeatures.singleFileFileByFile) {
+              if (this.viewDiffsFileByFile) {
                 this.fetchFileByFile();
               }
             }
@@ -527,7 +520,7 @@ export default {
           });
       }
 
-      if (!this.viewDiffsFileByFile || !this.glFeatures.singleFileFileByFile) {
+      if (!this.viewDiffsFileByFile) {
         this.fetchDiffFilesBatch()
           .then(() => {
             if (toggleTree) this.setTreeDisplay();
@@ -618,10 +611,7 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.flatBlobsList.length) {
-        this.goToFile({
-          path: this.flatBlobsList[targetIndex].path,
-          singleFile: this.glFeatures.singleFileFileByFile,
-        });
+        this.goToFile({ path: this.flatBlobsList[targetIndex].path });
       }
     },
     setTreeDisplay() {
