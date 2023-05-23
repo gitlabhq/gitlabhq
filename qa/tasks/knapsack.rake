@@ -42,6 +42,19 @@ namespace :knapsack do
     end
   end
 
+  desc "Create knapsack reports from existing reports for selective jobs"
+  task :create_reports_for_selective do
+    reports = Dir.glob("knapsack/*").map { |file| file.match(%r{.*/(.*)?\.json})[1] }
+
+    reports.each do |report_name|
+      unless report_name.include?('-selective-parallel')
+        QA::Support::KnapsackReport.new(report_name).create_for_selective(ENV['QA_TESTS'])
+      end
+    rescue StandardError => e
+      QA::Runtime::Logger.error(e)
+    end
+  end
+
   desc "Merge and upload knapsack report"
   task :upload, [:glob] do |_task, args|
     QA::Support::KnapsackReport.configure!

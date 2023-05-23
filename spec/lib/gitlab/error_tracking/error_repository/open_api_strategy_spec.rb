@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
         it 'returns detailed error' do
           is_expected.to have_attributes(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at.to_s,
@@ -187,7 +187,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
         expect(result_errors).to all(
           have_attributes(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at,

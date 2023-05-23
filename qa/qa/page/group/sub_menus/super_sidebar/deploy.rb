@@ -5,19 +5,15 @@ module QA
     module Group
       module SubMenus
         module SuperSidebar
-          module Main
+          module Deploy
             extend QA::Page::PageConcern
 
             def self.prepended(base)
               super
 
               base.class_eval do
-                include QA::Page::SubMenus::SuperSidebar::Main
+                include QA::Page::SubMenus::SuperSidebar::Deploy
               end
-            end
-
-            def go_to_group_overview
-              click_element(:nav_item_link, submenu_item: 'Group overview')
             end
           end
         end

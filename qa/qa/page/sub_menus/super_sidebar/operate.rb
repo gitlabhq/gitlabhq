@@ -7,14 +7,6 @@ module QA
         module Operate
           extend QA::Page::PageConcern
 
-          def go_to_package_registry
-            open_operate_submenu('Package Registry')
-          end
-
-          def go_to_container_registry
-            open_operate_submenu('Container Registry')
-          end
-
           def go_to_dependency_proxy
             open_operate_submenu('Dependency Proxy')
           end

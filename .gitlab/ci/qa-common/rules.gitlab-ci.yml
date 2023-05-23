@@ -1,5 +1,5 @@
 # Specific specs passed
-.specific-specs: &specific-specs
+.specs-specified: &specs-specified
   if: $QA_TESTS != ""
 
 # No specific specs passed
@@ -9,6 +9,14 @@
 # FF changes
 .feature-flags-set: &feature-flags-set
   if: $QA_FEATURE_FLAGS =~ /enabled|disabled/
+
+# Specific specs specified
+.spec-file-specified: &spec-file-specified
+  if: $QA_TESTS =~ /_spec\.rb/
+
+# Specs directory specified
+.spec-directory-specified: &spec-directory-specified
+  if: $QA_TESTS != "" && $QA_TESTS !~ /_spec\.rb/
 
 # Manually trigger job on ff changes but with default ff state instead of inverted
 .feature-flags-set-manual: &feature-flags-set-manual
@@ -96,11 +104,25 @@
       when: never
     - <<: *feature-flags-set
       when: never
+    - <<: *spec-directory-specified
+      when: never
+
+.rules:test:qa-selective-parallel:
+  rules:
+    # always run parallel with full suite when framework changes present or ff state changed
+    - <<: *qa-run-all-tests
+      when: never
+    - <<: *all-specs
+      when: never
+    - <<: *feature-flags-set
+      when: never
+    - <<: *spec-file-specified
+      when: never
 
 .rules:test:qa-parallel:
   rules:
     - *qa-run-all-tests
-    - <<: *specific-specs
+    - <<: *specs-specified
       when: manual
       allow_failure: true
       variables:

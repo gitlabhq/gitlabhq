@@ -13,6 +13,7 @@ module QA
           prepend SubMenus::SuperSidebar::Main
           prepend SubMenus::SuperSidebar::Build
           prepend SubMenus::SuperSidebar::Operate
+          prepend SubMenus::SuperSidebar::Deploy
         end
 
         def click_group_members_item

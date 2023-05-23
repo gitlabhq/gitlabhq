@@ -49,6 +49,7 @@ variables:
   QA_SAVE_TEST_METRICS: "${QA_SAVE_TEST_METRICS:-false}"
   QA_SUITES: "$QA_SUITES"
   QA_TESTS: "$QA_TESTS"
+  KNAPSACK_TEST_FILE_PATTERN: "$KNAPSACK_TEST_FILE_PATTERN"
 YML
 )
 
@@ -63,3 +64,4 @@ for key in "${!qa_pipelines[@]}"; do
 done
 
 echoinfo "Successfully generated qa pipeline files"
+echo "$variables"

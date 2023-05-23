@@ -1025,6 +1025,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiongeneratetestfile"></a>`generateTestFile` | [`GenerateTestFileInput`](#generatetestfileinput) | Input for generate_test_file AI action. |
 | <a id="mutationaiactionmarkupformat"></a>`markupFormat` | [`MarkupFormat`](#markupformat) | Indicates the response format. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
+| <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
 | <a id="mutationaiactiontanukibot"></a>`tanukiBot` | [`AiTanukiBotInput`](#aitanukibotinput) | Input for tanuki_bot AI action. |
 
 #### Fields
@@ -12344,6 +12345,28 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
+
+#### Fields with arguments
+
+##### `CiCatalogResource.versions`
+
+Versions of the catalog resource.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`ReleaseConnection`](#releaseconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionssort"></a>`sort` | [`ReleaseSort`](#releasesort) | Sort releases by given criteria. |
 
 ### `CiConfig`
 
@@ -27713,6 +27736,14 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aisummarizecommentsinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiSummarizeReviewInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aisummarizereviewinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiTanukiBotInput`
 

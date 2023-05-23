@@ -128,7 +128,12 @@ module QA
         # If a project is being imported, wait until it completes before we let the test continue.
         # Otherwise we see Git repository errors
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/356101
-        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5, retry_on_exception: true) do
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 5,
+          retry_on_exception: true,
+          message: "Wait for project to be imported"
+        ) do
           reload!.api_resource[:import_status] == "finished"
         end
 

@@ -104,10 +104,12 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers d
         title: 'This is a title',
         description: 'This is a test pull request',
         state: 'merged',
-        author: 'other',
+        author: pull_request_author,
         created_at: Time.now,
         updated_at: Time.now)
     end
+
+    let(:pull_request_author) { 'other' }
 
     let(:author_line) { "*Created by: someuser*\n\n" }
 
@@ -168,6 +170,16 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers d
       expect(reply_note.note).to include(author_line)
     end
 
+    context 'when author is blank' do
+      let(:pull_request_author) { nil }
+
+      it 'adds created by anonymous in the description', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        expect(MergeRequest.first.description).to include('Created by: Anonymous')
+      end
+    end
+
     context 'when user exists in GitLab' do
       let!(:existing_user) { create(:user, username: 'someuser') }
       let!(:identity) { create(:identity, provider: 'bitbucket', extern_uid: existing_user.username, user: existing_user) }
@@ -215,6 +227,17 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers d
         merge_request_diff = MergeRequest.first.merge_request_diff
         expect(merge_request_diff.head_commit_sha).to eq source_branch_sha
         expect(merge_request_diff.start_commit_sha).to eq target_branch_sha
+      end
+    end
+
+    context "when target_branch_sha is blank" do
+      let(:target_branch_sha) { nil }
+
+      it 'creates the merge request with no target branch', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        merge_request = MergeRequest.first
+        expect(merge_request.target_branch_sha).to eq(nil)
       end
     end
 

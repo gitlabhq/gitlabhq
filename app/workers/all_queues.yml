@@ -3027,6 +3027,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_mergeability_check_batch
+  :worker_name: MergeRequests::MergeabilityCheckBatchWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow

@@ -103,6 +103,19 @@ instance-ff-inverse:
 # ------------------------------------------
 # Jobs with parallel variant
 # ------------------------------------------
+
+# ========== instance ===========
+instance:
+  extends:
+    - .parallel
+    - .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
 instance-selective:
   extends: .qa
   variables:
@@ -110,12 +123,29 @@ instance-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-instance:
+
+instance-selective-parallel:
   extends:
     - .parallel
-    - instance-selective
+    - .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
   rules:
-    - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== praefect ===========
+
+praefect:
+  extends:
+    - .parallel
+    - .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+  rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -127,10 +157,28 @@ praefect-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-praefect:
+
+praefect-selective-parallel:
   extends:
+    - .qa
     - .parallel
-    - praefect-selective
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== relative-url ===========
+
+relative-url:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::RelativeUrl
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -142,10 +190,28 @@ relative-url-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-relative-url:
+
+relative-url-selective-parallel:
   extends:
+    - .qa
     - .parallel
-    - relative-url-selective
+  variables:
+    QA_SCENARIO: Test::Instance::RelativeUrl
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== decomposition-single-db ===========
+
+decomposition-single-db:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -158,10 +224,30 @@ decomposition-single-db-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-decomposition-single-db:
+
+decomposition-single-db-selective-parallel:
   extends:
+    - .qa
     - .parallel
-    - decomposition-single-db-selective
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== decomposition-multiple-db ===========
+
+decomposition-multiple-db:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -175,13 +261,33 @@ decomposition-multiple-db-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-decomposition-multiple-db:
+
+decomposition-multiple-db-selective-parallel:
   extends:
+    - .qa
     - .parallel
-    - decomposition-multiple-db-selective
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== object-storage ===========
+
+object-storage:
+  extends: .qa
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
+    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
 
 object-storage-selective:
   extends: .qa
@@ -192,12 +298,30 @@ object-storage-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-object-storage:
-  extends: object-storage-selective
+
+object-storage-selective-parallel:
+  extends: .qa
   parallel: 2
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
   rules:
-    - !reference [.rules:test:qa-parallel, rules]
+    - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
+      variables:
+        QA_TESTS: ""
+
+# ========== object-storage-aws ===========
+
+object-storage-aws:
+  extends: object-storage
+  variables:
+    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
+    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
+    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
+    AWS_S3_REGION: $QA_AWS_S3_REGION
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
 
 object-storage-aws-selective:
   extends: object-storage-selective
@@ -207,11 +331,27 @@ object-storage-aws-selective:
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
     GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
-object-storage-aws:
-  extends: object-storage-aws-selective
-  parallel: 2
-  rules:
-    - !reference [object-storage, rules]
+
+object-storage-aws-selective-parallel:
+  extends: object-storage-selective-parallel
+  variables:
+    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
+    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
+    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
+    AWS_S3_REGION: $QA_AWS_S3_REGION
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
+
+
+# ========== object-storage-gcs ===========
+
+object-storage-gcs:
+  extends: object-storage
+  variables:
+    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
+    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
+    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
+    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
 
 object-storage-gcs-selective:
   extends: object-storage-selective
@@ -221,11 +361,28 @@ object-storage-gcs-selective:
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
     GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
-object-storage-gcs:
-  extends: object-storage-gcs-selective
+
+object-storage-gcs-selective-parallel:
+  extends: object-storage-selective-parallel
+  variables:
+    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
+    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
+    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
+    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
+
+# ========== packages ===========
+
+packages:
+  extends: .qa
   parallel: 2
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag packages
+    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
   rules:
-    - !reference [object-storage, rules]
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Packages/
 
 packages-selective:
   extends: .qa
@@ -236,12 +393,19 @@ packages-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::Packages/
-packages:
-  extends: packages-selective
+
+packages-selective-parallel:
+  extends: .qa
   parallel: 2
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag packages
+    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
   rules:
-    - !reference [.rules:test:qa-parallel, rules]
+    - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Packages/
+      variables:
+        QA_TESTS: ""
 
 # ------------------------------------------
 # Non parallel jobs
@@ -474,7 +638,7 @@ elasticsearch:
     - !reference [.rules:test:manual, rules]
 
 registry-object-storage-tls:
-  extends: object-storage-aws-selective
+  extends: object-storage-aws-selective-parallel
   variables:
     QA_SCENARIO: Test::Integration::RegistryTLS
     QA_RSPEC_TAGS: ""

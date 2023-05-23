@@ -171,3 +171,4 @@ e2e-test-pipeline-generate:
     expire_in: 1 day
     paths:
       - '*-pipeline.yml'
+      - "${CI_PROJECT_DIR}/qa_tests_vars.env"

@@ -361,6 +361,8 @@
   - 1
 - - merge_requests_llm_summarize_merge_request
   - 1
+- - merge_requests_mergeability_check_batch
+  - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval

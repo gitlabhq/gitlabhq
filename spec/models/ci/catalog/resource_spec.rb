@@ -10,13 +10,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:resource_2) { create(:catalog_resource, project: project_2) }
   let_it_be(:resource_3) { create(:catalog_resource, project: project_3) }
 
-  let_it_be(:releases) do
-    [
-      create(:release, project: project, released_at: Time.zone.now - 2.days),
-      create(:release, project: project, released_at: Time.zone.now - 1.day),
-      create(:release, project: project, released_at: Time.zone.now)
-    ]
-  end
+  let_it_be(:release1) { create(:release, project: project, released_at: Time.zone.now - 2.days) }
+  let_it_be(:release2) { create(:release, project: project, released_at: Time.zone.now - 1.day) }
+  let_it_be(:release3) { create(:release, project: project, released_at: Time.zone.now) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -58,13 +54,13 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   describe '#versions' do
     it 'returns releases ordered by released date descending' do
-      expect(resource.versions).to eq(releases.reverse)
+      expect(resource.versions).to eq([release3, release2, release1])
     end
   end
 
   describe '#latest_version' do
     it 'returns the latest release' do
-      expect(resource.latest_version).to eq(releases.last)
+      expect(resource.latest_version).to eq(release3)
     end
   end
 end

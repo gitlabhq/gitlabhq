@@ -127,7 +127,7 @@ module Gitlab
         def to_sentry_error(error)
           Gitlab::ErrorTracking::Error.new(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at,
@@ -141,7 +141,7 @@ module Gitlab
         def to_sentry_detailed_error(error)
           Gitlab::ErrorTracking::DetailedError.new(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at.to_s,

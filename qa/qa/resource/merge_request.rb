@@ -24,7 +24,7 @@ module QA
         :title,
         :description,
         :merge_when_pipeline_succeeds,
-        :merge_status,
+        :detailed_merge_status,
         :state,
         :reviewers
 
@@ -151,13 +151,11 @@ module QA
       end
 
       def merge_via_api!
-        Support::Waiter.wait_until(sleep_interval: 1) do
-          QA::Runtime::Logger.debug("Waiting until merge request with id '#{iid}' can be merged")
+        QA::Runtime::Logger.info("Merging via PUT #{api_merge_path}")
 
-          reload!.merge_status == 'can_be_merged'
-        end
+        wait_until_mergable
 
-        Support::Retrier.retry_on_exception do
+        Support::Retrier.retry_on_exception(max_attempts: 10, sleep_interval: 5) do
           response = put(Runtime::API::Request.new(api_client, api_merge_path).url)
 
           unless response.code == HTTP_STATUS_OK
@@ -205,7 +203,7 @@ module QA
           :project_id,
           :source_project_id,
           :target_project_id,
-          :merge_status,
+          :detailed_merge_status,
           # we consider mr to still be the same even if users changed
           :author,
           :reviewers,
@@ -249,6 +247,18 @@ module QA
       # @return [Boolean]
       def create_target?
         !(project.initialize_with_readme && target_branch == project.default_branch) && target_new_branch
+      end
+
+      # Wait until the merge request can be merged. Raises WaitExceededError if the MR can't be merged within 60 seconds
+      #
+      # @return [void]
+      def wait_until_mergable
+        return if Support::Waiter.wait_until(sleep_interval: 1, raise_on_failure: false, log: false) do
+          reload!.detailed_merge_status == 'mergeable'
+        end
+
+        raise Support::Repeater::WaitExceededError,
+          "Timed out waiting for merge of MR with id '#{iid}'. Final status was '#{detailed_merge_status}'"
       end
     end
   end

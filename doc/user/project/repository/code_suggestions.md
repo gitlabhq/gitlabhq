@@ -164,7 +164,7 @@ programming languages from [The Pile](https://pile.eleuther.ai/) and the
 [Google BigQuery source code dataset](https://cloud.google.com/blog/topics/public-datasets/github-on-bigquery-analyze-all-the-open-source-code).
 We then process this raw dataset against heuristics that aim to increase the quality of the dataset.
 
-The Code Suggestions model is not trained on GitLab customer data.
+The Code Suggestions model is not trained on GitLab customer or user data.
 
 ## Progressive enhancement
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organization, type: :model, feature_category: :cell do
+RSpec.describe Organizations::Organization, type: :model, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:default_organization) { create(:organization, :default) }
 

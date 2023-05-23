@@ -3,7 +3,9 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging staging-canary pre] }, product_group: :container_registry do
+  RSpec.describe 'Package', :reliable, product_group: :container_registry, only: {
+    subdomain: %i[staging staging-canary pre]
+  } do
     include Support::API
     include Support::Helpers::MaskToken
 
@@ -76,26 +78,32 @@ module QA
         YAML
       end
 
-      after do
-        registry&.remove_via_api!
-      end
-
-      it 'pushes, pulls image to the registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
-        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+      it 'pushes, pulls image to the registry and deletes tag',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2, message: "Commit push") do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.api_client = api_client
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.project = project
             commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content: gitlab_ci_yaml
-                              }])
+              file_path: '.gitlab-ci.yml',
+              content: gitlab_ci_yaml
+            }])
           end
         end
 
-        Support::Waiter.wait_until(max_duration: 10) { pipeline_is_triggered? }
-
-        Support::Retrier.retry_until(max_duration: 300, sleep_interval: 5) do
+        Support::Retrier.retry_until(
+          max_duration: 10,
+          sleep_interval: 1,
+          message: "Waiting for pipeline to start"
+        ) do
+          pipeline_is_triggered?
+        end
+        Support::Retrier.retry_until(
+          max_duration: 300,
+          sleep_interval: 5,
+          message: "Waiting for pipeline to succeed"
+        ) do
           latest_pipeline_succeed?
         end
       end

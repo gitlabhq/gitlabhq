@@ -20,6 +20,11 @@ module Types
 
         field :icon, GraphQL::Types::String, null: true, description: 'Icon for the catalog resource.',
           method: :avatar_path, alpha: { milestone: '15.11' }
+
+        field :versions, Types::ReleaseType.connection_type, null: true,
+          description: 'Versions of the catalog resource.',
+          resolver: Resolvers::ReleasesResolver,
+          alpha: { milestone: '16.1' }
       end
       # rubocop: enable Graphql/AuthorizeTypes
     end

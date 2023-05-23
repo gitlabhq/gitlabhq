@@ -1,0 +1,8 @@
+---
+name: vsd_graphql_dora_and_flow_metrics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116216
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409499
+milestone: '16.1'
+type: development
+group: group::optimize
+default_enabled: false

@@ -18,6 +18,7 @@ module QA
 
         if Runtime::Env.super_sidebar_enabled?
           include Page::SubMenus::SuperSidebar::Manage
+          include Page::SubMenus::SuperSidebar::Deploy
           include SubMenus::SuperSidebar::Plan
           include SubMenus::SuperSidebar::Settings
           include SubMenus::SuperSidebar::Code

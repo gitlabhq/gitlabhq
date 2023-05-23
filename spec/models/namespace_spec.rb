@@ -15,7 +15,7 @@ RSpec.describe Namespace, feature_category: :subgroups do
   let(:repository_storage) { 'default' }
 
   describe 'associations' do
-    it { is_expected.to belong_to :organization }
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :project_statistics }
     it { is_expected.to belong_to :parent }

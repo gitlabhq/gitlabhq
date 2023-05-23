@@ -46,6 +46,28 @@ module QA
         logger.warn("Falling back to '#{FALLBACK_REPORT}'")
       end
 
+      # Create a copy of the report that contains the selective tests and has '-selective' suffix
+      #
+      # @param [String] qa_tests
+      # @return [void]
+      def create_for_selective(qa_tests)
+        timed_specs = JSON.parse(File.read(report_path))
+
+        qa_tests_array = qa_tests.split(' ')
+        filtered_timed_specs = timed_specs.select { |k, _| qa_tests_array.any? { |qa_test| k.include? qa_test } }
+        File.write(selective_path, filtered_timed_specs.to_json)
+      end
+
+      # Add '-selective-parallel' suffix to report name
+      #
+      # @return [String]
+      def selective_path
+        extension = File.extname(report_path)
+        directory = File.dirname(report_path)
+        file_name = File.basename(report_path, extension)
+        File.join(directory, "#{file_name}-selective-parallel#{extension}")
+      end
+
       # Rename and move new regenerated report to a separate folder used to indicate report name
       #
       # @return [void]
