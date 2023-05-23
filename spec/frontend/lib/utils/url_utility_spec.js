@@ -406,7 +406,9 @@ describe('URL utility', () => {
 
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: new URL(TEST_HOST),
+        value: {
+          assign: jest.fn(),
+        },
       });
     });
 
@@ -417,11 +419,15 @@ describe('URL utility', () => {
     it('navigates to a page', () => {
       urlUtils.visitUrl(mockUrl);
 
-      expect(window.location.href).toBe(mockUrl);
+      expect(window.location.assign).toHaveBeenCalledWith(mockUrl);
     });
 
     it('navigates to a new page', () => {
-      const otherWindow = {};
+      const otherWindow = {
+        location: {
+          assign: jest.fn(),
+        },
+      };
 
       Object.defineProperty(window, 'open', {
         writable: true,
@@ -431,7 +437,7 @@ describe('URL utility', () => {
       urlUtils.visitUrl(mockUrl, true);
 
       expect(otherWindow.opener).toBe(null);
-      expect(otherWindow.location).toBe(mockUrl);
+      expect(otherWindow.location.assign).toHaveBeenCalledWith(mockUrl);
     });
   });
 

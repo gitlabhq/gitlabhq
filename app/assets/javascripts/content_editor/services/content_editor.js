@@ -56,6 +56,10 @@ export class ContentEditor {
     return this._assetResolver.resolveUrl(canonicalSrc);
   }
 
+  resolveReference(originalText) {
+    return this._assetResolver.resolveReference(originalText);
+  }
+
   renderDiagram(code, language) {
     return this._assetResolver.renderDiagram(code, language);
   }

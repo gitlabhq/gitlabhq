@@ -397,3 +397,22 @@ You could also have the following `.gitlab-ci.yml` configuration:
 
 This configuration doesn't overwrite the compliance pipeline and you get the following message:
 `take compliance action`.
+
+### Prefilled variables are not shown
+
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), 
+compliance pipelines in GitLab 15.3 and later can prevent
+[prefilled variables](../../ci/pipelines/index.md#prefill-variables-in-manual-pipelines)
+from appearing when manually starting a pipeline.
+
+To workaround this issue, use `ref: '$CI_COMMIT_SHA'` instead of `ref: '$CI_COMMIT_REF_NAME'`
+in the `include:` statement that executes the individual project's configuration.
+
+The [example configuration](#example-configuration) has been updated with this change:
+
+```yaml
+include:
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_SHA'
+```

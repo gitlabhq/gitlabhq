@@ -12,6 +12,7 @@ const useMockLocation = (fn) => {
 
   Object.defineProperty(window, 'location', {
     get: () => currentWindowLocation,
+    assign: jest.fn(),
   });
 
   beforeEach(() => {

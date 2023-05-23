@@ -9,6 +9,7 @@ import EditorStateObserver from '~/content_editor/components/editor_state_observ
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
+import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/reference_bubble_menu.vue';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -267,7 +268,8 @@ describe('ContentEditor', () => {
     ${'link'}      | ${LinkBubbleMenu}
     ${'media'}     | ${MediaBubbleMenu}
     ${'codeBlock'} | ${CodeBlockBubbleMenu}
-  `('renders formatting bubble menu', ({ component }) => {
+    ${'reference'} | ${ReferenceBubbleMenu}
+  `('renders $name bubble menu', ({ component }) => {
     createWrapper();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);

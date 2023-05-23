@@ -10415,6 +10415,9 @@ msgstr ""
 msgid "ClusterAgents|shared"
 msgstr ""
 
+msgid "ClusterAgent|An agent can have only two active tokens at a time"
+msgstr ""
+
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
 msgstr ""
 
@@ -12352,6 +12355,9 @@ msgstr ""
 msgid "Copy environment"
 msgstr ""
 
+msgid "Copy epic URL"
+msgstr ""
+
 msgid "Copy evidence SHA"
 msgstr ""
 
@@ -12365,6 +12371,9 @@ msgid "Copy file path"
 msgstr ""
 
 msgid "Copy image URL"
+msgstr ""
+
+msgid "Copy issue URL"
 msgstr ""
 
 msgid "Copy issue URL to clipboard"
@@ -12386,6 +12395,9 @@ msgid "Copy link URL"
 msgstr ""
 
 msgid "Copy link to chart"
+msgstr ""
+
+msgid "Copy merge request URL"
 msgstr ""
 
 msgid "Copy reference"
@@ -15915,6 +15927,9 @@ msgstr ""
 msgid "Display alerts from all configured monitoring tools."
 msgstr ""
 
+msgid "Display as:"
+msgstr ""
+
 msgid "Display milestones"
 msgstr ""
 
@@ -17223,6 +17238,9 @@ msgstr ""
 msgid "Epic Boards"
 msgstr ""
 
+msgid "Epic ID"
+msgstr ""
+
 msgid "Epic actions"
 msgstr ""
 
@@ -17239,6 +17257,12 @@ msgid "Epic events"
 msgstr ""
 
 msgid "Epic not found for given params"
+msgstr ""
+
+msgid "Epic summary"
+msgstr ""
+
+msgid "Epic title"
 msgstr ""
 
 msgid "Epics"
@@ -24755,6 +24779,9 @@ msgstr ""
 msgid "Issue Boards"
 msgstr ""
 
+msgid "Issue ID"
+msgstr ""
+
 msgid "Issue Type"
 msgstr ""
 
@@ -24798,6 +24825,12 @@ msgid "Issue or merge request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
+msgstr ""
+
+msgid "Issue summary"
+msgstr ""
+
+msgid "Issue title"
 msgstr ""
 
 msgid "Issue types"
@@ -27972,6 +28005,9 @@ msgstr ""
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
 msgstr ""
 
+msgid "Merge request ID"
+msgstr ""
+
 msgid "Merge request actions"
 msgstr ""
 
@@ -27997,6 +28033,12 @@ msgid "Merge request reports"
 msgstr ""
 
 msgid "Merge request status"
+msgstr ""
+
+msgid "Merge request summary"
+msgstr ""
+
+msgid "Merge request title"
 msgstr ""
 
 msgid "Merge request was scheduled to merge after pipeline succeeds"
@@ -37635,6 +37677,9 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
+msgid "Remove epic reference"
+msgstr ""
+
 msgid "Remove favicon"
 msgstr ""
 
@@ -37659,6 +37704,9 @@ msgstr ""
 msgid "Remove icon"
 msgstr ""
 
+msgid "Remove issue reference"
+msgstr ""
+
 msgid "Remove iteration"
 msgstr ""
 
@@ -37681,6 +37729,9 @@ msgid "Remove logo"
 msgstr ""
 
 msgid "Remove member"
+msgstr ""
+
+msgid "Remove merge request reference"
 msgstr ""
 
 msgid "Remove milestone"
@@ -48969,6 +49020,9 @@ msgid "UserProfiles|No snippets found."
 msgstr ""
 
 msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|An error occurred loading the followers. Please refresh the page to try again."
 msgstr ""
 
 msgid "UserProfile|An error occurred loading the personal projects. Please refresh the page to try again."

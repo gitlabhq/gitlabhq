@@ -184,8 +184,8 @@ module UsersHelper
 
   def user_profile_tabs_app_data(user)
     {
-      followees: user.followees.count,
-      followers: user.followers.count,
+      followees_count: user.followees.count,
+      followers_count: user.followers.count,
       user_calendar_path: user_calendar_path(user, :json),
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
       user_id: user.id,

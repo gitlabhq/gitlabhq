@@ -189,6 +189,11 @@ In this example:
 - `DEPLOY_ENVIRONMENT` is pre-filled in the **Run pipeline** page with `canary` as the default value,
   and the message explains the other options.
 
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) can have prefilled variables not appear
+when running a pipeline manually. To workaround this issue,
+[change the compliance pipeline configuration](../../user/group/compliance_frameworks.md#prefilled-variables-are-not-shown).
+
 #### Configure a list of selectable prefilled variable values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.

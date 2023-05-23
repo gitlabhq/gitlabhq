@@ -91,7 +91,7 @@ export default {
 </script>
 
 <template>
-  <gl-tabs nav-class="gl-bg-gray-10" align="center">
+  <gl-tabs nav-class="gl-bg-gray-10" content-class="gl-bg-white gl-pt-5" align="center">
     <component
       :is="component"
       v-for="{ key, component } in $options.tabs"

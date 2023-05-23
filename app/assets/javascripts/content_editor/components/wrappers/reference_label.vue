@@ -14,6 +14,11 @@ export default {
       type: Object,
       required: true,
     },
+    selected: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isScopedLabel() {
@@ -23,12 +28,13 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper class="gl-display-inline-block">
+  <node-view-wrapper as="span" :class="{ 'ProseMirror-selectednode': selected }">
     <gl-label
       size="sm"
       :scoped="isScopedLabel"
       :background-color="node.attrs.color"
       :title="node.attrs.text"
+      class="gl-pointer-events-none"
     />
   </node-view-wrapper>
 </template>

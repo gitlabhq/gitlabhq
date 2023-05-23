@@ -11,6 +11,7 @@ import EditorStateObserver from './editor_state_observer.vue';
 import CodeBlockBubbleMenu from './bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from './bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
+import ReferenceBubbleMenu from './bubble_menus/reference_bubble_menu.vue';
 import FormattingToolbar from './formatting_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 
@@ -27,6 +28,7 @@ export default {
     LinkBubbleMenu,
     MediaBubbleMenu,
     EditorStateObserver,
+    ReferenceBubbleMenu,
   },
   props: {
     renderMarkdown: {
@@ -226,6 +228,7 @@ export default {
           <code-block-bubble-menu />
           <link-bubble-menu />
           <media-bubble-menu />
+          <reference-bubble-menu />
           <div v-if="showPlaceholder" class="gl-absolute gl-text-gray-400 gl-px-5 gl-pt-4">
             {{ placeholder }}
           </div>

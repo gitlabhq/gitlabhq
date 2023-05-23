@@ -2,11 +2,16 @@ import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
 import { initReportAbuse } from '~/users/profile';
+import { initProfileTabs } from '~/profile';
 import UserTabs from './user_tabs';
 
 function initUserProfile(action) {
-  // eslint-disable-next-line no-new
-  new UserTabs({ parentEl: '.user-profile', action });
+  if (gon.features?.profileTabsVue) {
+    initProfileTabs();
+  } else {
+    // eslint-disable-next-line no-new
+    new UserTabs({ parentEl: '.user-profile', action });
+  }
 
   // hide project limit message
   $('.hide-project-limit-message').on('click', (e) => {

@@ -3,12 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
-  describe GraphQL::Query, type: :request do
-    include ApiHelpers
-    include GraphqlHelpers
-    include JavaScriptFixturesHelpers
+  include JavaScriptFixturesHelpers
+  include ApiHelpers
 
-    let_it_be(:user) { create(:user) }
+  let_it_be(:followers) { create_list(:user, 5) }
+  let_it_be(:user) { create(:user, followers: followers) }
+
+  describe API::Users, '(JavaScript fixtures)', type: :request do
+    it 'api/users/followers/get.json' do
+      get api("/users/#{user.id}/followers", user)
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe GraphQL::Query, type: :request do
+    include GraphqlHelpers
 
     context 'for user achievements' do
       let_it_be(:group) { create(:group, :public) }

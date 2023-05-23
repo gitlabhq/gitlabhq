@@ -287,9 +287,9 @@ export function visitUrl(url, external = false) {
     // See https://mathiasbynens.github.io/rel-noopener/
     const otherWindow = window.open();
     otherWindow.opener = null;
-    otherWindow.location = url;
+    otherWindow.location.assign(url);
   } else {
-    window.location.href = url;
+    window.location.assign(url);
   }
 }
 

@@ -1,7 +1,6 @@
 import { create } from '~/drawio/content_editor_facade';
 import { launchDrawioEditor } from '~/drawio/drawio_editor';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
-import createAssetResolver from '../services/asset_resolver';
 import Image from './image';
 
 export default Image.extend({
@@ -10,7 +9,7 @@ export default Image.extend({
     return {
       ...this.parent?.(),
       uploadsPath: null,
-      renderMarkdown: null,
+      assetResolver: null,
     };
   },
   parseHTML() {
@@ -32,7 +31,7 @@ export default Image.extend({
             tiptapEditor: this.editor,
             drawioNodeName: this.name,
             uploadsPath: this.options.uploadsPath,
-            assetResolver: createAssetResolver({ renderMarkdown: this.options.renderMarkdown }),
+            assetResolver: this.options.assetResolver,
           }),
         });
       },

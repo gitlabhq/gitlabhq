@@ -1,7 +1,3 @@
-import { initProfileTabs, initUserAchievements } from '~/profile';
-
-if (gon.features?.profileTabsVue) {
-  initProfileTabs();
-}
+import { initUserAchievements } from '~/profile';
 
 initUserAchievements();

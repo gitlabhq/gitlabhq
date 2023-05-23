@@ -10,7 +10,7 @@ export default {
     GlBadge,
     GlTab,
   },
-  inject: ['followees'],
+  inject: ['followeesCount'],
 };
 </script>
 
@@ -18,7 +18,7 @@ export default {
   <gl-tab>
     <template #title>
       <span>{{ $options.i18n.title }}</span>
-      <gl-badge size="sm" class="gl-ml-2">{{ followees }}</gl-badge>
+      <gl-badge size="sm" class="gl-ml-2">{{ followeesCount }}</gl-badge>
     </template>
   </gl-tab>
 </template>

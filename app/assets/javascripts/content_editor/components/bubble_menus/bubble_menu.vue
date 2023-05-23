@@ -44,6 +44,7 @@ export default {
             this.menuVisible = false;
           },
           appendTo: () => document.body,
+          maxWidth: 'auto',
         },
       }),
     );

@@ -4,7 +4,7 @@ import LabelWrapper from '../components/wrappers/reference_label.vue';
 import Reference from './reference';
 
 export default Reference.extend({
-  name: 'reference_label',
+  name: 'referenceLabel',
 
   addAttributes() {
     return {
@@ -23,6 +23,10 @@ export default Reference.extend({
         parseHTML: (element) => element.querySelector('.gl-label-text').style.backgroundColor,
       },
     };
+  },
+
+  addInputRules() {
+    return [];
   },
 
   parseHTML() {

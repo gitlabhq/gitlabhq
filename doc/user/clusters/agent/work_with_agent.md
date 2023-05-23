@@ -91,6 +91,9 @@ For more information about debugging, see [troubleshooting documentation](troubl
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327152) in GitLab 14.9.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336641) in GitLab 14.10, the agent token can be revoked from the UI.
+> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030) in GitLab 16.1.
+
+An agent can have only two active tokens at one time.
 
 To reset the agent token without downtime:
 

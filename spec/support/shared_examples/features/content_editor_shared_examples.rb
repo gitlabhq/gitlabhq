@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'edits content using the content editor' do
+RSpec.shared_examples 'edits content using the content editor' do |params = { with_expanded_references: true }|
   include ContentEditorHelpers
 
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
@@ -491,6 +491,28 @@ RSpec.shared_examples 'edits content using the content editor' do
       switch_to_content_editor
 
       type_in_content_editor :enter
+    end
+
+    if params[:with_expanded_references]
+      describe 'when expanding an issue reference' do
+        it 'displays full reference name' do
+          new_issue = create(:issue, project: project, title: 'Brand New Issue')
+
+          type_in_content_editor "##{new_issue.iid}+s "
+
+          expect(page).to have_text('Brand New Issue')
+        end
+      end
+
+      describe 'when expanding an MR reference' do
+        it 'displays full reference name' do
+          new_mr = create(:merge_request, source_project: project, source_branch: 'branch-2', title: 'Brand New MR')
+
+          type_in_content_editor "!#{new_mr.iid}+s "
+
+          expect(page).to have_text('Brand New')
+        end
+      end
     end
 
     it 'shows suggestions for members with descriptions' do

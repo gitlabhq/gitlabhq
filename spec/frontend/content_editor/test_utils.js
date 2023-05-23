@@ -212,6 +212,22 @@ export const waitUntilNextDocTransaction = ({ tiptapEditor, action = () => {} })
   });
 };
 
+export const waitUntilTransaction = ({ tiptapEditor, number, action }) => {
+  return new Promise((resolve) => {
+    let counter = 0;
+    const handleTransaction = () => {
+      counter += 1;
+      if (counter === number) {
+        tiptapEditor.off('update', handleTransaction);
+        resolve();
+      }
+    };
+
+    tiptapEditor.on('update', handleTransaction);
+    action();
+  });
+};
+
 export const expectDocumentAfterTransaction = ({ tiptapEditor, number, expectedDoc, action }) => {
   return new Promise((resolve) => {
     let counter = 0;

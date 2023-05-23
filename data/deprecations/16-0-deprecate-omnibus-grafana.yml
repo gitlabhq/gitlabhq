@@ -7,8 +7,8 @@
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The version of [Grafana bundled with Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/grafana.html) is
-    disabled in 16.0 and will be removed in 16.3.
-    If you are using the bundled Grafana, you must migrate to either:
+    [deprecated and disabled](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#deprecation-of-bundled-grafana)
+    in 16.0 and will be removed in 16.3. If you are using the bundled Grafana, you must migrate to either:
 
     - Another implementation of Grafana. For more information, see
       [Switch to new Grafana instance](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#switch-to-new-grafana-instance).

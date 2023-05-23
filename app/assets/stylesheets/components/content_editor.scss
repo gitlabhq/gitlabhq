@@ -8,7 +8,9 @@
     background-color: transparent;
   }
 
-  &:not(.ProseMirror-hideselection) .content-editor-selection {
+  &:not(.ProseMirror-hideselection) .content-editor-selection,
+  a.ProseMirror-selectednode,
+  span.ProseMirror-selectednode {
     background-color: $blue-100;
     box-shadow: 0 2px 0 $blue-100,  0 -2px 0 $blue-100;
   }
@@ -160,5 +162,5 @@
 }
 
 .bubble-menu-form {
-  width: 320px;
+  min-width: 320px;
 }

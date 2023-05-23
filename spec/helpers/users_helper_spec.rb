@@ -503,8 +503,8 @@ RSpec.describe UsersHelper do
 
     it 'returns expected hash' do
       expect(helper.user_profile_tabs_app_data(user)).to match({
-        followees: 3,
-        followers: 2,
+        followees_count: 3,
+        followers_count: 2,
         user_calendar_path: '/users/root/calendar.json',
         utc_offset: 0,
         user_id: user.id,

@@ -1466,7 +1466,10 @@ You can configure:
   ```
 
 If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
-node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
+node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically. For large Gitaly
+Cluster deployments with many Gitaly nodes, replicating a repository to every storage is often not sensible and can cause problems.
+The higher the replication factor, the higher the pressure on the primary repository. You should explicitly set the default
+replication factor for large Gitaly Cluster deployments.
 
 ### Repository storage recommendations
 

@@ -14,8 +14,8 @@ export const initProfileTabs = () => {
   if (!el) return false;
 
   const {
-    followees,
-    followers,
+    followeesCount,
+    followersCount,
     userCalendarPath,
     utcOffset,
     userId,
@@ -31,8 +31,8 @@ export const initProfileTabs = () => {
     apolloProvider,
     name: 'ProfileRoot',
     provide: {
-      followees: parseInt(followers, 10),
-      followers: parseInt(followees, 10),
+      followeesCount: parseInt(followeesCount, 10),
+      followersCount: parseInt(followersCount, 10),
       userCalendarPath,
       utcOffset,
       userId,

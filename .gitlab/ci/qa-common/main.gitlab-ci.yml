@@ -6,7 +6,7 @@ workflow:
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 5.2.1
+    ref: 5.2.2
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -30,11 +30,14 @@ stages:
   # image path and registry needs to be defined explicitly
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
 
-.qa-install:
+.bundler-variables:
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
+
+.qa-install:
   extends:
+    - .bundler-variables
     - .gitlab-qa-install
 
 .update-script:
@@ -46,8 +49,8 @@ stages:
 
 .qa:
   extends:
+    - .bundler-variables
     - .qa-base
-    - .qa-install
     - .gitlab-qa-report
   stage: test
   tags:

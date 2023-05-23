@@ -10,7 +10,7 @@ describe('FollowingTab', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(FollowingTab, {
       provide: {
-        followees: 3,
+        followeesCount: 3,
       },
     });
   };

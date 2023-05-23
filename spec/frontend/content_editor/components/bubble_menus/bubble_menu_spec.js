@@ -65,6 +65,7 @@ describe('content_editor/components/bubble_menus/bubble_menu', () => {
         onHidden: expect.any(Function),
         onShow: expect.any(Function),
         appendTo: expect.any(Function),
+        maxWidth: 'auto',
         ...tippyOptions,
       }),
     });

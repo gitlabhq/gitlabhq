@@ -50,7 +50,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/gitlab_subscriptions/plan_upgrade_service.rb'
     - 'ee/app/services/iterations/create_service.rb'
-    - 'ee/app/services/registrations/base_namespace_create_service.rb'
     - 'ee/app/services/resource_events/change_iteration_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
     - 'ee/app/services/timebox_report_service.rb'

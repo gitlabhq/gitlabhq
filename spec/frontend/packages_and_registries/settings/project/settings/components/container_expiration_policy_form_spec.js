@@ -286,8 +286,8 @@ describe('Container Expiration Policy Settings Form', () => {
 
         await submitForm();
 
-        expect(window.location.href.endsWith('settings-path?showSetupSuccessAlert=true')).toBe(
-          true,
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'settings-path?showSetupSuccessAlert=true',
         );
       });
 
