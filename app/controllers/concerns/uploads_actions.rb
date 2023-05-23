@@ -10,6 +10,10 @@ module UploadsActions
   included do
     prepend_before_action :set_request_format_from_path_extension
     rescue_from FileUploader::InvalidSecret, with: :render_404
+
+    rescue_from ::Gitlab::Utils::PathTraversalAttackError do
+      head :bad_request
+    end
   end
 
   def create
@@ -33,6 +37,8 @@ module UploadsActions
   #   - or redirect to its URL
   #
   def show
+    Gitlab::Utils.check_path_traversal!(params[:filename])
+
     return render_404 unless uploader&.exists?
 
     ttl, directives = *cache_settings
