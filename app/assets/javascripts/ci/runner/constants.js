@@ -256,3 +256,5 @@ export const SERVICE_COMMANDS_HELP_URL =
 export const CHANGELOG_URL = 'https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md';
 export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
 export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';
+export const RUNNER_MANAGERS_HELP_URL =
+  'https://docs.gitlab.com/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities';

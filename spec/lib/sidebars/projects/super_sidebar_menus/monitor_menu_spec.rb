@@ -15,7 +15,6 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::MonitorMenu, feature_categ
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
-      :metrics,
       :error_tracking,
       :alert_management,
       :incidents,

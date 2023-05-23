@@ -185,6 +185,7 @@ class Project < ApplicationRecord
   has_one :bugzilla_integration, class_name: 'Integrations::Bugzilla'
   has_one :buildkite_integration, class_name: 'Integrations::Buildkite'
   has_one :campfire_integration, class_name: 'Integrations::Campfire'
+  has_one :clickup_integration, class_name: 'Integrations::Clickup'
   has_one :confluence_integration, class_name: 'Integrations::Confluence'
   has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_integration, class_name: 'Integrations::Datadog'
@@ -601,6 +602,42 @@ class Project < ApplicationRecord
     where(arel_table[:storage_version].lt(LATEST_STORAGE_VERSION)
         .or(arel_table[:storage_version].eq(nil)))
   end
+
+  scope :sorted_by_name_desc, -> {
+    keyset_order = Gitlab::Pagination::Keyset::Order.build([
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: :name,
+        column_expression: Project.arel_table[:name],
+        order_expression: Project.arel_table[:name].desc,
+        distinct: false,
+        nullable: :nulls_last
+      ),
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: :id,
+        order_expression: Project.arel_table[:id].desc
+      )
+    ])
+
+    reorder(keyset_order)
+  }
+
+  scope :sorted_by_name_asc, -> {
+    keyset_order = Gitlab::Pagination::Keyset::Order.build([
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: :name,
+        column_expression: Project.arel_table[:name],
+        order_expression: Project.arel_table[:name].asc,
+        distinct: false,
+        nullable: :nulls_last
+      ),
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: :id,
+        order_expression: Project.arel_table[:id].asc
+      )
+    ])
+
+    reorder(keyset_order)
+  }
 
   scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
   scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }

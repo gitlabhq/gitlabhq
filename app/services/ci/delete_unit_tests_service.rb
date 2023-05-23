@@ -25,9 +25,7 @@ module Ci
 
       klass.transaction do
         ids = klass.deletable.lock('FOR UPDATE SKIP LOCKED').limit(BATCH_SIZE).pluck(:id)
-        break if ids.empty?
-
-        deleted = klass.where(id: ids).delete_all
+        deleted = klass.where(id: ids).delete_all if ids.any?
       end
 
       deleted > 0

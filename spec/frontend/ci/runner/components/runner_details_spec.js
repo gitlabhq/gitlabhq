@@ -1,4 +1,5 @@
 import { GlSprintf, GlIntersperse } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
@@ -24,6 +25,7 @@ describe('RunnerDetails', () => {
   useFakeDate(mockNow);
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
+  const findDdContent = (label) => findDd(label, wrapper).text().replace(/\s+/g, ' ');
 
   const createComponent = ({ props = {}, stubs, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetails, {
@@ -61,6 +63,7 @@ describe('RunnerDetails', () => {
       ${'Maximum job timeout'} | ${{ maximumTimeout: 10 * 60 + 5 }}                                 | ${'10 minutes 5 seconds'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: mockOneHourAgo }}                              | ${'1 hour ago'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: null }}                                        | ${'Never expires'}
+      ${'Runners'}             | ${{ managers: { count: 2 } }}                                      | ${'2'}
     `('"$field" field', ({ field, runner, expectedValue }) => {
       beforeEach(() => {
         createComponent({
@@ -94,7 +97,7 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
+        expect(findDdContent(s__('Runners|Tags'))).toBe('tag-1 tag-2');
       });
 
       it('displays "None" when runner has no tags', () => {
@@ -105,7 +108,29 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('None');
+        expect(findDdContent(s__('Runners|Tags'))).toBe('None');
+      });
+    });
+
+    describe('"Runners" field', () => {
+      it.each`
+        count   | expected
+        ${0}    | ${'0'}
+        ${1}    | ${'1'}
+        ${1000} | ${'1,000'}
+      `('displays runner managers count of $count', ({ count, expected }) => {
+        createComponent({
+          props: {
+            runner: {
+              ...mockRunner,
+              managers: {
+                count,
+              },
+            },
+          },
+        });
+
+        expect(findDdContent(s__('Runners|Runners'))).toBe(expected);
       });
     });
 

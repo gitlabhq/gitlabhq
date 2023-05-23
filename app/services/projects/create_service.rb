@@ -231,7 +231,7 @@ module Projects
 
           @project.create_labels unless @project.gitlab_project_import?
 
-          break if @project.import?
+          next if @project.import?
 
           unless @project.create_repository(default_branch: default_branch)
             raise 'Failed to create repository'

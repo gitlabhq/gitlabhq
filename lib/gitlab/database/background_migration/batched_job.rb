@@ -139,7 +139,7 @@ module Gitlab
 
             new_batch_size = batch_size / 2
 
-            break update!(attempts: 0) if new_batch_size < 1
+            next update!(attempts: 0) if new_batch_size < 1
 
             batching_strategy = batched_migration.batch_class.new(connection: self.class.connection)
             next_batch_bounds = batching_strategy.next_batch(

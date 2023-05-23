@@ -20,6 +20,9 @@ fragment RunnerDetailsShared on CiRunner {
   tokenExpiresAt
   version
   editAdminUrl
+  managers {
+    count
+  }
   userPermissions {
     updateRunner
     deleteRunner

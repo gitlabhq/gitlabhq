@@ -382,32 +382,10 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
   end
 
   describe 'Monitor' do
-    before do
-      stub_feature_flags(remove_monitor_metrics: false)
-    end
-
     it 'top level navigation link is visible for user with permissions' do
       render
 
       expect(rendered).to have_link('Monitor')
-    end
-
-    describe 'Metrics Dashboard' do
-      it 'has a link to the metrics dashboard page' do
-        render
-
-        expect(rendered).to have_link('Metrics', href: project_metrics_dashboard_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the metrics page' do
-          render
-
-          expect(rendered).not_to have_link('Metrics')
-        end
-      end
     end
 
     describe 'Error Tracking' do

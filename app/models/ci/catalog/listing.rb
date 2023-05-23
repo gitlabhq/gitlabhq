@@ -14,15 +14,24 @@ module Ci
         @current_user = current_user
       end
 
-      def resources
-        Ci::Catalog::Resource
-          .joins(:project).includes(:project)
-          .merge(projects_in_namespace_visible_to_user)
+      def resources(sort: nil)
+        case sort.to_s
+        when 'name_desc' then all_resources.order_by_name_desc
+        when 'name_asc' then all_resources.order_by_name_asc
+        else
+          all_resources.order_by_created_at_desc
+        end
       end
 
       private
 
       attr_reader :namespace, :current_user
+
+      def all_resources
+        Ci::Catalog::Resource
+          .joins(:project).includes(:project)
+          .merge(projects_in_namespace_visible_to_user)
+      end
 
       def projects_in_namespace_visible_to_user
         Project

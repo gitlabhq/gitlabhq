@@ -43,7 +43,7 @@ job_build:
 export const mockCiTemplateQueryResponse = {
   data: {
     project: {
-      id: 'project-1',
+      id: 'gid://gitlab/Project/1',
       ciTemplate: {
         content: mockCiYml,
       },
@@ -54,7 +54,7 @@ export const mockCiTemplateQueryResponse = {
 export const mockBlobContentQueryResponse = {
   data: {
     project: {
-      id: 'project-1',
+      id: 'gid://gitlab/Project/1',
       repository: { blobs: { nodes: [{ id: 'blob-1', rawBlob: mockCiYml }] } },
     },
   },
@@ -62,13 +62,13 @@ export const mockBlobContentQueryResponse = {
 
 export const mockBlobContentQueryResponseNoCiFile = {
   data: {
-    project: { id: 'project-1', repository: { blobs: { nodes: [] } } },
+    project: { id: 'gid://gitlab/Project/1', repository: { blobs: { nodes: [] } } },
   },
 };
 
 export const mockBlobContentQueryResponseEmptyCiFile = {
   data: {
-    project: { id: 'project-1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
+    project: { id: 'gid://gitlab/Project/1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
   },
 };
 

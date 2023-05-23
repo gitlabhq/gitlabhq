@@ -76,16 +76,4 @@ RSpec.describe Gitlab::ResourceEvents::AssignmentEventRecorder, feature_category
       end.to change { ResourceEvents::MergeRequestAssignmentEvent.count }.by(1)
     end
   end
-
-  context 'when the record_issue_and_mr_assignee_events FF is off' do
-    before do
-      stub_feature_flags(record_issue_and_mr_assignee_events: false)
-    end
-
-    it 'does nothing' do
-      expect do
-        described_class.new(parent: mr_with_one_assignee, old_assignees: [user2, user3]).record
-      end.not_to change { mr_with_one_assignee.assignment_events.count }
-    end
-  end
 end

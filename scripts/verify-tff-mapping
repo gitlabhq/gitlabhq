@@ -220,6 +220,17 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1683#note_1385966977',
     source: 'app/finders/members_finder.rb',
     expected: ['spec/finders/members_finder_spec.rb', 'spec/graphql/types/project_member_relation_enum_spec.rb']
+  },
+
+  {
+    explanation: 'Map FOSS rake tasks',
+    source: 'lib/tasks/import.rake',
+    expected: ['spec/tasks/import_rake_spec.rb']
+  },
+  {
+    explanation: 'Map EE rake tasks',
+    source: 'ee/lib/tasks/geo.rake',
+    expected: ['ee/spec/tasks/geo_rake_spec.rb']
   }
 ]
 

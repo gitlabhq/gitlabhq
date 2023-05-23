@@ -19,8 +19,8 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Monitor"]',
-                                    text: 'Monitor', visible: :hidden)
+      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Error Tracking"]',
+                                    text: 'Error Tracking', visible: :hidden)
     end
   end
 

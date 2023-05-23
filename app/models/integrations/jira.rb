@@ -14,6 +14,14 @@ module Integrations
     ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
     ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
 
+    API_ENDPOINTS = {
+      find_issue: "/rest/api/2/issue/%s",
+      server_info: "/rest/api/2/serverInfo",
+      transition_issue: "/rest/api/2/issue/%s/transitions",
+      issue_comments: "/rest/api/2/issue/%s/comment",
+      link_remote_issue: "/rest/api/2/issue/%s/remotelink"
+    }.freeze
+
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
 
@@ -277,7 +285,9 @@ module Integrations
       expands << 'transitions' if transitions
       options = { expand: expands.join(',') } if expands.any?
 
-      jira_request { client.Issue.find(issue_key, options || {}) }
+      path = API_ENDPOINTS[:find_issue] % issue_key
+
+      jira_request(path) { client.Issue.find(issue_key, options || {}) }
     end
 
     def close_issue(entity, external_issue, current_user)
@@ -389,7 +399,7 @@ module Integrations
 
     def server_info
       strong_memoize(:server_info) do
-        client_url.present? ? jira_request { client.ServerInfo.all.attrs } : nil
+        client_url.present? ? jira_request(API_ENDPOINTS[:server_info]) { client.ServerInfo.all.attrs } : nil
       end
     end
 
@@ -419,7 +429,8 @@ module Integrations
 
       true
     rescue StandardError => e
-      log_exception(e, message: 'Issue transition failed', client_url: client_url)
+      path = API_ENDPOINTS[:transition_issue] % issue.id
+      log_exception(e, message: 'Issue transition failed', client_url: client_url, client_path: path, client_status: '400')
       false
     end
 
@@ -518,7 +529,8 @@ module Integrations
     end
 
     def comment_exists?(issue, message)
-      comments = jira_request { issue.comments }
+      path = API_ENDPOINTS[:issue_comments] % issue.id
+      comments = jira_request(path) { issue.comments }
 
       comments.present? && comments.any? { |comment| comment.body.include?(message) }
     end
@@ -526,14 +538,16 @@ module Integrations
     def send_message(issue, message, remote_link_props)
       return unless client_url.present?
 
-      jira_request do
+      path = API_ENDPOINTS[:link_remote_issue] % issue.id
+
+      jira_request(path) do
         remote_link = find_remote_link(issue, remote_link_props[:object][:url])
 
         create_issue_comment(issue, message) unless remote_link
         remote_link ||= issue.remotelink.build
         remote_link.save!(remote_link_props)
 
-        log_info("Successfully posted", client_url: client_url)
+        log_info("Successfully posted", client_url: client_url, client_path: path)
         "SUCCESS: Successfully posted to #{client_url}."
       end
     end
@@ -545,7 +559,8 @@ module Integrations
     end
 
     def find_remote_link(issue, url)
-      links = jira_request { issue.remotelink.all }
+      path = API_ENDPOINTS[:link_remote_issue] % issue.id
+      links = jira_request(path) { issue.remotelink.all }
       return unless links
 
       links.find { |link| link.object["url"] == url }
@@ -612,11 +627,11 @@ module Integrations
     end
 
     # Handle errors when doing Jira API calls
-    def jira_request
+    def jira_request(path)
       yield
     rescue StandardError => e
       @error = e
-      log_exception(e, message: 'Error sending message', client_url: client_url)
+      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path, client_status: e.code)
       nil
     end
 

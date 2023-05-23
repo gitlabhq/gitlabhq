@@ -50,6 +50,7 @@ You can configure the following integrations.
 | [Bugzilla](bugzilla.md)                                                     | Use Bugzilla as the issue tracker.                                    | **{dotted-circle}** No |
 | Buildkite                                                                   | Run CI/CD pipelines with Buildkite.                                   | **{check-circle}** Yes |
 | Campfire                                                                    | Connect to chat.                                                      | **{dotted-circle}** No |
+| [ClickUp](clickup.md)                                                       | Use ClickUp as the issue tracker.                                    | **{dotted-circle}** No |
 | [Confluence Workspace](../../../api/integrations.md#confluence-integration) | Use Confluence Cloud Workspace as an internal wiki.                   | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)                             | Use a custom issue tracker.                                           | **{dotted-circle}** No |
 | [Datadog](../../../integration/datadog.md)                                  | Trace your GitLab pipelines with Datadog.                             | **{check-circle}** Yes |

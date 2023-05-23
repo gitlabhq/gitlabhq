@@ -423,14 +423,76 @@ RSpec.describe Issue, feature_category: :team_planning do
     let_it_be(:issue) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
 
-    it 'gives issues with the given issue type' do
+    it 'returns issues with the given issue type' do
       expect(described_class.with_issue_type('issue'))
         .to contain_exactly(issue)
     end
 
-    it 'gives issues with the given issue type' do
+    it 'returns issues with the given issue types' do
       expect(described_class.with_issue_type(%w(issue incident)))
         .to contain_exactly(issue, incident)
+    end
+
+    it 'uses the work_item_types table for filtering' do
+      expect do
+        described_class.with_issue_type(:issue).to_a
+      end.to make_queries_matching(
+        %r{
+          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
+          \sWHERE\s"work_item_types"\."base_type"\s=\s0
+        }x
+      )
+    end
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column for filtering' do
+        expect do
+          described_class.with_issue_type(:issue).to_a
+        end.to make_queries_matching(/"issues"\."issue_type" = 0/)
+      end
+    end
+  end
+
+  describe '.without_issue_type' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:incident) { create(:incident, project: reusable_project) }
+    let_it_be(:task) { create(:issue, :task, project: reusable_project) }
+
+    it 'returns issues without the given issue type' do
+      expect(described_class.without_issue_type('issue'))
+        .to contain_exactly(incident, task)
+    end
+
+    it 'returns issues without the given issue types' do
+      expect(described_class.without_issue_type(%w(issue incident)))
+        .to contain_exactly(task)
+    end
+
+    it 'uses the work_item_types table for filtering' do
+      expect do
+        described_class.without_issue_type(:issue).to_a
+      end.to make_queries_matching(
+        %r{
+          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
+          \sWHERE\s"work_item_types"\."base_type"\s!=\s0
+        }x
+      )
+    end
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column for filtering' do
+        expect do
+          described_class.without_issue_type(:issue).to_a
+        end.to make_queries_matching(/"issues"\."issue_type" != 0/)
+      end
     end
   end
 

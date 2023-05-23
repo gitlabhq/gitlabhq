@@ -14,11 +14,15 @@ module UpdateRepositoryStorageMethods
   end
 
   def execute
-    repository_storage_move.with_lock do
-      return ServiceResponse.success unless repository_storage_move.scheduled? # rubocop:disable Cop/AvoidReturnFromBlocks
+    response = repository_storage_move.with_lock do
+      next ServiceResponse.success unless repository_storage_move.scheduled?
 
       repository_storage_move.start!
+
+      nil
     end
+
+    return response if response
 
     mirror_repositories unless same_filesystem?
 

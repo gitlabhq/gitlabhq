@@ -1,8 +1,0 @@
----
-name: vsa_group_and_project_parity
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114056
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396865
-milestone: '15.11'
-type: development
-group: group::optimize
-default_enabled: true

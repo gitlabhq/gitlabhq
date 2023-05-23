@@ -1081,7 +1081,7 @@ Style/PercentLiteralDelimiters:
     - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'
-    - 'spec/tasks/gitlab/task_helpers_spec.rb'
+    - 'spec/lib/gitlab/task_helpers_spec.rb'
     - 'spec/tooling/danger/customer_success_spec.rb'
     - 'spec/tooling/danger/datateam_spec.rb'
     - 'spec/tooling/danger/sidekiq_queues_spec.rb'

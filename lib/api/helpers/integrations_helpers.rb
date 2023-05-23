@@ -839,6 +839,20 @@ module API
               desc: 'The issues URL'
             }
           ],
+          'clickup' => [
+            {
+              required: true,
+              name: :project_url,
+              type: String,
+              desc: 'The project URL'
+            },
+            {
+              required: true,
+              name: :issues_url,
+              type: String,
+              desc: 'The issues URL'
+            }
+          ],
           'slack' => [
             chat_notification_settings,
             chat_notification_flags,
@@ -968,6 +982,7 @@ module API
           ::Integrations::Bugzilla,
           ::Integrations::Buildkite,
           ::Integrations::Campfire,
+          ::Integrations::Clickup,
           ::Integrations::Confluence,
           ::Integrations::CustomIssueTracker,
           ::Integrations::Datadog,

@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, name: 'A') }
+  let_it_be(:project_2) { build(:project, name: 'Z') }
+  let_it_be(:project_3) { build(:project, name: 'L') }
   let_it_be(:resource) { create(:catalog_resource, project: project) }
+  let_it_be(:resource_2) { create(:catalog_resource, project: project_2) }
+  let_it_be(:resource_3) { create(:catalog_resource, project: project_3) }
 
   let_it_be(:releases) do
     [
@@ -25,6 +29,30 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       resources_for_projects = described_class.for_projects(project.id)
 
       expect(resources_for_projects).to contain_exactly(resource)
+    end
+  end
+
+  describe '.order_by_created_at_desc' do
+    it 'returns catalog resources sorted by descending created at' do
+      ordered_resources = described_class.order_by_created_at_desc
+
+      expect(ordered_resources.to_a).to eq([resource_3, resource_2, resource])
+    end
+  end
+
+  describe '.order_by_name_desc' do
+    it 'returns catalog resources sorted by descending name' do
+      ordered_resources = described_class.order_by_name_desc
+
+      expect(ordered_resources.pluck(:name)).to eq(%w[Z L A])
+    end
+  end
+
+  describe '.order_by_name_asc' do
+    it 'returns catalog resources sorted by ascending name' do
+      ordered_resources = described_class.order_by_name_asc
+
+      expect(ordered_resources.pluck(:name)).to eq(%w[A L Z])
     end
   end
 

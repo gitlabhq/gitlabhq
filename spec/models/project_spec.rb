@@ -76,6 +76,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:harbor_integration) }
     it { is_expected.to have_one(:redmine_integration) }
     it { is_expected.to have_one(:youtrack_integration) }
+    it { is_expected.to have_one(:clickup_integration) }
     it { is_expected.to have_one(:custom_issue_tracker_integration) }
     it { is_expected.to have_one(:bugzilla_integration) }
     it { is_expected.to have_one(:ewm_integration) }
@@ -2044,6 +2045,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       projects = described_class.sort_by_attribute(:latest_activity_asc)
 
       expect(projects).to eq([project3, project1, project2])
+    end
+  end
+
+  describe 'sorting by name' do
+    let_it_be(:project1) { create(:project, name: 'A') }
+    let_it_be(:project2) { create(:project, name: 'Z') }
+    let_it_be(:project3) { create(:project, name: 'L') }
+
+    context 'when using .sort_by_name_desc' do
+      it 'reorders the projects by descending name order' do
+        projects = described_class.sorted_by_name_desc
+
+        expect(projects.pluck(:name)).to eq(%w[Z L A])
+      end
+    end
+
+    context 'when using .sort_by_name_asc' do
+      it 'reorders the projects by ascending name order' do
+        projects = described_class.sorted_by_name_asc
+
+        expect(projects.pluck(:name)).to eq(%w[A L Z])
+      end
     end
   end
 

@@ -276,6 +276,8 @@ Members who can push to this branch can now also force push.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
 For a protected branch, you can require at least one approval by a [Code Owner](codeowners/index.md).
+If a branch is protected by multiple rules, code owner approval is required if _any_ of
+the applicable rules have **Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:
 

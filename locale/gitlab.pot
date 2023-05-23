@@ -24926,6 +24926,12 @@ msgstr ""
 msgid "IssueTracker|Use Bugzilla as this project's issue tracker. %{docs_link}"
 msgstr ""
 
+msgid "IssueTracker|Use ClickUp as this project's issue tracker. %{docs_link}"
+msgstr ""
+
+msgid "IssueTracker|Use Clickup as this project's issue tracker."
+msgstr ""
+
 msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker."
 msgstr ""
 
@@ -39393,6 +39399,9 @@ msgid "Runners|Runners"
 msgstr ""
 
 msgid "Runners|Runners are either:"
+msgstr ""
+
+msgid "Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}"
 msgstr ""
 
 msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."

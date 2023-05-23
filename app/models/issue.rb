@@ -220,8 +220,20 @@ class Issue < ApplicationRecord
       project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
       duplicated_to: { project: [:project_feature] })
   }
-  scope :with_issue_type, ->(types) { where(issue_type: types) }
-  scope :without_issue_type, ->(types) { where.not(issue_type: types) }
+  scope :with_issue_type, ->(types) {
+    if Feature.enabled?(:issue_type_uses_work_item_types_table)
+      joins(:work_item_type).where(work_item_types: { base_type: types })
+    else
+      where(issue_type: types)
+    end
+  }
+  scope :without_issue_type, ->(types) {
+    if Feature.enabled?(:issue_type_uses_work_item_types_table)
+      joins(:work_item_type).where.not(work_item_types: { base_type: types })
+    else
+      where.not(issue_type: types)
+    end
+  }
 
   scope :public_only, -> { where(confidential: false) }
 

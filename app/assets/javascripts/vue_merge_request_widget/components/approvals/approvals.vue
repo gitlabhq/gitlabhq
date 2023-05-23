@@ -187,7 +187,7 @@ export default {
       this.updateApproval(
         () => this.service.approveMergeRequestWithAuth(data),
         (error) => {
-          if (error && error.response && error.response.status === HTTP_STATUS_UNAUTHORIZED) {
+          if (error?.response?.status === HTTP_STATUS_UNAUTHORIZED) {
             this.hasApprovalAuthError = true;
             return;
           }

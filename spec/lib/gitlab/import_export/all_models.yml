@@ -581,6 +581,7 @@ project:
 - custom_issue_tracker_integration
 - bugzilla_integration
 - ewm_integration
+- clickup_integration
 - external_wiki_integration
 - mock_ci_integration
 - mock_monitoring_integration

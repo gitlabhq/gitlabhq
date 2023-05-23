@@ -15,6 +15,7 @@ Style/NumberedParameters:
     - 'app/models/concerns/integrations/reset_secret_fields.rb'
     - 'app/models/hooks/web_hook.rb'
     - 'app/models/integration.rb'
+    - 'app/models/integrations/clickup.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/youtrack.rb'
     - 'app/models/project.rb'

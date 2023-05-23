@@ -1274,5 +1274,5 @@ Gitlab/NamespacedClass:
     - 'spec/support/helpers/require_migration.rb'
     - 'spec/support/models/merge_request_without_merge_request_diff.rb'
     - 'spec/support/renameable_upload.rb'
-    - 'spec/tasks/gitlab/task_helpers_spec.rb'
+    - 'spec/lib/gitlab/task_helpers_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'

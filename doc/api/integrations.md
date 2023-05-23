@@ -334,6 +334,43 @@ Get Campfire integration settings for a project.
 GET /projects/:id/integrations/campfire
 ```
 
+## ClickUp
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732) in GitLab 16.1.
+
+ClickUp issue tracker.
+
+### Create or edit ClickUp integration
+
+Set up ClickUp integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/clickup
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
+
+### Disable ClickUp integration
+
+Disable the ClickUp integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/clickup
+```
+
+### Get ClickUp integration settings
+
+Get ClickUp integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/clickup
+```
+
 ## Datadog
 
 Datadog system monitoring.

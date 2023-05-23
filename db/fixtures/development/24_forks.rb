@@ -8,7 +8,7 @@ Sidekiq::Testing.inline! do
       ##
       # 03_project.rb might not have created a public project because
       # we use randomized approach (e.g. `Array#sample`).
-      return unless source_project
+      next unless source_project
 
       Sidekiq::Worker.skipping_transaction_check do
         fork_project = Projects::ForkService.new(

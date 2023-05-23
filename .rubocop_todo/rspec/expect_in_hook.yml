@@ -469,7 +469,7 @@ RSpec/ExpectInHook:
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/tasks/gitlab/gitaly_rake_spec.rb'
     - 'spec/tasks/gitlab/praefect_rake_spec.rb'
-    - 'spec/tasks/gitlab/task_helpers_spec.rb'
+    - 'spec/lib/gitlab/task_helpers_spec.rb'
     - 'spec/tooling/danger/feature_flag_spec.rb'
     - 'spec/tooling/rspec_flaky/listener_spec.rb'
     - 'spec/uploaders/file_mover_spec.rb'

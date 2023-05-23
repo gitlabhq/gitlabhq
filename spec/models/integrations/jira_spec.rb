@@ -871,6 +871,8 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         expect(jira_integration).to have_received(:log_exception).with(
           kind_of(StandardError),
           message: 'Issue transition failed',
+          client_path: '/rest/api/2/issue/JIRA-123/transitions',
+          client_status: '400',
           client_url: "http://jira.example.com"
         )
       end
@@ -1175,12 +1177,14 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         error_message = 'Some specific failure.'
 
         WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
-          .to_raise(JIRA::HTTPError.new(double(message: error_message)))
+          .to_raise(JIRA::HTTPError.new(double(message: error_message, code: '403')))
 
         expect(jira_integration).to receive(:log_exception).with(
           kind_of(JIRA::HTTPError),
           message: 'Error sending message',
-          client_url: 'http://jira.example.com'
+          client_url: 'http://jira.example.com',
+          client_path: '/rest/api/2/serverInfo',
+          client_status: '403'
         )
 
         expect(jira_integration.test(nil)).to eq(success: false, result: error_message)

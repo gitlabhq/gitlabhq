@@ -8,11 +8,10 @@
       = form_tag network_path, method: :get, class: 'form-inline network-form' do |f|
         = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control gl-form-input input-mx-250 search-sha gl-mr-2'
         = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, icon: 'search')
-        .inline.gl-ml-5
-          .form-check.light
-            = check_box_tag :filter_ref, 1, @options[:filter_ref], class: 'form-check-input'
-            = label_tag :filter_ref, class: 'form-check-label' do
-              %span= _("Begin with the selected commit")
+        .form-group{ class: 'gl-ml-5 gl-mb-n3!' }
+          = render Pajamas::CheckboxTagComponent.new(name: :filter_ref, checked: @options[:filter_ref]) do |c|
+            = c.label do
+              = _("Begin with the selected commit")
 
     - if @commit
       .network-graph.gl-bg-white.gl-overflow-scroll.gl-overflow-x-hidden{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }

@@ -8,7 +8,6 @@ module Sidebars
         def configure_menu_items
           return false unless feature_enabled?
 
-          add_item(metrics_dashboard_menu_item)
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
@@ -47,23 +46,6 @@ module Sidebars
 
         def feature_enabled?
           context.project.feature_available?(:monitor, context.current_user)
-        end
-
-        def metrics_dashboard_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :metrics) if Feature.enabled?(:remove_monitor_metrics)
-
-          unless can?(context.current_user, :metrics_dashboard, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :metrics)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Metrics'),
-            link: project_metrics_dashboard_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
-            active_routes: { path: 'metrics_dashboard#show' },
-            container_html_options: { class: 'shortcuts-metrics' },
-            item_id: :metrics
-          )
         end
 
         def error_tracking_menu_item

@@ -30,7 +30,9 @@ else
     # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
     /default_hash is deprecated/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
-    /Passing an Active Record object to `\w+` directly is deprecated/
+    /Passing an Active Record object to `\w+` directly is deprecated/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/410086
+    /Using `return`, `break` or `throw` to exit a transaction block/
   ]
 
   ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings

@@ -115,6 +115,7 @@ Gitlab::CurrentSettings.update(tofa_credentials: File.read('/YOUR_FILE.json'))
 # Note: These credential examples will not work locally for all models
 Gitlab::CurrentSettings.update(tofa_host: "<root-domain>") # Example: us-central1-aiplatform.googleapis.com
 Gitlab::CurrentSettings.update(tofa_url: "<full-api-endpoint>") # Example: https://ROOT-DOMAIN/v1/projects/MY-COOL-PROJECT/locations/us-central1/publishers/google/models/MY-SPECIAL-MODEL:predict
+Gitlab::CurrentSettings.update(vertex_project: "<project-id>") # Example: cloud-large-language-models
 ```
 
 Internal team members can [use this snippet](https://gitlab.com/gitlab-com/gl-infra/production/-/snippets/2541742) for help configuring these endpoints.

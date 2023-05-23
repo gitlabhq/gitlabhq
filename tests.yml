@@ -24,6 +24,10 @@ mapping:
   - source: lib/(.+)\.rb
     test: spec/lib/%s_spec.rb
 
+  # Map rake tasks to its respective specs
+  - source: '(ee/)?lib/tasks/(.+)\.rake'
+    test: '%sspec/tasks/%s_rake_spec.rb'
+
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/368628
   - source: lib/gitlab/usage_data_counters/(.+)\.rb
     test: spec/lib/gitlab/usage_data_spec.rb

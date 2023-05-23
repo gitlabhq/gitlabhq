@@ -2378,7 +2378,7 @@ Layout/ArgumentAlignment:
     - 'spec/support/shared_examples/integrations/integration_settings_form.rb'
     - 'spec/support/shared_examples/lib/gitlab/ci/ci_trace_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/database/background_migration_job_shared_examples.rb'
-    - 'spec/tasks/cache/clear/redis_spec.rb'
+    - 'spec/tasks/cache_rake_spec.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/tasks/gitlab/db/decomposition/rollback/bump_ci_sequences_rake_spec.rb'
     - 'spec/tasks/gitlab/db/truncate_legacy_tables_rake_spec.rb'

@@ -1,15 +1,20 @@
+import Vue from 'vue';
 import { GlAlert, GlDisclosureDropdown, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/ui';
-import { nextTick } from 'vue';
-import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
+
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import CiValidate, { i18n } from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
 import ValidatePipelinePopover from '~/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue';
 import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.query.graphql';
-import lintCIMutation from '~/ci/pipeline_editor/graphql/mutations/client/lint_ci.mutation.graphql';
 import { pipelineEditorTrackingOptions } from '~/ci/pipeline_editor/constants';
 import {
   mockBlobContentQueryResponse,
@@ -17,68 +22,45 @@ import {
   mockCiYml,
   mockSimulatePipelineHelpPagePath,
 } from '../../mock_data';
-import { mockLintDataError, mockLintDataValid } from '../../../ci_lint/mock_data';
+import {
+  mockLintDataError,
+  mockLintDataValid,
+  mockLintDataErrorRest,
+  mockLintDataValidRest,
+} from '../../../ci_lint/mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+let mockAxios;
+
+Vue.use(VueApollo);
+
+const defaultProvide = {
+  ciConfigPath: '/path/to/ci-config',
+  ciLintPath: mockCiLintPath,
+  currentBranch: 'main',
+  projectFullPath: '/path/to/project',
+  validateTabIllustrationPath: '/path/to/img',
+  simulatePipelineHelpPagePath: mockSimulatePipelineHelpPagePath,
+};
 
 describe('Pipeline Editor Validate Tab', () => {
   let wrapper;
-  let mockApollo;
   let mockBlobContentData;
   let trackingSpy;
 
-  const createComponent = ({
-    props,
-    stubs,
-    options,
-    isBlobLoading = false,
-    isSimulationLoading = false,
-  } = {}) => {
+  const createComponent = ({ props, stubs } = {}) => {
+    const handlers = [[getBlobContent, mockBlobContentData]];
+    const mockApollo = createMockApollo(handlers, resolvers);
+
     wrapper = shallowMountExtended(CiValidate, {
       propsData: {
         ciFileContent: mockCiYml,
         ...props,
       },
+      stubs,
       provide: {
-        ciConfigPath: '/path/to/ci-config',
-        ciLintPath: mockCiLintPath,
-        currentBranch: 'main',
-        projectFullPath: '/path/to/project',
-        validateTabIllustrationPath: '/path/to/img',
-        simulatePipelineHelpPagePath: mockSimulatePipelineHelpPagePath,
+        ...defaultProvide,
       },
-      stubs,
-      mocks: {
-        $apollo: {
-          queries: {
-            initialBlobContent: {
-              loading: isBlobLoading,
-            },
-          },
-          mutations: {
-            lintCiMutation: {
-              loading: isSimulationLoading,
-            },
-          },
-        },
-      },
-      ...options,
-    });
-  };
-
-  const createComponentWithApollo = ({ props, stubs } = {}) => {
-    const handlers = [[getBlobContent, mockBlobContentData]];
-    mockApollo = createMockApollo(handlers);
-
-    createComponent({
-      props,
-      stubs,
-      options: {
-        localVue,
-        apolloProvider: mockApollo,
-        mocks: {},
-      },
+      apolloProvider: mockApollo,
     });
   };
 
@@ -96,12 +78,21 @@ describe('Pipeline Editor Validate Tab', () => {
   const findResultsCta = () => wrapper.findByTestId('resimulate-pipeline-button');
 
   beforeEach(() => {
+    mockAxios = new MockAdapter(axios);
+    mockAxios.onPost(defaultProvide.ciLintPath).reply(HTTP_STATUS_OK, mockLintDataValidRest);
+
     mockBlobContentData = jest.fn();
+  });
+
+  afterEach(() => {
+    mockAxios.restore();
   });
 
   describe('while initial CI content is loading', () => {
     beforeEach(() => {
-      createComponent({ isBlobLoading: true });
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+
+      createComponent();
     });
 
     it('renders disabled CTA with tooltip', () => {
@@ -113,7 +104,7 @@ describe('Pipeline Editor Validate Tab', () => {
   describe('after initial CI content is loaded', () => {
     beforeEach(async () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await createComponentWithApollo({ stubs: { GlPopover, ValidatePipelinePopover } });
+      await createComponent({ stubs: { GlPopover, ValidatePipelinePopover } });
     });
 
     it('renders disabled pipeline source dropdown', () => {
@@ -137,10 +128,9 @@ describe('Pipeline Editor Validate Tab', () => {
   describe('simulating the pipeline', () => {
     beforeEach(async () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await createComponentWithApollo();
+      await createComponent();
 
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
     });
 
     afterEach(() => {
@@ -158,32 +148,32 @@ describe('Pipeline Editor Validate Tab', () => {
     });
 
     it('renders loading state while simulation is ongoing', async () => {
-      findCta().vm.$emit('click');
-      await nextTick();
+      await findCta().vm.$emit('click');
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findCancelBtn().exists()).toBe(true);
       expect(findCta().props('loading')).toBe(true);
     });
 
-    it('calls mutation with the correct input', async () => {
-      await findCta().vm.$emit('click');
+    it('calls endpoint with the correct input', async () => {
+      findCta().vm.$emit('click');
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: lintCIMutation,
-        variables: {
-          dry: true,
+      await waitForPromises();
+
+      expect(mockAxios.history.post).toHaveLength(1);
+      expect(mockAxios.history.post[0].data).toBe(
+        JSON.stringify({
           content: mockCiYml,
-          endpoint: mockCiLintPath,
-        },
-      });
+          dry_run: true,
+        }),
+      );
     });
 
     describe('when results are successful', () => {
       beforeEach(async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
-        await findCta().vm.$emit('click');
+        findCta().vm.$emit('click');
+
+        await waitForPromises();
       });
 
       it('renders success alert', () => {
@@ -210,8 +200,10 @@ describe('Pipeline Editor Validate Tab', () => {
 
     describe('when results have errors', () => {
       beforeEach(async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataError);
-        await findCta().vm.$emit('click');
+        mockAxios.onPost(defaultProvide.ciLintPath).reply(HTTP_STATUS_OK, mockLintDataErrorRest);
+        findCta().vm.$emit('click');
+
+        await waitForPromises();
       });
 
       it('renders error alert', () => {
@@ -236,11 +228,11 @@ describe('Pipeline Editor Validate Tab', () => {
   describe('when CI content has changed after a simulation', () => {
     beforeEach(async () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await createComponentWithApollo();
+      await createComponent();
 
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
-      await findCta().vm.$emit('click');
+      findCta().vm.$emit('click');
+      await waitForPromises();
     });
 
     afterEach(() => {
@@ -267,25 +259,26 @@ describe('Pipeline Editor Validate Tab', () => {
     });
 
     it('calls mutation with new content', async () => {
-      await wrapper.setProps({ ciFileContent: 'new yaml content' });
-      await findResultsCta().vm.$emit('click');
+      const newContent = 'new yaml content';
+      await wrapper.setProps({ ciFileContent: newContent });
+      findResultsCta().vm.$emit('click');
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(2);
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: lintCIMutation,
-        variables: {
-          dry: true,
-          content: 'new yaml content',
-          endpoint: mockCiLintPath,
-        },
-      });
+      await waitForPromises();
+
+      expect(mockAxios.history.post).toHaveLength(2);
+      expect(mockAxios.history.post[1].data).toBe(
+        JSON.stringify({
+          content: newContent,
+          dry_run: true,
+        }),
+      );
     });
   });
 
   describe('canceling a simulation', () => {
     beforeEach(async () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await createComponentWithApollo();
+      await createComponent();
     });
 
     it('returns to init state', async () => {
@@ -294,9 +287,7 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(findCiLintResults().exists()).toBe(false);
 
       // mutations should have successful results
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
-      findCta().vm.$emit('click');
-      await nextTick();
+      await findCta().vm.$emit('click');
 
       // cancel before simulation succeeds
       expect(findCancelBtn().exists()).toBe(true);

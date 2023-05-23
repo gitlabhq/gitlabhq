@@ -1017,3 +1017,6 @@ RSpec/FactoryBot/LocalStaticAssignment:
   Include:
     - spec/factories/**/*.rb
     - ee/spec/factories/**/*.rb
+
+Rails/TransactionExitStatement:
+  Enabled: true

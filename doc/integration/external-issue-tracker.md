@@ -28,6 +28,7 @@ To enable an external issue tracker, you must configure the appropriate [integra
 The following external issue tracker integrations are available:
 
 - [Bugzilla](../user/project/integrations/bugzilla.md)
+- [ClickUp](../user/project/integrations/clickup.md)
 - [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management](../user/project/integrations/ewm.md)
 - [Jira](../integration/jira/index.md)

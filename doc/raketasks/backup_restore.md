@@ -288,7 +288,7 @@ To prepare the new server:
       Edit `/etc/gitlab/gitlab.rb` and set the following:
 
       ```ruby
-      nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
    1. Reconfigure GitLab:
@@ -319,7 +319,7 @@ To prepare the new server:
    1. Edit `/etc/gitlab/gitlab.rb`, and set the following:
 
       ```ruby
-      nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
    1. Reconfigure GitLab:
@@ -425,7 +425,7 @@ To prepare the new server:
 
    ```ruby
    # The following line must be removed
-   nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
    ```
 
 1. Reconfigure GitLab:

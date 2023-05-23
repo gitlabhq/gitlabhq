@@ -29,31 +29,27 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
 - In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`), and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
 - In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
 - In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet:
+- Configure remote development settings for the GitLab agent with this snippet, and update `dns_zone` as needed:
 
-   ```yaml
-   remote_development:
-     enabled: true
-     dns_zone: "workspaces.example.dev"
-   ```
+  ```yaml
+  remote_development:
+    enabled: true
+    dns_zone: "workspaces.example.dev"
+  ```
 
-   Update `dns_zone` as needed.
-
-- In each public project you want to use this feature for, define a [devfile](#devfile). Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
+- In each public project you want to use this feature for, create a [devfile](#devfile):
+  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](#example-configurations).
+- Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
 
 ### Create a workspace
 
-Prepare your projects and create a [devfile](#devfile):
+To create a workspace:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the root directory of your project, create a file named `.devfile.yaml`.
-   - Optional: For a quick demo, you can use one of the [example configurations](#example-definition) below.
-
-Next, go to the main menu to create a workspace:
-
-1. Go to **Main Menu > Your Work > Workspaces**.
-1. In the upper right, select **New workspace**.
-1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
+1. On the top bar, select **Main menu > Your work**.
+1. On the left sidebar, select **Workspaces**.
+1. Select **New workspace**.
+1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
@@ -88,9 +84,9 @@ Only these properties are relevant to the GitLab implementation of the `containe
 | `endpoints`    | Port mappings to expose from the container.                                       |
 | `volumeMounts` | Storage volume to mount in the container.                                         |
 
-### Example definition
+### Example configurations
 
-The following is an example devfile:
+The following is an example devfile configuration:
 
 ```yaml
 schemaVersion: 2.2.0
