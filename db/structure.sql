@@ -31679,7 +31679,7 @@ CREATE INDEX index_on_users_lower_username ON users USING btree (lower((username
 
 CREATE INDEX index_on_users_name_lower ON users USING btree (lower((name)::text));
 
-CREATE INDEX index_on_value_stream_dashboard_aggregations_last_run_at_id ON value_stream_dashboard_aggregations USING btree (last_run_at, namespace_id) WHERE (enabled IS TRUE);
+CREATE INDEX index_on_value_stream_dashboard_aggregations_last_run_at_and_id ON value_stream_dashboard_aggregations USING btree (last_run_at NULLS FIRST, namespace_id) WHERE (enabled IS TRUE);
 
 CREATE INDEX index_onboarding_progresses_for_create_track ON onboarding_progresses USING btree (created_at) WHERE (git_write_at IS NULL);
 

@@ -13,8 +13,14 @@ RSpec.describe Gitlab::Database::PgDepend, type: :model, feature_category: :data
         connection.execute('CREATE EXTENSION IF NOT EXISTS pg_stat_statements;')
       end
 
-      it 'returns pg_stat_statements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410508' do
-        expect(subject.pluck('relname')).to eq(['pg_stat_statements'])
+      it 'returns pg_stat_statements' do
+        expected_views = ['pg_stat_statements']
+
+        if Gitlab::Database::Reflection.new(described_class).version.to_f >= 14
+          expected_views << 'pg_stat_statements_info' # View added by pg_stat_statements starting in postgres 14
+        end
+
+        expect(subject.pluck('relname')).to match_array(expected_views)
       end
     end
   end

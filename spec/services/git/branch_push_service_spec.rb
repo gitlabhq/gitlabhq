@@ -14,15 +14,17 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   let(:branch)   { 'master' }
   let(:ref)      { "refs/heads/#{branch}" }
   let(:push_options) { nil }
+  let(:service) do
+    described_class
+      .new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options)
+  end
 
   before do
     project.add_maintainer(user)
   end
 
   subject(:execute_service) do
-    described_class
-      .new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options)
-      .execute
+    service.execute
   end
 
   describe 'Push branches' do
@@ -683,14 +685,44 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
     let(:commits_to_sync) { [] }
 
     shared_examples 'enqueues Jira sync worker' do
-      specify :aggregate_failures do
-        Sidekiq::Testing.fake! do
-          expect(JiraConnect::SyncBranchWorker)
-            .to receive(:perform_async)
-            .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
-            .and_call_original
+      context "batch_delay_jira_branch_sync_worker feature flag is enabled" do
+        before do
+          stub_feature_flags(batch_delay_jira_branch_sync_worker: true)
+        end
 
-          expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
+        specify :aggregate_failures do
+          Sidekiq::Testing.fake! do
+            if commits_to_sync.any?
+              expect(JiraConnect::SyncBranchWorker)
+                .to receive(:perform_in)
+                .with(kind_of(Numeric), project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
+                .and_call_original
+            else
+              expect(JiraConnect::SyncBranchWorker)
+                .to receive(:perform_async)
+                .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
+                .and_call_original
+            end
+
+            expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
+          end
+        end
+      end
+
+      context "batch_delay_jira_branch_sync_worker feature flag is disabled" do
+        before do
+          stub_feature_flags(batch_delay_jira_branch_sync_worker: false)
+        end
+
+        specify :aggregate_failures do
+          Sidekiq::Testing.fake! do
+            expect(JiraConnect::SyncBranchWorker)
+              .to receive(:perform_async)
+              .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
+              .and_call_original
+
+            expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
+          end
         end
       end
     end
@@ -723,6 +755,29 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
         end
 
         it_behaves_like 'enqueues Jira sync worker'
+
+        describe 'batch requests' do
+          let(:commits_to_sync) { [sample_commit.id, another_sample_commit.id] }
+
+          it 'enqueues multiple jobs' do
+            # We have to stub this as we only have two valid commits to use
+            stub_const('Git::BranchHooksService::JIRA_SYNC_BATCH_SIZE', 1)
+
+            expect_any_instance_of(Git::BranchHooksService).to receive(:filtered_commit_shas).and_return(commits_to_sync)
+
+            expect(JiraConnect::SyncBranchWorker)
+              .to receive(:perform_in)
+              .with(0.seconds, project.id, branch_to_sync, [commits_to_sync.first], kind_of(Numeric))
+              .and_call_original
+
+            expect(JiraConnect::SyncBranchWorker)
+              .to receive(:perform_in)
+              .with(10.seconds, project.id, branch_to_sync, [commits_to_sync.last], kind_of(Numeric))
+              .and_call_original
+
+            subject
+          end
+        end
       end
 
       context 'branch name and commit message does not contain Jira issue key' do

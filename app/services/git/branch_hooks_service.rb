@@ -4,6 +4,9 @@ module Git
   class BranchHooksService < ::Git::BaseHooksService
     extend ::Gitlab::Utils::Override
 
+    JIRA_SYNC_BATCH_SIZE = 20
+    JIRA_SYNC_BATCH_DELAY = 10.seconds
+
     def execute
       execute_branch_hooks
 
@@ -157,11 +160,32 @@ module Git
       return unless project.jira_subscription_exists?
 
       branch_to_sync = branch_name if Atlassian::JiraIssueKeyExtractors::Branch.has_keys?(project, branch_name)
-      commits_to_sync = limited_commits.select { |commit| Atlassian::JiraIssueKeyExtractor.has_keys?(commit.safe_message) }.map(&:sha)
+      commits_to_sync = filtered_commit_shas
 
-      if branch_to_sync || commits_to_sync.any?
-        JiraConnect::SyncBranchWorker.perform_async(project.id, branch_to_sync, commits_to_sync, Atlassian::JiraConnect::Client.generate_update_sequence_id)
+      return if branch_to_sync.nil? && commits_to_sync.empty?
+
+      if commits_to_sync.any? && Feature.enabled?(:batch_delay_jira_branch_sync_worker, project)
+        commits_to_sync.each_slice(JIRA_SYNC_BATCH_SIZE).with_index do |commits, i|
+          JiraConnect::SyncBranchWorker.perform_in(
+            JIRA_SYNC_BATCH_DELAY * i,
+            project.id,
+            branch_to_sync,
+            commits,
+            Atlassian::JiraConnect::Client.generate_update_sequence_id
+          )
+        end
+      else
+        JiraConnect::SyncBranchWorker.perform_async(
+          project.id,
+          branch_to_sync,
+          commits_to_sync,
+          Atlassian::JiraConnect::Client.generate_update_sequence_id
+        )
       end
+    end
+
+    def filtered_commit_shas
+      limited_commits.select { |commit| Atlassian::JiraIssueKeyExtractor.has_keys?(commit.safe_message) }.map(&:sha)
     end
 
     def signature_types

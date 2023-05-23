@@ -357,28 +357,21 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
 
     it 'returns true when a host has caught up' do
       allow(host).to receive(:connection).and_return(connection)
-      expect(connection).to receive(:select_all).and_return([{ 'result' => 't' }])
+      expect(connection).to receive(:select_all).and_return([{ 'diff' => -1 }])
 
       expect(host.caught_up?('foo')).to eq(true)
     end
 
-    it 'returns true when a host has caught up' do
+    it 'returns false when diff query returns nothing' do
       allow(host).to receive(:connection).and_return(connection)
-      expect(connection).to receive(:select_all).and_return([{ 'result' => true }])
-
-      expect(host.caught_up?('foo')).to eq(true)
-    end
-
-    it 'returns false when a host has not caught up' do
-      allow(host).to receive(:connection).and_return(connection)
-      expect(connection).to receive(:select_all).and_return([{ 'result' => 'f' }])
+      expect(connection).to receive(:select_all).and_return([])
 
       expect(host.caught_up?('foo')).to eq(false)
     end
 
     it 'returns false when a host has not caught up' do
       allow(host).to receive(:connection).and_return(connection)
-      expect(connection).to receive(:select_all).and_return([{ 'result' => false }])
+      expect(connection).to receive(:select_all).and_return([{ 'diff' => 123 }])
 
       expect(host.caught_up?('foo')).to eq(false)
     end
