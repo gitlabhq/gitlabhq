@@ -290,7 +290,7 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
    - The same or fewer permissions than the parent group membership, that user is displayed as having
      [inherited membership](../project/members/index.md#display-inherited-members) of the group.
 1. Optional. If the user you want to edit is displayed as having inherited membership,
-   [filter the subgroup to show direct members](manage.md#filter-a-group) before
+   [filter the subgroup to show direct members](index.md#filter-a-group) before
    overriding LDAP user permissions.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select **Edit permissions** in the modal.
@@ -318,6 +318,6 @@ If a parent group membership has the same or higher role than a subgroup, the
 listed on the subgroup members page, even if a [direct membership](../project/members/index.md#membership-types)
 on the group exists.
 
-To view and update direct memberships, [filter the group to show direct members](manage.md#filter-a-group).
+To view and update direct memberships, [filter the group to show direct members](index.md#filter-a-group).
 
 The need to filter members by type through a redesigned members page that lists both direct and inherited memberships is proposed in [issue 337539](https://gitlab.com/gitlab-org/gitlab/-/issues/337539#note_1277786161).

@@ -87,7 +87,7 @@ Alternatively, you can use the API to protect an environment:
        name: ${CI_JOB_NAME}
    ```
 
-1. Use the UI to [create a new group](../../user/group/manage.md#create-a-group).
+1. Use the UI to [create a new group](../../user/group/index.md#create-a-group).
    For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
    that the rest of the examples in these steps use this group.
 

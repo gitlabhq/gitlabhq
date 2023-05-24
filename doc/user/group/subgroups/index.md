@@ -184,7 +184,7 @@ In the screenshot above:
 - Administrator has the Owner role on group _Four_ and is a member of all subgroups. For that reason, as with User 3,
   the **Source** column indicates they are a direct member.
 
-Members can be [filtered by inherited or direct membership](../manage.md#filter-a-group).
+Members can be [filtered by inherited or direct membership](../index.md#filter-a-group).
 
 ### Override ancestor group membership
 

@@ -249,7 +249,7 @@ When you transfer a project to another namespace, you move the project to a diff
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
+- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).

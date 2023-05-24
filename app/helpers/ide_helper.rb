@@ -29,13 +29,17 @@ module IdeHelper
 
   private
 
+  def new_ide_code_suggestions_data
+    {}
+  end
+
   def new_ide_data(project:)
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
       # We will replace these placeholders in the FE
       'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
-    }
+    }.merge(new_ide_code_suggestions_data)
   end
 
   def legacy_ide_data(project:)

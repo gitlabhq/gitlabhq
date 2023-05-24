@@ -407,7 +407,7 @@ The following table lists group permissions available for each role:
 1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
 2. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-   - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
+   - The [group level](group/index.md#specify-who-can-add-projects-to-a-group).
 3. Does not apply to subgroups.
 4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
