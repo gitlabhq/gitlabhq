@@ -1,7 +1,8 @@
-import { withServer } from 'storybook-mirage'; // eslint-disable-line import/no-unresolved
+// Some modules read window.gon on initialization thus we need to define this object before anything else
+import './gon';
 import Vue from 'vue';
-import { createMockServer } from 'test_helpers/mock_server';
 import translateMixin from '~/vue_shared/translate';
+import { withGitLabAPIAccess, initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
 
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
@@ -9,13 +10,12 @@ const stylesheetsRequireCtx = require.context(
   /(application|application_utilities|highlight\/themes\/white)\.scss$/,
 );
 
-window.gon = {
-  user_color_scheme: 'white',
-};
+initializeGitLabAPIAccess();
+
 translateMixin(Vue);
 
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');
 stylesheetsRequireCtx('./highlight/themes/white.scss');
 
-export const decorators = [withServer(createMockServer)];
+export const decorators = [withGitLabAPIAccess];

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
+RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner, feature_category: :database do
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:migration_wrapper) { double('test wrapper') }
 
@@ -15,8 +15,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
   end
 
   before do
-    normal_signal = instance_double(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal, stop?: false)
-    allow(Gitlab::Database::BackgroundMigration::HealthStatus).to receive(:evaluate).and_return([normal_signal])
+    normal_signal = instance_double(Gitlab::Database::HealthStatus::Signals::Normal, stop?: false)
+    allow(Gitlab::Database::HealthStatus).to receive(:evaluate).and_return([normal_signal])
   end
 
   describe '#run_migration_job' do
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
         end
 
         context 'migration health' do
-          let(:health_status) { Gitlab::Database::BackgroundMigration::HealthStatus }
+          let(:health_status) { Gitlab::Database::HealthStatus }
           let(:stop_signal) { health_status::Signals::Stop.new(:indicator, reason: 'Take a break') }
           let(:normal_signal) { health_status::Signals::Normal.new(:indicator, reason: 'All good') }
           let(:not_available_signal) { health_status::Signals::NotAvailable.new(:indicator, reason: 'Indicator is disabled') }

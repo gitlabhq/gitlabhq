@@ -38419,6 +38419,9 @@ msgid_plural "Requires %{count} approvals from %{names}."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Requires a verified GitLab email address."
+msgstr ""
+
 msgid "Requires values to meet regular expression requirements."
 msgstr ""
 

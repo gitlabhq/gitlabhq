@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_category: :database do
+RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
 
   around do |example|
@@ -12,11 +12,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_cate
   end
 
   describe '.evaluate' do
-    subject(:evaluate) { described_class.evaluate(migration, [autovacuum_indicator_class]) }
+    subject(:evaluate) { described_class.evaluate(migration.health_context, [autovacuum_indicator_class]) }
 
     let(:migration) { build(:batched_background_migration, :active) }
 
-    let(:health_status) { Gitlab::Database::BackgroundMigration::HealthStatus }
+    let(:health_status) { described_class }
     let(:autovacuum_indicator_class) { health_status::Indicators::AutovacuumActiveOnTable }
     let(:wal_indicator_class) { health_status::Indicators::WriteAheadLog }
     let(:patroni_apdex_indicator_class) { health_status::Indicators::PatroniApdex }
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_cate
     end
 
     context 'with default indicators' do
-      subject(:evaluate) { described_class.evaluate(migration) }
+      subject(:evaluate) { described_class.evaluate(migration.health_context) }
 
       it 'returns a collection of signals' do
         normal_signal = instance_double("#{health_status}::Signals::Normal", log_info?: false)
@@ -65,8 +65,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_cate
 
       expect(autovacuum_indicator).to receive(:evaluate).and_return(signal)
 
-      expect(Gitlab::BackgroundMigration::Logger).to receive(:info).with(
-        migration_id: migration.id,
+      expect(Gitlab::Database::HealthStatus::Logger).to receive(:info).with(
+        status_checker_id: migration.id,
+        status_checker_type: 'Gitlab::Database::BackgroundMigration::BatchedMigration',
+        job_class_name: migration.job_class_name,
         health_status_indicator: autovacuum_indicator_class.to_s,
         indicator_signal: 'Stop',
         signal_reason: 'Test Exception',
@@ -89,7 +91,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_cate
       let(:error) { RuntimeError.new('everything broken') }
 
       before do
-        expect(autovacuum_indicator).to receive(:evaluate).and_raise(error)
+        allow(autovacuum_indicator).to receive(:evaluate).and_raise(error)
       end
 
       it 'does not fail' do
@@ -99,13 +101,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_cate
       it 'returns Unknown signal' do
         signal = evaluate.first
 
-        expect(signal).to be_an_instance_of(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+        expect(signal).to be_an_instance_of(Gitlab::Database::HealthStatus::Signals::Unknown)
         expect(signal.reason).to eq("unexpected error: everything broken (RuntimeError)")
       end
 
       it 'reports the exception to error tracking' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
-          .with(error, migration_id: migration.id, job_class_name: migration.job_class_name)
+          .with(
+            error,
+            status_checker_id: migration.id,
+            status_checker_type: 'Gitlab::Database::BackgroundMigration::BatchedMigration',
+            job_class_name: migration.job_class_name
+          )
 
         evaluate
       end

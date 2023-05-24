@@ -108,26 +108,30 @@ start-review-app-pipeline:
       - artifact: review-app-pipeline.yml
         job: e2e-test-pipeline-generate
 
-include:
-  - project: gitlab-org/quality/pipeline-common
-    ref: 5.2.2
-    file:
-      - /ci/danger-review.yml
-
 danger-review:
   extends:
     - .default-retry
     - .ruby-node-cache
     - .review:rules:danger
-  image: "${DEFAULT_CI_IMAGE}"
+  stage: test
+  needs: []
   before_script:
     - source scripts/utils.sh
     - bundle_install_script "--with danger"
     - yarn_install_script
+  script:
+    # ${DANGER_DANGERFILE} is used by Jihulab for customizing danger support: https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
+    - >
+      if [ -z "$DANGER_GITLAB_API_TOKEN" ]; then
+        run_timed_command danger_as_local
+      else
+        danger_id=$(echo -n ${DANGER_GITLAB_API_TOKEN} | md5sum | awk '{print $1}' | cut -c5-10)
+        run_timed_command "bundle exec danger --fail-on-errors=true --verbose --danger_id=\"${danger_id}\" --dangerfile=\"${DANGER_DANGERFILE:-Dangerfile}\""
+      fi
 
 danger-review-local:
-  extends: danger-review
-  before_script:
-    - !reference ["danger-review", "before_script"]
-    # We unset DANGER_GITLAB_API_TOKEN so that Danger will run as local from `danger-review:script`
-    - unset DANGER_GITLAB_API_TOKEN
+  extends:
+    - danger-review
+    - .review:rules:danger-local
+  script:
+    - run_timed_command danger_as_local

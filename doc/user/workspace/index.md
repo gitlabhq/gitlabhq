@@ -37,6 +37,7 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
     dns_zone: "workspaces.example.dev"
   ```
 
+- You must have at least the Developer role in the root group.
 - In each public project you want to use this feature for, create a [devfile](#devfile):
   1. On the top bar, select **Main menu > Projects** and find your project.
   1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](#example-configurations).

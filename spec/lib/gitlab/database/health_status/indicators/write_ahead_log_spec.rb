@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog do
+RSpec.describe Gitlab::Database::HealthStatus::Indicators::WriteAheadLog, feature_category: :database do
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
 
   around do |example|
@@ -14,7 +14,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
   describe '#evaluate' do
     let(:tables) { [table] }
     let(:table) { 'users' }
-    let(:context) { Gitlab::Database::BackgroundMigration::HealthStatus::Context.new(connection, tables) }
+    let(:context) do
+      Gitlab::Database::HealthStatus::Context.new(
+        described_class,
+        connection,
+        tables,
+        :gitlab_main
+      )
+    end
 
     subject(:evaluate) { described_class.new(context).evaluate }
 
@@ -25,14 +32,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
     it 'returns NoSignal signal in case the feature flag is disabled' do
       stub_feature_flags(batched_migrations_health_status_wal: false)
 
-      expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::NotAvailable)
+      expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
       expect(evaluate.reason).to include('indicator disabled')
     end
 
     it 'returns NoSignal signal when WAL archive queue can not be calculated' do
       expect(connection).to receive(:execute).and_return([{ 'pending_wal_count' => nil }])
 
-      expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::NotAvailable)
+      expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
       expect(evaluate.reason).to include('WAL archive queue can not be calculated')
     end
 
@@ -45,7 +52,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
     context 'when WAL archive queue size is below the limit' do
       it 'returns Normal signal' do
         expect(connection).to receive(:execute).and_return([{ 'pending_wal_count' => 1 }])
-        expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal)
+        expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Normal)
         expect(evaluate.reason).to include('WAL archive queue is within limit')
       end
     end
@@ -53,7 +60,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
     context 'when WAL archive queue size is above the limit' do
       it 'returns Stop signal' do
         expect(connection).to receive(:execute).and_return([{ 'pending_wal_count' => 420 }])
-        expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Stop)
+        expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Stop)
         expect(evaluate.reason).to include('WAL archive queue is too big')
       end
     end

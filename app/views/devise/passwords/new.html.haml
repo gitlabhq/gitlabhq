@@ -7,7 +7,10 @@
         = f.label :email, class: ("gl-mb-1" if Feature.enabled?(:restyle_login_page))
         = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
         .form-text.text-muted
-          = _('Requires your primary GitLab email address.')
+          - if Feature.enabled?(:password_reset_any_verified_email)
+            = _('Requires a verified GitLab email address.')
+          - else
+            = _('Requires your primary GitLab email address.')
 
       - if recaptcha_enabled?
         .gl-px-5

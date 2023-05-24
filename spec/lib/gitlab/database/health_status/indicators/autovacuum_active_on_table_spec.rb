@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::AutovacuumActiveOnTable,
+RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTable,
   feature_category: :database do
   include Database::DatabaseHelpers
 
@@ -23,11 +23,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
 
     let(:tables) { [table] }
     let(:table) { 'users' }
-    let(:context) { Gitlab::Database::BackgroundMigration::HealthStatus::Context.new(connection, tables) }
+    let(:context) do
+      Gitlab::Database::HealthStatus::Context.new(
+        described_class,
+        connection,
+        tables,
+        :gitlab_main
+      )
+    end
 
     context 'without autovacuum activity' do
       it 'returns Normal signal' do
-        expect(subject).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal)
+        expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::Normal)
       end
 
       it 'remembers the indicator class' do
@@ -41,7 +48,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
       end
 
       it 'returns Stop signal' do
-        expect(subject).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Stop)
+        expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::Stop)
       end
 
       it 'explains why' do
@@ -55,7 +62,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
       it 'returns NoSignal signal in case the feature flag is disabled' do
         stub_feature_flags(batched_migrations_health_status_autovacuum: false)
 
-        expect(subject).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::NotAvailable)
+        expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
       end
     end
   end

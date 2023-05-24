@@ -216,7 +216,12 @@ module Gitlab
         end
 
         def health_context
-          HealthStatus::Context.new(connection, [table_name], gitlab_schema.to_sym)
+          @health_context ||= Gitlab::Database::HealthStatus::Context.new(
+            self,
+            connection,
+            [table_name],
+            gitlab_schema.to_sym
+          )
         end
 
         def hold!(until_time: 10.minutes.from_now)

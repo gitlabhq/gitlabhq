@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::PatroniApdex, :aggregate_failures, feature_category: :database do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::Database::HealthStatus::Indicators::PatroniApdex, :aggregate_failures, feature_category: :database do # rubocop:disable Layout/LineLength
   let(:schema) { :main }
   let(:connection) { Gitlab::Database.database_base_models[schema].connection }
 
@@ -19,8 +19,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
     let(:prometheus_client) { instance_double(Gitlab::PrometheusClient) }
 
     let(:context) do
-      Gitlab::Database::BackgroundMigration::HealthStatus::Context
-        .new(connection, ['users'], gitlab_schema)
+      Gitlab::Database::HealthStatus::Context.new(
+        described_class,
+        connection,
+        ['users'],
+        gitlab_schema
+      )
     end
 
     let(:gitlab_schema) { "gitlab_#{schema}" }
@@ -61,7 +65,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
         it 'returns NoSignal signal in case the feature flag is disabled' do
           stub_feature_flags(batched_migrations_health_status_patroni_apdex: false)
 
-          expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::NotAvailable)
+          expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
           expect(evaluate.reason).to include('indicator disabled')
         end
 
@@ -69,7 +73,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           let(:database_apdex_settings) { nil }
 
           it 'returns Unknown signal' do
-            expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+            expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)
             expect(evaluate.reason).to include('Patroni Apdex Settings not configured')
           end
         end
@@ -78,7 +82,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           let(:client_ready) { false }
 
           it 'returns Unknown signal' do
-            expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+            expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)
             expect(evaluate.reason).to include('Prometheus client is not ready')
           end
         end
@@ -87,7 +91,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           let(:"database_apdex_sli_query_#{schema}") { nil }
 
           it 'returns Unknown signal' do
-            expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+            expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)
             expect(evaluate.reason).to include('Apdex SLI query is not configured')
           end
         end
@@ -96,7 +100,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           let(:"database_apdex_slo_#{schema}") { nil }
 
           it 'returns Unknown signal' do
-            expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+            expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)
             expect(evaluate.reason).to include('Apdex SLO is not configured')
           end
         end
@@ -105,7 +109,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           expect(prometheus_client).to receive(:query)
             .with(send("database_apdex_sli_query_#{schema}"))
             .and_return([{ "value" => [1662423310.878, apdex_slo_above_sli[schema]] }])
-          expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Normal)
+          expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Normal)
           expect(evaluate.reason).to include('Patroni service apdex is above SLO')
         end
 
@@ -113,7 +117,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           expect(prometheus_client).to receive(:query)
             .with(send("database_apdex_sli_query_#{schema}"))
             .and_return([{ "value" => [1662423310.878, apdex_slo_below_sli[schema]] }])
-          expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Stop)
+          expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Stop)
           expect(evaluate.reason).to include('Patroni service apdex is below SLO')
         end
 
@@ -131,7 +135,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
           with_them do
             it 'returns Unknown signal' do
               expect(prometheus_client).to receive(:query).and_return(result)
-              expect(evaluate).to be_a(Gitlab::Database::BackgroundMigration::HealthStatus::Signals::Unknown)
+              expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)
               expect(evaluate.reason).to include('Patroni service apdex can not be calculated')
             end
           end

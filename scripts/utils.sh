@@ -114,6 +114,8 @@ function yarn_install_script() {
 
   retry yarn install --frozen-lockfile
 
+  retry yarn storybook:install --frozen-lockfile
+
   section_end "yarn-install"
 }
 
@@ -288,6 +290,13 @@ function fail_pipeline_early() {
     echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."
     scripts/api/cancel_pipeline.rb
   fi
+}
+
+function danger_as_local() {
+  # Force danger to skip CI source GitLab and fallback to "local only git repo".
+  unset GITLAB_CI
+  # We need to base SHA to help danger determine the base commit for this shallow clone.
+  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}" --dangerfile="${DANGER_DANGERFILE:-Dangerfile}"
 }
 
 # We're inlining this function in `.gitlab/ci/package-and-test/main.gitlab-ci.yml` so make sure to reflect any changes there

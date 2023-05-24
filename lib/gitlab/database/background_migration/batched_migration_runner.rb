@@ -144,7 +144,7 @@ module Gitlab
         end
 
         def adjust_migration(active_migration)
-          signals = HealthStatus.evaluate(active_migration)
+          signals = Gitlab::Database::HealthStatus.evaluate(active_migration.health_context)
 
           if signals.any?(&:stop?)
             active_migration.hold!

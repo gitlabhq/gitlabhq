@@ -265,6 +265,15 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 16.1.0
+
+- A `MigrateHumanUserType` background migration will be finalized with
+    the `FinalizeUserTypeMigration` migration.
+    GitLab 16.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
+    [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
+    migration may take multiple days to complete on larger GitLab instances. Make sure the migration
+    has completed successfully before upgrading to 16.1.0.
+
 ### 16.0.0
 
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,

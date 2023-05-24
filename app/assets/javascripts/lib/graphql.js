@@ -120,6 +120,8 @@ function createApolloClient(resolvers = {}, config = {}) {
     cacheConfig = { typePolicies: {}, possibleTypes: {} },
     fetchPolicy = fetchPolicies.CACHE_FIRST,
     typeDefs,
+    httpHeaders = {},
+    fetchCredentials = 'same-origin',
     path = '/api/graphql',
     useGet = false,
   } = config;
@@ -138,11 +140,12 @@ function createApolloClient(resolvers = {}, config = {}) {
     uri,
     headers: {
       [csrf.headerKey]: csrf.token,
+      ...httpHeaders,
     },
     // fetch won’t send cookies in older browsers, unless you set the credentials init option.
     // We set to `same-origin` which is default value in modern browsers.
     // See https://github.com/whatwg/fetch/pull/585 for more information.
-    credentials: 'same-origin',
+    credentials: fetchCredentials,
     batchMax,
   };
 
