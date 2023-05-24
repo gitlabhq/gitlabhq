@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
+import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import DiffFileRow from '~/diffs/components//diff_file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 
@@ -38,6 +39,7 @@ describe('Diffs tree list component', () => {
     store = new Vuex.Store({
       modules: {
         diffs: createStore(),
+        batchComments: batchComments(),
       },
     });
 

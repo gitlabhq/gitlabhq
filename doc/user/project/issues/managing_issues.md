@@ -18,6 +18,8 @@ Prerequisites:
 
 To edit an issue:
 
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. To the right of the title, select **Edit title and description** (**{pencil}**).
 1. Edit the available fields.
 1. Select **Save changes**.
@@ -114,7 +116,8 @@ Prerequisites:
 
 To move an issue:
 
-1. Go to the issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, select **Move issue**.
 1. Search for a project to move the issue to.
 1. Select **Move**.
@@ -125,7 +128,7 @@ To move an issue:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
 
-You can move multiple issues at the same time when you’re in a project.
+You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
 
 Prerequisite:
@@ -204,10 +207,13 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
 
-To close an issue, you can do the following:
+To close an issue, you can either:
 
-- At the top of the issue, select **Close issue**.
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
+- From any other page in the GitLab UI:
+  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. Select **Issues**, then select the title of your issue to view it.
+  1. At the top of the issue, select **Close issue**.
 
 <!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
 If you don't see this action at the top of an issue, your project or instance might have
@@ -330,6 +336,8 @@ Prerequisites:
 
 To change issue type:
 
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. To the right of the title, select **Edit title and description** (**{pencil}**).
 1. Edit the issue and select an issue type from the **Issue type** dropdown list:
 
@@ -348,12 +356,16 @@ Prerequisites:
 
 To delete an issue:
 
-1. In an issue, select **Issue actions** (**{ellipsis_v}**).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
+1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Delete issue**.
 
 Alternatively:
 
-1. In an issue, select **Edit title and description** (**{pencil}**).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
+1. Select **Edit title and description** (**{pencil}**).
 1. Select **Delete issue**.
 
 ## Promote an issue to an epic **(PREMIUM)**
@@ -366,7 +378,9 @@ You can promote an issue to an [epic](../../group/epics/index.md) in the immedia
 
 To promote an issue to an epic:
 
-1. In an issue, select **Issue actions** (**{ellipsis_v}**).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
+1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
@@ -387,7 +401,8 @@ You can use the `/promote_to_incident` [quick action](../quick_actions.md) to pr
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
-1. Go to the issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
 1. Select any area outside the dropdown list.
@@ -417,6 +432,8 @@ Or:
 
 To filter the list of issues:
 
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**.
 1. Above the list of issues, select **Search or filter results...**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
@@ -469,7 +486,8 @@ To refer to an issue elsewhere in GitLab, you can use its full URL or a short re
 
 To copy the issue reference to your clipboard:
 
-1. Go to the issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, next to **Reference**, select **Copy Reference** (**{copy-to-clipboard}**).
 
 You can now paste the reference into another description or comment.
@@ -492,7 +510,8 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the issue's email address:
 
-1. Go to the issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
 
 ## Assignee
@@ -508,7 +527,8 @@ themselves or another project member assigns them.
 
 To change the assignee on an issue:
 
-1. Go to your issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, in the **Assignee** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -548,7 +568,8 @@ Prerequisites:
 
 To edit health status of an issue:
 
-1. Go to the issue.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Select **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:
 
@@ -556,7 +577,7 @@ To edit health status of an issue:
    - Needs attention (amber)
    - At risk (red)
 
-You can see the issue’s health status in:
+You can see the issue's health status in:
 
 - Issues list
 - Epic tree

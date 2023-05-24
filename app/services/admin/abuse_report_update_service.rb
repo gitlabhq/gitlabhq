@@ -17,8 +17,8 @@ module Admin
 
       result = perform_action
       if result[:status] == :success
-        close_report_and_record_event
-        ServiceResponse.success
+        event = close_report_and_record_event
+        ServiceResponse.success(message: event.success_message)
       else
         ServiceResponse.error(message: result[:message])
       end
@@ -58,6 +58,8 @@ module Admin
     end
 
     def close_report
+      return error('Report already closed') if abuse_report.closed?
+
       abuse_report.closed!
       success
     end

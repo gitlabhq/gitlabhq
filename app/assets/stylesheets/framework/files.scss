@@ -472,6 +472,8 @@ span.idiff {
 }
 
 .mr-tree-list:not(.tree-list-blobs) {
+  overflow: hidden;
+
   .tree-list-parent::before {
     @include gl-content-empty;
     @include gl-absolute;

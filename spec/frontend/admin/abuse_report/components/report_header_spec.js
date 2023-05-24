@@ -1,25 +1,27 @@
-import { GlAvatar, GlLink, GlButton } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlAvatar, GlLink, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
-import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
-import { REPORT_HEADER_I18N } from '~/admin/abuse_report/constants';
+import ReportActions from '~/admin/abuse_report/components/report_actions.vue';
+import { REPORT_HEADER_I18N, STATUS_OPEN, STATUS_CLOSED } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
 describe('ReportHeader', () => {
   let wrapper;
 
-  const { user, actions } = mockAbuseReport;
+  const { user, report } = mockAbuseReport;
 
+  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findIcon = () => wrapper.findComponent(GlIcon);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findLink = () => wrapper.findComponent(GlLink);
   const findButton = () => wrapper.findComponent(GlButton);
-  const findActions = () => wrapper.findComponent(AbuseReportActions);
+  const findActions = () => wrapper.findComponent(ReportActions);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(ReportHeader, {
       propsData: {
         user,
-        actions,
+        report,
         ...props,
       },
     });
@@ -51,9 +53,42 @@ describe('ReportHeader', () => {
     expect(button.text()).toBe(REPORT_HEADER_I18N.adminProfile);
   });
 
+  describe.each`
+    status           | text                                 | variant      | className                         | badgeIcon
+    ${STATUS_OPEN}   | ${REPORT_HEADER_I18N[STATUS_OPEN]}   | ${'success'} | ${'issuable-status-badge-open'}   | ${'issues'}
+    ${STATUS_CLOSED} | ${REPORT_HEADER_I18N[STATUS_CLOSED]} | ${'info'}    | ${'issuable-status-badge-closed'} | ${'issue-closed'}
+  `(
+    'rendering the report $status status badge',
+    ({ status, text, variant, className, badgeIcon }) => {
+      beforeEach(() => {
+        createComponent({ report: { ...report, status } });
+      });
+
+      it(`indicates the ${status} status`, () => {
+        expect(findBadge().text()).toBe(text);
+      });
+
+      it(`with the ${variant} variant`, () => {
+        expect(findBadge().props('variant')).toBe(variant);
+      });
+
+      it(`with the text '${text}' as 'aria-label'`, () => {
+        expect(findBadge().attributes('aria-label')).toBe(text);
+      });
+
+      it(`contains the ${className} class`, () => {
+        expect(findBadge().element.classList).toContain(className);
+      });
+
+      it(`has an icon with the ${badgeIcon} name`, () => {
+        expect(findIcon().props('name')).toBe(badgeIcon);
+      });
+    },
+  );
+
   it('renders the actions', () => {
     const actionsComponent = findActions();
 
-    expect(actionsComponent.props('report')).toMatchObject(actions);
+    expect(actionsComponent.props('report')).toMatchObject(report);
   });
 });

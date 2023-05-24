@@ -79,8 +79,7 @@ module Emails
       options = {
         from: email_sender,
         to: @service_desk_setting.custom_email_address_for_verification,
-        subject: subject,
-        content_type: "text/plain; charset=UTF-8"
+        subject: subject
       }
       # Outgoing emails from GitLab usually have this set to true.
       # Service Desk email ingestion ignores auto generated emails.

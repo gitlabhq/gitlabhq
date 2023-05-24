@@ -337,6 +337,81 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
+  describe 'GET /internal/kubernetes/verify_project_access' do
+    def send_request(headers: {}, params: {})
+      get api("/internal/kubernetes/verify_project_access"), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
+    include_examples 'agent authentication'
+    include_examples 'error handling'
+
+    shared_examples 'access is granted' do
+      it 'returns success response' do
+        send_request(params: { id: project_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    shared_examples 'access is denied' do
+      it 'returns 404' do
+        send_request(params: { id: project_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'an agent is found' do
+      let_it_be(:agent_token) { create(:cluster_agent_token) }
+      let(:project_id) { project.id }
+
+      include_examples 'agent token tracking'
+
+      context 'project is public' do
+        let(:project) { create(:project, :public) }
+
+        it_behaves_like 'access is granted'
+
+        context 'repository is for project members only' do
+          let(:project) { create(:project, :public, :repository_private) }
+
+          it_behaves_like 'access is denied'
+        end
+      end
+
+      context 'project is private' do
+        let(:project) { create(:project, :private) }
+
+        it_behaves_like 'access is denied'
+
+        context 'and agent belongs to project' do
+          let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: project)) }
+
+          it_behaves_like 'access is granted'
+        end
+      end
+
+      context 'project is internal' do
+        let(:project) { create(:project, :internal) }
+
+        it_behaves_like 'access is denied'
+
+        context 'and agent belongs to project' do
+          let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: project)) }
+
+          it_behaves_like 'access is granted'
+        end
+      end
+
+      context 'project does not exist' do
+        let(:project_id) { non_existing_record_id }
+
+        it_behaves_like 'access is denied'
+      end
+    end
+  end
+
   describe 'POST /internal/kubernetes/authorize_proxy_user', :clean_gitlab_redis_sessions do
     include SessionHelpers
 

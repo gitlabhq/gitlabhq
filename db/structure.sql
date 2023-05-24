@@ -10820,7 +10820,7 @@ CREATE TABLE abuse_trust_scores (
     updated_at timestamp with time zone NOT NULL,
     source smallint NOT NULL,
     correlation_id_value text,
-    CONSTRAINT check_77ca9551db CHECK ((char_length(correlation_id_value) <= 32))
+    CONSTRAINT check_77ca9551db CHECK ((char_length(correlation_id_value) <= 255))
 );
 
 CREATE SEQUENCE abuse_trust_scores_id_seq

@@ -23,6 +23,9 @@ export default {
     initialIsEnabled: {
       default: false,
     },
+    isIssueTrackerEnabled: {
+      default: false,
+    },
     endpoint: {
       default: '',
     },
@@ -163,6 +166,7 @@ export default {
     </gl-alert>
     <service-desk-setting
       :is-enabled="isEnabled"
+      :is-issue-tracker-enabled="isIssueTrackerEnabled"
       :incoming-email="incomingEmail"
       :custom-email="updatedCustomEmail"
       :custom-email-enabled="customEmailEnabled"

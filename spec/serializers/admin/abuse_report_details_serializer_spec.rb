@@ -12,8 +12,7 @@ RSpec.describe Admin::AbuseReportDetailsSerializer, feature_category: :insider_t
       is_expected.to include(
         :user,
         :reporter,
-        :report,
-        :actions
+        :report
       )
     end
   end

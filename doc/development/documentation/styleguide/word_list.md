@@ -672,6 +672,12 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
+## indexes, indices
+
+For the plural of **index**, use **indexes**.
+
+However, for ElasticSearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+
 ## Installation from source
 
 When referring to the installation method using the self-compiled code, refer to it

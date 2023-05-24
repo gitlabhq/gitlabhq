@@ -26,8 +26,16 @@ export default Node.create({
 
   addKeyboardShortcuts() {
     return {
-      Enter: () => this.editor.commands.splitListItem('detailsContent'),
-      'Shift-Tab': () => this.editor.commands.liftListItem('detailsContent'),
+      Enter: () => {
+        if (!this.editor.isActive('detailsContent')) return false;
+
+        return this.editor.commands.splitListItem('detailsContent');
+      },
+      'Shift-Tab': () => {
+        if (!this.editor.isActive('detailsContent')) return false;
+
+        return this.editor.commands.liftListItem('detailsContent');
+      },
     };
   },
 });

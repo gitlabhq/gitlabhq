@@ -14,6 +14,7 @@ describe('ServiceDeskTemplateDropdown', () => {
       mount(ServiceDeskTemplateDropdown, {
         propsData: {
           isEnabled: true,
+          isIssueTrackerEnabled: true,
           ...props,
         },
       }),

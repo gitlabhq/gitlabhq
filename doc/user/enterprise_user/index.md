@@ -71,6 +71,9 @@ The custom domain must match the email domain exactly. For example, if your emai
    certificate. You can also add the certificate and key later.
 1. Select **Add Domain**.
 
+NOTE:
+A valid certificate is not required for domain verification. You can ignore error messages regarding the certificate if you are not using GitLab Pages.
+
 #### 2. Get a verification code
 
 After you create a new domain, the verification code prompts you. Copy the values from GitLab
@@ -104,6 +107,7 @@ from the GitLab project.
 > - Once your domain has been verified, leave the verification record
   in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
+> - A valid certificate is not required for domain verification.
 
 ### View domains in group
 

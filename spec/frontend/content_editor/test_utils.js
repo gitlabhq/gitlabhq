@@ -192,6 +192,15 @@ export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
   );
 };
 
+export const triggerKeyboardInput = ({ tiptapEditor, key, shiftKey = false }) => {
+  let isCaptured = false;
+  tiptapEditor.view.someProp('handleKeyDown', (f) => {
+    isCaptured = f(tiptapEditor.view, new KeyboardEvent('keydown', { key, shiftKey }));
+    return isCaptured;
+  });
+  return isCaptured;
+};
+
 /**
  * Executes an action that triggers a transaction in the
  * tiptap Editor. Returns a promise that resolves

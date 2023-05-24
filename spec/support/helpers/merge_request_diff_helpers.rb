@@ -3,6 +3,18 @@
 module MergeRequestDiffHelpers
   PageEndReached = Class.new(StandardError)
 
+  def add_diff_line_draft_comment(comment, line_holder, diff_side = nil)
+    click_diff_line(line_holder, diff_side)
+    page.within('.js-discussion-note-form') do
+      fill_in('note_note', with: comment)
+      begin
+        click_button('Start a review', wait: 0.1)
+      rescue Capybara::ElementNotFound
+        click_button('Add to review')
+      end
+    end
+  end
+
   def click_diff_line(line_holder, diff_side = nil)
     line = get_line_components(line_holder, diff_side)
     scroll_to_elements_bottom(line_holder)

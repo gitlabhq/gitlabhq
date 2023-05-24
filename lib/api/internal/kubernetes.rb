@@ -121,6 +121,18 @@ module API
               default_branch: project.default_branch_or_main
             }
           end
+
+          desc 'Verify agent access to a project' do
+            detail 'Verifies if the agent (owning the token) is authorized to access the given project'
+          end
+          route_setting :authentication, cluster_agent_token_allowed: true
+          get '/verify_project_access', feature_category: :deployment_management, urgency: :low do
+            project = find_project(params[:id])
+
+            not_found! unless agent_has_access_to_project?(project)
+
+            status 204
+          end
         end
 
         namespace 'kubernetes/agent_configuration' do

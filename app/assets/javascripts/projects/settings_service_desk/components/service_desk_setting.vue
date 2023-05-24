@@ -8,6 +8,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlLink,
+  GlAlert,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
@@ -17,6 +18,9 @@ import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
 export default {
   i18n: {
     toggleLabel: __('Activate Service Desk'),
+    issueTrackerEnableMessage: __(
+      'To use Service Desk in this project, you must %{linkStart}activate the issue tracker%{linkEnd}.',
+    ),
   },
   components: {
     ClipboardButton,
@@ -28,10 +32,15 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlLink,
+    GlAlert,
     ServiceDeskTemplateDropdown,
   },
   props: {
     isEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    isIssueTrackerEnabled: {
       type: Boolean,
       required: true,
     },
@@ -110,6 +119,11 @@ export default {
         anchor: 'use-a-custom-email-address',
       });
     },
+    issuesHelpPagePath() {
+      return helpPagePath('user/project/settings/index.md', {
+        anchor: 'configure-project-visibility-features-and-permissions',
+      });
+    },
   },
   methods: {
     onCheckboxToggle(isChecked) {
@@ -141,9 +155,24 @@ export default {
 
 <template>
   <div>
+    <gl-alert v-if="!isIssueTrackerEnabled" class="mb-3" variant="info" :dismissible="false">
+      <gl-sprintf :message="$options.i18n.issueTrackerEnableMessage">
+        <template #link="{ content }">
+          <gl-link
+            class="gl-display-inline-block"
+            data-testid="issue-help-page"
+            :href="issuesHelpPagePath"
+            target="_blank"
+          >
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <gl-toggle
       id="service-desk-checkbox"
       :value="isEnabled"
+      :disabled="!isIssueTrackerEnabled"
       class="d-inline-block align-middle mr-1"
       :label="$options.i18n.toggleLabel"
       label-position="hidden"
@@ -194,6 +223,7 @@ export default {
           :label="__('Email address suffix')"
           :state="!projectKeyError"
           data-testid="suffix-form-group"
+          :disabled="!isIssueTrackerEnabled"
         >
           <gl-form-input
             v-if="hasProjectKeySupport"
@@ -249,6 +279,7 @@ export default {
           :label="__('Template to append to all Service Desk issues')"
           :state="!projectKeyError"
           class="mt-3"
+          :disabled="!isIssueTrackerEnabled"
         >
           <service-desk-template-dropdown
             :selected-template="selectedTemplate"
@@ -268,6 +299,7 @@ export default {
             id="service-desk-email-from-name"
             v-model.trim="outgoingName"
             data-testid="email-from-name"
+            :disabled="!isIssueTrackerEnabled"
           />
 
           <template #description>
@@ -280,7 +312,7 @@ export default {
           class="gl-mt-5"
           data-testid="save_service_desk_settings_button"
           data-qa-selector="save_service_desk_settings_button"
-          :disabled="isTemplateSaving"
+          :disabled="isTemplateSaving || !isIssueTrackerEnabled"
           @click="onSaveTemplate"
         >
           {{ __('Save changes') }}

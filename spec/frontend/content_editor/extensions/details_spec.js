@@ -1,6 +1,6 @@
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
 
 describe('content_editor/extensions/details', () => {
   let tiptapEditor;
@@ -75,18 +75,13 @@ describe('content_editor/extensions/details', () => {
   });
 
   it.each`
-    input          | insertedNode
-    ${'<details>'} | ${(...args) => details(detailsContent(p(...args)))}
-    ${'<details'}  | ${(...args) => p(...args)}
-    ${'details>'}  | ${(...args) => p(...args)}
-  `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
-    const { view } = tiptapEditor;
-    const { selection } = view.state;
-    const expectedDoc = doc(insertedNode());
+    inputRuleText  | insertedNode                          | insertedNodeType
+    ${'<details>'} | ${() => details(detailsContent(p()))} | ${'details'}
+    ${'<details'}  | ${() => p()}                          | ${'paragraph'}
+    ${'details>'}  | ${() => p()}                          | ${'paragraph'}
+  `('with input=$input, it inserts a $insertedNodeType node', ({ inputRuleText, insertedNode }) => {
+    triggerNodeInputRule({ tiptapEditor, inputRuleText });
 
-    // Triggers the event handler that input rules listen to
-    view.someProp('handleTextInput', (f) => f(view, selection.from, selection.to, input));
-
-    expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
+    expect(tiptapEditor.getJSON()).toEqual(doc(insertedNode()).toJSON());
   });
 });

@@ -739,7 +739,7 @@ attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts are sent to GitLab after the job finishes. They are
 available for download in the GitLab UI if the size is smaller than the
-the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
+[maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
 
 By default, jobs in later stages automatically download all the artifacts created
 by jobs in earlier stages. You can control artifact download behavior in jobs with

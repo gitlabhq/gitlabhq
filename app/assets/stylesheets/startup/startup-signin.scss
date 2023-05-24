@@ -670,6 +670,11 @@ body.navless {
   --top-bar-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
 }
 .tab-content {
   overflow: visible;

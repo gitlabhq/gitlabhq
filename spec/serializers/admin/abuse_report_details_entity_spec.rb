@@ -21,8 +21,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
       expect(entity_hash.keys).to include(
         :user,
         :reporter,
-        :report,
-        :actions
+        :report
       )
     end
 
@@ -127,31 +126,15 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
       report_hash = entity_hash[:report]
 
       expect(report_hash.keys).to match_array([
+        :status,
         :message,
         :reported_at,
         :category,
         :type,
         :content,
         :url,
-        :screenshot
-      ])
-    end
-
-    it 'correctly exposes `actions`', :aggregate_failures do
-      actions_hash = entity_hash[:actions]
-
-      expect(actions_hash.keys).to match_array([
-        :user_blocked,
-        :block_user_path,
-        :remove_user_and_report_path,
-        :remove_report_path,
-        :reported_user,
-        :redirect_path
-      ])
-
-      expect(actions_hash[:reported_user].keys).to match_array([
-        :name,
-        :created_at
+        :screenshot,
+        :update_path
       ])
     end
   end

@@ -1571,12 +1571,7 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
-            let_it_be(:credentials) do
-              create(
-                :service_desk_custom_email_credential,
-                project: project
-              )
-            end
+            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
 
             let_it_be(:settings) do
               create(

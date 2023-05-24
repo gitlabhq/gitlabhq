@@ -217,6 +217,14 @@ on a merge request, you can either add or remove approvers:
 Administrators can change the [merge request approvals settings](settings.md#prevent-editing-approval-rules-in-merge-requests)
 to prevent users from overriding approval rules for merge requests.
 
+## Require multiple approvals for a rule
+
+To create an approval rule which requires more than one approval:
+
+- When you [create or edit a rule](#edit-an-approval-rule), set **Approvals required** to `2` or more.
+- Use the [Merge requests approvals API](../../../../api/merge_request_approvals.md#update-merge-request-level-rule)
+  to set the `approvals_required` attribute to `2` or more.
+
 ## Configure optional approval rules
 
 Merge request approvals can be optional for projects where approvals are

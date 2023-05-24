@@ -1,6 +1,6 @@
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor, createDocBuilder, triggerKeyboardInput } from '../test_utils';
 
 describe('content_editor/extensions/details_content', () => {
   let tiptapEditor;
@@ -42,7 +42,6 @@ describe('content_editor/extensions/details_content', () => {
       );
 
       tiptapEditor.commands.setContent(initialDoc.toJSON());
-
       tiptapEditor.commands.setTextSelection(10);
       tiptapEditor.commands.keyboardShortcut('Enter');
 
@@ -66,11 +65,26 @@ describe('content_editor/extensions/details_content', () => {
       );
 
       tiptapEditor.commands.setContent(initialDoc.toJSON());
-
       tiptapEditor.commands.setTextSelection(20);
       tiptapEditor.commands.keyboardShortcut('Shift-Tab');
 
       expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
+    });
+  });
+
+  describe('capturing keyboard events', () => {
+    it.each`
+      key      | shiftKey | nodeActive | captured | description
+      ${'Tab'} | ${true}  | ${true}    | ${true}  | ${'captures Shift-Tab key when cursor is inside a details content'}
+      ${'Tab'} | ${true}  | ${false}   | ${false} | ${'does not capture Shift-Tab key when cursor is not inside a details content'}
+    `('$description', ({ key, shiftKey, nodeActive, captured }) => {
+      const initialDoc = doc(details(detailsContent(p('Text content'))));
+
+      tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+      jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(nodeActive);
+
+      expect(triggerKeyboardInput({ tiptapEditor, key, shiftKey })).toBe(captured);
     });
   });
 });

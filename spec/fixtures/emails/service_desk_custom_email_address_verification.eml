@@ -1,0 +1,31 @@
+Delivered-To: support+project_slug-project_id-issue-@example.com
+Received: by 2002:a05:7022:aa3:b0:5d:66:2e64 with SMTP id dd35csp3394266dlb; Mon, 23 Jan 2023 08:50:49 -0800 (PST)
+X-Received: by 2002:a19:a40e:0:b0:4c8:d65:da81 with SMTP id q14-20020a19a40e000000b004c80d65da81mr9022372lfc.60.1674492649184; Mon, 23 Jan 2023 08:50:49 -0800 (PST)
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41]) by mx.google.com with SMTPS id t20-20020a195f14000000b00499004f4b1asor10121263lfb.188.2023.01.23.08.50.48 for <support+project_slug-project_id-issue-@example.com> (Google Transport Security); Mon, 23 Jan 2023 08:50:49 -0800 (PST)
+X-Received: by 2002:a05:6512:224c:b0:4cc:7937:fa04 with SMTP id i12-20020a056512224c00b004cc7937fa04mr1421048lfu.378.1674492648772; Mon, 23 Jan 2023 08:50:48 -0800 (PST)
+X-Forwarded-To: support+project_slug-project_id-issue-@example.com
+X-Forwarded-For: custom-support-email@example.com support+project_slug-project_id-issue-@example.com
+Return-Path: <custom-support-email@example.com>
+Received: from gmail.com ([94.31.107.53]) by smtp.gmail.com with ESMTPSA id t13-20020a1c770d000000b003db0ee277b2sm11097876wmi.5.2023.01.23.08.50.47 for <fatjuiceofficial+verify@gmail.com> (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256); Mon, 23 Jan 2023 08:50:47 -0800 (PST)
+From: Flight Support <custom-support-email@example.com>
+X-Google-Original-From: Flight Support <example@example.com>
+Date: Mon, 23 Jan 2023 17:50:46 +0100
+Reply-To: GitLab <noreply@example.com>
+To: custom-support-email+verify@example.com
+Message-ID: <63d927a0e407c_5f8f3ac0267d@mail.gmail.com>
+Subject: Verify custom email address custom-support-email@example.com for Flight
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Auto-Submitted: no
+X-Auto-Response-Suppress: All
+
+
+
+This email is auto-generated. It verifies the ownership of the entered Service Desk custom email address and 
+correct functionality of email forwarding.
+
+Verification token: ZROT4ZZXA-Y6
+-- 
+
+You're receiving this email because of your account on 127.0.0.1.

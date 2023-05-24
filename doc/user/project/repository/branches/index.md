@@ -62,7 +62,14 @@ GitLab creates a default branch and adds your file to it.
 
 ### From an issue
 
+Prerequisites:
+
+- You must have at least the Developer role in the project.
+
 When viewing an issue, you can create an associated branch directly from that page.
+Branches created this way use the
+[default pattern for branch names from issues](#configure-default-pattern-for-branch-names-from-issues),
+including variables.
 
 Prerequisites:
 

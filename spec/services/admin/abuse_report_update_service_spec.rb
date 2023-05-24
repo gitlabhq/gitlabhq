@@ -52,6 +52,10 @@ RSpec.describe Admin::AbuseReportUpdateService, feature_category: :instance_resi
           comment: params[:comment]
         )
       end
+
+      it 'returns the event success message' do
+        expect(subject.message).to eq(abuse_report.events.last.success_message)
+      end
     end
 
     context 'when invalid parameters are given' do
@@ -194,6 +198,15 @@ RSpec.describe Admin::AbuseReportUpdateService, feature_category: :instance_resi
 
       it_behaves_like 'closes the report'
       it_behaves_like 'records an event', action: 'close_report'
+
+      context 'when report is already closed' do
+        before do
+          abuse_report.closed!
+        end
+
+        it_behaves_like 'returns an error response', 'Report already closed'
+        it_behaves_like 'does not record an event'
+      end
     end
   end
 end

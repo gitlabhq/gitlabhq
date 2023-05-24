@@ -95,7 +95,7 @@ describe('ContentEditor', () => {
   it('renders footer containing quick actions help text if quick actions docs path is defined', () => {
     createWrapper({ quickActionsDocsPath: '/foo/bar' });
 
-    expect(findEditorElement().text()).toContain('For quick actions, type /');
+    expect(wrapper.text()).toContain('For quick actions, type /');
     expect(wrapper.findComponent(GlLink).attributes('href')).toBe('/foo/bar');
   });
 

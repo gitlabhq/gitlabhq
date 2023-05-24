@@ -187,6 +187,13 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       visit project_commits_path(project, branch_name)
     end
 
+    it 'includes a date on which the commits were authored' do
+      commits = project.repository.commits(branch_name, limit: 40)
+      commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, _daily_commits|
+        expect(page).to have_content(day.strftime("%b %d, %Y"))
+      end
+    end
+
     it 'includes the committed_date for each commit' do
       commits = project.repository.commits(branch_name, limit: 40)
 

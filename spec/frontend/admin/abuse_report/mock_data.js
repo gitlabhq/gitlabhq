@@ -40,6 +40,7 @@ export const mockAbuseReport = {
     path: '/reporter',
   },
   report: {
+    status: 'open',
     message: 'This is obvious spam',
     reportedAt: '2023-03-29T09:39:50.502Z',
     category: 'spam',
@@ -49,13 +50,6 @@ export const mockAbuseReport = {
     url: 'http://localhost:3000/spamuser417/project/-/merge_requests/1#note_1375',
     screenshot:
       '/uploads/-/system/abuse_report/screenshot/27/Screenshot_2023-03-30_at_16.56.37.png',
-  },
-  actions: {
-    reportedUser: { name: 'Sp4m User', createdAt: '2023-03-29T09:30:23.885Z' },
-    userBlocked: false,
-    blockUserPath: '/admin/users/spamuser417/block',
-    removeReportPath: '/admin/abuse_reports/27',
-    removeUserAndReportPath: '/admin/abuse_reports/27?remove_user=true',
-    redirectPath: '/admin/abuse_reports',
+    updatePath: '/admin/abuse_reports/27',
   },
 };

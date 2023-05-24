@@ -327,15 +327,18 @@ $tabs-holder-z-index: 250;
   .diffs .files {
     .diff-tree-list {
       position: relative;
+      // height is fully handled on the javascript side in narrow view
+      min-height: 0;
+      height: auto;
       top: 0;
       // !important is required to override inline styles of resizable sidebar
       width: 100% !important;
       // avoid sticky elements overlap header and other elements
       z-index: 1;
+      @include gl-mb-3;
     }
 
     .tree-list-holder {
-      max-height: calc(50px + 50vh);
       padding-right: 0;
     }
   }
