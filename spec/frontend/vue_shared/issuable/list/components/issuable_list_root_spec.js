@@ -7,6 +7,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import issuableGrid from '~/vue_shared/issuable/list/components/issuable_grid.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -43,6 +44,7 @@ describe('IssuableListRoot', () => {
   const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
   const findIssuableItem = () => wrapper.findComponent(IssuableItem);
+  const findIssuableGrid = () => wrapper.findComponent(issuableGrid);
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
@@ -512,6 +514,20 @@ describe('IssuableListRoot', () => {
       const pageSize = 123;
       findPageSizeSelector().vm.$emit('input', pageSize);
       expect(wrapper.emitted('page-size-change')).toEqual([[pageSize]]);
+    });
+  });
+
+  describe('grid view issue', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        props: {
+          isGridView: true,
+        },
+      });
+    });
+
+    it('renders issuableGrid', () => {
+      expect(findIssuableGrid().exists()).toBe(true);
     });
   });
 });

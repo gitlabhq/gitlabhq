@@ -339,8 +339,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
      Name format for Redis HLL events `{hll_counters}_<name>`
 
-     [See Metric name](metrics_dictionary.md#metric-name) for a complete guide on metric naming suggestion.
-
      Example names: `users_creating_epics`, `users_triggering_security_scans`.
 
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.

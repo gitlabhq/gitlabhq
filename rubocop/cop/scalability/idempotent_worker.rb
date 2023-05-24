@@ -28,7 +28,7 @@ module RuboCop
 
         HELP_LINK = 'https://github.com/mperham/sidekiq/wiki/Best-Practices#2-make-your-job-idempotent-and-transactional'
 
-        MSG = <<~MSG
+        MSG = <<~MSG.freeze
           Avoid adding not idempotent workers.
 
           A worker is considered idempotent if:

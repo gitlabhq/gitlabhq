@@ -4,7 +4,7 @@ module Awardable
   extend ActiveSupport::Concern
 
   included do
-    has_many :award_emoji, -> { includes(:user).order(:id) }, as: :awardable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :award_emoji, -> { includes(:user).order(:id) }, as: :awardable, inverse_of: :awardable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     if self < Participable
       # By default we always load award_emoji user association

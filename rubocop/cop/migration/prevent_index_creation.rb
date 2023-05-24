@@ -10,7 +10,7 @@ module RuboCop
 
         FORBIDDEN_TABLES = %i[ci_builds].freeze
 
-        MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886"
+        MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886".freeze
 
         def on_new_investigation
           super

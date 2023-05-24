@@ -11,7 +11,8 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   getIssuesCountsQueryResponse,
@@ -34,6 +35,7 @@ import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
@@ -135,6 +137,9 @@ describe('CE IssuesListApp component', () => {
   const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
+  const findListViewTypeBtn = () => wrapper.findByTestId('list-view-type');
+  const findGridtViewTypeBtn = () => wrapper.findByTestId('grid-view-type');
+  const findViewTypeLocalStorageSync = () => wrapper.findAllComponents(LocalStorageSync).at(0);
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findRssButton = () => wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.rssLabel });
 
@@ -233,6 +238,7 @@ describe('CE IssuesListApp component', () => {
         hasPreviousPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage,
         hasNextPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage,
       });
+      expect(findIssuableList().props('isGridView')).toBe(false);
     });
   });
 
@@ -351,6 +357,37 @@ describe('CE IssuesListApp component', () => {
 
         expect(findNewResourceDropdown().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('header action buttons with the grid view enabled', () => {
+    beforeEach(() => {
+      wrapper = mountComponent({
+        mountFn: shallowMountExtended,
+        provide: {
+          glFeatures: {
+            issuesGridView: true,
+          },
+        },
+        stubs: {
+          IssuableList: stubComponent(IssuableList, {
+            template: `<div><slot name="nav-actions" /></div>`,
+          }),
+        },
+      });
+    });
+
+    it('switch between list and grid', async () => {
+      findGridtViewTypeBtn().vm.$emit('click');
+      await nextTick();
+
+      expect(findIssuableList().props('isGridView')).toBe(true);
+      expect(findViewTypeLocalStorageSync().props('value')).toBe('Grid');
+
+      findListViewTypeBtn().vm.$emit('click');
+      await nextTick();
+      expect(findIssuableList().props('isGridView')).toBe(false);
+      expect(findViewTypeLocalStorageSync().props('value')).toBe('List');
     });
   });
 

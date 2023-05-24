@@ -12,10 +12,9 @@ RSpec.describe Mutations::Environments::Create, feature_category: :environment_m
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   describe '#resolve' do
-    subject { mutation.resolve(project_path: project.full_path, name: name, external_url: external_url) }
+    subject { mutation.resolve(project_path: project.full_path, **kwargs) }
 
-    let(:name) { 'production' }
-    let(:external_url) { 'https://gitlab.com/' }
+    let(:kwargs) { { name: 'production', external_url: 'https://gitlab.com/' } }
 
     context 'when service execution succeeded' do
       it 'returns no errors' do
@@ -23,13 +22,13 @@ RSpec.describe Mutations::Environments::Create, feature_category: :environment_m
       end
 
       it 'creates the environment' do
-        expect(subject[:environment][:name]).to eq(name)
-        expect(subject[:environment][:external_url]).to eq(external_url)
+        expect(subject[:environment][:name]).to eq('production')
+        expect(subject[:environment][:external_url]).to eq('https://gitlab.com/')
       end
     end
 
     context 'when service cannot create the attribute' do
-      let(:external_url) { 'http://${URL}' }
+      let(:kwargs) { { name: 'production', external_url: 'http://${URL}' } }
 
       it 'returns an error' do
         expect(subject)
@@ -37,6 +36,18 @@ RSpec.describe Mutations::Environments::Create, feature_category: :environment_m
             environment: nil,
             errors: ['External url URI is invalid']
           })
+      end
+    end
+
+    context 'when setting cluster agent ID to the environment' do
+      let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+
+      let!(:authorization) { create(:agent_user_access_project_authorization, project: project, agent: cluster_agent) }
+
+      let(:kwargs) { { name: 'production', cluster_agent_id: cluster_agent.to_global_id } }
+
+      it 'sets the cluster agent to the environment' do
+        expect(subject[:environment].cluster_agent).to eq(cluster_agent)
       end
     end
 

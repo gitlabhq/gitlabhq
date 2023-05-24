@@ -50,6 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
     push_frontend_feature_flag(:saved_replies, current_user)
+    push_frontend_feature_flag(:issues_grid_view)
   end
 
   before_action only: [:index, :show] do

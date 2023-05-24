@@ -32,7 +32,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | Field               | Required | Additional information                                         |
 |---------------------|----------|----------------------------------------------------------------|
 | `key_path`          | yes      | JSON key path for the metric, location in Service Ping payload.  |
-| `name`              | no       | Metric name suggestion. Can replace the last part of `key_path`. |
+| `name` (deprecated)  | no       | Metric name suggestion. Does not have any impact on the Service Ping payload, only serves as documentation. |
 | `description`       | yes      |                                                                |
 | `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
 | `product_stage`     | yes       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
@@ -71,7 +71,11 @@ NOTE:
 We can't control what the metric's `key_path` is, because some of them are generated dynamically in `usage_data.rb`.
 For example, see [Redis HLL metrics](implement.md#redis-hll-counters).
 
-### Metric name
+### Metric name (deprecated)
+
+WARNING:
+This feature was deprecated in GitLab 16.1
+and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
 
 To improve metric discoverability by a wider audience, each metric with
 instrumentation added at an appointed `key_path` receives a `name` attribute
@@ -86,7 +90,11 @@ Metric name suggestions can contain two types of elements:
 For a metric name to be valid, it must not include any prompt, and fixed suggestions
 must not be changed.
 
-#### Generate a metric name suggestion
+#### Generate a metric name suggestion (deprecated)
+
+WARNING:
+This feature was deprecated in GitLab 16.1
+and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
 
 The metric YAML generator can suggest a metric name for you.
 To generate a metric name suggestion, first instrument the metric at the provided `key_path`.
@@ -149,7 +157,11 @@ We use the following categories to classify a metric:
 An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
 the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
 
-### Metric name suggestion examples
+### Metric name suggestion examples (deprecated)
+
+WARNING:
+This feature was deprecated in GitLab 16.1
+and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
 
 #### Metric with `data_source: database`
 

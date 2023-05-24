@@ -26,7 +26,7 @@ For error tracking to work, you need:
   Whatever backend you choose, the [error tracking UI](#error-tracking-list)
   is the same.
 
-## Integrated error tracking
+## Integrated error tracking **(FREE SAAS)**
 
 This guide provides you with basics of setting up error tracking for your project, using examples from different languages.
 
@@ -42,64 +42,59 @@ According to the Sentry [data model](https://develop.sentry.dev/sdk/envelopes/#d
 - [User feedback](https://develop.sentry.dev/sdk/envelopes/#user-feedback) (also known as user report)
 - [Client report](https://develop.sentry.dev/sdk/client-reports/)
 
-### Enable error tracking for your project
+### Enable error tracking for a project
 
 Regardless of the programming language you use, you first need to enable error tracking for your GitLab project.
 
-The `gitlab.com` instance is used in this guide.
+The `GitLab.com` instance is used in this guide.
 
-> This guide assumes that you already have a project for which you want to enable error tracking. Refer to [the GitLab documentation](../user/project/index.md) if you need to create a new one.
+Prerequisites:
 
-To enable error tracking:
+- You have a project for which you want to enable error tracking. To learn how to create a new one, see [Create a project](../user/project/index.md).
 
-1. In your project, go to **Settings > Monitor**. Expand the `Error Tracking` tab:
+To enable error tracking with GitLab as the backend:
 
-    ![MonitorTabPreEnable](img/Monitor_tab-pre-enable.png)
+1. In your project, go to **Settings > Monitor**.
+1. Expand **Error Tracking**.
+1. Under **Enable error tracking**, select the **Active** checkbox.
+1. Under **Error tracking backend**, select **GitLab**.
+1. Select **Save changes**.
 
-1. Enable Error Tracking with GitLab as backend:
-
-    ![MonitorTabPostEnable](img/Monitor_tab-post-enable.png)
-
-1. Select `Save Changes`.
-
-1. Copy the DSN string. You need it for configuring your SDK implementation.
+1. Copy the Data Source Name (DSN) string. You need it for configuring your SDK implementation.
 
 ## Error tracking list
 
-Once your application has emitted errors to the Error Tracking API through the Sentry SDK,
+After your application has emitted errors to the Error Tracking API through the Sentry SDK,
 they should be available under the **Monitor > Error Tracking** tab/section.
 
-![MonitorListErrors](img/Monitor-list_errors.png)
+![MonitorListErrors](img/list_errors_v16_0.png)
 
 ## Error tracking details
 
-![MonitorDetailErrors](img/Monitor-detail_errors.png)
+In the Error Details view you can see more details of the exception, including number of occurrences,
+users affected, first seen, and last seen dates.
 
-The Error Details view allows you to see more details of the Exception, including number of occurrences, users affected, first seen, and last seen.
+You can also review the stack trace.
 
-You can also review the Stack trace.
+![MonitorDetailErrors](img/detail_errors_v16_0.png)
 
 ## Emit errors
 
 ### Supported language SDKs & Sentry types
 
-In the following table, you can see a list of all event types available through Sentry SDK, and whether they are currently supported by GitLab Error Tracking.
+In the following table, you can see a list of all event types available through Sentry SDK, and whether they are supported by GitLab Error Tracking.
 
-<!-- markdownlint-disable MD044 -->
+| Language | Tested SDK client and version   | Endpoint   | Supported item types              |
+| -------- | ------------------------------- | ---------- | --------------------------------- |
+| Go       | `sentry-go/0.20.0`              | `store`    | `exception`, `message`            |
+| Java     | `sentry.java:6.18.1`            | `envelope` | `exception`, `message`            |
+| NodeJS   | `sentry.javascript.node:7.38.0` | `envelope` | `exception`, `message`            |
+| PHP      | `sentry.php/3.18.0`             | `store`    | `exception`, `message`            |
+| Python   | `sentry.python/1.21.0`          | `envelope` | `exception`, `message`, `session` |
+| Ruby     | `sentry.ruby:5.9.0`             | `envelope` | `exception`, `message`            |
+| Rust     | `sentry.rust/0.31.0`            | `envelope` | `exception`, `message`, `session` |
 
-| LANGUAGE | TESTED SDK CLIENT/VERSION | ENDPOINT | SUPPORTED ITEM TYPES |
-| --- | --- | --- | --- |
-| Go | sentry-go/0.20.0 | store | exception, message |
-| Java | sentry.java:6.18.1 | envelope | exception, message |
-| NodeJS | sentry.javascript.node:7.38.0 | envelope | exception, message |
-| PHP | sentry.php/3.18.0 | store | exception, message |
-| Python | sentry.python/1.21.0 | envelope | exception, message, session |
-| Ruby | sentry.ruby:5.9.0 | envelope | exception, message |
-| Rust | sentry.rust/0.31.0 | envelope | exception, message, session |
-
-<!-- markdownlint-enable -->
-
-For a detailed version of this matrix, see [this issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1737).
+For a detailed version of this table, see [this issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1737).
 
 ## Usage examples
 
@@ -112,34 +107,34 @@ see [Sentry SDK's documentation](https://docs.sentry.io/) specific to the used l
 
 ## Rotate generated DSN
 
-The Sentry DSN (client key) is a secret and it should not be exposed to the public.
+The Sentry Data Source Name, or DSN, (client key) is a secret and it should not be exposed to the public.
 In case of a leak, rotate the Sentry DSN by following these steps:
 
-1. [Create an access token](/ee/user/profile/personal_access_tokens.md#create-a-personal-access-token)
-by selecting your profile picture in GitLab.com.
-Then select Preferences, and then Access Token. Make sure you add API scope.
-1. Using the [error tracking API](/ee/api/error_tracking.md),
-create a new Sentry DSN:
+1. [Create an access token](../user/profile/personal_access_tokens.md#create-a-personal-access-token)
+   by selecting your profile picture in GitLab.com.
+   Then select Preferences, and then Access Token. Make sure you add API scope.
+1. Using the [error tracking API](../api/error_tracking.md),
+   create a new Sentry DSN:
 
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"
---header "Content-Type: application/json" \
-     "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys"
-```
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"
+   --header "Content-Type: application/json" \
+      "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys"
+   ```
 
-- Get the available client keys (Sentry DSNs).
- Ensure that the newly created Sentry DSN is in place.
- Then note down the key ID of the old client key:
+1. Get the available client keys (Sentry DSNs).
+   Ensure that the newly created Sentry DSN is in place.
+   Then note down the key ID of the old client key:
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys"
-```
+   ```shell
+   curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys"
+   ```
 
-- Delete the old client key.
+1. Delete the old client key.
 
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys/<key_id>"
-```
+   ```shell
+   curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys/<key_id>"
+   ```
 
 ## Debug SDK issues
 
@@ -158,51 +153,53 @@ so users can view a list of Sentry errors in GitLab.
 You can sign up to the cloud-hosted [Sentry](https://sentry.io) or deploy your own
 [on-premise instance](https://github.com/getsentry/onpremise/).
 
-### Enabling Sentry
+### Enable Sentry integration for a project
 
-GitLab provides a way to connect Sentry to your project. You need at
-least Maintainer [permissions](../user/permissions.md) to enable the Sentry integration.
+GitLab provides a way to connect Sentry to your project.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To enable the Sentry integration:
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
-1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/)
-a new Sentry project. For each GitLab project that you want to integrate,
-you should create a new Sentry project.
+1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/).
+   For each GitLab project that you want to integrate, you should create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).
    For the SaaS version of Sentry, you can find or generate the auth token at [https://sentry.io/api/](https://sentry.io/api/).
    You should give the token at least the following scopes: `project:read`,
    `event:read`, and
    `event:write` (for resolving events).
-1. In GitLab, enable error tracking:
+1. In GitLab, enable and configure Error Tracking:
    1. On the top bar, select **Main menu > Projects** and find your project.
    1. On the left sidebar, select **Monitor > Error Tracking**.
-   1. Select **Enable error tracking**.
-1. In GitLab, ensure error tracking is active.
-   1. On the left sidebar, select **Settings > Monitor**.
-   1. Expand **Error Tracking**.
-   1. Ensure the **Active** checkbox is selected.
-1. In the **Sentry API URL** box, enter your Sentry hostname. For example,
-enter `https://sentry.example.com`.
-For the SaaS version of Sentry, the hostname is `https://sentry.io`.
-1. In the **Auth Token** box, enter the token you previously generated.
-1. To test the connection to Sentry and populate the **Project** dropdown list,
-select **Connect**.
-1. From the **Project** list, choose a Sentry project to link to your GitLab project.
-1. Select **Save changes**.
+   1. Under **Enable error tracking**, select the **Active** checkbox.
+   1. Under **Error tracking backend**, select **Sentry**.
+   1. Under **Sentry API URL**, enter your Sentry hostname. For example,
+      enter `https://sentry.example.com`.
+      For the SaaS version of Sentry, the hostname is `https://sentry.io`.
+   1. Under **Auth Token**, enter the token you previously generated.
+   1. To test the connection to Sentry and populate the **Project** dropdown list,
+   select **Connect**.
+   1. From the **Project** list, choose a Sentry project to link to your GitLab project.
+   1. Select **Save changes**.
 
 You can now visit **Monitor > Error Tracking** in your project's sidebar to
 [view a list](#error-tracking-list) of Sentry errors.
 
-### Enabling GitLab issues links
+### Sentry's GitLab integration
 
 You might also want to enable Sentry's GitLab integration by following the steps
-in the [Sentry documentation](https://docs.sentry.io/product/integrations/gitlab/)
+in the [Sentry documentation](https://docs.sentry.io/product/integrations/gitlab/).
 
 ### Enable GitLab Runner
 
 To configure GitLab Runner with Sentry, you must add the value for `sentry_dsn`
-to your GitLab Runner's `config.toml` configuration file, as referenced in
-[GitLab Runner Advanced Configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
-While setting up Sentry, select **Go** if you're asked for the project type.
+to your runner's `config.toml` configuration file, as referenced in
+[Advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+
+If you're asked for the project type while setting up Sentry, select **Go**.
 
 If you see the following error in your GitLab Runner logs, then you should
 specify the deprecated

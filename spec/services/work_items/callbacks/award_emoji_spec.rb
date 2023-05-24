@@ -2,27 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::AwardEmojiService::UpdateService, feature_category: :team_planning do
+RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_planning do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   let(:current_user) { reporter }
-  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::AwardEmoji) } }
 
   before_all do
     project.add_reporter(reporter)
   end
 
-  describe '#before_update_in_transaction' do
+  describe '#before_update' do
     subject do
-      described_class.new(widget: widget, current_user: current_user)
-                     .before_update_in_transaction(params: params)
+      described_class.new(issuable: work_item, current_user: current_user, params: params)
+        .before_update
     end
 
     shared_examples 'raises a WidgetError' do
-      it { expect { subject }.to raise_error(described_class::WidgetError, message) }
+      it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message) }
     end
 
     context 'when awarding an emoji' do

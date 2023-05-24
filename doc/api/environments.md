@@ -299,7 +299,7 @@ PUT /projects/:id/environments/:environments_id
 | `tier`           | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 
 ```shell
-curl --request PUT --data "name=staging&external_url=https://staging.gitlab.example.com" \
+curl --request PUT --data "external_url=https://staging.gitlab.example.com" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 

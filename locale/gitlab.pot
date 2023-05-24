@@ -20933,6 +20933,9 @@ msgstr ""
 msgid "Gravatar enabled"
 msgstr ""
 
+msgid "Grid"
+msgstr ""
+
 msgid "Group"
 msgstr ""
 

@@ -2,6 +2,8 @@
 
 module Environments
   class CreateService < BaseService
+    ALLOWED_ATTRIBUTES = %i[name external_url tier cluster_agent].freeze
+
     def execute
       unless can?(current_user, :create_environment, project)
         return ServiceResponse.error(
@@ -10,7 +12,13 @@ module Environments
         )
       end
 
-      environment = project.environments.create(**params)
+      if unauthorized_cluster_agent?
+        return ServiceResponse.error(
+          message: _('Unauthorized to access the cluster agent in this project'),
+          payload: { environment: nil })
+      end
+
+      environment = project.environments.create(**params.slice(*ALLOWED_ATTRIBUTES))
 
       if environment.persisted?
         ServiceResponse.success(payload: { environment: environment })
@@ -20,6 +28,17 @@ module Environments
           payload: { environment: nil }
         )
       end
+    end
+
+    private
+
+    def unauthorized_cluster_agent?
+      return false unless params[:cluster_agent]
+
+      ::Clusters::Agents::Authorizations::UserAccess::Finder
+        .new(current_user, agent: params[:cluster_agent], project: project)
+        .execute
+        .empty?
     end
   end
 end

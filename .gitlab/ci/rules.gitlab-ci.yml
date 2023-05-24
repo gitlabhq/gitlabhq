@@ -2477,25 +2477,6 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.setup:rules:rails-production-server-boot:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-patterns
-
-.setup:rules:no-ee-check:
-  rules:
-    - <<: *if-not-foss
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-
-.setup:rules:no-jh-check:
-  rules:
-    - <<: *if-jh
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-
 .setup:rules:verify-ruby-3.0:
   rules:
     - <<: *if-merge-request-labels-run-in-ruby2
@@ -2525,6 +2506,29 @@
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+
+#######################
+# Preflight rules #
+#######################
+
+.preflight:rules:rails-production-server-boot:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-patterns
+
+.preflight:rules:no-ee-check:
+  rules:
+    - <<: *if-not-foss
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
+.preflight:rules:no-jh-check:
+  rules:
+    - <<: *if-jh
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
 
 #######################
 # Test metadata rules #

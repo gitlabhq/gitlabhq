@@ -12,10 +12,10 @@ module RuboCop
         DOC_LINK = "https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning"
 
         MSG_INHERIT = "Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. " \
-                      "Use Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}."
+                      "Use Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}.".freeze
 
         MSG_INCLUDE = "Don't include migration helper modules directly. " \
-                      "Inherit from Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}."
+                      "Inherit from Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}.".freeze
 
         GITLAB_MIGRATION_CLASS = 'Gitlab::Database::Migration'
         ACTIVERECORD_MIGRATION_CLASS = 'ActiveRecord::Migration'

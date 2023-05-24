@@ -3077,6 +3077,7 @@ Input type: `EnvironmentCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenvironmentcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentcreateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="mutationenvironmentcreatename"></a>`name` | [`String!`](#string) | Name of the environment. |
 | <a id="mutationenvironmentcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |

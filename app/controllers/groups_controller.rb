@@ -36,6 +36,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:issues_grid_view)
   end
 
   before_action only: :merge_requests do

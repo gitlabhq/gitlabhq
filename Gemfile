@@ -287,7 +287,7 @@ gem 'circuitbox', '2.0.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 6.0'
-gem 'babosa', '~> 1.0.4'
+gem 'babosa', '~> 2.0'
 
 # Sanitizes SVG input
 gem 'loofah', '~> 2.21.1'

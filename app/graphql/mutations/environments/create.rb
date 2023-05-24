@@ -30,6 +30,11 @@ module Mutations
         required: false,
         description: 'Tier of the environment.'
 
+      argument :cluster_agent_id,
+        ::Types::GlobalIDType[::Clusters::Agent],
+        required: false,
+        description: 'Cluster agent of the environment.'
+
       field :environment,
         Types::EnvironmentType,
         null: true,
@@ -37,6 +42,8 @@ module Mutations
 
       def resolve(project_path:, **kwargs)
         project = authorized_find!(project_path)
+
+        kwargs[:cluster_agent] = GitlabSchema.find_by_gid(kwargs.delete(:cluster_agent_id))&.sync
 
         response = ::Environments::CreateService.new(project, current_user, kwargs).execute
 
