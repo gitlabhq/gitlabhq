@@ -22,23 +22,11 @@ trigger-omnibus-env:
   extends:
     - .trigger-omnibus-env
 
-trigger-omnibus-env-ce:
-  extends:
-    - .trigger-omnibus-env-ce
-  variables:
-    FOSS_ONLY: "1"  # set FOSS_ONLY because we don't pass it via trigger job
-
 trigger-omnibus:
   extends:
     - .trigger-omnibus
   needs:
     - trigger-omnibus-env
-
-trigger-omnibus-ce:
-  extends:
-    - .trigger-omnibus-ce
-  needs:
-    - trigger-omnibus-env-ce
 
 download-knapsack-report:
   extends:
@@ -48,19 +36,6 @@ download-knapsack-report:
 # ==========================================
 # Test stage
 # ==========================================
-
-# ------------------------------------------
-# Update jobs
-# ------------------------------------------
-update-ee-to-ce:
-  extends:
-    - .qa
-    - .update-script
-    - .ce
-  variables:
-    UPDATE_TYPE: minor
-    UPDATE_FROM_EDITION: ee
-    QA_RSPEC_TAGS: --tag smoke
 
 # ------------------------------------------
 # Network limiting jobs

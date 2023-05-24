@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
 
           it 'does not increment cache read miss total' do
             expect(transaction).not_to receive(:increment)
-                                         .with(:gitlab_cache_misses_total, 1)
+                                         .with(:gitlab_cache_misses_total, 1, { store: store_label })
 
             subscriber.cache_read(event)
           end
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
 
       it 'increments the cache_read_hit count' do
         expect(transaction).to receive(:increment)
-                                 .with(:gitlab_transaction_cache_read_hit_count_total, 1)
+                                 .with(:gitlab_transaction_cache_read_hit_count_total, 1, { store: store_label })
 
         subscriber.cache_fetch_hit(event)
       end
@@ -168,9 +168,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       it 'increments the cache_fetch_miss count and cache_read_miss total' do
-        expect(transaction).to receive(:increment).with(:gitlab_cache_misses_total, 1)
+        expect(transaction).to receive(:increment).with(:gitlab_cache_misses_total, 1, { store: store_label })
         expect(transaction).to receive(:increment)
-                                 .with(:gitlab_transaction_cache_read_miss_count_total, 1)
+                                 .with(:gitlab_transaction_cache_read_miss_count_total, 1, { store: store_label })
 
         subscriber.cache_generate(event)
       end

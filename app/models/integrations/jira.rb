@@ -631,7 +631,7 @@ module Integrations
       yield
     rescue StandardError => e
       @error = e
-      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path, client_status: e.code)
+      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path, client_status: e.try(:code))
       nil
     end
 

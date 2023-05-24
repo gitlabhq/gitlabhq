@@ -1322,6 +1322,9 @@ msgstr ""
 msgid "'projects' is not yet supported"
 msgstr ""
 
+msgid "'schemaVersion' '%{given_version}' is not supported, it must be '%{required_version}'"
+msgstr ""
+
 msgid "'starterProjects' is not yet supported"
 msgstr ""
 
@@ -10985,6 +10988,9 @@ msgstr ""
 msgid "Command"
 msgstr ""
 
+msgid "Command id '%{command}' must not start with '%{prefix}'"
+msgstr ""
+
 msgid "Command line instructions"
 msgstr ""
 
@@ -11495,6 +11501,18 @@ msgid "ComplianceReport|Update result"
 msgstr ""
 
 msgid "Component"
+msgstr ""
+
+msgid "Component name '%{component}' for command id '%{command}' must not start with '%{prefix}'"
+msgstr ""
+
+msgid "Component name '%{component}' must not start with '%{prefix}'"
+msgstr ""
+
+msgid "Component type '%s' is not yet supported"
+msgstr ""
+
+msgid "Components must have a 'name'"
 msgstr ""
 
 msgid "Confidence"
@@ -16797,6 +16815,9 @@ msgstr ""
 msgid "End time"
 msgstr ""
 
+msgid "Endpoint name '%{endpoint}' of component '%{component}' must not start with '%{prefix}'"
+msgstr ""
+
 msgid "Ends"
 msgstr ""
 
@@ -17754,7 +17775,13 @@ msgstr ""
 msgid "Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
 msgstr ""
 
+msgid "Event '%{event}' of type '%{event_type}' must not start with '%{prefix}'"
+msgstr ""
+
 msgid "Event tag (optional)"
+msgstr ""
+
+msgid "Event type '%s' is not yet supported"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -24303,6 +24330,9 @@ msgstr ""
 msgid "Introducing Your DevOps Reports"
 msgstr ""
 
+msgid "Invalid 'schemaVersion' '%s'"
+msgstr ""
+
 msgid "Invalid Insights config file detected"
 msgstr ""
 
@@ -29239,6 +29269,9 @@ msgstr ""
 msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
+msgid "Multiple components(%s) have 'gl/inject-editor' attribute"
+msgstr ""
+
 msgid "Multiple integrations of a single type are not supported for this project"
 msgstr ""
 
@@ -29960,7 +29993,7 @@ msgstr ""
 msgid "No component has 'gl/inject-editor' attribute"
 msgstr ""
 
-msgid "No components present in the devfile"
+msgid "No components present in devfile"
 msgstr ""
 
 msgid "No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}."
@@ -36455,6 +36488,9 @@ msgid "Promotions|You can restrict access to protected branches by choosing a ro
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
+msgstr ""
+
+msgid "Property 'dedicatedPod' of component '%s' is not yet supported"
 msgstr ""
 
 msgid "Protect"
@@ -49422,6 +49458,9 @@ msgid "ValueStreamEvent|Stop"
 msgstr ""
 
 msgid "Variable"
+msgstr ""
+
+msgid "Variable name '%{variable}' must not start with '%{prefix}'"
 msgstr ""
 
 msgid "Variable value will be evaluated as raw string."

@@ -13,7 +13,7 @@ module Gitlab
 
           return unless current_transaction
 
-          labels = { store: event.payload[:store].split('::').last }
+          labels = { store: extract_store_name(event) }
           current_transaction.observe(:gitlab_cache_read_multikey_count, event.payload[:key].size, labels) do
             buckets [10, 50, 100, 1000]
             docstring 'Number of keys for mget in read_multi/fetch_multi'
@@ -48,23 +48,26 @@ module Gitlab
         def cache_fetch_hit(event)
           return unless current_transaction
 
-          current_transaction.increment(:gitlab_transaction_cache_read_hit_count_total, 1)
+          labels = { store: extract_store_name(event) }
+          current_transaction.increment(:gitlab_transaction_cache_read_hit_count_total, 1, labels)
         end
 
         def cache_generate(event)
           return unless current_transaction
 
-          current_transaction.increment(:gitlab_cache_misses_total, 1) do
+          labels = { store: extract_store_name(event) }
+
+          current_transaction.increment(:gitlab_cache_misses_total, 1, labels) do
             docstring 'Cache read miss'
           end
 
-          current_transaction.increment(:gitlab_transaction_cache_read_miss_count_total, 1)
+          current_transaction.increment(:gitlab_transaction_cache_read_miss_count_total, 1, labels)
         end
 
         def observe(key, event)
           return unless current_transaction
 
-          labels = { operation: key, store: event.payload[:store].split('::').last }
+          labels = { operation: key, store: extract_store_name(event) }
 
           current_transaction.increment(:gitlab_cache_operations_total, 1, labels) do
             docstring 'Cache operations'
@@ -75,6 +78,11 @@ module Gitlab
         end
 
         private
+
+        def extract_store_name(event)
+          # see payload documentation in https://guides.rubyonrails.org/active_support_instrumentation.html#active-support
+          event.payload[:store].to_s.split('::').last
+        end
 
         def current_transaction
           ::Gitlab::Metrics::WebTransaction.current

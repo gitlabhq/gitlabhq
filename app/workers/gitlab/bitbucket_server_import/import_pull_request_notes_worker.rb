@@ -2,10 +2,8 @@
 
 module Gitlab
   module BitbucketServerImport
-    class ImportPullRequestNotesWorker
+    class ImportPullRequestNotesWorker # rubocop:disable Scalability/IdempotentWorker
       include ObjectImporter
-
-      idempotent!
 
       def importer_class
         Importers::PullRequestNotesImporter

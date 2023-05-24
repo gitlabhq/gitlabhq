@@ -106,6 +106,7 @@ export default {
         'note note-wrapper note-comment': true,
         target: this.isTarget,
         'inner-target': this.isTarget && !this.isFirstNote,
+        'internal-note': this.note.internal,
       };
     },
     showReply() {
@@ -309,6 +310,7 @@ export default {
             :created-at="note.createdAt"
             :note-id="note.id"
             :note-url="note.url"
+            :is-internal-note="note.internal"
           >
             <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
           </note-header>

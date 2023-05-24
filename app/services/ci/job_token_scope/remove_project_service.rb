@@ -26,7 +26,7 @@ module Ci
           ServiceResponse.error(message: link.errors.full_messages.to_sentence, payload: { project_link: link })
         end
       rescue EditScopeValidations::ValidationError => e
-        ServiceResponse.error(message: e.message)
+        ServiceResponse.error(message: e.message, reason: :insufficient_permissions)
       end
     end
   end

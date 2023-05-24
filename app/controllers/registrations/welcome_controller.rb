@@ -81,6 +81,7 @@ module Registrations
         members_activity_path(members)
       else
         # subscription registrations goes through here as well
+        finish_onboarding_if_in_subscription_flow
         path_for_signed_in_user(current_user)
       end
     end
@@ -95,6 +96,9 @@ module Registrations
     def welcome_update_params
       {}
     end
+
+    # overridden in EE
+    def finish_onboarding_if_in_subscription_flow; end
   end
 end
 

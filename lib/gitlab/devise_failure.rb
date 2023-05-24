@@ -7,6 +7,14 @@ module Gitlab
     def http_auth?
       request_format && super
     end
+
+    def respond
+      if warden_options[:reason] == :too_many_requests
+        self.status = 403
+      else
+        super
+      end
+    end
   end
 end
 

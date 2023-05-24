@@ -263,4 +263,128 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
       end
     end
   end
+
+  describe 'DELETE /projects/:id/job_token_scope/allowlist/:target_project_id' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:target_project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:link) do
+      create(:ci_job_token_project_scope_link,
+        source_project: project,
+        target_project: target_project)
+    end
+
+    let(:project_id) { project.id }
+    let(:delete_job_token_scope_path) do
+      "/projects/#{project_id}/job_token_scope/allowlist/#{target_project.id}"
+    end
+
+    subject { delete api(delete_job_token_scope_path, user) }
+
+    context 'when unauthenticated user (missing user)' do
+      let(:user) { nil }
+
+      context 'for public project' do
+        it 'does not delete requested project from allowlist' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when user has no permissions to project' do
+      it 'responds with 401 forbidden' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated user as a developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 403 Forbidden' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated user as a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'for the target project member' do
+        before do
+          target_project.add_guest(user)
+        end
+
+        it 'returns no content and deletes requested project from allowlist' do
+          expect_next_instance_of(
+            Ci::JobTokenScope::RemoveProjectService,
+            project,
+            user
+          ) do |service|
+            expect(service).to receive(:execute).with(target_project, :inbound)
+              .and_return(instance_double('ServiceResponse', success?: true))
+          end
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(response.body).to be_blank
+        end
+
+        context 'when fails to remove target project' do
+          it 'returns a bad request' do
+            expect_next_instance_of(
+              Ci::JobTokenScope::RemoveProjectService,
+              project,
+              user
+            ) do |service|
+              expect(service).to receive(:execute).with(target_project, :inbound)
+                .and_return(instance_double('ServiceResponse',
+                  success?: false,
+                  reason: nil,
+                  message: 'Failed to remove'))
+            end
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
+      context 'when user project does not exists' do
+        before do
+          project.destroy!
+        end
+
+        it 'responds with 404 Not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when target project does not exists' do
+        before do
+          target_project.destroy!
+        end
+
+        it 'responds with 404 Not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
 end

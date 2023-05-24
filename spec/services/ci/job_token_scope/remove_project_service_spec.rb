@@ -52,6 +52,16 @@ RSpec.describe Ci::JobTokenScope::RemoveProjectService, feature_category: :conti
 
         it_behaves_like 'returns error', "Source project cannot be removed from the job token scope"
       end
+
+      context 'when target project is not in the job token scope' do
+        let_it_be(:target_project) { create(:project, :public) }
+
+        before do
+          project.add_maintainer(current_user)
+        end
+
+        it_behaves_like 'returns error', 'Target project is not in the job token scope'
+      end
     end
   end
 end

@@ -780,6 +780,12 @@ entry.
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
 
+## 15.11.6 (2023-05-24)
+
+### Changed (1 change)
+
+- [Introduce parallelised BitBucket Server Importer](gitlab-org/gitlab@41fead2e5b8b8c61c269de902282e2aa75b967a5) ([merge request](gitlab-org/gitlab!121332))
+
 ## 15.11.5 (2023-05-19)
 
 ### Fixed (5 changes)

@@ -73,6 +73,38 @@ module API
 
         present paginate(inbound_projects), with: Entities::BasicProjectDetails
       end
+
+      desc 'Delete project from allowlist.' do
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        success code: 204
+        tags %w[projects_job_token_scope]
+      end
+
+      params do
+        requires :id, type: Integer, desc: 'ID of user project', documentation: { example: 1 }
+        requires :target_project_id, type: Integer,
+          desc: 'ID of the project to be removed from the allowlist', documentation: { example: 2 }
+      end
+      delete ':id/job_token_scope/allowlist/:target_project_id' do
+        target_project = find_project!(params[:target_project_id])
+
+        result = ::Ci::JobTokenScope::RemoveProjectService
+          .new(user_project, current_user)
+          .execute(target_project, :inbound)
+
+        if result.success?
+          no_content!
+        elsif result.reason == :insufficient_permissions
+          forbidden!(result.message)
+        else
+          bad_request!(result.message)
+        end
+      end
     end
   end
 end

@@ -14,7 +14,7 @@ class Namespace::AggregationSchedule < ApplicationRecord
 
   def default_lease_timeout
     if Feature.enabled?(:reduce_aggregation_schedule_lease, namespace.root_ancestor)
-      2.minutes.to_i
+      ::Gitlab::CurrentSettings.namespace_aggregation_schedule_lease_duration_in_seconds
     else
       30.minutes.to_i
     end

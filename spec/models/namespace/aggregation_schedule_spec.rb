@@ -17,9 +17,12 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
     end
 
     context 'when reduce_aggregation_schedule_lease FF is enabled' do
-      it 'is 2 minutes' do
+      it 'returns namespace_aggregation_schedule_lease_duration value from Gitlabsettings' do
+        allow(::Gitlab::CurrentSettings).to receive(:namespace_aggregation_schedule_lease_duration_in_seconds)
+          .and_return(240)
         stub_feature_flags(reduce_aggregation_schedule_lease: true)
-        expect(aggregation_schedule.default_lease_timeout).to eq 2.minutes.to_i
+
+        expect(aggregation_schedule.default_lease_timeout).to eq 4.minutes.to_i
       end
     end
 

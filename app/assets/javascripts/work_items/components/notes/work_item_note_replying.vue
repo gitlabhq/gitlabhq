@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    isInternalNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     author() {
@@ -36,12 +41,18 @@ export default {
         username: window.gon.current_username,
       };
     },
+    entryClass() {
+      return {
+        'note note-wrapper note-comment being-posted': true,
+        'internal-note': this.isInternalNote,
+      };
+    },
   },
 };
 </script>
 
 <template>
-  <timeline-entry-item class="note note-wrapper note-comment being-posted">
+  <timeline-entry-item :class="entryClass">
     <div class="timeline-avatar gl-float-left">
       <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" />
     </div>

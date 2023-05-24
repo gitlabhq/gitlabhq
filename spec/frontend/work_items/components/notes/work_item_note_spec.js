@@ -318,5 +318,23 @@ describe('Work Item Note', () => {
         },
       );
     });
+
+    describe('internal note', () => {
+      it('does not have the internal note class set by default', () => {
+        createComponent();
+        expect(findTimelineEntryItem().classes()).not.toContain('internal-note');
+      });
+
+      it('timeline entry item and note header has the class for internal notes', () => {
+        createComponent({
+          note: {
+            ...mockWorkItemCommentNote,
+            internal: true,
+          },
+        });
+        expect(findTimelineEntryItem().classes()).toContain('internal-note');
+        expect(findNoteHeader().props('isInternalNote')).toBe(true);
+      });
+    });
   });
 });

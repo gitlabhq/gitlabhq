@@ -2341,7 +2341,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent: false
   :tags: []
 - :name: bitbucket_server_import_import_pull_request_notes
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker
@@ -2350,7 +2350,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent: false
   :tags: []
 - :name: bitbucket_server_import_stage_finish_import
   :worker_name: Gitlab::BitbucketServerImport::Stage::FinishImportWorker

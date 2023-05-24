@@ -69,6 +69,11 @@ export default {
       required: false,
       default: false,
     },
+    isInternalThread: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -148,6 +153,7 @@ export default {
         'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix': !this
           .isNewDiscussion,
         'gl-bg-white! gl-pt-0!': this.isEditing,
+        'gl-bg-orange-50!': this.isInternalThread,
       };
     },
   },
@@ -162,7 +168,7 @@ export default {
     },
   },
   methods: {
-    async updateWorkItem(commentText) {
+    async updateWorkItem({ commentText, isNoteInternal = false }) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
       try {
@@ -175,6 +181,7 @@ export default {
               noteableId: this.workItemId,
               body: commentText,
               discussionId: this.discussionId || null,
+              internal: isNoteInternal,
             },
           },
           update(store, createNoteData) {

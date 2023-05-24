@@ -120,7 +120,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  it('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
+  // quarantine flaky spec:https://gitlab.com/gitlab-org/gitlab/-/issues/412618
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: true } });
 
     await enableContentEditor();

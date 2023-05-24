@@ -135,6 +135,11 @@
     - *qa-run-all-tests
     - *feature-flags-set-manual
 
+.rules:test:ce-only:
+  rules:
+    - if: $FOSS_ONLY != "1"
+      when: never
+
 .rules:test:ee-only:
   rules:
     - if: $FOSS_ONLY == "1"
@@ -146,12 +151,10 @@
     # these jobs need gitlab version because we can't reliably detect it from just the image
     - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
       when: never
-    # update type tests are used to check if gitlab upgrade can be performed correctly (mainly migrations)
-    # there isn't much benefit in running tests after update with new sidebar enabled and there
-    # is also an issue to properly pass feature toggle to this job due to how gitlab-qa parses cli args
-    - if: $QA_SUPER_SIDEBAR_ENABLED == "true"
+    # $QA_SUPER_SIDEBAR_ENABLED is now only present as a variable when testing old nav so we skip update jobs
+    # in pipeline where it is explicitly disabled
+    - if: $QA_SUPER_SIDEBAR_ENABLED
       when: never
-    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
 
 .rules:test:qa-default-branch:
