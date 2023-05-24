@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.6 (2023-05-24)
+
+### Changed (1 change)
+
+- [Introduce parallelised BitBucket Server Importer](gitlab-org/gitlab@41fead2e5b8b8c61c269de902282e2aa75b967a5) ([merge request](gitlab-org/gitlab!121332))
+
 ## 15.11.5 (2023-05-19)
 
 ### Fixed (5 changes)
