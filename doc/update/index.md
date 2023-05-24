@@ -192,7 +192,8 @@ accordingly, while also consulting the
 - GitLab 12: `12.0.12` > [`12.1.17`](#1210) > [`12.10.14`](#12100)
 - GitLab 13: `13.0.14` > [`13.1.11`](#1310) > [`13.8.8`](#1388) > [`13.12.15`](#13120)
 - GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100)
-- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.11.x`](#15110)
+- GitLab 16: [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
