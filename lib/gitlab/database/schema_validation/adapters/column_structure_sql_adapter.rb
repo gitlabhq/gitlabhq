@@ -104,7 +104,7 @@ module Gitlab
             when :func_call
               "#{parse_node(node.func_call.funcname.first)}()"
             when :a_const
-              parse_node(node.a_const.val)
+              parse_a_const(node.a_const)
             when :type_cast
               value = parse_node(node.type_cast.arg)
               type = type(node.type_cast.type_name)
@@ -112,8 +112,19 @@ module Gitlab
 
               [MAPPINGS.fetch(value, "'#{value}'"), separator].compact.join('')
             else
-              node.to_h[node.node].values.last
+              get_value_from_key(node, key: node.node)
             end
+          end
+
+          def parse_a_const(a_const)
+            return unless a_const
+
+            type = a_const.val
+            get_value_from_key(a_const, key: type)
+          end
+
+          def get_value_from_key(node, key:)
+            node.to_h[key].values.last
           end
 
           def partition_keys

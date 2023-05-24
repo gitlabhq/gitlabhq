@@ -51,10 +51,15 @@ module Gitlab
 
         execute_sql_statement(sql_statement)
 
-        result_hash(action: 'locked')
+        result_hash(action: dry_run ? 'needs_lock' : 'locked')
       end
 
       def unlock_writes
+        unless table_locked_for_writes?
+          logger&.info "Skipping unlock_writes, because #{table_name} is already unlocked for writes"
+          return result_hash(action: 'skipped')
+        end
+
         logger&.info "Database: '#{database_name}', Table: '#{table_name}': Allow Writes".color(:green)
         sql_statement = <<~SQL
           DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};
@@ -62,7 +67,7 @@ module Gitlab
 
         execute_sql_statement(sql_statement)
 
-        result_hash(action: 'unlocked')
+        result_hash(action: dry_run ? 'needs_unlock' : 'unlocked')
       end
 
       private

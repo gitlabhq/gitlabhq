@@ -146,7 +146,7 @@ the GitLab container according to the documentation, it should be in the
 
 For [GitLab Helm chart installations](https://gitlab.com/gitlab-org/charts/gitlab)
 on a Kubernetes cluster, you must follow the
-[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
+[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#back-up-the-secrets)
 instructions.
 
 You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), and your

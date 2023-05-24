@@ -68,8 +68,6 @@ module Gitlab
             private
 
             def project
-              return legacy_project if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
-
               # Although we use `where_full_path_in`, this BatchLoader does not reduce the number of queries to 1.
               # That's because we use it in the `can_access_local_content?` and `sha` BatchLoaders
               # as the `for` parameter. And this loads the project immediately.
@@ -83,10 +81,6 @@ module Gitlab
             end
 
             def can_access_local_content?
-              if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
-                return legacy_can_access_local_content?
-              end
-
               return if project.nil?
 
               # We are force-loading the project with the `itself` method
@@ -103,7 +97,6 @@ module Gitlab
             end
 
             def sha
-              return legacy_sha if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
               return if project.nil?
 
               # with `itself`, we are force-loading the project
@@ -125,26 +118,6 @@ module Gitlab
                 end
               rescue GRPC::NotFound, GRPC::Internal
                 # no-op
-              end
-            end
-
-            def legacy_project
-              strong_memoize(:legacy_project) do
-                ::Project.find_by_full_path(project_name)
-              end
-            end
-
-            def legacy_can_access_local_content?
-              strong_memoize(:legacy_can_access_local_content) do
-                context.logger.instrument(:config_file_project_validate_access) do
-                  Ability.allowed?(context.user, :download_code, project)
-                end
-              end
-            end
-
-            def legacy_sha
-              strong_memoize(:legacy_sha) do
-                project.commit(ref_name).try(:sha)
               end
             end
 

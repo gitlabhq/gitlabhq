@@ -18,6 +18,7 @@ type: howto
 
 - Ensure the **primary** site has a [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) subscription to unlock Geo. You only need one license for all the sites.
 - Confirm the [requirements for running Geo](../index.md#requirements-for-running-geo) are met by all sites. For example, sites must use the same GitLab version, and sites must be able to communicate with each other over certain ports.
+- Confirm the **primary** and **secondary** site storage configurations match. If the primary Geo site uses object storage, the secondary Geo site must use it too. See [Geo with Object storage] (../object_storage.md) for more details.
 
 ## Using Omnibus GitLab
 

@@ -111,7 +111,7 @@ gem 'net-ldap', '~> 0.17.1'
 gem 'grape', '~> 1.5.2'
 gem 'grape-entity', '~> 0.10.0'
 gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
-gem 'grape-swagger', '~>1.5.0', group: [:development, :test]
+gem 'grape-swagger', '~> 1.6.1', group: [:development, :test]
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test]
 
 # GraphQL API
@@ -335,11 +335,11 @@ gem 'sentry-sidekiq', '~> 5.8.0'
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 2.2', '>= 2.2.1'
+gem 'pg_query', '~> 4.2.1'
 
 gem 'premailer-rails', '~> 1.10.3'
 
-gem 'gitlab-labkit', '~> 0.32.0'
+gem 'gitlab-labkit', '~> 0.33.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n

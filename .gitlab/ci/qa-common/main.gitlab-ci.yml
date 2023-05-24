@@ -6,7 +6,7 @@ workflow:
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 5.3.0
+    ref: 5.4.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml

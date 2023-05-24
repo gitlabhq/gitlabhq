@@ -84,11 +84,7 @@ module QA
       context 'when CI has invalid syntax' do
         it(
           'shows invalid validations',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368333',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412769',
-            type: :broken
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368333'
         ) do
           invalid_msg = 'syntax is invalid'
 
@@ -107,10 +103,10 @@ module QA
 
               show.go_to_full_configuration_tab
 
-              # TODO: remove this retry when
+              # TODO: remove page reload when
               # https://gitlab.com/gitlab-org/gitlab/-/issues/378536 is resolved
-              show.retry_until(max_attempts: 2, reload: true, sleep_interval: 1) { show.has_no_alert? }
-              expect(show).to have_source_editor
+              expect { show.has_source_editor? }
+                .to eventually_be_truthy.within(max_attempts: 2, reload_page: show, sleep_interval: 1)
 
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
             end

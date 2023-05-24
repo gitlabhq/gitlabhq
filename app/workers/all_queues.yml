@@ -417,6 +417,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:database_monitor_locked_tables
+  :worker_name: Database::MonitorLockedTablesWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_partition_management
   :worker_name: Database::PartitionManagementWorker
   :feature_category: :database

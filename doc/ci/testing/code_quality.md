@@ -227,7 +227,7 @@ Code Quality can be customized by defining available CI/CD variables:
 | CI/CD variable              | Description |
 | --------------------------- | ----------- |
 | `SOURCE_CODE`               | Path to the source code to scan. |
-| `TIMEOUT_SECONDS`           | Custom timeout for the `codeclimate analyze` command. |
+| `TIMEOUT_SECONDS`           | Custom timeout per engine container for the `codeclimate analyze` command, default is 900 seconds (15 minutes). |
 | `CODECLIMATE_DEBUG`         | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
 | `CODECLIMATE_DEV`           | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
 | `REPORT_STDOUT`             | Set to print the report to `STDOUT` instead of generating the usual report file. |

@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring, feature_flag: {
-    name: 'ci_batch_project_includes_context',
-    scope: :global
-  } do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Include multiple files from multiple projects' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
@@ -34,7 +31,7 @@ module QA
         end
       end
 
-      def before_do
+      before do
         Flow::Login.sign_in
 
         add_included_files_for(main_project)
@@ -50,44 +47,17 @@ module QA
         runner.remove_via_api!
       end
 
-      context 'when FF is on', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396374' do
-        before do
-          Runtime::Feature.enable(:ci_batch_project_includes_context, project: main_project)
-          sleep 60
-
-          before_do
-        end
-
-        it 'runs the pipeline with composed config' do
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            aggregate_failures 'pipeline has all expected jobs' do
-              expect(pipeline).to have_job('test_for_main')
-              expect(pipeline).to have_job("test1_for_#{project1.full_path}")
-              expect(pipeline).to have_job("test1_for_#{project2.full_path}")
-              expect(pipeline).to have_job("test2_for_#{project1.full_path}")
-              expect(pipeline).to have_job("test2_for_#{main_project.full_path}")
-            end
-          end
-        end
-      end
-
-      context 'when FF is off', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396375' do
-        before do
-          Runtime::Feature.disable(:ci_batch_project_includes_context, project: main_project)
-          sleep 60
-
-          before_do
-        end
-
-        it 'runs the pipeline with composed config' do
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            aggregate_failures 'pipeline has all expected jobs' do
-              expect(pipeline).to have_job('test_for_main')
-              expect(pipeline).to have_job("test1_for_#{project1.full_path}")
-              expect(pipeline).to have_job("test1_for_#{project2.full_path}")
-              expect(pipeline).to have_job("test2_for_#{project1.full_path}")
-              expect(pipeline).to have_job("test2_for_#{main_project.full_path}")
-            end
+      it(
+        'runs the pipeline with composed config',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396374'
+      ) do
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          aggregate_failures 'pipeline has all expected jobs' do
+            expect(pipeline).to have_job('test_for_main')
+            expect(pipeline).to have_job("test1_for_#{project1.full_path}")
+            expect(pipeline).to have_job("test1_for_#{project2.full_path}")
+            expect(pipeline).to have_job("test2_for_#{project1.full_path}")
+            expect(pipeline).to have_job("test2_for_#{main_project.full_path}")
           end
         end
       end
