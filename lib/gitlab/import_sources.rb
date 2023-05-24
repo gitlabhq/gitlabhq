@@ -13,7 +13,7 @@ module Gitlab
     IMPORT_TABLE = [
       ImportSource.new('github',           'GitHub',            Gitlab::GithubImport::ParallelImporter),
       ImportSource.new('bitbucket',        'Bitbucket Cloud',   Gitlab::BitbucketImport::Importer),
-      ImportSource.new('bitbucket_server', 'Bitbucket Server',  Gitlab::BitbucketServerImport::Importer),
+      ImportSource.new('bitbucket_server', 'Bitbucket Server',  Gitlab::BitbucketServerImport::ParallelImporter),
       ImportSource.new('gitlab',           'GitLab.com',        Gitlab::GitlabImport::Importer),
       ImportSource.new('fogbugz',          'FogBugz',           Gitlab::FogbugzImport::Importer),
       ImportSource.new('git',              'Repository by URL', nil),
@@ -23,6 +23,9 @@ module Gitlab
       ImportSource.new('phabricator',      'Phabricator',       Gitlab::PhabricatorImport::Importer)
     ].freeze
 
+    LEGACY_IMPORT_TABLE = IMPORT_TABLE.deep_dup
+    LEGACY_IMPORT_TABLE[2].importer = Gitlab::BitbucketServerImport::Importer
+
     class << self
       prepend_mod_with('Gitlab::ImportSources') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -31,7 +34,7 @@ module Gitlab
       end
 
       def values
-        import_table.map(&:name)
+        IMPORT_TABLE.map(&:name)
       end
 
       def importer_names
@@ -47,7 +50,9 @@ module Gitlab
       end
 
       def import_table
-        IMPORT_TABLE
+        return IMPORT_TABLE if Feature.enabled?(:bitbucket_server_parallel_importer)
+
+        LEGACY_IMPORT_TABLE
       end
     end
   end

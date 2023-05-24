@@ -68,6 +68,23 @@ module BitbucketServer
         raw.dig('toRef', 'latestCommit')
       end
 
+      def to_hash
+        {
+          iid: iid,
+          author: author,
+          author_email: author_email,
+          author_username: author_username,
+          description: description,
+          created_at: created_at,
+          updated_at: updated_at,
+          state: state,
+          title: title,
+          source_branch_name: source_branch_name,
+          target_branch_name: target_branch_name,
+          target_branch_sha: target_branch_sha
+        }
+      end
+
       private
 
       def created_date
