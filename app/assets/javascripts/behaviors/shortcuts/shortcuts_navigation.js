@@ -17,7 +17,6 @@ import {
   GO_TO_PROJECT_SNIPPETS,
   GO_TO_PROJECT_KUBERNETES,
   GO_TO_PROJECT_ENVIRONMENTS,
-  GO_TO_PROJECT_METRICS,
   GO_TO_PROJECT_WEBIDE,
   NEW_ISSUE,
 } from './keybindings';
@@ -44,7 +43,6 @@ export default class ShortcutsNavigation extends Shortcuts {
       [GO_TO_PROJECT_SNIPPETS, () => findAndFollowLink('.shortcuts-snippets')],
       [GO_TO_PROJECT_KUBERNETES, () => findAndFollowLink('.shortcuts-kubernetes')],
       [GO_TO_PROJECT_ENVIRONMENTS, () => findAndFollowLink('.shortcuts-environments')],
-      [GO_TO_PROJECT_METRICS, () => findAndFollowLink('.shortcuts-metrics')],
       [GO_TO_PROJECT_WEBIDE, ShortcutsNavigation.navigateToWebIDE],
       [NEW_ISSUE, () => findAndFollowLink('.shortcuts-new-issue')],
     ]);

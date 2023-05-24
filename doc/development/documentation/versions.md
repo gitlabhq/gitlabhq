@@ -201,8 +201,8 @@ This content is removed from the documentation as part of the Technical Writing 
 ## Which versions are removed
 
 GitLab supports the current major version and two previous major versions.
-For example, if 15.0 is the current major version, all major and minor releases of
-GitLab 15.0, 14.0, and 13.0 are supported.
+For example, if 16.0 is the current major version, all major and minor releases of
+GitLab 16.0, 15.0, and 14.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 

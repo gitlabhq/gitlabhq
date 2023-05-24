@@ -11,16 +11,8 @@ import {
 import VueDraggable from 'vuedraggable';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { createAlert } from '~/alert';
-import {
-  keysFor,
-  METRICS_COPY_LINK_TO_CHART,
-  METRICS_DOWNLOAD_CSV,
-  METRICS_EXPAND_PANEL,
-  METRICS_SHOW_ALERTS,
-} from '~/behaviors/shortcuts/keybindings';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
-import { Mousetrap } from '~/lib/mousetrap';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { defaultTimeRange } from '~/vue_shared/constants';
@@ -217,32 +209,6 @@ export default {
         });
       }
     },
-  },
-  created() {
-    window.addEventListener('keyup', this.onKeyup);
-
-    Mousetrap.bind(keysFor(METRICS_EXPAND_PANEL), () =>
-      this.runShortcut('onExpandFromKeyboardShortcut'),
-    );
-    Mousetrap.bind(keysFor(METRICS_SHOW_ALERTS), () =>
-      this.runShortcut('showAlertModalFromKeyboardShortcut'),
-    );
-    Mousetrap.bind(keysFor(METRICS_DOWNLOAD_CSV), () =>
-      this.runShortcut('downloadCsvFromKeyboardShortcut'),
-    );
-    Mousetrap.bind(keysFor(METRICS_COPY_LINK_TO_CHART), () =>
-      this.runShortcut('copyChartLinkFromKeyboardShotcut'),
-    );
-  },
-  destroyed() {
-    window.removeEventListener('keyup', this.onKeyup);
-
-    [
-      METRICS_COPY_LINK_TO_CHART,
-      METRICS_DOWNLOAD_CSV,
-      METRICS_EXPAND_PANEL,
-      METRICS_SHOW_ALERTS,
-    ].forEach((command) => Mousetrap.unbind(keysFor(command)));
   },
   mounted() {
     if (!this.hasMetrics) {

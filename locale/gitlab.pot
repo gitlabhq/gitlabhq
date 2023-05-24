@@ -18020,9 +18020,6 @@ msgstr ""
 msgid "Expand milestones"
 msgstr ""
 
-msgid "Expand panel"
-msgstr ""
-
 msgid "Expand settings section"
 msgstr ""
 
@@ -20697,9 +20694,6 @@ msgid "Go to kubernetes"
 msgstr ""
 
 msgid "Go to merge requests"
-msgstr ""
-
-msgid "Go to metrics"
 msgstr ""
 
 msgid "Go to next page"

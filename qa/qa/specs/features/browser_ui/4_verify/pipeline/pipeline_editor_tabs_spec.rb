@@ -84,7 +84,11 @@ module QA
       context 'when CI has invalid syntax' do
         it(
           'shows invalid validations',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368333'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368333',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412769',
+            type: :broken
+          }
         ) do
           invalid_msg = 'syntax is invalid'
 

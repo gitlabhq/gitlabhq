@@ -492,6 +492,23 @@ Example:
 ]
 ```
 
+## Integrate multiple tools
+
+Code Quality combines the results from all jobs in a pipeline into a single `gl-code-quality-report.json` file. As a result, multiple individual tools can be used in a pipeline, either alongside, or in place of, the supported `Code-Quality.gitlab-ci.yml` template.
+
+Here is an example that returns ESLint output in the necessary format:
+
+```yaml
+eslint:
+  image: node:18-alpine
+  script:
+    - npm ci
+    - npx eslint --format gitlab .
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+```
+
 ## Using Analysis Plugins
 
 Code Quality functionality can be extended by using Code Climate
@@ -549,12 +566,9 @@ This can be due to multiple reasons:
 
 ### Only a single Code Quality report is displayed, but more are defined
 
-Starting [in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/340525), Code Quality combines the results from all jobs in a pipeline.
+Code Quality automatically [combines multiple reports](#integrate-multiple-tools).
 
-In previous versions, GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
-If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
-
-To avoid confusion, configure only one job to generate a `gl-code-quality-report.json` file.
+In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 
 ### RuboCop errors
 

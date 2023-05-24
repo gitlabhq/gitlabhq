@@ -6,7 +6,6 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { ESC_KEY } from '~/lib/utils/keys';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
@@ -479,8 +478,6 @@ describe('Dashboard', () => {
       let group;
       let panel;
 
-      const mockKeyup = (key) => window.dispatchEvent(new KeyboardEvent('keyup', { key }));
-
       const MockPanel = {
         template: `<div><slot name="top-left"/></div>`,
       };
@@ -528,14 +525,6 @@ describe('Dashboard', () => {
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'monitoringDashboard/clearExpandedPanel',
-          undefined,
-        );
-      });
-
-      it('restores dashboard from full screen by typing the Escape key', () => {
-        mockKeyup(ESC_KEY);
-        expect(store.dispatch).toHaveBeenCalledWith(
-          `monitoringDashboard/clearExpandedPanel`,
           undefined,
         );
       });
