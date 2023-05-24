@@ -40,11 +40,11 @@ module Integrations
     validate :validate_jira_cloud_auth_type_is_basic, if: :activated?
 
     validates :jira_issue_transition_id,
-              format: {
-                with: Gitlab::Regex.jira_transition_id_regex,
-                message: ->(*_) { s_("JiraService|IDs must be a list of numbers that can be split with , or ;") }
-              },
-              allow_blank: true
+      format: {
+        with: Gitlab::Regex.jira_transition_id_regex,
+        message: ->(*_) { s_("JiraService|IDs must be a list of numbers that can be split with , or ;") }
+      },
+      allow_blank: true
 
     # Jira Cloud version is deprecating authentication via username and password.
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
@@ -60,57 +60,57 @@ module Integrations
     self.field_storage = :data_fields
 
     field :url,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('JiraService|Web URL') },
-          help: -> { s_('JiraService|Base URL of the Jira instance') },
-          placeholder: 'https://jira.example.com',
-          exposes_secrets: true
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('JiraService|Web URL') },
+      help: -> { s_('JiraService|Base URL of the Jira instance') },
+      placeholder: 'https://jira.example.com',
+      exposes_secrets: true
 
     field :api_url,
-          section: SECTION_TYPE_CONNECTION,
-          title: -> { s_('JiraService|Jira API URL') },
-          help: -> { s_('JiraService|If different from the Web URL') },
-          exposes_secrets: true
+      section: SECTION_TYPE_CONNECTION,
+      title: -> { s_('JiraService|Jira API URL') },
+      help: -> { s_('JiraService|If different from the Web URL') },
+      exposes_secrets: true
 
     field :jira_auth_type,
-          type: 'select',
-          required: true,
-          section: SECTION_TYPE_CONNECTION,
-          title: -> { s_('JiraService|Authentication type') },
-          choices: -> {
-            [
-              [s_('JiraService|Basic'), AUTH_TYPE_BASIC],
-              [s_('JiraService|Jira personal access token (Jira Data Center and Jira Server only)'), AUTH_TYPE_PAT]
-            ]
-          }
+      type: 'select',
+      required: true,
+      section: SECTION_TYPE_CONNECTION,
+      title: -> { s_('JiraService|Authentication type') },
+      choices: -> {
+        [
+          [s_('JiraService|Basic'), AUTH_TYPE_BASIC],
+          [s_('JiraService|Jira personal access token (Jira Data Center and Jira Server only)'), AUTH_TYPE_PAT]
+        ]
+      }
 
     field :username,
-          section: SECTION_TYPE_CONNECTION,
-          required: false,
-          title: -> { s_('JiraService|Email or username') },
-          help: -> { s_('JiraService|Email for Jira Cloud or username for Jira Data Center and Jira Server') }
+      section: SECTION_TYPE_CONNECTION,
+      required: false,
+      title: -> { s_('JiraService|Email or username') },
+      help: -> { s_('JiraService|Email for Jira Cloud or username for Jira Data Center and Jira Server') }
 
     field :password,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('JiraService|API token or password') },
-          non_empty_password_title: -> { s_('JiraService|New API token or password') },
-          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
-          help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
-          is_secret: true
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('JiraService|API token or password') },
+      non_empty_password_title: -> { s_('JiraService|New API token or password') },
+      non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
+      help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
+      is_secret: true
 
     field :jira_issue_regex,
-           section: SECTION_TYPE_CONFIGURATION,
-           required: false,
-           title: -> { s_('JiraService|Jira issue regex') },
-           help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
+      section: SECTION_TYPE_CONFIGURATION,
+      required: false,
+      title: -> { s_('JiraService|Jira issue regex') },
+      help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
 
     field :jira_issue_prefix,
-          section: SECTION_TYPE_CONFIGURATION,
-          required: false,
-          title: -> { s_('JiraService|Jira issue prefix') },
-          help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
+      section: SECTION_TYPE_CONFIGURATION,
+      required: false,
+      title: -> { s_('JiraService|Jira issue prefix') },
+      help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
 
     field :jira_issue_transition_id, api_only: true
 

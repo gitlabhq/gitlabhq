@@ -3,9 +3,7 @@
 class GenericCommitStatus < CommitStatus
   EXTERNAL_STAGE_IDX = 1_000_000
 
-  validates :target_url, addressable_url: true,
-                         length: { maximum: 255 },
-                         allow_nil: true
+  validates :target_url, addressable_url: true, length: { maximum: 255 }, allow_nil: true
   validate :name_uniqueness_across_types, unless: :importing?
 
   # GitHub compatible API

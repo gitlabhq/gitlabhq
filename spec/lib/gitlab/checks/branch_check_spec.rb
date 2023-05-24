@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::BranchCheck do
+RSpec.describe Gitlab::Checks::BranchCheck, feature_category: :source_code_management do
   include_context 'change access checks context'
 
   describe '#validate!' do
@@ -44,6 +44,23 @@ RSpec.describe Gitlab::Checks::BranchCheck do
 
         it "doesn't prohibit the deletion of a hexadecimal branch name" do
           expect { subject.validate! }.not_to raise_error
+        end
+      end
+
+      context 'when branch name is invalid' do
+        let(:ref) { 'refs/heads/-wrong' }
+
+        it 'prohibits branches with an invalid name' do
+          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You cannot create a branch with an invalid name.')
+        end
+
+        context 'deleting an invalid branch' do
+          let(:ref) { 'refs/heads/-wrong' }
+          let(:newrev) { '0000000000000000000000000000000000000000' }
+
+          it "doesn't prohibit the deletion of an invalid branch name" do
+            expect { subject.validate! }.not_to raise_error
+          end
         end
       end
     end

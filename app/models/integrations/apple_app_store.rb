@@ -18,18 +18,16 @@ module Integrations
     end
 
     field :app_store_issuer_id,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Issuer ID.') }
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('AppleAppStore|The Apple App Store Connect Issuer ID.') }
 
     field :app_store_key_id,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
 
-    field :app_store_private_key_file_name,
-          section: SECTION_TYPE_CONNECTION
-
+    field :app_store_private_key_file_name, section: SECTION_TYPE_CONNECTION
     field :app_store_private_key, api_only: true
 
     def title

@@ -152,17 +152,19 @@ class Group < Namespace
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   validates :name,
-            html_safety: true,
-            format: { with: Gitlab::Regex.group_name_regex,
-                      message: Gitlab::Regex.group_name_regex_message },
-            if: :name_changed?
+    html_safety: true,
+    format: {
+      with: Gitlab::Regex.group_name_regex,
+      message: Gitlab::Regex.group_name_regex_message
+    },
+    if: :name_changed?
 
   validates :group_feature, presence: true
 
   add_authentication_token_field :runners_token,
-                                 encrypted: :required,
-                                 format_with_prefix: :runners_token_prefix,
-                                 require_prefix_for_validation: true
+    encrypted: :required,
+    format_with_prefix: :runners_token_prefix,
+    require_prefix_for_validation: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
@@ -974,9 +976,11 @@ class Group < Namespace
   end
 
   def max_member_access(user_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),
-                                      resource_ids: user_ids,
-                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(User),
+      resource_ids: user_ids,
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |user_ids|
       members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
     end
   end
@@ -1037,8 +1041,7 @@ class Group < Namespace
     # the respective group_group_links.group_access.
     member_columns = GroupMember.attribute_names.map do |column_name|
       if column_name == 'access_level'
-        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]],
-                            'access_level')
+        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
       else
         group_member_table[column_name]
       end

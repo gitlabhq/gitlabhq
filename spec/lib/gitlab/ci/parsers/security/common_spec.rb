@@ -183,55 +183,44 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
         describe 'parsing finding.name' do
           let(:artifact) { build(:ci_job_artifact, :common_security_report_with_blank_names) }
 
-          context 'when message is provided' do
-            it 'sets message from the report as a finding name' do
-              finding = report.findings.find { |x| x.compare_key == 'CVE-1020' }
-              expected_name = Gitlab::Json.parse(finding.raw_metadata)['message']
+          context 'when name is provided' do
+            it 'sets name from the report as a name' do
+              finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
+              expected_name = Gitlab::Json.parse(finding.raw_metadata)['name']
 
               expect(finding.name).to eq(expected_name)
             end
           end
 
-          context 'when message is not provided' do
-            context 'and name is provided' do
-              it 'sets name from the report as a name' do
-                finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
-                expected_name = Gitlab::Json.parse(finding.raw_metadata)['name']
+          context 'when name is not provided' do
+            context 'when location does not exist' do
+              let(:location) { nil }
 
-                expect(finding.name).to eq(expected_name)
+              it 'returns only identifier name' do
+                finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
+                expect(finding.name).to eq("CVE-2017-11429")
               end
             end
 
-            context 'and name is not provided' do
-              context 'when location does not exist' do
-                let(:location) { nil }
-
-                it 'returns only identifier name' do
+            context 'when location exists' do
+              context 'when CVE identifier exists' do
+                it 'combines identifier with location to create name' do
                   finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
-                  expect(finding.name).to eq("CVE-2017-11429")
+                  expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
                 end
               end
 
-              context 'when location exists' do
-                context 'when CVE identifier exists' do
-                  it 'combines identifier with location to create name' do
-                    finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
-                    expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
-                  end
+              context 'when CWE identifier exists' do
+                it 'combines identifier with location to create name' do
+                  finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
+                  expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
                 end
+              end
 
-                context 'when CWE identifier exists' do
-                  it 'combines identifier with location to create name' do
-                    finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
-                    expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
-                  end
-                end
-
-                context 'when neither CVE nor CWE identifier exist' do
-                  it 'combines identifier with location to create name' do
-                    finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
-                    expect(finding.name).to eq("other-2017-11429 in yarn.lock")
-                  end
+              context 'when neither CVE nor CWE identifier exist' do
+                it 'combines identifier with location to create name' do
+                  finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
+                  expect(finding.name).to eq("other-2017-11429 in yarn.lock")
                 end
               end
             end

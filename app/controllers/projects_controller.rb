@@ -263,12 +263,12 @@ class ProjectsController < Projects::ApplicationController
     @project.add_export_job(current_user: current_user)
 
     redirect_to(
-      edit_project_path(@project, anchor: 'js-export-project'),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
   rescue Project::ExportLimitExceeded => e
     redirect_to(
-      edit_project_path(@project, anchor: 'js-export-project'),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: e.to_s
     )
   end
@@ -279,13 +279,13 @@ class ProjectsController < Projects::ApplicationController
         send_upload(@project.export_file, attachment: @project.export_file.filename)
       else
         redirect_to(
-          edit_project_path(@project, anchor: 'js-export-project'),
+          edit_project_path(@project, anchor: 'js-project-advanced-settings'),
           alert: _("The file containing the export is not available yet; it may still be transferring. Please try again later.")
         )
       end
     else
       redirect_to(
-        edit_project_path(@project, anchor: 'js-export-project'),
+        edit_project_path(@project, anchor: 'js-project-advanced-settings'),
         alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
@@ -298,7 +298,7 @@ class ProjectsController < Projects::ApplicationController
       flash[:alert] = _("Project export could not be deleted.")
     end
 
-    redirect_to(edit_project_path(@project, anchor: 'js-export-project'))
+    redirect_to(edit_project_path(@project, anchor: 'js-project-advanced-settings'))
   end
 
   def generate_new_export
@@ -306,7 +306,7 @@ class ProjectsController < Projects::ApplicationController
       export
     else
       redirect_to(
-        edit_project_path(@project, anchor: 'js-export-project'),
+        edit_project_path(@project, anchor: 'js-project-advanced-settings'),
         alert: _("Project export could not be deleted.")
       )
     end

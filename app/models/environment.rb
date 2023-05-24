@@ -36,12 +36,12 @@ class Environment < ApplicationRecord
 
   Deployment::FINISHED_STATUSES.each do |status|
     has_one :"last_#{status}_deployment", -> { where(status: status).ordered },
-            class_name: 'Deployment', inverse_of: :environment
+      class_name: 'Deployment', inverse_of: :environment
   end
 
   Deployment::UPCOMING_STATUSES.each do |status|
     has_one :"last_#{status}_deployment", -> { where(status: status).ordered_as_upcoming },
-            class_name: 'Deployment', inverse_of: :environment
+      class_name: 'Deployment', inverse_of: :environment
   end
 
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
@@ -53,22 +53,22 @@ class Environment < ApplicationRecord
   after_save :clear_reactive_cache!
 
   validates :name,
-            presence: true,
-            uniqueness: { scope: :project_id },
-            length: { maximum: 255 },
-            format: { with: Gitlab::Regex.environment_name_regex,
-                      message: Gitlab::Regex.environment_name_regex_message }
+    presence: true,
+    uniqueness: { scope: :project_id },
+    length: { maximum: 255 },
+    format: { with: Gitlab::Regex.environment_name_regex,
+              message: Gitlab::Regex.environment_name_regex_message }
 
   validates :slug,
-            presence: true,
-            uniqueness: { scope: :project_id },
-            length: { maximum: 24 },
-            format: { with: Gitlab::Regex.environment_slug_regex,
-                      message: Gitlab::Regex.environment_slug_regex_message }
+    presence: true,
+    uniqueness: { scope: :project_id },
+    length: { maximum: 24 },
+    format: { with: Gitlab::Regex.environment_slug_regex,
+              message: Gitlab::Regex.environment_slug_regex_message }
 
   validates :external_url,
-            length: { maximum: 255 },
-            allow_nil: true
+    length: { maximum: 255 },
+    allow_nil: true
 
   # Currently, the tier presence is validaed for newly created environments.
   # After the `BackfillEnvironmentTiers` background migration has been completed, we should remove `on: :create`.
@@ -237,8 +237,7 @@ class Environment < ApplicationRecord
 
   def self.nested
     group('COALESCE(environment_type, id::text)', 'COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS name',
-              'COUNT(*) AS size', 'MAX(id) AS last_id')
+      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS name', 'COUNT(*) AS size', 'MAX(id) AS last_id')
       .order('name ASC')
   end
 
