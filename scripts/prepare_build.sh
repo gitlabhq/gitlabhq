@@ -53,6 +53,13 @@ sed -i 's|url:.*$|url: redis://redis:6379|g' config/cable.yml
 cp config/resque.yml.example config/resque.yml
 sed -i 's|url:.*$|url: redis://redis:6379|g' config/resque.yml
 
+# By default, run CI against Redis Cluster to ensure Redis Cluster compatibility.
+# if SETUP_DB is false, the jobs are not backend-related
+if [[ "$USE_REDIS_CLUSTER" != "false" ]] && [[ "$SETUP_DB" != "false" ]]; then
+  cp config/redis.yml.example config/redis.yml
+  sed -i 's|- .*$|- redis://rediscluster:7001|g' config/redis.yml
+fi
+
 if [ "$SETUP_DB" != "false" ]; then
   setup_db
 elif getent hosts postgres; then

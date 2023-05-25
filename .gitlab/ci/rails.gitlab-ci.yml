@@ -120,6 +120,12 @@ rspec unit pg13:
     - .rails:rules:ee-and-foss-unit
     - .rspec-unit-parallel
 
+rspec unit pg13 single-redis:
+  extends:
+    - rspec unit pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
+
 rspec unit pg13 single-db:
   extends:
     - rspec unit pg13
@@ -143,6 +149,12 @@ rspec integration pg13:
     - .rspec-base-pg13
     - .rails:rules:ee-and-foss-integration
     - .rspec-integration-parallel
+
+rspec integration pg13 single-redis:
+  extends:
+    - rspec integration pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
 
 rspec integration pg13 single-db:
   extends:
@@ -169,6 +181,12 @@ rspec system pg13:
     - .rspec-system-parallel
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
+
+rspec system pg13 single-redis:
+  extends:
+    - rspec system pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
 
 rspec system pg13 single-db:
   extends:
@@ -572,6 +590,12 @@ rspec-ee unit pg13 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec-ee unit pg13 single-redis:
+  extends:
+    - rspec-ee unit pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
+
 rspec-ee unit pg13 single-db-ci-connection:
   extends:
     - rspec-ee unit pg13
@@ -595,6 +619,12 @@ rspec-ee integration pg13 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec-ee integration pg13 single-redis:
+  extends:
+    - rspec-ee integration pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
+
 rspec-ee integration pg13 single-db-ci-connection:
   extends:
     - rspec-ee integration pg13
@@ -617,6 +647,12 @@ rspec-ee system pg13 single-db:
     - rspec-ee system pg13
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec-ee system pg13 single-redis:
+  extends:
+    - rspec-ee system pg13
+    - .no-redis-cluster
+    - .rails:rules:single-redis
 
 rspec-ee system pg13 single-db-ci-connection:
   extends:

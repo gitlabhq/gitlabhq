@@ -28,6 +28,10 @@ include:
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
     - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
+.no-redis-cluster:
+  variables:
+    USE_REDIS_CLUSTER: "false"
+
 .single-db:
   variables:
     DECOMPOSED_DB: "false"

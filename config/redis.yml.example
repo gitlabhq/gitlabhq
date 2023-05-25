@@ -1,0 +1,10 @@
+---
+development:
+  rate_limiting:
+    cluster:
+      - redis://localhost:7001
+
+test:
+  rate_limiting:
+    cluster:
+      - redis://localhost:7001

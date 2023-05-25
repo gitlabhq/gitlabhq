@@ -40,6 +40,10 @@ For further details, see [the Google Chat documentation for configuring webhooks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27823) in GitLab 15.4.
 
+WARNING:
+In March 2023, Google [deprecated threaded replies in Google Chat](https://workspaceupdates.googleblog.com/2023/02/new-google-chat-spaces-will-be-in-line-threaded.html).
+This feature does not work for new Google Chat spaces. You can still use this feature in existing Google Chat spaces where threaded replies are already enabled.
+
 To enable threaded notifications for the same GitLab object (for example, an issue or merge request):
 
 1. Go to [Google Chat](https://chat.google.com/).

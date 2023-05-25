@@ -27,6 +27,13 @@ module QA
         end
       end
 
+      let(:registry_repository) do
+        Resource::RegistryRepository.fabricate! do |repository|
+          repository.name = project.path_with_namespace.to_s
+          repository.project = project
+        end
+      end
+
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -44,65 +51,66 @@ module QA
       end
 
       after do
+        registry_repository&.remove_via_api!
         runner.remove_via_api!
       end
 
       context "when tls is disabled" do
         where do
           {
-            'using docker:18.09.9 and a personal access token' => {
-              docker_client_version: 'docker:18.09.9',
+            'using docker:20.10.23 and a personal access token' => {
+              docker_client_version: 'docker:20.10.23',
               authentication_token_type: :personal_access_token,
               token_name: 'Personal Access Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348499'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412807'
             },
-            'using docker:18.09.9 and a project deploy token' => {
-              docker_client_version: 'docker:18.09.9',
+            'using docker:20.10.23 and a project deploy token' => {
+              docker_client_version: 'docker:20.10.23',
               authentication_token_type: :project_deploy_token,
               token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348852'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412808'
             },
-            'using docker:18.09.9 and a ci job token' => {
-              docker_client_version: 'docker:18.09.9',
+            'using docker:20.10.23 and a ci job token' => {
+              docker_client_version: 'docker:20.10.23',
               authentication_token_type: :ci_job_token,
               token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348765'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412809'
             },
-            'using docker:19.03.12 and a personal access token' => {
-              docker_client_version: 'docker:19.03.12',
+            'using docker:23.0.6 and a personal access token' => {
+              docker_client_version: 'docker:23.0.6',
               authentication_token_type: :personal_access_token,
               token_name: 'Personal Access Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348507'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412810'
             },
-            'using docker:19.03.12 and a project deploy token' => {
-              docker_client_version: 'docker:19.03.12',
+            'using docker:23.0.6 and a project deploy token' => {
+              docker_client_version: 'docker:23.0.6',
               authentication_token_type: :project_deploy_token,
               token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348859'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412813'
             },
-            'using docker:19.03.12 and a ci job token' => {
-              docker_client_version: 'docker:19.03.12',
+            'using docker:23.0.6 and a ci job token' => {
+              docker_client_version: 'docker:23.0.6',
               authentication_token_type: :ci_job_token,
               token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348654'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412814'
             },
-            'using docker:20.10 and a personal access token' => {
-              docker_client_version: 'docker:20.10',
+            'using docker:24.0.1 and a personal access token' => {
+              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :personal_access_token,
               token_name: 'Personal Access Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348754'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412817'
             },
-            'using docker:20.10 and a project deploy token' => {
-              docker_client_version: 'docker:20.10',
+            'using docker:24.0.1 and a project deploy token' => {
+              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :project_deploy_token,
               token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348856'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412818'
             },
-            'using docker:20.10 and a ci job token' => {
-              docker_client_version: 'docker:20.10',
+            'using docker:24.0.1 and a ci job token' => {
+              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :ci_job_token,
               token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348766'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412819'
             }
           }
         end
@@ -201,10 +209,10 @@ module QA
                     content:
                       <<~YAML
                         build:
-                          image: docker:19.03.12
+                          image: docker:23.0.6
                           stage: build
                           services:
-                          - name: docker:19.03.12-dind
+                          - name: docker:23.0.6-dind
                             command:
                             - /bin/sh
                             - -c

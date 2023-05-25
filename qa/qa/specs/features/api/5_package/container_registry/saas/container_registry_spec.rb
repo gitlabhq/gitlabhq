@@ -3,13 +3,12 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', :reliable, product_group: :container_registry, only: {
-    subdomain: %i[staging staging-canary pre]
-  } do
+  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging staging-canary pre] },
+    product_group: :container_registry do
     include Support::API
     include Support::Helpers::MaskToken
 
-    describe 'Container Registry' do
+    describe 'SaaS Container Registry API' do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
 
       let(:project) do
@@ -45,10 +44,10 @@ module QA
         - test
 
         build:
-          image: docker:19.03.12
+          image: docker:24.0.1
           stage: build
           services:
-            - docker:19.03.12-dind
+            - docker:24.0.1-dind
           variables:
             IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
             DOCKER_HOST: tcp://docker:2376

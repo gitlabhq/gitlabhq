@@ -66,7 +66,12 @@ InitializerConnections.raise_if_new_database_connection do
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
-        resources :groups_projects, only: [:new, :create] do
+        # TODO: remove next line and the controller after the deployment
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/411208
+        resources :groups_projects, only: [:create] do
+          post :import, on: :collection
+        end
+        resources :groups, only: [:new, :create] do
           post :import, on: :collection
         end
         draw :verification

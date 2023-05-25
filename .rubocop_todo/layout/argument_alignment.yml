@@ -1359,7 +1359,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/requests/groups/settings/domain_verification_controller_spec.rb'
     - 'ee/spec/requests/groups/two_factor_auths_controller_spec.rb'
-    - 'ee/spec/requests/registrations/project_creation_spec.rb'
     - 'ee/spec/requests/smartcard_controller_spec.rb'
     - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/aggregator_service_spec.rb'

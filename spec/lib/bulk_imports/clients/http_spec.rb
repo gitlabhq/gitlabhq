@@ -33,11 +33,17 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
     end
 
     context 'error handling' do
-      context 'when error occurred' do
-        it 'raises BulkImports::NetworkError' do
-          allow(Gitlab::HTTP).to receive(method).and_raise(Errno::ECONNREFUSED)
+      context 'when any known HTTP error occurs' do
+        using RSpec::Parameterized::TableSyntax
 
-          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError)
+        where(:exception_class) { Gitlab::HTTP::HTTP_ERRORS }
+
+        with_them do
+          it 'raises BulkImports::NetworkError' do
+            allow(Gitlab::HTTP).to receive(method).and_raise(exception_class)
+
+            expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError)
+          end
         end
       end
 

@@ -338,6 +338,24 @@
   - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
+# Redis patterns + feature flags
+.redis-patterns: &redis-patterns
+  - "{,ee/,jh/}{,spec/}app/models/concerns/redis_cacheable{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}app/models/ci/build_trace_chunks/redis{,_base,_trace_chunks}{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage_data_counters/{hll_redis_counter,redis_counter}{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/instrumentations/redis{_metric,hll_metric}{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/aggregates/sources/redis_hll{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/patch/action_cable_redis_listener{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/merge_requests/mergeability/redis_interface{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/markdown_cache/redis/*.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/redis/**/*.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/instrumentation/*.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/redis.rb"
+  - "{,ee/,jh/}config/initializers/7_redis.rb"
+  # Feature flag changes
+  - "{,ee/,jh/}{,spec/}lib/feature.rb"
+  - "config/feature_flags/**/*"
+
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
@@ -1566,6 +1584,15 @@
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+
+.rails:rules:single-redis:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request
+      changes: *redis-patterns
+    - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:single-db:
   rules:

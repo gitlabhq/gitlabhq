@@ -11,7 +11,8 @@ RSpec.describe Admin::DashboardController do
     it 'retrieves Redis versions' do
       get :index
 
-      expect(assigns[:redis_versions].length).to eq(1)
+      # specs are run against both Redis and Redis Cluster instances.
+      expect(assigns[:redis_versions].length).to be > 0
     end
 
     context 'with pending_delete projects' do

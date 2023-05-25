@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry', only: { subdomain: %i[staging staging-canary pre] }, product_group: :container_registry do
+    describe 'SaaS Container Registry', only: { subdomain: %i[staging staging-canary pre] },
+      product_group: :container_registry do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry'
@@ -12,7 +13,7 @@ module QA
 
       let(:registry_repository) do
         Resource::RegistryRepository.fabricate! do |repository|
-          repository.name = "#{project.path_with_namespace}"
+          repository.name = project.path_with_namespace.to_s
           repository.project = project
         end
       end
@@ -20,10 +21,10 @@ module QA
       let!(:gitlab_ci_yaml) do
         <<~YAML
           build:
-            image: docker:19.03.12
+            image: docker:24.0.1
             stage: build
             services:
-              - docker:19.03.12-dind
+              - docker:24.0.1-dind
             variables:
               IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
               DOCKER_HOST: tcp://docker:2376
@@ -49,7 +50,8 @@ module QA
         registry_repository&.remove_via_api!
       end
 
-      it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347687' do
+      it 'pushes project image to the container registry and deletes tag',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412806' do
         Flow::Login.sign_in
         project.visit!
 
@@ -58,9 +60,9 @@ module QA
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.add_files([{
-                                file_path: '.gitlab-ci.yml',
-                                content: gitlab_ci_yaml
-                              }])
+              file_path: '.gitlab-ci.yml',
+              content: gitlab_ci_yaml
+            }])
           end
         end
 

@@ -224,7 +224,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/views/projects/security/policies/index.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/sast_configuration/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/settings/subscriptions/_index.html.haml_spec.rb'
-    - 'ee/spec/views/registrations/groups_projects/new.html.haml_spec.rb'
+    - 'ee/spec/views/registrations/groups/new.html.haml_spec.rb'
     - 'ee/spec/views/shared/_clone_panel.html.haml_spec.rb'
     - 'ee/spec/views/shared/_kerberos_clone_button.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_status.html.haml_spec.rb'
