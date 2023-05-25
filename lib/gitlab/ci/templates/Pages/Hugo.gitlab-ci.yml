@@ -6,7 +6,8 @@
 ---
 # All available Hugo versions are listed here:
 # https://gitlab.com/pages/hugo/container_registry
-image: "${CI_TEMPLATE_REGISTRY_HOST}/pages/hugo:latest"
+default:
+  image: "${CI_TEMPLATE_REGISTRY_HOST}/pages/hugo:latest"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -14,9 +15,8 @@ variables:
 test:
   script:
     - hugo
-  except:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
 pages:
   script:
@@ -24,7 +24,6 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production

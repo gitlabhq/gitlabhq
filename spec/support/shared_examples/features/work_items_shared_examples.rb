@@ -148,7 +148,7 @@ RSpec.shared_examples 'work items assignees' do
     find("body").click
     wait_for_requests
 
-    expect(work_item.assignees).to include(user)
+    expect(work_item.reload.assignees).to include(user)
   end
 end
 

@@ -203,7 +203,7 @@ GEM
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.173.0)
+    aws-sdk-core (3.173.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -1160,7 +1160,7 @@ GEM
       tty-markdown
       tty-prompt
     public_suffix (5.0.0)
-    puma (5.6.5)
+    puma (6.2.2)
       nio4r (~> 2.0)
     pyu-ruby-sasl (0.0.3.3)
     raabro (1.4.0)
@@ -1669,7 +1669,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.173.0)
+  aws-sdk-core (~> 3.173.1)
   aws-sdk-s3 (~> 1.122.0)
   axe-core-rspec
   babosa (~> 2.0)
@@ -1863,7 +1863,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.1)
-  puma (~> 5.6.5)
+  puma (~> 6.2)
   rack (~> 2.2.7)
   rack-attack (~> 6.6.1)
   rack-cors (~> 1.1.1)

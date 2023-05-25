@@ -4,6 +4,7 @@ module Registrations
   class WelcomeController < ApplicationController
     include OneTrustCSP
     include GoogleAnalyticsCSP
+    include ::Gitlab::Utils::StrongMemoize
 
     layout 'minimal'
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
@@ -24,6 +25,7 @@ module Registrations
 
       if result.success?
         track_event('successfully_submitted_form')
+        finish_onboarding_on_welcome_page unless complete_signup_onboarding?
 
         redirect_to update_success_path
       else
@@ -34,6 +36,8 @@ module Registrations
     private
 
     def registering_from_invite?(members)
+      # If there are more than one member it will mean we have been invited to multiple projects/groups and
+      # are not able to distinguish which one we should putting the user in after registration
       members.count == 1 && members.last.source.present?
     end
 
@@ -61,30 +65,36 @@ module Registrations
     end
 
     # overridden in EE
-    def redirect_to_signup_onboarding?
+    def complete_signup_onboarding?
       false
     end
 
-    def redirect_for_tasks_to_be_done?
-      MemberTask.for_members(current_user.members).exists?
+    def invites_with_tasks_to_be_done?
+      MemberTask.for_members(user_members).exists?
     end
 
     def update_success_path
-      return issues_dashboard_path(assignee_username: current_user.username) if redirect_for_tasks_to_be_done?
-
-      return signup_onboarding_path if redirect_to_signup_onboarding?
-
-      members = current_user.members
-
-      if registering_from_invite?(members)
-        flash[:notice] = helpers.invite_accepted_notice(members.last)
-        members_activity_path(members)
+      if invites_with_tasks_to_be_done?
+        issues_dashboard_path(assignee_username: current_user.username)
+      elsif complete_signup_onboarding? # trials/regular registration on .com
+        signup_onboarding_path
+      elsif registering_from_invite?(user_members) # invites w/o tasks due to order
+        flash[:notice] = helpers.invite_accepted_notice(user_members.last)
+        members_activity_path(user_members)
       else
-        # subscription registrations goes through here as well
-        finish_onboarding_if_in_subscription_flow
+        # Subscription registrations goes through here as well.
+        # Invites will come here too if there is more than 1.
         path_for_signed_in_user(current_user)
       end
     end
+
+    def user_members
+      current_user.members
+    end
+    strong_memoize_attr :user_members
+
+    # overridden in EE
+    def finish_onboarding_on_welcome_page; end
 
     # overridden in EE
     def signup_onboarding_path; end
@@ -96,9 +106,6 @@ module Registrations
     def welcome_update_params
       {}
     end
-
-    # overridden in EE
-    def finish_onboarding_if_in_subscription_flow; end
   end
 end
 

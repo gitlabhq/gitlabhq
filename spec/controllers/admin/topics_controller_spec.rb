@@ -102,6 +102,12 @@ RSpec.describe Admin::TopicsController do
       expect(errors).to contain_exactly(errors.full_message(:title, I18n.t('errors.messages.blank')))
     end
 
+    it 'redirects to the topics list' do
+      post :create, params: { projects_topic: { name: 'test-redirect', title: "Test redirect" } }
+
+      expect(response).to redirect_to(admin_topics_path)
+    end
+
     context 'as a normal user' do
       before do
         sign_in(user)
