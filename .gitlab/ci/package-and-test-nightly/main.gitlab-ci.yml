@@ -107,31 +107,6 @@ integration-opensearch-compatibility-version-2:
     OPENSEARCH_VERSION: "2.0.1"
     QA_SCENARIO: "Test::Integration::Opensearch"
 
-# ------------------------------------------
-# Remote browser jobs
-# ------------------------------------------
-remote-mobile-safari:
-  extends:
-    - .qa
-    - .ee
-  variables:
-    QA_RSPEC_TAGS: "--tag mobile"
-    QA_BROWSER: "safari"
-    QA_REMOTE_MOBILE_DEVICE_NAME: "iPhone Simulator"
-    QA_REMOTE_GRID: "ondemand.saucelabs.com:80"
-    QA_REMOTE_TUNNEL_ID: "gitlab-sl_tunnel_id"
-  before_script:
-    - !reference [.qa, before_script]
-    - docker pull saucelabs/sauce-connect
-    - docker network create test
-    - |
-      docker run --detach \
-        --network="test" \
-        -e SAUCE_USERNAME=$QA_REMOTE_GRID_USERNAME \
-        -e SAUCE_ACCESS_KEY=$QA_REMOTE_GRID_ACCESS_KEY \
-        -t saucelabs/sauce-connect \
-        -i $QA_REMOTE_TUNNEL_ID
-
 # ==========================================
 # Post test stage
 # ==========================================

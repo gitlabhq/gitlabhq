@@ -42,7 +42,7 @@ For example:
         = f.check_box :prevent_sharing_groups_outside_hierarchy, disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group), class: 'custom-control-input'
         = f.label :prevent_sharing_groups_outside_hierarchy, class: 'custom-control-label' do
           %span
-            = s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.').html_safe % { group: link_to_group(@group) }
+            = safe_format(s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.'), group: link_to_group(@group))
           %p.help-text= prevent_sharing_groups_outside_hierarchy_help_text(@group)
 
     .form-group.gl-mb-3
@@ -61,7 +61,7 @@ For example:
   = gitlab_ui_form_for @group do |f|
     .form-group.gl-mb-3
       = f.gitlab_ui_checkbox_component :prevent_sharing_groups_outside_hierarchy,
-          s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.').html_safe % { group: link_to_group(@group) },
+          safe_format(s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.'), group: link_to_group(@group)),
           help_text: prevent_sharing_groups_outside_hierarchy_help_text(@group),
           checkbox_options: { disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group) }
 
