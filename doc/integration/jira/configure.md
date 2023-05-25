@@ -63,7 +63,7 @@ To configure your project settings in GitLab:
    can view all issues from the Jira project you've specified.
 
    - To [create Jira issues for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select the **Enable Jira issue creation from vulnerabilities** checkbox.
-1. Optional. Select **Test settings** to verify the connection.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 Your GitLab project can now interact with all Jira projects in your instance, and the project
@@ -96,7 +96,7 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. In **Email or username**, enter the email or username registered on your Jira profile.
 1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.
 1. In **API token or password**, paste the API token value.
-1. Optional. Select **Test settings** to verify the connection.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 To update existing Jira issue references in GitLab to use the new Jira site URL, you must [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

@@ -24,7 +24,8 @@ To enable the Redmine integration in a project:
      **This URL is not used and removal is planned in a future release.**
      For more information, see [issue 327503](https://gitlab.com/gitlab-org/gitlab/-/issues/327503).
 
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 After you have configured and enabled Redmine, you see the Redmine link on the GitLab project pages,
 which takes you to your Redmine project.

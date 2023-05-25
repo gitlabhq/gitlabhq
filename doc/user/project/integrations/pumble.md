@@ -33,7 +33,7 @@ notifications:
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Pumble.
 1. Paste the **Webhook** URL for the Pumble channel.
 1. Configure the remaining options.
-1. Optional. To test the integration, select **Test settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 The Pumble channel begins to receive all applicable GitLab events.

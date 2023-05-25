@@ -288,7 +288,7 @@ To add a link to an external wiki from a project's left sidebar:
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
-1. Optional. To verify the connection, select **Test settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 You can now see the **External wiki** option from your project's

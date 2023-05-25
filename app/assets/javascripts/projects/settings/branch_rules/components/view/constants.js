@@ -49,7 +49,7 @@ export const BRANCH_PARAM_NAME = 'branch';
 export const ALL_BRANCHES_WILDCARD = '*';
 
 export const WILDCARDS_HELP_PATH =
-  'user/project/protected_branches#configure-multiple-protected-branches-by-using-a-wildcard';
+  'user/project/protected_branches#protect-multiple-branches-with-wildcard-rules';
 
 export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
 

@@ -201,7 +201,7 @@ RSpec.shared_examples 'submits edit runner form' do
 
   describe 'runner header', :js do
     it 'contains the runner id' do
-      expect(page).to have_content("Runner ##{runner.id} created")
+      expect(page).to have_content("##{runner.id} (#{runner.short_sha})")
     end
   end
 

@@ -31,7 +31,8 @@ To enable the Bugzilla integration in a project:
      For example, for a project named "My Cool App":
      `https://bugzilla.example.org/enter_bug.cgi#h=dupes%7CMy+Cool+App`.
 
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 After you configure and enable Bugzilla, a link appears on the GitLab
 project pages. This link takes you to the appropriate Bugzilla project.

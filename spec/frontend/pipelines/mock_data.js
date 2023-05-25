@@ -1,9 +1,14 @@
+import pipelineHeaderSuccess from 'test_fixtures/graphql/pipelines/pipeline_header_success.json';
+import pipelineHeaderRunning from 'test_fixtures/graphql/pipelines/pipeline_header_running.json';
+
 const PIPELINE_RUNNING = 'RUNNING';
 const PIPELINE_CANCELED = 'CANCELED';
 const PIPELINE_FAILED = 'FAILED';
 
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+export { pipelineHeaderSuccess, pipelineHeaderRunning };
 
 export const mockPipelineHeader = {
   detailedStatus: {},

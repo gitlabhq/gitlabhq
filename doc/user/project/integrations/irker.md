@@ -50,8 +50,9 @@ network. For more details, read
    It's prepended to every channel or user provided under **Recipients**, which is not a full URI.
 1. Under **Recipients**, enter the users or channels to receive updates, separated by spaces
    (for example, `#channel1 user1`). For more details, see [Enter irker recipients](#enter-irker-recipients).
-1. Optional. Under **Colorize messages**, select the checkbox. irker will highlight your messages.
-1. Select **Save changes** or optionally select **Test Settings**.
+1. Optional. To highlight messages, select the **Colorize messages** checkbox.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 ## Enter irker recipients
 

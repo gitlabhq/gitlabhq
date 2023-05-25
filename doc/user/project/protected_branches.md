@@ -42,7 +42,7 @@ When a branch is protected, the default behavior enforces these restrictions on 
 
 When a branch matches multiple rules, the **most permissive rule** determines the
 level of protection for the branch. For example, consider these rules, which include
-[wildcards](#configure-multiple-protected-branches-by-using-a-wildcard):
+[wildcards](#protect-multiple-branches-with-wildcard-rules):
 
 | Branch name pattern | Allowed to merge       | Allowed to push and merge |
 |---------------------|------------------------|-----------------|
@@ -77,11 +77,11 @@ that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 Administrators can set a default branch protection level in the
 [Admin Area](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
-## Configure a protected branch
+## Add protection to existing branches
 
 Configure protected branches for all projects in a group, or just for a project.
 
-### For a project
+### For one project
 
 Prerequisites:
 
@@ -133,11 +133,12 @@ To protect a branch for all the projects in a group:
 
 The protected branch is added to the list of protected branches.
 
-## Configure multiple protected branches by using a wildcard
+## Protect multiple branches with wildcard rules
 
-If both a specific rule and a wildcard rule apply to the same branch, the most
-permissive rule controls how the branch behaves. For merge controls to work properly,
-set **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
+When using wildcards, multiple rules can apply to a single branch.
+If more than one rule applies to a branch, the _most permissive_ rule controls
+how the branch behaves. For merge controls to work properly, set
+**Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
 Prerequisite:
 
@@ -165,13 +166,13 @@ To protect multiple branches at the same time:
 
 The protected branch displays in the list of protected branches.
 
-## Create a protected branch
+## Create a new branch with protections
 
-Users with at least the Developer role can create a protected branch.
+Users with at least the Developer role can create new protected branches.
 
 Prerequisites:
 
-- **Allowed to push and merge** is set to **No one**
+- **Allowed to push and merge** is set to **No one**.
 - **Allowed to merge** is set to **Developers**.
 
 You can create a protected branch by using the UI or API only.

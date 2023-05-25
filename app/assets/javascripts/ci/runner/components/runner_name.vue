@@ -1,5 +1,5 @@
 <script>
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { formatRunnerName } from '../utils';
 
 export default {
   props: {
@@ -8,13 +8,13 @@ export default {
       required: true,
     },
   },
-  methods: {
-    getIdFromGraphQLId,
+  computed: {
+    name() {
+      return formatRunnerName(this.runner);
+    },
   },
 };
 </script>
 <template>
-  <span class="gl-font-weight-bold gl-vertical-align-middle"
-    >#{{ getIdFromGraphQLId(runner.id) }} ({{ runner.shortSha }})</span
-  >
+  <span class="gl-font-weight-bold gl-vertical-align-middle">{{ name }}</span>
 </template>

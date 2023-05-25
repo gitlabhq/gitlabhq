@@ -34,6 +34,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const mockRunner = runnerData.data.runner;
 const mockRunnerGraphqlId = mockRunner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
+const mockRunnerSha = mockRunner.shortSha;
 const mockRunnersPath = '/admin/runners';
 
 Vue.use(VueApollo);
@@ -89,7 +90,7 @@ describe('AdminRunnerShowApp', () => {
     });
 
     it('displays the runner header', () => {
-      expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
+      expect(findRunnerHeader().text()).toContain(`#${mockRunnerId} (${mockRunnerSha})`);
     });
 
     it('displays the runner edit and pause buttons', () => {

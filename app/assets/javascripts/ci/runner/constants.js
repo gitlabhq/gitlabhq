@@ -9,7 +9,6 @@ export const RUNNER_DETAILS_PROJECTS_PAGE_SIZE = 5;
 export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 30;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
-export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
 export const FILTER_CSS_CLASSES =
   'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1';

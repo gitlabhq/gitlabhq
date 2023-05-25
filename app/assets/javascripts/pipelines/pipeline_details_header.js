@@ -62,6 +62,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
     autoDevops,
     detached,
     stuck,
+    refText,
   } = el.dataset;
 
   // eslint-disable-next-line no-new
@@ -86,6 +87,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
           computeCredits,
           yamlErrors,
           failureReason,
+          refText,
           badges: {
             schedule: parseBoolean(schedule),
             child: parseBoolean(child),

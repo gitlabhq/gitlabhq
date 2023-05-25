@@ -218,14 +218,11 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 ## Ban and unban users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ban_user_feature_flag`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/330667) in GitLab 14.8.
+> - Ban and unban users [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.8. Feature flag `ban_user_feature_flag` removed.
+> - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
+> - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `hidden_notes`. Disabled by default.
 
-FLAG:
-On self-managed GitLab, by default this feature is available.
-On GitLab.com, this feature is available to GitLab.com administrators only.
-
-GitLab administrators can ban and unban users. Banned users are blocked, and their issues and merge requests are hidden.
-The banned user's comments are still displayed. Hiding a banned user's comments is [tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327356).
+GitLab administrators can ban and unban users. Banned users are blocked, and their issues, merge requests, and comments are hidden.
 
 ### Ban a user
 

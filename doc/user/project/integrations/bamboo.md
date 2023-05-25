@@ -47,8 +47,7 @@ integration in GitLab.
 1. If necessary, enter a username and password for a Bamboo user that has
    access to trigger the build plan. Leave these fields blank if you do not require
    authentication.
-1. Optional. To test the configuration and trigger a build in Bamboo,
-   select **Test Settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 ### Identify the Bamboo build plan build key

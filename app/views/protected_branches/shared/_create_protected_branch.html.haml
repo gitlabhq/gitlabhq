@@ -13,7 +13,7 @@
           - else
             = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
           .form-text.text-muted
-            - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'configure-multiple-protected-branches-by-using-a-wildcard')
+            - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'protect-multiple-branches-with-wildcard-rules')
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
             - placeholders = { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }
             - if protected_branch_entity.is_a?(Group)

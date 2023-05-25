@@ -56,8 +56,8 @@ to control GitLab from Slack. Slash commands are configured separately.
 1. Leave the **Labels to be notified** field blank to get all notifications, or
    add labels that the issue or merge request must have to trigger a
    notification.
-1. Select **Test settings** to verify your information, and then select
-   **Save changes**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 Your Slack team now starts receiving GitLab event notifications as configured.
 

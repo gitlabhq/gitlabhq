@@ -3263,6 +3263,26 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     specify { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
+  describe 'read_model_registry' do
+    let(:project_with_feature) { project }
+    let(:current_user) { owner }
+
+    before do
+      stub_feature_flags(model_registry: false)
+      stub_feature_flags(model_registry: project_with_feature) if project_with_feature
+    end
+
+    context 'feature flag is enabled' do
+      specify { is_expected.to be_allowed(:read_model_registry) }
+    end
+
+    context 'feature flag is disabled' do
+      let(:project_with_feature) { nil }
+
+      specify { is_expected.not_to be_allowed(:read_model_registry) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

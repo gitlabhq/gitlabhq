@@ -14,6 +14,17 @@ export default {
       type: Object,
       required: true,
     },
+    displayCalendarIcon: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    fontSize: {
+      type: String,
+      required: false,
+      default: 'gl-font-sm',
+      validator: (fontSize) => ['gl-font-sm', 'gl-font-md'].includes(fontSize),
+    },
   },
   computed: {
     duration() {
@@ -23,7 +34,7 @@ export default {
       return formatTime(this.duration * 1000);
     },
     finishedTime() {
-      return this.pipeline?.details?.finished_at;
+      return this.pipeline?.details?.finished_at || this.pipeline?.finishedAt;
     },
     showInProgress() {
       return !this.duration && !this.finishedTime && !this.skipped;
@@ -35,13 +46,13 @@ export default {
       return this.pipeline?.details?.status?.label === 'skipped';
     },
     stuck() {
-      return this.pipeline.flags.stuck;
+      return this.pipeline?.flags?.stuck;
     },
   },
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-font-sm time-ago">
+  <div class="gl-display-flex gl-flex-direction-column time-ago" :class="fontSize">
     <span
       v-if="showInProgress"
       class="gl-display-inline-flex gl-align-items-center"
@@ -63,7 +74,13 @@ export default {
     </p>
 
     <p v-if="finishedTime" class="finished-at gl-display-inline-flex gl-align-items-center">
-      <gl-icon name="calendar" class="gl-mr-2" :size="12" />
+      <gl-icon
+        v-if="displayCalendarIcon"
+        name="calendar"
+        class="gl-mr-2"
+        :size="12"
+        data-testid="calendar-icon"
+      />
 
       <time
         v-gl-tooltip

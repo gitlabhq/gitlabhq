@@ -52,7 +52,7 @@ Complete these steps in GitLab:
 
    ![ZenTao settings page](img/zentao_product_id.png)
 
-1. To verify the ZenTao connection is working, select **Test settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 <!--- end_remove -->

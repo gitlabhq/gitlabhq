@@ -14,7 +14,7 @@ Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular int
 For a scheduled pipeline to run:
 
 - The schedule owner must have the Developer role. For pipelines on protected branches,
-  the schedule owner must be [allowed to merge](../../user/project/protected_branches.md#configure-a-protected-branch)
+  the schedule owner must be [allowed to merge](../../user/project/protected_branches.md#add-protection-to-existing-branches)
   to the branch.
 - The [CI/CD configuration](../yaml/index.md) must be valid.
 

@@ -1,4 +1,5 @@
 import { formatNumber } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { RUNNER_JOB_COUNT_LIMIT } from './constants';
 
 /**
@@ -80,4 +81,14 @@ export const getPaginationVariables = (pagination, pageSize = 10) => {
  */
 export const parseInterval = (interval) => {
   return typeof interval === 'string' ? parseInt(interval, 10) : null;
+};
+
+/**
+ * Creates formatted runner name
+ *
+ * @param {Object} runner - Runner object
+ * @returns Formatted name
+ */
+export const formatRunnerName = ({ id, shortSha }) => {
+  return `#${getIdFromGraphQLId(id)} (${shortSha})`;
 };

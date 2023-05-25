@@ -19,6 +19,7 @@ can and can't be pushed to your repository. While GitLab offers
 
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions
 in push rules. You can test them at the [regex101 regex tester](https://regex101.com/).
+Each regular expression is limited to 255 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 

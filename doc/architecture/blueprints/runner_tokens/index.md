@@ -54,13 +54,13 @@ The remaining concerns become non-issues due to the elimination of the registrat
 graph TD
     subgraph new[<b>New registration flow</b>]
     A[<b>GitLab</b>: User creates a runner in GitLab UI and adds the runner configuration] -->|<b>GitLab</b>: creates ci_runners record and returns<br/>new 'glrt-' prefixed authentication token| B
-    B(<b>Runner</b>: User runs 'gitlab-runner register' command with</br>authentication token to register new runner machine with<br/>the GitLab instance) --> C{<b>Runner</b>: Does a .runner_system_id file exist in<br/>the gitlab-runner configuration directory?}
+    B(<b>Runner</b>: User runs 'gitlab-runner register' command with</br>authentication token to register new runner manager with<br/>the GitLab instance) --> C{<b>Runner</b>: Does a .runner_system_id file exist in<br/>the gitlab-runner configuration directory?}
     C -->|Yes| D[<b>Runner</b>: Reads existing system ID] --> F
     C -->|No| E[<b>Runner</b>: Generates and persists unique system ID] --> F
     F[<b>Runner</b>: Issues 'POST /runner/verify' request<br/>to verify authentication token validity] --> G{<b>GitLab</b>: Is the authentication token valid?}
     G -->|Yes| H[<b>GitLab</b>: Creates ci_runner_machine database record if missing] --> J[<b>Runner</b>: Store authentication token in .config.toml]
     G -->|No| I(<b>GitLab</b>: Returns '403 Forbidden' error) --> K(gitlab-runner register command fails)
-    J --> Z(Runner and runner machine are ready for use)
+    J --> Z(Runner and runner manager are ready for use)
     end
 
     subgraph current[<b>Current registration flow</b>]
@@ -158,7 +158,7 @@ wherever it publishes the short token SHA.
 Given that the runner can potentially be reused with different unique system identifiers,
 we should store the unique system ID in the database.
 This ensures the unique system ID maps to a GitLab Runner's `system_id` value with the runner token.
-A new `ci_runner_machines` table holds information about each unique runner machine,
+A new `ci_runner_machines` table holds information about each unique runner manager,
 with information regarding when the runner last connected, and what type of runner it was.
 
 In the long term, the relevant fields are to be moved from the `ci_runners` into
@@ -398,7 +398,7 @@ scope.
 | GitLab Runner    | `%15.10` | Make the `gitlab-runner register` command happen in a single operation. |
 | GitLab Rails app | `%15.10` | Define feature flag and policies for "New Runner creation workflow" for groups and projects. |
 | GitLab Rails app | `%15.10` | Only update runner `contacted_at` and `status` when polled for jobs. |
-| GitLab Rails app | `%15.10` | Add GraphQL type to represent runner machines under `CiRunner`. |
+| GitLab Rails app | `%15.10` | Add GraphQL type to represent runner managers under `CiRunner`. |
 | GitLab Rails app | `%15.11` | Implement UI to create new instance runner. |
 | GitLab Rails app | `%15.11` | Update service and mutation to accept groups and projects. |
 | GitLab Rails app | `%15.11` | Implement UI to create new group/project runners. |
@@ -417,7 +417,6 @@ scope.
 | GitLab Rails app | | Add UI to allow disabling use of registration tokens at project or group level. |
 | GitLab Rails app | | Introduce `:enforce_create_runner_workflow` feature flag (disabled by default) to control whether use of registration tokens is allowed. |
 | GitLab Rails app | | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting or `:enforce_create_runner_workflow` feature flag disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
-| GitLab Rails app | | Start refusing job requests that don't include a unique ID, if either `allow_runner_registration_token` setting or `:enforce_create_runner_workflow` feature flag disables registration tokens. |
 | GitLab Rails app | | Hide legacy UI showing registration with a registration token, if `:enforce_create_runner_workflow` feature flag disables registration tokens. |
 
 ### Stage 6 - Enforcement
@@ -425,7 +424,8 @@ scope.
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
 | GitLab Rails app | `%16.6`   | Enable `:enforce_create_runner_workflow` feature flag by default. |
-| GitLab Rails app | `%16.6`   | Start reject job requests that don't include `system_id` value. |
+| GitLab Rails app | | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope. |
+| GitLab Rails app | | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-authentication-tokens) with multiple machines. |
 
 ### Stage 7 - Removals
 
@@ -442,7 +442,8 @@ scope.
 ### Will my runner registration workflow break?
 
 If no action is taken before your GitLab instance is upgraded to 16.6, then your runner registration
-worflow will break.
+workflow will break.
+Until then, both the new and the old workflow will coexist side-by-side.
 For self-managed instances, to continue using the previous runner registration process,
 you can disable the `enforce_create_runner_workflow` feature flag until GitLab 17.0.
 
@@ -456,7 +457,9 @@ When the new runner registration process is introduced, you will:
 
 1. Create a runner directly in the GitLab UI.
 1. Receive an authentication token in return.
-1. Use the authentication token instead of the registration token.
+1. Use the authentication token instead of the registration token, whenever you need to register a runner with this
+   configuration. Runner managers registered in multiple hosts will appear under the same runner in the GitLab UI,
+   but with an identifying system ID.
 
 This has added benefits such as preserved ownership records for runners, and minimizes
 impact on users.
@@ -491,14 +494,14 @@ Example command for GitLab 15.9:
 
 ```shell
 gitlab-runner register
+    --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \
     --tag-list "shell,mac,gdk,test" \
-    --run-untagged="false" \
-    --locked="false" \
-    --access-level="not_protected" \
-    --non-interactive \
-    --registration-token="GR1348941C6YcZVddc8kjtdU-yWYD"
+    --run-untagged "false" \
+    --locked "false" \
+    --access-level "not_protected" \
+    --registration-token "GR1348941C6YcZVddc8kjtdU-yWYD"
 ```
 
 In GitLab 16.0, the runner will be created in the UI where some of its attributes can be
@@ -508,10 +511,10 @@ to `register`. The following example shows the new command:
 
 ```shell
 gitlab-runner register
+    --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \
-    --non-interactive \
-    --registration-token="glrt-2CR8_eVxiioB1QmzPZwa"
+    --token "glrt-2CR8_eVxiioB1QmzPZwa"
 ```
 
 ### How does this change impact auto-scaling scenarios?
@@ -522,6 +525,41 @@ This means that the same runner configuration is reused across jobs, instead of 
 for each job.
 The specific runner can be identified by the unique system ID that is generated when the runner
 process is started.
+
+### Will existing runners continue to work?
+
+Yes, existing runners will continue to work as usual. This change only affects registration of new runners.
+
+### Can runners still be created programmatically?
+
+A new [POST /user/runners REST API](../../../api/users.md#create-a-ci-runner) was introduced in
+GitLab 15.11, which allows a runner to be created in the context of an authenticated user. This should only be used in
+scenarios where the runner configuration is dynamic, or not reusable. If the runner configuration is static, it is
+preferable to reuse the authentication token of an existing runner.
+
+The following snippet shows how a group runner could be created and registered with a
+[Group Access Token](../../../user/group/settings/group_access_tokens.md) using the new creation flow.
+The process is very similar when using [Project Access Tokens](../../../user/project/settings/project_access_tokens.md)
+or [Personal Access Tokens](../../../user/profile/personal_access_tokens.md):
+
+```shell
+# `GROUP_ID` contains the numerical ID of the group where the runner will be created
+# `GITLAB_TOKEN` can be a Personal Access Token for a group owner, or a Group Access Token on the respective group
+#   created with `owner` access and `api` scope.
+#
+# The output will be parsed by `jq` to extract the token of the newly created runner
+RUNNER_TOKEN=$(curl --silent --method POST "https://gitlab.com/api/v4/user/runners" \
+    --header "private-token: $GITLAB_TOKEN" \
+    --header 'content-type: application/json' \
+    --data "{\"runner_type\":\"group_type\",\"group_id\":\"$GROUP_ID\",\"description\":\"My runner\",\"tag-list\":\"java,linux\"}" \
+  | jq -r '.token')
+
+gitlab-runner register
+    --non-interactive \
+    --executor "shell" \
+    --url "https://gitlab.com/" \
+    --token "$RUNNER_TOKEN"
+```
 
 ## Status
 
@@ -537,7 +575,7 @@ Proposal:
 |------------------------------|--------------------------------------------------|
 | Authors                      | Kamil Trzciński, Tomasz Maczukin, Pedro Pombeiro |
 | Architecture Evolution Coach | Kamil Trzciński                                  |
-| Engineering Leader           | Elliot Rushton, Cheryl Li                        |
+| Engineering Leader           | Nicole Williams, Cheryl Li                       |
 | Product Manager              | Darren Eastman, Jackie Porter                    |
 | Domain Expert / Runner       | Tomasz Maczukin                                  |
 
@@ -545,7 +583,7 @@ DRIs:
 
 | Role                         | Who                             |
 |------------------------------|---------------------------------|
-| Leadership                   | Elliot Rushton                  |
+| Leadership                   | Nicole Williams                 |
 | Product                      | Darren Eastman                  |
 | Engineering                  | Tomasz Maczukin, Pedro Pombeiro |
 

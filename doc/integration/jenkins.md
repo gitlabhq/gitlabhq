@@ -134,7 +134,7 @@ than the [webhook integration](#configure-a-webhook).
    project.
 1. If your Jenkins server requires
    authentication, enter the **Username** and **Password**.
-1. To test the connection to Jenkins, select **Test settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 ### Configure a webhook

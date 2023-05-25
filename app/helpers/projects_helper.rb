@@ -737,7 +737,6 @@ module ProjectsHelper
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsDisabled: project.emails_disabled?,
-      metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,

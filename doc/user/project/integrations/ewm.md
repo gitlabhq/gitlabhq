@@ -35,7 +35,8 @@ To enable the EWM integration, in a project:
      Append the following fragment to your project area URL: `#action=com.ibm.team.workitem.newWorkItem`.
      For example, `https://example.com/ccm/web/projects/JKE%20Banking#action=com.ibm.team.workitem.newWorkItem`.
 
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 ## Reference EWM work items in commit messages
 

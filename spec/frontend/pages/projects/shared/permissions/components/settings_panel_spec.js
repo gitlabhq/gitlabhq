@@ -24,7 +24,6 @@ const defaultProps = {
     buildsAccessLevel: 20,
     wikiAccessLevel: 20,
     snippetsAccessLevel: 20,
-    metricsDashboardAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
     containerRegistryAccessLevel: 20,
@@ -126,10 +125,6 @@ describe('Settings Panel', () => {
     wrapper.find(
       'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
     );
-  const findMetricsVisibilitySettings = () =>
-    wrapper.findComponent({ ref: 'metrics-visibility-settings' });
-  const findMetricsVisibilityInput = () =>
-    findMetricsVisibilitySettings().findComponent(ProjectFeatureSetting);
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
@@ -137,8 +132,6 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'infrastructure-settings' });
   const findReleasesSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findMonitorSettings = () => wrapper.findComponent({ ref: 'monitor-settings' });
-  const findMonitorVisibilityInput = () =>
-    findMonitorSettings().findComponent(ProjectFeatureSetting);
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -682,69 +675,6 @@ describe('Settings Panel', () => {
     });
   });
 
-  describe('Metrics dashboard', () => {
-    it('should show the metrics dashboard access select', () => {
-      wrapper = mountComponent();
-
-      expect(findMetricsVisibilitySettings().exists()).toBe(true);
-    });
-
-    it('should contain help text', () => {
-      wrapper = mountComponent();
-
-      expect(findMetricsVisibilitySettings().props('helpText')).toBe(
-        "Visualize the project's performance metrics.",
-      );
-    });
-
-    it.each`
-      before                                | after
-      ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.EVERYONE}
-      ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.PROJECT_MEMBERS}
-      ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.PROJECT_MEMBERS}
-      ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.NOT_ENABLED}
-      ${featureAccessLevel.PROJECT_MEMBERS} | ${featureAccessLevel.NOT_ENABLED}
-    `(
-      'when updating Monitor access level from `$before` to `$after`, Metric Dashboard access is updated to `$after` as well',
-      async ({ before, after }) => {
-        wrapper = mountComponent({
-          currentSettings: { monitorAccessLevel: before, metricsDashboardAccessLevel: before },
-        });
-
-        await findMonitorVisibilityInput().vm.$emit('change', after);
-
-        expect(findMetricsVisibilityInput().props('value')).toBe(after);
-      },
-    );
-
-    it('when updating Monitor access level from `10` to `20`, Metric Dashboard access is not increased', async () => {
-      wrapper = mountComponent({
-        currentSettings: {
-          monitorAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
-          metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
-        },
-      });
-
-      await findMonitorVisibilityInput().vm.$emit('change', featureAccessLevel.EVERYONE);
-
-      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.PROJECT_MEMBERS);
-    });
-
-    it('should reduce Metrics visibility level when visibility is set to private', async () => {
-      wrapper = mountComponent({
-        currentSettings: {
-          visibilityLevel: VISIBILITY_LEVEL_PUBLIC_INTEGER,
-          monitorAccessLevel: featureAccessLevel.EVERYONE,
-          metricsDashboardAccessLevel: featureAccessLevel.EVERYONE,
-        },
-      });
-
-      await findProjectVisibilityLevelInput().setValue(VISIBILITY_LEVEL_PRIVATE_INTEGER);
-
-      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.PROJECT_MEMBERS);
-    });
-  });
-
   describe('Analytics', () => {
     it('should show the analytics toggle', () => {
       wrapper = mountComponent();
@@ -793,13 +723,6 @@ describe('Settings Panel', () => {
       expect(findMonitorSettings().findComponent(ProjectFeatureSetting).props('options')).toEqual(
         expectedAccessLevel,
       );
-    });
-    it('when monitorAccessLevel is for project members, it is also for everyone', () => {
-      wrapper = mountComponent({
-        currentSettings: { monitorAccessLevel: featureAccessLevel.PROJECT_MEMBERS },
-      });
-
-      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.EVERYONE);
     });
   });
 });

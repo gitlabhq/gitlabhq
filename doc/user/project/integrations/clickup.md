@@ -21,7 +21,8 @@ To enable the ClickUp integration in a project:
    - **Issue URL**: The URL to the ClickUp project issue to link to this GitLab project.
      The URL must contain `:id`. GitLab replaces this ID with the issue number.
 
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 After you have configured and enabled ClickUp, you see the ClickUp link on the GitLab project pages,
 which takes you to your ClickUp project.

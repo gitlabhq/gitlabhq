@@ -61,7 +61,7 @@ To enable the integration in GitLab:
 1. Scroll down to the end of the page where you find a **Webhook** field.
 1. Enter the webhook URL you copied from Google Chat.
 1. Select the events you want to be notified about in your Google Chat space.
-1. Optional. Select **Test settings** to verify the connection.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 To test the integration, make a change based on the events you selected and

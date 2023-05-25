@@ -2,7 +2,6 @@
 import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
@@ -93,7 +92,7 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin, glFeatureFlagsMixin()],
+  mixins: [settingsMixin],
 
   props: {
     requestCveAvailable: {
@@ -250,7 +249,6 @@ export default {
       wikiAccessLevel: featureAccessLevel.EVERYONE,
       snippetsAccessLevel: featureAccessLevel.EVERYONE,
       pagesAccessLevel: featureAccessLevel.EVERYONE,
-      metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
@@ -360,9 +358,6 @@ export default {
     packageRegistryApiForEveryoneEnabledShown() {
       return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
     },
-    monitorOperationsFeatureAccessLevelOptions() {
-      return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
-    },
   },
 
   watch: {
@@ -396,10 +391,6 @@ export default {
         this.snippetsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.snippetsAccessLevel,
-        );
-        this.metricsDashboardAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.metricsDashboardAccessLevel,
         );
         this.analyticsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -464,8 +455,6 @@ export default {
           this.pagesAccessLevel = featureAccessLevel.EVERYONE;
         if (this.analyticsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.analyticsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.metricsDashboardAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
@@ -503,22 +492,9 @@ export default {
       else if (oldValue === featureAccessLevel.NOT_ENABLED)
         toggleHiddenClassBySelector('.merge-requests-feature', false);
     },
-
-    monitorAccessLevel(value, oldValue) {
-      this.updateSubFeatureAccessLevel(value, oldValue);
-    },
   },
 
   methods: {
-    updateSubFeatureAccessLevel(value, oldValue) {
-      if (value < oldValue) {
-        // sub-features cannot have more permissive access level
-        this.metricsDashboardAccessLevel = Math.min(this.metricsDashboardAccessLevel, value);
-      } else if (oldValue === 0) {
-        this.metricsDashboardAccessLevel = value;
-      }
-    },
-
     highlightChanges() {
       this.highlightChangesClass = true;
       this.$nextTick(() => {
@@ -930,23 +906,6 @@ export default {
           name="project[project_feature_attributes][monitor_access_level]"
         />
       </project-setting-row>
-      <div
-        v-if="!glFeatures.removeMonitorMetrics"
-        class="project-feature-setting-group gl-pl-5 gl-md-pl-7"
-      >
-        <project-setting-row
-          ref="metrics-visibility-settings"
-          :label="__('Metrics Dashboard')"
-          :help-text="s__('ProjectSettings|Visualize the project\'s performance metrics.')"
-        >
-          <project-feature-setting
-            v-model="metricsDashboardAccessLevel"
-            :show-toggle="false"
-            :options="monitorOperationsFeatureAccessLevelOptions"
-            name="project[project_feature_attributes][metrics_dashboard_access_level]"
-          />
-        </project-setting-row>
-      </div>
       <project-setting-row
         ref="environments-settings"
         :label="$options.i18n.environmentsLabel"

@@ -8,9 +8,12 @@
   = rm_f.hidden_field :keep_divergent_refs, class: 'js-mirror-keep-divergent-refs-hidden'
   = render partial: 'projects/mirrors/ssh_host_keys', locals: { f: rm_f }
   = render partial: 'projects/mirrors/authentication_method', locals: { f: rm_f }
-  .form-check.gl-mb-3
-    = check_box_tag :keep_divergent_refs, '1', false, class: 'js-mirror-keep-divergent-refs form-check-input'
-    = label_tag :keep_divergent_refs, _('Keep divergent refs'), class: 'form-check-label'
-    .form-text.text-muted
-      - link_opening_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
-      = html_escape(_('Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}')) % { mirroring_docs_link_start: link_opening_tag % {url: help_page_path('user/project/repository/mirror/push.md', anchor: 'keep-divergent-refs')}, mirroring_api_docs_link_start: link_opening_tag % {url: help_page_path('api/remote_mirrors')}, link_closing_tag: '</a>'.html_safe }
+  .form-group
+    = render Pajamas::CheckboxTagComponent.new(name: :keep_divergent_refs,
+      checkbox_options: { class: 'js-mirror-keep-divergent-refs' },
+      label_options: { class: 'gl-mb-0!' }) do |c|
+      = c.label do
+        = _('Keep divergent refs')
+      = c.help_text do
+        - link_opening_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
+        = html_escape(_('Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}')) % { mirroring_docs_link_start: link_opening_tag % {url: help_page_path('user/project/repository/mirror/push.md', anchor: 'keep-divergent-refs')}, mirroring_api_docs_link_start: link_opening_tag % {url: help_page_path('api/remote_mirrors')}, link_closing_tag: '</a>'.html_safe }
