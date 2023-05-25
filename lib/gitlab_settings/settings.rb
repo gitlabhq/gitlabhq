@@ -8,6 +8,16 @@ module GitlabSettings
       raise(ArgumentError, 'config source is required') if source.blank?
       raise(ArgumentError, 'config section is required') if section.blank?
 
+      # Rails will set the default encoding to UTF-8
+      # (https://github.com/rails/rails/blob/v6.1.7.2/railties/lib/rails.rb#L21C1-L24),
+      # but it's possible this class is used before `require 'rails'` is
+      # called, as in the case of `sidekiq-cluster`. Ensure the
+      # configuration file is parsed as UTF-8, or
+      # ActiveSupport::ConfigurationFile.parse will blow up if the
+      # configuration file contains UTF-8 characters.
+      Encoding.default_external = Encoding::UTF_8
+      Encoding.default_internal = Encoding::UTF_8
+
       @source = source
       @section = section
       @loaded = false

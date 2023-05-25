@@ -31,6 +31,15 @@ RSpec.describe GitlabSettings::Settings, :aggregate_failures, feature_category: 
       expect { described_class.new(source, '') }
         .to raise_error(ArgumentError, 'config section is required')
     end
+
+    it 'sets encodings' do
+      expect(Encoding).to receive(:default_external=).with(Encoding::UTF_8).and_call_original
+      expect(Encoding).to receive(:default_internal=).with(Encoding::UTF_8).and_call_original
+
+      File.write(source, { section1: { config1: { value1: 2 } } }.to_yaml)
+
+      described_class.new(source, 'section1')
+    end
   end
 
   describe '#reload!' do
