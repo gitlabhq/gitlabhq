@@ -112,6 +112,7 @@ module QA
 
         let(:user) do
           Resource::User.fabricate_via_browser_ui! do |user|
+            user.email_domain = 'gitlab.com'
             user.expect_fabrication_success = false
           end
         end
@@ -122,7 +123,6 @@ module QA
 
         after do
           set_require_admin_approval_after_user_signup(false)
-          user.remove_via_api! if user
         end
 
         it 'allows user login after approval',

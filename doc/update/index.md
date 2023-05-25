@@ -276,6 +276,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 16.0.0
 
+- Sidekiq crashes if there are non-ASCII characters in the GitLab.rb file. You can fix this
+  by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).

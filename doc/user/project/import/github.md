@@ -188,7 +188,7 @@ Completed imports can be re-imported by selecting **Re-import** and specifying n
 
 ### Check status of imports
 
-> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.0.
+> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
 
 After imports are completed, they can be in one of three states:
 
