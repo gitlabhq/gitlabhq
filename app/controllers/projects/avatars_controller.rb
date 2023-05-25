@@ -5,7 +5,7 @@ class Projects::AvatarsController < Projects::ApplicationController
 
   before_action :authorize_admin_project!, only: [:destroy]
 
-  feature_category :projects
+  feature_category :groups_and_projects
 
   urgency :low, [:show]
 

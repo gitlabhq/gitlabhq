@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CountService, feature_category: :projects do
+RSpec.describe Projects::CountService, feature_category: :groups_and_projects do
   let(:project) { build(:project, id: 1) }
   let(:service) { described_class.new(project) }
 

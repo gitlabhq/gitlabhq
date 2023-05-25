@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sees user popover', :js, feature_category: :projects do
+RSpec.describe 'User sees user popover', :js, feature_category: :groups_and_projects do
   include Features::NotesHelpers
 
   let_it_be(:user) { create(:user, pronouns: 'they/them') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User sees Git instructions', feature_category: :projects do
+RSpec.describe 'Projects > Show > User sees Git instructions', feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
 
   before do

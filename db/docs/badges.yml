@@ -5,7 +5,7 @@ classes:
 - GroupBadge
 - ProjectBadge
 feature_categories:
-- projects
+- groups_and_projects
 description: Stores badges records
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17082
 milestone: '10.6'

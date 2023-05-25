@@ -3,7 +3,7 @@
 class Projects::StarrersController < Projects::ApplicationController
   include SortingHelper
 
-  feature_category :projects
+  feature_category :groups_and_projects
 
   urgency :low, [:index]
 

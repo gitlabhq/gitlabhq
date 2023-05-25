@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::ImportProjectTeamService, feature_category: :subgroups do
+RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_projects do
   describe '#execute' do
     let_it_be(:source_project) { create(:project) }
     let_it_be(:target_project) { create(:project) }

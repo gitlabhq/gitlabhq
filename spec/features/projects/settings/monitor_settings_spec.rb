@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :projects do
+RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
 
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }

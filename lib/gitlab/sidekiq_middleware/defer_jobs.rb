@@ -7,7 +7,7 @@ module Gitlab
       DELAY = ENV.fetch("SIDEKIQ_DEFER_JOBS_DELAY", 5.minutes)
       FEATURE_FLAG_PREFIX = "defer_sidekiq_jobs"
 
-      # This middleware will defer jobs indefinitely until the `defer_sidekiq_jobs:#{worker_name}` feature flag
+      # This middleware will defer jobs indefinitely until the `defer_sidekiq_jobs_#{worker_name}` feature flag
       # is turned off (or when Feature.enabled? returns false by chance while using `percentage of time` value)
       def call(worker, job, _queue)
         if defer_job?(worker)
@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def defer_job?(worker)
-        Feature.enabled?(:"#{FEATURE_FLAG_PREFIX}:#{worker.class.name}", type: :worker,
+        Feature.enabled?(:"#{FEATURE_FLAG_PREFIX}_#{worker.class.name}", type: :worker,
           default_enabled_if_undefined: false)
       end
     end

@@ -16,15 +16,16 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
       ci_registered_group_runners: 107,
       ci_registered_project_runners: 108,
       conan_max_file_size: 10,
+      enforcement_limit: 15,
       generic_packages_max_file_size: 20,
       helm_max_file_size: 25,
-      maven_max_file_size: 30,
-      npm_max_file_size: 40,
-      nuget_max_file_size: 50,
-      pypi_max_file_size: 60,
-      terraform_module_max_file_size: 70,
-      storage_size_limit: 80,
-      notification_limit: 90,
+      notification_limit: 30,
+      maven_max_file_size: 40,
+      npm_max_file_size: 60,
+      nuget_max_file_size: 60,
+      pypi_max_file_size: 70,
+      terraform_module_max_file_size: 80,
+      storage_size_limit: 90,
       pipeline_hierarchy_size: 250
     }
   end

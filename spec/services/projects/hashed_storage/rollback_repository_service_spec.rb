@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis_shared_state, feature_category: :projects do
+RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis_shared_state, feature_category: :groups_and_projects do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :repository, :wiki_repo, :design_repo, storage_version: ::Project::HASHED_STORAGE_FEATURES[:repository]) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }

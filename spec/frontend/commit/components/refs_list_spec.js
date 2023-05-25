@@ -45,12 +45,12 @@ describe('Commit references component', () => {
     expect(findCollapseButton().text()).toContain(CONTAINING_COMMIT);
   });
 
-  it('Emits event when collapse button is clicked', () => {
+  it('emits event when collapse button is clicked', () => {
     findCollapseButton().vm.$emit('click');
     expect(wrapper.emitted()[FETCH_CONTAINING_REFS_EVENT]).toHaveLength(1);
   });
 
-  it('Renders the list of containing branches or tags when collapse is expanded', () => {
+  it('renders the list of containing branches or tags when collapse is expanded', () => {
     createComponent({ containingRefs: containingBranchesMock });
     const containingRefsList = findContainingRefs();
     expect(containingRefsList.findAllComponents(GlBadge)).toHaveLength(
@@ -58,12 +58,19 @@ describe('Commit references component', () => {
     );
   });
 
-  it('Does not reneder list of tipping branches or tags if there is no data', () => {
+  it('renders links to refs', () => {
+    const index = 0;
+    const refBadge = findTippingRefs().at(index);
+    const refUrl = `${refsListPropsMock.urlPart}${refsListPropsMock.tippingRefs[index]}`;
+    expect(refBadge.attributes('href')).toBe(refUrl);
+  });
+
+  it('does not reneder list of tipping branches or tags if there is no data', () => {
     createComponent({ tippingRefs: [] });
     expect(findTippingRefs().exists()).toBe(false);
   });
 
-  it('Renders skeleton loader when isLoading prop has true value', () => {
+  it('renders skeleton loader when isLoading prop has true value', () => {
     createComponent({ isLoading: true, containingRefs: [] });
     expect(findSkeletonLoader().exists()).toBe(true);
   });

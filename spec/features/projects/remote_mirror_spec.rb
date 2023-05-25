@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project remote mirror', :feature, feature_category: :projects do
+RSpec.describe 'Project remote mirror', :feature, feature_category: :groups_and_projects do
   let(:project) { create(:project, :repository, :remote_mirror) }
   let(:remote_mirror) { project.remote_mirrors.first }
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AfterRenameService, feature_category: :projects do
+RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_projects do
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::Hashed.new(project) }
   let!(:path_before_rename) { project.path }

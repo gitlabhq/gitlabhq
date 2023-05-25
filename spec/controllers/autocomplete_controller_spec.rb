@@ -248,7 +248,7 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'GET projects', feature_category: :projects do
+  context 'GET projects', feature_category: :groups_and_projects do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 

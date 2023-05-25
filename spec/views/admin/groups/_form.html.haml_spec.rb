@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/groups/_form', feature_category: :subgroups do
+RSpec.describe 'admin/groups/_form', feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:admin) { build(:user, :admin) }

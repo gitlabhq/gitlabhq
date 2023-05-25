@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User manages notifications', :js, feature_category: :projects do
+RSpec.describe 'Projects > Show > User manages notifications', :js, feature_category: :groups_and_projects do
   let(:project) { create(:project, :public, :repository) }
 
   before do

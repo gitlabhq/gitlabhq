@@ -10,7 +10,16 @@ description: "Documentation on Git file blame."
 
 [Git blame](https://git-scm.com/docs/git-blame) provides more information
 about every line in a file, including the last modified time, author, and
-commit hash. To view it for a file:
+commit hash.
+
+## View blame for a file
+
+Prerequisites:
+
+- The file type must be text-based. The GitLab UI does not display
+  `git blame` results for binary files.
+
+To view the blame for a file:
 
 1. Go to your project's **Repository > Files**.
 1. Select the file you want to review.

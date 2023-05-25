@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'The group dashboard', :js, feature_category: :subgroups do
+RSpec.describe 'The group dashboard', :js, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
   include Features::TopNavSpecHelpers
 

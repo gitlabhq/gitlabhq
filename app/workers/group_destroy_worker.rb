@@ -8,7 +8,7 @@ class GroupDestroyWorker
   sidekiq_options retry: 3
   include ExceptionBacktrace
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
 
   idempotent!
   deduplicate :until_executed, ttl: 2.hours

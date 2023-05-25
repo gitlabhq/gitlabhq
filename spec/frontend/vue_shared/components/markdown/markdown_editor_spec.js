@@ -174,6 +174,20 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  describe('when attachments are disabled', () => {
+    beforeEach(() => {
+      buildWrapper({ propsData: { disableAttachments: true } });
+    });
+
+    it('disables canAttachFile', () => {
+      expect(findMarkdownField().props().canAttachFile).toBe(false);
+    });
+
+    it('passes `attach-file` to restrictedToolBarItems', () => {
+      expect(findMarkdownField().props().restrictedToolBarItems).toContain('attach-file');
+    });
+  });
+
   describe('disabled', () => {
     it('disables markdown field when disabled prop is true', () => {
       buildWrapper({ propsData: { disabled: true } });

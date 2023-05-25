@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DownloadService, feature_category: :projects do
+RSpec.describe Projects::DownloadService, feature_category: :groups_and_projects do
   describe 'File service' do
     before do
       @user = create(:user)

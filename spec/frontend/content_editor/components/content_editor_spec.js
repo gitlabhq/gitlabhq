@@ -105,6 +105,18 @@ describe('ContentEditor', () => {
     expect(findEditorElement().text()).not.toContain('For quick actions, type /');
   });
 
+  it('displays an attachment button', () => {
+    createWrapper();
+
+    expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(false);
+  });
+
+  it('hides the attachment button if attachments are disabled', () => {
+    createWrapper({ disableAttachments: true });
+
+    expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(true);
+  });
+
   describe('when setting initial content', () => {
     it('displays loading indicator', async () => {
       createWrapper();

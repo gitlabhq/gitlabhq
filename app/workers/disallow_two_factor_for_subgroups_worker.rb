@@ -10,7 +10,7 @@ class DisallowTwoFactorForSubgroupsWorker
 
   INTERVAL = 2.seconds.to_i
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
   idempotent!
 
   def perform(group_id)

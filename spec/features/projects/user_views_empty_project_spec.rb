@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views an empty project', feature_category: :projects do
+RSpec.describe 'User views an empty project', feature_category: :groups_and_projects do
   include Features::InviteMembersModalHelpers
 
   let_it_be(:project) { create(:project, :empty_repo) }

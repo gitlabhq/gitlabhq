@@ -44,8 +44,8 @@ Matches use:
 | `gitlab.com and staging.gitlab.com`      | `only: { subdomain: /(staging.)?/, domain: 'gitlab' }` | `(staging.)?gitlab.com` |
 | `dev.gitlab.org`                         | `only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org` |
 | `staging.gitlab.com and domain.gitlab.com` | `only: { subdomain: %i[staging domain] }` | `(staging\|domain).+.com`             |
-| The `nightly` pipeline                     | `only: { pipeline: :nightly }` | "nightly" |
-| The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
+| The `nightly` pipeline                     | `only: { pipeline: :nightly }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) |
+| The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 | The `ee:instance` job | `only: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
 | Any `quarantine` job | `only: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
 | Any run where condition evaluates to a truthy value | `only: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is set to true
@@ -87,8 +87,8 @@ Matches use:
 | `gitlab.com and staging.gitlab.com`      | `except: { subdomain: /(staging.)?/, domain: 'gitlab' }` | `(staging.)?gitlab.com` |
 | `dev.gitlab.org`                         | `except: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org` |
 | `staging.gitlab.com and domain.gitlab.com` | `except: { subdomain: %i[staging domain] }` | `(staging\|domain).+.com`             |
-| The `nightly` pipeline                     | `except: { pipeline: :nightly }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) |
-| The `nightly` and `canary` pipelines | `except: { pipeline: [:nightly, :canary] }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
+| The `nightly` pipeline                     | `only: { pipeline: :nightly }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) |
+| The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 | The `ee:instance` job | `except: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
 | Any `quarantine` job | `except: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
 | Any run except where condition evaluates to a truthy value | `except: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is not set to true

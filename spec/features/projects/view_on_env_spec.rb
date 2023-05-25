@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'View on environment', :js, feature_category: :projects do
+RSpec.describe 'View on environment', :js, feature_category: :groups_and_projects do
   let(:branch_name) { 'feature' }
   let(:file_path) { 'files/ruby/feature.rb' }
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User browse group projects page', feature_category: :subgroups do
+RSpec.describe 'User browse group projects page', feature_category: :groups_and_projects do
   let(:user) { create :user }
   let(:group) { create :group }
 

@@ -60,17 +60,19 @@ module API
         optional :ci_registered_group_runners, type: Integer, desc: 'Maximum number of runners registered per group'
         optional :ci_registered_project_runners, type: Integer, desc: 'Maximum number of runners registered per project'
         optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
+        optional :enforcement_limit, type: Integer,
+                                      desc: 'Maximum storage size for the root namespace enforcement in MiB'
         optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes'
         optional :helm_max_file_size, type: Integer, desc: 'Maximum Helm chart file size in bytes'
         optional :maven_max_file_size, type: Integer, desc: 'Maximum Maven package file size in bytes'
+        optional :notification_limit, type: Integer,
+                                      desc: 'Maximum storage size for the root namespace notifications in MiB'
         optional :npm_max_file_size, type: Integer, desc: 'Maximum NPM package file size in bytes'
         optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes'
         optional :pypi_max_file_size, type: Integer, desc: 'Maximum PyPI package file size in bytes'
         optional :terraform_module_max_file_size, type: Integer,
                                                   desc: 'Maximum Terraform Module package file size in bytes'
-        optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in megabytes'
-        optional :notification_limit, type: Integer,
-                                      desc: 'Maximum storage size for the root namespace notifications in megabytes'
+        optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in MiB'
         optional :pipeline_hierarchy_size, type: Integer,
                                            desc: "Maximum number of downstream pipelines in a pipeline's hierarchy tree"
       end

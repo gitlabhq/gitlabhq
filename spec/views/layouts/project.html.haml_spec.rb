@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/project', feature_category: :projects do
+RSpec.describe 'layouts/project', feature_category: :groups_and_projects do
   let(:invite_member) { true }
 
   before do

@@ -23,7 +23,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   rescue_from PageOutOfBoundsError, with: :page_out_of_bounds
 
-  feature_category :projects
+  feature_category :groups_and_projects
   # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
   # and https://gitlab.com/gitlab-org/gitlab/-/issues/358945
   urgency :low, [:index, :topics, :trending, :starred, :topic]

@@ -6,7 +6,7 @@
 class Projects::RedirectController < ::ApplicationController
   skip_before_action :authenticate_user!
 
-  feature_category :projects
+  feature_category :groups_and_projects
 
   def redirect_from_id
     project = Project.find(params[:id])

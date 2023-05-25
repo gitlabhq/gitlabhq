@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload an attachment', :api, :js, feature_category: :projects do
+RSpec.describe 'Upload an attachment', :api, :js, feature_category: :groups_and_projects do
   include_context 'file upload requests helpers'
 
   let_it_be(:project) { create(:project) }

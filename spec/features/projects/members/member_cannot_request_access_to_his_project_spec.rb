@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Member cannot request access to their project', feature_category: :subgroups do
+RSpec.describe 'Projects > Members > Member cannot request access to their project', feature_category: :groups_and_projects do
   let(:member) { create(:user) }
   let(:project) { create(:project) }
 

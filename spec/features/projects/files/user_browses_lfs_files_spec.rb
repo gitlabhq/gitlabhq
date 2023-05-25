@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :projects do
+RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :groups_and_projects do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
 

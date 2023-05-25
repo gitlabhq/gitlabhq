@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Badges, feature_category: :projects do
+RSpec.describe API::Badges, feature_category: :groups_and_projects do
   let(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }

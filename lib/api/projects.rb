@@ -9,7 +9,7 @@ module API
 
     before { authenticate_non_get! }
 
-    feature_category :projects, %w[
+    feature_category :groups_and_projects, %w[
       /projects/:id/custom_attributes
       /projects/:id/custom_attributes/:key
       /projects/:id/share_locations
@@ -244,7 +244,7 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get ":user_id/projects", feature_category: :projects, urgency: :low do
+      get ":user_id/projects", feature_category: :groups_and_projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -264,7 +264,7 @@ module API
         use :collection_params
         use :statistics_params
       end
-      get ":user_id/starred_projects", feature_category: :projects, urgency: :low do
+      get ":user_id/starred_projects", feature_category: :groups_and_projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -290,7 +290,7 @@ module API
         use :with_custom_attributes
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
-      get feature_category: :projects, urgency: :low do
+      get feature_category: :groups_and_projects, urgency: :low do
         validate_projects_api_rate_limit_for_unauthenticated_users!
         validate_updated_at_order_and_filter!
 
@@ -359,7 +359,7 @@ module API
         use :create_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      post "user/:user_id", feature_category: :projects do
+      post "user/:user_id", feature_category: :groups_and_projects do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
@@ -416,7 +416,7 @@ module API
                            desc: 'Include project license data'
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
-      get ":id", feature_category: :projects, urgency: :low do
+      get ":id", feature_category: :groups_and_projects, urgency: :low do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
@@ -527,7 +527,7 @@ module API
 
         at_least_one_of(*Helpers::ProjectsHelpers.update_params_at_least_one_of)
       end
-      put ':id', feature_category: :projects do
+      put ':id', feature_category: :groups_and_projects do
         authorize_admin_project
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -559,7 +559,7 @@ module API
         ]
         tags %w[projects]
       end
-      post ':id/archive', feature_category: :projects do
+      post ':id/archive', feature_category: :groups_and_projects do
         authorize!(:archive_project, user_project)
 
         ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
@@ -574,7 +574,7 @@ module API
         ]
         tags %w[projects]
       end
-      post ':id/unarchive', feature_category: :projects, urgency: :default do
+      post ':id/unarchive', feature_category: :groups_and_projects, urgency: :default do
         authorize!(:archive_project, user_project)
 
         ::Projects::UpdateService.new(user_project, current_user, archived: false).execute
@@ -590,7 +590,7 @@ module API
         ]
         tags %w[projects]
       end
-      post ':id/star', feature_category: :projects do
+      post ':id/star', feature_category: :groups_and_projects do
         if current_user.starred?(user_project)
           not_modified!
         else
@@ -609,7 +609,7 @@ module API
         ]
         tags %w[projects]
       end
-      post ':id/unstar', feature_category: :projects do
+      post ':id/unstar', feature_category: :groups_and_projects do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reset
@@ -633,7 +633,7 @@ module API
         optional :search, type: String, desc: 'Return list of users matching the search criteria', documentation: { example: 'user' }
         use :pagination
       end
-      get ':id/starrers', feature_category: :projects do
+      get ':id/starrers', feature_category: :groups_and_projects do
         starrers = UsersStarProjectsFinder.new(user_project, params, current_user: current_user).execute
 
         present paginate(starrers), with: Entities::UserStarsProject
@@ -661,7 +661,7 @@ module API
         ]
         tags %w[projects]
       end
-      delete ":id", feature_category: :projects do
+      delete ":id", feature_category: :groups_and_projects do
         authorize! :remove_project, user_project
 
         delete_project(user_project)
@@ -729,7 +729,7 @@ module API
         requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
-      post ":id/share", feature_category: :projects do
+      post ":id/share", feature_category: :groups_and_projects do
         authorize! :admin_project, user_project
         shared_with_group = Group.find_by_id(params[:group_id])
 
@@ -759,7 +759,7 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ":id/share/:group_id", feature_category: :projects do
+      delete ":id/share/:group_id", feature_category: :groups_and_projects do
         authorize! :admin_project, user_project
 
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
@@ -783,7 +783,7 @@ module API
       params do
         requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
       end
-      post ":id/import_project_members/:project_id", feature_category: :projects do
+      post ":id/import_project_members/:project_id", feature_category: :groups_and_projects do
         ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/355916')
         authorize! :admin_project, user_project
 
@@ -947,7 +947,7 @@ module API
       params do
         requires :namespace, type: String, desc: 'The ID or path of the new namespace', documentation: { example: 'gitlab' }
       end
-      put ":id/transfer", feature_category: :projects do
+      put ":id/transfer", feature_category: :groups_and_projects do
         authorize! :change_namespace, user_project
 
         namespace = find_namespace!(params[:namespace])
@@ -972,7 +972,7 @@ module API
         optional :search, type: String, desc: 'Return list of namespaces matching the search criteria', documentation: { example: 'search' }
         use :pagination
       end
-      get ":id/transfer_locations", feature_category: :projects do
+      get ":id/transfer_locations", feature_category: :groups_and_projects do
         authorize! :change_namespace, user_project
         args = declared_params(include_missing: false)
         args[:permission_scope] = :transfer_projects

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CreateService, '#execute', feature_category: :projects do
+RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create :user }

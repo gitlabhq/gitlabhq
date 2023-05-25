@@ -1,11 +1,10 @@
-import $ from 'jquery';
-import GLForm from '~/gl_form';
 import initFilePickers from '~/file_pickers';
 import ZenMode from '~/zen_mode';
 import { initRemoveAvatar } from '~/admin/topics';
+import { mountMarkdownEditor } from '~/vue_shared/components/markdown/mount_markdown_editor';
 
-new GLForm($('.js-project-topic-form')); // eslint-disable-line no-new
 initFilePickers();
 new ZenMode(); // eslint-disable-line no-new
 
 initRemoveAvatar();
+mountMarkdownEditor();

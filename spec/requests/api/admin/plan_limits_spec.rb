@@ -99,15 +99,16 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'ci_registered_group_runners': 107,
             'ci_registered_project_runners': 108,
             'conan_max_file_size': 10,
+            'enforcement_limit': 15,
             'generic_packages_max_file_size': 20,
             'helm_max_file_size': 25,
             'maven_max_file_size': 30,
+            'notification_limit': 90,
             'npm_max_file_size': 40,
             'nuget_max_file_size': 50,
             'pypi_max_file_size': 60,
             'terraform_module_max_file_size': 70,
             'storage_size_limit': 80,
-            'notification_limit': 90,
             'pipeline_hierarchy_size': 250
           }
 
@@ -120,15 +121,16 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['ci_registered_group_runners']).to eq(107)
           expect(json_response['ci_registered_project_runners']).to eq(108)
           expect(json_response['conan_max_file_size']).to eq(10)
+          expect(json_response['enforcement_limit']).to eq(15)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
           expect(json_response['helm_max_file_size']).to eq(25)
           expect(json_response['maven_max_file_size']).to eq(30)
+          expect(json_response['notification_limit']).to eq(90)
           expect(json_response['npm_max_file_size']).to eq(40)
           expect(json_response['nuget_max_file_size']).to eq(50)
           expect(json_response['pypi_max_file_size']).to eq(60)
           expect(json_response['terraform_module_max_file_size']).to eq(70)
           expect(json_response['storage_size_limit']).to eq(80)
-          expect(json_response['notification_limit']).to eq(90)
           expect(json_response['pipeline_hierarchy_size']).to eq(250)
         end
 
@@ -165,15 +167,16 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'ci_registered_group_runners': 't',
             'ci_registered_project_runners': 's',
             'conan_max_file_size': 'a',
+            'enforcement_limit': 'e',
             'generic_packages_max_file_size': 'b',
             'helm_max_file_size': 'h',
             'maven_max_file_size': 'c',
+            'notification_limit': 'n',
             'npm_max_file_size': 'd',
             'nuget_max_file_size': 'e',
             'pypi_max_file_size': 'f',
             'terraform_module_max_file_size': 'g',
             'storage_size_limit': 'j',
-            'notification_limit': 'm',
             'pipeline_hierarchy_size': 'r'
           }
 
@@ -187,15 +190,16 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'ci_registered_group_runners is invalid',
             'ci_registered_project_runners is invalid',
             'conan_max_file_size is invalid',
+            'enforcement_limit is invalid',
             'generic_packages_max_file_size is invalid',
             'helm_max_file_size is invalid',
             'maven_max_file_size is invalid',
+            'notification_limit is invalid',
             'npm_max_file_size is invalid',
             'nuget_max_file_size is invalid',
             'pypi_max_file_size is invalid',
             'terraform_module_max_file_size is invalid',
             'storage_size_limit is invalid',
-            'notification_limit is invalid',
             'pipeline_hierarchy_size is invalid'
           )
         end

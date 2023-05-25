@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillMemberNamespaceIdForGroupMembers, feature_category: :subgroups do
+RSpec.describe BackfillMemberNamespaceIdForGroupMembers, feature_category: :groups_and_projects do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

@@ -18,14 +18,15 @@
 
   .form-group
     = f.label :description, _("Description")
-    = render layout: 'shared/md_preview', locals: { url: preview_markdown_admin_topics_path, referenced_users: false } do
-      = render 'shared/zen', f: f, attr: :description,
-                               classes: 'note-textarea',
-                               placeholder: _('Write a description…'),
-                               supports_quick_actions: false,
-                               supports_autocomplete: false,
-                               qa_selector: 'topic_form_description'
-      = render 'shared/notes/hints', supports_file_upload: false
+    .js-markdown-editor{ data: { render_markdown_path: preview_markdown_admin_topics_path,
+                                 markdown_docs_path: help_page_path('user/markdown'),
+                                 qa_selector: 'topic_form_description',
+                                 form_field_placeholder: _('Write a description…'),
+                                 supports_quick_actions: 'false',
+                                 enable_autocomplete: 'false',
+                                 disable_attachments: 'true',
+                                 form_field_classes: 'note-textarea js-gfm-input markdown-area' } }
+      = f.hidden_field :description
 
   .form-group.gl-mt-3.gl-mb-3
     = f.label :avatar, _('Topic avatar'), class: 'gl-display-block'

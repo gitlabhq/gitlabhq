@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/application_settings/network.html.haml', feature_category: :projects do
+RSpec.describe 'admin/application_settings/network.html.haml', feature_category: :groups_and_projects do
   let_it_be(:admin) { build_stubbed(:admin) }
   let_it_be(:application_setting) { build(:application_setting) }
 

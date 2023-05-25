@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::Topics::AvatarsController < Admin::ApplicationController
-  feature_category :projects
+  feature_category :groups_and_projects
 
   def destroy
     @topic = Projects::Topic.find(params[:topic_id])

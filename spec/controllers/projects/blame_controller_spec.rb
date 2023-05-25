@@ -28,6 +28,14 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
       end
     end
 
+    context 'valid branch, binary file' do
+      let(:id) { 'master/files/images/logo-black.png' }
+
+      it 'redirects' do
+        expect(subject).to redirect_to("/#{project.full_path}/-/blob/master/files/images/logo-black.png")
+      end
+    end
+
     context 'invalid branch, valid file' do
       let(:id) { 'invalid-branch/files/ruby/missing_file.rb' }
 

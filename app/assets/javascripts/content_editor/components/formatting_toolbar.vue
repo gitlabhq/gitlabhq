@@ -16,6 +16,13 @@ export default {
     ToolbarMoreDropdown,
     EditorModeSwitcher,
   },
+  props: {
+    hideAttachmentButton: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
@@ -114,6 +121,7 @@ export default {
         />
         <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
         <toolbar-attachment-button
+          v-if="!hideAttachmentButton"
           data-testid="attachment"
           @execute="trackToolbarControlExecution"
         />

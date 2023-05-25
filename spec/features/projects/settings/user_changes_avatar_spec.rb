@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User changes avatar', feature_category: :projects do
+RSpec.describe 'Projects > Settings > User changes avatar', feature_category: :groups_and_projects do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

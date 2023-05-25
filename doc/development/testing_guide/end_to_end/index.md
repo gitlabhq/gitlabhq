@@ -21,8 +21,8 @@ using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool
 ### Testing nightly builds
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
-You can find these pipelines at <https://gitlab.com/gitlab-org/quality/nightly/pipelines>
-(requires the Developer role). Results are reported in the `#qa-nightly` Slack channel.
+You can find these pipelines at <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>
+(requires the Developer role). Results are reported in the `#qa-master` Slack channel.
 
 ### Testing staging
 

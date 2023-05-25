@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :subgroups do
+RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :groups_and_projects do
   include ActionView::Helpers::DateHelper
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable templates', :js, feature_category: :projects do
+RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include CookieHelper
 

@@ -42,7 +42,7 @@ describe('Commit references component', () => {
         [containingBranchesQuery, containingBranchesQueryHandler],
       ]),
       provide: {
-        fullPath: '/some/project',
+        fullPath: 'some/project',
         commitSha: 'xxx',
       },
     });
@@ -50,13 +50,15 @@ describe('Commit references component', () => {
     await waitForPromises();
   };
 
-  it('renders component correcrly', async () => {
+  beforeEach(async () => {
     await createComponent();
+  });
+
+  it('renders component correcrly', () => {
     expect(findRefsLists()).toHaveLength(2);
   });
 
-  it('passes props to refs list', async () => {
-    await createComponent();
+  it('passes props to refs list', () => {
     expect(branchesList().props()).toEqual(refsListPropsMock);
   });
 
@@ -78,5 +80,18 @@ describe('Commit references component', () => {
   it('does not render list when there is no branches or tags', async () => {
     await createComponent(successQueryHandler(mockOnlyBranchesResponse));
     expect(findRefsLists()).toHaveLength(1);
+  });
+
+  describe('with relative url', () => {
+    beforeEach(async () => {
+      gon.relative_url_root = '/gitlab';
+      await createComponent();
+    });
+
+    it('passes correct urlPart prop to refList', () => {
+      expect(branchesList().props('urlPart')).toBe(
+        `${gon.relative_url_root}${refsListPropsMock.urlPart}`,
+      );
+    });
   });
 });

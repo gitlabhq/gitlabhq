@@ -12,6 +12,10 @@ export default {
     GlIcon,
   },
   props: {
+    urlPart: {
+      type: String,
+      required: true,
+    },
     containingRefs: {
       type: Array,
       required: false,
@@ -66,9 +70,14 @@ export default {
 <template>
   <div class="gl-pt-4">
     <span data-testid="title" class="gl-mr-2">{{ namespace }}</span>
-    <gl-badge v-for="ref in tippingRefs" :key="ref" class="gl-mt-2 gl-mr-2" size="sm">{{
-      ref
-    }}</gl-badge>
+    <gl-badge
+      v-for="ref in tippingRefs"
+      :key="ref"
+      :href="`${urlPart}${ref}`"
+      class="gl-mt-2 gl-mr-2"
+      size="sm"
+      >{{ ref }}</gl-badge
+    >
     <gl-button
       v-if="hasContainingRefs"
       class="gl-mr-2 gl-font-sm!"
@@ -82,9 +91,14 @@ export default {
     <gl-collapse :visible="isContainingRefsVisible">
       <gl-skeleton-loader v-if="isLoadingRefs" :lines="1" />
       <template v-else>
-        <gl-badge v-for="ref in containingRefs" :key="ref" class="gl-mt-3 gl-mr-2" size="sm">{{
-          ref
-        }}</gl-badge>
+        <gl-badge
+          v-for="ref in containingRefs"
+          :key="ref"
+          :href="`${urlPart}${ref}`"
+          class="gl-mt-3 gl-mr-2"
+          size="sm"
+          >{{ ref }}</gl-badge
+        >
       </template>
     </gl-collapse>
   </div>

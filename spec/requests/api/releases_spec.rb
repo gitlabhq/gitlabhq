@@ -791,16 +791,16 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         name: 'New release',
         tag_name: 'v0.1',
         description: 'Super nice release',
-        assets: {
-          links: [
-            {
-              name: 'An example runbook link',
-              url: 'https://example.com/runbook',
-              link_type: 'runbook',
-              filepath: '/permanent/path/to/runbook'
-            }
-          ]
-        }
+        assets: { links: [link_asset] }
+      }
+    end
+
+    let(:link_asset) do
+      {
+        name: 'An example runbook link',
+        url: 'https://example.com/runbook',
+        link_type: 'runbook',
+        filepath: '/permanent/path/to/runbook'
       }
     end
 
@@ -906,8 +906,13 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     end
 
     context 'when using `direct_asset_path` for the asset link' do
-      before do
-        params[:direct_asset_path] = params.delete(:filepath)
+      let(:link_asset) do
+        {
+          name: 'An example runbook link',
+          url: 'https://example.com/runbook',
+          link_type: 'runbook',
+          direct_asset_path: '/permanent/path/to/runbook'
+        }
       end
 
       it 'creates a new release successfully' do
@@ -915,8 +920,9 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
           post api("/projects/#{project.id}/releases", maintainer), params: params
         end.to change { Release.count }.by(1)
 
-        release = project.releases.last
+        expect(response).to have_gitlab_http_status(:created)
 
+        release = project.releases.last
         expect(release.links.last.filepath).to eq('/permanent/path/to/runbook')
       end
     end

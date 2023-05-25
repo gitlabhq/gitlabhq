@@ -86,6 +86,10 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
+      def schedule_type
+        ENV['SCHEDULE_TYPE']
+      end
+
       def generate_allure_report?
         enabled?(ENV['QA_GENERATE_ALLURE_REPORT'], default: false)
       end

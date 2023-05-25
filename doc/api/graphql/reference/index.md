@@ -36,6 +36,27 @@ in [Removed Items](../removed_items.md).
 
 The `Query` type contains the API's top-level entry points for all executable queries.
 
+### `Query.aiMessages`
+
+Find AI messages.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AiCachedMessageTypeConnection!`](#aicachedmessagetypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
+| <a id="queryaimessagesroles"></a>`roles` | [`[AiCachedMessageRole!]`](#aicachedmessagerole) | Array of request IDs to fetch. |
+
 ### `Query.boardList`
 
 Find an issue board list.
@@ -7244,6 +7265,29 @@ The edge type for [`AgentConfiguration`](#agentconfiguration).
 | <a id="agentconfigurationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="agentconfigurationedgenode"></a>`node` | [`AgentConfiguration`](#agentconfiguration) | The item at the end of the edge. |
 
+#### `AiCachedMessageTypeConnection`
+
+The connection type for [`AiCachedMessageType`](#aicachedmessagetype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicachedmessagetypeconnectionedges"></a>`edges` | [`[AiCachedMessageTypeEdge]`](#aicachedmessagetypeedge) | A list of edges. |
+| <a id="aicachedmessagetypeconnectionnodes"></a>`nodes` | [`[AiCachedMessageType]`](#aicachedmessagetype) | A list of nodes. |
+| <a id="aicachedmessagetypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiCachedMessageTypeEdge`
+
+The edge type for [`AiCachedMessageType`](#aicachedmessagetype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicachedmessagetypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aicachedmessagetypeedgenode"></a>`node` | [`AiCachedMessageType`](#aicachedmessagetype) | The item at the end of the edge. |
+
 #### `AiMessageTypeConnection`
 
 The connection type for [`AiMessageType`](#aimessagetype).
@@ -11686,6 +11730,19 @@ Information about a connected Agent.
 | <a id="agentmetadatapodnamespace"></a>`podNamespace` | [`String`](#string) | Namespace of the pod running the Agent. |
 | <a id="agentmetadataversion"></a>`version` | [`String`](#string) | Agent version tag. |
 
+### `AiCachedMessageType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicachedmessagetypecontent"></a>`content` | [`String`](#string) | Content of the message. Can be null for user requests or failed responses. |
+| <a id="aicachedmessagetypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
+| <a id="aicachedmessagetypeid"></a>`id` | [`ID`](#id) | UUID of the message. |
+| <a id="aicachedmessagetyperequestid"></a>`requestId` | [`ID`](#id) | UUID of the original request message. |
+| <a id="aicachedmessagetyperole"></a>`role` | [`AiCachedMessageRole!`](#aicachedmessagerole) | Message role. |
+| <a id="aicachedmessagetypetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
+
 ### `AiMessageType`
 
 #### Fields
@@ -12591,7 +12648,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobartifactfiletype"></a>`fileType` | [`JobArtifactFileType`](#jobartifactfiletype) | File type of the artifact. |
 | <a id="cijobartifactid"></a>`id` | [`CiJobArtifactID!`](#cijobartifactid) | ID of the artifact. |
 | <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
-| <a id="cijobartifactsize"></a>`size` | [`Int!`](#int) | Size of the artifact in bytes. |
+| <a id="cijobartifactsize"></a>`size` | [`BigInt!`](#bigint) | Size of the artifact in bytes. |
 
 ### `CiJobTokenScopeType`
 
@@ -23858,6 +23915,15 @@ Agent token statuses.
 | ----- | ----------- |
 | <a id="agenttokenstatusactive"></a>`ACTIVE` | Active agent token. |
 | <a id="agenttokenstatusrevoked"></a>`REVOKED` | Revoked agent token. |
+
+### `AiCachedMessageRole`
+
+Roles to filter in chat message.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicachedmessageroleassistant"></a>`ASSISTANT` | Filter only AI responses. |
+| <a id="aicachedmessageroleuser"></a>`USER` | Filter only user messages. |
 
 ### `AlertManagementAlertSort`
 

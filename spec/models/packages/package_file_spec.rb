@@ -9,7 +9,7 @@ RSpec.describe Packages::PackageFile, type: :model do
   let_it_be(:package_file2) { create(:package_file, :xml, file_name: 'ThisIsATest') }
   let_it_be(:package_file3) { create(:package_file, :xml, file_name: 'formatted.zip') }
   let_it_be(:package_file4) { create(:package_file, :nuget) }
-  let_it_be(:debian_package) { create(:debian_package, project: project) }
+  let_it_be(:debian_package) { create(:debian_package, project: project, with_changes_file: true) }
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'destructible', factory: :package_file

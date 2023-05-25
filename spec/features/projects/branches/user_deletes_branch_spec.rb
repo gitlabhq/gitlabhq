@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User deletes branch", :js, feature_category: :projects do
+RSpec.describe "User deletes branch", :js, feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }

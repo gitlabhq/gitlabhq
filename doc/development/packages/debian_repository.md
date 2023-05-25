@@ -102,18 +102,33 @@ Next, if the file is a `.changes` format:
       1. A [Release file](https://wiki.debian.org/DebianRepository/Format#A.22Release.22_files) is written, signed by the GPG key, and then stored.
    1. Old component files are destroyed.
 
-This diagram shows the path taken after a file is uploaded to the Debian API:
+The three following diagrams show the path taken after a file is uploaded to the Debian API:
 
 ```mermaid
 sequenceDiagram
+    autonumber
+    actor Client
     Client->>+DebianProjectPackages: PUT projects/:id/packages/debian/:file_name
+    Note over DebianProjectPackages: If `.changes` file or distribution param present
+    DebianProjectPackages->>+CreateTemporaryPackageService: Create temporary package
+    Note over DebianProjectPackages: Else
     DebianProjectPackages->>+FindOrCreateIncomingService: Create "incoming" package
+    Note over DebianProjectPackages: Finally
     DebianProjectPackages->>+CreatePackageFileService: Create "unknown" file
-    Note over DebianProjectPackages: If `.changes` file
-    DebianProjectPackages->>+ProcessChangesWorker: Schedule worker to process the file
+    Note over CreatePackageFileService: If `.changes` file or distribution param present
+    CreatePackageFileService->>+ProcessPackageFileWorker: Schedule worker to process the file
     DebianProjectPackages->>+Client: 202 Created
-    ProcessChangesWorker->>+ProcessChangesService: Start service
-    ProcessChangesService->>+ExtractChangesMetadataService: Extract changesmetadata
+
+    ProcessPackageFileWorker->>+ProcessPackageFileService: Start service
+```
+
+`ProcessPackageFileWorker` background job:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    ProcessPackageFileWorker->>+ProcessPackageFileService: Start service
+    ProcessPackageFileService->>+ExtractChangesMetadataService: Extract changes metadata
     ExtractChangesMetadataService->>+ExtractMetadataService: Extract file metadata
     ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
     ExtractMetadataService->>+ExtractDebMetadataService: If .deb, .udeb or ddeb
@@ -123,9 +138,9 @@ sequenceDiagram
     ExtractMetadataService->>+ParseDebian822Service: if .dsc, .changes, or buildinfo
     ParseDebian822Service-->>-ExtractMetadataService:  Parse String as Debian RFC822 control data format
     ExtractMetadataService-->>-ExtractChangesMetadataService: Parse Metadata file
-    ExtractChangesMetadataService-->>-ProcessChangesService: Return list of files and hashes from the .changes file
+    ExtractChangesMetadataService-->>-ProcessPackageFileService: Return list of files and hashes from the .changes file
     loop process files listed in .changes
-        ProcessChangesService->>+ExtractMetadataService: Process file
+        ProcessPackageFileService->>+ExtractMetadataService: Process file
         ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
         ExtractMetadataService->>+ExtractDebMetadataService: If .deb, .udeb or ddeb
         ExtractDebMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
@@ -133,9 +148,18 @@ sequenceDiagram
         ExtractDebMetadataService-->>-ExtractMetadataService: Return the parsed control file
         ExtractMetadataService->>+ParseDebian822Service: if .dsc, .changes, or buildinfo
         ParseDebian822Service-->>-ExtractMetadataService:  Parse String as Debian RFC822 control data format
-        ExtractMetadataService-->>-ProcessChangesService: Use parsed metadata to update "unknown" (or known) file
+        ExtractMetadataService-->>-ProcessPackageFileService: Use parsed metadata to update "unknown" (or known) file
     end
-    ProcessChangesService->>+GenerateDistributionWorker: Find distribution and start service
+    ProcessPackageFileService->>+GenerateDistributionWorker: Find distribution and start service
+
+    GenerateDistributionWorker->>+GenerateDistributionService: Generate distribution
+```
+
+`GenerateDistributionWorker` background job:
+
+```mermaid
+sequenceDiagram
+    autonumber
     GenerateDistributionWorker->>+GenerateDistributionService: Generate distribution
     GenerateDistributionService->>+GenerateDistributionService: generate component files based on new archs and updates from .changes
     GenerateDistributionService->>+GenerateDistributionKeyService: generate GPG key for distribution
@@ -143,7 +167,7 @@ sequenceDiagram
     GenerateDistributionService-->>-GenerateDistributionService: Generate distribution file
     GenerateDistributionService->>+SignDistributionService: Sign release file with GPG key
     SignDistributionService-->>-GenerateDistributionService: Save the signed release file
-    GenerateDistributionWorker->>+GenerateDistributionService: destroy no longer used component files
+    GenerateDistributionService->>+GenerateDistributionService: destroy no longer used component files
 ```
 
 ### Distributions

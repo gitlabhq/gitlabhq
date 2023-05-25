@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '../../constants';
 import MarkdownEditor from './markdown_editor.vue';
 import eventHub from './eventhub';
@@ -67,6 +68,9 @@ export function mountMarkdownEditor() {
     newIssuePath,
   } = el.dataset;
 
+  const supportsQuickActions = parseBoolean(el.dataset.supportsQuickActions ?? true);
+  const enableAutocomplete = parseBoolean(el.dataset.enableAutocomplete ?? true);
+  const disableAttachments = parseBoolean(el.dataset.disableAttachments ?? false);
   const hiddenInput = el.querySelector('input[type="hidden"]');
   const formFieldName = hiddenInput.getAttribute('name');
   const formFieldId = hiddenInput.getAttribute('id');
@@ -102,9 +106,11 @@ export function mountMarkdownEditor() {
             'data-qa-selector': qaSelector,
           },
           autosaveKey,
-          enableAutocomplete: true,
+          enableAutocomplete,
           autocompleteDataSources: gl.GfmAutoComplete?.dataSources,
-          supportsQuickActions: true,
+          supportsQuickActions,
+          disableAttachments,
+          autofocus: true,
         },
       });
     },

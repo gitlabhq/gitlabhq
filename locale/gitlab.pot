@@ -7495,6 +7495,9 @@ msgstr ""
 msgid "Blame could not be loaded as a single page."
 msgstr ""
 
+msgid "Blame for binary files is not supported."
+msgstr ""
+
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 

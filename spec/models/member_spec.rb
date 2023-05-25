@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Member, feature_category: :subgroups do
+RSpec.describe Member, feature_category: :groups_and_projects do
   include ExclusiveLeaseHelpers
 
   using RSpec::Parameterized::TableSyntax

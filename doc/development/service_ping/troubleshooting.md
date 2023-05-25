@@ -10,15 +10,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ### Symptoms
 
-You will be alerted by a [Sisense alert](https://app.periscopedata.com/app/gitlab/alert/Service-ping-payload-drop-Alert/5a5b8766b8af43b4a75d6e9c684a365f/edit) that is sent to `#g_analyze_analytics_instrumentation` Slack channel
+You will be alerted by the [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) and their [Monte Carlo alerting](https://about.gitlab.com/handbook/business-technology/data-team/platform/monte-carlo/).
 
 ### Locating the problem
 
 First you need to identify at which stage in Service Ping data pipeline the drop is occurring.
 
 Start at [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489) on Sisense.
-
-The alert compares the current daily value with the daily value from previous week, excluding the last 48 hours as this is the interval where we export the data in GCP and get it into DWH.
 
 You can use [this query](https://gitlab.com/gitlab-org/gitlab/-/issues/347298#note_836685350) as an example, to start detecting when the drop started.
 

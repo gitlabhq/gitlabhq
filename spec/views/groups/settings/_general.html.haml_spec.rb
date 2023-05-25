@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/settings/_general.html.haml', feature_category: :subgroups do
+RSpec.describe 'groups/settings/_general.html.haml', feature_category: :groups_and_projects do
   describe 'Group Settings README' do
     let_it_be(:group) { build_stubbed(:group) }
     let_it_be(:user) { build_stubbed(:admin) }

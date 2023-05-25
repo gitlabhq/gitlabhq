@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::UsersMaxAccessLevelByProjectPreloader, feature_category: :projects do
+RSpec.describe Preloaders::UsersMaxAccessLevelByProjectPreloader, feature_category: :groups_and_projects do
   let_it_be(:user_1) { create(:user) }
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_with_no_access) { create(:user) } # ensures we correctly cache NO_ACCESS

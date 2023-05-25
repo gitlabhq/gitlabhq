@@ -149,7 +149,7 @@ created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/g
 `worker` feature flags are used for controlling Sidekiq workers behavior, such as deferring Sidekiq jobs.
 
 `worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
-the worker name itself, e.g. `defer_sidekiq_jobs:AuthorizedProjectsWorker`. Some examples for using `worker` type feature
+the worker name itself, e.g. `defer_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
 
 ## Feature flag definition and validation
@@ -713,7 +713,7 @@ Feature flags with [`worker` type](#worker-type) can be used to control the beha
 
 ### Deferring Sidekiq jobs
 
-Feature flags with the format of `defer_sidekiq_jobs:{WorkerName}` delay the execution of the worker
+Feature flags with the format of `defer_sidekiq_jobs_{WorkerName}` delay the execution of the worker
 by scheduling the job at a later time.
 Deferring jobs can be useful during an incident where contentious behavior from
 worker instances are saturating infrastructure resources (such as database and database connection pool).
@@ -728,16 +728,16 @@ use a **percentage of time** rollout. For example:
 
 ```shell
 # defer 100% of the jobs
-/chatops run feature set defer_sidekiq_jobs:SlowRunningWorker true
+/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker true
 
 # defer 99% of the jobs, only letting 1% processed
-/chatops run feature set defer_sidekiq_jobs:SlowRunningWorker 99
+/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker 99
 
 # defer 50% of the jobs
-/chatops run feature set defer_sidekiq_jobs:SlowRunningWorker 50
+/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker 50
 
 # stop deferring the jobs, jobs are being processed normally
-/chatops run feature set defer_sidekiq_jobs:SlowRunningWorker false
+/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker false
 ```
 
 NOTE:

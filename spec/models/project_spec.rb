@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Project, factory_default: :keep, feature_category: :projects do
+RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers

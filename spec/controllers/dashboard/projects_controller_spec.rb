@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_category: :projects do
+RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }

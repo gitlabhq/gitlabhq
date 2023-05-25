@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::MemberAccessLevelEnum, feature_category: :subgroups do
+RSpec.describe Types::MemberAccessLevelEnum, feature_category: :groups_and_projects do
   specify { expect(described_class.graphql_name).to eq('MemberAccessLevel') }
 
   it 'exposes all the existing access levels' do

@@ -95,6 +95,11 @@ export default {
       required: false,
       default: false,
     },
+    disableAttachments: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -110,6 +115,9 @@ export default {
     contentEditorAutofocused() {
       // Match textarea focus behavior
       return this.autofocus && !this.autofocused ? 'end' : false;
+    },
+    markdownFieldRestrictedToolBarItems() {
+      return this.disableAttachments ? ['attach-file'] : [];
     },
   },
   watch: {
@@ -231,7 +239,7 @@ export default {
       v-bind="$attrs"
       data-testid="markdown-field"
       :markdown-preview-path="renderMarkdownPath"
-      can-attach-file
+      :can-attach-file="!disableAttachments"
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
       :enable-autocomplete="enableAutocomplete"
@@ -240,6 +248,7 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
+      :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
       :remove-border="true"
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
@@ -256,8 +265,7 @@ export default {
           :disabled="disabled"
           @input="updateMarkdownFromMarkdownField"
           @keydown="$emit('keydown', $event)"
-        >
-        </textarea>
+        ></textarea>
       </template>
     </markdown-field>
     <div v-else>
@@ -273,6 +281,7 @@ export default {
         :enable-autocomplete="enableAutocomplete"
         :autocomplete-data-sources="autocompleteDataSources"
         :editable="!disabled"
+        :disable-attachments="disableAttachments"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="$emit('keydown', $event)"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'searching groups', :with_license, feature_category: :subgroups do
+RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

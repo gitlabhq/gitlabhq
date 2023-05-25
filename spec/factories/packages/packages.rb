@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryBot.define do
   factory :package, class: 'Packages::Package' do
     project
@@ -72,6 +73,7 @@ FactoryBot.define do
 
       transient do
         without_package_files { false }
+        with_changes_file { false }
         file_metadatum_trait { processing? ? :unknown : :keep }
         published_in { :create }
       end
@@ -97,6 +99,9 @@ FactoryBot.define do
           create :debian_package_file, :udeb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :ddeb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :buildinfo, evaluator.file_metadatum_trait, package: package
+        end
+
+        if evaluator.with_changes_file
           create :debian_package_file, :changes, evaluator.file_metadatum_trait, package: package
         end
       end
@@ -107,6 +112,28 @@ FactoryBot.define do
 
         transient do
           without_package_files { false }
+          file_metadatum_trait { :unknown }
+          published_in { nil }
+        end
+      end
+
+      factory :debian_temporary_with_files do
+        status { :processing }
+
+        transient do
+          without_package_files { false }
+          with_changes_file { false }
+          file_metadatum_trait { :unknown }
+          published_in { nil }
+        end
+      end
+
+      factory :debian_temporary_with_changes do
+        status { :processing }
+
+        transient do
+          without_package_files { true }
+          with_changes_file { true }
           file_metadatum_trait { :unknown }
           published_in { nil }
         end

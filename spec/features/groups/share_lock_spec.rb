@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group share with group lock', feature_category: :subgroups do
+RSpec.describe 'Group share with group lock', feature_category: :groups_and_projects do
   let(:root_owner) { create(:user) }
   let(:root_group) { create(:group) }
 

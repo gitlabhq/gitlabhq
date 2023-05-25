@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespacesHelper, feature_category: :subgroups do
+RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   let!(:admin) { create(:admin) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do

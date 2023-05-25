@@ -3,7 +3,7 @@ table_name: project_authorizations
 classes:
 - ProjectAuthorization
 feature_categories:
-- projects
+- groups_and_projects
 - system_access
 description: Stores maximal access to the project per user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6839

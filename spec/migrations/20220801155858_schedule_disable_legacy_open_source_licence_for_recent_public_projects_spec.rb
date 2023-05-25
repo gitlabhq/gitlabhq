@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleDisableLegacyOpenSourceLicenceForRecentPublicProjects,
-  schema: 20220801155858, feature_category: :projects do
+  schema: 20220801155858, feature_category: :groups_and_projects do
   context 'when on gitlab.com' do
     let(:background_migration) { described_class::MIGRATION }
     let(:migration) { described_class.new }

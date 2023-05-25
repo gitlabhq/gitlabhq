@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting project information', feature_category: :projects do
+RSpec.describe 'getting project information', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   let(:query) { graphql_query_for('metadata', {}, all_graphql_fields_for('Metadata')) }

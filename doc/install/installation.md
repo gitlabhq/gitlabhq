@@ -423,7 +423,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
 
 ## 8. Redis
 
-See the [requirements page](requirements.md#redis-versions) for the minimum
+See the [requirements page](requirements.md#redis) for the minimum
 Redis requirements.
 
 Install Redis with:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Topic show page', feature_category: :projects do
+RSpec.describe 'Topic show page', feature_category: :groups_and_projects do
   let_it_be(:topic) { create(:topic, name: 'my-topic', title: 'My Topic', description: 'This is **my** topic https://google.com/ :poop: ```\ncode\n```', avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
   context 'when topic does not exist' do

@@ -760,6 +760,23 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.debian_incoming_package!' do
+    let!(:debian_package) { create(:debian_package) }
+    let!(:debian_processing_incoming) { create(:debian_incoming, :processing) }
+
+    subject { described_class.debian_incoming_package! }
+
+    context 'when incoming exists' do
+      let!(:debian_incoming) { create(:debian_incoming) }
+
+      it { is_expected.to eq(debian_incoming) }
+    end
+
+    context 'when incoming not found' do
+      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+    end
+  end
+
   describe '.with_package_type' do
     let!(:package1) { create(:terraform_module_package) }
     let!(:package2) { create(:npm_package) }

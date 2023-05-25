@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResetProjectCacheService, feature_category: :projects do
+RSpec.describe ResetProjectCacheService, feature_category: :groups_and_projects do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

@@ -1,13 +1,17 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category: :package_registry do
   describe '#execute' do
     let_it_be(:incoming) { create(:debian_incoming) }
+    let_it_be(:temp_package) do
+      create(:debian_package, without_package_files: true, with_changes_file: true, project: incoming.project)
+    end
 
     let(:source_file) { incoming.package_files.first }
     let(:dsc_file) { incoming.package_files.second }
-    let(:changes_file) { incoming.package_files.last }
+    let(:changes_file) { temp_package.package_files.first }
     let(:service) { described_class.new(changes_file) }
 
     subject { service.execute }

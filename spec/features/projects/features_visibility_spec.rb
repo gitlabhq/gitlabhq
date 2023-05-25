@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Edit Project Settings', feature_category: :projects do
+RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects do
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, :repository) }
   let!(:issue) { create(:issue, project: project) }

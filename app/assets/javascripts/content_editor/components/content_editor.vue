@@ -90,6 +90,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    disableAttachments: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -223,7 +228,11 @@ export default {
         class="md-area gl-border-none! gl-shadow-none!"
         :class="{ 'is-focused': focused }"
       >
-        <formatting-toolbar ref="toolbar" @enableMarkdownEditor="$emit('enableMarkdownEditor')" />
+        <formatting-toolbar
+          ref="toolbar"
+          :hide-attachment-button="disableAttachments"
+          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+        />
         <div v-if="showPlaceholder" class="gl-absolute gl-text-gray-400 gl-px-5 gl-pt-4">
           {{ placeholder }}
         </div>

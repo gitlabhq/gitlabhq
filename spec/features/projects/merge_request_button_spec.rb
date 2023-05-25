@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Request button', feature_category: :projects do
+RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
       [
         {
           endpoint_id: "ProjectsController#index",
-          feature_category: :projects,
+          feature_category: :groups_and_projects,
           request_urgency: :default
         }
       ]

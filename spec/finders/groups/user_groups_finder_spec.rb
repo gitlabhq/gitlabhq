@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UserGroupsFinder, feature_category: :subgroups do
+RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:root_group) { create(:group, name: 'Root group', path: 'root-group') }

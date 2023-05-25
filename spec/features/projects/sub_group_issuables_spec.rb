@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Subgroup Issuables', :js, feature_category: :projects do
+RSpec.describe 'Subgroup Issuables', :js, feature_category: :groups_and_projects do
   let!(:group)    { create(:group, name: 'group') }
   let!(:subgroup) { create(:group, parent: group, name: 'subgroup') }
   let!(:project)  { create(:project, namespace: subgroup, name: 'project') }

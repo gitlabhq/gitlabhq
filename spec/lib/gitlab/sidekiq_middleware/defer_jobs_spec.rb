@@ -33,8 +33,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalabil
   describe '#call' do
     context 'when sidekiq_defer_jobs feature flag is enabled for a worker' do
       before do
-        stub_feature_flags("defer_sidekiq_jobs:#{TestDeferredWorker.name}": true)
-        stub_feature_flags("defer_sidekiq_jobs:#{UndeferredWorker.name}": false)
+        stub_feature_flags("defer_sidekiq_jobs_#{TestDeferredWorker.name}": true)
+        stub_feature_flags("defer_sidekiq_jobs_#{UndeferredWorker.name}": false)
       end
 
       context 'for the affected worker' do
@@ -59,8 +59,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalabil
 
     context 'when sidekiq_defer_jobs feature flag is disabled' do
       before do
-        stub_feature_flags("defer_sidekiq_jobs:#{TestDeferredWorker.name}": false)
-        stub_feature_flags("defer_sidekiq_jobs:#{UndeferredWorker.name}": false)
+        stub_feature_flags("defer_sidekiq_jobs_#{TestDeferredWorker.name}": false)
+        stub_feature_flags("defer_sidekiq_jobs_#{UndeferredWorker.name}": false)
       end
 
       it 'runs the job normally' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates branch', :js, feature_category: :projects do
+RSpec.describe 'User creates branch', :js, feature_category: :groups_and_projects do
   include Features::BranchesHelpers
 
   let_it_be(:group) { create(:group, :public) }

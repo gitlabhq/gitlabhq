@@ -225,6 +225,10 @@ class Packages::Package < ApplicationRecord
     find_by!(name: name, version: version)
   end
 
+  def self.debian_incoming_package!
+    find_by!(name: Packages::Debian::INCOMING_PACKAGE_NAME, version: nil, package_type: :debian, status: :default)
+  end
+
   def self.existing_debian_packages_with(name:, version:)
     debian.with_name(name)
           .with_version(version)

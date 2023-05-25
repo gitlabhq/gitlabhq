@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateInvalidMemberStates, feature_category: :subgroups do
+RSpec.describe UpdateInvalidMemberStates, feature_category: :groups_and_projects do
   let(:members) { table(:members) }
   let(:groups) { table(:namespaces) }
   let(:projects) { table(:projects) }

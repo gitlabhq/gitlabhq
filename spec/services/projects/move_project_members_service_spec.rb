@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MoveProjectMembersService, feature_category: :projects do
+RSpec.describe Projects::MoveProjectMembersService, feature_category: :groups_and_projects do
   let!(:user) { create(:user) }
   let(:project_with_users) { create(:project, namespace: user.namespace) }
   let(:target_project) { create(:project, namespace: user.namespace) }

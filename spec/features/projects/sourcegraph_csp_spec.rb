@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sourcegraph Content Security Policy', feature_category: :projects do
+RSpec.describe 'Sourcegraph Content Security Policy', feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 

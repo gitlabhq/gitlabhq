@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Edit group settings', feature_category: :subgroups do
+RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user)  { create(:user) }

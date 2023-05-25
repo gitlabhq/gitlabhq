@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Raw > User interacts with raw endpoint', feature_category: :projects do
+RSpec.describe 'Projects > Raw > User interacts with raw endpoint', feature_category: :groups_and_projects do
   include RepoHelpers
 
   let(:user) { create(:user) }

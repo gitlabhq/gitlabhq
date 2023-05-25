@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GroupMember', feature_category: :subgroups do
+RSpec.describe 'GroupMember', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   let_it_be(:member) { create(:group_member, :developer) }

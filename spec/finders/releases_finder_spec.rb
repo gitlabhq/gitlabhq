@@ -12,17 +12,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   let_it_be(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
   let_it_be(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
 
-  shared_examples_for 'when the user is not part of the project' do
-    it 'returns no releases' do
-      is_expected.to be_empty
-    end
-  end
-
-  shared_examples_for 'when the user is not part of the group' do
-    before do
-      allow(Ability).to receive(:allowed?).with(user, :read_release, group).and_return(false)
-    end
-
+  shared_examples_for 'when the user is not authorized' do
     it 'returns no releases' do
       is_expected.to be_empty
     end
@@ -57,9 +47,9 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   describe 'when parent is a project' do
     subject { described_class.new(project, user, params).execute(**args) }
 
-    it_behaves_like 'when the user is not part of the project'
+    it_behaves_like 'when the user is not authorized'
 
-    context 'when the user is a project guest' do
+    context 'when the user has guest privileges or higher' do
       before do
         project.add_guest(user)
 
@@ -109,11 +99,9 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
 
     subject { described_class.new([project, project2], user, params).execute(**args) }
 
-    context 'when the user is not part of any project' do
-      it_behaves_like 'when the user is not part of the project'
-    end
+    it_behaves_like 'when the user is not authorized'
 
-    context 'when the user is only part of one project' do
+    context 'when the user has guest privileges or higher on one project' do
       before do
         project.add_guest(user)
       end
@@ -125,7 +113,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
       end
     end
 
-    context 'when the user is a guest on all projects' do
+    context 'when the user has guest privileges or higher on all projects' do
       before do
         project.add_guest(user)
         project2.add_guest(user)

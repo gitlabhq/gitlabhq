@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects members', :js, feature_category: :subgroups do
+RSpec.describe 'Projects members', :js, feature_category: :groups_and_projects do
   include Features::MembersHelpers
 
   let(:user) { create(:user) }

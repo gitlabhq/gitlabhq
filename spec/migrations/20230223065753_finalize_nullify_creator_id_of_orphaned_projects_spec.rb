@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe FinalizeNullifyCreatorIdOfOrphanedProjects, :migration, feature_category: :projects do
+RSpec.describe FinalizeNullifyCreatorIdOfOrphanedProjects, :migration, feature_category: :groups_and_projects do
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:batch_failed_status) { 2 }
   let(:batch_finalized_status) { 3 }

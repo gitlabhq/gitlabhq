@@ -3,7 +3,7 @@ key_path: gitlab_dedicated
 description: Is the instance a Gitlab Dedicated instance
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: boolean
 status: active
 milestone: "15.10"

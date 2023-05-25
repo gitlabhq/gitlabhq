@@ -10,6 +10,7 @@ class PlanLimits < ApplicationRecord
   belongs_to :plan
 
   validates :notification_limit, numericality: { only_integer: true }
+  validates :enforcement_limit, numericality: { only_integer: true }
 
   def exceeded?(limit_name, subject, alternate_limit: 0)
     limit = limit_for(limit_name, alternate_limit: alternate_limit)

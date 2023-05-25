@@ -43,8 +43,13 @@ tests = [
 
   {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368628',
-    source: 'lib/gitlab/usage_data_counters/foo.rb',
-    expected: ['spec/lib/gitlab/usage_data_spec.rb']
+    source: 'lib/gitlab/usage_data_counters/wiki_page_counter.rb',
+    expected: ['spec/lib/gitlab/usage_data_spec.rb', 'spec/lib/gitlab/usage_data_counters/wiki_page_counter_spec.rb']
+  },
+  {
+    explanation: 'EE usage counters map to usage data spec',
+    source: 'ee/lib/gitlab/usage_data_counters/licenses_list.rb',
+    expected: ['ee/spec/lib/gitlab/usage_data_counters/licenses_list_spec.rb', 'spec/lib/gitlab/usage_data_spec.rb']
   },
 
   {
@@ -252,7 +257,12 @@ class MappingTest
   end
 
   def failure_message
-    "#{explanation}: #{source}: Expected #{expected_set.to_a}, got #{actual_set.to_a}."
+    <<~MESSAGE
+      #{explanation}:
+          Source #{source}
+        Expected #{expected_set.to_a}
+          Actual #{actual_set.to_a}
+    MESSAGE
   end
 
   private
@@ -273,6 +283,7 @@ failed_tests = results.select(&:failed?)
 if failed_tests.any?
   puts <<~MESSAGE
     tff mapping verification failed:
+
     #{failed_tests.map(&:failure_message).join("\n")}
   MESSAGE
 

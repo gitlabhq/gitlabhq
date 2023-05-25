@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/edit.html.haml', feature_category: :subgroups do
+RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects do
   include Devise::Test::ControllerHelpers
 
   before do

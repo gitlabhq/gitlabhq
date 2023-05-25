@@ -101,12 +101,17 @@ module Packages
 
       def entries_from_package_files
         @entries.each do |filename, entry|
-          entry.package_file = ::Packages::PackageFileFinder.new(@package_file.package, filename).execute!
+          entry.package_file = ::Packages::PackageFileFinder.new(incoming, filename).execute!
           entry.validate!
         rescue ActiveRecord::RecordNotFound
           raise ExtractionError, "#{filename} is listed in Files but was not uploaded"
         end
       end
+
+      def incoming
+        @package_file.package.project.packages.debian_incoming_package!
+      end
+      strong_memoize_attr(:incoming)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/_files', feature_category: :projects do
+RSpec.describe 'projects/_files', feature_category: :groups_and_projects do
   let_it_be(:template) { 'projects/files' }
   let_it_be(:namespace) { build_stubbed(:namespace) }
   let_it_be(:user) { build_stubbed(:user, namespace: namespace) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > User requests access', :js, feature_category: :subgroups do
+RSpec.describe 'Projects > Members > User requests access', :js, feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }

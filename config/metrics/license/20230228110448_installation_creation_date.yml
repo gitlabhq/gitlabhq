@@ -3,7 +3,7 @@ key_path: installation_creation_date
 description: "The date and time the instance was installed"
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: string
 status: active
 milestone: "15.10"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceSettings::UpdateService, feature_category: :subgroups do
+RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:settings) { {} }

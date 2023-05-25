@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
+RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :model do
   it_behaves_like 'sanitizable', :namespace_settings, %i[default_branch_name]
 
   # Relationships

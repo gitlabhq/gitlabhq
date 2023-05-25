@@ -8,7 +8,7 @@ module Projects
     LEASE_TIMEOUT = 1.hour.to_i
     APPLE_PLATFORM_LANGUAGES = %w(swift objective-c).freeze
 
-    feature_category :projects
+    feature_category :groups_and_projects
     data_consistency :always
     deduplicate :until_executed
     urgency :low

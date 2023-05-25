@@ -24,7 +24,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   skip_cross_project_access_check :index, :update, :destroy, :request_access,
     :approve_access_request, :leave, :resend_invite, :override
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
   urgency :low
 
   def index

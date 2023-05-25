@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :subgroups do
+RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_and_projects do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:group1) { create(:group, name: 'group.one') }

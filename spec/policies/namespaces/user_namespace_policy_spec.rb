@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::UserNamespacePolicy, feature_category: :subgroups do
+RSpec.describe Namespaces::UserNamespacePolicy, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }

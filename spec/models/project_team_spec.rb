@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ProjectTeam, feature_category: :subgroups do
+RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   include ProjectForksHelper
 
   let(:maintainer) { create(:user) }

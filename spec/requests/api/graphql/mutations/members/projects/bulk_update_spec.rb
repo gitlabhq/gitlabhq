@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ProjectMemberBulkUpdate', feature_category: :projects do
+RSpec.describe 'ProjectMemberBulkUpdate', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   let_it_be(:parent_group) { create(:group) }

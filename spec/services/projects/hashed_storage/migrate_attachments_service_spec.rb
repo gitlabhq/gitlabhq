@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HashedStorage::MigrateAttachmentsService, feature_category: :projects do
+RSpec.describe Projects::HashedStorage::MigrateAttachmentsService, feature_category: :groups_and_projects do
   subject(:service) { described_class.new(project: project, old_disk_path: project.full_path, logger: nil) }
 
   let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }

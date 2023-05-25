@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectFeature, feature_category: :projects do
+RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }

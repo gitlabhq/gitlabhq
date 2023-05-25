@@ -31,7 +31,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
   shared_examples "a middleware chain" do
     before do
       configurator.call(chain)
-      stub_feature_flags("defer_sidekiq_jobs:#{worker_class.name}": false) # not letting this worker deferring its jobs
+      stub_feature_flags("defer_sidekiq_jobs_#{worker_class.name}": false) # not letting this worker deferring its jobs
     end
     it "passes through the right middlewares", :aggregate_failures do
       enabled_sidekiq_middlewares.each do |middleware|

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe InsertDailyInvitesTrialPlanLimits, feature_category: :subgroups do
+RSpec.describe InsertDailyInvitesTrialPlanLimits, feature_category: :groups_and_projects do
   let(:plans) { table(:plans) }
   let(:plan_limits) { table(:plan_limits) }
   let!(:premium_trial_plan) { plans.create!(name: 'premium_trial') }

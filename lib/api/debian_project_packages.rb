@@ -19,6 +19,10 @@ module API
         def project_or_group
           authorized_user_project(action: :read_package)
         end
+
+        def end_of_new_upload?
+          params[:distribution].present? || params[:file_name].end_with?('.changes')
+        end
       end
 
       after_validation do
@@ -97,7 +101,7 @@ module API
               component: params['component']
             }
 
-            package = if params[:distribution].present?
+            package = if end_of_new_upload?
                         ::Packages::CreateTemporaryPackageService.new(
                           project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
                         ).execute(:debian, name: ::Packages::Debian::TEMPORARY_PACKAGE_NAME)

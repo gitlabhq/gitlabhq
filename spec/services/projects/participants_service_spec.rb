@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ParticipantsService, feature_category: :projects do
+RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_projects do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }

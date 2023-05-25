@@ -321,18 +321,21 @@ Additionally, the following cloud provider services are validated and supported 
 
 ### Recommendation notes for the database services
 
-When selecting a database service, it should run a standard, performant, and [supported version](../../install/requirements.md#postgresql-requirements) of PostgreSQL with the following features:
+[When selecting to use an external database service](../postgresql/external.md), it should run a standard, performant, and [supported version](../../install/requirements.md#postgresql-requirements).
 
-- Read Replicas for [Database Load Balancing](../postgresql/database_load_balancing.md).
-- Cross Region replication for [GitLab Geo](../geo/index.md).
+If you choose to use a third party external service:
+
+1. Note that the HA Omnibus PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. The number of nodes required to achieve HA may differ depending on the service compared to Omnibus and doesn't need to match accordingly.
+1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
+1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication
 
 #### Unsupported database services
 
 Several database cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/index.md#1440) for more details.
-- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is not supported for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
-- Azure Database for PostgreSQL Flexible Server uses Microsoft Azure Active Directory (Azure AD) as authentication mechanism, which is incompatible with GitLab database integration.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
 
@@ -342,8 +345,9 @@ Due to performance issues that we found with several key Azure services, we only
 
 In addition to the above, you should be aware of the additional specific guidance for Azure:
 
-- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is not supported for use due to notable performance / stability issues or missing functionality.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported for use due to notable performance / stability issues or missing functionality.
 - A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released. [Internal testing](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/91) has shown that it does look to perform as expected, but this hasn't been validated in production, so generally isn't recommended at this time. Additionally, as it's a new service, you may find that it's missing some functionality depending on your requirements.
+  - Only standard Postgres authentication is supported at this time with this service. Microsoft Azure Active Directory (Azure AD) is not compatible.
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs/) has been found to have [performance limits that can impact production use at certain times](https://gitlab.com/gitlab-org/gitlab/-/issues/344861). However, this has only been seen in our largest architectures (25k+) so far.
 
 ## Deviating from the suggested reference architectures

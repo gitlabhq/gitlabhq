@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MemberPresenter, feature_category: :subgroups do
+RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
   let_it_be(:member) { build(:group_member) }
   let(:presenter) { described_class.new(member) }
 

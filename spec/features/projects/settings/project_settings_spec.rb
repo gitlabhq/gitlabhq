@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects settings', feature_category: :projects do
+RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.first_owner }

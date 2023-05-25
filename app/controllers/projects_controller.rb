@@ -50,7 +50,7 @@ class ProjectsController < Projects::ApplicationController
 
   layout :determine_layout
 
-  feature_category :projects, [
+  feature_category :groups_and_projects, [
     :index, :show, :new, :create, :edit, :update, :transfer,
     :destroy, :archive, :unarchive, :toggle_star, :activity
   ]

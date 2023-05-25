@@ -554,7 +554,7 @@
   :tags: []
 - :name: cronjob:member_invitation_reminder_emails
   :worker_name: MemberInvitationReminderEmailsWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2642,7 +2642,7 @@
   :tags: []
 - :name: disallow_two_factor_for_group
   :worker_name: DisallowTwoFactorForGroupWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2651,7 +2651,7 @@
   :tags: []
 - :name: disallow_two_factor_for_subgroups
   :worker_name: DisallowTwoFactorForSubgroupsWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2786,7 +2786,7 @@
   :tags: []
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3398,7 +3398,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :projects
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
