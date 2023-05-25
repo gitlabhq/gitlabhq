@@ -3,9 +3,10 @@
 module Gitlab
   module BitbucketServerImport
     class Importer
+      include Loggable
+
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users, :already_imported_cache_key
-      attr_accessor :logger
 
       BATCH_SIZE = 100
       # The base cache key to use for tracking already imported objects.
@@ -38,7 +39,6 @@ module Gitlab
         @errors = []
         @users = {}
         @temp_branches = []
-        @logger = Gitlab::Import::Logger.build
         @already_imported_cache_key = ALREADY_IMPORTED_CACHE_KEY %
           { project: project.id, collection: collection_method }
       end
@@ -424,26 +424,6 @@ module Gitlab
           author_id: author,
           created_at: comment.created_at,
           updated_at: comment.updated_at
-        }
-      end
-
-      def log_debug(details)
-        logger.debug(log_base_data.merge(details))
-      end
-
-      def log_info(details)
-        logger.info(log_base_data.merge(details))
-      end
-
-      def log_warn(details)
-        logger.warn(log_base_data.merge(details))
-      end
-
-      def log_base_data
-        {
-          class: self.class.name,
-          project_id: project.id,
-          project_path: project.full_path
         }
       end
 
