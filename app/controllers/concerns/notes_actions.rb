@@ -75,7 +75,7 @@ module NotesActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     @note = Notes::UpdateService.new(project, current_user, update_note_params).execute(note)
-    unless @note
+    if @note.destroyed?
       head :gone
       return
     end

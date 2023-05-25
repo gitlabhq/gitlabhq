@@ -3,8 +3,8 @@ data_category: optional
 key_path: counts.kubernetes_agents_with_token
 description: Count of Kubernetes agents with at least one token
 product_section: ops
-product_stage: configure
-product_group: configure
+product_stage: deploy
+product_group: environments
 product_category: deployment_management
 value_type: number
 status: active
@@ -17,5 +17,6 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- smau
 milestone: "<13.9"

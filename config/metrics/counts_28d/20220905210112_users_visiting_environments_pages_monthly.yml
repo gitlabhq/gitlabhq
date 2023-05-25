@@ -2,8 +2,8 @@
 key_path: redis_hll_counters.environments.users_visiting_environments_pages_monthly
 description: Monthly count of unique users visiting environments pages
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 milestone: "15.4"

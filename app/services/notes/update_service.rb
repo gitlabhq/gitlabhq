@@ -45,7 +45,6 @@ module Notes
 
         if only_commands
           delete_note(note, message)
-          note = nil
         else
           note.save
         end

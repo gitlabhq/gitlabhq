@@ -3,8 +3,8 @@ data_category: operational
 key_path: counts_monthly.deployments
 description: Total deployments count for recent 28 days
 product_section: ops
-product_stage: release
-product_group: ops_release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 milestone: "13.2"

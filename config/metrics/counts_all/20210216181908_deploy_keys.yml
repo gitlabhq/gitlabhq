@@ -3,8 +3,8 @@ data_category: optional
 key_path: counts.deploy_keys
 description: Count of deploy keys
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 time_frame: all

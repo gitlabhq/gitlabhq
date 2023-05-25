@@ -27,7 +27,7 @@ module API
 
         note = ::Notes::UpdateService.new(project, current_user, opts).execute(note)
 
-        if note.valid?
+        if note.errors.blank?
           present note, with: Entities::Note
         else
           bad_request!("Failed to save note #{note.errors.messages}")

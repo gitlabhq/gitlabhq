@@ -89,6 +89,18 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
           expect { edit_note_text }.to change { note.reload.updated_by }
         end
       end
+
+      context 'when quick action only update' do
+        it "delete note and return commands_only error" do
+          updated_note = described_class.new(project, user, { note: "/close\n" }).execute(note)
+
+          expect(updated_note.destroyed?).to eq(true)
+          expect(updated_note.errors).to match_array([
+            "Note can't be blank",
+            "Commands only Closed this issue."
+          ])
+        end
+      end
     end
 
     context 'when note text was not changed' do
