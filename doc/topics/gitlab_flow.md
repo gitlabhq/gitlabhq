@@ -311,7 +311,7 @@ In GitLab Flow, you can configure your pipeline to run every time you commit cha
 When you are ready to merge your feature branch, assign the merge request to a maintainer for the project.
 Also, mention any other people from whom you would like feedback.
 After the assigned person feels comfortable with the result, they can merge the branch.
-In GitLab Flow, a [merged results pipeline](../ci/pipelines/merged_results_pipelines.md) runs against the results of the source and target branches merged together. 
+In GitLab Flow, a [merged results pipeline](../ci/pipelines/merged_results_pipelines.md) runs against the results of the source and target branches merged together.
 If the assigned person does not feel comfortable, they can request more changes or close the merge request without merging.
 
 NOTE:
@@ -513,7 +513,7 @@ The words "change," "improve," "fix," and "refactor" don't add much information 
 For more information, see Tim Pope's excellent [note about formatting commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 To add more context to a commit message, consider adding information regarding the
-origin of the change, such the GitLab issue URL or Jira issue number. That way, you provide 
+origin of the change, such the GitLab issue URL or Jira issue number. That way, you provide
 more information for users who need in-depth context about the change.
 
 For example:

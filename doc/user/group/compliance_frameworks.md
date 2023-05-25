@@ -400,7 +400,7 @@ This configuration doesn't overwrite the compliance pipeline and you get the fol
 
 ### Prefilled variables are not shown
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), 
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857),
 compliance pipelines in GitLab 15.3 and later can prevent
 [prefilled variables](../../ci/pipelines/index.md#prefill-variables-in-manual-pipelines)
 from appearing when manually starting a pipeline.

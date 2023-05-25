@@ -89,22 +89,32 @@ describe('Snippet view app', () => {
 
   describe('Embed dropdown rendering', () => {
     it.each`
-      visibilityLevel                     | condition       | isRendered
-      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${'not render'} | ${false}
-      ${'foo'}                            | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${'render'}     | ${true}
-    `('does $condition embed-dropdown by default', ({ visibilityLevel, isRendered }) => {
-      createComponent({
-        data: {
-          snippet: {
-            visibilityLevel,
-            webUrl,
+      snippetVisibility                   | projectVisibility                  | condition       | isRendered
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${undefined}                       | ${'render'}     | ${true}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'render'}     | ${true}
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${undefined}                       | ${'not render'} | ${false}
+      ${'foo'}                            | ${undefined}                       | ${'not render'} | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING} | ${'not render'} | ${false}
+    `(
+      'does $condition embed-dropdown by default',
+      ({ snippetVisibility, projectVisibility, isRendered }) => {
+        createComponent({
+          data: {
+            snippet: {
+              visibilityLevel: snippetVisibility,
+              webUrl,
+              project: {
+                visibility: projectVisibility,
+              },
+            },
           },
-        },
-      });
-      expect(findEmbedDropdown().exists()).toBe(isRendered);
-    });
+        });
+        expect(findEmbedDropdown().exists()).toBe(isRendered);
+      },
+    );
   });
 
   describe('hasUnretrievableBlobs alert rendering', () => {

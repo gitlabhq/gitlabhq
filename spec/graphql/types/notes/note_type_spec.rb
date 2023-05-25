@@ -8,6 +8,7 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       author
       body
       body_html
+      award_emoji
       confidential
       internal
       created_at

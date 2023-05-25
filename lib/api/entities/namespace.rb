@@ -10,6 +10,14 @@ module API
       def expose_members_count_with_descendants?(namespace, opts)
         namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
       end
+
+      expose :root_repository_size, documentation: { type: 'integer', example: 123 }, if: -> (namespace, opts) { expose_root_repository_size?(namespace, opts) } do |namespace, _|
+        namespace.root_storage_statistics&.repository_size
+      end
+
+      def expose_root_repository_size?(namespace, opts)
+        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
+      end
     end
   end
 end

@@ -176,6 +176,11 @@ module Backup
           human_name: _('packages'),
           destination_path: 'packages.tar.gz',
           task: build_files_task(Settings.packages.storage_path, excludes: ['tmp'])
+        ),
+        'ci_secure_files' => TaskDefinition.new(
+          human_name: _('ci secure files'),
+          destination_path: 'ci_secure_files.tar.gz',
+          task: build_files_task(Settings.ci_secure_files.storage_path, excludes: ['tmp'])
         )
       }.freeze
     end

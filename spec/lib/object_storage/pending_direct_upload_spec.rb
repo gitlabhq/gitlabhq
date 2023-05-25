@@ -2,21 +2,36 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::PendingDirectUpload, :clean_gitlab_redis_shared_state, feature_category: :shared do
+RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :shared do
   let(:location_identifier) { :artifacts }
   let(:path) { 'some/path/123' }
 
   describe '.prepare' do
     it 'creates a redis entry for the given location identifier and path' do
+      redis_key = described_class.redis_key(location_identifier, path)
+
+      expect_to_log(:prepared, redis_key)
+
       freeze_time do
         described_class.prepare(location_identifier, path)
 
         ::Gitlab::Redis::SharedState.with do |redis|
-          key = described_class.key(location_identifier, path)
-          expect(redis.hget('pending_direct_uploads', key)).to eq(Time.current.utc.to_i.to_s)
+          expect(redis.hget('pending_direct_uploads', redis_key)).to eq(Time.current.utc.to_i.to_s)
         end
       end
     end
+  end
+
+  describe '.count' do
+    subject { described_class.count }
+
+    before do
+      described_class.prepare(:artifacts, 'some/path')
+      described_class.prepare(:uploads, 'some/other/path')
+      described_class.prepare(:artifacts, 'some/new/path')
+    end
+
+    it { is_expected.to eq(3) }
   end
 
   describe '.exists?' do
@@ -56,15 +71,101 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :clean_gitlab_redis_shared_st
 
       expect(described_class.exists?(location_identifier, path)).to eq(true)
 
+      redis_key = described_class.redis_key(location_identifier, path)
+
+      expect_to_log(:completed, redis_key)
+
       described_class.complete(location_identifier, path)
 
       expect(described_class.exists?(location_identifier, path)).to eq(false)
     end
   end
 
-  describe '.key' do
-    subject { described_class.key(location_identifier, path) }
+  describe '.redis_key' do
+    subject { described_class.redis_key(location_identifier, path) }
 
     it { is_expected.to eq("#{location_identifier}:#{path}") }
+  end
+
+  describe '.each' do
+    before do
+      described_class.prepare(:artifacts, 'some/path')
+      described_class.prepare(:uploads, 'some/other/path')
+      described_class.prepare(:artifacts, 'some/new/path')
+    end
+
+    it 'yields each pending direct upload object' do
+      expect { |b| described_class.each(&b) }.to yield_control.exactly(3).times
+    end
+  end
+
+  describe '#stale?' do
+    let(:pending_direct_upload) do
+      described_class.new(
+        redis_key: 'artifacts:some/path',
+        storage_location_identifier: 'artifacts',
+        object_storage_path: 'some/path',
+        timestamp: timestamp
+      )
+    end
+
+    subject { pending_direct_upload.stale? }
+
+    context 'when timestamp is older than 3 hours ago' do
+      let(:timestamp) { 4.hours.ago.utc.to_i }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when timestamp is not older than 3 hours ago' do
+      let(:timestamp) { 2.hours.ago.utc.to_i }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#delete' do
+    let(:object_storage_path) { 'some/path' }
+    let(:pending_direct_upload) do
+      described_class.new(
+        redis_key: 'artifacts:some/path',
+        storage_location_identifier: location_identifier,
+        object_storage_path: object_storage_path,
+        timestamp: 4.hours.ago
+      )
+    end
+
+    let(:location_identifier) { JobArtifactUploader.storage_location_identifier }
+    let(:fog_connection) { stub_artifacts_object_storage(JobArtifactUploader, direct_upload: true) }
+
+    before do
+      fog_connection.directories
+        .new(key: location_identifier.to_s)
+        .files
+        .create( # rubocop:disable Rails/SaveBang
+          key: object_storage_path,
+          body: 'something'
+        )
+
+      prepare_pending_direct_upload(object_storage_path, 4.hours.ago)
+    end
+
+    it 'deletes the object from storage and also the redis entry' do
+      redis_key = described_class.redis_key(location_identifier, object_storage_path)
+
+      expect_to_log(:deleted, redis_key)
+
+      expect { pending_direct_upload.delete }.to change { total_pending_direct_uploads }.by(-1)
+
+      expect_not_to_have_pending_direct_upload(object_storage_path)
+      expect_pending_uploaded_object_not_to_exist(object_storage_path)
+    end
+  end
+
+  def expect_to_log(event, redis_key)
+    expect(Gitlab::AppLogger).to receive(:info).with(
+      message: "Pending direct upload #{event}",
+      redis_key: redis_key
+    )
   end
 end

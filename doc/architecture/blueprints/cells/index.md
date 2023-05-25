@@ -119,7 +119,7 @@ would be required to define a general split of data and build required tooling.
 
 1. **User can push to Git repository.**
 
-    The purpose is to ensure that essential joins from the projects table are properly attributed to be 
+    The purpose is to ensure that essential joins from the projects table are properly attributed to be
     Cell-local, and as a result the essential Git workflow is supported.
 
 1. **User can run CI pipeline.**
@@ -159,7 +159,7 @@ This list is not exhaustive of work needed to be done.
 ### 4. Routing layer
 
 The routing layer is meant to offer a consistent user experience where all Cells are presented
-under a single domain (for example, `gitlab.com`), instead of 
+under a single domain (for example, `gitlab.com`), instead of
 having to navigate to separate domains.
 
 The user will able to use `https://gitlab.com` to access Cell-enabled GitLab. Depending

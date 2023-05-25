@@ -35,7 +35,7 @@ If both Geo sites are based on the [1K reference architecture](../../reference_a
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites. See [notes on LDAP](../index.md#ldap).
 1. Optional: [Configure Geo secondary proxying](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites. This step is recommended to accelerate most read requests while transparently proxying writes to the primary Geo site.
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.
- 
+
 ### Multi-node Geo sites
 
 If one or more of your sites is using the [2K reference architecture](../../reference_architectures/2k_users.md) or larger, see

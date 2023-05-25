@@ -95,7 +95,7 @@ To disable shared runners for a group:
    select **Allow projects and subgroups to override the group setting**.
 
 NOTE:
-If you re-enable the shared runners for a group after you disable them, a user with the 
+If you re-enable the shared runners for a group after you disable them, a user with the
 Owner or Maintainer role must manually change this setting for each project subgroup or project.
 
 ### How shared runners pick jobs

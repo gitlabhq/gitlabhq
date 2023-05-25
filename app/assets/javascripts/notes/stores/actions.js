@@ -95,10 +95,17 @@ export const fetchDiscussions = (
   { commit, dispatch, getters },
   { path, filter, persistFilter },
 ) => {
-  const config =
+  let config =
     filter !== undefined
       ? { params: { notes_filter: filter, persist_filter: persistFilter } }
       : null;
+
+  if (
+    window.gon?.features?.mrActivityFilters &&
+    getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
+  ) {
+    config = { params: { notes_filter: 0, persist_filter: false } };
+  }
 
   if (
     getters.noteableType === constants.ISSUE_NOTEABLE_TYPE ||

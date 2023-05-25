@@ -427,7 +427,7 @@ This setting enables users in the group to access [Code Suggestions](../project/
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
-However, each user can enable or disable Code Suggestions for themselves. 
+However, each user can enable or disable Code Suggestions for themselves.
 
 To enable Code Suggestions for a group:
 

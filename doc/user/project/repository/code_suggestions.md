@@ -60,7 +60,7 @@ Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](/ee/policy/alpha-beta-support.md#beta).
 
-Each user can enable Code Suggestions for themselves: 
+Each user can enable Code Suggestions for themselves:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. On the left sidebar, select **Preferences**.

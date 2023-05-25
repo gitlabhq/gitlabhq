@@ -68,6 +68,14 @@ module Gitlab
         false
       end
 
+      def tracker
+        @tracker ||= if snowplow_micro_enabled?
+                       Gitlab::Tracking::Destinations::SnowplowMicro.new
+                     else
+                       Gitlab::Tracking::Destinations::Snowplow.new
+                     end
+      end
+
       private
 
       def track_struct_event(destination, category, action, label:, property:, value:, contexts:) # rubocop:disable Metrics/ParameterLists
@@ -75,14 +83,6 @@ module Gitlab
           .event(category, action, label: label, property: property, value: value, context: contexts)
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
-      end
-
-      def tracker
-        @tracker ||= if snowplow_micro_enabled?
-                       Gitlab::Tracking::Destinations::SnowplowMicro.new
-                     else
-                       Gitlab::Tracking::Destinations::Snowplow.new
-                     end
       end
     end
   end

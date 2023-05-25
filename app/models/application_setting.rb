@@ -13,7 +13,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
-  ignore_column :clickhouse_connection_string, remove_with: '16.1', remove_after: '2023-05-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50

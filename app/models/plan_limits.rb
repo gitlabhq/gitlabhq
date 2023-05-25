@@ -40,4 +40,11 @@ class PlanLimits < ApplicationRecord
     limits = [limit, alternate_limit]
     limits.map(&:to_i).select(&:positive?).min
   end
+
+  # Overridden in EE
+  def dashboard_storage_limit_enabled?
+    false
+  end
 end
+
+PlanLimits.prepend_mod_with('PlanLimits')

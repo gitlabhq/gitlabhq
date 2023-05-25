@@ -21,6 +21,7 @@ including:
 - Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
 - Snippets
 - [Group wikis](../user/project/wiki/group.md)
+- Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
 
 Backups do not include:
 
@@ -240,6 +241,7 @@ You can exclude specific directories from the backup by adding the environment v
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
 - `packages` (Packages)
+- `ci_secure_files` (Project-level Secure Files)
 
 NOTE:
 When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).

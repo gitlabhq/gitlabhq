@@ -6,7 +6,7 @@ workflow:
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 5.4.0
+    ref: 6.3.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -219,6 +219,7 @@ stages:
         echo "Test suite passed. Exiting..."
         exit 0
       fi
+    - bundle exec update-screenshot-paths --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
     - |
       bundle exec relate-failure-issue \
         --input-files "${QA_RSPEC_JSON_FILE_PATTERN}" \

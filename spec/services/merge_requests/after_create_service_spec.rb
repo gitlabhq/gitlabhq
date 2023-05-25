@@ -231,5 +231,30 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
 
       expect(service).to have_received(:execute).with(merge_request)
     end
+
+    describe 'logging' do
+      it 'logs specific events' do
+        ::Gitlab::ApplicationContext.push(caller_id: 'NewMergeRequestWorker')
+
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+        [
+          'Executing hooks',
+          'Executed hooks',
+          'Creating pipeline',
+          'Pipeline created'
+        ].each do |message|
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              'meta.caller_id' => 'NewMergeRequestWorker',
+              message: message,
+              merge_request_id: merge_request.id
+            )
+          ).and_call_original
+        end
+
+        execute_service
+      end
+    end
   end
 end

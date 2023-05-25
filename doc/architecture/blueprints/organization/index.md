@@ -87,14 +87,14 @@ Self-managed instances would set a default Organization.
 
 The Organization MVC will contain the following functionality:
 
-- Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab. 
+- Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
 - Every instance will have a default organization. Initially, all users will be managed by this default Organization.
 - Organization Owner. The creation of an Organization appoints that user as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
 - Organization users. A user is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
 - Setup settings. Containing the Organization name, ID, description, README, and avatar. Settings are editable by the Organization Owner.
 - Setup flow. Users are able to build an Organization on top of an existing top-level group. New users are able to create an Organization from scratch and to start building top-level groups from there.
 - Visibility. Options will be `public` and `private`. A nonuser of a specific Organization will not see private Organizations in the explore section. Visibility is editable by the Organization Owner.
-- Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented. 
+- Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete groups, as well as a Groups overview that can be accessed by the Organization Owner.
 - Projects. This includes the ability to create, edit, and delete projects, as well as a Projects overview that can be accessed by the Organization Owner.
 
@@ -146,9 +146,9 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 
 ### Iteration 3: Organization MVC Beta (FY24Q4)
 
-In iteration 3, the Organization MVC Beta will be released. 
+In iteration 3, the Organization MVC Beta will be released.
 
-- Multiple Organization Owners can be assigned. 
+- Multiple Organization Owners can be assigned.
 - Enterprise users can be added to an Organization.
 
 ### Iteration 4: Organization MVC GA (FY25Q1)
@@ -160,7 +160,7 @@ After the initial rollout of Organizations, the following functionality will be 
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Move billing from top-level group to Organization.
 1. Audit events at the Organization level.
-1. Set merge request approval rules at the Organization level and cascade to all groups and projects. 
+1. Set merge request approval rules at the Organization level and cascade to all groups and projects.
 1. Security policies at the Organization level.
 1. Vulnerability reports at the Organization level.
 1. Cascading Organization setting to enforce security scans.

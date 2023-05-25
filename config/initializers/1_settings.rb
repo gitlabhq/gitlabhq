@@ -685,6 +685,9 @@ Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] 
 Settings.cron_jobs['global_metrics_update_worker'] ||= {}
 Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, feature_category: :importers do
   include ImportSpecHelper
 
   before do
@@ -258,6 +258,29 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers d
         subject.execute
       end
     end
+
+    context 'when pull request was already imported' do
+      let(:pull_request_already_imported) do
+        instance_double(
+          BitbucketServer::Representation::PullRequest,
+          iid: 11)
+      end
+
+      let(:cache_key) do
+        format(described_class::ALREADY_IMPORTED_CACHE_KEY, project: project.id, collection: :pull_requests)
+      end
+
+      before do
+        allow(subject.client).to receive(:pull_requests).and_return([pull_request, pull_request_already_imported])
+        Gitlab::Cache::Import::Caching.set_add(cache_key, pull_request_already_imported.iid)
+      end
+
+      it 'does not import the previously imported pull requests', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        expect(Gitlab::Cache::Import::Caching.set_includes?(cache_key, pull_request.iid)).to eq(true)
+      end
+    end
   end
 
   context 'issues statuses' do
@@ -426,6 +449,24 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :importers d
           expect(comment.note).to include(inline_note.note)
           expect(comment.note).to include(inline_note.author)
           expect(importer.errors).to be_empty
+        end
+      end
+
+      context 'when issue was already imported' do
+        let(:cache_key) do
+          format(described_class::ALREADY_IMPORTED_CACHE_KEY, project: project.id, collection: :issues)
+        end
+
+        before do
+          Gitlab::Cache::Import::Caching.set_add(cache_key, sample_issues_statuses.first[:id])
+        end
+
+        it 'does not import previously imported issues', :aggregate_failures do
+          expect { subject.execute }.to change { Issue.count }.by(sample_issues_statuses.size - 1)
+
+          sample_issues_statuses.each do |sample_issues_status|
+            expect(Gitlab::Cache::Import::Caching.set_includes?(cache_key, sample_issues_status[:id])).to eq(true)
+          end
         end
       end
     end

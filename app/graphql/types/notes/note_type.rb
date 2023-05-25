@@ -36,6 +36,10 @@ module Types
         method: :note,
         description: 'Content of the note.'
 
+      field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
+        null: true,
+        description: 'List of award emojis associated with the note.'
+
       field :confidential, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates if this note is confidential.',

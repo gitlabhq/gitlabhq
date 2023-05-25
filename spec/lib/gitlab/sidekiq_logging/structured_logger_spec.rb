@@ -424,6 +424,21 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context 'when the job is deferred' do
+      it 'logs start and end of job with deferred job_status' do
+        travel_to(timestamp) do
+          expect(logger).to receive(:info).with(start_payload).ordered
+          expect(logger).to receive(:info).with(deferred_payload).ordered
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          call_subject(job, 'test_queue') do
+            job['deferred'] = true
+          end
+        end
+      end
+    end
   end
 
   describe '#add_time_keys!' do

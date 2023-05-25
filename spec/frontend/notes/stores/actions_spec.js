@@ -68,6 +68,8 @@ describe('Actions Notes Store', () => {
     resetStore(store);
     axiosMock.restore();
     resetHTMLFixture();
+
+    window.gon = {};
   });
 
   describe('setNotesData', () => {
@@ -1464,6 +1466,29 @@ describe('Actions Notes Store', () => {
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
         ],
         [{ type: 'updateResolvableDiscussionsCounts' }],
+      );
+    });
+
+    it('dispatches `fetchDiscussionsBatch` action with notes_filter 0 for merge request', () => {
+      window.gon = { features: { mrActivityFilters: true } };
+
+      return testAction(
+        actions.fetchDiscussions,
+        { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
+        [],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: {
+              config: {
+                params: { notes_filter: 0, persist_filter: false },
+              },
+              path: 'test-path',
+              perPage: 20,
+            },
+          },
+        ],
       );
     });
 

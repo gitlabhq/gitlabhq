@@ -7,7 +7,9 @@ module MergeRequests
     def execute(merge_request)
       merge_request.ensure_merge_request_diff
 
+      logger.info(**log_payload(merge_request, 'Executing hooks'))
       execute_hooks(merge_request)
+      logger.info(**log_payload(merge_request, 'Executed hooks'))
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
 
@@ -17,7 +19,9 @@ module MergeRequests
     private
 
     def prepare_for_mergeability(merge_request)
+      logger.info(**log_payload(merge_request, 'Creating pipeline'))
       create_pipeline_for(merge_request, current_user)
+      logger.info(**log_payload(merge_request, 'Pipeline created'))
       merge_request.update_head_pipeline
       check_mergeability(merge_request)
     end
@@ -57,6 +61,17 @@ module MergeRequests
 
     def mark_merge_request_as_prepared(merge_request)
       merge_request.update!(prepared_at: Time.current)
+    end
+
+    def logger
+      @logger ||= Gitlab::AppLogger
+    end
+
+    def log_payload(merge_request, message)
+      Gitlab::ApplicationContext.current.merge(
+        merge_request_id: merge_request.id,
+        message: message
+      )
     end
   end
 end

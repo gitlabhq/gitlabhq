@@ -1,15 +1,6 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .file-editor {
-  .nav-links {
-    border-top: 1px solid var(--border-color, $border-color);
-    border-right: 1px solid var(--border-color, $border-color);
-    border-left: 1px solid var(--border-color, $border-color);
-    border-bottom: 0;
-    border-radius: $border-radius-small $border-radius-small 0 0;
-    background: var(--gray-50, $gray-50);
-  }
-
   #editor,
   .editor {
     @include gl-border-0;

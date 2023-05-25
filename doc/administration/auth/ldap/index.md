@@ -1047,7 +1047,7 @@ For more information on synchronizing users and groups between LDAP and GitLab, 
 1. In the configuration file, change:
    - `omniauth_auto_link_user` to `saml` only.
    - `omniauth_auto_link_ldap_user` to false.
-   - `ldap_enabled` to `false`. 
+   - `ldap_enabled` to `false`.
    You can also comment out the LDAP provider settings.
 
 ## Troubleshooting

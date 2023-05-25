@@ -30,7 +30,7 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
-          'parent_id', 'members_count_with_descendants')
+          'parent_id', 'members_count_with_descendants', 'root_repository_size')
 
         expect(user_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
       end
@@ -66,7 +66,7 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
         owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
         expect(owned_group_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
-          'parent_id', 'members_count_with_descendants')
+          'parent_id', 'members_count_with_descendants', 'root_repository_size')
       end
 
       it "returns correct attributes when user cannot admin group" do

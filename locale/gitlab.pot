@@ -53000,6 +53000,9 @@ msgid_plural "checklist items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ci secure files"
+msgstr ""
+
 msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
 msgstr ""
 

@@ -253,4 +253,10 @@ RSpec.describe PlanLimits do
       expect(attributes).to all(include(be_zero))
     end
   end
+
+  describe '#dashboard_storage_limit_enabled?' do
+    it 'returns false' do
+      expect(plan_limits.dashboard_storage_limit_enabled?).to be false
+    end
+  end
 end

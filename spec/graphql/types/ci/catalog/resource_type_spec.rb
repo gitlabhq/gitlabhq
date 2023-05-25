@@ -11,6 +11,7 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       name
       description
       icon
+      web_path
       versions
     ]
 

@@ -541,6 +541,95 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    describe 'notes widget' do
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetNotes {
+              system: discussions(filter: ONLY_ACTIVITY, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+              comments: discussions(filter: ONLY_COMMENTS, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+              all_notes: discussions(filter: ALL_NOTES, first: 10) { nodes { id  notes { nodes { id system internal body } } } }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'when fetching award emoji from notes' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                discussions(filter: ONLY_COMMENTS, first: 10) {
+                  nodes {
+                    id
+                    notes {
+                      nodes {
+                        id
+                        body
+                        awardEmoji {
+                          nodes {
+                            name
+                            user {
+                              name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        let_it_be(:note) { create(:note, project: work_item.project, noteable: work_item) }
+
+        before_all do
+          create(:award_emoji, awardable: note, name: 'rocket', user: developer)
+        end
+
+        it 'returns award emoji data' do
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
+
+          note_with_emoji = notes.find { |n| n['id'] == note.to_gid.to_s }
+
+          expect(note_with_emoji).to include(
+            'awardEmoji' => {
+              'nodes' => include(
+                hash_including(
+                  'name' => 'rocket',
+                  'user' => {
+                    'name' => developer.name
+                  }
+                )
+              )
+            }
+          )
+        end
+
+        it 'avoids N+1 queries' do
+          post_graphql(query, current_user: developer)
+
+          control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: developer) }
+
+          expect_graphql_errors_to_be_empty
+
+          another_note = create(:note, project: work_item.project, noteable: work_item)
+          create(:award_emoji, awardable: another_note, name: 'star', user: guest)
+
+          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control)
+          expect_graphql_errors_to_be_empty
+        end
+      end
+    end
+
     context 'when an Issue Global ID is provided' do
       let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
 

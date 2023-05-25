@@ -11,12 +11,9 @@ module Gitlab
       # is turned off (or when Feature.enabled? returns false by chance while using `percentage of time` value)
       def call(worker, job, _queue)
         if defer_job?(worker)
-          Sidekiq.logger.info(
-            class: worker.class.name,
-            job_id: job['jid'],
-            message: "Deferring #{worker.class.name} for #{DELAY} s with arguments (#{job['args'].inspect})"
-          )
+          job['deferred'] = true # for logging job_status
           worker.class.perform_in(DELAY, *job['args'])
+          counter.increment({ worker: worker.class.name })
           return
         end
 
@@ -26,6 +23,12 @@ module Gitlab
       def defer_job?(worker)
         Feature.enabled?(:"#{FEATURE_FLAG_PREFIX}_#{worker.class.name}", type: :worker,
           default_enabled_if_undefined: false)
+      end
+
+      private
+
+      def counter
+        @counter ||= Gitlab::Metrics.counter(:sidekiq_jobs_deferred_total, 'The number of jobs deferred')
       end
     end
   end

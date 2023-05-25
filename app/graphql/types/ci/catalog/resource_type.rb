@@ -21,10 +21,17 @@ module Types
         field :icon, GraphQL::Types::String, null: true, description: 'Icon for the catalog resource.',
           method: :avatar_path, alpha: { milestone: '15.11' }
 
+        field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',
+          alpha: { milestone: '16.1' }
+
         field :versions, Types::ReleaseType.connection_type, null: true,
           description: 'Versions of the catalog resource.',
           resolver: Resolvers::ReleasesResolver,
           alpha: { milestone: '16.1' }
+
+        def web_path
+          ::Gitlab::Routing.url_helpers.project_path(object.project)
+        end
       end
       # rubocop: enable Graphql/AuthorizeTypes
     end

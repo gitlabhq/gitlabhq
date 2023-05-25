@@ -212,6 +212,7 @@ If there are problems with the manual upload:
 1. Open a confidential issue in the [security fork of version app project](https://gitlab.com/gitlab-org/security/version.gitlab.com).
 1. Attach the JSON payload if possible.
 1. Tag `@gitlab-org/analytics-section/analytics-instrumentation` who will triage the issue.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
