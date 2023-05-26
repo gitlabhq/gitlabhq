@@ -15,12 +15,12 @@ type: index, reference
 
 WARNING:
 This feature is in [Beta](/ee/policy/alpha-beta-support.md#beta).
-Due to high demand, this feature may have unscheduled downtime and code suggestions in IDEs may be delayed.
+Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
 
 Code Suggestions use generative AI to suggest code while you're developing.
-Use Code Suggestions to write code more efficiently by viewing code suggestions
+Use Code Suggestions to write code more efficiently by viewing Code Suggestions
 as you type. Depending on the cursor position, the extension either:
 
 - Provides entire code snippets, like generating functions.
@@ -65,17 +65,19 @@ Each user can enable Code Suggestions for themselves:
 1. On the top bar, in the upper-right corner, select your avatar.
 1. On the left sidebar, select **Preferences**.
 1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
+1. Select **Save changes**.
 
 NOTE:
-If Code Suggestions is [enabled for the group](../../group/manage.md#group-code-suggestions), the group setting overrides the user setting.
+If Code Suggestions is [enabled for the group](../../group/manage.md#enable-code-suggestions), the group setting overrides the user setting.
 
 ## Enable Code Suggestions in VS Code
 
 Prerequisites:
 
-- Your group owner must enable the [group level code suggestions setting](../../group/manage.md#group-code-suggestions).
+- Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
 - Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-- If using a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token), the token must have the `read_api` and `read_user` scopes.
+- If you use a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token),
+  the token must have the `read_api` and `read_user` scopes.
 
 To enable Code Suggestions in VS Code:
 
@@ -111,14 +113,14 @@ Start typing and receive suggestions for your GitLab projects.
   <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-## Why can't I see any code suggestions?
+## Why aren't Code Suggestions displayed?
 
 If Code Suggestions are not displayed, try the following troubleshooting steps.
 
 In GitLab, ensure Code Suggestions is enabled:
 
 - [For your user account](#enable-code-suggestions-for-an-individual-user).
-- [For *all* top-level groups your account belongs to](../../group/manage.md#group-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+- [For *all* top-level groups your account belongs to](../../group/manage.md#enable-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
 In VS Code:
 

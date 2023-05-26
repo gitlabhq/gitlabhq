@@ -17,16 +17,19 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To enable AI/ML features:
+To enable AI/ML features for a top-level group:
 
-- Enable the [Experiment features setting](group/manage.md#group-experiment-features-setting).
-- The [third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) is enabled by default. To disable AI features powered by third-party APIs, disable this setting.
+- Enable [Experiment features](group/manage.md#enable-experiment-features).
+- Enable [third-party AI features](group/manage.md#enable-third-party-ai-features) (enabled by default).
+  To disable AI features powered by third-party APIs, clear this setting.
 
-These settings give you control over which features are enabled. These settings work together so you can have a mix of both experimental and third-party AI features.
+These settings work together so you can have a mix of both experimental and third-party AI features.
 
 ## Generally Available AI features
 
-When a feature is [Generally Available](../policy/alpha-beta-support.md#generally-available-ga), it does not require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled. Some of these features might require the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
+When a feature is [Generally Available](../policy/alpha-beta-support.md#generally-available-ga),
+it does not require [Experiment features to be enabled](group/manage.md#enable-experiment-features).
+Some of these features might require [third-party AI features to be enabled](group/manage.md#enable-third-party-ai-features).
 
 The following feature is Generally Available:
 
@@ -34,7 +37,8 @@ The following feature is Generally Available:
 
 ## Beta AI features
 
-[Beta features](../policy/alpha-beta-support.md#beta) do not require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+[Beta features](../policy/alpha-beta-support.md#beta) do not require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features).
 
 The following feature is in Beta:
 
@@ -42,11 +46,14 @@ The following feature is in Beta:
 
 ## Experiment AI features
 
-[Experiment features](../policy/alpha-beta-support.md#experiment) will soon require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+[Experiment features](../policy/alpha-beta-support.md#experiment) will soon require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features).
 
 ## Third-party AI features
 
-Third-party AI features require the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled. Experiment third-party AI features also require the [Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+Third-party AI features require [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
+
+For Experiment third-party AI features, [Experiment features must be enabled](group/manage.md#enable-experiment-features) as well.
 
 ### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
 
@@ -117,7 +124,7 @@ We cannot guarantee that the large language model produces results that are corr
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
 Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat.
 
@@ -131,7 +138,7 @@ To give feedback, select the **Give Feedback** link.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
 You can generate a merge request summary in a merge request comment.
 
@@ -148,7 +155,7 @@ and the target branch is sent to the large language model referenced above.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
 When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review), you can have a summary generated for you.
 
@@ -171,7 +178,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
 In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 
@@ -208,7 +215,7 @@ These features are in a variety of [feature support levels](../policy/alpha-beta
 
 Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features.
 
-Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
+Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#enable-third-party-ai-features).
 
 ### Model accuracy and quality
 

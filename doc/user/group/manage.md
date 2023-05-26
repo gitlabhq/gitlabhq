@@ -408,7 +408,7 @@ To view the merge request approval settings for a group:
 
 Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Group Code Suggestions **(FREE SAAS)**
+## Enable Code Suggestions **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
@@ -416,38 +416,37 @@ Support for group-level settings for merge request approval rules is tracked in 
 
 WARNING:
 This feature is in [Beta](../../policy/alpha-beta-support.md#beta).
-Code Suggestions use generative AI to suggest code while you're developing.
-Due to high demand, this feature may have unscheduled downtime and code suggestions in VS Code may be delayed.
+Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce
 [low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
 Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
 We look forward to hearing your feedback.
 
-This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
-that belong to the group.
+You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions.md).
 
-However, each user can enable or disable Code Suggestions for themselves.
+- This setting
+  [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
+- Each user can
+  [enable or disable Code Suggestions for themselves](../project/repository/code_suggestions.md#enable-code-suggestions-for-an-individual-user).
 
 To enable Code Suggestions for a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Find the **Code Suggestions** settings.
+1. Expand **Permissions and group features**.
+1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
 1. Select **Save changes**.
 
-## Group Experiment features setting **(ULTIMATE SAAS)**
+## Enable Experiment features **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
-
-You can give all users in a top-level group access to Experiment features.
 
 WARNING:
 [Experiment features](../../policy/alpha-beta-support.md#experiment) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
+You can give all users in a top-level group access to Experiment features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
@@ -455,16 +454,16 @@ To enable Experiment features for a top-level group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Find the **Experiment features** settings.
+1. Expand **Permissions and group features**.
+1. Under **Experiment features**, select the **Use Experiment features** checkbox.
 1. Select **Save changes**.
 
-## Group third-party AI features setting **(ULTIMATE SAAS)**
+## Enable third-party AI features **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
 
 WARNING:
-These Artifical Intelligence (AI) features use [third-party services](../ai_features.md#data-usage)
+These AI features use [third-party services](../ai_features.md#data-usage)
 and require transmission of data, including personal data.
 
 You can give all users in the group access to third-party AI features.
@@ -475,8 +474,8 @@ To enable third-party AI features for a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Find the **Third-party Artificial Intelligence (AI) features** settings.
+1. Expand **Permissions and group features**.
+1. Under **Third-party AI services**, select the **Use third-party AI services** checkbox.
 1. Select **Save changes**.
 
 ## Group activity analytics **(PREMIUM)**
