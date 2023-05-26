@@ -2707,10 +2707,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.default_branch_protected? }
 
     where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE           | false
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH   | false
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE  | true
-      Gitlab::Access::PROTECTION_FULL           | true
+      Gitlab::Access::PROTECTION_NONE                 | false
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
+      Gitlab::Access::PROTECTION_FULL                 | true
+      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+    end
+
+    with_them do
+      before do
+        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  describe 'initial_push_to_default_branch_allowed_for_developer?' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
+
+    subject { project.initial_push_to_default_branch_allowed_for_developer? }
+
+    where(:default_branch_protection_level, :result) do
+      Gitlab::Access::PROTECTION_NONE                 | true
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | true
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
+      Gitlab::Access::PROTECTION_FULL                 | false
+      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
     end
 
     with_them do

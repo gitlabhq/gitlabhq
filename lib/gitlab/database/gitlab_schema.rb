@@ -67,13 +67,6 @@ module Gitlab
 
         # All `pg_` tables are marked as `internal`
         return :gitlab_internal if table_name.start_with?('pg_')
-
-        # Sometimes the name of an index can be interpreted as a table's name.
-        # For eg, if we execute "ALTER INDEX my_index..", my_index is interpreted as a table name.
-        # In such cases, we should return the schema of the database table actually
-        # holding that index.
-        index_name = table_name
-        derive_schema_from_index(index_name)
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
@@ -129,15 +122,6 @@ module Gitlab
 
       def self.schema_names
         @schema_names ||= self.views_and_tables_to_schema.values.to_set
-      end
-
-      private_class_method def self.derive_schema_from_index(index_name)
-        index = Gitlab::Database::PostgresIndex.find_by(name: index_name,
-          schema: ApplicationRecord.connection.current_schema)
-
-        return unless index
-
-        table_schema(index.tablename)
       end
 
       private_class_method def self.build_dictionary(path_globs)

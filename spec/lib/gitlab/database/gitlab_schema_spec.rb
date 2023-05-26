@@ -20,12 +20,6 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   shared_examples 'maps table name to table schema' do
     using RSpec::Parameterized::TableSyntax
 
-    before do
-      ApplicationRecord.connection.execute(<<~SQL)
-        CREATE INDEX index_name_on_table_belonging_to_gitlab_main ON public.projects (name);
-      SQL
-    end
-
     where(:name, :classification) do
       'ci_builds'                                    | :gitlab_ci
       'my_schema.ci_builds'                          | :gitlab_ci
@@ -37,7 +31,6 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       '_test_gitlab_ci_table'                        | :gitlab_ci
       '_test_my_table'                               | :gitlab_shared
       'pg_attribute'                                 | :gitlab_internal
-      'index_name_on_table_belonging_to_gitlab_main' | :gitlab_main
     end
 
     with_them do
@@ -152,6 +145,18 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
     context 'when mapping fails' do
       let(:name) { 'unknown_table' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when an index name is used as the table name' do
+      before do
+        ApplicationRecord.connection.execute(<<~SQL)
+          CREATE INDEX index_on_projects ON public.projects USING gin (name gin_trgm_ops)
+        SQL
+      end
+
+      let(:name) { 'index_on_projects' }
 
       it { is_expected.to be_nil }
     end

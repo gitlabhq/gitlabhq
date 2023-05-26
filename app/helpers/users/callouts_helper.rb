@@ -16,6 +16,7 @@ module Users
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     ULTIMATE_FEATURE_REMOVAL_BANNER = 'ultimate_feature_removal_banner'
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
+    NEW_NAVIGATION_CALLOUT = 'new_navigation_callout'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -77,6 +78,10 @@ module Users
 
     def show_branch_rules_info?
       !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
+    end
+
+    def show_new_navigation_callout?
+      show_super_sidebar? && !user_dismissed?(NEW_NAVIGATION_CALLOUT)
     end
 
     def ultimate_feature_removal_banner_dismissed?(project)

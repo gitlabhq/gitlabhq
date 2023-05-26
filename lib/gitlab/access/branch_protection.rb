@@ -34,6 +34,10 @@ module Gitlab
         level == PROTECTION_DEV_CAN_PUSH
       end
 
+      def developer_can_initial_push?
+        level == PROTECTION_DEV_CAN_INITIAL_PUSH
+      end
+
       def developer_can_merge?
         level == PROTECTION_DEV_CAN_MERGE
       end

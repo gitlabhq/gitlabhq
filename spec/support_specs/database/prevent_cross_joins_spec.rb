@@ -48,6 +48,20 @@ RSpec.describe Database::PreventCrossJoins, :suppress_gitlab_schemas_validate_co
           expect { ApplicationRecord.connection.execute('SELECT SELECT FROM SELECT') }.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
+
+      context 'when an ALTER INDEX query is used' do
+        before do
+          ApplicationRecord.connection.execute(<<~SQL)
+            CREATE INDEX index_on_projects ON public.projects USING gin (name gin_trgm_ops)
+          SQL
+        end
+
+        it 'does not raise exception' do
+          expect do
+            ApplicationRecord.connection.execute('ALTER INDEX index_on_projects SET ( fastupdate = false )')
+          end.not_to raise_error
+        end
+      end
     end
   end
 

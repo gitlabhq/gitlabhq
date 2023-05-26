@@ -95,6 +95,8 @@ unless a subgroup configuration overrides it.
 
 ## Protect initial default branches **(FREE SELF)**
 
+> Full protection after initial push [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
+
 GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
 to apply to every repository's [default branch](#default-branch)
 at the [instance level](#instance-level-default-branch-protection) and
@@ -108,6 +110,8 @@ at the [instance level](#instance-level-default-branch-protection) and
    but cannot force push.
 - **Fully protected** - Developers cannot push new commits, but maintainers can.
    No one can force push.
+- **Fully protected after initial push** - Developers can push the initial commit
+  to a repository, but none afterward. Maintainers can always push. No one can force push.
 
 ### Instance-level default branch protection **(FREE SELF)**
 

@@ -326,7 +326,11 @@ module Feature
     end
 
     def l2_cache_backend
-      ::Gitlab::Redis::FeatureFlag.cache_store
+      if !Gitlab::Utils.to_boolean(ENV['GITLAB_USE_FEATURE_FLAG_REDIS'])
+        Rails.cache
+      else
+        ::Gitlab::Redis::FeatureFlag.cache_store
+      end
     end
 
     def log(key:, action:, **extra)

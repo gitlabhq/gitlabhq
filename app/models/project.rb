@@ -2908,7 +2908,13 @@ class Project < ApplicationRecord
   def default_branch_protected?
     branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
 
-    branch_protection.fully_protected? || branch_protection.developer_can_merge?
+    branch_protection.fully_protected? || branch_protection.developer_can_merge? || branch_protection.developer_can_initial_push?
+  end
+
+  def initial_push_to_default_branch_allowed_for_developer?
+    branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
+
+    !branch_protection.any? || branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
   end
 
   def environments_for_scope(scope)

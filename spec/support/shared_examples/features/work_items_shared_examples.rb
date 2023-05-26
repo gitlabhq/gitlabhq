@@ -32,6 +32,7 @@ end
 
 RSpec.shared_examples 'work items comments' do |type|
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
+  let(:edit_button) { '[data-testid="edit-work-item-note"]' }
   let(:textarea_selector) { '[data-testid="work-item-add-comment"] #work-item-add-or-edit-comment' }
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
@@ -50,6 +51,22 @@ RSpec.shared_examples 'work items comments' do |type|
 
     page.within(".main-notes-list") do
       expect(page).to have_content comment
+    end
+  end
+
+  it 'successfully updates existing comments' do
+    set_comment
+    click_button "Comment"
+    wait_for_all_requests
+
+    find(edit_button).click
+    send_keys(" updated")
+    click_button "Save comment"
+
+    wait_for_all_requests
+
+    page.within(".main-notes-list") do
+      expect(page).to have_content "Test comment updated"
     end
   end
 

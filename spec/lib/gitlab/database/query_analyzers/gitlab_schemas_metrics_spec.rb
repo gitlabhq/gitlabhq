@@ -7,6 +7,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
 
   before do
     allow(Gitlab::Database::QueryAnalyzer.instance).to receive(:all_analyzers).and_return([analyzer])
+    ApplicationRecord.connection.execute(<<~SQL)
+      CREATE INDEX index_on_projects ON public.projects USING gin (name gin_trgm_ops)
+    SQL
   end
 
   it 'does not increment metrics if feature flag is disabled' do
@@ -59,6 +62,11 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
           sql: "SELECT 1 FROM projects LEFT JOIN not_in_schema ON not_in_schema.project_id=projects.id",
           expect_error:
              /Could not find gitlab schema for table not_in_schema/
+        },
+        "for query altering an INDEX" => {
+          model: ApplicationRecord,
+          sql: "ALTER INDEX index_on_projects SET ( fastupdate = false )",
+          no_op: true
         }
       }
     end
@@ -74,6 +82,10 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
 
         if expect_error
           expect { process_sql(model, sql) }.to raise_error(expect_error)
+        elsif no_op
+          expect(described_class.schemas_metrics).not_to receive(:increment)
+
+          process_sql(model, sql)
         else
           expect(described_class.schemas_metrics).to receive(:increment)
             .with(expectations).and_call_original

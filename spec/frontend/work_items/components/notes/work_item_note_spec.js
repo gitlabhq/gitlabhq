@@ -133,7 +133,7 @@ describe('Work Item Note', () => {
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', updatedNoteText);
+      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
 
       expect(successHandler).toHaveBeenCalledWith({
         input: {
@@ -148,7 +148,7 @@ describe('Work Item Note', () => {
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', updatedNoteText);
+      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
       await waitForPromises();
 
       expect(findCommentForm().exists()).toBe(false);
@@ -161,7 +161,7 @@ describe('Work Item Note', () => {
         findNoteActions().vm.$emit('startEditing');
         await nextTick();
 
-        findCommentForm().vm.$emit('submitForm', updatedNoteText);
+        findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
         await waitForPromises();
       });
 

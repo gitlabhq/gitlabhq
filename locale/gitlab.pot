@@ -14476,6 +14476,9 @@ msgstr ""
 msgid "DefaultBranchProtection|Both developers and maintainers can push new commits, force push, or delete the branch."
 msgstr ""
 
+msgid "DefaultBranchProtection|Developers can push the initial commit to a repository, but none afterward. Maintainers can always push. No one can force push."
+msgstr ""
+
 msgid "DefaultBranchProtection|Developers cannot push new commits, but are allowed to accept merge requests to the branch. Maintainers can push to the branch."
 msgstr ""
 
@@ -14483,6 +14486,9 @@ msgid "DefaultBranchProtection|Developers cannot push new commits, but maintaine
 msgstr ""
 
 msgid "DefaultBranchProtection|Fully protected"
+msgstr ""
+
+msgid "DefaultBranchProtection|Fully protected after initial push"
 msgstr ""
 
 msgid "DefaultBranchProtection|Not protected"
@@ -19223,6 +19229,9 @@ msgstr ""
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
+msgid "For the next few releases, you can go to your avatar at any time to turn the new navigation on and off."
+msgstr ""
+
 msgid "Forbidden"
 msgstr ""
 
@@ -22415,6 +22424,9 @@ msgid "How to track time"
 msgstr ""
 
 msgid "I accept the %{terms_link}"
+msgstr ""
+
+msgid "I am sorry, I am unable to find the issue you are looking for."
 msgstr ""
 
 msgid "I do not know."
@@ -37316,6 +37328,9 @@ msgstr ""
 msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
+msgid "Read more about the %{changes_link_start}changes%{link_end}, the %{vision_link_start}vision%{link_end}, and the %{design_link_start}design%{link_end}."
+msgstr ""
+
 msgid "Read their documentation."
 msgstr ""
 
@@ -50826,6 +50841,9 @@ msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
 msgid "Welcome to GitLab,%{br_tag}%{name}!"
+msgstr ""
+
+msgid "Welcome to a new navigation experience"
 msgstr ""
 
 msgid "Welcome, %{name}!"

@@ -212,7 +212,15 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
 
     it { expect(described_class.send(:l1_cache_backend)).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
-    it { expect(described_class.send(:l2_cache_backend)).to eq(Gitlab::Redis::FeatureFlag.cache_store) }
+    it { expect(described_class.send(:l2_cache_backend)).to eq(Rails.cache) }
+
+    context 'when GITLAB_USE_FEATURE_FLAG_REDIS is set to true' do
+      before do
+        stub_env('GITLAB_USE_FEATURE_FLAG_REDIS', 'true')
+      end
+
+      it { expect(described_class.send(:l2_cache_backend)).to eq(Gitlab::Redis::FeatureFlag.cache_store) }
+    end
 
     it 'caches the status in L1 and L2 caches',
        :request_store, :use_clean_rails_memory_store_caching do

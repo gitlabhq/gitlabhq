@@ -149,10 +149,10 @@ comments.
 This worker imports note attachments that are linked inside Markdown.
 For each entity with Markdown text in the project, we schedule a job of:
 
-- `Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every release.
-- `Gitlab::GithubImport::ImportNoteAttachmentsWorker` for every note.
-- `Gitlab::GithubImport::ImportIssueAttachmentsWorker` for every issue.
-- `Gitlab::GithubImport::ImportMergeRequestAttachmentsWorker` for every merge request.
+- `Gitlab::GithubImport::Importer::Attachments::ReleasesImporter` for every release.
+- `Gitlab::GithubImport::Importer::Attachments::NotesImporter` for every note.
+- `Gitlab::GithubImport::Importer::Attachments::IssuesImporter` for every issue.
+- `Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter` for every merge request.
 
 Each job:
 

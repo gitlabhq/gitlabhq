@@ -23,6 +23,7 @@ module Gitlab
     PROTECTION_DEV_CAN_PUSH  = 1
     PROTECTION_FULL          = 2
     PROTECTION_DEV_CAN_MERGE = 3
+    PROTECTION_DEV_CAN_INITIAL_PUSH = 4
 
     # Default project creation level
     NO_ONE_PROJECT_ACCESS = 0
@@ -95,6 +96,11 @@ module Gitlab
             label: s_('DefaultBranchProtection|Fully protected'),
             help_text: s_('DefaultBranchProtection|Developers cannot push new commits, but maintainers can. No one can force push.'),
             value: PROTECTION_FULL
+          },
+          {
+            label: s_('DefaultBranchProtection|Fully protected after initial push'),
+            help_text: s_('DefaultBranchProtection|Developers can push the initial commit to a repository, but none afterward. Maintainers can always push. No one can force push.'),
+            value: PROTECTION_DEV_CAN_INITIAL_PUSH
           }
         ]
       end

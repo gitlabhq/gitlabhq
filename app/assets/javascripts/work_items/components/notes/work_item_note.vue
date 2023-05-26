@@ -180,7 +180,7 @@ export default {
       this.isEditing = true;
       updateDraft(this.autosaveKey, this.note.body);
     },
-    async updateNote(newText) {
+    async updateNote({ commentText }) {
       try {
         this.isEditing = false;
         await this.$apollo.mutate({
@@ -188,7 +188,7 @@ export default {
           variables: {
             input: {
               id: this.note.id,
-              body: newText,
+              body: commentText,
             },
           },
           optimisticResponse: {
@@ -196,14 +196,14 @@ export default {
               errors: [],
               note: {
                 ...this.note,
-                bodyHtml: renderMarkdown(newText),
+                bodyHtml: renderMarkdown(commentText),
               },
             },
           },
         });
         clearDraft(this.autosaveKey);
       } catch (error) {
-        updateDraft(this.autosaveKey, newText);
+        updateDraft(this.autosaveKey, commentText);
         this.isEditing = true;
         this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
         Sentry.captureException(error);

@@ -507,6 +507,44 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
       it { is_expected.to eq(true) }
     end
+
+    context 'when project is an empty repository' do
+      before do
+        allow(project).to receive(:empty_repo?).and_return(true)
+      end
+
+      context 'when user is an admin' do
+        let(:current_user) { admin }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when user is maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when user is developer and initial push is allowed' do
+        let(:current_user) { developer }
+
+        before do
+          allow(project).to receive(:initial_push_to_default_branch_allowed_for_developer?).and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when user is developer and initial push is not allowed' do
+        let(:current_user) { developer }
+
+        before do
+          allow(project).to receive(:initial_push_to_default_branch_allowed_for_developer?).and_return(false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
   end
 
   describe '.by_name' do

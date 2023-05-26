@@ -13,8 +13,7 @@ module Organizations
 
     validates :name,
       presence: true,
-      length: { maximum: 255 },
-      uniqueness: { case_sensitive: false }
+      length: { maximum: 255 }
 
     def default?
       id == DEFAULT_ORGANIZATION_ID
