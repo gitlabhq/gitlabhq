@@ -2,13 +2,16 @@
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import createEnvironment from '../graphql/mutations/create_environment.mutation.graphql';
 import EnvironmentForm from './environment_form.vue';
 
 export default {
   components: {
     EnvironmentForm,
   },
-  inject: ['projectEnvironmentsPath'],
+  mixins: [glFeatureFlagsMixin()],
+  inject: ['projectEnvironmentsPath', 'projectPath'],
   data() {
     return {
       environment: {
@@ -23,6 +26,45 @@ export default {
       this.environment = env;
     },
     onSubmit() {
+      if (this.glFeatures?.environmentSettingsToGraphql) {
+        this.createWithGraphql();
+      } else {
+        this.createWithAxios();
+      }
+    },
+    async createWithGraphql() {
+      this.loading = true;
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: createEnvironment,
+          variables: {
+            input: {
+              name: this.environment.name,
+              externalUrl: this.environment.externalUrl,
+              projectPath: this.projectPath,
+            },
+          },
+        });
+
+        const { errors } = data.environmentCreate;
+
+        if (errors.length > 0) {
+          throw new Error(errors[0]?.message ?? errors[0]);
+        }
+
+        const { path } = data.environmentCreate.environment;
+
+        if (path) {
+          visitUrl(path);
+        }
+      } catch (error) {
+        const { message } = error;
+        createAlert({ message });
+      } finally {
+        this.loading = false;
+      }
+    },
+    createWithAxios() {
       this.loading = true;
       axios
         .post(this.projectEnvironmentsPath, {

@@ -37,6 +37,7 @@ GitLab supports enabling the Apple App Store integration at the project level. C
    - **Issuer ID**: The Apple App Store Connect issuer ID.
    - **Key ID**: The key ID of the generated private key.
    - **Private Key**: The generated private key. You can download this key only once.
+   - **Protected branches and tags only**: Enable to only set variables on protected branches and tags.
 
 1. Select **Save changes**.
 

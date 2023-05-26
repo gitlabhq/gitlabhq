@@ -45,10 +45,10 @@ const getMockSnippet = (id) => {
         },
       ],
     },
-    commenters: {
+    notes: {
       nodes: [
         {
-          id: 'git://gitlab/User/1',
+          id: 'git://gitlab/Note/1',
         },
       ],
     },

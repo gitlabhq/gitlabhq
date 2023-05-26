@@ -84,6 +84,8 @@ RSpec.shared_context 'with integration' do
         hash.merge!(k => 'ABC1')
       elsif integration == 'apple_app_store' && k == :app_store_private_key_file_name
         hash.merge!(k => 'ssl_key.pem')
+      elsif integration == 'apple_app_store' && k == :app_store_protected_refs # rubocop:disable Lint/DuplicateBranch
+        hash.merge!(k => true)
       elsif integration == 'google_play' && k == :package_name
         hash.merge!(k => 'com.gitlab.foo.bar')
       elsif integration == 'google_play' && k == :service_account_key

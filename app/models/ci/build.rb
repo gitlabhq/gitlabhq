@@ -650,9 +650,8 @@ module Ci
 
     def apple_app_store_variables
       return [] unless apple_app_store_integration.try(:activated?)
-      return [] unless pipeline.protected_ref?
 
-      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
+      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables(protected_ref: pipeline.protected_ref?))
     end
 
     def google_play_variables

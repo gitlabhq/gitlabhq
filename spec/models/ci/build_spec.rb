@@ -3870,7 +3870,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'for the apple_app_store integration' do
-      let_it_be(:apple_app_store_integration) { create(:apple_app_store_integration) }
+      before do
+        allow(build.pipeline).to receive(:protected_ref?).and_return(pipeline_protected_ref)
+      end
 
       let(:apple_app_store_variables) do
         [
@@ -3881,39 +3883,70 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         ]
       end
 
-      context 'when the apple_app_store exists' do
-        context 'when a build is protected' do
-          before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
-            build.project.update!(apple_app_store_integration: apple_app_store_integration)
-          end
-
-          it 'includes apple_app_store variables' do
-            is_expected.to include(*apple_app_store_variables)
-          end
-        end
-
-        context 'when a build is not protected' do
-          before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
-            build.project.update!(apple_app_store_integration: apple_app_store_integration)
-          end
-
-          it 'does not include the apple_app_store variables' do
-            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
-            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
-            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
-            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64' }).to be_nil
-          end
-        end
-      end
-
-      context 'when the apple_app_store integration does not exist' do
-        it 'does not include apple_app_store variables' do
+      shared_examples 'does not include the apple_app_store variables' do
+        specify do
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64' }).to be_nil
+        end
+      end
+
+      shared_examples 'includes apple_app_store variables' do
+        specify do
+          expect(subject).to include(*apple_app_store_variables)
+        end
+      end
+
+      context 'when an Apple App Store integration exists' do
+        let_it_be(:apple_app_store_integration) do
+          create(:apple_app_store_integration, project: project)
+        end
+
+        context 'when app_store_protected_refs is true' do
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes apple_app_store variables'
+          end
+
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'does not include the apple_app_store variables'
+          end
+        end
+
+        context 'when app_store_protected_refs is false' do
+          before do
+            apple_app_store_integration.update!(app_store_protected_refs: false)
+          end
+
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes apple_app_store variables'
+          end
+
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'includes apple_app_store variables'
+          end
+        end
+      end
+
+      context 'when an Apple App Store integration does not exist' do
+        context 'when a build is protected' do
+          let(:pipeline_protected_ref) { true }
+
+          include_examples 'does not include the apple_app_store variables'
+        end
+
+        context 'when a build is not protected' do
+          let(:pipeline_protected_ref) { false }
+
+          include_examples 'does not include the apple_app_store variables'
         end
       end
     end

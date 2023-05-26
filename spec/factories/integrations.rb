@@ -297,6 +297,7 @@ FactoryBot.define do
     app_store_key_id { 'ABC1' }
     app_store_private_key_file_name { 'auth_key.p8' }
     app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
+    app_store_protected_refs { true }
   end
 
   factory :google_play_integration, class: 'Integrations::GooglePlay' do

@@ -180,7 +180,6 @@ export default {
     },
   },
   epicLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353639',
-  openBetaLink: 'https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta',
   featureFlagLink: helpPagePath('operations/error_tracking'),
   created() {
     if (this.errorTrackingEnabled) {
@@ -475,10 +474,6 @@ export default {
             <gl-link target="_blank" :href="errorTrackingHelpUrl">{{
               __('How do I get started?')
             }}</gl-link>
-          </div>
-          <div class="gl-mt-3">
-            <span>{{ __('Error tracking is currently in') }}</span>
-            <gl-link target="_blank" :href="$options.openBetaLink">{{ __('Open Beta.') }}</gl-link>
           </div>
         </template>
       </gl-empty-state>

@@ -28,7 +28,7 @@ query getUserSnippets(
             name
           }
         }
-        commenters {
+        notes {
           nodes {
             id
           }

@@ -1,103 +1,196 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import NewEnvironment from '~/environments/components/new_environment.vue';
+import createEnvironment from '~/environments/graphql/mutations/create_environment.mutation.graphql';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
+import createMockApollo from '../__helpers__/mock_apollo_helper';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
 
-const DEFAULT_OPTS = {
-  provide: {
-    projectEnvironmentsPath: '/projects/environments',
-    protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd',
-  },
+const newName = 'test';
+const newExternalUrl = 'https://google.ca';
+
+const provide = {
+  projectEnvironmentsPath: '/projects/environments',
+  projectPath: '/path/to/project',
+};
+
+const environmentCreate = { environment: { id: '1', path: 'path/to/environment' }, errors: [] };
+const environmentCreateError = {
+  environment: null,
+  errors: [{ message: 'uh oh!' }],
 };
 
 describe('~/environments/components/new.vue', () => {
   let wrapper;
   let mock;
-  let name;
-  let url;
-  let form;
 
-  const createWrapper = (opts = {}) =>
-    mountExtended(NewEnvironment, {
-      ...DEFAULT_OPTS,
-      ...opts,
+  const createMockApolloProvider = (mutationResult) => {
+    Vue.use(VueApollo);
+
+    return createMockApollo([
+      [
+        createEnvironment,
+        jest.fn().mockResolvedValue({ data: { environmentCreate: mutationResult } }),
+      ],
+    ]);
+  };
+
+  const createWrapperWithApollo = async (mutationResult = environmentCreate) => {
+    wrapper = mountExtended(NewEnvironment, {
+      provide: {
+        ...provide,
+        glFeatures: {
+          environmentSettingsToGraphql: true,
+        },
+      },
+      apolloProvider: createMockApolloProvider(mutationResult),
     });
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    wrapper = createWrapper();
-    name = wrapper.findByLabelText('Name');
-    url = wrapper.findByLabelText('External URL');
-    form = wrapper.findByRole('form', { name: 'New environment' });
-  });
-
-  afterEach(() => {
-    mock.restore();
-  });
-
-  const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
-
-  const submitForm = async (expected, response) => {
-    mock
-      .onPost(DEFAULT_OPTS.provide.projectEnvironmentsPath, {
-        name: expected.name,
-        external_url: expected.url,
-      })
-      .reply(...response);
-    await name.setValue(expected.name);
-    await url.setValue(expected.url);
-
-    await form.trigger('submit');
     await waitForPromises();
   };
 
-  it('sets the title to New environment', () => {
-    const header = wrapper.findByRole('heading', { name: 'New environment' });
-    expect(header.exists()).toBe(true);
+  const createWrapperWithAxios = () => {
+    wrapper = mountExtended(NewEnvironment, {
+      provide: {
+        ...provide,
+        glFeatures: {
+          environmentSettingsToGraphql: false,
+        },
+      },
+    });
+  };
+
+  const findNameInput = () => wrapper.findByLabelText(__('Name'));
+  const findExternalUrlInput = () => wrapper.findByLabelText(__('External URL'));
+  const findForm = () => wrapper.findByRole('form', { name: __('New environment') });
+  const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
+
+  const submitForm = async () => {
+    await findNameInput().setValue('test');
+    await findExternalUrlInput().setValue('https://google.ca');
+
+    await findForm().trigger('submit');
+  };
+
+  describe('default', () => {
+    beforeEach(() => {
+      createWrapperWithAxios();
+    });
+
+    it('sets the title to New environment', () => {
+      const header = wrapper.findByRole('heading', { name: 'New environment' });
+      expect(header.exists()).toBe(true);
+    });
+
+    it.each`
+      input                           | value
+      ${() => findNameInput()}        | ${'test'}
+      ${() => findExternalUrlInput()} | ${'https://example.org'}
+    `('changes the value of the input to $value', ({ input, value }) => {
+      input().setValue(value);
+
+      expect(input().element.value).toBe(value);
+    });
   });
 
-  it.each`
-    input         | value
-    ${() => name} | ${'test'}
-    ${() => url}  | ${'https://example.org'}
-  `('changes the value of the input to $value', async ({ input, value }) => {
-    await input().setValue(value);
+  describe('when environmentSettingsToGraphql feature is enabled', () => {
+    describe('when mutation successful', () => {
+      beforeEach(() => {
+        createWrapperWithApollo();
+      });
 
-    expect(input().element.value).toBe(value);
+      it('shows loader after form is submitted', async () => {
+        expect(showsLoading()).toBe(false);
+
+        await submitForm();
+
+        expect(showsLoading()).toBe(true);
+      });
+
+      it('submits the new environment on submit', async () => {
+        submitForm();
+        await waitForPromises();
+
+        expect(visitUrl).toHaveBeenCalledWith('path/to/environment');
+      });
+    });
+
+    describe('when failed', () => {
+      beforeEach(async () => {
+        createWrapperWithApollo(environmentCreateError);
+        submitForm();
+        await waitForPromises();
+      });
+
+      it('shows errors on error', () => {
+        expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
+        expect(showsLoading()).toBe(false);
+      });
+    });
   });
 
-  it('shows loader after form is submitted', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+  describe('when environmentSettingsToGraphql feature is disabled', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      createWrapperWithAxios();
+    });
 
-    expect(showsLoading()).toBe(false);
+    afterEach(() => {
+      mock.restore();
+    });
 
-    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
+    it('shows loader after form is submitted', async () => {
+      expect(showsLoading()).toBe(false);
 
-    expect(showsLoading()).toBe(true);
-  });
+      mock
+        .onPost(provide.projectEnvironmentsPath, {
+          name: newName,
+          external_url: newExternalUrl,
+        })
+        .reply(HTTP_STATUS_OK, { path: '/test' });
 
-  it('submits the new environment on submit', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+      await submitForm();
 
-    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
+      expect(showsLoading()).toBe(true);
+    });
 
-    expect(visitUrl).toHaveBeenCalledWith('/test');
-  });
+    it('submits the new environment on submit', async () => {
+      mock
+        .onPost(provide.projectEnvironmentsPath, {
+          name: newName,
+          external_url: newExternalUrl,
+        })
+        .reply(HTTP_STATUS_OK, { path: '/test' });
 
-  it('shows errors on error', async () => {
-    const expected = { name: 'test', url: 'https://google.ca' };
+      await submitForm();
+      await waitForPromises();
 
-    await submitForm(expected, [HTTP_STATUS_BAD_REQUEST, { message: ['name taken'] }]);
+      expect(visitUrl).toHaveBeenCalledWith('/test');
+    });
 
-    expect(createAlert).toHaveBeenCalledWith({ message: 'name taken' });
-    expect(showsLoading()).toBe(false);
+    it('shows errors on error', async () => {
+      mock
+        .onPost(provide.projectEnvironmentsPath, {
+          name: newName,
+          external_url: newExternalUrl,
+        })
+        .reply(HTTP_STATUS_BAD_REQUEST, { message: ['name taken'] });
+
+      await submitForm();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({ message: 'name taken' });
+      expect(showsLoading()).toBe(false);
+    });
   });
 });

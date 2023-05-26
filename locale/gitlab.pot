@@ -5409,6 +5409,12 @@ msgstr ""
 msgid "AppleAppStore|Leave empty to use your current Private Key."
 msgstr ""
 
+msgid "AppleAppStore|Only set variables on protected branches and tags"
+msgstr ""
+
+msgid "AppleAppStore|Protected branches and tags only"
+msgstr ""
+
 msgid "AppleAppStore|The Apple App Store Connect Issuer ID."
 msgstr ""
 
@@ -17623,9 +17629,6 @@ msgid "Error setting up editor. Please try again."
 msgstr ""
 
 msgid "Error tracking"
-msgstr ""
-
-msgid "Error tracking is currently in"
 msgstr ""
 
 msgid "Error updating %{issuableType}"
@@ -31622,9 +31625,6 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
-msgstr ""
-
-msgid "Open Beta."
 msgstr ""
 
 msgid "Open Selection"
@@ -49193,6 +49193,12 @@ msgstr ""
 msgid "UserProfiles|No snippets found."
 msgstr ""
 
+msgid "UserProfile|%{count} %{file}"
+msgstr ""
+
+msgid "UserProfile|%{id} · created %{created} by %{author}"
+msgstr ""
+
 msgid "UserProfile|Activity"
 msgstr ""
 
@@ -49332,6 +49338,9 @@ msgid "UserProfile|at"
 msgstr ""
 
 msgid "UserProfile|made a private contribution"
+msgstr ""
+
+msgid "UserProfile|updated %{updated}"
 msgstr ""
 
 msgid "Username"

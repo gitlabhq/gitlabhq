@@ -197,6 +197,12 @@ module API
               name: :app_store_private_key_file_name,
               type: String,
               desc: 'The Apple App Store Connect Private Key File Name'
+            },
+            {
+              required: false,
+              name: :app_store_protected_refs,
+              type: Boolean,
+              desc: 'Only enable for protected refs'
             }
           ],
           'asana' => [

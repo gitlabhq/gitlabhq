@@ -15,6 +15,7 @@ module Integrations
       validates :app_store_key_id, presence: true, format: { with: KEY_ID_REGEX }
       validates :app_store_private_key, presence: true, certificate_key: true
       validates :app_store_private_key_file_name, presence: true
+      validates :app_store_protected_refs, inclusion: [true, false]
     end
 
     field :app_store_issuer_id,
@@ -29,6 +30,12 @@ module Integrations
 
     field :app_store_private_key_file_name, section: SECTION_TYPE_CONNECTION
     field :app_store_private_key, api_only: true
+
+    field :app_store_protected_refs,
+      type: 'checkbox',
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('AppleAppStore|Protected branches and tags only') },
+      checkbox_label: -> { s_('AppleAppStore|Only set variables on protected branches and tags') }
 
     def title
       'Apple App Store Connect'
@@ -85,8 +92,9 @@ module Integrations
       end
     end
 
-    def ci_variables
+    def ci_variables(protected_ref:)
       return [] unless activated?
+      return [] if app_store_protected_refs && !protected_ref
 
       [
         { key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID', value: app_store_issuer_id, masked: true, public: false },
@@ -96,6 +104,11 @@ module Integrations
         { key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64', value: IS_KEY_CONTENT_BASE64, masked: false,
           public: false }
       ]
+    end
+
+    def initialize_properties
+      super
+      self.app_store_protected_refs = true if app_store_protected_refs.nil?
     end
 
     private
