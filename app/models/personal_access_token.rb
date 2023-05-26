@@ -63,12 +63,7 @@ class PersonalAccessToken < ApplicationRecord
   # existing PATs and we can add a validation
   # https://gitlab.com/gitlab-org/gitlab/-/issues/369123
   def expires_at=(value)
-    datetime = if Feature.enabled?(:default_pat_expiration)
-                 value.presence || MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
-               else
-                 value
-               end
-
+    datetime = value.presence || MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     super(datetime)
   end
 
@@ -125,7 +120,6 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def expires_at_before_instance_max_expiry_date
-    return unless Feature.enabled?(:default_pat_expiration)
     return unless expires_at
 
     if expires_at > MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now

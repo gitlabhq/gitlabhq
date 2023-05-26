@@ -104,11 +104,7 @@ module ResourceAccessTokens
     end
 
     def default_pat_expiration
-      if Feature.enabled?(:default_pat_expiration)
-        params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
-      else
-        params[:expires_at]
-      end
+      params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     end
 
     def log_event(token)

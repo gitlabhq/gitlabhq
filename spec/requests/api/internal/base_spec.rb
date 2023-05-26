@@ -217,47 +217,22 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
     end
 
-    context 'when default_pat_expiration feature flag is true' do
-      it 'returns token with expiry as PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
-        freeze_time do
-          token_size = (PersonalAccessToken.token_prefix || '').size + 20
-
-          post api('/internal/personal_access_token'),
-            params: {
-              key_id: key.id,
-              name: 'newtoken',
-              scopes: %w(read_api read_repository)
-            },
-            headers: gitlab_shell_internal_api_request_header
-
-          expect(json_response['success']).to be_truthy
-          expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-          expect(json_response['scopes']).to match_array(%w(read_api read_repository))
-          expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
-        end
-      end
-    end
-
-    context 'when default_pat_expiration feature flag is false' do
-      before do
-        stub_feature_flags(default_pat_expiration: false)
-      end
-
-      it 'uses nil expiration value' do
+    it 'returns token with expiry as PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
+      freeze_time do
         token_size = (PersonalAccessToken.token_prefix || '').size + 20
 
         post api('/internal/personal_access_token'),
-            params: {
-              key_id: key.id,
-              name: 'newtoken',
-              scopes: %w(read_api read_repository)
-            },
-            headers: gitlab_shell_internal_api_request_header
+          params: {
+            key_id: key.id,
+            name: 'newtoken',
+            scopes: %w(read_api read_repository)
+          },
+          headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
         expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
         expect(json_response['scopes']).to match_array(%w(read_api read_repository))
-        expect(json_response['expires_at']).to be_nil
+        expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
     end
   end

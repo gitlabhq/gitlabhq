@@ -1883,6 +1883,12 @@ msgstr ""
 msgid "AI| %{link_start}What are Experiment features?%{link_end}"
 msgstr ""
 
+msgid "AI|AI generated explanations will appear here."
+msgstr ""
+
+msgid "AI|Ask a question"
+msgstr ""
+
 msgid "AI|Autocomplete"
 msgstr ""
 
