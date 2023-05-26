@@ -31,7 +31,7 @@ Lint/AmbiguousOperatorPrecedence:
     - 'app/services/issues/relative_position_rebalancing_service.rb'
     - 'app/services/jira/requests/base.rb'
     - 'config/initializers/1_settings.rb'
-    - 'config/initializers/carrierwave_patch.rb'
+    - 'config/initializers/carrierwave_s3_encryption_headers_patch.rb'
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'
     - 'danger/roulette/Dangerfile'
     - 'ee/app/models/ee/integrations/jira.rb'

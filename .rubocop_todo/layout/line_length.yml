@@ -710,7 +710,7 @@ Layout/LineLength:
     - 'config/initializers/active_record_force_reconnects.rb'
     - 'config/initializers/active_record_keyset_pagination.rb'
     - 'config/initializers/active_record_schema_versions.rb'
-    - 'config/initializers/carrierwave_patch.rb'
+    - 'config/initializers/carrierwave_s3_encryption_headers_patch.rb'
     - 'config/initializers/deprecations.rb'
     - 'config/initializers/devise_dynamic_password_length_validation.rb'
     - 'config/initializers/direct_upload_support.rb'

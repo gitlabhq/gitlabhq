@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'CarrierWave::Storage::Fog::File' do
+RSpec.describe 'CarrierWave::Storage::Fog::File', feature_category: :shared do
   let(:uploader_class) { Class.new(CarrierWave::Uploader::Base) }
   let(:uploader) { uploader_class.new }
   let(:storage) { CarrierWave::Storage::Fog.new(uploader) }

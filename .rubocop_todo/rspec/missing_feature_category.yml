@@ -2645,7 +2645,7 @@ RSpec/MissingFeatureCategory:
     - 'spec/initializers/action_mailer_hooks_spec.rb'
     - 'spec/initializers/active_record_locking_spec.rb'
     - 'spec/initializers/asset_proxy_setting_spec.rb'
-    - 'spec/initializers/carrierwave_patch_spec.rb'
+    - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
     - 'spec/initializers/cookies_serializer_spec.rb'
     - 'spec/initializers/database_config_spec.rb'
     - 'spec/initializers/direct_upload_support_spec.rb'
