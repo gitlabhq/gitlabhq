@@ -115,6 +115,7 @@ module Tooling
 
         %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.rb} => [:backend],
         %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.js} => [:frontend],
+        %r{\A((ee|jh)/)?scripts/remote_development/.*} => [:remote_development],
         %r{\A((ee|jh)/)?scripts/.*\.rb} => [:backend, :tooling],
         %r{\A((ee|jh)/)?scripts/.*\.js} => [:frontend, :tooling],
         %r{\A((ee|jh)/)?scripts/} => :tooling,
