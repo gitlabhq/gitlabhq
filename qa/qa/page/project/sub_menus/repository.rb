@@ -38,6 +38,8 @@ module QA
           end
 
           def go_to_repository_contributors
+            return go_to_contributor_statistics if Runtime::Env.super_sidebar_enabled?
+
             hover_repository do
               within_submenu do
                 click_element(:sidebar_menu_item_link, menu_item: 'Contributor statistics')

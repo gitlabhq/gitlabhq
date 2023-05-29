@@ -1,6 +1,4 @@
-import { GlDropdownDivider, GlDropdownSectionHeader } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CommitOptionsDropdown from '~/projects/commit/components/commit_options_dropdown.vue';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import eventHub from '~/projects/commit/event_hub';
@@ -14,18 +12,16 @@ describe('BranchesDropdown', () => {
   };
 
   const createComponent = (props = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(CommitOptionsDropdown, {
-        provide,
-        propsData: {
-          canRevert: true,
-          canCherryPick: true,
-          canTag: true,
-          canEmailPatches: true,
-          ...props,
-        },
-      }),
-    );
+    wrapper = mountExtended(CommitOptionsDropdown, {
+      provide,
+      propsData: {
+        canRevert: true,
+        canCherryPick: true,
+        canTag: true,
+        canEmailPatches: true,
+        ...props,
+      },
+    });
   };
 
   const findRevertLink = () => wrapper.findByTestId('revert-link');
@@ -33,8 +29,6 @@ describe('BranchesDropdown', () => {
   const findTagItem = () => wrapper.findByTestId('tag-link');
   const findEmailPatchesItem = () => wrapper.findByTestId('email-patches-link');
   const findPlainDiffItem = () => wrapper.findByTestId('plain-diff-link');
-  const findDivider = () => wrapper.findComponent(GlDropdownDivider);
-  const findSectionHeader = () => wrapper.findComponent(GlDropdownSectionHeader);
 
   describe('Everything enabled', () => {
     beforeEach(() => {
@@ -42,7 +36,7 @@ describe('BranchesDropdown', () => {
     });
 
     it('has expected dropdown button text', () => {
-      expect(wrapper.attributes('text')).toBe('Options');
+      expect(wrapper.findByTestId('base-dropdown-toggle').text()).toBe('Options');
     });
 
     it('has expected items', () => {
@@ -51,8 +45,6 @@ describe('BranchesDropdown', () => {
           findRevertLink().exists(),
           findCherryPickLink().exists(),
           findTagItem().exists(),
-          findDivider().exists(),
-          findSectionHeader().exists(),
           findEmailPatchesItem().exists(),
           findPlainDiffItem().exists(),
         ].every((exists) => exists),
@@ -94,7 +86,6 @@ describe('BranchesDropdown', () => {
     it('only has the download items', () => {
       createComponent({ canRevert: false, canCherryPick: false, canTag: false });
 
-      expect(findDivider().exists()).toBe(false);
       expect(findEmailPatchesItem().exists()).toBe(true);
       expect(findPlainDiffItem().exists()).toBe(true);
     });
@@ -109,13 +100,13 @@ describe('BranchesDropdown', () => {
     });
 
     it('emits openModal for revert', () => {
-      findRevertLink().vm.$emit('click');
+      findRevertLink().trigger('click');
 
       expect(spy).toHaveBeenCalledWith(OPEN_REVERT_MODAL);
     });
 
     it('emits openModal for cherry-pick', () => {
-      findCherryPickLink().vm.$emit('click');
+      findCherryPickLink().trigger('click');
 
       expect(spy).toHaveBeenCalledWith(OPEN_CHERRY_PICK_MODAL);
     });

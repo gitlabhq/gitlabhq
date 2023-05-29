@@ -810,32 +810,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       end
     end
 
-    context 'when FF `ci_remove_legacy_predefined_variables` is disabled' do
-      before do
-        stub_feature_flags(ci_remove_legacy_predefined_variables: false)
-      end
-
-      context 'with environment name including persisted variables' do
-        before do
-          config = YAML.dump(
-            deploy: {
-              environment: { name: "review/id1$CI_PIPELINE_ID/id2$CI_BUILD_ID" },
-              script: 'ls'
-            }
-          )
-
-          stub_ci_pipeline_yaml_file(config)
-        end
-
-        it 'skips persisted variables in environment name' do
-          result = execute_service.payload
-
-          expect(result).to be_persisted
-          expect(Environment.find_by(name: "review/id1/id2")).to be_present
-        end
-      end
-    end
-
     context 'environment with Kubernetes configuration' do
       let(:kubernetes_namespace) { 'custom-namespace' }
 

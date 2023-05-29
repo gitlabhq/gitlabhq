@@ -14,28 +14,12 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it { is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path) }
     it { is_expected.to include('CI_JOB_NAME'        => 'some-job') }
 
-    context 'when FF `ci_remove_legacy_predefined_variables` is disabled' do
-      before do
-        stub_feature_flags(ci_remove_legacy_predefined_variables: false)
-      end
-
-      it { is_expected.to include('CI_BUILD_REF_NAME' => 'master') }
-    end
-
     context 'without passed build-specific attributes' do
       let(:context) { described_class.new(pipeline) }
 
       it { is_expected.to include('CI_JOB_NAME'        => nil) }
       it { is_expected.to include('CI_COMMIT_REF_NAME' => 'master') }
       it { is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path) }
-
-      context 'when FF `ci_remove_legacy_predefined_variables` is disabled' do
-        before do
-          stub_feature_flags(ci_remove_legacy_predefined_variables: false)
-        end
-
-        it { is_expected.to include('CI_BUILD_REF_NAME' => 'master') }
-      end
     end
 
     context 'when environment:name is provided' do
