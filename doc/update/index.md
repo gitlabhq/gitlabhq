@@ -273,6 +273,12 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
     [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
     migration may take multiple days to complete on larger GitLab instances. Make sure the migration
     has completed successfully before upgrading to 16.1.0.
+- A `BackfillPreparedAtMergeRequests` background migration will be finalized with
+  the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
+  GitLab 15.10.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
+  [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
+  migration may take multiple days to complete on larger GitLab instances. Make sure the migration
+  has completed successfully before upgrading to 16.1.0.
 
 ### 16.0.0
 
