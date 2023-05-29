@@ -46,6 +46,7 @@ describe('BoardTopBar', () => {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
         isSwimlanesOn: false,
+        addColumnFormVisible: false,
       },
       provide: {
         swimlanesFeatureAvailable: false,

@@ -6,7 +6,7 @@ import { mapState, mapActions } from 'vuex';
 import eventHub from '~/boards/eventhub';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, flashAnimationDuration } from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
@@ -44,16 +44,25 @@ export default {
       required: false,
       default: null,
     },
+    listQueryVariables: {
+      type: Object,
+      required: true,
+    },
+    addColumnFormVisible: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       boardHeight: null,
+      highlightedLists: [],
     };
   },
   computed: {
-    ...mapState(['boardLists', 'error', 'addColumnForm']),
-    addColumnFormVisible() {
-      return this.addColumnForm?.visible;
+    ...mapState(['boardLists', 'error']),
+    boardListsById() {
+      return this.isApolloBoard ? this.boardListsApollo : this.boardLists;
     },
     boardListsToUse() {
       const lists = this.isApolloBoard ? this.boardListsApollo : this.boardLists;
@@ -101,6 +110,13 @@ export default {
     refetchLists() {
       this.$apollo.queries.boardListsApollo.refetch();
     },
+    highlightList(listId) {
+      this.highlightedLists.push(listId);
+
+      setTimeout(() => {
+        this.highlightedLists = this.highlightedLists.filter((id) => id !== listId);
+      }, flashAnimationDuration);
+    },
   },
 };
 </script>
@@ -129,13 +145,22 @@ export default {
         :board-id="boardId"
         :list="list"
         :filters="filterParams"
+        :highlighted-lists-apollo="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
-        <board-add-new-column v-if="addColumnFormVisible" class="gl-xs-w-full!" />
+        <board-add-new-column
+          v-if="addColumnFormVisible"
+          class="gl-xs-w-full!"
+          :board-id="boardId"
+          :list-query-variables="listQueryVariables"
+          :lists="boardListsById"
+          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @highlight-list="highlightList"
+        />
       </transition>
     </component>
 
@@ -146,8 +171,20 @@ export default {
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
       :filters="filterParams"
+      :highlighted-lists="highlightedLists"
       @setActiveList="$emit('setActiveList', $event)"
-    />
+    >
+      <board-add-new-column
+        v-if="addColumnFormVisible"
+        class="gl-sticky gl-top-5"
+        :filter-params="filterParams"
+        :list-query-variables="listQueryVariables"
+        :board-id="boardId"
+        :lists="boardListsById"
+        @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+        @highlight-list="highlightList"
+      />
+    </epics-swimlanes>
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />
 

@@ -23,7 +23,8 @@ class Packages::Package < ApplicationRecord
     rubygems: 10,
     helm: 11,
     terraform_module: 12,
-    rpm: 13
+    rpm: 13,
+    ml_model: 14
   }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }

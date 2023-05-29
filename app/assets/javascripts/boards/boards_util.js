@@ -1,4 +1,4 @@
-import { sortBy, cloneDeep } from 'lodash';
+import { sortBy, cloneDeep, find } from 'lodash';
 import {
   TYPENAME_BOARD,
   TYPENAME_ITERATION,
@@ -316,6 +316,13 @@ export function transformBoardConfig() {
 
 export function getBoardQuery(boardType) {
   return boardQuery[boardType].query;
+}
+
+export function getListByTypeId(lists, type, id) {
+  // type can be assignee/label/milestone/iteration
+  if (type && id) return find(lists, (l) => l.listType === ListType[type] && l[type]?.id === id);
+
+  return null;
 }
 
 export default {

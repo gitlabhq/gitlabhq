@@ -60,7 +60,7 @@ feature_category: :continuous_integration do
         RemoveFkToTestTmpBuildsTestTmpMetadataOnBuildsId
       ])
 
-      schema_migrate_up!(only_databases: [:main])
+      schema_migrate_up!
 
       fks = Gitlab::Database::PostgresForeignKey
         .by_referenced_table_identifier('public._test_tmp_builds')

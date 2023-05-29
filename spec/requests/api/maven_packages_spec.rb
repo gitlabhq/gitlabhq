@@ -1155,25 +1155,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
-
-        context 'when the stored sha1 is not the same' do
-          let(:sent_sha1) { File.read(file_upload.path) }
-          let(:stored_sha1) { 'wrong sha1' }
-
-          it 'logs an error and returns conflict' do
-            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-              instance_of(ArgumentError),
-              message: 'maven package file sha1 conflict',
-              stored_sha1: stored_sha1,
-              received_sha256: Digest::SHA256.hexdigest(sent_sha1),
-              sha256_hexdigest_of_stored_sha1: Digest::SHA256.hexdigest(stored_sha1)
-            )
-
-            upload
-
-            expect(response).to have_gitlab_http_status(:conflict)
-          end
-        end
       end
 
       context 'for md5 file' do

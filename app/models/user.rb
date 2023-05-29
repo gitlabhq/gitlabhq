@@ -2393,11 +2393,19 @@ class User < ApplicationRecord
   end
 
   def authorized_groups_without_shared_membership
-    Group.from_union(
-      [
-        groups.select(*Namespace.cached_column_list),
-        authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
-      ])
+    if Feature.enabled?(:authorize_groups_query_without_column_cache)
+      Group.from_union(
+        [
+          groups.select(Namespace.default_select_columns),
+          authorized_projects.joins(:namespace).select(Namespace.default_select_columns)
+        ])
+    else
+      Group.from_union(
+        [
+          groups.select(*Namespace.cached_column_list),
+          authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
+        ])
+    end
   end
 
   def authorized_groups_with_shared_membership

@@ -103,6 +103,10 @@
       .username .validation-error {
         color: $red-500;
       }
+
+      .terms .gl-form-checkbox {
+        @include gl-reset-font-size;
+      }
     }
   }
 

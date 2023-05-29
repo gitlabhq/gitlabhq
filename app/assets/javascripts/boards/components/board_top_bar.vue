@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    addColumnFormVisible: {
+      type: Boolean,
+      required: true,
+    },
     isSwimlanesOn: {
       type: Boolean,
       required: true,
@@ -117,7 +121,11 @@ export default {
           @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
         />
         <config-toggle :board-has-scope="hasScope" />
-        <board-add-new-column-trigger v-if="canAdminList" />
+        <board-add-new-column-trigger
+          v-if="canAdminList"
+          :is-new-list-showing="addColumnFormVisible"
+          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+        />
         <toggle-focus />
       </div>
     </div>

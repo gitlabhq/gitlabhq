@@ -3,6 +3,7 @@ import { TYPE_EPIC, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/iss
 import { s__, __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
+import createBoardListMutation from './graphql/board_list_create.mutation.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
@@ -68,6 +69,12 @@ export const boardQuery = {
 export const listsQuery = {
   [TYPE_ISSUE]: {
     query: boardListsQuery,
+  },
+};
+
+export const createListMutations = {
+  [TYPE_ISSUE]: {
+    mutation: createBoardListMutation,
   },
 };
 

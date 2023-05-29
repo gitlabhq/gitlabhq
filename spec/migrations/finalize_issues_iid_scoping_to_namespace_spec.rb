@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe FinalizeIssuesIidScopingToNamespace, :migration, feature_category: :team_planning do
-  let(:batched_migrations) { table(:batched_background_migrations, database: :main) }
+  let(:batched_migrations) { table(:batched_background_migrations) }
 
   let!(:migration) { described_class::MIGRATION }
 

@@ -71,7 +71,7 @@ export default {
     :label="$options.i18n.label"
     label-class="sr-only"
     label-for="issuable-type"
-    class="mb-2 mb-md-0"
+    class="gl-mb-0"
   >
     <gl-collapsible-listbox
       v-model="selectedIssueType"

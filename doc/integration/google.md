@@ -23,10 +23,9 @@ In Google's side:
 1. Refresh the page and you should see your new project in the list
 1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard)
 1. In the upper-left corner, select the previously created project
-1. Select **Credentials** from the sidebar
-1. Select **OAuth consent screen** and fill the form with the required information
-1. In the **Credentials** tab, select **Create credentials > OAuth client ID**
-1. Fill in the required information
+1. Select **OAuth consent screen** from the sidebar and fill the form with the required information
+1. Select **Credentials** from the sidebar, then select **Create credentials > OAuth client ID**
+1. Fill in the required information:
    - **Application type** - Choose "Web Application"
    - **Name** - Use the default one or provide your own
    - **Authorized JavaScript origins** -This isn't really used by GitLab but go

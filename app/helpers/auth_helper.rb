@@ -51,7 +51,8 @@ module AuthHelper
     {
       saml: 'saml_login_button',
       openid_connect: 'oidc_login_button',
-      github: 'github_login_button'
+      github: 'github_login_button',
+      gitlab: 'gitlab_oauth_login_button'
     }[provider.to_sym]
   end
 

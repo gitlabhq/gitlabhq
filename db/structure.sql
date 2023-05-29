@@ -20109,7 +20109,8 @@ CREATE TABLE plan_limits (
     dashboard_limit_enabled_at timestamp with time zone,
     web_hook_calls integer DEFAULT 0 NOT NULL,
     project_access_token_limit integer DEFAULT 0 NOT NULL,
-    google_cloud_logging_configurations integer DEFAULT 5 NOT NULL
+    google_cloud_logging_configurations integer DEFAULT 5 NOT NULL,
+    ml_model_max_file_size bigint DEFAULT '10737418240'::bigint NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -33196,6 +33197,8 @@ CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statisti
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
+
+CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

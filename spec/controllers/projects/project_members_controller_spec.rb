@@ -97,6 +97,37 @@ RSpec.describe Projects::ProjectMembersController do
             expect(assigns(:project_members).map(&:invite_email)).not_to contain_exactly(invited_member.invite_email)
           end
         end
+
+        context 'when invited group members are present' do
+          let_it_be(:invited_group_member) { create(:user) }
+
+          before do
+            group.add_owner(invited_group_member)
+
+            project.invited_groups << group
+            project.add_maintainer(user)
+
+            sign_in(user)
+          end
+
+          context 'when webui_members_inherited_users is disabled' do
+            before do
+              stub_feature_flags(webui_members_inherited_users: false)
+            end
+
+            it 'lists only direct members' do
+              get :index, params: { namespace_id: project.namespace, project_id: project }
+
+              expect(assigns(:project_members).map(&:user_id)).not_to include(invited_group_member.id)
+            end
+          end
+
+          it 'lists invited group members by default' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+
+            expect(assigns(:project_members).map(&:user_id)).to include(invited_group_member.id)
+          end
+        end
       end
 
       context 'invited members' do

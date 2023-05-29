@@ -114,10 +114,10 @@ export default {
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
-    async deleteBoardList() {
+    deleteBoardList() {
       this.track('click_button', { label: 'remove_list' });
       if (this.isApolloBoard) {
-        await this.deleteList(this.activeListId);
+        this.deleteList(this.activeListId);
       } else {
         this.removeList(this.activeId);
       }
@@ -157,7 +157,7 @@ export default {
   <mounting-portal mount-to="#js-right-sidebar-portal" name="board-settings-sidebar" append>
     <gl-drawer
       v-bind="$attrs"
-      class="js-board-settings-sidebar gl-absolute"
+      class="js-board-settings-sidebar gl-absolute boards-sidebar"
       :open="showSidebar"
       variant="sidebar"
       @close="unsetActiveListId"

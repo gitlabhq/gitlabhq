@@ -25545,6 +25545,7 @@ Values for sorting package.
 | <a id="packagetypeenumgolang"></a>`GOLANG` | Packages from the Golang package manager. |
 | <a id="packagetypeenumhelm"></a>`HELM` | Packages from the Helm package manager. |
 | <a id="packagetypeenummaven"></a>`MAVEN` | Packages from the Maven package manager. |
+| <a id="packagetypeenumml_model"></a>`ML_MODEL` | Packages from the Ml_model package manager. |
 | <a id="packagetypeenumnpm"></a>`NPM` | Packages from the npm package manager. |
 | <a id="packagetypeenumnuget"></a>`NUGET` | Packages from the Nuget package manager. |
 | <a id="packagetypeenumpypi"></a>`PYPI` | Packages from the PyPI package manager. |

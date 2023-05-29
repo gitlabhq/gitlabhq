@@ -222,7 +222,7 @@ export default {
 
       <convert-description-modal
         v-if="issueId && glFeatures.generateDescriptionAi"
-        class="gl-pl-5 gl-sm-pl-0"
+        class="gl-pl-5 gl-md-pl-0"
         :resource-id="resourceId"
         :user-id="userId"
         @contentGenerated="setDescription"

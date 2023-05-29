@@ -24,12 +24,20 @@ export default {
       type: Object,
       required: true,
     },
+    highlightedListsApollo: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState(['filterParams', 'highlightedLists']),
     ...mapGetters(['getBoardItemsByList']),
+    highlightedListsToUse() {
+      return this.isApolloBoard ? this.highlightedListsApollo : this.highlightedLists;
+    },
     highlighted() {
-      return this.highlightedLists.includes(this.list.id);
+      return this.highlightedListsToUse.includes(this.list.id);
     },
     listItems() {
       return this.isApolloBoard ? [] : this.getBoardItemsByList(this.list.id);

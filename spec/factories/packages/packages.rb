@@ -300,5 +300,11 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :ml_model_package do
+      sequence(:name) { |n| "mlmodel-package-#{n}" }
+      version { '1.0.0' }
+      package_type { :ml_model }
+    end
   end
 end

@@ -42,6 +42,7 @@ module QA
           element :saml_login_button
           element :github_login_button
           element :oidc_login_button
+          element :gitlab_oauth_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -189,9 +190,14 @@ module QA
           click_element :saml_login_button
         end
 
-        def sign_in_with_oidc
+        def sign_in_with_gitlab_oidc
           set_initial_password_if_present
           click_element :oidc_login_button
+        end
+
+        def sign_in_with_gitlab_oauth
+          set_initial_password_if_present
+          click_element :gitlab_oauth_login_button
         end
 
         def sign_out_and_sign_in_as(user:)

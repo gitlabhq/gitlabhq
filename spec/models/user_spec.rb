@@ -4418,7 +4418,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#authorized_groups' do
+  shared_examples '#authorized_groups shared' do
     let!(:user) { create(:user) }
     let!(:private_group) { create(:group) }
     let!(:child_group) { create(:group, parent: private_group) }
@@ -4446,6 +4446,32 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to include shared_group }
       it { is_expected.not_to include other_group }
+    end
+  end
+
+  describe '#authorized_groups' do
+    context 'authorize_groups_query_without_column_cache FF enabled' do
+      it_behaves_like '#authorized_groups shared' do
+        context 'when a new column is added to namespaces table' do
+          before do
+            ApplicationRecord.connection.execute "ALTER TABLE namespaces ADD COLUMN _test_column_xyz INT NULL"
+          end
+
+          # We sanity check that we don't get:
+          #   ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  each UNION query must have the same number of columns
+          it 'will not raise errors' do
+            expect { subject.count }.not_to raise_error
+          end
+        end
+      end
+    end
+
+    context 'authorize_groups_query_without_column_cache FF disabled' do
+      before do
+        stub_feature_flags(authorize_groups_query_without_column_cache: false)
+      end
+
+      it_behaves_like '#authorized_groups shared'
     end
   end
 

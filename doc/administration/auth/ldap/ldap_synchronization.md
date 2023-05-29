@@ -15,7 +15,7 @@ You can change when synchronization occurs.
 
 ## User sync
 
-> Preventing LDAP username synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
+> Preventing LDAP user's profile name synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -45,9 +45,9 @@ The process also updates the following user information:
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
 
-### Synchronize LDAP username
+### Synchronize LDAP user's profile name
 
-By default, GitLab synchronizes the LDAP username field.
+By default, GitLab synchronizes the LDAP user's profile name field.
 
 To prevent this synchronization, you can set `sync_name` to `false`.
 

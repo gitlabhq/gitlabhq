@@ -25,7 +25,7 @@ describe('BoardContent', () => {
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
-    boardLists: mockLists,
+    boardLists: mockListsById,
     error: undefined,
     issuableType: 'issue',
   };
@@ -57,6 +57,8 @@ describe('BoardContent', () => {
         filterParams: {},
         isSwimlanesOn: false,
         boardListsApollo: mockListsById,
+        listQueryVariables: {},
+        addColumnFormVisible: false,
         ...props,
       },
       provide: {
@@ -166,7 +168,7 @@ describe('BoardContent', () => {
 
   describe('when "add column" form is visible', () => {
     beforeEach(() => {
-      createComponent({ state: { addColumnForm: { visible: true } } });
+      createComponent({ props: { addColumnFormVisible: true } });
     });
 
     it('shows the "add column" form', () => {

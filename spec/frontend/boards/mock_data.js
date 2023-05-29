@@ -526,6 +526,27 @@ export const mockList = {
   __typename: 'BoardList',
 };
 
+export const labelsQueryResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/33',
+      labels: {
+        nodes: [
+          {
+            id: 'gid://gitlab/GroupLabel/121',
+            title: 'To Do',
+            color: '#F0AD4E',
+            textColor: '#FFFFFF',
+            description: null,
+            descriptionHtml: null,
+          },
+        ],
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockLabelList = {
   id: 'gid://gitlab/List/2',
   title: 'To Do',
@@ -913,8 +934,8 @@ export const mockGroupLabelsResponse = {
 
 export const boardListsQueryResponse = {
   data: {
-    group: {
-      id: 'gid://gitlab/Group/1',
+    project: {
+      id: 'gid://gitlab/Project/1',
       board: {
         id: 'gid://gitlab/Board/1',
         hideBacklogList: false,
@@ -922,7 +943,7 @@ export const boardListsQueryResponse = {
           nodes: mockLists,
         },
       },
-      __typename: 'Group',
+      __typename: 'Project',
     },
   },
 };
@@ -985,6 +1006,15 @@ export const updateEpicTitleResponse = {
         id: 'gid://gitlab/Epic/426',
         title: 'Epic 1 edit',
       },
+    },
+  },
+};
+
+export const createBoardListResponse = {
+  data: {
+    boardListCreate: {
+      list: mockLabelList,
+      errors: [],
     },
   },
 };

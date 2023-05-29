@@ -363,7 +363,7 @@ When you sign in, three cookies are set:
 
 - A session cookie called `_gitlab_session`.
   This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
-- A session cookied called `about_gitlab_active_user`.
+- A session cookie called `about_gitlab_active_user`.
   This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires with the session.
 - A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 
