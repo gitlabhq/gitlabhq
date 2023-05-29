@@ -259,8 +259,8 @@ is inside `_()` so it can be translated:
   link:
 
   ```haml
-  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/permissions') }
-  %p= safe_format(_("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}"), link_start: link_start, link_end: '</a>'.html_safe)
+  - link = link_to('', help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer')
+  %p= safe_format(_("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
   ```
 
 - Using a button link. Useful in places where text would be out of context with

@@ -149,12 +149,10 @@ export-test-metrics:
   variables:
     QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
 
-relate-test-failures:
-  extends:
-    - .relate-test-failures
-    - .rules:report:process-results
+.gitlab-qa-report:
   variables:
     QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
+    QA_SYSTEM_LOG_FILE_PATTERN: $CI_PROJECT_DIR/test_output/logs
 
 generate-test-session:
   extends:

@@ -122,10 +122,6 @@ export-test-metrics:
   extends:
     - .export-test-metrics
 
-relate-test-failures:
-  extends:
-    - .relate-test-failures
-
 generate-test-session:
   extends:
     - .generate-test-session

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Interpolator, feature_category: :pipeline_composition do
+RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
 
   let(:ctx) { instance_double(Gitlab::Ci::Config::External::Context, project: project, user: build(:user, id: 1234)) }

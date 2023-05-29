@@ -70,15 +70,6 @@ qa:master-auto-quarantine-dequarantine:
     - bundle exec confiner -r .confiner/master.yml
   allow_failure: true
 
-qa:nightly-auto-quarantine-dequarantine:
-  extends:
-    - .qa-job-base
-  rules:
-    - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
-  script:
-    - bundle exec confiner -r .confiner/nightly.yml
-  allow_failure: true
-
 qa:update-qa-cache:
   extends:
     - .qa-job-base

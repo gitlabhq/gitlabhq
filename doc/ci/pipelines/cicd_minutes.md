@@ -33,17 +33,17 @@ On self-managed GitLab instances:
 
 - CI/CD minutes quotas are disabled by default.
 - When enabled, CI/CD minutes quotas apply to private projects only.
-- Administrators can [assign more CI/CD minutes](#set-the-quota-of-cicd-minutes-for-a-specific-namespace)
+- Administrators can [assign more CI/CD minutes](#set-the-compute-quota-for-a-specific-namespace)
   if a namespace uses all the CI/CD minutes in its monthly quota.
 
 [Project runners](../runners/runners_scope.md#project-runners) are not subject to a quota of CI/CD minutes.
 
-## Set the quota of CI/CD minutes for all namespaces
+## Set the compute quota for all namespaces
 
 > [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
-By default, GitLab instances do not have a quota of CI/CD minutes.
-The default value for the quota is `0`, which grants unlimited CI/CD minutes.
+By default, GitLab instances do not have a compute quota.
+The default value for the quota is `0`, which is unlimited.
 However, you can change this default value.
 
 Prerequisite:
@@ -55,35 +55,35 @@ To change the default quota that applies to all namespaces:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
+1. In the **Compute quota** box, enter a limit.
 1. Select **Save changes**.
 
 If a quota is already defined for a specific namespace, this value does not change that quota.
 
-## Set the quota of CI/CD minutes for a specific namespace
+## Set the compute quota for a specific namespace
 
 > [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
-You can override the global value and set a quota of CI/CD minutes
+You can override the global value and set a compute quota
 for a specific namespace.
 
 Prerequisite:
 
 - You must be a GitLab administrator.
 
-To set a quota of CI/CD minutes for a namespace:
+To set a compute quota for a namespace:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
-1. In the **Quota of CI/CD minutes** box, enter the maximum number of CI/CD minutes.
+1. In the **Compute quota** box, enter the maximum number of CI/CD minutes.
 1. Select **Save changes**.
 
 You can also use the [update group API](../../api/groups.md#update-group) or the
 [update user API](../../api/users.md#user-modification) instead.
 
 NOTE:
-You can set a quota of CI/CD minutes for only top-level groups or user namespaces.
+You can set a compute quota for only top-level groups or user namespaces.
 If you set a quota for a subgroup, it is not used.
 
 ## View CI/CD minutes
@@ -348,18 +348,18 @@ consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
-## Reset CI/CD minutes used **(PREMIUM SELF)**
+## Reset compute usage **(PREMIUM SELF)**
 
 An administrator can reset the number of minutes used by a namespace for the current month.
 
-### Reset minutes for a personal namespace
+### Reset usage for a personal namespace
 
 1. Find the [user in the admin area](../../user/admin_area/index.md#administering-users).
 1. Select **Edit**.
-1. In **Limits**, select **Reset pipeline minutes**.
+1. In **Limits**, select **Reset compute usage**.
 
-### Reset minutes for a group namespace
+### Reset usage for a group namespace
 
 1. Find the [group in the admin area](../../user/admin_area/index.md#administering-groups).
 1. Select **Edit**.
-1. In **Permissions and group features**, select **Reset pipeline minutes**.
+1. In **Permissions and group features**, select **Reset compute usage**.

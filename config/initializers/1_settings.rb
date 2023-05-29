@@ -702,9 +702,6 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
   Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
   Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
-  Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= {}
-  Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
-  Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'

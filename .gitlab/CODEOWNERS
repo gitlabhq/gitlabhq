@@ -1300,7 +1300,6 @@ lib/gitlab/checks/**
 /ee/app/views/ci_minutes_usage_mailer/
 /ee/app/views/projects/pipelines/
 /ee/app/views/projects/settings/ci_cd/
-/ee/app/workers/clear_shared_runners_minutes_worker.rb
 /ee/lib/api/merge_trains.rb
 /ee/lib/ee/api/entities/merge_train.rb
 

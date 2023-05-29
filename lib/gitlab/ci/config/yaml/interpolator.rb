@@ -3,9 +3,9 @@
 module Gitlab
   module Ci
     class Config
-      module External
+      module Yaml
         ##
-        # Config::External::Interpolation perform includable file interpolation, and surfaces all possible interpolation
+        # Config::Yaml::Interpolation performs includable file interpolation, and surfaces all possible interpolation
         # errors. It is designed to provide an external file's validation context too.
         #
         class Interpolator

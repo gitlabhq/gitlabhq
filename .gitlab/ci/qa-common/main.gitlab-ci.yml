@@ -205,27 +205,6 @@ stages:
   script:
     - bundle exec rake "ci:export_test_metrics[$QA_METRICS_REPORT_FILE_PATTERN]"
 
-.relate-test-failures:
-  extends:
-    - .qa-install
-    - .ruby-image
-  stage: report
-  when: always
-  variables:
-    QA_RSPEC_JSON_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json"
-  script:
-    - |
-      if [ "$SUITE_FAILED" != "true" ] && [ "$SUITE_RAN" == "true" ]; then
-        echo "Test suite passed. Exiting..."
-        exit 0
-      fi
-    - bundle exec update-screenshot-paths --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
-    - |
-      bundle exec relate-failure-issue \
-        --input-files "${QA_RSPEC_JSON_FILE_PATTERN}" \
-        --project "gitlab-org/gitlab" \
-        --token "${QA_RELATE_FAILURE_ISSUE_TOKEN}"
-
 .generate-test-session:
   extends:
     - .qa-install

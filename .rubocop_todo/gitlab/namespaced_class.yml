@@ -1033,7 +1033,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/adjourned_project_deletion_worker.rb'
     - 'ee/app/workers/adjourned_projects_deletion_cron_worker.rb'
     - 'ee/app/workers/admin_emails_worker.rb'
-    - 'ee/app/workers/clear_shared_runners_minutes_worker.rb'
     - 'ee/app/workers/create_github_webhook_worker.rb'
     - 'ee/app/workers/elastic_association_indexer_worker.rb'
     - 'ee/app/workers/elastic_cluster_reindexing_cron_worker.rb'

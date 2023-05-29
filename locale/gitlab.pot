@@ -3725,6 +3725,9 @@ msgstr ""
 msgid "AdminUsers|Cohorts"
 msgstr ""
 
+msgid "AdminUsers|Compute quota"
+msgstr ""
+
 msgid "AdminUsers|Confirm user"
 msgstr ""
 
@@ -3830,9 +3833,6 @@ msgstr ""
 msgid "AdminUsers|Private profile"
 msgstr ""
 
-msgid "AdminUsers|Quota of CI/CD minutes"
-msgstr ""
-
 msgid "AdminUsers|Reactivating a user will:"
 msgstr ""
 
@@ -3872,7 +3872,7 @@ msgstr ""
 msgid "AdminUsers|Sort by"
 msgstr ""
 
-msgid "AdminUsers|The maximum number of CI/CD minutes on shared runners that a group can use each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
+msgid "AdminUsers|The maximum units of compute that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
 msgstr ""
 
 msgid "AdminUsers|The user can't access git repositories."
@@ -5028,6 +5028,9 @@ msgid "An error occurred while rendering the editor"
 msgstr ""
 
 msgid "An error occurred while reordering issues."
+msgstr ""
+
+msgid "An error occurred while resetting the compute usage."
 msgstr ""
 
 msgid "An error occurred while retrieving calendar activity"
@@ -11612,6 +11615,9 @@ msgid "Component type '%s' is not yet supported"
 msgstr ""
 
 msgid "Components must have a 'name'"
+msgstr ""
+
+msgid "Compute quota"
 msgstr ""
 
 msgid "Confidence"
@@ -37265,9 +37271,6 @@ msgstr ""
 msgid "Quick range"
 msgstr ""
 
-msgid "Quota of CI/CD minutes"
-msgstr ""
-
 msgid "Quota of CI/CD minutes:"
 msgstr ""
 
@@ -42201,13 +42204,10 @@ msgstr ""
 msgid "Shared runners help link"
 msgstr ""
 
-msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
+msgid "SharedRunnersMinutesSettings|Reset compute usage"
 msgstr ""
 
-msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
-msgstr ""
-
-msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+msgid "SharedRunnersMinutesSettings|When you reset the compute usage for this namespace, the compute usage changes to zero."
 msgstr ""
 
 msgid "Shimo|Go to Shimo Workspace"
@@ -44075,6 +44075,9 @@ msgstr ""
 msgid "Successfully removed email."
 msgstr ""
 
+msgid "Successfully reset compute usage for namespace."
+msgstr ""
+
 msgid "Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details."
 msgstr ""
 
@@ -45524,10 +45527,10 @@ msgstr ""
 msgid "The maximum file size is %{size}."
 msgstr ""
 
-msgid "The maximum number of CI/CD minutes on shared runners that a group can use each month. 0 for unlimited."
+msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
-msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
+msgid "The maximum units of compute that jobs in a namespace can use on shared runners each month. 0 for unlimited."
 msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
@@ -46038,9 +46041,6 @@ msgid "There was an error parsing the data for this graph."
 msgstr ""
 
 msgid "There was an error removing the e-mail."
-msgstr ""
-
-msgid "There was an error resetting user pipeline minutes."
 msgstr ""
 
 msgid "There was an error retrieving LDAP groups. Please try again."
@@ -50858,9 +50858,6 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
-msgid "What are CI/CD minutes?"
-msgstr ""
-
 msgid "What are group audit events?"
 msgstr ""
 
@@ -50883,6 +50880,9 @@ msgid "What is GitLab Runner?"
 msgstr ""
 
 msgid "What is Markdown?"
+msgstr ""
+
+msgid "What is a compute quota?"
 msgstr ""
 
 msgid "What is listed here?"

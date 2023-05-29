@@ -151,7 +151,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Chaos::SleepWorker' => 3,
         'ChatNotificationWorker' => false,
         'Ci::ArchiveTraceWorker' => 3,
-        'Ci::BatchResetMinutesWorker' => 10,
         'Ci::BuildFinishedWorker' => 3,
         'Ci::BuildPrepareWorker' => 3,
         'Ci::BuildScheduleWorker' => 3,

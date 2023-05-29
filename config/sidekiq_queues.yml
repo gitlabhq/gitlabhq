@@ -113,8 +113,6 @@
   - 2
 - - chat_notification
   - 2
-- - ci_batch_reset_minutes
-  - 1
 - - ci_cancel_pipeline
   - 1
 - - ci_cancel_redundant_pipelines
