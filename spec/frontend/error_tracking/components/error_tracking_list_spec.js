@@ -1,19 +1,22 @@
-import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlLoadingIcon,
+  GlFormInput,
+  GlPagination,
+  GlDropdown,
+  GlDropdownItem,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
-import {
-  trackErrorListViewsOptions,
-  trackErrorStatusUpdateOptions,
-  trackErrorStatusFilterOptions,
-  trackErrorSortedByField,
-} from '~/error_tracking/events_tracking';
 import Tracking from '~/tracking';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
+
+jest.mock('~/tracking');
 
 Vue.use(Vuex);
 
@@ -37,6 +40,7 @@ describe('ErrorTrackingList', () => {
     errorTrackingEnabled = true,
     userCanEnableErrorTracking = true,
     showIntegratedTrackingDisabledAlert = false,
+    integratedErrorTrackingEnabled = false,
     stubs = {},
   } = {}) {
     wrapper = extendedWrapper(
@@ -49,6 +53,7 @@ describe('ErrorTrackingList', () => {
           enableErrorTrackingLink: '/link',
           userCanEnableErrorTracking,
           errorTrackingEnabled,
+          integratedErrorTrackingEnabled,
           showIntegratedTrackingDisabledAlert,
           illustrationPath: 'illustration/path',
         },
@@ -122,8 +127,6 @@ describe('ErrorTrackingList', () => {
       mountComponent({
         stubs: {
           GlTable: false,
-          GlDropdown: false,
-          GlDropdownItem: false,
           GlLink: false,
         },
       });
@@ -170,14 +173,14 @@ describe('ErrorTrackingList', () => {
       });
 
       it('sorts by fields', () => {
-        const findSortItem = () => findSortDropdown().find('.dropdown-item');
-        findSortItem().trigger('click');
+        const findSortItem = () => findSortDropdown().findComponent(GlDropdownItem);
+        findSortItem().vm.$emit('click');
         expect(actions.sortByField).toHaveBeenCalled();
       });
 
       it('filters by status', () => {
-        const findStatusFilter = () => findStatusFilterDropdown().find('.dropdown-item');
-        findStatusFilter().trigger('click');
+        const findStatusFilter = () => findStatusFilterDropdown().findComponent(GlDropdownItem);
+        findStatusFilter().vm.$emit('click');
         expect(actions.filterByStatus).toHaveBeenCalled();
       });
     });
@@ -244,9 +247,7 @@ describe('ErrorTrackingList', () => {
 
     describe('when alert is dismissed', () => {
       it('hides the alert box', async () => {
-        findIntegratedDisabledAlert().vm.$emit('dismiss');
-
-        await nextTick();
+        await findIntegratedDisabledAlert().vm.$emit('dismiss');
 
         expect(findIntegratedDisabledAlert().exists()).toBe(false);
       });
@@ -515,49 +516,67 @@ describe('ErrorTrackingList', () => {
 
   describe('Snowplow tracking', () => {
     beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
       store.state.list.loading = false;
       store.state.list.errors = errorsList;
-      mountComponent({
-        stubs: {
-          GlTable: false,
-          GlLink: false,
-          GlDropdown: false,
-          GlDropdownItem: false,
-        },
-      });
     });
 
-    it('should track list views', () => {
-      const { category, action } = trackErrorListViewsOptions;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+    describe.each([true, false])(`when integratedErrorTracking is %s`, (integrated) => {
+      const category = 'Error Tracking';
 
-    it('should track status updates', async () => {
-      const status = 'ignored';
-      findErrorActions().vm.$emit('update-issue-status', {
-        errorId: 1,
-        status,
+      beforeEach(() => {
+        mountComponent({
+          stubs: {
+            GlTable: false,
+            GlLink: false,
+          },
+          integratedErrorTrackingEnabled: integrated,
+        });
       });
 
-      await nextTick();
+      it('should track list views', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'view_errors_list', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
 
-      const { category, action } = trackErrorStatusUpdateOptions(status);
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+      it('should track status updates', async () => {
+        const status = 'ignored';
+        findErrorActions().vm.$emit('update-issue-status', {
+          errorId: 1,
+          status,
+        });
+        await nextTick();
 
-    it('should track error filter', () => {
-      const findStatusFilter = () => findStatusFilterDropdown().find('.dropdown-item');
-      findStatusFilter().trigger('click');
-      const { category, action } = trackErrorStatusFilterOptions('unresolved');
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'update_ignored_status', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
 
-    it('should track error sorting', () => {
-      const findSortItem = () => findSortDropdown().find('.dropdown-item');
-      findSortItem().trigger('click');
-      const { category, action } = trackErrorSortedByField('last_seen');
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+      it('should track error filter', () => {
+        const findStatusFilter = () => findStatusFilterDropdown().findComponent(GlDropdownItem);
+        findStatusFilter().vm.$emit('click');
+
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'filter_unresolved_status', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
+
+      it('should track error sorting', () => {
+        const findSortItem = () => findSortDropdown().findComponent(GlDropdownItem);
+        findSortItem().vm.$emit('click');
+
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'sort_by_last_seen', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
     });
   });
 });

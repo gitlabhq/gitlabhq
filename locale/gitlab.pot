@@ -17214,6 +17214,9 @@ msgstr ""
 msgid "Environments|Get started with environments"
 msgstr ""
 
+msgid "Environments|GitLab agent"
+msgstr ""
+
 msgid "Environments|Job"
 msgstr ""
 
@@ -17266,6 +17269,9 @@ msgid "Environments|Rollback environment %{name}?"
 msgstr ""
 
 msgid "Environments|Search by environment name"
+msgstr ""
+
+msgid "Environments|Select agent"
 msgstr ""
 
 msgid "Environments|Select which environments to clean up.     Protected environments are excluded. Learn more about cleaning up environments."

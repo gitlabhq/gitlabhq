@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import csrf from '~/lib/utils/csrf';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import ErrorDetails from './components/error_details.vue';
 import store from './store';
 
@@ -18,6 +19,9 @@ export default () => {
     issueStackTracePath,
     projectIssuesPath,
   } = domEl.dataset;
+
+  let { integratedErrorTrackingEnabled } = domEl.dataset;
+  integratedErrorTrackingEnabled = parseBoolean(integratedErrorTrackingEnabled);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -40,6 +44,7 @@ export default () => {
           issueStackTracePath,
           projectIssuesPath,
           csrfToken: csrf.token,
+          integratedErrorTrackingEnabled,
         },
       });
     },

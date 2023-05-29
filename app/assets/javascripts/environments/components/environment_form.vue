@@ -1,12 +1,22 @@
 <script>
-import { GlButton, GlForm, GlFormGroup, GlFormInput, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlForm,
+  GlFormGroup,
+  GlFormInput,
+  GlCollapsibleListbox,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isAbsolute } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   ENVIRONMENT_NEW_HELP_TEXT,
   ENVIRONMENT_EDIT_HELP_TEXT,
 } from 'ee_else_ce/environments/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
 
 export default {
   components: {
@@ -14,10 +24,15 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
+    GlCollapsibleListbox,
     GlLink,
     GlSprintf,
   },
-  inject: { protectedEnvironmentSettingsPath: { default: '' } },
+  mixins: [glFeatureFlagsMixin()],
+  inject: {
+    protectedEnvironmentSettingsPath: { default: '' },
+    projectPath: { default: '' },
+  },
   props: {
     environment: {
       required: true,
@@ -47,8 +62,11 @@ export default {
     nameDisabledLinkText: __('How do I rename an environment?'),
     urlLabel: __('External URL'),
     urlFeedback: __('The URL should start with http:// or https://'),
+    agentLabel: s__('Environments|GitLab agent'),
+    agentHelpText: s__('Environments|Select agent'),
     save: __('Save'),
     cancel: __('Cancel'),
+    reset: __('Reset'),
   },
   helpPagePath: helpPagePath('ci/environments/index.md'),
   renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
@@ -60,6 +78,10 @@ export default {
         name: null,
         url: null,
       },
+      userAccessAuthorizedAgents: [],
+      loadingAgentsList: false,
+      selectedAgentId: this.environment.clusterAgentId,
+      searchTerm: '',
     };
   },
   computed: {
@@ -75,6 +97,37 @@ export default {
         url: this.visited.url && isAbsolute(this.environment.externalUrl),
       };
     },
+    agentsList() {
+      return this.userAccessAuthorizedAgents.map((node) => {
+        return {
+          value: node?.agent?.id,
+          text: node?.agent?.name,
+        };
+      });
+    },
+    dropdownToggleText() {
+      if (!this.selectedAgentId) {
+        return this.$options.i18n.agentHelpText;
+      }
+      const selectedAgentById = this.agentsList.find(
+        (agent) => agent.value === this.selectedAgentId,
+      );
+      return selectedAgentById?.text;
+    },
+    filteredAgentsList() {
+      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
+      return this.agentsList.filter((item) =>
+        item.text.toLowerCase().includes(lowerCasedSearchTerm),
+      );
+    },
+    showAgentsSelect() {
+      return this.glFeatures?.environmentSettingsToGraphql;
+    },
+  },
+  watch: {
+    environment(change) {
+      this.selectedAgentId = change.clusterAgentId;
+    },
   },
   methods: {
     onChange(env) {
@@ -82,6 +135,23 @@ export default {
     },
     visit(field) {
       this.visited[field] = true;
+    },
+    getAgentsList() {
+      this.$apollo.addSmartQuery('userAccessAuthorizedAgents', {
+        variables() {
+          return { projectFullPath: this.projectPath };
+        },
+        query: getUserAuthorizedAgents,
+        update: (data) => {
+          return data?.project?.userAccessAuthorizedAgents?.nodes || [];
+        },
+        watchLoading: (isLoading) => {
+          this.loadingAgentsList = isLoading;
+        },
+      });
+    },
+    onAgentSearch(search) {
+      this.searchTerm = search;
     },
   },
 };
@@ -150,6 +220,29 @@ export default {
             type="url"
             @input="onChange({ ...environment, externalUrl: $event })"
             @blur="visit('url')"
+          />
+        </gl-form-group>
+
+        <gl-form-group
+          v-if="showAgentsSelect"
+          :label="$options.i18n.agentLabel"
+          label-for="environment_agent"
+        >
+          <gl-collapsible-listbox
+            id="environment_agent"
+            v-model="selectedAgentId"
+            class="gl-w-full"
+            block
+            :items="filteredAgentsList"
+            :loading="loadingAgentsList"
+            :toggle-text="dropdownToggleText"
+            :header-text="$options.i18n.agentHelpText"
+            :reset-button-label="$options.i18n.reset"
+            :searchable="true"
+            @shown="getAgentsList"
+            @search="onAgentSearch"
+            @select="onChange({ ...environment, clusterAgentId: $event })"
+            @reset="onChange({ ...environment, clusterAgentId: null })"
           />
         </gl-form-group>
 

@@ -14,16 +14,12 @@ import { severityLevel, severityLevelVariant, errorStatus } from '~/error_tracki
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue';
-import {
-  trackErrorDetailsViewsOptions,
-  trackErrorStatusUpdateOptions,
-  trackCreateIssueFromError,
-} from '~/error_tracking/events_tracking';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 
 jest.mock('~/alert');
+jest.mock('~/tracking');
 
 Vue.use(Vuex);
 
@@ -33,7 +29,6 @@ describe('ErrorDetails', () => {
   let actions;
   let getters;
   let mocks;
-  const externalUrl = 'https://sentry.io/organizations/test-sentry-nk/issues/1/?project=1';
 
   const findInput = (name) => {
     const inputs = wrapper
@@ -48,7 +43,7 @@ describe('ErrorDetails', () => {
     wrapper.find('[data-testid="update-resolve-status-btn"]');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  function mountComponent() {
+  function mountComponent({ integratedErrorTrackingEnabled = false } = {}) {
     wrapper = shallowMount(ErrorDetails, {
       stubs: { GlButton, GlSprintf },
       store,
@@ -61,6 +56,7 @@ describe('ErrorDetails', () => {
         issueStackTracePath: '/stacktrace',
         projectIssuesPath: '/test-project/issues/',
         csrfToken: 'fakeToken',
+        integratedErrorTrackingEnabled,
       },
     });
   }
@@ -477,37 +473,55 @@ describe('ErrorDetails', () => {
 
   describe('Snowplow tracking', () => {
     beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
       mocks.$apollo.queries.error.loading = false;
-      mountComponent();
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        error: { externalUrl },
+    });
+
+    describe.each([true, false])(`when integratedErrorTracking is %s`, (integrated) => {
+      const category = 'Error Tracking';
+
+      beforeEach(() => {
+        mountComponent({ integratedErrorTrackingEnabled: integrated });
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // eslint-disable-next-line no-restricted-syntax
+        wrapper.setData({
+          error: {},
+        });
       });
-    });
 
-    it('should track detail page views', () => {
-      const { category, action } = trackErrorDetailsViewsOptions;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+      it('should track detail page views', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'view_error_details', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
 
-    it('should track IGNORE status update', async () => {
-      await findUpdateIgnoreStatusButton().trigger('click');
-      const { category, action } = trackErrorStatusUpdateOptions('ignored');
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+      it('should track IGNORE status update', async () => {
+        await findUpdateIgnoreStatusButton().trigger('click');
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'update_ignored_status', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
 
-    it('should track RESOLVE status update', async () => {
-      await findUpdateResolveStatusButton().trigger('click');
-      const { category, action } = trackErrorStatusUpdateOptions('resolved');
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
+      it('should track RESOLVE status update', async () => {
+        await findUpdateResolveStatusButton().trigger('click');
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'update_resolved_status', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
 
-    it('should track create issue button click', async () => {
-      await wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
-      const { category, action } = trackCreateIssueFromError;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+      it('should track create issue button click', async () => {
+        await wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
+        expect(Tracking.event).toHaveBeenCalledWith(category, 'click_create_issue_from_error', {
+          extra: {
+            variant: integrated ? 'integrated' : 'external',
+          },
+        });
+      });
     });
   });
 });

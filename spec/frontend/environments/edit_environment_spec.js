@@ -20,7 +20,10 @@ jest.mock('~/alert');
 const newExternalUrl = 'https://google.ca';
 const environment = { id: '1', name: 'foo', externalUrl: 'https://foo.example.com' };
 const resolvedEnvironment = { project: { id: '1', environment } };
-const environmentUpdate = { environment: { id: '1', path: 'path/to/environment' }, errors: [] };
+const environmentUpdate = {
+  environment: { id: '1', path: 'path/to/environment', clusterAgentId: null },
+  errors: [],
+};
 const environmentUpdateError = {
   environment: null,
   errors: [{ message: 'uh oh!' }],

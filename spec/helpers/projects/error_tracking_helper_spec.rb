@@ -32,6 +32,7 @@ RSpec.describe Projects::ErrorTrackingHelper do
           'user-can-enable-error-tracking' => 'true',
           'enable-error-tracking-link' => setting_path,
           'error-tracking-enabled' => 'false',
+          'integrated-error-tracking-enabled' => 'false',
           'list-path' => list_path,
           'project-path' => project_path,
           'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg'),
@@ -70,15 +71,15 @@ RSpec.describe Projects::ErrorTrackingHelper do
       context 'with integrated error tracking feature' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:feature_flag, :enabled, :integrated, :show_alert) do
-          false | true  | true  | true
-          false | true  | false | false
-          false | false | true  | false
-          false | false | false | false
-          true  | true  | true  | false
-          true  | true  | false | false
-          true  | false | true  | false
-          true  | false | false | false
+        where(:feature_flag, :enabled, :settings_integrated, :show_alert, :integrated_enabled) do
+          false | true  | true  | true | false
+          false | true  | false | false | false
+          false | false | true  | false | false
+          false | false | false | false | false
+          true  | true  | true  | false | true
+          true  | true  | false | false | false
+          true  | false | true  | false | false
+          true  | false | false | false | false
         end
 
         with_them do
@@ -87,13 +88,15 @@ RSpec.describe Projects::ErrorTrackingHelper do
 
             project.error_tracking_setting.attributes = {
               enabled: enabled,
-              integrated: integrated
+              integrated: settings_integrated
             }
           end
 
           specify do
-            expect(helper.error_tracking_data(current_user, project)).to include(
-              'show-integrated-tracking-disabled-alert' => show_alert.to_s
+            data = helper.error_tracking_data(current_user, project)
+            expect(data).to include(
+              'show-integrated-tracking-disabled-alert' => show_alert.to_s,
+              'integrated-error-tracking-enabled' => integrated_enabled.to_s
             )
           end
         end
@@ -112,6 +115,7 @@ RSpec.describe Projects::ErrorTrackingHelper do
   end
 
   describe '#error_details_data' do
+    let(:project) { build_stubbed(:project, :with_error_tracking_setting) }
     let(:issue_id) { 1234 }
     let(:route_params) { [project.owner, project, issue_id, { format: :json }] }
     let(:project_path) { project.full_path }
@@ -134,6 +138,36 @@ RSpec.describe Projects::ErrorTrackingHelper do
 
     it 'creates an issue and redirects to issue show page' do
       expect(result['project-issues-path']).to eq issues_path
+    end
+
+    context 'with integrated error tracking feature' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:feature_flag, :enabled, :settings_integrated, :integrated_enabled) do
+        false | true  | true   | false
+        false | true  | false  | false
+        false | false | true   | false
+        false | false | false  | false
+        true  | true  | true   | true
+        true  | true  | false  | false
+        true  | false | true   | false
+        true  | false | false  | false
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(integrated_error_tracking: feature_flag)
+
+          project.error_tracking_setting.attributes = {
+            enabled: enabled,
+            integrated: settings_integrated
+          }
+        end
+
+        specify do
+          expect(result['integrated-error-tracking-enabled']).to eq integrated_enabled.to_s
+        end
+      end
     end
   end
 end

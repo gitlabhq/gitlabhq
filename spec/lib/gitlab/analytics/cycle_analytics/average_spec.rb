@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Analytics::CycleAnalytics::Average do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :value_stream_management do
   let_it_be(:project) { create(:project) }
 
   let_it_be(:issue_1) do
@@ -45,7 +45,8 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average do
       it { is_expected.to eq(nil) }
     end
 
-    context 'returns the average duration in seconds' do
+    context 'returns the average duration in seconds',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413223' do
       it { is_expected.to be_within(0.5).of(7.5.days.to_f) }
     end
   end

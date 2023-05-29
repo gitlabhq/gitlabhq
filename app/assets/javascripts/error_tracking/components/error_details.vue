@@ -13,7 +13,6 @@ import {
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __, sprintf, n__ } from '~/locale';
-import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import query from '../queries/details.query.graphql';
@@ -67,6 +66,10 @@ export default {
     },
     csrfToken: {
       type: String,
+      required: true,
+    },
+    integratedErrorTrackingEnabled: {
+      type: Boolean,
       required: true,
     },
   },
@@ -188,8 +191,7 @@ export default {
     ]),
     createIssue() {
       this.issueCreationInProgress = true;
-      const { category, action } = trackCreateIssueFromError;
-      Tracking.event(category, action);
+      trackCreateIssueFromError(this.integratedErrorTrackingEnabled);
       this.$refs.sentryIssueForm.submit();
     },
     onIgnoreStatusUpdate() {
@@ -224,12 +226,10 @@ export default {
       }
     },
     trackPageViews() {
-      const { category, action } = trackErrorDetailsViewsOptions;
-      Tracking.event(category, action);
+      trackErrorDetailsViewsOptions(this.integratedErrorTrackingEnabled);
     },
     trackStatusUpdate(status) {
-      const { category, action } = trackErrorStatusUpdateOptions(status);
-      Tracking.event(category, action);
+      trackErrorStatusUpdateOptions(status, this.integratedErrorTrackingEnabled);
     },
   },
 };

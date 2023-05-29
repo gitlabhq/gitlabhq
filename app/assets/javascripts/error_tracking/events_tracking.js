@@ -1,4 +1,14 @@
+import Tracking from '~/tracking';
+
 const category = 'Error Tracking'; // eslint-disable-line @gitlab/require-i18n-strings
+
+function sendTrackingEvents(action, integrated) {
+  Tracking.event(category, action, {
+    extra: {
+      variant: integrated ? 'integrated' : 'external',
+    },
+  });
+}
 
 /**
  * Tracks snowplow event when User clicks on error link to Sentry
@@ -14,47 +24,42 @@ export const trackClickErrorLinkToSentryOptions = (url) => ({
 /**
  * Tracks snowplow event when user views error list
  */
-export const trackErrorListViewsOptions = {
-  category,
-  action: 'view_errors_list',
+
+export const trackErrorListViewsOptions = (integrated) => {
+  sendTrackingEvents('view_errors_list', integrated);
 };
 
 /**
  * Tracks snowplow event when user views error details
  */
-export const trackErrorDetailsViewsOptions = {
-  category,
-  action: 'view_error_details',
+export const trackErrorDetailsViewsOptions = (integrated) => {
+  sendTrackingEvents('view_error_details', integrated);
 };
 
 /**
  * Tracks snowplow event when error status is updated
  */
-export const trackErrorStatusUpdateOptions = (status) => ({
-  category,
-  action: `update_${status}_status`,
-});
+export const trackErrorStatusUpdateOptions = (status, integrated) => {
+  sendTrackingEvents(`update_${status}_status`, integrated);
+};
 
 /**
  * Tracks snowplow event when error list is filter by status
  */
-export const trackErrorStatusFilterOptions = (status) => ({
-  category,
-  action: `filter_${status}_status`,
-});
+export const trackErrorStatusFilterOptions = (status, integrated) => {
+  sendTrackingEvents(`filter_${status}_status`, integrated);
+};
 
 /**
  * Tracks snowplow event when error list is sorted by field
  */
-export const trackErrorSortedByField = (field) => ({
-  category,
-  action: `sort_by_${field}`,
-});
+export const trackErrorSortedByField = (field, integrated) => {
+  sendTrackingEvents(`sort_by_${field}`, integrated);
+};
 
 /**
  * Tracks snowplow event when the Create Issue button is clicked
  */
-export const trackCreateIssueFromError = {
-  category,
-  action: 'click_create_issue_from_error',
+export const trackCreateIssueFromError = (integrated) => {
+  sendTrackingEvents('click_create_issue_from_error', integrated);
 };

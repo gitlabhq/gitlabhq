@@ -42,6 +42,7 @@ export default {
               name: this.environment.name,
               externalUrl: this.environment.externalUrl,
               projectPath: this.projectPath,
+              clusterAgentId: this.environment.clusterAgentId,
             },
           },
         });

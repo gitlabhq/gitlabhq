@@ -60,6 +60,7 @@ export default {
             input: {
               id: this.formEnvironment.id,
               externalUrl: this.formEnvironment.externalUrl,
+              clusterAgentId: this.formEnvironment.clusterAgentId,
             },
           },
         });

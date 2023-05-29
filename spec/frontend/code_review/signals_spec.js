@@ -1,5 +1,4 @@
 import { start } from '~/code_review/signals';
-
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_PREPARED } from '~/diffs/constants';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
@@ -88,6 +87,20 @@ describe('~/code_review', () => {
           await start(callArgs);
 
           expect(apolloSubscribeSpy).not.toHaveBeenCalled();
+        });
+
+        describe('when the project does not exist', () => {
+          beforeEach(() => {
+            querySpy.mockResolvedValue({
+              data: { project: null },
+            });
+          });
+
+          it('does not fail and quits silently', () => {
+            expect(async () => {
+              await start(callArgs);
+            }).not.toThrow();
+          });
         });
 
         describe('if the merge request is still asynchronously preparing', () => {

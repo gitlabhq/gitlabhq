@@ -20,7 +20,6 @@ import { mapActions, mapState } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
-import Tracking from '~/tracking';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { sanitizeUrl } from '~/lib/utils/url_utility';
 import {
@@ -113,6 +112,10 @@ export default {
       required: true,
     },
     errorTrackingEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    integratedErrorTrackingEnabled: {
       type: Boolean,
       required: true,
     },
@@ -241,13 +244,11 @@ export default {
     },
     filterErrors(status, label) {
       this.filterValue = label;
-      const { category, action } = trackErrorStatusFilterOptions(status);
-      Tracking.event(category, action);
+      trackErrorStatusFilterOptions(status, this.integratedErrorTrackingEnabled);
       return this.filterByStatus(status);
     },
     sortErrorsByField(field) {
-      const { category, action } = trackErrorSortedByField(field);
-      Tracking.event(category, action);
+      trackErrorSortedByField(field, this.integratedErrorTrackingEnabled);
       return this.sortByField(field);
     },
     updateErrosStatus({ errorId, status }) {
@@ -262,12 +263,10 @@ export default {
       this.removeIgnoredResolvedErrors(errorId);
     },
     trackPageViews() {
-      const { category, action } = trackErrorListViewsOptions;
-      Tracking.event(category, action);
+      trackErrorListViewsOptions(this.integratedErrorTrackingEnabled);
     },
     trackStatusUpdate(status) {
-      const { category, action } = trackErrorStatusUpdateOptions(status);
-      Tracking.event(category, action);
+      trackErrorStatusUpdateOptions(status, this.integratedErrorTrackingEnabled);
     },
   },
 };
