@@ -116,6 +116,9 @@ that you can download and analyze.
 
 ### Enable IaC Scanning via an automatic merge request
 
+NOTE:
+The **Configure with a merge request** button been temporarily disabled due to a known issue. For details, see [merge request 83757](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83757).
+
 To enable IaC Scanning in a project, you can create a merge request:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

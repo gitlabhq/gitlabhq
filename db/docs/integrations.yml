@@ -16,6 +16,7 @@ classes:
 - Integrations::Bugzilla
 - Integrations::Buildkite
 - Integrations::Campfire
+- Integrations::Clickup
 - Integrations::Confluence
 - Integrations::CustomIssueTracker
 - Integrations::Datadog

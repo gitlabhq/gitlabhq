@@ -107,7 +107,8 @@ In order to obtain a GCP service key for local development, please follow the st
 - Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). At this time, access to any endpoints outside of `text-bison` or `chat-bison` must be made through the group environment.
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account. Your full settings should then be:
+- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account. 
+- Open the Rails console. Update the settings to:
 
 ```ruby
 Gitlab::CurrentSettings.update(tofa_credentials: File.read('/YOUR_FILE.json'))
