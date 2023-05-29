@@ -81,7 +81,8 @@ module Gitlab
           {
             table_name: async_index.table_name,
             index_name: async_index.name,
-            class: self.class.name.to_s
+            class: self.class.name.to_s,
+            connection_name: database_config_name
           }
         end
       end

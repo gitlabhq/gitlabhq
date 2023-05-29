@@ -1,4 +1,5 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import logo from '../../../../views/shared/_logo.svg?raw';
@@ -9,6 +10,7 @@ export default {
     homepage: __('Homepage'),
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   inject: ['rootPath'],

@@ -102,19 +102,11 @@ module Git
     def branch_change_hooks
       enqueue_process_commit_messages
       enqueue_jira_connect_sync_messages
-      enqueue_metrics_dashboard_sync
       track_ci_config_change_event
     end
 
     def branch_remove_hooks
       project.repository.after_remove_branch(expire_cache: false)
-    end
-
-    def enqueue_metrics_dashboard_sync
-      return unless default_branch?
-      return unless modified_file_types.include?(:metrics_dashboard)
-
-      ::Metrics::Dashboard::SyncDashboardsWorker.perform_async(project.id)
     end
 
     def track_ci_config_change_event

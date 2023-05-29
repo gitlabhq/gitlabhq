@@ -247,6 +247,8 @@ export default {
               :label="__('Training mode')"
               label-position="hidden"
               :disabled="!securityTrainingEnabled"
+              data-qa-selector="security_training_toggle"
+              :data-qa-training-provider="provider.name"
               @change="toggleProvider(provider)"
             />
             <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">

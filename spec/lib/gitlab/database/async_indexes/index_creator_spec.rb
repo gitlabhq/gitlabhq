@@ -12,11 +12,12 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator, feature_category: :
 
     let(:index_model) { Gitlab::Database::AsyncIndexes::PostgresAsyncIndex }
 
-    let(:model) { Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME] }
+    let(:connection_name) { Gitlab::Database::PRIMARY_DATABASE_NAME }
+    let(:model) { Gitlab::Database.database_base_models[connection_name] }
     let(:connection) { model.connection }
 
     let!(:lease) { stub_exclusive_lease(lease_key, :uuid, timeout: lease_timeout) }
-    let(:lease_key) { "gitlab/database/asyncddl/actions/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
+    let(:lease_key) { "gitlab/database/asyncddl/actions/#{connection_name}" }
     let(:lease_timeout) { described_class::TIMEOUT_PER_ACTION }
 
     around do |example|
@@ -51,7 +52,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator, feature_category: :
 
         expect(Gitlab::AppLogger)
           .to have_received(:info)
-          .with(a_hash_including(message: expected_message))
+          .with(a_hash_including(message: expected_message, connection_name: connection_name.to_s))
       end
     end
 
@@ -85,11 +86,11 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator, feature_category: :
 
       expect(Gitlab::AppLogger)
         .to have_received(:info)
-        .with(a_hash_including(message: 'Starting async index creation'))
+        .with(a_hash_including(message: 'Starting async index creation', connection_name: connection_name.to_s))
 
       expect(Gitlab::AppLogger)
         .to have_received(:info)
-        .with(a_hash_including(message: 'Finished async index creation'))
+        .with(a_hash_including(message: 'Finished async index creation', connection_name: connection_name.to_s))
     end
   end
 end

@@ -373,7 +373,7 @@ export default {
     </gl-alert>
     <header
       v-if="showToolbar"
-      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!"
+      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-top-base"
       data-testid="design-toolbar-wrapper"
     >
       <div
