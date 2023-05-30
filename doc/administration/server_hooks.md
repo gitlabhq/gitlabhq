@@ -97,8 +97,9 @@ If the server hook code is properly implemented, it should execute when the Git 
 
 ### Gitaly Cluster
 
-If you use [Gitaly Cluster](gitaly/index.md), the scripts must be copied to every Gitaly node that has a replica of the repository. Every Gitaly node
-needs a copy because any node can be made a primary at any time. Server hooks only run on primary nodes.
+If you use [Gitaly Cluster](gitaly/index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
+Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
+To accomplish this, follow the same steps for setting custom repository hooks for the applicable version and repeat for each storage.
 
 The location to copy the scripts to depends on where repositories are stored:
 

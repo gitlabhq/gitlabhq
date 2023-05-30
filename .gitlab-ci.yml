@@ -201,6 +201,10 @@ variables:
   # This is set at the gitlab-org level, but we set it here for forks
   DANGER_DO_NOT_POST_INVALID_DANGERFILE_ERROR: "1"
 
+  # Workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/390313. This can be dropped whenever
+  # https://github.com/ruby/ruby/pull/7663 lands in the Ruby interpreter.
+  NOKOGIRI_LIBXML_MEMORY_MANAGEMENT: default
+
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml
   - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'

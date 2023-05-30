@@ -48660,6 +48660,9 @@ msgstr ""
 msgid "UsageQuota|Month"
 msgstr ""
 
+msgid "UsageQuota|Namespace overview"
+msgstr ""
+
 msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
@@ -48718,6 +48721,9 @@ msgid "UsageQuota|Storage"
 msgstr ""
 
 msgid "UsageQuota|Storage type"
+msgstr ""
+
+msgid "UsageQuota|Storage usage breakdown"
 msgstr ""
 
 msgid "UsageQuota|Storage used"

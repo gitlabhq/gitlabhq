@@ -4877,7 +4877,7 @@
   canonical: |
     <a href="/bar\/)">
   static: |-
-    <a href="/bar%5C/)" rel="nofollow noreferrer noopener" target="_blank"></a>
+    <a href="/bar\/)" rel="nofollow noreferrer noopener" target="_blank"></a>
   wysiwyg: |-
     <p></p>
 06_02_00__inlines__backslash_escapes__011:
@@ -5180,7 +5180,7 @@
   canonical: |
     <p><a href="`">`</p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><a href="%60" rel="nofollow noreferrer noopener" target="_blank">`</a></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><a href="`" rel="nofollow noreferrer noopener" target="_blank">`</a></p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="`">`</a></p>
 06_04_00__inlines__code_spans__018:
@@ -7437,7 +7437,7 @@
   canonical: |
     <p>foo <a href="\*"></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">foo <a href="%5C*" rel="nofollow noreferrer noopener" target="_blank"></a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto">foo <a href="\*" rel="nofollow noreferrer noopener" target="_blank"></a></p>
   wysiwyg: |-
     <p>foo </p>
 06_11_00__inlines__raw_html__021:
@@ -7556,7 +7556,7 @@
     <p><a href="foo\
     bar"></p>
   static: |-
-    <p data-sourcepos="1:1-2:5" dir="auto"><a href="foo%5C%0Abar" rel="nofollow noreferrer noopener" target="_blank"></a></p>
+    <p data-sourcepos="1:1-2:5" dir="auto"><a href="foo\%0Abar" rel="nofollow noreferrer noopener" target="_blank"></a></p>
   wysiwyg: |-
     <p></p>
 06_13_00__inlines__hard_line_breaks__012:

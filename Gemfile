@@ -48,7 +48,7 @@ gem 'bcrypt', '~> 3.1', '>= 3.1.14'
 gem 'doorkeeper', '~> 5.6', '>= 5.6.6'
 gem 'doorkeeper-openid_connect', '~> 1.8', '>= 1.8.7'
 gem 'rexml', '~> 3.2.5'
-gem 'ruby-saml', '~> 1.13.0'
+gem 'ruby-saml', '~> 1.15.0'
 gem 'omniauth', '~> 2.1.0'
 gem 'omniauth-auth0', '~> 3.1'
 gem 'omniauth-azure-activedirectory-v2', '~> 2.0'
@@ -195,7 +195,7 @@ gem 'asciidoctor-plantuml', '~> 0.0.16'
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false
 gem 'rouge', '~> 4.1.0'
 gem 'truncato', '~> 0.7.12'
-gem 'nokogiri', '~> 1.14.3'
+gem 'nokogiri', '~> 1.15'
 
 # Calendar rendering
 gem 'icalendar'
@@ -455,7 +455,7 @@ group :test do
   gem 'capybara', '~> 3.39', '>= 3.39.1'
   gem 'capybara-screenshot', '~> 1.0.26'
   # 4.9.1 drops Ruby 2.7 support. We can upgrade further after we drop Ruby 2.7 support.
-  gem 'selenium-webdriver', '= 4.9.1'
+  gem 'selenium-webdriver', '= 4.9.0'
 
   gem 'graphlyte', '~> 1.0.0'
 
