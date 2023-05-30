@@ -37,6 +37,8 @@ module SearchHelper
   end
 
   def resource_results(term)
+    return [] if term.length < Gitlab::Search::Params::MIN_TERM_LENGTH
+
     [
       groups_autocomplete(term),
       projects_autocomplete(term),
@@ -307,7 +309,7 @@ module SearchHelper
   # Autocomplete results for the current user's groups
   # rubocop: disable CodeReuse/ActiveRecord
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.order_id_desc.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.order_id_desc.search(term, use_minimum_char_limit: false).limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -341,7 +343,7 @@ module SearchHelper
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true)
+    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
       {
         category: "Projects",
@@ -357,9 +359,11 @@ module SearchHelper
   def users_autocomplete(term, limit = 5)
     return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
 
-    SearchService
-      .new(current_user, { scope: 'users', per_page: limit, search: term })
-      .search_objects
+    is_current_user_admin = current_user.can_admin_all_resources?
+
+    scope = is_current_user_admin ? User.all : User.without_forbidden_states
+    scope.search(term, with_private_emails: is_current_user_admin, use_minimum_char_limit: false)
+      .limit(limit)
       .map do |user|
       {
         category: "Users",

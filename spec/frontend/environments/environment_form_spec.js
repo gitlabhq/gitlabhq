@@ -270,4 +270,21 @@ describe('~/environments/components/form.vue', () => {
       ]);
     });
   });
+
+  describe('when environment has an associated agent', () => {
+    const environmentWithAgent = {
+      ...DEFAULT_PROPS.environment,
+      clusterAgent: { id: '1', name: 'agent-1' },
+      clusterAgentId: '1',
+    };
+    beforeEach(() => {
+      wrapper = createWrapperWithApollo({
+        propsData: { environment: environmentWithAgent },
+      });
+    });
+
+    it('updates agent selector field with the name of the associated agent', () => {
+      expect(findAgentSelector().props('toggleText')).toBe('agent-1');
+    });
+  });
 });

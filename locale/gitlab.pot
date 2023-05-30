@@ -21599,6 +21599,9 @@ msgstr ""
 msgid "GroupSettings|Email notifications are disabled"
 msgstr ""
 
+msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
+msgstr ""
+
 msgid "GroupSettings|Export group"
 msgstr ""
 
@@ -21690,6 +21693,9 @@ msgid "GroupSettings|Transfer group"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
+msgstr ""
+
+msgid "GroupSettings|Value Streams Dashboard"
 msgstr ""
 
 msgid "GroupSettings|What are badges?"

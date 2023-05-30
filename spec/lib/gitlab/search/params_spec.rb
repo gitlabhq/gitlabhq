@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Search::Params do
+RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
   subject { described_class.new(params, detect_abuse: detect_abuse) }
 
   let(:search) { 'search' }

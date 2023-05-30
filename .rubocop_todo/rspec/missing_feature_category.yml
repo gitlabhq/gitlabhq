@@ -5310,7 +5310,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/rubocop/cop/graphql/old_types_spec.rb'
     - 'spec/rubocop/cop/graphql/resolver_type_spec.rb'
     - 'spec/rubocop/cop/group_public_or_visible_to_user_spec.rb'
-    - 'spec/rubocop/cop/ignored_columns_spec.rb'
     - 'spec/rubocop/cop/include_sidekiq_worker_spec.rb'
     - 'spec/rubocop/cop/inject_enterprise_edition_module_spec.rb'
     - 'spec/rubocop/cop/migration/add_columns_to_wide_tables_spec.rb'

@@ -112,7 +112,7 @@ export default {
       const selectedAgentById = this.agentsList.find(
         (agent) => agent.value === this.selectedAgentId,
       );
-      return selectedAgentById?.text;
+      return selectedAgentById?.text || this.environment.clusterAgent?.name;
     },
     filteredAgentsList() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();

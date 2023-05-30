@@ -18,7 +18,12 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
 
 const newExternalUrl = 'https://google.ca';
-const environment = { id: '1', name: 'foo', externalUrl: 'https://foo.example.com' };
+const environment = {
+  id: '1',
+  name: 'foo',
+  externalUrl: 'https://foo.example.com',
+  clusterAgent: null,
+};
 const resolvedEnvironment = { project: { id: '1', environment } };
 const environmentUpdate = {
   environment: { id: '1', path: 'path/to/environment', clusterAgentId: null },
@@ -34,40 +39,43 @@ const provide = {
   updateEnvironmentPath: '/projects/environments/1',
   protectedEnvironmentSettingsPath: '/projects/1/settings/ci_cd',
   projectPath: '/path/to/project',
-  environmentName: environment.name,
 };
 
 describe('~/environments/components/edit.vue', () => {
   let wrapper;
   let mock;
 
-  const createMockApolloProvider = (mutationResult, environmentSettingsToGraphql) => {
+  const createMockApolloProvider = (mutationResult) => {
     Vue.use(VueApollo);
 
-    const mocks = [[getEnvironment, jest.fn().mockResolvedValue({ data: resolvedEnvironment })]];
-
-    if (environmentSettingsToGraphql) {
-      mocks.push([
+    const mocks = [
+      [getEnvironment, jest.fn().mockResolvedValue({ data: resolvedEnvironment })],
+      [
         updateEnvironment,
         jest.fn().mockResolvedValue({ data: { environmentUpdate: mutationResult } }),
-      ]);
-    }
+      ],
+    ];
 
     return createMockApollo(mocks);
   };
 
-  const createWrapper = async ({
-    mutationResult = environmentUpdate,
-    environmentSettingsToGraphql = false,
-  } = {}) => {
+  const createWrapper = () => {
     wrapper = mountExtended(EditEnvironment, {
+      propsData: { environment: { id: '1', name: 'foo', external_url: 'https://foo.example.com' } },
+      provide,
+    });
+  };
+
+  const createWrapperWithApollo = async ({ mutationResult = environmentUpdate } = {}) => {
+    wrapper = mountExtended(EditEnvironment, {
+      propsData: { environment: {} },
       provide: {
         ...provide,
         glFeatures: {
-          environmentSettingsToGraphql,
+          environmentSettingsToGraphql: true,
         },
       },
-      apolloProvider: createMockApolloProvider(mutationResult, environmentSettingsToGraphql),
+      apolloProvider: createMockApolloProvider(mutationResult),
     });
 
     await waitForPromises();
@@ -109,9 +117,18 @@ describe('~/environments/components/edit.vue', () => {
   });
 
   describe('when environmentSettingsToGraphql feature is enabled', () => {
+    describe('when mounted', () => {
+      beforeEach(() => {
+        createWrapperWithApollo();
+      });
+      it('renders loading icon when environment query is loading', () => {
+        expect(showsLoading()).toBe(true);
+      });
+    });
+
     describe('when mutation successful', () => {
       beforeEach(async () => {
-        await createWrapper({ environmentSettingsToGraphql: true });
+        await createWrapperWithApollo();
       });
 
       it('shows loader after form is submitted', async () => {
@@ -132,9 +149,8 @@ describe('~/environments/components/edit.vue', () => {
 
     describe('when mutation failed', () => {
       beforeEach(async () => {
-        await createWrapper({
+        await createWrapperWithApollo({
           mutationResult: environmentUpdateError,
-          environmentSettingsToGraphql: true,
         });
       });
 
@@ -149,9 +165,9 @@ describe('~/environments/components/edit.vue', () => {
   });
 
   describe('when environmentSettingsToGraphql feature is disabled', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mock = new MockAdapter(axios);
-      await createWrapper();
+      createWrapper();
     });
 
     afterEach(() => {
@@ -200,16 +216,6 @@ describe('~/environments/components/edit.vue', () => {
 
       expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
       expect(showsLoading()).toBe(false);
-    });
-  });
-
-  describe('when environment query is loading', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('renders loading icon', () => {
-      expect(showsLoading()).toBe(true);
     });
   });
 });

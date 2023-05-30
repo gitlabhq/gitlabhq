@@ -14,13 +14,19 @@ export default {
     EnvironmentForm,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectEnvironmentsPath', 'updateEnvironmentPath', 'projectPath', 'environmentName'],
+  inject: ['projectEnvironmentsPath', 'updateEnvironmentPath', 'projectPath'],
+  props: {
+    environment: {
+      required: true,
+      type: Object,
+    },
+  },
   apollo: {
     environment: {
       query: getEnvironment,
       variables() {
         return {
-          environmentName: this.environmentName,
+          environmentName: this.environment.name,
           projectFullPath: this.projectPath,
         };
       },
@@ -31,16 +37,38 @@ export default {
   },
   data() {
     return {
+      isQueryLoading: false,
       loading: false,
       formEnvironment: null,
     };
   },
-  computed: {
-    isQueryLoading() {
-      return this.$apollo.queries.environment.loading;
-    },
+  mounted() {
+    if (this.glFeatures?.environmentSettingsToGraphql) {
+      this.fetchWithGraphql();
+    } else {
+      this.formEnvironment = {
+        id: this.environment.id,
+        name: this.environment.name,
+        externalUrl: this.environment.external_url,
+      };
+    }
   },
   methods: {
+    async fetchWithGraphql() {
+      this.$apollo.addSmartQuery('environmentData', {
+        variables() {
+          return { environmentName: this.environment.name, projectFullPath: this.projectPath };
+        },
+        query: getEnvironment,
+        update(data) {
+          const result = data?.project?.environment || {};
+          this.formEnvironment = { ...result, clusterAgentId: result?.clusterAgent?.id };
+        },
+        watchLoading: (isLoading) => {
+          this.isQueryLoading = isLoading;
+        },
+      });
+    },
     onChange(environment) {
       this.formEnvironment = environment;
     },

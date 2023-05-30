@@ -5,4 +5,4 @@
                               update_environment_path: project_environment_path(@project, @environment),
                               protected_environment_settings_path: (project_settings_ci_cd_path(@project, anchor: 'js-protected-environments-settings') if @project.licensed_feature_available?(:protected_environments)),
                               project_path: @project.full_path,
-                              environment_name: @environment.name } }
+                              environment: environment_data(@environment) } }

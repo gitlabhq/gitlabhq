@@ -1355,12 +1355,12 @@
 ##########
 .notify:rules:create-issues-for-failing-tests:
   rules:
-    - <<: *if-not-canonical-namespace
+    - if: '$CREATE_ISSUES_FOR_FAILING_TESTS != "true"'
       when: never
     # Don't report child pipeline failures
     - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
       when: never
-    - if: '$CREATE_ISSUES_FOR_FAILING_TESTS == "true"'
+    - <<: *if-dot-com-gitlab-org-default-branch
       when: on_failure
       allow_failure: true
 

@@ -5,6 +5,10 @@ query getEnvironment($projectFullPath: ID!, $environmentName: String) {
       id
       name
       externalUrl
+      clusterAgent {
+        id
+        name
+      }
     }
   }
 }

@@ -1067,6 +1067,18 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       expect(described_class.search('PARENT-PATH/NEW-PATH', include_parents: true)).to eq([second_group])
     end
 
+    it 'defaults use_minimum_char_limit to true' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+
+      described_class.search('my namespace')
+    end
+
+    it 'passes use_minimum_char_limit if it is set' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+
+      described_class.search('my namespace', use_minimum_char_limit: false)
+    end
+
     context 'with project namespaces' do
       let_it_be(:project) { create(:project, namespace: parent_group, path: 'some-new-path') }
       let_it_be(:project_namespace) { project.project_namespace }

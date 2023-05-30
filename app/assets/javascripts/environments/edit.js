@@ -15,7 +15,7 @@ export default (el) => {
     updateEnvironmentPath,
     protectedEnvironmentSettingsPath,
     projectPath,
-    environmentName,
+    environment,
   } = el.dataset;
 
   return new Vue({
@@ -26,10 +26,13 @@ export default (el) => {
       updateEnvironmentPath,
       protectedEnvironmentSettingsPath,
       projectPath,
-      environmentName,
     },
     render(h) {
-      return h(EditEnvironment);
+      return h(EditEnvironment, {
+        props: {
+          environment: JSON.parse(environment),
+        },
+      });
     },
   });
 };

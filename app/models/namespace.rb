@@ -230,11 +230,15 @@ class Namespace < ApplicationRecord
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
-    def search(query, include_parents: false)
+    def search(query, include_parents: false, use_minimum_char_limit: true)
       if include_parents
-        without_project_namespaces.where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
+        without_project_namespaces
+          .where(id: Route.for_routable_type(Namespace.name)
+            .fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]],
+              use_minimum_char_limit: use_minimum_char_limit)
+            .select(:source_id))
       else
-        without_project_namespaces.fuzzy_search(query, [:path, :name])
+        without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit)
       end
     end
 

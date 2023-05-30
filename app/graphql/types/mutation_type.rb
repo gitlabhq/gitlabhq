@@ -142,11 +142,6 @@ module Types
     mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::Create
     mount_mutation Mutations::Ci::PipelineSchedule::Update
-    mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
-      reason: :renamed,
-      replacement: 'ProjectCiCdSettingsUpdate',
-      milestone: '15.0'
-    }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Job::ArtifactsDestroy
     mount_mutation Mutations::Ci::Job::Play

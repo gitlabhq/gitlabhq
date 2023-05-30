@@ -2997,6 +2997,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(described_class.search(project.path.upcase)).to eq([project])
     end
 
+    it 'defaults use_minimum_char_limit to true' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+
+      described_class.search('kitten')
+    end
+
+    it 'passes use_minimum_char_limit if it is set' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+
+      described_class.search('kitten', use_minimum_char_limit: false)
+    end
+
     context 'when include_namespace is true' do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }

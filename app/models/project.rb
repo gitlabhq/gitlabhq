@@ -900,11 +900,12 @@ class Project < ApplicationRecord
     # search.
     #
     # query - The search query as a String.
-    def search(query, include_namespace: false)
+    def search(query, include_namespace: false, use_minimum_char_limit: true)
       if include_namespace
-        joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description])
+        joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description],
+          use_minimum_char_limit: use_minimum_char_limit)
       else
-        fuzzy_search(query, [:path, :name, :description])
+        fuzzy_search(query, [:path, :name, :description], use_minimum_char_limit: use_minimum_char_limit)
       end
     end
 

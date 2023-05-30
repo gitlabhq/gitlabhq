@@ -64,13 +64,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         let_it_be(:another_user) { create(:user, name: 'Jane Doe') }
         let(:term) { 'jane' }
 
-        it 'makes a call to SearchService' do
-          params = { search: term, per_page: 5, scope: 'users' }
-          expect(SearchService).to receive(:new).with(current_user, params).and_call_original
-
-          search_autocomplete_opts(term)
-        end
-
         it 'returns users matching the term' do
           result = search_autocomplete_opts(term)
           expect(result.size).to eq(1)
@@ -85,6 +78,68 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
           it 'returns an empty array' do
             expect(search_autocomplete_opts(term)).to eq([])
+          end
+        end
+
+        describe 'permissions' do
+          let(:term) { 'jane@doe' }
+          let(:private_email_user) { create(:user, email: term) }
+          let(:public_email_user) { create(:user, :public_email, email: term) }
+          let(:banned_user) { create(:user, :banned, email: term) }
+          let(:user_with_other_email) { create(:user, email: 'something@else') }
+          let(:secondary_email) { create(:email, :confirmed, user: user_with_other_email, email: term) }
+          let(:ids) { search_autocomplete_opts(term).pluck(:id) }
+
+          context 'when current_user is an admin' do
+            before do
+              allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+            end
+
+            it 'includes users with matching public emails' do
+              public_email_user
+              expect(ids).to include(public_email_user.id)
+            end
+
+            it 'includes users in forbidden states' do
+              banned_user
+              expect(ids).to include(banned_user.id)
+            end
+
+            it 'includes users without matching public emails but with matching private emails' do
+              private_email_user
+              expect(ids).to include(private_email_user.id)
+            end
+
+            it 'includes users matching on secondary email' do
+              secondary_email
+              expect(ids).to include(secondary_email.user_id)
+            end
+          end
+
+          context 'when current_user is not an admin' do
+            before do
+              allow(current_user).to receive(:can_admin_all_resources?).and_return(false)
+            end
+
+            it 'includes users with matching public emails' do
+              public_email_user
+              expect(ids).to include(public_email_user.id)
+            end
+
+            it 'does not include users in forbidden states' do
+              banned_user
+              expect(ids).not_to include(banned_user.id)
+            end
+
+            it 'does not include users without matching public emails but with matching private emails' do
+              private_email_user
+              expect(ids).not_to include(private_email_user.id)
+            end
+
+            it 'does not include users matching on secondary email' do
+              secondary_email
+              expect(ids).not_to include(secondary_email.user_id)
+            end
           end
         end
 
@@ -268,7 +323,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             expect(results.first).to include({
               category: 'In this project',
               id: issue.id,
-              label: 'test title (#1)',
+              label: "test title (##{issue.iid})",
               url: ::Gitlab::Routing.url_helpers.project_issue_path(issue.project, issue),
               avatar_url: '' # project has no avatar
             })
@@ -306,8 +361,47 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
   end
 
+  describe 'resource_results' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user, name: 'User') }
+    let_it_be(:group) { create(:group, name: 'Group') }
+    let_it_be(:project) { create(:project, name: 'Project') }
+    let!(:issue) { create(:issue, project: project) }
+    let(:issue_iid) { "\##{issue.iid}" }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+      group.add_owner(user)
+      project.add_owner(user)
+      @project = project
+    end
+
+    where(:term, :size, :category) do
+      'g'             | 0 | 'Groups'
+      'gr'            | 1 | 'Groups'
+      'gro'           | 1 | 'Groups'
+      'p'             | 0 | 'Projects'
+      'pr'            | 1 | 'Projects'
+      'pro'           | 1 | 'Projects'
+      'u'             | 0 | 'Users'
+      'us'            | 1 | 'Users'
+      'use'           | 1 | 'Users'
+      ref(:issue_iid) | 1 | 'In this project'
+    end
+
+    with_them do
+      it 'returns results only if the term is more than or equal to Gitlab::Search::Params::MIN_TERM_LENGTH' do
+        results = resource_results(term)
+
+        expect(results.size).to eq(size)
+        expect(results.first[:category]).to eq(category) if size == 1
+      end
+    end
+  end
+
   describe 'projects_autocomplete' do
-    let_it_be(:user) { create(:user, name: "madelein") }
+    let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project, name: 'test 1') }
     let_it_be(:project_2) { create(:project, name: 'test 2') }
     let(:search_term) { 'test' }
