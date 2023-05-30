@@ -4,6 +4,7 @@ module API
   module Helpers
     module PackagesHelpers
       extend ::Gitlab::Utils::Override
+      include ::Gitlab::Utils::StrongMemoize
 
       MAX_PACKAGE_FILE_SIZE = 50.megabytes.freeze
       ALLOWED_REQUIRED_PERMISSIONS = %i[read_package read_group].freeze
@@ -71,19 +72,18 @@ module API
 
       # This function is similar to the `find_project!` function, but it considers the `read_package` ability.
       def user_project_with_read_package
-        strong_memoize(:user_project_with_read_package) do
-          project = find_project(params[:id])
+        project = find_project(params[:id])
 
-          next forbidden! unless authorized_project_scope?(project)
+        return forbidden! unless authorized_project_scope?(project)
 
-          next project if can?(current_user, :read_package, project&.packages_policy_subject)
-          # guest users can have :read_project but not :read_package
-          next forbidden! if can?(current_user, :read_project, project)
-          next unauthorized! if authenticate_non_public?
+        return project if can?(current_user, :read_package, project&.packages_policy_subject)
+        # guest users can have :read_project but not :read_package
+        return forbidden! if can?(current_user, :read_project, project)
+        return unauthorized! if authenticate_non_public?
 
-          not_found!('Project')
-        end
+        not_found!('Project')
       end
+      strong_memoize_attr :user_project_with_read_package
 
       def track_package_event(action, scope, **args)
         service = ::Packages::CreateEventService.new(nil, current_user, event_name: action, scope: scope)

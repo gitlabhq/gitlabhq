@@ -93,6 +93,7 @@ Parameters:
 | `app_store_issuer_id` | string | true | The Apple App Store Connect Issuer ID. |
 | `app_store_key_id` | string | true | The Apple App Store Connect Key ID. |
 | `app_store_private_key` | string | true | The Apple App Store Connect Private Key. |
+| `app_store_protected_refs` | boolean | false | Set variables only on protected branches and tags. Defaults to `true` (enabled). |
 
 ### Disable Apple App Store integration
 

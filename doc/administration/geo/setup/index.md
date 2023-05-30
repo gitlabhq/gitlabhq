@@ -18,7 +18,8 @@ type: howto
 
 - Ensure the **primary** site has a [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) subscription to unlock Geo. You only need one license for all the sites.
 - Confirm the [requirements for running Geo](../index.md#requirements-for-running-geo) are met by all sites. For example, sites must use the same GitLab version, and sites must be able to communicate with each other over certain ports.
-- Confirm the **primary** and **secondary** site storage configurations match. If the primary Geo site uses object storage, the secondary Geo site must use it too. See [Geo with Object storage] (../object_storage.md) for more details.
+- Confirm the **primary** and **secondary** site storage configurations match. If the primary Geo site uses object storage, the secondary Geo site must use it too. See [Geo with Object storage] (../replication/object_storage.md) for more details.
+- Ensure clocks are synchronized between the **primary** site and the **secondary** site. Synchronized clocks are required for Geo to function correctly. For example, if the clock drift between the **primary** and **secondary** sites exceeds 1 minute, replication will fail.
 
 ## Using Omnibus GitLab
 
@@ -34,6 +35,7 @@ If both Geo sites are based on the [1K reference architecture](../../reference_a
 1. Optional: [Configure Object storage](../../object_storage.md)
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites. See [notes on LDAP](../index.md#ldap).
 1. Optional: [Configure Geo secondary proxying](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites. This step is recommended to accelerate most read requests while transparently proxying writes to the primary Geo site.
+1. Optional: [Configure Container Registry for the secondary site](../replication/container_registry.md).
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.
 
 ### Multi-node Geo sites

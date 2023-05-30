@@ -46,16 +46,15 @@ module Packages
       end
 
       def gomod
-        strong_memoize(:gomod) do
-          if strong_memoized?(:blobs)
-            blob_at(@mod.path + '/go.mod')
-          elsif @mod.path.empty?
-            @mod.project.repository.blob_at(@commit.sha, 'go.mod')&.data
-          else
-            @mod.project.repository.blob_at(@commit.sha, @mod.path + '/go.mod')&.data
-          end
+        if strong_memoized?(:blobs)
+          blob_at(@mod.path + '/go.mod')
+        elsif @mod.path.empty?
+          @mod.project.repository.blob_at(@commit.sha, 'go.mod')&.data
+        else
+          @mod.project.repository.blob_at(@commit.sha, @mod.path + '/go.mod')&.data
         end
       end
+      strong_memoize_attr :gomod
 
       def archive
         suffix_len = @mod.path == '' ? 0 : @mod.path.length + 1
@@ -69,18 +68,16 @@ module Packages
       end
 
       def files
-        strong_memoize(:files) do
-          ls_tree.filter { |e| !excluded.any? { |n| e.start_with? n } }
-        end
+        ls_tree.filter { |e| !excluded.any? { |n| e.start_with? n } }
       end
+      strong_memoize_attr :files
 
       def excluded
-        strong_memoize(:excluded) do
-          ls_tree
+        ls_tree
             .filter { |f| f.end_with?('/go.mod') && f != @mod.path + '/go.mod' }
             .map    { |f| f[0..-7] }
-        end
       end
+      strong_memoize_attr :excluded
 
       def valid?
         # assume the module version is valid if a corresponding Package exists
@@ -100,21 +97,20 @@ module Packages
       end
 
       def blobs
-        strong_memoize(:blobs) { @mod.project.repository.batch_blobs(files.map { |x| [@commit.sha, x] }) }
+        @mod.project.repository.batch_blobs(files.map { |x| [@commit.sha, x] })
       end
+      strong_memoize_attr :blobs
 
       def ls_tree
-        strong_memoize(:ls_tree) do
-          path =
-            if @mod.path.empty?
-              '.'
-            else
-              @mod.path
-            end
+        path = if @mod.path.empty?
+                 '.'
+               else
+                 @mod.path
+               end
 
-          @mod.project.repository.gitaly_repository_client.search_files_by_name(@commit.sha, path)
-        end
+        @mod.project.repository.gitaly_repository_client.search_files_by_name(@commit.sha, path)
       end
+      strong_memoize_attr :ls_tree
     end
   end
 end

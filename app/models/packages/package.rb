@@ -329,10 +329,9 @@ class Packages::Package < ApplicationRecord
   end
 
   def package_settings
-    strong_memoize(:package_settings) do
-      project.namespace.package_settings
-    end
+    project.namespace.package_settings
   end
+  strong_memoize_attr :package_settings
 
   def sync_maven_metadata(user)
     return unless maven? && version? && user

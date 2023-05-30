@@ -41,16 +41,15 @@ module API
         end
 
         def find_authorized_group!
-          strong_memoize(:authorized_group) do
-            group = find_group(params[:id])
+          group = find_group(params[:id])
 
-            unless group && can?(current_user, :read_group, group)
-              next unauthorized_or! { not_found! }
-            end
-
-            group
+          unless group && can?(current_user, :read_group, group)
+            return unauthorized_or! { not_found! }
           end
+
+          group
         end
+        strong_memoize_attr :find_authorized_group!
 
         def authorize!(action, subject = :global, reason = nil)
           return if can?(current_user, action, subject)

@@ -395,7 +395,7 @@ To enable this setting:
 > - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
 Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
-at the top-level group level. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
 To view the merge request approval settings for a group:
@@ -406,7 +406,9 @@ To view the merge request approval settings for a group:
 1. Select the settings you want.
 1. Select **Save changes**.
 
-Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+Approval settings should not be confused with [approval rules](../project/merge_requests/approvals/rules.md). Support
+for the ability to set merge request approval rules for groups is tracked in
+[epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## Enable Code Suggestions **(FREE SAAS)**
 

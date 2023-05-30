@@ -868,7 +868,7 @@ This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, 
 
 ### Semgrep slowness, unexpected results, or other errors
 
-If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/gitlab-sast/).
+If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/semgrep-ci/#troubleshooting-gitlab-sast).
 
 ### SAST job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
 

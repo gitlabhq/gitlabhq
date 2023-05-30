@@ -14,26 +14,25 @@ module Packages
       end
 
       def data
-        strong_memoize(:data) do
-          @search.results.group_by(&:name).map do |package_name, packages|
-            latest_version = latest_version(packages)
-            latest_package = packages.find { |pkg| pkg.version == latest_version }
+        @search.results.group_by(&:name).map do |package_name, packages|
+          latest_version = latest_version(packages)
+          latest_package = packages.find { |pkg| pkg.version == latest_version }
 
-            {
-              type: 'Package',
-              authors: '',
-              name: package_name,
-              version: latest_version,
-              versions: build_package_versions(packages),
-              summary: '',
-              total_downloads: 0,
-              verified: true,
-              tags: tags_for(latest_package),
-              metadatum: metadatum_for(latest_package)
-            }
-          end
+          {
+            type: 'Package',
+            authors: '',
+            name: package_name,
+            version: latest_version,
+            versions: build_package_versions(packages),
+            summary: '',
+            total_downloads: 0,
+            verified: true,
+            tags: tags_for(latest_package),
+            metadatum: metadatum_for(latest_package)
+          }
         end
       end
+      strong_memoize_attr :data
 
       private
 
