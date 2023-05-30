@@ -2161,6 +2161,14 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  def dismissed_callout_before?(feature_name, dismissed_before)
+    callout = callouts_by_feature_name[feature_name]
+
+    return false unless callout
+
+    callout.dismissed_before?(dismissed_before)
+  end
+
   def dismissed_callout_for_group?(feature_name:, group:, ignore_dismissal_earlier_than: nil)
     source_feature_name = "#{feature_name}_#{group.id}"
     callout = group_callouts_by_feature_name[source_feature_name]

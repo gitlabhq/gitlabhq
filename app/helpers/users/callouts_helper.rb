@@ -107,6 +107,12 @@ module Users
     def dismissed_callout?(object, query)
       current_user.dismissed_callout_for_project?(project: object, **query)
     end
+
+    def user_dismissed_before?(feature_name, dismissed_before)
+      return false unless current_user
+
+      current_user.dismissed_callout_before?(feature_name, dismissed_before)
+    end
   end
 end
 

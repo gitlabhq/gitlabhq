@@ -8,9 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
 
-WARNING:
-This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and its API/Architecture might change in the future.
-
 [Group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) is the
 evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,
 including projects, from one GitLab instance to another.
