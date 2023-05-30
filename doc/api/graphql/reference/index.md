@@ -55,7 +55,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
-| <a id="queryaimessagesroles"></a>`roles` | [`[AiCachedMessageRole!]`](#aicachedmessagerole) | Array of request IDs to fetch. |
+| <a id="queryaimessagesroles"></a>`roles` | [`[AiCachedMessageRole!]`](#aicachedmessagerole) | Array of roles to fetch. |
 
 ### `Query.boardList`
 
@@ -11783,7 +11783,7 @@ Information about a connected Agent.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicachedmessagetypecontent"></a>`content` | [`String`](#string) | Content of the message. Can be null for user requests or failed responses. |
-| <a id="aicachedmessagetypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
+| <a id="aicachedmessagetypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI (assistant) response. |
 | <a id="aicachedmessagetypeid"></a>`id` | [`ID`](#id) | UUID of the message. |
 | <a id="aicachedmessagetyperequestid"></a>`requestId` | [`ID`](#id) | UUID of the original request message. |
 | <a id="aicachedmessagetyperole"></a>`role` | [`AiCachedMessageRole!`](#aicachedmessagerole) | Message role. |
@@ -23973,7 +23973,7 @@ Roles to filter in chat message.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="aicachedmessageroleassistant"></a>`ASSISTANT` | Filter only AI responses. |
+| <a id="aicachedmessageroleassistant"></a>`ASSISTANT` | Filter only assistant messages. |
 | <a id="aicachedmessageroleuser"></a>`USER` | Filter only user messages. |
 
 ### `AlertManagementAlertSort`

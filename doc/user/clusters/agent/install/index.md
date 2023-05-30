@@ -144,7 +144,7 @@ When [KAS](../../../../administration/clusters/kas.md) is behind a self-signed c
 you can set the value of `config.caCert` to the certificate. For example:
 
 ```shell
-helm update --install gitlab-agent gitlab/gitlab-agent \
+helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   --set-file config.caCert=my-custom-ca.pem
 ```
 

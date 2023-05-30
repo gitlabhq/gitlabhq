@@ -11,7 +11,7 @@ export const initHeaderSearchApp = (search = '') => {
   const el = document.getElementById('js-header-search');
   const headerEl = document.querySelector('.header-content');
 
-  if (!el && !headerEl) {
+  if (!el || !headerEl) {
     return false;
   }
 

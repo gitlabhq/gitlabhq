@@ -20,7 +20,7 @@ import {
   NEW_ACTIONS_POPOVER_KEY,
 } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { getCookie, parseBoolean, setCookie } from '~/lib/utils/common_utils';
+import { getCookie, parseBoolean, setCookie, isLoggedIn } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
@@ -137,6 +137,7 @@ export default {
   data() {
     return {
       isReportAbuseDrawerOpen: false,
+      isUserSignedIn: isLoggedIn(),
     };
   },
   apollo: {
@@ -204,7 +205,11 @@ export default {
     },
     hasDesktopDropdown() {
       return (
-        this.canCreateIssue || this.canPromoteToEpic || !this.isIssueAuthor || this.canReportSpam
+        this.canCreateIssue ||
+        this.canPromoteToEpic ||
+        !this.isIssueAuthor ||
+        this.canReportSpam ||
+        this.issuableReference
       );
     },
     hasMobileDropdown() {
@@ -219,7 +224,10 @@ export default {
       return this.glFeatures.movedMrSidebar;
     },
     showLockIssueOption() {
-      return this.isMrSidebarMoved && this.issueType === TYPE_ISSUE;
+      return this.isMrSidebarMoved && this.issueType === TYPE_ISSUE && this.isUserSignedIn;
+    },
+    showMovedSidebarOptions() {
+      return this.isMrSidebarMoved && this.isUserSignedIn;
     },
   },
   created() {
@@ -336,7 +344,7 @@ export default {
       data-testid="mobile-dropdown"
       :loading="isToggleStateButtonLoading"
     >
-      <template v-if="isMrSidebarMoved">
+      <template v-if="showMovedSidebarOptions">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"
@@ -375,7 +383,7 @@ export default {
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
         >
         <gl-dropdown-item
-          v-if="issuableEmailAddress"
+          v-if="issuableEmailAddress && showMovedSidebarOptions"
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
           @click="copyEmailAddress"
@@ -401,7 +409,7 @@ export default {
         </gl-dropdown-item>
       </template>
       <gl-dropdown-item
-        v-if="!isIssueAuthor"
+        v-if="!isIssueAuthor && isUserSignedIn"
         data-testid="report-abuse-item"
         @click="toggleReportAbuseDrawer(true)"
       >
@@ -449,7 +457,7 @@ export default {
       right
       @shown="dismissPopover"
     >
-      <template v-if="isMrSidebarMoved">
+      <template v-if="showMovedSidebarOptions">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"
@@ -460,7 +468,7 @@ export default {
         <gl-dropdown-divider />
       </template>
 
-      <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
+      <gl-dropdown-item v-if="canCreateIssue && isUserSignedIn" :href="newIssuePath">
         {{ newIssueTypeText }}
       </gl-dropdown-item>
       <gl-dropdown-item
@@ -482,7 +490,7 @@ export default {
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
         >
         <gl-dropdown-item
-          v-if="issuableEmailAddress"
+          v-if="issuableEmailAddress && showMovedSidebarOptions"
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
           @click="copyEmailAddress"
@@ -509,7 +517,7 @@ export default {
         </gl-dropdown-item>
       </template>
       <gl-dropdown-item
-        v-if="!isIssueAuthor"
+        v-if="!isIssueAuthor && isUserSignedIn"
         data-testid="report-abuse-item"
         @click="toggleReportAbuseDrawer(true)"
       >

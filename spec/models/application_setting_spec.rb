@@ -320,17 +320,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    context 'import_sources validation' do
-      before do
-        subject.import_sources = %w[github bitbucket gitlab git gitlab_project gitea manifest phabricator]
-      end
-
-      it 'removes phabricator as an import source' do
-        subject.validate
-        expect(subject.import_sources).to eq(%w[github bitbucket git gitlab_project gitea manifest])
-      end
-    end
-
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)

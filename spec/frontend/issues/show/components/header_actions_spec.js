@@ -134,6 +134,7 @@ describe('HeaderActions component', () => {
     .mockResolvedValue(promoteToEpicMutationErrorResponse);
 
   const mountComponent = ({
+    isLoggedIn = true,
     props = {},
     issueState = STATUS_OPEN,
     blockedByIssues = [],
@@ -150,6 +151,10 @@ describe('HeaderActions component', () => {
       [updateIssueMutation, updateIssueMutationResponseHandler],
       [promoteToEpicMutation, promoteToEpicHandler],
     ];
+
+    if (isLoggedIn) {
+      window.gon.current_user_id = 1;
+    }
 
     return shallowMount(HeaderActions, {
       apolloProvider: createMockApollo(handlers),
@@ -647,5 +652,41 @@ describe('HeaderActions component', () => {
         expect(toast).toHaveBeenCalledWith('Email address copied');
       });
     });
+  });
+
+  describe('when logged out', () => {
+    describe.each`
+      movedMrSidebarEnabled | issueType        | headerActionsVisible
+      ${true}               | ${TYPE_ISSUE}    | ${true}
+      ${true}               | ${TYPE_INCIDENT} | ${true}
+      ${false}              | ${TYPE_ISSUE}    | ${false}
+      ${false}              | ${TYPE_INCIDENT} | ${false}
+    `(
+      `with movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
+      ({ movedMrSidebarEnabled, issueType, headerActionsVisible }) => {
+        beforeEach(async () => {
+          wrapper = mountComponent({
+            props: {
+              issueType,
+              canCreateIssue: false,
+              canPromoteToEpic: false,
+              canReportSpam: false,
+            },
+            movedMrSidebarEnabled,
+            isLoggedIn: false,
+          });
+
+          await waitForPromises();
+        });
+
+        it(`${headerActionsVisible ? 'shows' : 'hides'} headers actions`, () => {
+          expect(findDesktopDropdown().exists()).toBe(headerActionsVisible);
+          expect(findCopyRefenceDropdownItem().exists()).toBe(headerActionsVisible);
+          expect(findNotificationWidget().exists()).toBe(false);
+          expect(findReportAbuseSelectorItem().exists()).toBe(false);
+          expect(findLockIssueWidget().exists()).toBe(false);
+        });
+      },
+    );
   });
 });

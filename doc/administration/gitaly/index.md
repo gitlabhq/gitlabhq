@@ -481,8 +481,7 @@ You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) us
 
 #### Strong consistency
 
-> - In GitLab 13.6 to 13.12, strong consistency must be manually configured. Refer to [the 13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
-> - In GitLab 14.0, strong consistency is the primary replication method.
+> In GitLab 14.0, strong consistency is the primary replication method.
 
 Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
 replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.

@@ -29822,6 +29822,8 @@ CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identi
 
 CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON audit_events_external_audit_event_destinations USING btree (verification_token);
 
+CREATE INDEX index_audit_events_on_entity_id_and_entity_type_and_created_at ON ONLY audit_events USING btree (entity_id, entity_type, created_at, id);
+
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 
 CREATE INDEX index_authentication_events_on_user_and_ip_address_and_result ON authentication_events USING btree (user_id, ip_address, result);
