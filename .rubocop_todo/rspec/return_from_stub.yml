@@ -79,7 +79,6 @@ RSpec/ReturnFromStub:
     - 'spec/bin/feature_flag_spec.rb'
     - 'spec/config/settings_spec.rb'
     - 'spec/controllers/admin/application_settings_controller_spec.rb'
-    - 'spec/controllers/admin/integrations_controller_spec.rb'
     - 'spec/controllers/concerns/page_limiter_spec.rb'
     - 'spec/controllers/concerns/send_file_upload_spec.rb'
     - 'spec/controllers/concerns/spammable_actions/akismet_mark_as_spam_action_spec.rb'

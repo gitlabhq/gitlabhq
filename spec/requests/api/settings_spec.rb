@@ -19,6 +19,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
+      expect(json_response['diagramsnet_enabled']).to be_truthy
+      expect(json_response['diagramsnet_url']).to eq('https://embed.diagrams.net')
       expect(json_response['default_ci_config_path']).to be_nil
       expect(json_response['sourcegraph_enabled']).to be_falsey
       expect(json_response['sourcegraph_url']).to be_nil
@@ -125,6 +127,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             repository_storages_weighted: { 'custom' => 100 },
             plantuml_enabled: true,
             plantuml_url: 'http://plantuml.example.com',
+            diagramsnet_enabled: false,
+            diagramsnet_url: nil,
             sourcegraph_enabled: true,
             sourcegraph_url: 'https://sourcegraph.com',
             sourcegraph_public_only: false,
@@ -203,6 +207,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['repository_storages_weighted']).to eq({ 'custom' => 100 })
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
+        expect(json_response['diagramsnet_enabled']).to be_falsey
+        expect(json_response['diagramsnet_url']).to be_nil
         expect(json_response['sourcegraph_enabled']).to be_truthy
         expect(json_response['sourcegraph_url']).to eq('https://sourcegraph.com')
         expect(json_response['sourcegraph_public_only']).to eq(false)
@@ -550,6 +556,15 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('plantuml_url is missing')
+      end
+    end
+
+    context "missing diagramsnet_url value when diagramsnet_enabled is true" do
+      it "returns a blank parameter error message" do
+        put api("/application/settings", admin), params: { diagramsnet_enabled: true }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('diagramsnet_url is missing')
       end
     end
 

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::IntegrationsController do
-  let(:admin) { create(:admin) }
+RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
+  let_it_be(:admin) { create(:admin) }
 
   before do
     stub_feature_flags(remove_monitor_metrics: false)
@@ -19,14 +19,16 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#edit' do
-    Integration.available_integration_names.each do |integration_name|
-      context integration_name.to_s do
-        it 'successfully displays the template' do
-          get :edit, params: { id: integration_name }
+    where(:integration_name) do
+      Integration.available_integration_names - Integration.project_specific_integration_names
+    end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:edit)
-        end
+    with_them do
+      it 'successfully displays the template' do
+        get :edit, params: { id: integration_name }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:edit)
       end
     end
 
@@ -51,7 +53,7 @@ RSpec.describe Admin::IntegrationsController do
       put :update, params: { id: integration.class.to_param, service: params }
     end
 
-    context 'valid params' do
+    context 'with valid params' do
       let(:params) { { url: 'https://jira.gitlab-example.com', password: 'password' } }
 
       it 'updates the integration' do
@@ -64,7 +66,7 @@ RSpec.describe Admin::IntegrationsController do
       end
     end
 
-    context 'invalid params' do
+    context 'with invalid params' do
       let(:params) { { url: 'invalid', password: 'password' } }
 
       it 'does not update the integration' do

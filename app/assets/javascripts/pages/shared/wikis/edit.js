@@ -70,6 +70,7 @@ const createWikiFormApp = () => {
       provide: {
         formatOptions: JSON.parse(formatOptions),
         pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+        drawioUrl: gon.diagramsnet_url,
       },
       render(createElement) {
         return createElement(wikiForm);

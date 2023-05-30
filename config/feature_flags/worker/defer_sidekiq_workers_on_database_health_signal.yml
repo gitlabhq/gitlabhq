@@ -1,0 +1,8 @@
+---
+name: defer_sidekiq_workers_on_database_health_signal
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121261
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412990
+milestone: '16.1'
+type: worker
+group: group::database
+default_enabled: false

@@ -186,6 +186,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :sourcegraph_url, presence: true, if: :sourcegraph_enabled
 
+  validates :diagramsnet_url,
+    presence: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
+    if: :diagramsnet_enabled
+
   validates :gitpod_url,
     presence: true,
     addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),

@@ -337,6 +337,8 @@ module ApplicationSettingsHelper
       :kroki_formats,
       :plantuml_enabled,
       :plantuml_url,
+      :diagramsnet_enabled,
+      :diagramsnet_url,
       :polling_interval_multiplier,
       :project_export_enabled,
       :prometheus_metrics_enabled,

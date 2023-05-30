@@ -1,7 +1,7 @@
 <script>
-import { GlIcon, GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__, formatNumber } from '~/locale';
+import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
@@ -15,10 +15,10 @@ import RunnerDetail from './runner_detail.vue';
 import RunnerGroups from './runner_groups.vue';
 import RunnerProjects from './runner_projects.vue';
 import RunnerTags from './runner_tags.vue';
+import RunnerManagersDetail from './runner_managers_detail.vue';
 
 export default {
   components: {
-    GlIcon,
     GlIntersperse,
     GlLink,
     GlSprintf,
@@ -33,6 +33,7 @@ export default {
     RunnerUpgradeStatusAlert: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_alert.vue'),
     RunnerTags,
+    RunnerManagersDetail,
     TimeAgo,
   },
   props: {
@@ -80,9 +81,6 @@ export default {
       return helpPagePath('ci/runners/configure_runners', {
         anchor: 'authentication-token-security',
       });
-    },
-    runnerManagersCount() {
-      return formatNumber(this.runner?.managers?.count || 0);
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
@@ -185,8 +183,7 @@ export default {
             </help-popover>
           </template>
           <template #value>
-            <gl-icon name="container-image" class="gl-text-secondary" />
-            {{ runnerManagersCount }}
+            <runner-managers-detail :runner="runner" />
           </template>
         </runner-detail>
       </dl>

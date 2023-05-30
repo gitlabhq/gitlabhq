@@ -37,6 +37,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :worker_has_external_dependencies? | :worker_has_external_dependencies! | false            | []                                 | true
       :idempotent?                       | :idempotent!                       | false            | []                                 | true
       :big_payload?                      | :big_payload!                      | false            | []                                 | true
+      :database_health_check_attrs       | :defer_on_database_health_signal   | nil              | [:gitlab_main, 1.minute, [:users]] | { gitlab_schema: :gitlab_main, delay_by: 1.minute, tables: [:users] }
     end
     # rubocop: enable Layout/LineLength
 
@@ -138,6 +139,40 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
           expect(worker.deduplication_enabled?).to be(false)
           expect(child_worker.deduplication_enabled?).to be(false)
         end
+      end
+    end
+  end
+
+  describe '#defer_on_database_health_signal?' do
+    subject(:defer_on_database_health_signal?) { worker.defer_on_database_health_signal? }
+
+    context 'when defer_on_database_health_signal is set' do
+      before do
+        worker.defer_on_database_health_signal(:gitlab_main, 1.minute, [:users])
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when defer_on_database_health_signal is not set' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when FF `defer_sidekiq_workers_on_database_health_signal` is disabled' do
+      before do
+        stub_feature_flags(defer_sidekiq_workers_on_database_health_signal: false)
+      end
+
+      context 'when defer_on_database_health_signal is set' do
+        before do
+          worker.defer_on_database_health_signal(:gitlab_main, 1.minute, [:users])
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when defer_on_database_health_signal is not set' do
+        it { is_expected.to be(false) }
       end
     end
   end

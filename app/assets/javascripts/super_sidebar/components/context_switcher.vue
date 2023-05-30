@@ -194,6 +194,7 @@ export default {
               :key="item.link"
               :item="item"
               :link-classes="{ [item.link_classes]: item.link_classes }"
+              is-subitem
             />
           </ul>
         </li>

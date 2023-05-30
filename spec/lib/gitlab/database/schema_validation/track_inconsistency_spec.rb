@@ -63,13 +63,47 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
     end
 
     context 'when the schema inconsistency already exists' do
+      let(:diff) do
+        "-#{structure_sql_statement}\n" \
+          "+#{database_statement}\n"
+      end
+
       let!(:schema_inconsistency) do
         create(:schema_inconsistency, object_name: 'index_name', table_name: 'achievements',
-          valitador_name: 'different_definition_indexes')
+          valitador_name: 'different_definition_indexes', diff: diff)
       end
 
       before do
         project.add_developer(user)
+      end
+
+      context 'when the issue has the last schema inconsistency' do
+        it 'does not add a note' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+
+          expect { execute }.not_to change { schema_inconsistency.issue.notes.count }
+        end
+      end
+
+      context 'when the issue is outdated' do
+        let!(:schema_inconsistency) do
+          create(:schema_inconsistency, object_name: 'index_name', table_name: 'achievements',
+            valitador_name: 'different_definition_indexes', diff: 'old_diff')
+        end
+
+        it 'adds a note' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+
+          expect { execute }.to change { schema_inconsistency.issue.notes.count }.from(0).to(1)
+        end
+
+        it 'updates the diff' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+
+          execute
+
+          expect(schema_inconsistency.reload.diff).to eq(diff)
+        end
       end
 
       context 'when the GitLab issue is open' do

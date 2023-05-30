@@ -8278,6 +8278,9 @@ msgstr ""
 msgid "BroadcastMessages|Your message here"
 msgstr ""
 
+msgid "Browse CI/CD Catalog"
+msgstr ""
+
 msgid "Browse Directory"
 msgstr ""
 
@@ -15829,6 +15832,12 @@ msgstr ""
 msgid "Diagram saved successfully."
 msgstr ""
 
+msgid "Diagrams.net"
+msgstr ""
+
+msgid "Diagrams.net URL"
+msgstr ""
+
 msgid "Did not delete the source branch."
 msgstr ""
 
@@ -16795,6 +16804,9 @@ msgid "Enable cleanup policy caching."
 msgstr ""
 
 msgid "Enable dashboard limits on namespaces"
+msgstr ""
+
+msgid "Enable diagrams.net"
 msgstr ""
 
 msgid "Enable email notification"
@@ -33856,9 +33868,6 @@ msgstr ""
 msgid "Please create an index before enabling indexing"
 msgstr ""
 
-msgid "Please delete your current license if you want to downgrade to the free plan."
-msgstr ""
-
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
 msgstr ""
 
@@ -38025,6 +38034,9 @@ msgstr ""
 msgid "Render diagrams in your documents using PlantUML."
 msgstr ""
 
+msgid "Render diagrams in your documents using diagrams.net."
+msgstr ""
+
 msgid "Renew subscription"
 msgstr ""
 
@@ -39058,6 +39070,9 @@ msgstr ""
 msgid "Runners|An upgrade is recommended for this runner"
 msgstr ""
 
+msgid "Runners|Arch/Platform"
+msgstr ""
+
 msgid "Runners|Architecture"
 msgstr ""
 
@@ -39626,6 +39641,9 @@ msgstr ""
 msgid "Runners|Support for registration tokens is deprecated"
 msgstr ""
 
+msgid "Runners|System ID"
+msgstr ""
+
 msgid "Runners|Tags"
 msgstr ""
 
@@ -39642,6 +39660,9 @@ msgid "Runners|The project, group or instance where the runner was registered. I
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Runners|The unique ID for each runner that uses this configuration."
 msgstr ""
 
 msgid "Runners|These runners are assigned to this project."
@@ -45461,6 +45482,9 @@ msgstr ""
 msgid "The hostname of your Snowplow collector."
 msgstr ""
 
+msgid "The hostname of your diagrams.net server."
+msgstr ""
+
 msgid "The import cannot be canceled because it is %{project_status}"
 msgstr ""
 
@@ -46413,6 +46437,9 @@ msgid "This group, its subgroups and projects will be removed on %{date} since i
 msgstr ""
 
 msgid "This incident is already escalated with '%{escalation_policy_name}'."
+msgstr ""
+
+msgid "This instance is now read-only. Don't worry, your data is safe. To change to GitLab Free and restore write access to this instance, delete your expired license."
 msgstr ""
 
 msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."

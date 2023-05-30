@@ -567,12 +567,11 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
-NOTE:
-Use of the diagrams.net editor is not available on offline environments.
-
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
 the Markdown editor and the content editor.
+
+For more information, see [Diagrams.net](../administration/integration/diagrams_net.md).
 
 ##### Markdown editor
 

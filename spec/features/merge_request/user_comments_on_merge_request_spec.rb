@@ -6,12 +6,15 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
+  let(:diagramsnet_url) { 'https://embed.diagrams.net' }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)
     sign_in(user)
+    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_enabled).and_return(true)
+    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_url).and_return(diagramsnet_url)
 
     visit(merge_request_path(merge_request))
   end

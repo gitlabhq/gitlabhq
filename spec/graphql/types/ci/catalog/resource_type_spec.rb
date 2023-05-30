@@ -13,6 +13,8 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       icon
       web_path
       versions
+      star_count
+      forks_count
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

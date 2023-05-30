@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::Settings::IntegrationsController do
+RSpec.describe Groups::Settings::IntegrationsController, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
@@ -52,7 +52,11 @@ RSpec.describe Groups::Settings::IntegrationsController do
   describe '#edit' do
     context 'when user is not owner' do
       it 'renders not_found' do
-        get :edit, params: { group_id: group, id: Integration.available_integration_names(include_project_specific: false).sample }
+        get :edit,
+          params: {
+            group_id: group,
+            id: Integration.available_integration_names(include_project_specific: false).sample
+          }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -88,7 +92,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
       put :update, params: { group_id: group, id: integration.class.to_param, service: params }
     end
 
-    context 'valid params' do
+    context 'with valid params' do
       let(:params) { { url: 'https://jira.gitlab-example.com', password: 'password' } }
 
       it 'updates the integration' do
@@ -97,7 +101,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
       end
     end
 
-    context 'invalid params' do
+    context 'with invalid params' do
       let(:params) { { url: 'invalid', password: 'password' } }
 
       it 'does not update the integration' do

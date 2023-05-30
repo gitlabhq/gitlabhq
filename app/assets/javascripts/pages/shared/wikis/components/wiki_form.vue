@@ -107,7 +107,7 @@ export default {
     MarkdownEditor,
   },
   mixins: [trackingMixin],
-  inject: ['formatOptions', 'pageInfo'],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl'],
   data() {
     return {
       editingMode: 'source',
@@ -182,6 +182,9 @@ export default {
     },
     disableSubmitButton() {
       return this.noContent || !this.title;
+    },
+    drawioEnabled() {
+      return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
     },
   },
   mounted() {
@@ -356,7 +359,7 @@ export default {
             :autofocus="pageInfo.persisted"
             :enable-autocomplete="true"
             :autocomplete-data-sources="autocompleteDataSources"
-            :drawio-enabled="true"
+            :drawio-enabled="drawioEnabled"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormShortcut"

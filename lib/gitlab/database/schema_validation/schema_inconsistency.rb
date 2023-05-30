@@ -8,7 +8,7 @@ module Gitlab
 
         belongs_to :issue
 
-        validates :object_name, :valitador_name, :table_name, presence: true
+        validates :object_name, :valitador_name, :table_name, :diff, presence: true
 
         scope :with_open_issues, -> { joins(:issue).where('issue.state_id': Issue.available_states[:opened]) }
       end

@@ -1,6 +1,42 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
+export const commonOptions = {
+  ciConfigPath: '/ci/config',
+  ciExamplesHelpPagePath: 'help/ci/examples',
+  ciHelpPagePath: 'help/ci/',
+  ciLintPath: 'ci/lint',
+  ciTroubleshootingPath: 'help/troubleshoot',
+  defaultBranch: 'main',
+  emptyStateIllustrationPath: 'illustrations/svg',
+  helpPaths: '/ads',
+  includesHelpPagePath: 'help/includes',
+  needsHelpPagePath: 'help/ci/needs',
+  newMergeRequestPath: 'merge_request/new',
+  pipelinePagePath: '/pipelines/1',
+  projectFullPath: 'root/my-project',
+  projectNamespace: 'root',
+  simulatePipelineHelpPagePath: 'help/ci/simulate',
+  totalBranches: '10',
+  usesExternalConfig: 'false',
+  validateTabIllustrationPath: 'illustrations/tab',
+  ymlHelpPagePath: 'help/ci/yml',
+  aiChatAvailable: 'true',
+};
+
+export const editorDatasetOptions = {
+  initialBranchName: 'production',
+  pipelineEtag: 'pipelineEtag',
+  ...commonOptions,
+};
+
+export const expectedInjectValues = {
+  ...commonOptions,
+  aiChatAvailable: true,
+  usesExternalConfig: false,
+  totalBranches: 10,
+};
+
 export const mockProjectNamespace = 'user1';
 export const mockProjectPath = 'project1';
 export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;

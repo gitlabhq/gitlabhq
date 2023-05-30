@@ -12446,9 +12446,11 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Description of the catalog resource. |
+| <a id="cicatalogresourceforkscount"></a>`forksCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been forked. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
+| <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Web path of the catalog resource. |
 
 #### Fields with arguments

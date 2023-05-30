@@ -10,6 +10,16 @@ RSpec.shared_examples Integrations::Actions do
     )
   end
 
+  shared_examples 'unknown integration' do
+    let(:routing_params) do
+      super().merge(id: 'unknown_integration')
+    end
+
+    it 'returns 404 Not Found' do
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe 'GET #edit' do
     before do
       get :edit, params: routing_params
@@ -19,6 +29,8 @@ RSpec.shared_examples Integrations::Actions do
       expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:integration)).to eq(integration)
     end
+
+    it_behaves_like 'unknown integration'
   end
 
   describe 'PUT #update' do
@@ -55,5 +67,15 @@ RSpec.shared_examples Integrations::Actions do
         expect(integration.reload).to have_attributes(params.merge(api_key: 'secret'))
       end
     end
+
+    it_behaves_like 'unknown integration'
+  end
+
+  describe 'PUT #test' do
+    before do
+      put :test, params: routing_params
+    end
+
+    it_behaves_like 'unknown integration'
   end
 end

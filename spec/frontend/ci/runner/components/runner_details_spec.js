@@ -1,5 +1,5 @@
 import { GlSprintf, GlIntersperse } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
@@ -11,6 +11,7 @@ import RunnerDetail from '~/ci/runner/components/runner_detail.vue';
 import RunnerGroups from '~/ci/runner/components/runner_groups.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerTag from '~/ci/runner/components/runner_tag.vue';
+import RunnerManagersDetail from '~/ci/runner/components/runner_managers_detail.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -25,6 +26,8 @@ describe('RunnerDetails', () => {
   useFakeDate(mockNow);
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
+  const findRunnerManagersDetail = () => wrapper.findComponent(RunnerManagersDetail);
+
   const findDdContent = (label) => findDd(label, wrapper).text().replace(/\s+/g, ' ');
 
   const createComponent = ({ props = {}, stubs, mountFn = shallowMountExtended } = {}) => {
@@ -63,7 +66,7 @@ describe('RunnerDetails', () => {
       ${'Maximum job timeout'} | ${{ maximumTimeout: 10 * 60 + 5 }}                                 | ${'10 minutes 5 seconds'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: mockOneHourAgo }}                              | ${'1 hour ago'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: null }}                                        | ${'Never expires'}
-      ${'Runners'}             | ${{ managers: { count: 2 } }}                                      | ${'2'}
+      ${'Runners'}             | ${{ managers: { count: 2 } }}                                      | ${`2 ${__('Show details')}`}
     `('"$field" field', ({ field, runner, expectedValue }) => {
       beforeEach(() => {
         createComponent({
@@ -77,12 +80,13 @@ describe('RunnerDetails', () => {
             GlIntersperse,
             GlSprintf,
             TimeAgo,
+            RunnerManagersDetail,
           },
         });
       });
 
       it(`displays expected value "${expectedValue}"`, () => {
-        expect(findDd(field, wrapper).text()).toBe(expectedValue);
+        expect(findDdContent(field)).toBe(expectedValue);
       });
     });
 
@@ -113,24 +117,14 @@ describe('RunnerDetails', () => {
     });
 
     describe('"Runners" field', () => {
-      it.each`
-        count   | expected
-        ${0}    | ${'0'}
-        ${1}    | ${'1'}
-        ${1000} | ${'1,000'}
-      `('displays runner managers count of $count', ({ count, expected }) => {
+      it('displays runner managers count of $count', () => {
         createComponent({
           props: {
-            runner: {
-              ...mockRunner,
-              managers: {
-                count,
-              },
-            },
+            runner: mockRunner,
           },
         });
 
-        expect(findDdContent(s__('Runners|Runners'))).toBe(expected);
+        expect(findRunnerManagersDetail().props('runner')).toEqual(mockRunner);
       });
     });
 

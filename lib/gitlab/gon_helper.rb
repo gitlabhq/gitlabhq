@@ -51,6 +51,8 @@ module Gitlab
       gon.dot_com                = Gitlab.com?
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
 
+      gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
+
       if current_user
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username

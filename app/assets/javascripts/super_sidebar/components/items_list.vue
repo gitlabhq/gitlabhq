@@ -24,6 +24,7 @@ export default {
       :key="item.id"
       :item="item"
       :link-classes="{ 'gl-py-2!': true }"
+      is-subitem
     >
       <template #icon>
         <project-avatar
@@ -32,6 +33,7 @@ export default {
           :project-avatar-url="item.avatar"
           :size="24"
           aria-hidden="true"
+          class="gl-mr-n2"
         />
       </template>
       <template #actions>

@@ -167,7 +167,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         accept_pending_invitations(user: user) if new_user
         persist_accepted_terms_if_required(user) if new_user
 
-        perform_registration_tasks(user, oauth['provider']) if intent_to_register?
+        perform_registration_tasks(user, oauth['provider']) if new_user
         sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
       end
     else
@@ -247,11 +247,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
-  end
-
-  def intent_to_register?
-    request_params = request.env['omniauth.params']
-    (request_params['intent'] == 'register') if request_params.present?
   end
 
   def store_redirect_fragment(redirect_fragment)

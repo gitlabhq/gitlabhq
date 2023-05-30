@@ -1127,6 +1127,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
+    describe 'diagrams.net settings' do
+      context 'when diagrams.net is enabled' do
+        before do
+          setting.diagramsnet_enabled = true
+        end
+
+        it { is_expected.not_to allow_value(nil).for(:diagramsnet_url) }
+        it { is_expected.to allow_value("https://embed.diagrams.net").for(:diagramsnet_url) }
+        it { is_expected.not_to allow_value('not a URL').for(:diagramsnet_url) }
+      end
+
+      context 'when diagrams.net is not enabled' do
+        before do
+          setting.diagramsnet_enabled = false
+        end
+
+        it { is_expected.to allow_value(nil).for(:diagramsnet_url) }
+      end
+    end
+
     context 'throttle_* settings' do
       where(:throttle_setting) do
         %i[

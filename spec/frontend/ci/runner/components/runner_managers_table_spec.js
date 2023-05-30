@@ -1,0 +1,123 @@
+import { GlTableLite } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { s__ } from '~/locale';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+
+import RunnerManagersTable from '~/ci/runner/components/runner_managers_table.vue';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+
+import { runnerManagersData } from '../mock_data';
+
+jest.mock('~/alert');
+jest.mock('~/ci/runner/sentry_utils');
+
+const [runnerManager1, runnerManager2] = runnerManagersData.data.runner.managers.nodes;
+
+Vue.use(VueApollo);
+
+describe('RunnerJobs', () => {
+  let wrapper;
+
+  const findHeaders = () => wrapper.findAll('thead th');
+  const findRows = () => wrapper.findAll('tbody tr');
+  const findCell = ({ field, i }) => extendedWrapper(findRows().at(i)).findByTestId(`td-${field}`);
+  const findCellText = (opts) => findCell(opts).text().replace(/\s+/g, ' ');
+
+  const createComponent = ({ item } = {}) => {
+    wrapper = mountExtended(RunnerManagersTable, {
+      propsData: {
+        items: [{ ...runnerManager1, ...item }, runnerManager2],
+      },
+      stubs: {
+        GlTableLite,
+      },
+    });
+  };
+
+  it('shows headers', () => {
+    createComponent();
+    expect(findHeaders().wrappers.map((w) => w.text())).toEqual([
+      expect.stringContaining(s__('Runners|System ID')),
+      s__('Runners|Version'),
+      s__('Runners|IP Address'),
+      s__('Runners|Executor'),
+      s__('Runners|Arch/Platform'),
+      s__('Runners|Last contact'),
+    ]);
+  });
+
+  it('shows rows', () => {
+    createComponent();
+    expect(findRows()).toHaveLength(2);
+  });
+
+  it('shows system id', () => {
+    createComponent();
+    expect(findCellText({ field: 'systemId', i: 0 })).toBe(runnerManager1.systemId);
+    expect(findCellText({ field: 'systemId', i: 1 })).toBe(runnerManager2.systemId);
+  });
+
+  it('shows version', () => {
+    createComponent({
+      item: { version: '1.0' },
+    });
+
+    expect(findCellText({ field: 'version', i: 0 })).toBe('1.0');
+  });
+
+  it('shows version with revision', () => {
+    createComponent({
+      item: { version: '1.0', revision: '123456' },
+    });
+
+    expect(findCellText({ field: 'version', i: 0 })).toBe('1.0 (123456)');
+  });
+
+  it('shows ip address', () => {
+    createComponent({
+      item: { ipAddress: '127.0.0.1' },
+    });
+
+    expect(findCellText({ field: 'ipAddress', i: 0 })).toBe('127.0.0.1');
+  });
+
+  it('shows executor', () => {
+    createComponent({
+      item: { executorName: 'shell' },
+    });
+
+    expect(findCellText({ field: 'executorName', i: 0 })).toBe('shell');
+  });
+
+  it('shows architecture', () => {
+    createComponent({
+      item: { architectureName: 'x64' },
+    });
+
+    expect(findCellText({ field: 'architecturePlatform', i: 0 })).toBe('x64');
+  });
+
+  it('shows platform', () => {
+    createComponent({
+      item: { platformName: 'darwin' },
+    });
+
+    expect(findCellText({ field: 'architecturePlatform', i: 0 })).toBe('darwin');
+  });
+
+  it('shows architecture and platform', () => {
+    createComponent({
+      item: { architectureName: 'x64', platformName: 'darwin' },
+    });
+
+    expect(findCellText({ field: 'architecturePlatform', i: 0 })).toBe('x64/darwin');
+  });
+
+  it('shows contacted at', () => {
+    createComponent();
+    expect(findCell({ field: 'contactedAt', i: 0 }).findComponent(TimeAgo).props('time')).toBe(
+      runnerManager1.contactedAt,
+    );
+  });
+});

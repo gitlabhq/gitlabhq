@@ -1,12 +1,15 @@
 import { launchDrawioEditor } from '~/drawio/drawio_editor';
 import {
-  DRAWIO_EDITOR_URL,
   DRAWIO_FRAME_ID,
   DIAGRAM_BACKGROUND_COLOR,
   DRAWIO_IFRAME_TIMEOUT,
   DIAGRAM_MAX_SIZE,
 } from '~/drawio/constants';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
+
+const DRAWIO_EDITOR_URL =
+  'https://embed.diagrams.net/?ui=sketch&noSaveBtn=1&saveAndExit=1&keepmodified=1&spin=1&embed=1&libraries=1&configure=1&proto=json&toSvg=1';
+const DRAWIO_EDITOR_ORIGIN = new URL(DRAWIO_EDITOR_URL).origin;
 
 jest.mock('~/alert');
 
@@ -59,6 +62,7 @@ describe('drawio/drawio_editor', () => {
       updateDiagram: jest.fn(),
     };
     drawioIFrameReceivedMessages = [];
+    gon.diagramsnet_url = DRAWIO_EDITOR_ORIGIN;
   });
 
   afterEach(() => {
@@ -356,7 +360,11 @@ describe('drawio/drawio_editor', () => {
       const TEST_FILENAME = 'diagram.drawio.svg';
 
       beforeEach(() => {
-        launchDrawioEditor({ editorFacade, filename: TEST_FILENAME });
+        launchDrawioEditor({
+          editorFacade,
+          filename: TEST_FILENAME,
+          drawioUrl: DRAWIO_EDITOR_ORIGIN,
+        });
       });
 
       it('displays loading spinner in the draw.io editor', async () => {

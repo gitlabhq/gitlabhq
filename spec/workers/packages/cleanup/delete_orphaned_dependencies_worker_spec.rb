@@ -104,15 +104,5 @@ RSpec.describe Packages::Cleanup::DeleteOrphanedDependenciesWorker, feature_cate
         subject
       end
     end
-
-    context 'when the FF is disabled' do
-      before do
-        stub_feature_flags(packages_delete_orphaned_dependencies_worker: false)
-      end
-
-      it 'does not execute the worker' do
-        expect { subject }.not_to change { Packages::Dependency.count }
-      end
-    end
   end
 end

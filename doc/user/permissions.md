@@ -463,6 +463,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
+- [Read-only namespaces](../user/read_only_namespaces.md)
 
 ## Custom roles **(ULTIMATE)**
 

@@ -38,7 +38,6 @@ Layout/LineLength:
     - 'app/controllers/groups/group_members_controller.rb'
     - 'app/controllers/groups/settings/applications_controller.rb'
     - 'app/controllers/groups/settings/ci_cd_controller.rb'
-    - 'app/controllers/groups/settings/integrations_controller.rb'
     - 'app/controllers/groups/settings/repository_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/import/base_controller.rb'

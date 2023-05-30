@@ -2204,12 +2204,15 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a CI runner **(FREE SELF)**
+## Create a runner **(FREE SELF)**
 
-It creates a new runner, linked to the current user.
+Creates a runner linked to the current user.
 
-Requires administrator access or ownership of the target namespace or project. Token values are returned once. Make sure you save it because you can't access
-it again.
+Prerequisites:
+
+- You must be an administrator or have the Owner role of the target namespace or project.
+
+Be sure to copy or save the `token` in the response, the value cannot be retrieved again.
 
 ```plaintext
 POST /user/runners

@@ -401,16 +401,15 @@ lib/gitlab/checks/**
 /doc/administration/audit_reports.md @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
-/doc/administration/cicd.md @drcatherinepope
+/doc/administration/cicd.md @marcel.amirault
 /doc/administration/clusters/ @phillipwells
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
-/doc/administration/dedicated/ @drcatherinepope
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
-/doc/administration/external_pipeline_validation.md @drcatherinepope
+/doc/administration/external_pipeline_validation.md @marcel.amirault
 /doc/administration/feature_flags.md @axil
 /doc/administration/file_hooks.md @eread @ashrafkhamis
 /doc/administration/geo/ @axil
@@ -515,7 +514,6 @@ lib/gitlab/checks/**
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
-/doc/api/error_tracking.md @drcatherinepope
 /doc/api/events.md @eread
 /doc/api/feature_flag_user_lists.md @phillipwells
 /doc/api/feature_flags.md @phillipwells
@@ -559,20 +557,19 @@ lib/gitlab/checks/**
 /doc/api/issues_statistics.md @msedlakjakubowski
 /doc/api/iterations.md @msedlakjakubowski
 /doc/api/job_artifacts.md @marcel.amirault
-/doc/api/jobs.md @drcatherinepope
+/doc/api/jobs.md @marcel.amirault
 /doc/api/keys.md @aqualls
 /doc/api/labels.md @msedlakjakubowski
 /doc/api/license.md @fneill
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
-/doc/api/managed_licenses.md @fneill
 /doc/api/markdown.md @msedlakjakubowski
 /doc/api/member_roles.md @jglassman1
 /doc/api/members.md @jglassman1
 /doc/api/merge_request_approvals.md @aqualls
 /doc/api/merge_request_context_commits.md @aqualls
 /doc/api/merge_requests.md @aqualls
-/doc/api/merge_trains.md @drcatherinepope
+/doc/api/merge_trains.md @marcel.amirault
 /doc/api/metadata.md @phillipwells
 /doc/api/metrics_dashboard_annotations.md @msedlakjakubowski
 /doc/api/metrics_user_starred_dashboards.md @msedlakjakubowski
@@ -585,9 +582,9 @@ lib/gitlab/checks/**
 /doc/api/packages.md @marcel.amirault
 /doc/api/packages/ @marcel.amirault
 /doc/api/personal_access_tokens.md @eread
-/doc/api/pipeline_schedules.md @drcatherinepope
-/doc/api/pipeline_triggers.md @drcatherinepope
-/doc/api/pipelines.md @drcatherinepope
+/doc/api/pipeline_schedules.md @marcel.amirault
+/doc/api/pipeline_triggers.md @marcel.amirault
+/doc/api/pipelines.md @marcel.amirault
 /doc/api/plan_limits.md @jglassman1
 /doc/api/product_analytics.md @lciutacu
 /doc/api/project_access_tokens.md @jglassman1
@@ -595,6 +592,7 @@ lib/gitlab/checks/**
 /doc/api/project_badges.md @aqualls
 /doc/api/project_clusters.md @phillipwells
 /doc/api/project_import_export.md @aqualls
+/doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_relations_export.md @eread @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
@@ -622,6 +620,7 @@ lib/gitlab/checks/**
 /doc/api/saml.md @jglassman1
 /doc/api/scim.md @jglassman1
 /doc/api/search.md @ashrafkhamis
+/doc/api/search_admin.md @ashrafkhamis
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/settings.md @jglassman1
 /doc/api/sidekiq_metrics.md @axil
@@ -641,50 +640,26 @@ lib/gitlab/checks/**
 /doc/api/usage_data.md @lciutacu
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
-/doc/api/visual_review_discussions.md @drcatherinepope
+/doc/api/visual_review_discussions.md @marcel.amirault
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
 /doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/database/scalability/patterns/ @aqualls
 /doc/architecture/blueprints/database_scaling/ @aqualls
-/doc/ci/ @drcatherinepope
-/doc/ci/caching/ @marcel.amirault
+/doc/ci/ @marcel.amirault
 /doc/ci/chatops/ @eread @ashrafkhamis
 /doc/ci/cloud_deployment/ @phillipwells
-/doc/ci/cloud_services/ @marcel.amirault
-/doc/ci/components/ @marcel.amirault
-/doc/ci/directed_acyclic_graph/ @marcel.amirault
 /doc/ci/docker/using_docker_images.md @fneill
 /doc/ci/environments/ @phillipwells
-/doc/ci/examples/authenticating-with-hashicorp-vault/ @marcel.amirault
 /doc/ci/examples/deployment/ @phillipwells
-/doc/ci/examples/semantic-release.md @marcel.amirault
 /doc/ci/interactive_web_terminal/ @fneill
-/doc/ci/introduction/ @marcel.amirault
-/doc/ci/jobs/ @marcel.amirault
 /doc/ci/large_repositories/ @fneill
-/doc/ci/lint.md @marcel.amirault
-/doc/ci/migration/ @marcel.amirault
-/doc/ci/pipeline_editor/ @marcel.amirault
-/doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
-/doc/ci/pipelines/index.md @marcel.amirault
-/doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
-/doc/ci/pipelines/pipeline_artifacts.md @marcel.amirault
-/doc/ci/quick_start/ @marcel.amirault
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @fneill
-/doc/ci/secrets/ @marcel.amirault
-/doc/ci/secure_files/ @marcel.amirault
 /doc/ci/services/ @fneill
-/doc/ci/ssh_keys/ @marcel.amirault
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
-/doc/ci/triggers/ @marcel.amirault
-/doc/ci/troubleshooting.md @marcel.amirault
-/doc/ci/variables/ @marcel.amirault
-/doc/ci/yaml/ @marcel.amirault
-/doc/ci/yaml/artifacts_reports.md @drcatherinepope
 /doc/development/advanced_search.md @ashrafkhamis
 /doc/development/application_limits.md @axil
 /doc/development/audit_event_guide/ @eread
@@ -697,8 +672,6 @@ lib/gitlab/checks/**
 /doc/development/cascading_settings.md @jglassman1
 /doc/development/chatops_on_gitlabcom.md @eread @ashrafkhamis
 /doc/development/cicd/ @marcel.amirault
-/doc/development/cicd/cicd_tables.md @drcatherinepope
-/doc/development/cicd/index.md @drcatherinepope
 /doc/development/code_intelligence/ @aqualls
 /doc/development/code_owners/ @aqualls
 /doc/development/contributing/ @sselhorn
@@ -756,6 +729,7 @@ lib/gitlab/checks/**
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @aqualls
 /doc/development/prometheus_metrics.md @msedlakjakubowski
+/doc/development/rails_endpoints/ @aqualls
 /doc/development/real_time.md @jglassman1
 /doc/development/rubocop_development_guide.md @sselhorn
 /doc/development/search/ @ashrafkhamis
@@ -796,11 +770,9 @@ lib/gitlab/checks/**
 /doc/integration/sourcegraph.md @aqualls
 /doc/integration/trello_power_up.md @eread @ashrafkhamis
 /doc/integration/vault.md @phillipwells
-/doc/operations/error_tracking.md @drcatherinepope
 /doc/operations/feature_flags.md @phillipwells
 /doc/operations/incident_management/ @msedlakjakubowski
 /doc/operations/index.md @msedlakjakubowski
-/doc/operations/metrics/ @msedlakjakubowski
 /doc/policy/ @axil
 /doc/raketasks/ @axil
 /doc/raketasks/generate_sample_prometheus_data.md @msedlakjakubowski
@@ -810,7 +782,6 @@ lib/gitlab/checks/**
 /doc/security/ @jglassman1
 /doc/security/email_verification.md @phillipwells
 /doc/subscriptions/ @fneill
-/doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/data_seeder.md @sselhorn
@@ -821,6 +792,7 @@ lib/gitlab/checks/**
 /doc/tutorials/ @kpaizee
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
+/doc/tutorials/configure_gitlab_runner_to_use_gke/ @fneill
 /doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
 /doc/tutorials/fuzz_testing/ @rdickenson
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
@@ -843,7 +815,7 @@ lib/gitlab/checks/**
 /doc/user/admin_area/reporting/spamcheck.md @axil
 /doc/user/admin_area/review_abuse_reports.md @phillipwells
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
-/doc/user/admin_area/settings/continuous_integration.md @drcatherinepope
+/doc/user/admin_area/settings/continuous_integration.md @marcel.amirault
 /doc/user/admin_area/settings/deprecated_api_rate_limits.md @aqualls
 /doc/user/admin_area/settings/email.md @msedlakjakubowski
 /doc/user/admin_area/settings/external_authorization.md @jglassman1
@@ -859,7 +831,7 @@ lib/gitlab/checks/**
 /doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
 /doc/user/admin_area/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
-/doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @drcatherinepope
+/doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @marcel.amirault
 /doc/user/admin_area/settings/rate_limit_on_projects_api.md @lciutacu
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
 /doc/user/admin_area/settings/scim_setup.md @jglassman1
@@ -881,29 +853,23 @@ lib/gitlab/checks/**
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/feature_flags.md @sselhorn
-/doc/user/group/access_and_permissions.md @lciutacu
+/doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
-/doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @aqualls
-/doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread @ashrafkhamis
-/doc/user/group/index.md @lciutacu
-/doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
-/doc/user/group/manage.md @lciutacu
 /doc/user/group/moderate_users.md @phillipwells
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
 /doc/user/group/reporting/ @phillipwells
-/doc/user/group/repositories_analytics/ @drcatherinepope
+/doc/user/group/repositories_analytics/ @marcel.amirault
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
 /doc/user/group/settings/ @jglassman1
-/doc/user/group/subgroups/ @lciutacu
-/doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
+/doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @fneill
 /doc/user/markdown.md @msedlakjakubowski
 /doc/user/namespace/ @lciutacu
@@ -939,8 +905,6 @@ lib/gitlab/checks/**
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @eread @ashrafkhamis
-/doc/user/project/integrations/prometheus.md @msedlakjakubowski
-/doc/user/project/integrations/prometheus_library/ @msedlakjakubowski
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis

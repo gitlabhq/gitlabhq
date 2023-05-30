@@ -229,39 +229,19 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           end
         end
 
-        context 'sign up' do
+        context 'for sign up' do
           include_context 'sign_up'
 
-          context 'when intent to register is added to omniauth params' do
-            before do
-              request.env['omniauth.params'] = { 'intent' => 'register' }
-            end
+          it 'is allowed' do
+            post provider
 
-            it 'is allowed' do
-              post provider
-
-              expect(request.env['warden']).to be_authenticated
-            end
-
-            it 'redirects to welcome path' do
-              post provider
-
-              expect(response).to redirect_to(users_sign_up_welcome_path)
-            end
+            expect(request.env['warden']).to be_authenticated
           end
 
-          context 'when intent to register is not added to omniauth params' do
-            it 'is allowed' do
-              post provider
+          it 'redirects to welcome path' do
+            post provider
 
-              expect(request.env['warden']).to be_authenticated
-            end
-
-            it 'redirects to root path' do
-              post provider
-
-              expect(response).to redirect_to(root_path)
-            end
+            expect(response).to redirect_to(users_sign_up_welcome_path)
           end
         end
 

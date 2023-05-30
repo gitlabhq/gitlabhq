@@ -13,7 +13,7 @@ RSpec.describe RegistrationsHelper, feature_category: :user_management do
     it 'adds intent to register' do
       allow(helper).to receive(:glm_tracking_params).and_return({})
 
-      expect(helper.register_omniauth_params({})).to eq({ intent: :register })
+      expect(helper.register_omniauth_params({})).to eq({})
     end
   end
 end

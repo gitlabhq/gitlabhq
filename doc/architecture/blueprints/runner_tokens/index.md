@@ -532,7 +532,7 @@ Yes, existing runners will continue to work as usual. This change only affects r
 
 ### Can runners still be created programmatically?
 
-A new [POST /user/runners REST API](../../../api/users.md#create-a-ci-runner) was introduced in
+A new [POST /user/runners REST API](../../../api/users.md#create-a-runner) was introduced in
 GitLab 15.11, which allows a runner to be created in the context of an authenticated user. This should only be used in
 scenarios where the runner configuration is dynamic, or not reusable. If the runner configuration is static, it is
 preferable to reuse the authentication token of an existing runner.

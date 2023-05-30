@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::SchemaInconsistency, type: :m
     it { is_expected.to validate_presence_of(:object_name) }
     it { is_expected.to validate_presence_of(:valitador_name) }
     it { is_expected.to validate_presence_of(:table_name) }
+    it { is_expected.to validate_presence_of(:diff) }
   end
 
   describe 'scopes' do

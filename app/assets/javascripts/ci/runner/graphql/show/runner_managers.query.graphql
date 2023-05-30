@@ -1,0 +1,13 @@
+query getRunnerManagers($runnerId: CiRunnerID!) {
+  runner(id: $runnerId) {
+    id
+    managers {
+      count
+      nodes {
+        id
+        systemId
+        contactedAt
+      }
+    }
+  }
+}

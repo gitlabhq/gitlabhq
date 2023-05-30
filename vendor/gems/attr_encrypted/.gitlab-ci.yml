@@ -23,4 +23,4 @@ rspec:
     - bundle exec rake test
   parallel:
     matrix:
-      - RUBY_VERSION: ["2.7", "3.0"]
+      - RUBY_VERSION: ["2.7", "3.0", "3.1"]

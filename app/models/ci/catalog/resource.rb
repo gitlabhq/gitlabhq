@@ -17,7 +17,7 @@ module Ci
       scope :order_by_name_desc, -> { joins(:project).merge(Project.sorted_by_name_desc) }
       scope :order_by_name_asc, -> { joins(:project).merge(Project.sorted_by_name_asc) }
 
-      delegate :avatar_path, :description, :name, to: :project
+      delegate :avatar_path, :description, :name, :star_count, :forks_count, to: :project
 
       def versions
         project.releases.order_released_desc

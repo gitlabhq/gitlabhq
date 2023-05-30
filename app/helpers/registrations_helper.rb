@@ -15,8 +15,9 @@ module RegistrationsHelper
     'devise/shared/signup_box'
   end
 
+  # overridden in EE
   def register_omniauth_params(_local_assigns)
-    { intent: :register }
+    {}
   end
 end
 

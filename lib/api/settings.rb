@@ -125,6 +125,10 @@ module API
       given plantuml_enabled: ->(val) { val } do
         requires :plantuml_url, type: String, desc: 'The PlantUML server URL'
       end
+      optional :diagramsnet_enabled, type: Boolean, desc: 'Enable Diagrams.net'
+      given diagramsnet_enabled: ->(val) { val } do
+        requires :diagramsnet_url, type: String, desc: 'The Diagrams.net server URL'
+      end
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       optional :project_export_enabled, type: Boolean, desc: 'Enable project export'
       optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'

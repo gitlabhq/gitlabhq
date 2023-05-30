@@ -19,6 +19,8 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:description).to(:project) }
   it { is_expected.to delegate_method(:name).to(:project) }
+  it { is_expected.to delegate_method(:star_count).to(:project) }
+  it { is_expected.to delegate_method(:forks_count).to(:project) }
 
   describe '.for_projects' do
     it 'returns catalog resources for the given project IDs' do

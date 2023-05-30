@@ -11837,6 +11837,8 @@ CREATE TABLE application_settings (
     remember_me_enabled boolean DEFAULT true NOT NULL,
     encrypted_anthropic_api_key bytea,
     encrypted_anthropic_api_key_iv bytea,
+    diagramsnet_enabled boolean DEFAULT true NOT NULL,
+    diagramsnet_url text DEFAULT 'https://embed.diagrams.net'::text,
     allow_account_deletion boolean DEFAULT true NOT NULL,
     vertex_project text,
     wiki_asciidoc_allow_uri_includes boolean DEFAULT false NOT NULL,
@@ -11856,6 +11858,7 @@ CREATE TABLE application_settings (
     CONSTRAINT app_settings_registry_repair_worker_max_concurrency_positive CHECK ((container_registry_data_repair_detail_worker_max_concurrency >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
     CONSTRAINT app_settings_yaml_max_size_positive CHECK ((max_yaml_size_bytes > 0)),
+    CONSTRAINT check_0542340619 CHECK ((char_length(diagramsnet_url) <= 2048)),
     CONSTRAINT check_17d9558205 CHECK ((char_length((kroki_url)::text) <= 1024)),
     CONSTRAINT check_2b820eaac3 CHECK ((char_length(database_grafana_tag) <= 255)),
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
@@ -22256,6 +22259,8 @@ CREATE TABLE schema_inconsistencies (
     object_name text NOT NULL,
     table_name text NOT NULL,
     valitador_name text NOT NULL,
+    diff text NOT NULL,
+    CONSTRAINT check_001d186ac7 CHECK ((char_length(diff) <= 6144)),
     CONSTRAINT check_120b6c86d0 CHECK ((char_length(valitador_name) <= 63)),
     CONSTRAINT check_a0411f31fd CHECK ((char_length(object_name) <= 63)),
     CONSTRAINT check_d96408dfd2 CHECK ((char_length(table_name) <= 63))
@@ -33100,8 +33105,6 @@ CREATE UNIQUE INDEX kubernetes_namespaces_cluster_and_namespace ON clusters_kube
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_and_note_id_index ON merge_request_user_mentions USING btree (merge_request_id, note_id);
 
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_index ON merge_request_user_mentions USING btree (merge_request_id) WHERE (note_id IS NULL);
-
-CREATE INDEX merge_requests_state_id_temp_index ON merge_requests USING btree (id) WHERE (state_id = ANY (ARRAY[2, 3]));
 
 CREATE INDEX migrate_index_users_for_active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = 0) OR (user_type = ANY (ARRAY[0, 6, 4, 13]))) AND ((user_type IS NULL) OR (user_type = 0) OR (user_type = ANY (ARRAY[0, 4, 5]))));
 

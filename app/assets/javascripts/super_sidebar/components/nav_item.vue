@@ -51,6 +51,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isSubitem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     pillData() {
@@ -99,12 +104,16 @@ export default {
       return {
         'gl-py-2': this.isPinnable,
         'gl-py-3': !this.isPinnable,
+        'gl-mx-2': this.isSubitem,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
     },
     navItemLinkComponent() {
       return this.item.to ? NavItemRouterLink : NavItemLink;
+    },
+    iconClasses() {
+      return this.isSubitem === true ? 'gl-ml-2 gl-mr-4' : 'gl-w-6 gl-mx-3';
     },
   },
 };
@@ -128,7 +137,7 @@ export default {
         style="width: 3px; border-radius: 3px; margin-right: 1px"
         data-testid="active-indicator"
       ></div>
-      <div class="gl-flex-shrink-0 gl-w-6 gl-mx-3">
+      <div :class="iconClasses" class="gl-flex-shrink-0">
         <slot name="icon">
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2 item-icon" />
           <gl-icon

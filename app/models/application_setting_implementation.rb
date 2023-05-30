@@ -132,6 +132,8 @@ module ApplicationSettingImplementation
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         plantuml_url: nil,
+        diagramsnet_enabled: true,
+        diagramsnet_url: 'https://embed.diagrams.net',
         polling_interval_multiplier: 1,
         productivity_analytics_start_date: Time.current,
         project_download_export_limit: 1,

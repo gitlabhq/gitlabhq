@@ -7,7 +7,12 @@ module Integrations::Actions
     include Integrations::Params
     include IntegrationsHelper
 
+    # :overrides is defined in Admin:IntegrationsController
+    # rubocop:disable Rails/LexicallyScopedActionFilter
+    before_action :ensure_integration_enabled, only: [:edit, :update, :overrides, :test]
     before_action :integration, only: [:edit, :update, :overrides, :test]
+    # rubocop:enable Rails/LexicallyScopedActionFilter
+
     before_action :render_404, only: :edit, if: -> do
       integration.to_param == 'prometheus' && Feature.enabled?(:remove_monitor_metrics)
     end
@@ -56,6 +61,10 @@ module Integrations::Actions
 
   def integration
     @integration ||= find_or_initialize_non_project_specific_integration(params[:id])
+  end
+
+  def ensure_integration_enabled
+    render_404 unless integration
   end
 
   def success_message

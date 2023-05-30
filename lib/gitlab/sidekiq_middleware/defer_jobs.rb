@@ -4,6 +4,7 @@ module Gitlab
   module SidekiqMiddleware
     class DeferJobs
       include Sidekiq::ServerMiddleware
+
       DELAY = ENV.fetch("SIDEKIQ_DEFER_JOBS_DELAY", 5.minutes)
       FEATURE_FLAG_PREFIX = "defer_sidekiq_jobs"
 

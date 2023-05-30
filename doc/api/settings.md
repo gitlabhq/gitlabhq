@@ -67,6 +67,8 @@ Example response:
   "repository_storages_weighted": {"default": 100},
   "plantuml_enabled": false,
   "plantuml_url": null,
+  "diagramsnet_enabled": true,
+  "diagramsnet_url": "https://embed.diagrams.net",
   "kroki_enabled": false,
   "kroki_url": null,
   "terminal_max_session_time": 0,
@@ -193,6 +195,8 @@ Example response:
   "repository_storages": ["default"],
   "plantuml_enabled": false,
   "plantuml_url": null,
+  "diagramsnet_enabled": true,
+  "diagramsnet_url": "https://embed.diagrams.net",
   "terminal_max_session_time": 0,
   "polling_interval_multiplier": 1.0,
   "rsa_key_restriction": 0,
@@ -325,6 +329,8 @@ listed in the descriptions of the relevant settings.
 | `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
 | `default_project_deletion_protection` **(PREMIUM SELF)** | boolean | no                            | Enable default project deletion protection so only administrators can delete projects. Default is `false`. |
 | `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
+| `diagramsnet_enabled`                       | boolean          | no                                   | (If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md). Default is `true`. |
+| `diagramsnet_url`                           | string           | required by: `diagramsnet_enabled`      | The Diagrams.net instance URL for integration. |
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
 | `diff_max_lines`                         | integer          | no                                   | Maximum [lines in a diff](../user/admin_area/diff_limits.md). |

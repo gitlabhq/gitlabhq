@@ -65,6 +65,7 @@ export const CI_YAML_LINK = 'CI_YAML_LINK';
 export const pipelineEditorTrackingOptions = {
   label: 'pipeline_editor',
   actions: {
+    browseCatalog: 'browse_catalog',
     browseTemplates: 'browse_templates',
     closeHelpDrawer: 'close_help_drawer',
     commitCiConfig: 'commit_ci_config',

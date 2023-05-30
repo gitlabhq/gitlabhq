@@ -29,8 +29,20 @@ module Types
           resolver: Resolvers::ReleasesResolver,
           alpha: { milestone: '16.1' }
 
+        field :star_count, GraphQL::Types::Int, null: false,
+          description: 'Number of times the catalog resource has been starred.',
+          alpha: { milestone: '16.1' }
+
+        field :forks_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
+          description: 'Number of times the catalog resource has been forked.',
+          alpha: { milestone: '16.1' }
+
         def web_path
           ::Gitlab::Routing.url_helpers.project_path(object.project)
+        end
+
+        def forks_count
+          BatchLoader::GraphQL.wrap(object.forks_count)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes
