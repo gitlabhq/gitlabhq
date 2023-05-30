@@ -97,6 +97,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_data_repair_detail_worker_max_concurrency).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to allow_value(true).for(:container_registry_expiration_policies_caching) }
     it { is_expected.to allow_value(false).for(:container_registry_expiration_policies_caching) }
@@ -108,6 +109,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_data_repair_detail_worker_max_concurrency) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }

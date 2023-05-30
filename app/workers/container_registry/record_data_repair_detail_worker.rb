@@ -14,7 +14,6 @@ module ContainerRegistry
     worker_resource_boundary :unknown
     idempotent!
 
-    MAX_CAPACITY = 2
     LEASE_TIMEOUT = 1.hour.to_i
 
     def perform_work
@@ -60,10 +59,14 @@ module ContainerRegistry
     end
 
     def max_running_jobs
-      MAX_CAPACITY
+      current_application_settings.container_registry_data_repair_detail_worker_max_concurrency.to_i
     end
 
     private
+
+    def current_application_settings
+      ::Gitlab::CurrentSettings.current_application_settings
+    end
 
     def next_project
       Project.pending_data_repair_analysis.first

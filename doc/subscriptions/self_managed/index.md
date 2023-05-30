@@ -37,7 +37,7 @@ Prorated charges are not possible without a quarterly usage report.
 You can view users for your license and determine if you've gone over your subscription.
 
 1. On the top bar, select **Main menu > Admin**.
-1. On the left menu, select **Subscription**.
+1. On the left menu, select **Users**.
 
 The lists of users are displayed.
 

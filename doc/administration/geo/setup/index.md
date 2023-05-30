@@ -47,6 +47,10 @@ If one or more of your sites is using the [2K reference architecture](../../refe
 
 [Configure the GitLab chart with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/).
 
+## Geo and self-compiled installations 
+
+Geo is not supported when you use a [self-compiled GitLab installation](../../../install/installation.md).
+
 ## Post-installation documentation
 
 After installing GitLab on the **secondary** sites and performing the initial configuration, see the [following documentation for post-installation information](../index.md#post-installation-documentation).

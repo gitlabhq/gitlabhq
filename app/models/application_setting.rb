@@ -390,6 +390,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :container_registry_delete_tags_service_timeout,
     :container_registry_cleanup_tags_service_max_list_size,
+    :container_registry_data_repair_detail_worker_max_concurrency,
     :container_registry_expiration_policies_worker_capacity,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 

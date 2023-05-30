@@ -67,6 +67,11 @@ RSpec.describe SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom2, feature_cate
       connection = described_class.new.connection
       connection.execute('ALTER TABLE issue_user_mentions ALTER COLUMN note_id TYPE bigint')
       connection.execute('ALTER TABLE issue_user_mentions ALTER COLUMN note_id_convert_to_bigint TYPE integer')
+      # Cleanup artefacts from executing `#down` in test setup
+      connection.execute('DROP INDEX IF EXISTS index_issue_user_mentions_on_note_id_convert_to_bigint')
+      connection.execute(
+        'ALTER TABLE issue_user_mentions DROP CONSTRAINT IF EXISTS fk_issue_user_mentions_note_id_convert_to_bigint'
+      )
 
       allow_any_instance_of(described_class).to receive(:com_or_dev_or_test_but_not_jh?).and_return(true)
 

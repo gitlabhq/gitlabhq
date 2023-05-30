@@ -148,14 +148,23 @@ RSpec.describe ContainerRegistry::RecordDataRepairDetailWorker, :aggregate_failu
   end
 
   describe '#max_running_jobs' do
+    let(:max_concurrency) { 3 }
+
+    before do
+      stub_application_setting(
+        container_registry_data_repair_detail_worker_max_concurrency: max_concurrency
+      )
+    end
+
     subject { worker.max_running_jobs }
 
-    it { is_expected.to eq(described_class::MAX_CAPACITY) }
+    it { is_expected.to eq(max_concurrency) }
   end
 
   describe '#remaining_work_count' do
+    let_it_be(:max_running_jobs) { 5 }
     let_it_be(:pending_projects) do
-      create_list(:project, described_class::MAX_CAPACITY + 2)
+      create_list(:project, max_running_jobs + 2)
     end
 
     subject { worker.remaining_work_count }
@@ -163,9 +172,10 @@ RSpec.describe ContainerRegistry::RecordDataRepairDetailWorker, :aggregate_failu
     context 'when on Gitlab.com', :saas do
       before do
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        allow(worker).to receive(:max_running_jobs).and_return(max_running_jobs)
       end
 
-      it { is_expected.to eq(described_class::MAX_CAPACITY + 1) }
+      it { is_expected.to eq(worker.max_running_jobs + 1) }
 
       context 'when the Gitlab API is not supported' do
         before do
