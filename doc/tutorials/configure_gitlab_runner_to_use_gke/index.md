@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine
+# Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine **(FREE)**
 
 This tutorial describes how to configure GitLab Runner to use the Google Kubernetes Engine (GKE)
 to run jobs.
@@ -187,12 +187,12 @@ To check if runners are running in the GKE cluster, you can either:
   kubectl get pods
   ```
 
-  You should see the following output, which shows your runners
+  You should see the following output. This shows that your runners
   are running in the GKE cluster:
 
   ```plaintext
   NAME                             READY   STATUS    RESTARTS   AGE
-  gitlab-runner-bf9894bdb-wplxn    1/1     Running   0          5m
+  gitlab-runner-hash-short_hash    1/1     Running   0          5m
   ```
 
 - Check the job log in GitLab:

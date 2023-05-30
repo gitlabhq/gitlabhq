@@ -106,7 +106,7 @@ identifying abstract concepts and are subject to changes as we refine the design
 
 A pipeline component is a reusable single-purpose building block that abstracts away a single pipeline configuration unit.
 Components are used to compose a part or entire pipeline configuration.
-It can optionally take input parameters and set output data to be adaptable and reusable in different pipeline contexts,
+It can optionally take input parameters to be adaptable and reusable in different pipeline contexts,
 while encapsulating and isolating implementation details.
 
 Components allow a pipeline to be assembled by using abstractions instead of having all the details defined in one place.
@@ -204,7 +204,6 @@ A component YAML file:
 - Must specify its **type** in the filename, which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
 - Must define its **content** based on the type.
 - Must specify **input parameters** that it accepts. Components should depend on input parameters for dynamic values and not environment variables.
-- Can optionally define **output data** that it returns.
 - Should be **validated statically** (for example: using JSON schema validators).
 
 ```yaml

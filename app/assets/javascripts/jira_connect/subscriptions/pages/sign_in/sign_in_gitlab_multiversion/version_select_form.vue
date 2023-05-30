@@ -56,7 +56,7 @@ export default {
         ? this.$options.i18n.buttonNext
         : this.$options.i18n.buttonSave;
     },
-    showVersonSelect() {
+    showVersionSelect() {
       return !this.showSetupInstructions && !this.showSelfManagedInstanceInput;
     },
   },
@@ -99,7 +99,7 @@ export default {
 
 <template>
   <gl-form class="gl-max-w-62 gl-mx-auto" @submit.prevent="onSubmit">
-    <div v-if="showVersonSelect">
+    <div v-if="showVersionSelect">
       <h5 class="gl-mb-5">{{ $options.i18n.title }}</h5>
       <gl-form-radio-group v-model="selected" class="gl-mb-3" name="gitlab_version">
         <gl-form-radio :value="$options.radioOptions.saas">

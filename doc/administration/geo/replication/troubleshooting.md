@@ -1474,7 +1474,31 @@ Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Ge
 This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
 and then calculate this value on the secondary to check if they match. This
-does not change anything in the UI:
+does not change anything in the UI.
+
+For GitLab 14.4 and later:
+
+```ruby
+# Run on secondary
+status = {}
+
+Packages::PackageFile.find_each do |package_file|
+  primary_checksum = package_file.verification_checksum
+  secondary_checksum = Packages::PackageFile.sha256_hexdigest(package_file.file.path)
+  verification_status = (primary_checksum == secondary_checksum)
+
+  status[verification_status.to_s] ||= []
+  status[verification_status.to_s] << package_file.id
+end
+
+# Count how many of each value we get
+status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
+
+# See the output in its entirety
+status
+```
+
+For GitLab 14.3 and earlier:
 
 ```ruby
 # Run on secondary

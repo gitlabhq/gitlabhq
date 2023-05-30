@@ -1045,7 +1045,7 @@ a node and change its status from primary to replica (and vice versa).
    #redis['master_port'] = 6379
 
    # Set up password authentication for Redis and replicas (use the same password in all nodes).
-   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
+   redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
    redis['master_password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
 
    ## Must be the same in every Redis node

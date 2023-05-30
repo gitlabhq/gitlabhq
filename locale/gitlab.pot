@@ -29515,6 +29515,9 @@ msgstr ""
 msgid "NamespaceLimits|Storage Phased Notification"
 msgstr ""
 
+msgid "NamespaceLimits|There was an error fetching the exclusion list, try refreshing the page."
+msgstr ""
+
 msgid "NamespaceLimits|These namespaces won't receive any notifications nor any degraded functionality while they remain on this list"
 msgstr ""
 
@@ -41282,6 +41285,9 @@ msgid "SecurityReports|Error parsing security reports"
 msgstr ""
 
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
+msgstr ""
+
+msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %{ids}"
 msgstr ""
 
 msgid "SecurityReports|Has issue"

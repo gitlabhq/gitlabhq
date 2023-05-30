@@ -169,6 +169,7 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
+  - ".gitlab/ci/cng/**/*"
   - ".gitlab/ci/review-apps/**/*"
   - "scripts/review_apps/**/*"
   - "scripts/trigger-build.rb"

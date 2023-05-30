@@ -1139,10 +1139,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20230524134151.tgz#027b859d98a6e062eb7e0632d4d9bc094dc3ac9a"
   integrity sha512-uduf0YWp7iotdz+TrYcnbsZVfMo6FytNAPXKxBxHRsK2x6cDqR9HPni/JDkgtvXJDW6cgB9Um0/+NoKcZD0/KQ==
 
-"@graphql-eslint/eslint-plugin@3.19.0":
-  version "3.19.0"
-  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.19.0.tgz#08cf96f7b093622449064bc258526a73f92944eb"
-  integrity sha512-p1jK3IUTi+wecMAzeWpDWQE3ZskayKvE6sFnELaVqmYERJhsocKp1yoVWgWfLuSDgtcMEKG7YHz8OQCmy/9Siw==
+"@graphql-eslint/eslint-plugin@3.19.1":
+  version "3.19.1"
+  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.19.1.tgz#b8e1b6a061b46fd7ad0bbf431b2dc2657ef484e7"
+  integrity sha512-8hllEu0dFXDk9poJRN0gIqrGoBblMe1TpRJFx0We+ZKWNQgaxvQ0QGmJPDak+BZV5BcOAM7m/GH2XWDgVB2nQA==
   dependencies:
     "@babel/code-frame" "^7.18.6"
     "@graphql-tools/code-file-loader" "^7.3.6"
