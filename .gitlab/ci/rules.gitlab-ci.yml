@@ -1144,6 +1144,8 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: always
 
