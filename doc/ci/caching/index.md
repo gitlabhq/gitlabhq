@@ -261,6 +261,39 @@ cache:
   key: $CI_JOB_NAME
 ```
 
+### Use a variable to control a job's cache policy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371480) in GitLab 16.1.
+
+To reduce duplication of jobs where the only difference is the pull policy, you can use a [CI/CD variable](../variables/index.md).
+
+For example:
+
+```yaml
+conditional-policy:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        POLICY: pull-push
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      variables:
+        POLICY: pull
+  stage: build
+  cache:
+    key: gems
+    policy: $POLICY
+    paths:
+      - vendor/bundle
+  script:
+    - echo "This job pulls and pushes the cache depending on the branch"
+    - echo "Downloading dependencies..."
+```
+
+In this example, the job's cache policy is:
+
+- `pull-push` for changes to the default branch.
+- `pull` for changes to other branches.
+
 ### Cache Node.js dependencies
 
 If your project uses [npm](https://www.npmjs.com/) to install Node.js

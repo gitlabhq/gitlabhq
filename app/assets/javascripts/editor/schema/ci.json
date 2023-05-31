@@ -1067,11 +1067,7 @@
           "type": "string",
           "markdownDescription": "Determines the strategy for downloading and updating the cache. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachepolicy)",
           "default": "pull-push",
-          "enum": [
-            "pull",
-            "push",
-            "pull-push"
-          ]
+          "pattern": "pull-push|pull|push|\\$\\w{1,255}"
         },
         "unprotect": {
           "type": "boolean",

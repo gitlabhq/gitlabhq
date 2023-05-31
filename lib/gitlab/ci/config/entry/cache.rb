@@ -10,7 +10,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[key untracked paths when policy unprotect fallback_keys].freeze
-          ALLOWED_POLICY = %w[pull-push push pull].freeze
+          ALLOWED_POLICY = /pull-push|push|pull|\$\w{1,255}*/
           DEFAULT_POLICY = 'pull-push'
           ALLOWED_WHEN = %w[on_success on_failure always].freeze
           DEFAULT_WHEN = 'on_success'
@@ -18,9 +18,9 @@ module Gitlab
 
           validations do
             validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
-            validates :policy, type: String, allow_blank: true, inclusion: {
-              in: ALLOWED_POLICY,
-              message: "should be one of: #{ALLOWED_POLICY.join(', ')}"
+            validates :policy, type: String, allow_blank: true, format: {
+              with: ALLOWED_POLICY,
+              message: "should be a variable or one of: pull-push, push, pull"
             }
 
             with_options allow_nil: true do

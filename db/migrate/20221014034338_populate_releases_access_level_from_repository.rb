@@ -6,7 +6,7 @@ class PopulateReleasesAccessLevelFromRepository < Gitlab::Database::Migration[2.
   disable_ddl_transaction!
 
   def up
-    update_column_in_batches(
+    update_column_in_batches( # rubocop: disable Migration/UpdateColumnInBatches
       :project_features,
       :releases_access_level,
       Arel.sql('repository_access_level')

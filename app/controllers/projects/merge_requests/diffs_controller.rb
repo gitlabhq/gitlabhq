@@ -13,7 +13,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   around_action :allow_gitaly_ref_name_caching
 
-  after_action :track_viewed_diffs_events, only: [:diffs_batch]
+  after_action :track_viewed_diffs_events, only: [:diffs_batch, :diff_for_path]
 
   urgency :low, [
     :show,

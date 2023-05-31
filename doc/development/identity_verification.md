@@ -14,7 +14,6 @@ Because of the many registration paths and multiple verification stages, identit
 
 Before you enable these features, ensure [hard email confirmation](../security/user_email_confirmation.md) is enabled and [Arkose](../integration/arkose.md#configuration) is configured properly.
 
-
 | Feature flag name | Description |
 |---------|-------------|
 | `identity_verification` | Turns on email verification for all registration paths |

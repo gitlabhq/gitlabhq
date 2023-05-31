@@ -1453,6 +1453,7 @@ Must be used with `cache: paths`, or nothing is cached.
 - `pull`
 - `push`
 - `pull-push` (default)
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `cache:policy`**:
 
@@ -1479,6 +1480,10 @@ faster-test-job:
     - echo "This job script uses the cache, but does not update it."
     - echo "Running tests..."
 ```
+
+**Related topics**:
+
+- You can [use a variable to control a job's cache policy](../caching/index.md#use-a-variable-to-control-a-jobs-cache-policy).
 
 #### `cache:fallback_keys`
 

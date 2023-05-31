@@ -29,6 +29,59 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     end
   end
 
+  shared_examples 'diff tracking' do
+    it 'tracks mr_diffs event' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_mr_diffs_action)
+        .with(merge_request: merge_request)
+
+      method_call
+    end
+
+    context 'when DNT is enabled' do
+      before do
+        stub_do_not_track('1')
+      end
+
+      it 'does not track any mr_diffs event' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_mr_diffs_action)
+
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_mr_diffs_single_file_action)
+
+        method_call
+      end
+    end
+
+    context 'when user has view_diffs_file_by_file set to false' do
+      before do
+        user.update!(view_diffs_file_by_file: false)
+      end
+
+      it 'does not track single_file_diffs events' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_mr_diffs_single_file_action)
+
+        method_call
+      end
+    end
+
+    context 'when user has view_diffs_file_by_file set to true' do
+      before do
+        user.update!(view_diffs_file_by_file: true)
+      end
+
+      it 'tracks single_file_diffs events' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_diffs_single_file_action)
+          .with(merge_request: merge_request, user: user)
+
+        method_call
+      end
+    end
+  end
+
   shared_examples 'forked project with submodules' do
     render_views
 
@@ -327,6 +380,10 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     context 'when the merge request exists' do
       context 'when the user can view the merge request' do
         context 'when the path exists in the diff' do
+          include_examples 'diff tracking' do
+            let(:method_call) { diff_for_path(old_path: existing_path, new_path: existing_path) }
+          end
+
           it 'enables diff notes' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
@@ -399,6 +456,10 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     end
 
     shared_examples_for 'successful request' do
+      include_examples 'diff tracking' do
+        let(:method_call) { subject }
+      end
+
       it 'returns success' do
         subject
 
@@ -413,57 +474,6 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
         expect(Gitlab::Metrics).to receive(:measure).with(:diffs_render).and_call_original
 
         subject
-      end
-
-      it 'tracks mr_diffs event' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .to receive(:track_mr_diffs_action)
-          .with(merge_request: merge_request)
-
-        subject
-      end
-
-      context 'when DNT is enabled' do
-        before do
-          stub_do_not_track('1')
-        end
-
-        it 'does not track any mr_diffs event' do
-          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .not_to receive(:track_mr_diffs_action)
-
-          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .not_to receive(:track_mr_diffs_single_file_action)
-
-          subject
-        end
-      end
-
-      context 'when user has view_diffs_file_by_file set to false' do
-        before do
-          user.update!(view_diffs_file_by_file: false)
-        end
-
-        it 'does not track single_file_diffs events' do
-          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .not_to receive(:track_mr_diffs_single_file_action)
-
-          subject
-        end
-      end
-
-      context 'when user has view_diffs_file_by_file set to true' do
-        before do
-          user.update!(view_diffs_file_by_file: true)
-        end
-
-        it 'tracks single_file_diffs events' do
-          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .to receive(:track_mr_diffs_single_file_action)
-            .with(merge_request: merge_request, user: user)
-
-          subject
-        end
       end
     end
 
