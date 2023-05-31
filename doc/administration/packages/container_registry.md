@@ -598,7 +598,7 @@ The default configuration for the storage driver is scheduled to be [changed](ht
 <!--- end_remove -->
 
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
-Configure it by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
+Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
 Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
 
 **Omnibus GitLab installations**

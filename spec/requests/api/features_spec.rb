@@ -26,8 +26,6 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
       actor.respond_to?(:admin) && actor.admin?
     end
 
-    stub_feature_flags(admin_mode_for_api: true)
-
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
   end
@@ -86,9 +84,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    # Skipping this spec here, because the spec clears all the feature flags to have a deterministic list of features returned.
-    # which in turns causes the `admin_mode` feature not to be enabled and the spec to fail.
-    it 'returns the feature list for admins', :skip do
+    it 'returns the feature list for admins' do
       get api('/features', admin, admin_mode: true)
 
       expect(json_response).to match_array(expected_features)

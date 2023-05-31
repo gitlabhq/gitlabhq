@@ -457,6 +457,13 @@ module Gitlab
 end
 ```
 
+Because we support multiple AI providers, you may also use those providers for the same example:
+
+```ruby
+Gitlab::Llm::VertexAi::Client.new(user)
+Gitlab::Llm::Anthropic::Client.new(user)
+```
+
 ### Add Ai Action to GraphQL
 
 TODO

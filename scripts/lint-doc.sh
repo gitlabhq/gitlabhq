@@ -197,7 +197,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: Merged results pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
 else
-  if ! yarn markdownlint --config .markdownlint.yml "${MD_DOC_PATH}" --rules doc/.markdownlint/rules;
+  if ! yarn markdownlint --rules doc/.markdownlint/rules ${MD_DOC_PATH};
   then
     # shellcheck disable=2059
     printf "${COLOR_RED}ERROR: Markdownlint failed with errors!${COLOR_RESET}\n" >&2

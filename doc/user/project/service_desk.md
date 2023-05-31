@@ -182,6 +182,11 @@ Behind the scenes, Service Desk works by the special Support Bot user creating i
 This user isn't a [billable user](../../subscriptions/self_managed/index.md#billable-users),
 so it does not count toward the license limit count.
 
+In GitLab 16.0 and earlier, comments generated from Service Desk emails show `GitLab Support Bot`
+as the author. In [GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/226995),
+these comments show the email of the user who sent the email.
+This feature only applies to comments made in GitLab 16.1 and later.
+
 #### Change the Support Bot's display name
 
 You can change the display name of the Support Bot user. Emails sent from Service Desk have

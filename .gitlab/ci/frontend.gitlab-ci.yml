@@ -260,7 +260,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 7
+  parallel: 12
 
 jest predictive:
   extends:
@@ -278,7 +278,7 @@ jest as-if-foss:
     - .frontend:rules:jest:as-if-foss
     - .as-if-foss
   needs: ["rspec-all frontend_fixture as-if-foss"]
-  parallel: 4
+  parallel: 10
 
 jest predictive as-if-foss:
   extends:

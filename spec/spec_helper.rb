@@ -351,16 +351,6 @@ RSpec.configure do |config|
       end
     end
 
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-    # The ongoing implementation of Admin Mode for API is behind the :admin_mode_for_api feature flag.
-    # All API specs will be adapted continuously. The following list contains the specs that have not yet been adapted.
-    # The feature flag is disabled for these specs as long as they are not yet adapted.
-    admin_mode_for_api_feature_flag_paths = %w[]
-
-    if example.metadata[:file_path].start_with?(*admin_mode_for_api_feature_flag_paths)
-      stub_feature_flags(admin_mode_for_api: false)
-    end
-
     # Make sure specs test by default admin mode setting on, unless forced to the opposite
     stub_application_setting(admin_mode: true) unless example.metadata[:do_not_mock_admin_mode_setting]
 

@@ -2,11 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
-    product_group: :authentication_and_authorization, quarantine: {
-      only: { pipeline: :nightly },
-      type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408317'
-    } do
+    product_group: :authentication_and_authorization do
     let!(:user) { Resource::User.fabricate_via_api! }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }
     let(:instance_oauth_app) do
@@ -65,7 +61,9 @@ module QA
 
         expect(page.driver.current_url).to include(Runtime::Scenario.gitlab_address)
 
-        Flow::Login.sign_in(as: user)
+        Flow::Login.sign_in(as: user, skip_page_validation: true)
+
+        Flow::UserOnboarding.onboard_user
 
         expect(page.driver.current_url).to include(consumer_host)
 
