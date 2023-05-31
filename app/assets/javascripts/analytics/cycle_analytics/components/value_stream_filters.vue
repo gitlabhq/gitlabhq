@@ -82,6 +82,7 @@ export default {
       <div>
         <projects-dropdown-filter
           v-if="hasProjectFilter"
+          toggle-classes="gl-max-w-26"
           class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
           :group-namespace="groupPath"
           :query-params="projectsQueryParams"

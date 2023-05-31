@@ -22,7 +22,8 @@ export default {
   props: {
     versionDigest: {
       type: String,
-      required: true,
+      required: false,
+      default: undefined,
     },
   },
   computed: {
@@ -75,7 +76,7 @@ export default {
       <template #title>
         <h4 class="page-title gl-my-2">{{ __("What's new") }}</h4>
       </template>
-      <template v-if="features.length">
+      <template v-if="features.length || !fetching">
         <gl-infinite-scroll
           :fetched-items="features.length"
           :max-list-height="drawerBodyHeight"

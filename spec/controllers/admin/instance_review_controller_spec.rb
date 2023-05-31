@@ -18,7 +18,7 @@ RSpec.describe Admin::InstanceReviewController, feature_category: :service_ping 
 
     subject { post :index }
 
-    context 'with usage ping enabled' do
+    context 'with usage ping enabled', :with_license do
       before do
         stub_application_setting(usage_ping_enabled: true)
         stub_usage_data_connections

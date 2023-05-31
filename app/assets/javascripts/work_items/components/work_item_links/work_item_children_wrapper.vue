@@ -1,15 +1,20 @@
 <script>
+import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
+import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
 
 export default {
@@ -74,6 +79,58 @@ export default {
     },
   },
   methods: {
+    async removeChild(child) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: { input: { id: child.id, hierarchyWidget: { parentId: null } } },
+        });
+
+        if (data.workItemUpdate.errors.length) {
+          throw new Error(data.workItemUpdate.errors);
+        }
+
+        await this.$apollo.mutate({
+          mutation: removeHierarchyChildMutation,
+          variables: { fullPath: this.fullPath, iid: this.workItemIid, workItem: child },
+        });
+
+        this.$toast.show(s__('WorkItem|Child removed'), {
+          action: {
+            text: s__('WorkItem|Undo'),
+            onClick: (_, toast) => {
+              this.undoChildRemoval(child);
+              toast.hide();
+            },
+          },
+        });
+      } catch (error) {
+        this.$emit('error', s__('WorkItem|Something went wrong while removing child.'));
+        Sentry.captureException(error);
+      }
+    },
+    async undoChildRemoval(child) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
+        });
+
+        if (data.workItemUpdate.errors.length) {
+          throw new Error(data.workItemUpdate.errors);
+        }
+
+        await this.$apollo.mutate({
+          mutation: addHierarchyChildMutation,
+          variables: { fullPath: this.fullPath, iid: this.workItemIid, workItem: child },
+        });
+
+        this.$toast.show(s__('WorkItem|Child removal reverted'));
+      } catch (error) {
+        this.$emit('error', s__('WorkItem|Something went wrong while undoing child removal.'));
+        Sentry.captureException(error);
+      }
+    },
     addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
         query: workItemByIidQuery,
@@ -188,7 +245,8 @@ export default {
           },
         )
         .catch((error) => {
-          this.updateError = error.message;
+          this.$emit('error', error.message);
+          Sentry.captureException(error);
         });
     },
   },
@@ -213,7 +271,7 @@ export default {
       :has-indirect-children="hasIndirectChildren"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
-      @removeChild="$emit('removeChild', $event)"
+      @removeChild="removeChild"
       @click="$emit('show-modal', { event: $event, child: $event.childItem || child })"
     />
   </component>

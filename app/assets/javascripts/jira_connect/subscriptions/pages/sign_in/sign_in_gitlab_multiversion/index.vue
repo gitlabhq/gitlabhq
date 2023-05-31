@@ -8,6 +8,7 @@ import { updateInstallation, setApiBaseURL } from '~/jira_connect/subscriptions/
 import {
   GITLAB_COM_BASE_PATH,
   I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+  FAILED_TO_UPDATE_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 
@@ -56,6 +57,7 @@ export default {
         .catch(() => {
           this.setAlert({
             message: I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+            linkUrl: FAILED_TO_UPDATE_DOC_LINK,
             variant: 'danger',
           });
           this.loadingVersionSelect = false;

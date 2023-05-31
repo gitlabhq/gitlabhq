@@ -116,7 +116,7 @@ docs-lint deprecations-and-removals:
     SETUP_DB: "false"
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .docs:rules:deprecations-and-removals
   stage: lint

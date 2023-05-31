@@ -304,14 +304,9 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
   - In all GitLab versions:
     - Re-install the GitLab for Jira Cloud app. This method might remove all synced data from the Jira development panel.
 
-### `Failed to update GitLab version` error when setting up the GitLab for Jira Cloud app for self-managed instances
+### `Failed to update the GitLab instance` for self-managed instances
 
-When you set up the GitLab for Jira Cloud app, you might get the following message after you enter your
-self-managed instance URL:
-
-```plaintext
-Failed to update GitLab version. Please try again.
-```
+When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your self-managed instance URL.
 
 To resolve this issue, ensure all prerequisites for your installation method have been met:
 

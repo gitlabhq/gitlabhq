@@ -13,18 +13,15 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
-import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   getIssueDetailsResponse,
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
-  changeWorkItemParentMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
   mockWorkItemCommentNote,
-  childrenWorkItems,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -35,15 +32,6 @@ describe('WorkItemLinks', () => {
   let wrapper;
   let mockApollo;
 
-  const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
-
-  const $toast = {
-    show: jest.fn(),
-  };
-
-  const mutationChangeParentHandler = jest
-    .fn()
-    .mockResolvedValue(changeWorkItemParentMutationResponse);
   const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
   const responseWithoutAddChildPermission = jest
     .fn()
@@ -51,14 +39,12 @@ describe('WorkItemLinks', () => {
 
   const createComponent = async ({
     fetchHandler = responseWithAddChildPermission,
-    mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
         [workItemByIidQuery, fetchHandler],
-        [changeWorkItemParentMutation, mutationHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
       ],
       resolvers,
@@ -76,9 +62,6 @@ describe('WorkItemLinks', () => {
         issuableIid: 1,
       },
       apolloProvider: mockApollo,
-      mocks: {
-        $toast,
-      },
       stubs: {
         WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
           methods: {
@@ -116,8 +99,7 @@ describe('WorkItemLinks', () => {
   `(
     '$expectedAssertion "Add" button in hierarchy widget header when "userPermissions.adminParentLink" is $value',
     async ({ workItemFetchHandler, value }) => {
-      createComponent({ fetchHandler: workItemFetchHandler });
-      await waitForPromises();
+      await createComponent({ fetchHandler: workItemFetchHandler });
 
       expect(findToggleFormDropdown().exists()).toBe(value);
     },
@@ -221,50 +203,6 @@ describe('WorkItemLinks', () => {
 
     it('does not display link menu on children', () => {
       expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
-    });
-  });
-
-  describe('remove child', () => {
-    let firstChild;
-
-    beforeEach(async () => {
-      await createComponent({ mutationHandler: mutationChangeParentHandler });
-
-      [firstChild] = childrenWorkItems;
-    });
-
-    it('calls correct mutation with correct variables', async () => {
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-
-      await waitForPromises();
-
-      expect(mutationChangeParentHandler).toHaveBeenCalledWith({
-        input: {
-          id: WORK_ITEM_ID,
-          hierarchyWidget: {
-            parentId: null,
-          },
-        },
-      });
-    });
-
-    it('shows toast when mutation succeeds', async () => {
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-
-      await waitForPromises();
-
-      expect($toast.show).toHaveBeenCalledWith('Child removed', {
-        action: { onClick: expect.anything(), text: 'Undo' },
-      });
-    });
-
-    it('renders correct number of children after removal', async () => {
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
-
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-      await waitForPromises();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(3);
     });
   });
 

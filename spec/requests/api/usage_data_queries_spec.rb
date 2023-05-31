@@ -14,7 +14,7 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
     stub_database_flavor_check
   end
 
-  describe 'GET /usage_data/usage_data_queries' do
+  describe 'GET /usage_data/usage_data_queries', :with_license do
     let(:endpoint) { '/usage_data/queries' }
 
     context 'with authentication' do

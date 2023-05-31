@@ -612,7 +612,14 @@ module SearchHelper
 
   def sanitized_search_params
     sanitized_params = params.dup
-    sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential]) if sanitized_params.key?(:confidential)
+
+    if sanitized_params.key?(:confidential)
+      sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential])
+    end
+
+    if sanitized_params.key?(:include_archived)
+      sanitized_params[:include_archived] = Gitlab::Utils.to_boolean(sanitized_params[:include_archived])
+    end
 
     sanitized_params
   end

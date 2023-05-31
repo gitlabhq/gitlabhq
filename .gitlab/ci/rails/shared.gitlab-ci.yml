@@ -16,7 +16,7 @@ include:
   extends:
     - .default-retry
     - .default-before_script
-    - .rails-cache
+    - .ruby-cache
 
 .base-script:
   script:

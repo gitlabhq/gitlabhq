@@ -557,6 +557,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           project_id: '456',
           project_ids: %w(456 789),
           confidential: true,
+          include_archived: true,
           state: true,
           force_search_results: true,
           language: 'ruby'

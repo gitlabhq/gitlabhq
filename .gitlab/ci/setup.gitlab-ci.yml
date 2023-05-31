@@ -84,7 +84,7 @@ generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
     - .use-pg13
-    - .rails-cache
+    - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare
   before_script:

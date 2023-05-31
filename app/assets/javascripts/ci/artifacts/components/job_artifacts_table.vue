@@ -313,7 +313,13 @@ export default {
       return !job.archive?.downloadPath;
     },
     browseButtonDisabled(job) {
-      return !job.browseArtifactsPath;
+      return !job.browseArtifactsPath || !job.hasMetadata;
+    },
+    browseButtonHref(job) {
+      // make href blank when button is disabled so `cursor: not-allowed` is applied
+      if (this.browseButtonDisabled(job)) return '';
+
+      return job.browseArtifactsPath;
     },
     deleteButtonDisabled(job) {
       return !job.hasArtifacts || !this.canBulkDestroyArtifacts;
@@ -500,7 +506,7 @@ export default {
           <gl-button
             icon="folder-open"
             :disabled="browseButtonDisabled(item)"
-            :href="item.browseArtifactsPath"
+            :href="browseButtonHref(item)"
             :title="$options.i18n.browse"
             :aria-label="$options.i18n.browse"
             data-testid="job-artifacts-browse-button"

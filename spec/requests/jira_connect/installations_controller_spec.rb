@@ -106,13 +106,9 @@ RSpec.describe JiraConnect::InstallationsController, feature_category: :integrat
             do_request
 
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(json_response).to eq({
-              'errors' => {
-                'instance_url' => [
-                  'Could not be installed on the instance. Error response code 422'
-                ]
-              }
-            })
+            expect(json_response).to eq(
+              { 'errors' => 'Could not be installed on the instance. Error response code 422' }
+            )
           end
         end
 

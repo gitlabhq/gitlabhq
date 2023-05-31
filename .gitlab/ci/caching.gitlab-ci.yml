@@ -2,7 +2,7 @@ cache-workhorse:
   extends:
     - .default-retry
     - .default-before_script
-    - .rails-cache
+    - .ruby-cache
     - .setup-test-env-cache
     - .caching:rules:cache-workhorse
   stage: prepare

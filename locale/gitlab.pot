@@ -2960,9 +2960,6 @@ msgstr ""
 msgid "Admin Area / Dashboard"
 msgstr ""
 
-msgid "Admin Mode"
-msgstr ""
-
 msgid "Admin Note"
 msgstr ""
 
@@ -2970,6 +2967,9 @@ msgid "Admin Notifications"
 msgstr ""
 
 msgid "Admin message"
+msgstr ""
+
+msgid "Admin mode"
 msgstr ""
 
 msgid "Admin mode already enabled"
@@ -11911,6 +11911,9 @@ msgstr ""
 msgid "Container Scanning"
 msgstr ""
 
+msgid "Container must be a group."
+msgstr ""
+
 msgid "Container must be a project or a group."
 msgstr ""
 
@@ -16969,9 +16972,6 @@ msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd}
 msgstr ""
 
 msgid "Enter %{weights_link_start}weights%{weights_link_end} for storages for new repositories. Configured storages appear below."
-msgstr ""
-
-msgid "Enter 2FA for Admin Mode"
 msgstr ""
 
 msgid "Enter a name for your comment template"
@@ -24282,7 +24282,7 @@ msgstr ""
 msgid "Integrations|Failed to unlink namespace. Please try again."
 msgstr ""
 
-msgid "Integrations|Failed to update GitLab version. Please try again."
+msgid "Integrations|Failed to update the GitLab instance. See the %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
 msgid "Integrations|GitLab administrators can set up integrations that all groups and projects inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}instance-level integration management%{link_end}."
@@ -29510,6 +29510,9 @@ msgid "NamespaceLimits|%{linkStart}%{username}%{linkEnd} changed the limit to %{
 msgstr ""
 
 msgid "NamespaceLimits|Confirm limits change"
+msgstr ""
+
+msgid "NamespaceLimits|Enter a valid number greater or equal to zero."
 msgstr ""
 
 msgid "NamespaceLimits|Exclude"
@@ -47991,6 +47994,9 @@ msgstr ""
 msgid "Two-factor authentication disabled"
 msgstr ""
 
+msgid "Two-factor authentication for admin mode"
+msgstr ""
+
 msgid "Two-factor authentication grace period"
 msgstr ""
 
@@ -51340,6 +51346,9 @@ msgstr ""
 msgid "WorkItem|Child objectives and key results"
 msgstr ""
 
+msgid "WorkItem|Child removal reverted"
+msgstr ""
+
 msgid "WorkItem|Child removed"
 msgstr ""
 
@@ -52084,6 +52093,9 @@ msgid "You do not have access to any projects for creating incidents."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
+msgstr ""
+
+msgid "You do not have permission to access DORA4 metrics."
 msgstr ""
 
 msgid "You do not have permission to access dora metrics."

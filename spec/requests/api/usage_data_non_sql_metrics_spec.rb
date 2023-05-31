@@ -12,7 +12,7 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
     stub_usage_data_connections
   end
 
-  describe 'GET /usage_data/non_sql_metrics' do
+  describe 'GET /usage_data/non_sql_metrics', :with_license do
     let(:endpoint) { '/usage_data/non_sql_metrics' }
 
     context 'with authentication' do

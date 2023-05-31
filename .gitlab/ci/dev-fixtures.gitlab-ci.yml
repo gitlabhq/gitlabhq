@@ -1,7 +1,7 @@
 .run-dev-fixtures:
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .use-pg13
   stage: test

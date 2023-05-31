@@ -98,9 +98,10 @@ Below are the settings for SaaS runners on Linux.
   and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070).
 
 NOTE:
-SaaS runner instances are provisioned with a 25 GB storage volume. The underlying disk space of the storage volume
+Typical SaaS runner instances are provisioned with a 25 GB storage volume. GPU-enabled runners
+are provisioned with a 50 GB storage volume. The underlying disk space of the storage volume
 is shared by the operating system, the Docker image, and a copy of your cloned repository.
-This means that the available free disk space that your jobs can use is **less than 25 GB**.
+This means that the available free disk space that your jobs can use is **less than 25 (or 50) GB**.
 
 <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 

@@ -22,7 +22,7 @@ Prerequisites:
   - Jira personal access token (GitLab 16.0 and later).
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
-You can also configure these settings at the [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
+You can configure these settings at the [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or at the [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
 
 To configure your project settings in GitLab:
 
@@ -83,7 +83,7 @@ To create a Jira Cloud API token:
 1. Select **Create API token**.
 1. In the dialog, enter a label for your token and select **Create**.
 
-To copy the API token, select **Copy** and paste the token somewhere safe.
+To copy the API token, select **Copy**.
 
 ## Migrate from Jira Server to Jira Cloud in GitLab
 
@@ -93,7 +93,7 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Jira**.
 1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
-1. In **Email or username**, enter the email or username registered on your Jira profile.
+1. In **Email or username**, enter the email registered on your Jira profile.
 1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.
 1. In **API token or password**, paste the API token value.
 1. Optional. Select **Test settings**.

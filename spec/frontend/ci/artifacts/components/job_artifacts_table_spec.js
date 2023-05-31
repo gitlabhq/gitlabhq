@@ -370,6 +370,38 @@ describe('JobArtifactsTable component', () => {
 
       expect(findBrowseButton().attributes('disabled')).toBeDefined();
     });
+
+    it('is disabled when job has no metadata.gz', async () => {
+      const jobWithoutMetadata = {
+        ...job,
+        artifacts: { nodes: [archiveArtifact] },
+      };
+
+      createComponent({
+        handlers: { getJobArtifactsQuery: jest.fn() },
+        data: { jobArtifacts: [jobWithoutMetadata] },
+      });
+
+      await waitForPromises();
+
+      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('is disabled when job has no artifacts', async () => {
+      const jobWithoutArtifacts = {
+        ...job,
+        artifacts: { nodes: [] },
+      };
+
+      createComponent({
+        handlers: { getJobArtifactsQuery: jest.fn() },
+        data: { jobArtifacts: [jobWithoutArtifacts] },
+      });
+
+      await waitForPromises();
+
+      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+    });
   });
 
   describe('delete button', () => {

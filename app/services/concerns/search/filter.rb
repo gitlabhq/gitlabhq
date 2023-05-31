@@ -5,7 +5,7 @@ module Search
     private
 
     def filters
-      { state: params[:state], confidential: params[:confidential] }
+      { state: params[:state], confidential: params[:confidential], include_archived: params[:include_archived] }
     end
   end
 end

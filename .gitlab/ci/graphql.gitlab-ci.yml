@@ -3,7 +3,7 @@ graphql-verify:
     SETUP_DB: "false"
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .graphql:rules:graphql-verify
   stage: test

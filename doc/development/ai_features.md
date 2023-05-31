@@ -107,7 +107,7 @@ In order to obtain a GCP service key for local development, please follow the st
 - Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). At this time, access to any endpoints outside of `text-bison` or `chat-bison` must be made through the group environment.
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account. 
+- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
 - Open the Rails console. Update the settings to:
 
 ```ruby
@@ -321,7 +321,6 @@ We recommend to use [policies](policies.md) to deal with authorization for a fea
 1. Feature specific feature flag is enabled
 1. The namespace has the required license for the feature
 1. User is a member of the group/project
-1. Resource is allowed to be sent (see `send_to_ai?` method)
 1. `experiment_features_enabled` and `third_party_ai_features_enabled` flags are set on the `Namespace`
 
 For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
@@ -335,8 +334,7 @@ module EE
     prepended do
       with_scope :subject
       condition(:ai_available) do
-        ::Feature.enabled?(:openai_experimentation) &&
-          @subject.send_to_ai?
+        ::Feature.enabled?(:openai_experimentation)
       end
 
       with_scope :subject
@@ -350,19 +348,6 @@ module EE
       end.enable :amazing_new_ai_feature
     end
   end
-end
-```
-
-### Implement `send_to_ai?`
-
-To make sure we only send data that is allowed to be sent, we have the `send_to_ai?` method. It checks if the resource is not confidential and public data.
-Some resources already implement `send_to_ai?`. Make sure yours does as well. In our case, `Issue` is already covered with the `Issuable` concern. This is an example how it could look like:
-
-```ruby
-# ee/app/models/concerns/ee
-
-def send_to_ai?
-  !try(:confidential) && resource_parent.public?
 end
 ```
 

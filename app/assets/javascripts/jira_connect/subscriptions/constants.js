@@ -24,7 +24,7 @@ export const I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE = s__(
   'Integrations|Failed to link namespace. Please try again.',
 );
 export const I18N_UPDATE_INSTALLATION_ERROR_MESSAGE = s__(
-  'Integrations|Failed to update GitLab version. Please try again.',
+  'Integrations|Failed to update the GitLab instance. See the %{linkStart}troubleshooting documentation%{linkEnd}.',
 );
 export const I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE = s__(
   'Integrations|Failed to load Jira Connect Application ID. Please try again.',
@@ -39,6 +39,9 @@ export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/development_
 });
 export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('integration/jira/connect-app', {
   anchor: 'connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances',
+});
+export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath('integration/jira/connect-app', {
+  anchor: 'failed-to-update-the-gitlab-instance-for-self-managed-instances',
 });
 
 export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';

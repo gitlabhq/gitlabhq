@@ -661,14 +661,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
   end
 
-  describe '.license_usage_data' do
-    subject { described_class.license_usage_data }
-
-    it 'gathers license data' do
-      expect(subject[:recorded_at]).to be_a(Time)
-    end
-  end
-
   context 'when not relying on database records' do
     describe '.features_usage_data_ce' do
       subject { described_class.features_usage_data_ce }

@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Search::GlobalService, feature_category: :global_search do
-  let(:user) { create(:user) }
-  let(:internal_user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:internal_user) { create(:user) }
 
-  let!(:found_project)    { create(:project, :private, name: 'searchable_project') }
-  let!(:unfound_project)  { create(:project, :private, name: 'unfound_project') }
-  let!(:internal_project) { create(:project, :internal, name: 'searchable_internal_project') }
-  let!(:public_project)   { create(:project, :public, name: 'searchable_public_project') }
+  let_it_be(:found_project)    { create(:project, :private, name: 'searchable_project') }
+  let_it_be(:unfound_project)  { create(:project, :private, name: 'unfound_project') }
+  let_it_be(:internal_project) { create(:project, :internal, name: 'searchable_internal_project') }
+  let_it_be(:public_project)   { create(:project, :public, name: 'searchable_public_project') }
+  let_it_be(:archived_project) { create(:project, :public, archived: true, name: 'archived_project') }
 
   before do
     found_project.add_maintainer(user)
@@ -44,11 +45,15 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
       end
 
       it 'does not return archived projects' do
-        archived_project = create(:project, :public, archived: true, name: 'archived_project')
-
         results = described_class.new(user, search: "archived").execute
 
         expect(results.objects('projects')).not_to include(archived_project)
+      end
+
+      it 'returns archived projects if the include_archived option is passed' do
+        results = described_class.new(user, { include_archived: true, search: "archived" }).execute
+
+        expect(results.objects('projects')).to include(archived_project)
       end
     end
   end

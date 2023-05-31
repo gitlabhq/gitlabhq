@@ -8862,6 +8862,29 @@ The edge type for [`Discussion`](#discussion).
 | <a id="discussionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="discussionedgenode"></a>`node` | [`Discussion`](#discussion) | The item at the end of the edge. |
 
+#### `DoraPerformanceScoreCountConnection`
+
+The connection type for [`DoraPerformanceScoreCount`](#doraperformancescorecount).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="doraperformancescorecountconnectionedges"></a>`edges` | [`[DoraPerformanceScoreCountEdge]`](#doraperformancescorecountedge) | A list of edges. |
+| <a id="doraperformancescorecountconnectionnodes"></a>`nodes` | [`[DoraPerformanceScoreCount]`](#doraperformancescorecount) | A list of nodes. |
+| <a id="doraperformancescorecountconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DoraPerformanceScoreCountEdge`
+
+The edge type for [`DoraPerformanceScoreCount`](#doraperformancescorecount).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="doraperformancescorecountedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="doraperformancescorecountedgenode"></a>`node` | [`DoraPerformanceScoreCount`](#doraperformancescorecount) | The item at the end of the edge. |
+
 #### `EgressNodeConnection`
 
 The connection type for [`EgressNode`](#egressnode).
@@ -14315,6 +14338,20 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametrictimetorestoreservice"></a>`timeToRestoreService` | [`Float`](#float) | Median time to close an incident. |
 | <a id="dorametricvalue"></a>`value` **{warning-solid}** | [`Float`](#float) | **Deprecated** in 15.10. Moved to corresponding metric field. |
 
+### `DoraPerformanceScoreCount`
+
+Aggregated DORA score counts for projects for the last complete month.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="doraperformancescorecounthighprojectscount"></a>`highProjectsCount` | [`Int`](#int) | Number of projects that score "high" on the metric. |
+| <a id="doraperformancescorecountlowprojectscount"></a>`lowProjectsCount` | [`Int`](#int) | Number of projects that score "low" on the metric. |
+| <a id="doraperformancescorecountmediumprojectscount"></a>`mediumProjectsCount` | [`Int`](#int) | Number of projects that score "medium" on the metric. |
+| <a id="doraperformancescorecountmetricname"></a>`metricName` | [`String!`](#string) | Name of the DORA metric. |
+| <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data. |
+
 ### `EgressNode`
 
 #### Fields
@@ -15405,6 +15442,7 @@ GPG signature for a signed commit.
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
+| <a id="groupdoraperformancescorecounts"></a>`doraPerformanceScoreCounts` | [`DoraPerformanceScoreCountConnection`](#doraperformancescorecountconnection) | Group's DORA scores for all projects by DORA key metric for the last complete month. (see [Connections](#connections)) |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |

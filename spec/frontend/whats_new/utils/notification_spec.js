@@ -38,12 +38,27 @@ describe('~/whats_new/utils/notification', () => {
 
     it('removes class and count element when storage key has current digest', () => {
       const notificationEl = findNotificationEl();
+
       notificationEl.classList.add('with-notifications');
       localStorage.setItem('display-whats-new-notification', 'version-digest');
 
       expect(findNotificationCountEl()).not.toBe(null);
 
       subject();
+
+      expect(findNotificationCountEl()).toBe(null);
+      expect(notificationEl.classList).not.toContain('with-notifications');
+    });
+
+    it('removes class and count element when no records and digest undefined', () => {
+      const notificationEl = findNotificationEl();
+
+      notificationEl.classList.add('with-notifications');
+      localStorage.setItem('display-whats-new-notification', 'version-digest');
+
+      expect(findNotificationCountEl()).not.toBe(null);
+
+      setNotification(wrapper.querySelector('[data-testid="without-digest"]'));
 
       expect(findNotificationCountEl()).toBe(null);
       expect(notificationEl.classList).not.toContain('with-notifications');

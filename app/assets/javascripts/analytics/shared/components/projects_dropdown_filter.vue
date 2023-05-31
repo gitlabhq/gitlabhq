@@ -50,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    toggleClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -222,7 +227,6 @@ export default {
 <template>
   <gl-collapsible-listbox
     ref="projectsDropdown"
-    toggle-class="gl-shadow-none gl-mb-0"
     :header-text="__('Projects')"
     :items="listBoxItems"
     :reset-button-label="__('Clear All')"
@@ -238,7 +242,10 @@ export default {
     @select="onSelected"
   >
     <template #toggle>
-      <gl-button class="dropdown-projects">
+      <gl-button
+        button-text-classes="gl-w-full gl-justify-content-space-between gl-display-flex gl-shadow-none gl-mb-0"
+        :class="['dropdown-projects', toggleClasses]"
+      >
         <gl-avatar
           v-if="isOnlyOneProjectSelected"
           :src="selectedProjects[0].avatarUrl"

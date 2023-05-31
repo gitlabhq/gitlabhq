@@ -38,7 +38,6 @@ This works well for the following reasons:
    with fixed keys:
    - `.setup-test-env-cache`
    - `.ruby-cache`
-   - `.rails-cache`
    - `.static-analysis-cache`
    - `.rubocop-cache`
    - `.coverage-cache`

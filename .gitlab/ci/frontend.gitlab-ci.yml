@@ -128,7 +128,7 @@ retrieve-frontend-fixtures:
   extends:
     - .default-retry
     - .default-before_script
-    - .rails-cache
+    - .ruby-cache
     - .use-pg13
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
@@ -206,7 +206,7 @@ graphql-schema-dump:
     SETUP_DB: "false"
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .frontend:rules:default-frontend-jobs
   stage: fixtures

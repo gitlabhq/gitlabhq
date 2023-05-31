@@ -71,7 +71,7 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
-      CodeOwnerRule.new('Source Code', '@aqualls'),
+      CodeOwnerRule.new('Source Code', '@aqualls @msedlakjakubowski'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Tenant Scale', '@lciutacu'),

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SearchResults do
+RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
   include ProjectForksHelper
   include SearchHelpers
   using RSpec::Parameterized::TableSyntax
@@ -257,6 +257,19 @@ RSpec.describe Gitlab::SearchResults do
         include_examples 'search results sorted by popularity' do
           let(:results_popular) { described_class.new(user, 'popular', Project.order(:id), sort: sort, filters: filters) }
         end
+      end
+    end
+
+    describe '#projects' do
+      let(:scope) { 'projects' }
+      let(:query) { 'Test' }
+
+      describe 'filtering' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:unarchived_project) { create(:project, :public, group: group, name: 'Test1') }
+        let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
+
+        it_behaves_like 'search results filtered by archived'
       end
     end
 

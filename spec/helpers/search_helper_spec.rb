@@ -805,22 +805,38 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       allow(self).to receive(:current_user).and_return(:the_current_user)
     end
 
-    where(:confidential, :expected) do
+    where(:input, :expected) do
       '0'       | false
       '1'       | true
       'yes'     | true
       'no'      | false
+      'true'    | true
+      'false'   | false
       true      | true
       false     | false
     end
 
-    let(:params) { { confidential: confidential } }
+    describe 'for confidential' do
+      let(:params) { { confidential: input } }
 
-    with_them do
-      it 'transforms confidentiality param' do
-        expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
+      with_them do
+        it 'transforms param' do
+          expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
 
-        subject
+          subject
+        end
+      end
+    end
+
+    describe 'for include_archived' do
+      let(:params) { { include_archived: input } }
+
+      with_them do
+        it 'transforms param' do
+          expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: expected })
+
+          subject
+        end
       end
     end
   end

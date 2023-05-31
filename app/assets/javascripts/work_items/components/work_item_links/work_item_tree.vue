@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      error: undefined,
       isShownAddForm: false,
       formType: null,
       childType: null,
@@ -98,7 +99,12 @@ export default {
 </script>
 
 <template>
-  <widget-wrapper ref="wrapper" data-testid="work-item-tree">
+  <widget-wrapper
+    ref="wrapper"
+    :error="error"
+    data-testid="work-item-tree"
+    @dismissAlert="error = undefined"
+  >
     <template #header>
       {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
     </template>
@@ -144,7 +150,7 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
-        @removeChild="$emit('removeChild', $event)"
+        @error="error = $event"
         @show-modal="showModal"
       />
     </template>

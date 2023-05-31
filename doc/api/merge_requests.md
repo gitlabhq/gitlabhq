@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11  [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
 > - `approvals_before_merge` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
 
-Every API call to merge requests must be authenticated.
+Authentication is required for API calls to non-public information.
 
 ## Removals in API v5
 

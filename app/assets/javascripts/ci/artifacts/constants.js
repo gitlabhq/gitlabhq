@@ -104,6 +104,7 @@ export const JOBS_PER_PAGE = 20;
 export const INITIAL_LAST_PAGE_SIZE = null;
 
 export const ARCHIVE_FILE_TYPE = 'ARCHIVE';
+export const METADATA_FILE_TYPE = 'METADATA';
 
 export const ARTIFACT_ROW_HEIGHT = 56;
 export const ARTIFACTS_SHOWN_WITHOUT_SCROLLING = 4;

@@ -146,10 +146,6 @@
   cache:
     - *ruby-gems-cache
 
-.rails-cache:
-  cache:
-    - *ruby-gems-cache
-
 .static-analysis-cache:
   cache:
     - *ruby-gems-cache

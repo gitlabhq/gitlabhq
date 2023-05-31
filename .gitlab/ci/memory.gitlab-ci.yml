@@ -1,7 +1,7 @@
 .only-code-memory-job-base:
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .memory:rules
   variables:

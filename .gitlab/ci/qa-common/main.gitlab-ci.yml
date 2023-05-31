@@ -62,9 +62,6 @@ stages:
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     GITLAB_QA_OPTS: $EXTRA_GITLAB_QA_OPTS
-    # todo: remove in 16.1 milestone when not needed for backwards compatibility anymore
-    EE_LICENSE: $QA_EE_LICENSE
-    GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
   # Allow QA jobs to fail as they are flaky. The top level `package-and-e2e:ee`
   # pipeline is not allowed to fail, so without allowing QA to fail, we will be
   # blocking merges due to flaky tests.

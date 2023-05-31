@@ -51,7 +51,7 @@ module JiraConnectInstallations
                   'Could not be installed on the instance. Network error'
                 end
 
-      ServiceResponse.error(message: { instance_url: [message] })
+      ServiceResponse.error(message: message)
     end
 
     def update_error

@@ -96,8 +96,6 @@ To filter code search results by one or more languages:
 ## Search for projects by full path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/388473) on GitLab.com in GitLab 15.9.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111808) on self-managed GitLab 15.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
 
 You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
@@ -107,6 +105,12 @@ For example, the search query:
 
 - `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
 - `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
+
+### Search archived projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1.
+
+By default, archived projects are excluded from the search results. To include archived projects, add the parameter `include_archived=true` to the URL.
 
 ## Search for a SHA
 

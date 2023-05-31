@@ -31,7 +31,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       end
 
       # In order to improve tests performance, all UI checks are placed in this test.
-      it 'shows elements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27993' do
+      it 'shows elements' do
         button_create_merge_request = find('.js-create-merge-request')
         button_toggle_dropdown = find('.create-mr-dropdown-wrap .dropdown-toggle')
 

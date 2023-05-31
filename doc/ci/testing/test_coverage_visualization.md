@@ -73,10 +73,11 @@ a [blocking manual job](../jobs/job_control.md#types-of-manual-jobs), the
 pipeline waits for the manual job before continuing and is not considered complete.
 The visualization cannot be displayed if the blocking manual job did not run.
 
-### Artifact expiration
+### Data expiration
 
-By default, the [pipeline artifact](../pipelines/pipeline_artifacts.md#storage) used
-to draw the visualization on the merge request expires **one week** after creation.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest data is kept regardless of expiry time.
+
+By default, the data used to draw the visualization on the merge request expires **one week** after creation.
 
 ### Coverage report from child pipeline
 

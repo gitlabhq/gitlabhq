@@ -137,11 +137,7 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
 
         it 'returns an error message' do
           expect(execute_service[:status]).to eq(:error)
-          expect(execute_service[:message]).to eq(
-            {
-              instance_url: ["Could not be installed on the instance. Error response code 422"]
-            }
-          )
+          expect(execute_service[:message]).to eq("Could not be installed on the instance. Error response code 422")
         end
 
         context 'and the installation had a previous instance_url' do
@@ -175,11 +171,7 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
 
           it 'returns an error message' do
             expect(execute_service[:status]).to eq(:error)
-            expect(execute_service[:message]).to eq(
-              {
-                instance_url: ["Could not be installed on the instance. Network error"]
-              }
-            )
+            expect(execute_service[:message]).to eq("Could not be installed on the instance. Network error")
           end
         end
       end

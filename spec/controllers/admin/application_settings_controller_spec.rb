@@ -59,7 +59,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'GET #usage_data', feature_category: :service_ping do
+  describe 'GET #usage_data', :with_license, feature_category: :service_ping do
     before do
       stub_usage_data_connections
       stub_database_flavor_check

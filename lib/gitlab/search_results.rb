@@ -174,7 +174,9 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     def projects
-      limit_projects.search(query)
+      scope = limit_projects
+      scope = filters[:include_archived] ? scope : scope.non_archived
+      scope.search(query)
     end
 
     def issues(finder_params = {})

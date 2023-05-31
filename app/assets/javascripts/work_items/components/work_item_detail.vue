@@ -12,7 +12,6 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
-import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -426,44 +425,6 @@ export default {
 
       store.writeQuery({ ...query, data: newData });
     },
-    async updateWorkItem(workItem, childId, parentId) {
-      return this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
-        update: (store) => this.toggleChildFromCache(workItem, childId, store),
-      });
-    },
-    async undoChildRemoval(workItem, childId) {
-      try {
-        const { data } = await this.updateWorkItem(workItem, childId, this.workItem.id);
-
-        if (data.workItemUpdate.errors.length === 0) {
-          this.activeToast?.hide();
-        }
-      } catch (error) {
-        this.updateError = s__('WorkItem|Something went wrong while undoing child removal.');
-        Sentry.captureException(error);
-      } finally {
-        this.activeToast?.hide();
-      }
-    },
-    async removeChild({ id }) {
-      try {
-        const { data } = await this.updateWorkItem(null, id, null);
-
-        if (data.workItemUpdate.errors.length === 0) {
-          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
-            action: {
-              text: s__('WorkItem|Undo'),
-              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, id),
-            },
-          });
-        }
-      } catch (error) {
-        this.updateError = s__('WorkItem|Something went wrong while removing child.');
-        Sentry.captureException(error);
-      }
-    },
     updateHasNotes() {
       this.$emit('has-notes');
     },
@@ -716,7 +677,6 @@ export default {
           :can-update="canUpdate"
           :confidential="workItem.confidential"
           @addWorkItemChild="addChild"
-          @removeChild="removeChild"
           @show-modal="openInModal"
         />
         <work-item-notes

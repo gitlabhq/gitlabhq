@@ -13,7 +13,6 @@ import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants
 import { findHierarchyWidgetChildren } from '../../utils';
 import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
 import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
-import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
@@ -92,7 +91,6 @@ export default {
     return {
       isShownAddForm: false,
       activeChild: {},
-      activeToast: null,
       error: undefined,
       parentIssue: null,
       formType: null,
@@ -168,7 +166,7 @@ export default {
     },
     handleWorkItemDeleted(child) {
       this.removeHierarchyChild(child);
-      this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
+      this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery({ iid } = {}) {
       updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
@@ -184,36 +182,6 @@ export default {
         mutation: removeHierarchyChildMutation,
         variables: { fullPath: this.fullPath, iid: this.iid, workItem },
       });
-    },
-    async undoChildRemoval(workItem, childId) {
-      const { data } = await this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId: this.issuableGid } } },
-      });
-
-      await this.addHierarchyChild(workItem);
-
-      if (data.workItemUpdate.errors.length === 0) {
-        this.activeToast?.hide();
-      }
-    },
-    async removeChild(workItem) {
-      const childId = workItem.id;
-      const { data } = await this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId: null } } },
-      });
-
-      await this.removeHierarchyChild(workItem);
-
-      if (data.workItemUpdate.errors.length === 0) {
-        this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
-          action: {
-            text: s__('WorkItem|Undo'),
-            onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
-          },
-        });
-      }
     },
     toggleReportAbuseDrawer(isOpen, reply = {}) {
       this.isReportDrawerOpen = isOpen;
@@ -307,7 +275,7 @@ export default {
           :can-update="canUpdate"
           :work-item-id="issuableGid"
           :work-item-iid="iid"
-          @removeChild="removeChild"
+          @error="error = $event"
           @show-modal="openChild"
         />
         <work-item-detail-modal

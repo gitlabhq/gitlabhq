@@ -6,16 +6,28 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
-import { childrenWorkItems, workItemByIidResponseFactory } from '../../mock_data';
+import {
+  changeWorkItemParentMutationResponse,
+  childrenWorkItems,
+  updateWorkItemMutationErrorResponse,
+  workItemByIidResponseFactory,
+} from '../../mock_data';
 
 describe('WorkItemChildrenWrapper', () => {
   let wrapper;
 
+  const $toast = {
+    show: jest.fn(),
+  };
   const getWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const updateWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue(changeWorkItemParentMutationResponse);
 
   const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
 
@@ -25,9 +37,13 @@ describe('WorkItemChildrenWrapper', () => {
     workItemType = 'Objective',
     confidential = false,
     children = childrenWorkItems,
+    mutationHandler = updateWorkItemMutationHandler,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemChildrenWrapper, {
-      apolloProvider: createMockApollo([[workItemByIidQuery, getWorkItemQueryHandler]]),
+      apolloProvider: createMockApollo([
+        [workItemByIidQuery, getWorkItemQueryHandler],
+        [updateWorkItemMutation, mutationHandler],
+      ]),
       provide: {
         fullPath: 'test/project',
       },
@@ -36,6 +52,9 @@ describe('WorkItemChildrenWrapper', () => {
         workItemId: 'gid://gitlab/WorkItem/515',
         confidential,
         children,
+      },
+      mocks: {
+        $toast,
       },
     });
   };
@@ -48,16 +67,6 @@ describe('WorkItemChildrenWrapper', () => {
     expect(workItemLinkChildren.at(0).props().childItem.confidential).toBe(
       childrenWorkItems[0].confidential,
     );
-  });
-
-  it('remove event on child triggers `removeChild` event', () => {
-    createComponent();
-    const workItem = { id: 'gid://gitlab/WorkItem/2' };
-    const firstChild = findWorkItemLinkChildItems().at(0);
-
-    firstChild.vm.$emit('removeChild', workItem);
-
-    expect(wrapper.emitted('removeChild')).toEqual([[workItem]]);
   });
 
   it('emits `show-modal` on `click` event', () => {
@@ -94,4 +103,47 @@ describe('WorkItemChildrenWrapper', () => {
       }
     },
   );
+
+  describe('when removing child work item', () => {
+    const workItem = { id: 'gid://gitlab/WorkItem/2' };
+
+    describe('when successful', () => {
+      beforeEach(async () => {
+        createComponent();
+        findWorkItemLinkChildItems().at(0).vm.$emit('removeChild', workItem);
+        await waitForPromises();
+      });
+
+      it('calls a mutation to update the work item', () => {
+        expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+          input: {
+            id: workItem.id,
+            hierarchyWidget: {
+              parentId: null,
+            },
+          },
+        });
+      });
+
+      it('shows a toast', () => {
+        expect($toast.show).toHaveBeenCalledWith('Child removed', {
+          action: { onClick: expect.anything(), text: 'Undo' },
+        });
+      });
+    });
+
+    describe('when not successful', () => {
+      beforeEach(async () => {
+        createComponent({
+          mutationHandler: jest.fn().mockResolvedValue(updateWorkItemMutationErrorResponse),
+        });
+        findWorkItemLinkChildItems().at(0).vm.$emit('removeChild', workItem);
+        await waitForPromises();
+      });
+
+      it('emits an error message', () => {
+        expect(wrapper.emitted('error')).toEqual([['Something went wrong while removing child.']]);
+      });
+    });
+  });
 });

@@ -47,6 +47,12 @@ The **Approved** button is in the merge request widget.
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve merges it.
 
+Some domain areas (like `Verify`) require an approval from a domain expert, based on
+CODEOWNERS rules. Because CODEOWNERS sections are independent approval rules, we could have certain
+rules (for example `Verify`) that may be a subset of other more generic approval rules (for example `backend`).
+For a more efficient process, authors should look for domain-specific approvals before generic approvals.
+Domain-specific approvers may also be maintainers, and if so they should review the domain specifics and broader change at the same time and approve once for both roles.
+
 Read more about [author responsibilities](#the-responsibility-of-the-merge-request-author) below.
 
 ### Domain experts
