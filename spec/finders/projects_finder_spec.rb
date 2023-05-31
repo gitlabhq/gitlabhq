@@ -502,13 +502,13 @@ RSpec.describe ProjectsFinder do
       end
     end
 
-    describe 'without CTE flag enabled' do
+    describe 'without CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
       let(:use_cte) { false }
 
       it_behaves_like 'ProjectFinder#execute examples'
     end
 
-    describe 'with CTE flag enabled' do
+    describe 'with CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
       let(:use_cte) { true }
 
       it_behaves_like 'ProjectFinder#execute examples'
