@@ -1285,6 +1285,33 @@ specified in its configuration and allows the operation.
 GitLab background jobs processing (through Sidekiq) also interacts with Registry.
 These jobs talk directly to Registry to handle image deletion.
 
+## Migrate from a third-party registry
+
+Using external container registries in GitLab was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
+in GitLab 15.8 and the end of support occurred in GitLab 16.0. See the [deprecation notice](../../update/deprecations.md#use-of-third-party-container-registries-is-deprecated) for more details.
+
+The integration is not disabled in GitLab 16.0, but support for debugging and fixing issues
+is no longer provided. Additionally, the integration is no longer being developed or
+enhanced with new features. Third-party registry functionality might be completely removed
+after the new GitLab Container Registry version is available for self-managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab Container Registry is planned to be supported.
+
+This section has guidance for administrators migrating from third-party registries
+to the GitLab Container Registry. If the third-party container registry you are using is not listed here,
+you can describe your use cases in [the feedback issue](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
+
+For all of the instructions provided below, you should try them first on a test environment.
+Make sure everything continues to work as expected before replicating it in production.
+
+### Docker Distribution Registry
+
+The [Docker Distribution Registry](https://docs.docker.com/registry/) was donated to the CNCF
+and is now known as the [Distribution Registry](https://github.com/distribution/distribution).
+This registry is the open source implementation that the GitLab Container Registry is based on.
+The GitLab Container Registry is compatible with the basic functionality provided by the Distribution Registry,
+including all the supported storage backends. To migrate to the GitLab Container Registry
+you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
+The GitLab Container Registry should accept the same configuration that you are using for the Distribution Registry.
+
 ## Troubleshooting
 
 Before diving in to the following sections, here's some basic troubleshooting:

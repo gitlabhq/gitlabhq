@@ -328,6 +328,23 @@ When you rerun a job, uses the same configuration each time. If you update confi
 including separate files added with [`include`](yaml/index.md#include), you must
 start a new pipeline to use the new configuration.
 
+### Unable to pull image from another project
+
+When a runner tries to pull an image from a private project, the job could fail with the following error:
+
+```shell
+WARNING: Failed to pull image with policy "always": Error response from daemon: pull access denied for registry.example.com/path/to/project, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+```
+
+This error can happen if the following are both true:
+
+- The **Allow access to this project with a CI_JOB_TOKEN** option is enabled in the private project
+  hosting the image.
+- The job attempting to fetch the image is running for a project that is not listed in
+  the private project's allowlist.
+
+The recommended solution is to [add your project to the private project's job token scope allowlist](jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist).
+
 ## Pipeline warnings
 
 Pipeline configuration warnings are shown when you:

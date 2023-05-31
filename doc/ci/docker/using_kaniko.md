@@ -134,7 +134,7 @@ before_script:
   - |
     echo "-----BEGIN CERTIFICATE-----
     ...
-    -----END CERTIFICATE-----" >> /kaniko/ssl/certs/additional-ca-cert-bundle.crt
+    -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
 ```
 
 ## Video walkthrough of a working example
