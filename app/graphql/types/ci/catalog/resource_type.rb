@@ -37,12 +37,39 @@ module Types
           description: 'Number of times the catalog resource has been forked.',
           alpha: { milestone: '16.1' }
 
+        field :root_namespace, Types::NamespaceType, null: true,
+          description: 'Root namespace of the catalog resource.',
+          alpha: { milestone: '16.1' }
+
         def web_path
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end
 
         def forks_count
           BatchLoader::GraphQL.wrap(object.forks_count)
+        end
+
+        def root_namespace
+          BatchLoader::GraphQL.for(object.project_id).batch do |project_ids, loader|
+            projects = Project.id_in(project_ids)
+
+            # This preloader uses traversal_ids to obtain Group-type root namespaces.
+            # It also preloads each project's immediate parent namespace, which effectively
+            # preloads the User-type root namespaces since they cannot be nested (parent == root).
+            Preloaders::ProjectRootAncestorPreloader.new(projects, :group).execute
+            root_namespaces = projects.map(&:root_ancestor)
+
+            # NamespaceType requires the `:read_namespace` ability. We must preload the policy for
+            # Group-type namespaces to avoid N+1 queries caused by the authorization requests.
+            group_root_namespaces = root_namespaces.select { |n| n.type == ::Group.sti_name }
+            Preloaders::GroupPolicyPreloader.new(group_root_namespaces, current_user).execute
+
+            # For User-type namespaces, the authorization request requires preloading the owner objects.
+            user_root_namespaces = root_namespaces.select { |n| n.type == ::Namespaces::UserNamespace.sti_name }
+            ActiveRecord::Associations::Preloader.new(records: user_root_namespaces, associations: :owner).call
+
+            projects.each { |project| loader.call(project.id, project.root_ancestor) }
+          end
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

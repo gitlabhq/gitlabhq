@@ -5494,7 +5494,7 @@
   canonical: |
     <p><strong>foo, <strong>bar</strong>, baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><strong>foo, <strong>bar</strong>, baz</strong></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><strong>foo, bar, baz</strong></p>
   wysiwyg: |-
     <p><strong>foo, bar</strong>, baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__040:
@@ -5696,7 +5696,7 @@
   canonical: |
     <p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto">foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
+    <p data-sourcepos="1:1-1:24" dir="auto">foo<strong>bar</strong>***baz</p>
   wysiwyg: |-
     <p>foo<strong>bar</strong>***baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__068:
@@ -5755,21 +5755,21 @@
   canonical: |
     <p><strong>foo <strong>bar</strong> baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo <strong>bar</strong> baz</strong></p>
+    <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo bar baz</strong></p>
   wysiwyg: |-
     <p><strong>foo bar</strong> baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__076:
   canonical: |
     <p><strong><strong>foo</strong> bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong><strong>foo</strong> bar</strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo bar</strong></p>
   wysiwyg: |-
     <p><strong>foo</strong> bar</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__077:
   canonical: |
     <p><strong>foo <strong>bar</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo <strong>bar</strong></strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo bar</strong></p>
   wysiwyg: |-
     <p><strong>foo bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__078:
@@ -6031,21 +6031,21 @@
   canonical: |
     <p><strong><strong>foo</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong><strong>foo</strong></strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo</strong></p>
   wysiwyg: |-
     <p><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__115:
   canonical: |
     <p><strong><strong>foo</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong><strong>foo</strong></strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo</strong></p>
   wysiwyg: |-
     <p><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__116:
   canonical: |
     <p><strong><strong><strong>foo</strong></strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong><strong><strong>foo</strong></strong></strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo</strong></p>
   wysiwyg: |-
     <p><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__117:
@@ -6059,7 +6059,7 @@
   canonical: |
     <p><em><strong><strong>foo</strong></strong></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><em><strong><strong>foo</strong></strong></em></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><em><strong>foo</strong></em></p>
   wysiwyg: |-
     <p><strong><em>foo</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__119:
@@ -7392,7 +7392,7 @@
   canonical: |
     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
   static: |-
-    <p data-sourcepos="1:1-1:41" dir="auto">foo &lt;!-- not a comment -- two hyphens --&gt;</p>
+    <p data-sourcepos="1:1-1:41" dir="auto">foo <!-- not a comment -- two hyphens --></p>
   wysiwyg: |-
     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 06_11_00__inlines__raw_html__015:
@@ -7400,7 +7400,7 @@
     <p>foo &lt;!--&gt; foo --&gt;</p>
     <p>foo &lt;!-- foo---&gt;</p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">foo &lt;!--&gt; foo --&gt;</p>
+    <p data-sourcepos="1:1-1:17" dir="auto">foo <!----> foo --&gt;</p>
     <p data-sourcepos="3:1-3:16" dir="auto">foo &lt;!-- foo---&gt;</p>
   wysiwyg: |-
     <p>foo &lt;!--&gt; foo --&gt;</p>
@@ -8238,10 +8238,10 @@
     <section data-footnotes class="footnotes">
     <ol>
     <li id="fn-1-42">
-    <p data-sourcepos="5:7-5:41">This is the text inside a footnote. <a href="#fnref-1-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <p data-sourcepos="5:7-5:41">This is the text inside a footnote. <a href="#fnref-1-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     <li id="fn-footnote-42">
-    <p data-sourcepos="7:14-7:38">This is another footnote. <a href="#fnref-footnote-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <p data-sourcepos="7:14-7:38">This is another footnote. <a href="#fnref-footnote-42" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>
@@ -8643,7 +8643,7 @@
     <section data-footnotes class="footnotes">
     <ol>
     <li id="fn-fortytwo-42">
-    <p data-sourcepos="3:14-3:26">footnote text <a href="#fnref-fortytwo-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <p data-sourcepos="3:14-3:26">footnote text <a href="#fnref-fortytwo-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>

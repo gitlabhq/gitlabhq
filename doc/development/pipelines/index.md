@@ -442,7 +442,7 @@ This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-vali
 project variables set.
 
 It's a pull mirror pulling from [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
-mirroring only protected branches, `master` and `main-jh`, overriding
+mirroring specific branches: `(master|main-jh)`, overriding
 divergent refs, triggering no pipelines when mirror is updated.
 
 The pulling user is [`@gitlab-jh-validation-bot`](https://gitlab.com/gitlab-jh-validation-bot), who is a maintainer in the project, and also a

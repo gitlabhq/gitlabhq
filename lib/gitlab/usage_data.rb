@@ -42,9 +42,12 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          { recorded_at: recorded_at }
-            .merge(usage_data_metrics)
+          usage_data_metrics
         end
+      end
+
+      def license_usage_data
+        { recorded_at: recorded_at }
       end
 
       def recorded_at
@@ -549,7 +552,8 @@ module Gitlab
       end
 
       def usage_data_metrics
-        system_usage_data_license
+        license_usage_data
+          .merge(system_usage_data_license)
           .merge(system_usage_data_settings)
           .merge(system_usage_data)
           .merge(system_usage_data_monthly)

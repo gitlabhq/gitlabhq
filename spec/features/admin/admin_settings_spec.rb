@@ -977,7 +977,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
     end
 
-    context 'Service usage data page', :with_license do
+    context 'Service usage data page' do
       before do
         stub_usage_data_connections
         stub_database_flavor_check

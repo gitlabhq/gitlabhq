@@ -144,6 +144,18 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
     end
 
     describe 'footnotes' do
+      it 'allows the footnote attributes' do
+        exp = <<~HTML
+          <section data-footnotes>
+          <a href="#fn-first" id="fnref-first" data-footnote-ref data-footnote-backref data-footnote-backref-idx>foo/bar.md</a>
+          </section>
+        HTML
+
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
       it 'allows correct footnote id property on links' do
         exp = %q(<a href="#fn-first" id="fnref-first">foo/bar.md</a>)
         act = filter(exp)

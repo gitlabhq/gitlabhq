@@ -160,8 +160,10 @@ To purge files from a GitLab repository:
 
    Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
 
-1. Wait at least 30 minutes, because the repository cleanup process only processes object older than 30 minutes.
-1. Run [repository cleanup](#repository-cleanup).
+1. Wait at least 30 minutes before attempting the next step.
+1. Run [repository cleanup](#repository-cleanup). This process only cleans up objects
+   that are more than 30 minutes old. See [Space not being freed](#space-not-being-freed)
+   for more information.
 
 ## Repository cleanup
 
@@ -300,3 +302,17 @@ end
 
 puts "#{artifact_storage} bytes"
 ```
+
+### Space not being freed
+
+The process defined on this page can decrease the size of repository exports
+decreasing, but the usage in the file system appearing unchanged in both the Web UI and terminal.
+
+The process leaves many unreachable objects remaining in the repository.
+Because they are unreachable, they are not included in the export, but they are
+still stored in the file system. These files are pruned after a grace period of
+two weeks. Pruning deletes these files and ensures your storage usage statistics
+are accurate.
+
+To expedite this process, see the
+['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).

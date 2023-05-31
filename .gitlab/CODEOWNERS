@@ -30,6 +30,8 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership
+/scripts/lint-doc.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
+/scripts/lint-docs-metadata.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
 
 ^[Source code editing]
 .solargraph.yml.example @igor.drozdov
@@ -1434,8 +1436,8 @@ ee/lib/ee/api/entities/project.rb
 /ee/lib/sidebars/
 
 [Global Search] @gitlab-org/search-team/migration-maintainers
-/ee/elastic/migrate
-/ee/spec/elastic/migrate
+/ee/elastic/migrate/
+/ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528

@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, :with_license, feature_category: :service_ping do
+RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, feature_category: :service_ping do
   include StubRequests
   include UsageDataHelpers
 

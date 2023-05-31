@@ -182,7 +182,7 @@ gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive 
 gem 'html-pipeline', '~> 2.14.3'
 gem 'deckar01-task_list', '2.3.2'
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup'
-gem 'commonmarker', '~> 0.23.6'
+gem 'commonmarker', '~> 0.23.9'
 gem 'kramdown', '~> 2.3.1'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 6.3.2'
@@ -367,7 +367,7 @@ gem 'prometheus-client-mmap', '~> 0.24', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.4.0', require: false
+  gem 'lefthook', '~> 1.4.1', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 

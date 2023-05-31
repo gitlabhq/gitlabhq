@@ -5196,6 +5196,9 @@ msgstr ""
 msgid "Analytics|Browser Family"
 msgstr ""
 
+msgid "Analytics|By GitLab"
+msgstr ""
+
 msgid "Analytics|Cancel"
 msgstr ""
 
@@ -16441,9 +16444,6 @@ msgid "Edit Pipeline Schedule"
 msgstr ""
 
 msgid "Edit Release"
-msgstr ""
-
-msgid "Edit Requirement"
 msgstr ""
 
 msgid "Edit Slack integration"
@@ -36885,6 +36885,9 @@ msgid "ProtectedEnvironments|List of protected environments (%{protectedEnvironm
 msgstr ""
 
 msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
+msgstr ""
+
+msgid "ProtectedEnvironments|Remove approval rule"
 msgstr ""
 
 msgid "ProtectedEnvironments|Required approval count"
