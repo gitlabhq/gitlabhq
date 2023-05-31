@@ -39,6 +39,9 @@ RSpec.describe Gitlab::HotlinkingDetector do
         true | "text/css,*/*;q=0.1"
         true | "text/css"
         true | "text/css,*/*;q=0.1"
+
+        # Invalid MIME definition
+        true | "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
       end
 
       with_them do

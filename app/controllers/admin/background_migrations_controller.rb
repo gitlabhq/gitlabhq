@@ -18,7 +18,7 @@ module Admin
       @current_tab = @relations_by_tab.key?(params[:tab]) ? params[:tab] : 'queued'
       @migrations = @relations_by_tab[@current_tab].page(params[:page])
       @successful_rows_counts = batched_migration_class.successful_rows_counts(@migrations.map(&:id))
-      @databases = Gitlab::Database.db_config_names
+      @databases = Gitlab::Database.db_config_names(with_schema: :gitlab_shared)
     end
 
     def show

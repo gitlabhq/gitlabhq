@@ -99,6 +99,7 @@ module API
         optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
         optional :without_project_bots, type: Boolean, default: false, desc: 'Filters users without project bots'
         optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
+        optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params
@@ -108,10 +109,12 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :user_profile, urgency: :low do
-        authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
+        index_params = declared_params(include_missing: false)
+
+        authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
 
         unless current_user&.can_read_all_resources?
-          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
+          index_params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
         authorized = can?(current_user, :read_users_list)
@@ -121,11 +124,11 @@ module API
         # a list of all the users on the GitLab instance. `UsersFinder` performs
         # an exact match on the `username` parameter, so we are guaranteed to
         # get either 0 or 1 `users` here.
-        authorized &&= params[:username].present? if current_user.blank?
+        authorized &&= index_params[:username].present? if current_user.blank?
 
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
-        users = UsersFinder.new(current_user, params).execute
+        users = UsersFinder.new(current_user, index_params).execute
         users = reorder_users(users)
 
         entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic

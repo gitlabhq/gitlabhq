@@ -228,6 +228,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
       end
 
       it 'validates FK for each partition' do
+        allow(migration).to receive(:statement_timeout_disabled?).and_return(false)
         expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/).twice
         expect(migration).to receive(:execute).with(/RESET statement_timeout/).twice
         expect(migration).to receive(:execute)

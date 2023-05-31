@@ -428,21 +428,24 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
   describe '#ensure_batched_background_migration_is_finished' do
     let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
-    let(:table) { :events }
+    let(:table_name) { 'events' }
     let(:column_name) { :id }
     let(:job_arguments) { [["id"], ["id_convert_to_bigint"], nil] }
+    let(:gitlab_schema) { Gitlab::Database::GitlabSchema.table_schema!(table_name) }
 
     let(:configuration) do
       {
         job_class_name: job_class_name,
-        table_name: table,
+        table_name: table_name,
         column_name: column_name,
         job_arguments: job_arguments
       }
     end
 
     let(:migration_attributes) do
-      configuration.merge(gitlab_schema: Gitlab::Database.gitlab_schemas_for_connection(migration.connection).first)
+      configuration.merge(
+        gitlab_schema: gitlab_schema
+      )
     end
 
     before do
@@ -457,7 +460,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       create(:batched_background_migration, :active, migration_attributes)
 
       allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-        allow(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(false)
+        allow(runner).to receive(:finalize).with(job_class_name, table_name, column_name, job_arguments).and_return(false)
       end
 
       expect { ensure_batched_background_migration_is_finished }
@@ -530,7 +533,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       migration = create(:batched_background_migration, :active, configuration)
 
       allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-        expect(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(migration.finish!)
+        expect(runner).to receive(:finalize).with(job_class_name, table_name, column_name, job_arguments).and_return(migration.finish!)
       end
 
       ensure_batched_background_migration_is_finished
@@ -543,7 +546,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         create(:batched_background_migration, :active, configuration)
 
         allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-          expect(runner).not_to receive(:finalize).with(job_class_name, table, column_name, job_arguments)
+          expect(runner).not_to receive(:finalize).with(job_class_name, table_name, column_name, job_arguments)
         end
 
         expect { migration.ensure_batched_background_migration_is_finished(**configuration.merge(finalize: false)) }.to raise_error(RuntimeError)

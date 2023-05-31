@@ -14,6 +14,8 @@ import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
 import { getFirstPropertyValue } from '~/lib/utils/common_utils';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { INDEX_ROUTE_NAME } from '../constants';
 
 const MSG_SAVE_CHANGES = __('Save changes');
@@ -241,17 +243,12 @@ export default {
       return data[keys[0]];
     },
     getDrawerHeaderHeight() {
-      const wrapperEl = document.querySelector('.content-wrapper');
-
-      if (wrapperEl) {
-        return `${wrapperEl.offsetTop}px`;
-      }
-
-      return '';
+      return getContentWrapperHeight();
     },
   },
   MSG_CANCEL,
   INDEX_ROUTE_NAME,
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -261,6 +258,7 @@ export default {
       :header-height="getDrawerHeaderHeight()"
       class="gl-drawer-responsive"
       :open="drawerOpen"
+      :z-index="$options.DRAWER_Z_INDEX"
       @close="close(false)"
     >
       <template #title>

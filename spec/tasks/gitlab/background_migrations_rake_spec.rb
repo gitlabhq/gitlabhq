@@ -18,7 +18,7 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks', :suppress_gi
 
     before do
       allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
-      allow(Gitlab::Database).to receive(:db_config_names).and_return(databases)
+      allow(Gitlab::Database).to receive(:db_config_names).with(with_schema: :gitlab_shared).and_return(databases)
     end
 
     context 'without the proper arguments' do

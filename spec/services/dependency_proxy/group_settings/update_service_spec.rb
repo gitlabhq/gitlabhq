@@ -41,7 +41,8 @@ RSpec.describe ::DependencyProxy::GroupSettings::UpdateService, feature_category
     end
 
     where(:user_role, :shared_examples_name) do
-      :maintainer | 'updating the dependency proxy group settings'
+      :owner      | 'updating the dependency proxy group settings'
+      :maintainer | 'denying access to dependency proxy group settings'
       :developer  | 'denying access to dependency proxy group settings'
       :reporter   | 'denying access to dependency proxy group settings'
       :guest      | 'denying access to dependency proxy group settings'
@@ -55,6 +56,14 @@ RSpec.describe ::DependencyProxy::GroupSettings::UpdateService, feature_category
       end
 
       it_behaves_like params[:shared_examples_name]
+
+      context 'with disabled admin_package feature flag' do
+        before do
+          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+        end
+
+        it_behaves_like 'updating the dependency proxy group settings' if params[:user_role] == :maintainer
+      end
     end
   end
 end

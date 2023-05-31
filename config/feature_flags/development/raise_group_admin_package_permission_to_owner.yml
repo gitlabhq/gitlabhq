@@ -1,0 +1,8 @@
+---
+name: raise_group_admin_package_permission_to_owner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118360
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409642
+milestone: '16.1'
+type: development
+group: group::package registry
+default_enabled: false

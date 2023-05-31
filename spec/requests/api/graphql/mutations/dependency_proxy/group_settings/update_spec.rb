@@ -49,16 +49,21 @@ RSpec.describe 'Updating the dependency proxy group settings', feature_category:
     end
 
     context 'with permission' do
-      before do
-        group.add_maintainer(user)
-      end
+      %i[owner maintainer].each do |role|
+        context "for #{role}" do
+          before do
+            group.send("add_#{role}", user)
+            stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+          end
 
-      it 'returns the updated dependency proxy settings', :aggregate_failures do
-        subject
+          it 'returns the updated dependency proxy settings', :aggregate_failures do
+            subject
 
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['errors']).to be_empty
-        expect(group_settings[:enabled]).to eq(false)
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['errors']).to be_empty
+            expect(group_settings[:enabled]).to eq(false)
+          end
+        end
       end
     end
   end

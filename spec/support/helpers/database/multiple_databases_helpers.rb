@@ -2,7 +2,7 @@
 
 module Database
   module MultipleDatabasesHelpers
-    EXTRA_DBS = ::Gitlab::Database::DATABASE_NAMES.map(&:to_sym) - [:main]
+    EXTRA_DBS = ::Gitlab::Database.all_database_names.map(&:to_sym) - [:main]
 
     def database_exists?(database_name)
       ::Gitlab::Database.has_database?(database_name)

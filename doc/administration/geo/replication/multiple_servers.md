@@ -79,6 +79,14 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
+### Step 2: Define the site as the **primary** site
+
+1. Execute the following command on one of the frontend nodes:
+
+   ```shell
+   sudo gitlab-ctl set-geo-primary-node
+   ```
+
 NOTE:
 PostgreSQL and Redis should have already been disabled on the
 application nodes during typical GitLab multi-node setup. Connections

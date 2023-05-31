@@ -15,6 +15,68 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.all_database_connections' do
+    it 'the first entry is always main' do
+      expect(described_class.all_database_connections.keys).to start_with('main')
+    end
+
+    it 'contains as many entries as YAML files' do
+      expect(described_class.all_database_connections.values.map(&:file_path))
+        .to contain_exactly(*described_class.all_database_connection_files)
+    end
+  end
+
+  describe '.database_base_models' do
+    subject { described_class.database_base_models }
+
+    it 'contains "main"' do
+      is_expected.to include("main" => ActiveRecord::Base)
+    end
+
+    it 'does not contain "ci" when not running CI database' do
+      skip_if_multiple_databases_are_setup(:ci)
+
+      is_expected.not_to include("ci")
+    end
+
+    it 'contains "ci" pointing to Ci::ApplicationRecord when running CI database' do
+      skip_if_multiple_databases_not_setup(:ci)
+
+      is_expected.to include("ci" => Ci::ApplicationRecord)
+    end
+  end
+
+  describe '.all_gitlab_schemas' do
+    it 'contains as many entries as YAML files' do
+      expect(described_class.all_gitlab_schemas.values.map(&:file_path))
+        .to contain_exactly(*described_class.all_gitlab_schema_files)
+    end
+  end
+
+  describe '.schemas_to_base_models' do
+    subject { described_class.schemas_to_base_models }
+
+    it 'contains gitlab_main' do
+      is_expected.to include(gitlab_main: [ActiveRecord::Base])
+    end
+
+    it 'contains gitlab_shared' do
+      is_expected.to include(gitlab_main: include(ActiveRecord::Base))
+    end
+
+    it 'contains gitlab_ci pointing to ActiveRecord::Base when not running CI database' do
+      skip_if_multiple_databases_are_setup(:ci)
+
+      is_expected.to include(gitlab_ci: [ActiveRecord::Base])
+    end
+
+    it 'contains gitlab_ci pointing to Ci::ApplicationRecord when running CI database' do
+      skip_if_multiple_databases_not_setup(:ci)
+
+      is_expected.to include(gitlab_ci: [Ci::ApplicationRecord])
+    end
+  end
+
   describe '.default_pool_size' do
     before do
       allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
@@ -250,22 +312,35 @@ RSpec.describe Gitlab::Database, feature_category: :database do
   end
 
   describe '.db_config_names' do
-    let(:expected) { %w[foo bar] }
+    using RSpec::Parameterized::TableSyntax
 
-    it 'includes only main by default' do
-      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
-        double(configs_for: %w[foo bar].map { |x| double(name: x) })
-      )
-
-      expect(described_class.db_config_names).to eq(expected)
+    where(:configs_for, :gitlab_schema, :expected_main, :expected_main_ci) do
+      %i[main] | :gitlab_shared | %i[main] | %i[main]
+      %i[main ci] | :gitlab_shared | %i[main] | %i[main ci]
+      %i[main ci] | :gitlab_ci | %i[main] | %i[ci]
     end
 
-    it 'excludes geo when that is included' do
-      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
-        double(configs_for: %w[foo bar geo].map { |x| double(name: x) })
-      )
+    with_them do
+      before do
+        hash_configs = configs_for.map do |x|
+          instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: x)
+        end
+        allow(::ActiveRecord::Base).to receive(:configurations).and_return(
+          instance_double(ActiveRecord::DatabaseConfigurations, configs_for: hash_configs)
+        )
+      end
 
-      expect(described_class.db_config_names).to eq(expected)
+      if ::Gitlab::Database.has_config?(:ci)
+        it 'when main and CI database are configured' do
+          expect(described_class.db_config_names(with_schema: gitlab_schema))
+            .to eq(expected_main_ci)
+        end
+      else
+        it 'when only main database is configured' do
+          expect(described_class.db_config_names(with_schema: gitlab_schema))
+            .to eq(expected_main)
+        end
+      end
     end
   end
 

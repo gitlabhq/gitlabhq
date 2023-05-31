@@ -3,12 +3,14 @@
 # This module gathers information about table to schema mapping
 # to understand table affinity
 #
-# Each table / view needs to have assigned gitlab_schema. Names supported today:
+# Each table / view needs to have assigned gitlab_schema. For example:
 #
 # - gitlab_shared - defines a set of tables that are found on all databases (data accessed is dependent on connection)
 # - gitlab_main / gitlab_ci - defines a set of tables that can only exist on a given application database
 # - gitlab_geo - defines a set of tables that can only exist on the geo database
 # - gitlab_internal - defines all internal tables of Rails and PostgreSQL
+#
+# All supported GitLab schemas can be viewed in `db/gitlab_schemas/` and `ee/db/gitlab_schemas/`
 #
 # Tables for the purpose of tests should be prefixed with `_test_my_table_name`
 
@@ -16,8 +18,6 @@ module Gitlab
   module Database
     module GitlabSchema
       UnknownSchemaError = Class.new(StandardError)
-
-      DICTIONARY_PATH = 'db/docs/'
 
       def self.table_schemas!(tables)
         tables.map { |table| table_schema!(table) }.to_set
@@ -70,26 +70,6 @@ module Gitlab
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
-      def self.dictionary_path_globs
-        [Rails.root.join(DICTIONARY_PATH, '*.yml')]
-      end
-
-      def self.view_path_globs
-        [Rails.root.join(DICTIONARY_PATH, 'views', '*.yml')]
-      end
-
-      def self.deleted_views_path_globs
-        [Rails.root.join(DICTIONARY_PATH, 'deleted_views', '*.yml')]
-      end
-
-      def self.deleted_tables_path_globs
-        [Rails.root.join(DICTIONARY_PATH, 'deleted_tables', '*.yml')]
-      end
-
-      def self.views_and_tables_to_schema
-        @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
-      end
-
       def self.table_schema!(name)
         # rubocop:disable Gitlab/DocUrl
         self.table_schema(name) || raise(
@@ -100,32 +80,45 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
+      def self.dictionary_paths
+        Gitlab::Database.all_database_connections
+          .values.map(&:db_docs_dir).uniq
+      end
+
+      def self.dictionary_path_globs(scope)
+        self.dictionary_paths.map { |path| Rails.root.join(path, scope, '*.yml') }
+      end
+
+      def self.views_and_tables_to_schema
+        @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
+      end
+
       def self.deleted_views_and_tables_to_schema
         @deleted_views_and_tables_to_schema ||= self.deleted_tables_to_schema.merge(self.deleted_views_to_schema)
       end
 
       def self.deleted_tables_to_schema
-        @deleted_tables_to_schema ||= self.build_dictionary(self.deleted_tables_path_globs)
+        @deleted_tables_to_schema ||= self.build_dictionary('deleted_tables').to_h
       end
 
       def self.deleted_views_to_schema
-        @deleted_views_to_schema ||= self.build_dictionary(self.deleted_views_path_globs)
+        @deleted_views_to_schema ||= self.build_dictionary('deleted_views').to_h
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= self.build_dictionary(self.dictionary_path_globs)
+        @tables_to_schema ||= self.build_dictionary('').to_h
       end
 
       def self.views_to_schema
-        @views_to_schema ||= self.build_dictionary(self.view_path_globs)
+        @views_to_schema ||= self.build_dictionary('views').to_h
       end
 
       def self.schema_names
         @schema_names ||= self.views_and_tables_to_schema.values.to_set
       end
 
-      private_class_method def self.build_dictionary(path_globs)
-        Dir.glob(path_globs).each_with_object({}) do |file_path, dic|
+      def self.build_dictionary(scope)
+        Dir.glob(dictionary_path_globs(scope)).map do |file_path|
           data = YAML.load_file(file_path)
 
           key_name = data['table_name'] || data['view_name']
@@ -140,7 +133,7 @@ module Gitlab
           end
           # rubocop:enable Gitlab/DocUrl
 
-          dic[key_name] = data['gitlab_schema'].to_sym
+          [key_name, data['gitlab_schema'].to_sym]
         end
       end
     end

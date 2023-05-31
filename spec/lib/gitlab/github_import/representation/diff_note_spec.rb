@@ -146,6 +146,14 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
 
           expect(note.line_code).to eq('8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_2_2')
         end
+
+        context 'when comment on file' do
+          it 'generates line code for first line' do
+            note = described_class.new(diff_hunk: '', file_path: 'README.md', subject_type: 'file')
+
+            expect(note.line_code).to eq('8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_1_1')
+          end
+        end
       end
 
       describe '#note and #contains_suggestion?' do

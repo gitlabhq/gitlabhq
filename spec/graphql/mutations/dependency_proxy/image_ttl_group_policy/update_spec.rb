@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
+RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update, feature_category: :dependency_proxy do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:group) { create(:group) }
@@ -58,6 +58,15 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
       end
     end
 
+    # To be removed when raise_group_admin_package_permission_to_owner FF is removed
+    shared_examples 'disabling admin_package feature flag' do |action:|
+      before do
+        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+      end
+
+      it_behaves_like "#{action} the dependency proxy image ttl policy"
+    end
+
     before do
       stub_config(dependency_proxy: { enabled: true })
     end
@@ -71,7 +80,8 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
       end
 
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'updating the dependency proxy image ttl policy'
+        :owner      | 'updating the dependency proxy image ttl policy'
+        :maintainer | 'denying access to dependency proxy image ttl policy'
         :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
@@ -84,6 +94,7 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
         end
 
         it_behaves_like params[:shared_examples_name]
+        it_behaves_like 'disabling admin_package feature flag', action: :updating if params[:user_role] == :maintainer
       end
     end
 
@@ -91,7 +102,8 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
       let_it_be(:ttl_policy) { group.dependency_proxy_image_ttl_policy }
 
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'creating the dependency proxy image ttl policy'
+        :owner      | 'creating the dependency proxy image ttl policy'
+        :maintainer | 'denying access to dependency proxy image ttl policy'
         :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
@@ -104,6 +116,7 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
         end
 
         it_behaves_like params[:shared_examples_name]
+        it_behaves_like 'disabling admin_package feature flag', action: :creating if params[:user_role] == :maintainer
       end
     end
   end

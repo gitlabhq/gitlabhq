@@ -1,0 +1,2 @@
+name: gitlab_main
+description: Schema for all Cell-local tables, ex. projects, issues, etc.

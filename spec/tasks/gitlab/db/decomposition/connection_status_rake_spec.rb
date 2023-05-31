@@ -49,7 +49,7 @@ RSpec.describe 'gitlab:db:decomposition:connection_status', feature_category: :c
 
   context 'when separate ci database is configured' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_multiple_databases_not_setup(:ci)
     end
 
     it "does not show connection information" do

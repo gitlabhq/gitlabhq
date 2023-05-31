@@ -1,0 +1,2 @@
+name: gitlab_ci
+description: Schema for all Cell-local CI tables, ex. ci_builds, etc.

@@ -48183,9 +48183,6 @@ msgstr ""
 msgid "Unable to suggest a path. Please refresh and try again."
 msgstr ""
 
-msgid "Unable to summarize your review. No draft comments found."
-msgstr ""
-
 msgid "Unable to update label prioritization at this time"
 msgstr ""
 

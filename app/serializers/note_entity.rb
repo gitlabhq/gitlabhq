@@ -109,8 +109,6 @@ class NoteEntity < API::Entities::Note
   end
 
   def external_author
-    return unless Feature.enabled?(:external_note_author_service_desk)
-
     return unless object.note_metadata&.external_author
 
     if can?(current_user, :read_external_emails, object.project)

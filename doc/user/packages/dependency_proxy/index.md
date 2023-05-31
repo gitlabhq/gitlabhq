@@ -35,6 +35,8 @@ For a list of planned additions, view the
 
 ## Enable or turn off the Dependency Proxy for a group
 
+> Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+
 To enable or turn off the Dependency Proxy for a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.

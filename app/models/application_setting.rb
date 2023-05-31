@@ -734,6 +734,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :tofa_response_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :tofa_url, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :tofa_access_token_expires_in, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

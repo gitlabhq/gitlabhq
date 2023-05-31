@@ -46,12 +46,15 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
 
     context 'with different permissions' do
       where(:group_visibility, :role, :access_granted) do
-        :private | :maintainer | true
+        :private | :owner      | true
+        :private | :maintainer | false
         :private | :developer  | false
         :private | :reporter   | false
         :private | :guest      | false
         :private | :anonymous  | false
-        :public  | :maintainer | true
+
+        :public  | :owner      | true
+        :public  | :maintainer | false
         :public  | :developer  | false
         :public  | :reporter   | false
         :public  | :guest      | false
@@ -71,6 +74,20 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
             expect(dependency_proxy_group_setting_response).to eq('enabled' => true)
           else
             expect(dependency_proxy_group_setting_response).to be_blank
+          end
+        end
+
+        context 'with disabled admin_package feature flag' do
+          before do
+            stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+          end
+
+          if params[:role] == :maintainer
+            it 'return the proper response' do
+              subject
+
+              expect(dependency_proxy_group_setting_response).to eq('enabled' => true)
+            end
           end
         end
       end

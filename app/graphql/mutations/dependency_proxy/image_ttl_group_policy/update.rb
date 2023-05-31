@@ -8,6 +8,12 @@ module Mutations
 
         include Mutations::ResolvesGroup
 
+        description <<~DESC
+          These settings can be adjusted by the group Owner or Maintainer.
+          [Issue 370471](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) proposes limiting
+          this to Owners only to match the permissions level in the user interface.
+        DESC
+
         authorize :admin_dependency_proxy
 
         argument :group_path,

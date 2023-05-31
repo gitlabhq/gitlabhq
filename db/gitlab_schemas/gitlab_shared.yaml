@@ -1,0 +1,4 @@
+name: gitlab_shared
+description:
+  Schema for all tables implementing shared features,
+  ex. loose foreign keys, re-indexing, etc.

@@ -483,18 +483,12 @@ namespace :gitlab do
     end
 
     namespace :dictionary do
-      DB_DOCS_PATH = Rails.root.join('db', 'docs')
-
       desc 'Generate database docs yaml'
       task generate: :environment do
         next if Gitlab.jh?
 
-        FileUtils.mkdir_p(DB_DOCS_PATH)
-
-        if Gitlab.ee?
-          Gitlab::Database::EE_DATABASES_NAME_TO_DIR.each do |_, ee_db_dir|
-            FileUtils.mkdir_p(Rails.root.join(ee_db_dir, 'docs'))
-          end
+        Gitlab::Database.all_database_connections.values.map(&:db_docs_dir).each do |db_dir|
+          FileUtils.mkdir_p(db_dir)
         end
 
         Rails.application.eager_load!
@@ -575,12 +569,7 @@ namespace :gitlab do
       def dictionary_file_path(source_name, views, database)
         sub_directory = views.include?(source_name) ? 'views' : ''
 
-        path = if Gitlab.ee? && Gitlab::Database::EE_DATABASES_NAME_TO_DIR.key?(database.to_s)
-                 Rails.root.join(Gitlab::Database::EE_DATABASES_NAME_TO_DIR[database.to_s], 'docs')
-               else
-                 DB_DOCS_PATH
-               end
-
+        path = Gitlab::Database.all_database_connections.fetch(database).db_docs_dir
         File.join(path, sub_directory, "#{source_name}.yml")
       end
 

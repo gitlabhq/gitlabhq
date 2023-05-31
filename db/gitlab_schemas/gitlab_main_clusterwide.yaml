@@ -1,0 +1,2 @@
+name: gitlab_main_clusterwide
+description: Schema for all Cluster-wide tables, ex. application_settings, etc.

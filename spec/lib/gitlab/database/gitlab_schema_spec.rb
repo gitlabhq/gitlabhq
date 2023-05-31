@@ -45,53 +45,72 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   describe '.views_and_tables_to_schema' do
     include_examples 'validate schema data', described_class.views_and_tables_to_schema
 
-    # This being run across different databases indirectly also tests
-    # a general consistency of structure across databases
-    Gitlab::Database.database_base_models.except(:geo).each do |db_config_name, db_class|
-      context "for #{db_config_name} using #{db_class}" do
-        let(:db_data_sources) { db_class.connection.data_sources }
+    # group configurations by db_docs_dir, since then we expect all sharing this
+    # to contain exactly those tables
+    Gitlab::Database.all_database_connections.values.group_by(&:db_docs_dir).each do |db_docs_dir, db_infos|
+      context "for #{db_docs_dir}" do
+        let(:all_gitlab_schemas) { db_infos.flat_map(&:gitlab_schemas).to_set }
 
-        # The embedding and Geo databases do not share the same structure as all decomposed databases
-        subject do
-          described_class.views_and_tables_to_schema.reject { |_, v| v == :gitlab_embedding || v == :gitlab_geo }
+        let(:tables_for_gitlab_schemas) do
+          described_class.views_and_tables_to_schema.select do |_, gitlab_schema|
+            all_gitlab_schemas.include?(gitlab_schema)
+          end
         end
 
-        it 'new data sources are added' do
-          missing_data_sources = db_data_sources.to_set - subject.keys
+        db_infos.to_h { |db_info| [db_info.name, db_info.connection_class] }
+          .compact.each do |db_config_name, connection_class|
+          context "validates '#{db_config_name}' using '#{connection_class}'" do
+            let(:data_sources) { connection_class.connection.data_sources }
 
-          expect(missing_data_sources).to be_empty, \
-            "Missing table/view(s) #{missing_data_sources.to_a} not found in " \
-            "#{described_class}.views_and_tables_to_schema. " \
-            "Any new tables or views must be added to the database dictionary. " \
-            "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
-        end
+            it 'new data sources are added' do
+              missing_data_sources = data_sources.to_set - tables_for_gitlab_schemas.keys
 
-        it 'non-existing data sources are removed' do
-          extra_data_sources = subject.keys.to_set - db_data_sources
+              expect(missing_data_sources).to be_empty, \
+                "Missing table/view(s) #{missing_data_sources.to_a} not found in " \
+                "#{described_class}.views_and_tables_to_schema. " \
+                "Any new tables or views must be added to the database dictionary. " \
+                "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+            end
 
-          expect(extra_data_sources).to be_empty, \
-            "Extra table/view(s) #{extra_data_sources.to_a} found in #{described_class}.views_and_tables_to_schema. " \
-            "Any removed or renamed tables or views must be removed from the database dictionary. " \
-            "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+            it 'non-existing data sources are removed' do
+              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources
+
+              expect(extra_data_sources).to be_empty, \
+                "Extra table/view(s) #{extra_data_sources.to_a} found in " \
+                "#{described_class}.views_and_tables_to_schema. " \
+                "Any removed or renamed tables or views must be removed from the database dictionary. " \
+                "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+            end
+          end
         end
       end
+    end
+
+    it 'all tables and views are unique' do
+      table_and_view_names = described_class.build_dictionary('')
+      table_and_view_names += described_class.build_dictionary('views')
+
+      # ignore gitlab_internal due to `ar_internal_metadata`, `schema_migrations`
+      table_and_view_names = table_and_view_names
+        .reject { |_, gitlab_schema| gitlab_schema == :gitlab_internal }
+
+      duplicated_tables = table_and_view_names
+        .group_by(&:first)
+        .select { |_, schemas| schemas.count > 1 }
+        .keys
+
+      expect(duplicated_tables).to be_empty, \
+        "Duplicated table(s) #{duplicated_tables.to_a} found in #{described_class}.views_and_tables_to_schema. " \
+        "Any duplicated table must be removed from db/docs/ or ee/db/docs/. " \
+        "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
     end
   end
 
   describe '.dictionary_path_globs' do
-    include_examples 'validate path globs', described_class.dictionary_path_globs
-  end
-
-  describe '.view_path_globs' do
-    include_examples 'validate path globs', described_class.view_path_globs
-  end
-
-  describe '.deleted_tables_path_globs' do
-    include_examples 'validate path globs', described_class.deleted_tables_path_globs
-  end
-
-  describe '.deleted_views_path_globs' do
-    include_examples 'validate path globs', described_class.deleted_views_path_globs
+    include_examples 'validate path globs', described_class.dictionary_path_globs('')
+    include_examples 'validate path globs', described_class.dictionary_path_globs('views')
+    include_examples 'validate path globs', described_class.dictionary_path_globs('deleted_views')
+    include_examples 'validate path globs', described_class.dictionary_path_globs('deleted_tables')
   end
 
   describe '.tables_to_schema' do
@@ -121,7 +140,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   end
 
   describe '.table_schemas!' do
-    let(:tables) { %w[users projects ci_builds] }
+    let(:tables) { %w[namespaces projects ci_builds] }
 
     subject { described_class.table_schemas!(tables) }
 
@@ -130,7 +149,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
 
     context 'when one of the tables does not have a matching table schema' do
-      let(:tables) { %w[users projects unknown ci_builds] }
+      let(:tables) { %w[namespaces projects unknown ci_builds] }
 
       it 'raises error' do
         expect { subject }.to raise_error(/Could not find gitlab schema for table unknown/)

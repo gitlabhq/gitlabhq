@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PackageSettings'] do
+RSpec.describe GitlabSchema.types['PackageSettings'], feature_category: :package_registry do
   specify { expect(described_class.graphql_name).to eq('PackageSettings') }
 
   specify { expect(described_class.description).to eq('Namespace-level Package Registry settings') }

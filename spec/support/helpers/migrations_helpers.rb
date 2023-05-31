@@ -4,7 +4,7 @@ module MigrationsHelpers
   def active_record_base(database: nil)
     database_name = database || self.class.metadata[:database] || :main
 
-    unless Gitlab::Database::DATABASE_NAMES.include?(database_name.to_s)
+    unless ::Gitlab::Database.all_database_connections.include?(database_name)
       raise ArgumentError, "#{database_name} is not a valid argument"
     end
 
