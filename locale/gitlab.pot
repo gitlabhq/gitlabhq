@@ -4640,9 +4640,6 @@ msgstr ""
 msgid "Allow projects and subgroups to override the group setting"
 msgstr ""
 
-msgid "Allow projects within this group to use Git LFS"
-msgstr ""
-
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
@@ -8742,9 +8739,6 @@ msgstr ""
 msgid "Can be manually deployed to"
 msgstr ""
 
-msgid "Can be overridden in each project."
-msgstr ""
-
 msgid "Can create groups:"
 msgstr ""
 
@@ -11102,6 +11096,15 @@ msgstr ""
 msgid "Command line instructions"
 msgstr ""
 
+msgid "CommandPalette|Commands"
+msgstr ""
+
+msgid "CommandPalette|Type %{commandHandle} for command or search..."
+msgstr ""
+
+msgid "CommandPalette|command"
+msgstr ""
+
 msgid "Commands applied"
 msgstr ""
 
@@ -12806,6 +12809,9 @@ msgid "Create a new issue"
 msgstr ""
 
 msgid "Create a new project"
+msgstr ""
+
+msgid "Create a new project/repository"
 msgstr ""
 
 msgid "Create a new repository"
@@ -34067,6 +34073,9 @@ msgid "Popularity"
 msgstr ""
 
 msgid "Port"
+msgstr ""
+
+msgid "Possible to override in each project."
 msgstr ""
 
 msgid "Postman collection"

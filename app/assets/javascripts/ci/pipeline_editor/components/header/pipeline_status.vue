@@ -9,7 +9,9 @@ import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
@@ -32,11 +34,13 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSprintf,
+    GraphqlPipelineMiniGraph,
     PipelineEditorMiniGraph,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectFullPath'],
   props: {
     commitSha: {
@@ -106,6 +110,9 @@ export default {
     hasPipelineData() {
       return Boolean(this.pipeline?.id);
     },
+    isUsingPipelineMiniGraphQueries() {
+      return this.glFeatures.ciGraphqlPipelineMiniGraph;
+    },
     pipelineId() {
       return getIdFromGraphQLId(this.pipeline.id);
     },
@@ -171,8 +178,14 @@ export default {
           </gl-sprintf>
         </span>
       </div>
-      <div class="gl-display-flex gl-flex-wrap">
-        <pipeline-editor-mini-graph :pipeline="pipeline" v-on="$listeners" />
+      <div class="gl-display-flex gl-flex-wrap-wrap">
+        <graphql-pipeline-mini-graph
+          v-if="isUsingPipelineMiniGraphQueries"
+          :full-path="projectFullPath"
+          :iid="pipeline.iid"
+          :pipeline-etag="pipelineEtag"
+        />
+        <pipeline-editor-mini-graph v-else :pipeline="pipeline" v-on="$listeners" />
         <gl-button
           class="gl-ml-3"
           category="secondary"

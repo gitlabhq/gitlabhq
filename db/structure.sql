@@ -20904,7 +20904,8 @@ CREATE TABLE project_features (
     infrastructure_access_level integer DEFAULT 20 NOT NULL,
     feature_flags_access_level integer DEFAULT 20 NOT NULL,
     environments_access_level integer DEFAULT 20 NOT NULL,
-    releases_access_level integer DEFAULT 20 NOT NULL
+    releases_access_level integer DEFAULT 20 NOT NULL,
+    model_experiments_access_level integer DEFAULT 20 NOT NULL
 );
 
 CREATE SEQUENCE project_features_id_seq
@@ -22871,7 +22872,8 @@ CREATE TABLE status_check_responses (
     external_approval_rule_id bigint,
     sha bytea NOT NULL,
     external_status_check_id bigint NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    retried_at timestamp with time zone
 );
 
 CREATE SEQUENCE status_check_responses_id_seq

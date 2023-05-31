@@ -40,3 +40,4 @@ You cannot verify an account with a credit card number associated with a banned 
 ## Related topics
 
 - [Identity verification development documentation](../development/identity_verification.md)
+- [Changing risk assessment support](https://about.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts.html#change-risk-assessment-credit-card-verification)

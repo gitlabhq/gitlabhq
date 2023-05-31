@@ -110,3 +110,7 @@ export const TRACKING_CATEGORIES = {
   tabs: 'pipelines_filter_tabs',
   search: 'pipelines_filtered_search',
 };
+
+// Pipeline Mini Graph
+
+export const PIPELINE_MINI_GRAPH_POLL_INTERVAL = 5000;

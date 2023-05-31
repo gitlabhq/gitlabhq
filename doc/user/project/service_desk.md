@@ -485,6 +485,138 @@ The [incoming email](../../administration/incoming_email.md) address still works
 If you don't configure a custom suffix, the default project identification is used for identifying
 the project.
 
+### Configure email ingestion in multi-node environments
+
+A multi-node environment is a setup where GitLab is run across multiple servers
+for scalability, fault tolerance, and performance reasons.
+
+GitLab uses a separate process called `mail_room` to ingest new unread emails
+from the `incoming_email` and `service_desk_email` mailboxes.
+
+#### Helm chart (Kubernetes)
+
+The [GitLab Helm chart](https://docs.gitlab.com/charts/) is made up of multiple subcharts, and one of them is
+the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/index.html). Configure the
+[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
+and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#service-desk-email-configuration).
+
+#### Linux package (Omnibus)
+
+In multi-node Linux package (Omnibus) environments, run `mail_room` only on one node. Run it either on a single
+`rails` node (for example, [Omnibus role](https://docs.gitlab.com/omnibus/roles/index.html) `application_role`)
+or completely separately.
+
+##### Set up all nodes
+
+1. Add basic configuration for `incoming_email` and `service_desk_email` on every node
+   to render email addresses in the web UI and in generated emails.
+
+   Find the `incoming_email` or `service_desk_email` section in `/etc/gitlab/gitlab.rb`:
+
+   ::Tabs
+
+   :::TabTitle `incoming_email`
+
+   ```ruby
+   gitlab_rails['incoming_email_enabled'] = true
+   gitlab_rails['incoming_email_address'] = "incoming+%{key}@example.com"
+   ```
+
+   :::TabTitle `service_desk_email`
+
+   ```ruby
+   gitlab_rails['service_desk_email_enabled'] = true
+   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.com"
+   ```
+
+   ::EndTabs
+
+1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
+application. You can configure the `delivery_method` for each email setting individually:
+   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
+      application. It uses a shared token to authenticate. If you choose this method,
+      make sure the `mail_room` process can access the API endpoint and distribute the shared
+      token across all application nodes.
+
+      ::Tabs
+
+      :::TabTitle `incoming_email`
+
+      ```ruby
+      gitlab_rails['incoming_email_delivery_method'] = "webhook"
+
+      # The URL that mail_room can contact. You can also use an internal URL or IP,
+      # just make sure mail_room can access the GitLab API via that address.
+      # Do not end with "/".
+      gitlab_rails['incoming_email_gitlab_url'] = "https://gitlab.example.com"
+
+      # The shared secret file that should contain a random token. Make sure it's the same on every node.
+      gitlab_rails['incoming_email_secret_file'] = ".gitlab_mailroom_secret"
+      ```
+
+      :::TabTitle `service_desk_email`
+
+      ```ruby
+      gitlab_rails['service_desk_email_delivery_method'] = "webhook"
+
+      # The URL that mail_room can contact. You can also use an internal URL or IP,
+      # just make sure mail_room can access the GitLab API via that address.
+      # Do not end with "/".
+
+      gitlab_rails['service_desk_email_gitlab_url'] = "https://gitlab.example.com"
+
+      # The shared secret file that should contain a random token. Make sure it's the same on every node.
+      gitlab_rails['service_desk_email_secret_file'] = ".gitlab_mailroom_secret"
+      ```
+
+      ::EndTabs
+
+   1. [Deprecated in GitLab 16.0 and planned for removal in 17.0)](../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
+      If you experience issues with the `webhook` setup, use `sidekiq` to deliver the email payload directly to GitLab Sidekiq using Redis.
+
+      ::Tabs
+
+      :::TabTitle `incoming_email`
+
+      ```ruby
+      # It uses the Redis configuration to directly add Sidekiq jobs
+      gitlab_rails['incoming_email_delivery_method'] = "sidekiq"
+      ```
+
+      :::TabTitle `service_desk_email`
+
+      ```ruby
+      # It uses the Redis configuration to directly add Sidekiq jobs
+      gitlab_rails['service_desk_email_delivery_method'] = "sidekiq"
+      ```
+
+      ::EndTabs
+
+1. Disable `mail_room` on all nodes that should not run email ingestion. For example, in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   mailroom['enabled'] = false
+   ```
+
+1. [Reconfigure GitLab](../../administration/restart_gitlab.md) for the changes to take effect.
+
+##### Set up a single email ingestion node
+
+After setting up all nodes and disabling the `mail_room` process, enable `mail_room` on a single node.
+This node polls the mailboxes for `incoming_email` and `service_desk_email` on a regular basis and
+move new unread emails to GitLab.
+
+1. Choose an existing node that additionally handles email ingestion.
+1. Add [full configuration and credentials](../../administration/incoming_email.md#configuration-examples)
+   for `incoming_email` and `service_desk_email`.
+1. Enable `mail_room` on this node. For example, in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   mailroom['enabled'] = true
+   ```
+
+1. [Reconfigure GitLab](../../administration/restart_gitlab.md) on this node for the changes to take effect.
+
 ## Use Service Desk
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).

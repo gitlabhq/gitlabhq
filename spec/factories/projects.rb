@@ -42,6 +42,7 @@ FactoryBot.define do
       feature_flags_access_level { ProjectFeature::ENABLED }
       releases_access_level { ProjectFeature::ENABLED }
       infrastructure_access_level { ProjectFeature::ENABLED }
+      model_experiments_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first

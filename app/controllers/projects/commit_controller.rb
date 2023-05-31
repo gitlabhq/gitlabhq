@@ -19,6 +19,9 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_box_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
+  before_action do
+    push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, @project)
+  end
 
   BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 20

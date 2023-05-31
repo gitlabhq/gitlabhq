@@ -48,6 +48,10 @@ sequenceDiagram
     end
 ```
 
+## How do we treat malicious sign-up attempts?
+
+Depending on the risk score received, a user might be required to perform up to three stages of [identity verification](../security/identity_verification.md) to register an account.
+
 ## How do we treat malicious sign-in attempts?
 
 Users are not denied access if Arkose Protect considers they are malicious. However,

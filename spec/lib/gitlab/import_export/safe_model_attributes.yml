@@ -704,6 +704,7 @@ ProjectFeature:
 - releases_access_level
 - monitor_access_level
 - infrastructure_access_level
+- model_experiments_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

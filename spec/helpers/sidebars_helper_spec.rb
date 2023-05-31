@@ -319,6 +319,17 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       )
     end
 
+    it 'returns command palette items', :use_clean_rails_memory_store_caching do
+      expect(subject[:command_palette_commands]).to match_array([
+        { href: "/projects/new",
+          text: "New project/repository", keywords: [_('Create a new project/repository')] },
+        { href: "/groups/new", text: "New group",
+          keywords: ['Create a new group'] },
+        { href: "/-/snippets/new", text: "New snippet",
+          keywords: ['Create a new snippet'] }
+      ])
+    end
+
     describe 'current context' do
       context 'when current context is a project' do
         let_it_be(:project) { build(:project) }

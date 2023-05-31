@@ -7,65 +7,16 @@ type: reference
 
 # GitLab Admin Area **(FREE SELF)**
 
-The Admin Area provides a web UI to manage and configure some features of GitLab
-self-managed instances. If you are an administrator, you can access the Admin Area
-by visiting `/admin` on your self-managed instance. You can also access it through
-the UI:
+The Admin Area provides a web UI to manage and configure features of GitLab
+self-managed instances. If you are an administrator,to access the Admin Area:
 
-- GitLab versions 14.0 and later: on the top bar, select **Main menu > Admin**.
-- GitLab versions 13.12 and earlier: on the top bar, select the Admin Area icon (**{admin}**).
+- In GitLab 14.0 and later: on the top bar, select **Main menu > Admin**.
+- In GitLab 13.12 and earlier: on the top bar, select the Admin Area icon (**{admin}**).
 
 NOTE:
 Only administrators can access the Admin Area.
 
-## Admin Area sections
-
-The Admin Area is made up of the following sections:
-
-| Section                                        | Description |
-|:-----------------------------------------------|:------------|
-| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [topics](#administering-topics), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
-| **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), and [audit events](#audit-events). |
-| **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
-| **{hook}** System Hooks                        | Configure [system hooks](../../administration/system_hooks.md) for many events. |
-| **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services. |
-| **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
-| **{license}** License                          | Add, display, and remove [licenses](license.md). |
-| **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
-| **{push-rules}** Push rules | Configure pre-defined Git [push rules](../project/repository/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
-| **{location-dot}** Geo                         | Configure and maintain [Geo sites](geo_sites.md). |
-| **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md). |
-| **{lock}** Credentials                         | View [credentials](credentials_inventory.md) that can be used to access your instance. |
-| **{template}** Integrations                    | Manage [instance-level default settings](settings/project_integration_management.md) for a project integration. |
-| **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance. |
-| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md). |
-| **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance. |
-
-## Admin Area dashboard
-
-The Dashboard provides statistics and system information about the GitLab instance.
-
-To access the Dashboard, either:
-
-- On the top bar, select **Main menu > Admin**.
-- Visit `/admin` on your self-managed instance.
-
-The Dashboard is the default view of the Admin Area, and is made up of the following sections:
-
-| Section    | Description |
-|:-----------|:------------|
-| Projects   | The total number of projects, up to 10 of the latest projects, and the option of creating a new project. |
-| Users      | The total number of users, up to 10 of the latest users, the option of creating a new user, and a link to [**Users statistics**](#users-statistics). |
-| Groups     | The total number of groups, up to 10 of the latest groups, and the option of creating a new group. |
-| Statistics | Totals of all elements of the GitLab instance. |
-| Features   | All features available on the GitLab instance. Enabled features are marked with a green circle icon, and disabled features are marked with a power icon. |
-| Components | The major components of GitLab and the version number of each. A link to the Gitaly Servers is also included. |
-
-## Overview section
-
-The following topics document the **Overview** section of the Admin Area.
-
-### Administering Projects
+## Administering projects
 
 You can administer all projects in the GitLab instance from the Admin Area's Projects page.
 
@@ -118,7 +69,7 @@ You can combine the filter options. For example, to list only public projects wi
 1. Select the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
-### Administering Users
+## Administering users
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:
 
@@ -159,7 +110,7 @@ To search for users, enter your criteria in the search field. The user search is
 insensitive, and applies partial matching to name and username. To search for an email address,
 you must provide the complete email address.
 
-#### User impersonation
+### User impersonation
 
 An administrator can "impersonate" any other user, including other administrators.
 This allows the administrator to "see what the user sees," and take actions on behalf of the user.
@@ -178,7 +129,7 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
-#### User identities
+### User identities
 
 > The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
 
@@ -192,7 +143,7 @@ When using authentication providers, administrators can see the identities for a
 This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
 the identities being used for an account.
 
-#### User Permission Export **(PREMIUM SELF)**
+### User Permission Export **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
@@ -213,7 +164,7 @@ Only the first 100,000 user accounts are exported.
 
 ![user permission export button](img/export_permissions_v13_11.png)
 
-#### Users statistics
+### Users statistics
 
 The **Users statistics** page provides an overview of user accounts by role. These statistics are
 calculated daily, so user changes made since the last update are not reflected.
@@ -226,7 +177,7 @@ The following totals are also included:
 
 GitLab billing is based on the number of [**Billable users**](../../subscriptions/self_managed/index.md#billable-users).
 
-#### Add email to user
+### Add email to user
 
 You must be an administrator to manually add emails to users:
 
@@ -238,11 +189,11 @@ You must be an administrator to manually add emails to users:
    user and sets the previous email address to be a secondary.
 1. Select **Save changes**.
 
-### User cohorts
+## User cohorts
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
 
-### Prevent a user from creating groups
+## Prevent a user from creating groups
 
 By default, users can create groups. To prevent a user from creating a top level group:
 
@@ -255,7 +206,7 @@ By default, users can create groups. To prevent a user from creating a top level
 
 It is also possible to [limit which roles can create a subgroup within a group](../group/subgroups/index.md#change-who-can-create-subgroups).
 
-### Administering Groups
+## Administering groups
 
 You can administer all groups in the GitLab instance from the Admin Area's Groups page.
 
@@ -275,7 +226,7 @@ insensitive, and applies partial matching.
 
 To [Create a new group](../group/index.md#create-a-group) select **New group**.
 
-### Administering Topics
+## Administering topics
 
 - > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 - > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
@@ -307,7 +258,7 @@ The assigned topics are visible only to everyone with access to the project,
 but everyone can see which topics exist on the GitLab instance.
 Do not include sensitive information in the name of a topic.
 
-### Administering Gitaly servers
+## Administering Gitaly servers
 
 You can list all Gitaly servers in the GitLab instance from the Admin Area's **Gitaly Servers**
 page. For more details, see [Gitaly](../../administration/gitaly/index.md).

@@ -1,0 +1,42 @@
+<script>
+import { COMMON_HANDLES, SEARCH_SCOPE } from './constants';
+
+export default {
+  name: 'FakeSearchInput',
+  props: {
+    userInput: {
+      type: String,
+      required: true,
+    },
+    scope: {
+      type: String,
+      required: true,
+      validator: (value) => COMMON_HANDLES.includes(value),
+    },
+  },
+  computed: {
+    placeholder() {
+      return SEARCH_SCOPE[this.scope];
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="gl-display-flex gl-pointer-events-none fake-input">
+    <span class="gl-opacity-0" data-testid="search-scope">{{ scope }}&nbsp;</span>
+    <span
+      v-if="!userInput"
+      data-testid="search-scope-placeholder"
+      class="gl-text-gray-500 gl-pointer-events-none"
+      >{{ placeholder }}</span
+    >
+  </div>
+</template>
+
+<style scoped>
+.fake-input {
+  top: 12px;
+  left: 33px;
+}
+</style>
