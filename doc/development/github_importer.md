@@ -205,7 +205,7 @@ also reduces pressure on the system as a whole.
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
 that periodically runs and marks project imports as failed if they have been
-running for more than 15 hours. For GitHub projects, this poses a bit of a
+running for more than 24 hours. For GitHub projects, this poses a bit of a
 problem: importing large projects could take several hours depending on how
 often we hit the GitHub rate limit (more on this below), but we don't want
 `Gitlab::Import::StuckProjectImportJobsWorker` to mark our import as failed because of this.

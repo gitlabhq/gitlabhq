@@ -13,10 +13,6 @@ module API
       end
     end
 
-    after_validation do
-      not_found! unless Feature.enabled?(:npm_group_level_endpoints, group)
-    end
-
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end

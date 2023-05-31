@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading from Community Edition to Enterprise Edition from source **(FREE SELF)**
+# Upgrading from Community Edition to Enterprise Edition for self-compiled installations **(FREE SELF)**
 
 NOTE:
 In the past we used separate documents for upgrading from
@@ -38,9 +38,6 @@ Make a backup just in case something goes wrong:
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
-
-For installations using MySQL, this may require granting `LOCK TABLES`
-privileges to the GitLab user on the database version.
 
 ### 1. Stop server
 

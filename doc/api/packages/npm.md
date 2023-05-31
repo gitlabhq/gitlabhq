@@ -150,11 +150,8 @@ The examples in this document all use the project-level prefix.
 
 ### Group-level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
 
 ```plaintext
  /groups/:id/-/packages/npm`

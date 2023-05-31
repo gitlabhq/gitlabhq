@@ -57,11 +57,13 @@ To set server hooks for a repository:
    1. Ensure the server hook files are executable and do not match the backup file pattern (`*~`). The server hooks be
       in a `custom_hooks` directory that is at the root of the tarball.
    1. Create the custom hooks archive with the tar command. For example, `tar -cf custom_hooks.tar custom_hooks`.
-1. Run the `hooks set` command with required options to set the Git hooks for the repository. For example,
+1. Run the `hooks set` subcommand with required options to set the Git hooks for the repository. For example,
    `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
 
    - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
    - Custom hooks tarball must be passed via `stdin`. For example, `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+1. If you are using Gitaly Cluster, you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
 
 If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.
 
@@ -90,12 +92,14 @@ To create server hooks for a repository:
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 1. Ensure the hook file does not match the backup file
    pattern (`*~`).
+1. If you are using Gitaly Cluster, you must repeat this process on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
 
 ::EndTabs
 
-### Gitaly Cluster
+### Server hooks on a Gitaly Cluster
 
 If you use [Gitaly Cluster](gitaly/index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
 Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.

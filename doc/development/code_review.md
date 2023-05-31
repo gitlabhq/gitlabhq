@@ -210,6 +210,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have considered the availability and reliability risks of this change.
 1. You have considered the scalability risk based on future predicted growth.
 1. You have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
+1. You have considered the performance, reliability, and availability impacts of this change on customers who may run GitLab on the [minimum system](../install/requirements.md).
 
 ##### Observability instrumentation
 

@@ -90,8 +90,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20221014034338_populate_releases_access_level_from_repository.rb',
-    expected: ['spec/migrations/populate_releases_access_level_from_repository_spec.rb']
+    source: 'db/migrate/20221011062254_sync_new_amount_used_for_ci_project_monthly_usages.rb',
+    expected: ['spec/migrations/sync_new_amount_used_for_ci_project_monthly_usages_spec.rb']
   },
   # rubocop:disable Layout/LineLength
   {

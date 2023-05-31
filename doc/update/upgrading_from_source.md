@@ -4,13 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
+# Upgrading self-compiled installations **(FREE SELF)**
 
 Make sure you view this upgrade guide from the branch (version) of GitLab you
-would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown list in the upper-right corner of GitLab documentation page.
+would like to install (for example, `16.0`). You can select the required version of documentation in the dropdown list in the upper-right corner of GitLab documentation page.
 
-In each of the following examples, replace `BRANCH` with the branch of the version you upgrading to (for example, `11-8-stable` for `11.8`). Replace `PREVIOUS_BRANCH` with the
-branch for the version you are upgrading from (for example, `11-7-stable` for `11.7`).
+In each of the following examples, replace `BRANCH` with the branch of the version you upgrading to (for example, `16-0-stable` for `16.0`). Replace `PREVIOUS_BRANCH` with the
+branch for the version you are upgrading from (for example, `15-11-stable` for `15.11`).
 
 If the highest number stable branch is unclear check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
@@ -38,7 +38,11 @@ specific guidelines (should there be any) are covered separately.
 
 ### 1. Backup
 
-If you installed GitLab from source, make sure `rsync` is installed.
+Prerequisites:
+
+- Make sure `rsync` is installed.
+
+Perform the backup:
 
 ```shell
 cd /home/git/gitlab
@@ -218,7 +222,7 @@ via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/l
 
 #### SMTP configuration
 
-If you're installing from source and use SMTP to deliver mail, you must
+If you use SMTP to deliver mail, you must
 add the following line to `config/initializers/smtp_settings.rb`:
 
 ```ruby
@@ -400,7 +404,7 @@ see how to [upgrade to a later version](../administration/docs_self_host.md#upgr
 Upgrading versions might need some manual intervention. For more information,
 [check the version you are upgrading to](index.md#version-specific-upgrading-instructions)
 for additional steps required for all GitLab installations, and for
-steps that apply to self-compiled (source) installations.
+steps that apply to self-compiled installations.
 
 ## Troubleshooting
 

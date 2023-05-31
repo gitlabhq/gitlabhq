@@ -5741,6 +5741,7 @@ Input type: `ScanExecutionPolicyCommitInput`
 | <a id="mutationscanexecutionpolicycommitbranch"></a>`branch` | [`String`](#string) | Name of the branch to which the policy changes are committed. |
 | <a id="mutationscanexecutionpolicycommitclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationscanexecutionpolicycommiterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationscanexecutionpolicycommitvalidationerrors"></a>`validationErrors` | [`[SecurityPolicyValidationError!]`](#securitypolicyvalidationerror) | Validation errors encountered during execution of the mutation. |
 
 ### `Mutation.securityFindingCreateIssue`
 
@@ -21731,6 +21732,19 @@ Represents a resource scanned by a security scan.
 | ---- | ---- | ----------- |
 | <a id="scannedresourcerequestmethod"></a>`requestMethod` | [`String`](#string) | HTTP request method used to access the URL. |
 | <a id="scannedresourceurl"></a>`url` | [`String`](#string) | URL scanned by the scanner. |
+
+### `SecurityPolicyValidationError`
+
+Security policy validation error.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitypolicyvalidationerrorfield"></a>`field` | [`String!`](#string) | Error field. |
+| <a id="securitypolicyvalidationerrorlevel"></a>`level` | [`String!`](#string) | Error level. |
+| <a id="securitypolicyvalidationerrormessage"></a>`message` | [`String!`](#string) | Error message. |
+| <a id="securitypolicyvalidationerrortitle"></a>`title` | [`String`](#string) | Error title. |
 
 ### `SecurityReportSummary`
 
