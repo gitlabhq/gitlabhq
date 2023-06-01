@@ -2,7 +2,7 @@
 import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
-import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
@@ -18,17 +18,9 @@ export default {
   },
   inject: ['kasTunnelUrl'],
   props: {
-    agentName: {
+    clusterAgent: {
       required: true,
-      type: String,
-    },
-    agentId: {
-      required: true,
-      type: String,
-    },
-    agentProjectPath: {
-      required: true,
-      type: String,
+      type: Object,
     },
     namespace: {
       required: false,
@@ -50,8 +42,7 @@ export default {
       return this.isVisible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
     gitlabAgentId() {
-      const id = isGid(this.agentId) ? getIdFromGraphQLId(this.agentId) : this.agentId;
-      return id.toString();
+      return getIdFromGraphQLId(this.clusterAgent.id).toString();
     },
     k8sAccessConfiguration() {
       return {
@@ -91,11 +82,7 @@ export default {
     </p>
     <gl-collapse :visible="isVisible" class="gl-md-pl-7 gl-md-pr-5 gl-mt-4">
       <template v-if="isVisible">
-        <kubernetes-agent-info
-          :agent-name="agentName"
-          :agent-id="agentId"
-          :agent-project-path="agentProjectPath"
-          class="gl-mb-5" />
+        <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-5" />
 
         <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
           {{ error }}

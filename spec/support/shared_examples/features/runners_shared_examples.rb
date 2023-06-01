@@ -207,7 +207,7 @@ RSpec.shared_examples 'submits edit runner form' do
 
   context 'when a runner is updated', :js do
     before do
-      find('[data-testid="runner-field-description"] input').set('new-runner-description')
+      fill_in s_('Runners|Runner description'), with: 'new-runner-description'
 
       click_on _('Save changes')
       wait_for_requests

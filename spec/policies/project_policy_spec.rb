@@ -3283,6 +3283,32 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe ':read_model_experiments' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::ENABLED  | true
+      true  | ref(:guest)      | Featurable::PRIVATE  | true
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
+    end
+    with_them do
+      before do
+        stub_feature_flags(ml_experiment_tracking: ff_ml_experiment_tracking)
+        project.project_feature.update!(model_experiments_access_level: access_level)
+      end
+
+      if params[:allowed]
+        it { is_expected.to be_allowed(:read_model_experiments) }
+      else
+        it { is_expected.not_to be_allowed(:read_model_experiments) }
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

@@ -3,6 +3,7 @@ import Vue from 'vue';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { stubTransition } from 'helpers/stub_transition';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -11,6 +12,7 @@ import EnvironmentActions from '~/environments/components/environment_actions.vu
 import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
+import getEnvironmentClusterAgent from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
@@ -18,9 +20,24 @@ Vue.use(VueApollo);
 
 describe('~/environments/components/new_environment_item.vue', () => {
   let wrapper;
+  let queryResponseHandler;
 
-  const createApolloProvider = () => {
-    return createMockApollo();
+  const projectPath = '/1';
+
+  const createApolloProvider = (clusterAgent = null) => {
+    const response = {
+      data: {
+        project: {
+          id: '1',
+          environment: {
+            id: '1',
+            clusterAgent,
+          },
+        },
+      },
+    };
+    queryResponseHandler = jest.fn().mockResolvedValue(response);
+    return createMockApollo([[getEnvironmentClusterAgent, queryResponseHandler]]);
   };
 
   const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
@@ -30,7 +47,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       provide: {
         helpPagePath: '/help',
         projectId: '1',
-        projectPath: '/1',
+        projectPath,
         kasTunnelUrl: mockKasTunnelUrl,
         ...provideData,
       },
@@ -501,14 +518,59 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('kubernetes overview', () => {
-    const environmentWithAgent = {
-      ...resolvedEnvironment,
-      agent,
-    };
-
-    it('should render if the feature flag is enabled and the environment has an agent object with the required data specified', () => {
+    it('should request agent data when the environment is visible if the feature flag is enabled', async () => {
       wrapper = createWrapper({
-        propsData: { environment: environmentWithAgent },
+        propsData: { environment: resolvedEnvironment },
+        provideData: {
+          glFeatures: {
+            kasUserAccessProject: true,
+          },
+        },
+        apolloProvider: createApolloProvider(agent),
+      });
+
+      await expandCollapsedSection();
+
+      expect(queryResponseHandler).toHaveBeenCalledWith({
+        environmentName: resolvedEnvironment.name,
+        projectFullPath: projectPath,
+      });
+    });
+
+    it('should render if the feature flag is enabled and the environment has an agent associated', async () => {
+      wrapper = createWrapper({
+        propsData: { environment: resolvedEnvironment },
+        provideData: {
+          glFeatures: {
+            kasUserAccessProject: true,
+          },
+        },
+        apolloProvider: createApolloProvider(agent),
+      });
+
+      await expandCollapsedSection();
+      await waitForPromises();
+
+      expect(findKubernetesOverview().props()).toMatchObject({
+        clusterAgent: agent,
+      });
+    });
+
+    it('should not render if the feature flag is not enabled', async () => {
+      wrapper = createWrapper({
+        propsData: { environment: resolvedEnvironment },
+        apolloProvider: createApolloProvider(agent),
+      });
+
+      await expandCollapsedSection();
+
+      expect(queryResponseHandler).not.toHaveBeenCalled();
+      expect(findKubernetesOverview().exists()).toBe(false);
+    });
+
+    it('should not render if the environment has no agent object', async () => {
+      wrapper = createWrapper({
+        propsData: { environment: resolvedEnvironment },
         provideData: {
           glFeatures: {
             kasUserAccessProject: true,
@@ -517,52 +579,8 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      expandCollapsedSection();
-
-      expect(findKubernetesOverview().props()).toMatchObject({
-        agentProjectPath: agent.project,
-        agentName: agent.name,
-        agentId: agent.id,
-        namespace: agent.kubernetesNamespace,
-      });
-    });
-
-    it('should not render if the feature flag is not enabled', () => {
-      wrapper = createWrapper({
-        propsData: { environment: environmentWithAgent },
-        apolloProvider: createApolloProvider(),
-      });
-
-      expandCollapsedSection();
-
-      expect(findKubernetesOverview().exists()).toBe(false);
-    });
-
-    it('should not render if the environment has no agent object', () => {
-      wrapper = createWrapper({
-        apolloProvider: createApolloProvider(),
-      });
-
-      expandCollapsedSection();
-
-      expect(findKubernetesOverview().exists()).toBe(false);
-    });
-
-    it('should not render if the environment has an agent object without agent id specified', () => {
-      const environment = {
-        ...resolvedEnvironment,
-        agent: {
-          project: agent.project,
-          name: agent.name,
-        },
-      };
-
-      wrapper = createWrapper({
-        propsData: { environment },
-        apolloProvider: createApolloProvider(),
-      });
-
-      expandCollapsedSection();
+      await expandCollapsedSection();
+      await waitForPromises();
 
       expect(findKubernetesOverview().exists()).toBe(false);
     });

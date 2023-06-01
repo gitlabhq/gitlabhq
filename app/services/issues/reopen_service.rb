@@ -7,6 +7,12 @@ module Issues
 
       if issue.reopen
         event_service.reopen_issue(issue, current_user)
+
+        if current_user.project_bot?
+          log_audit_event(issue, current_user, "#{issue.issue_type}_reopened_by_project_bot",
+            "Reopened #{issue.issue_type.humanize(capitalize: false)} #{issue.title}")
+        end
+
         create_note(issue, 'reopened')
         notification_service.async.reopen_issue(issue, current_user)
         perform_incident_management_actions(issue)

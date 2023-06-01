@@ -1,8 +1,6 @@
 import { groupMemberRequestFormatter } from '~/groups/members/utils';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
-import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
 import { MEMBER_TYPES, EE_APP_OPTIONS } from 'ee_else_ce/members/constants';
@@ -60,7 +58,5 @@ const APP_OPTIONS = {
 
 initMembersApp(document.querySelector('.js-group-members-list-app'), APP_OPTIONS);
 
-initInviteMembersModal();
 initInviteGroupsModal();
-initInviteMembersTrigger();
 initInviteGroupTrigger();

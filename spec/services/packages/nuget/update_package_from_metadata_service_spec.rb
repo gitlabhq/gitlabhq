@@ -38,7 +38,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
     shared_examples 'not updating the package if the lease is taken' do
       context 'without obtaining the exclusive lease' do
         let(:lease_key) { "packages:nuget:update_package_from_metadata_service:package:#{package_id}" }
-        let(:metadata) { { package_name: package_name, package_version: package_version } }
+        let(:metadata) { { package_name: package_name, package_version: package_version, authors: 'author1, author2', description: 'test description' } }
         let(:package_from_package_file) { package_file.package }
 
         before do
@@ -66,12 +66,12 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
     context 'with no existing package' do
       let(:package_id) { package.id }
 
-      it 'updates package and package file', :aggregate_failures do
+      it 'updates package and package file and creates metadatum', :aggregate_failures do
         expect { subject }
           .to not_change { ::Packages::Package.count }
           .and change { Packages::Dependency.count }.by(1)
           .and change { Packages::DependencyLink.count }.by(1)
-          .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+          .and change { ::Packages::Nuget::Metadatum.count }.by(1)
 
         expect(package.reload.name).to eq(package_name)
         expect(package.version).to eq(package_version)
@@ -98,7 +98,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           .and change { Packages::Dependency.count }.by(0)
           .and change { Packages::DependencyLink.count }.by(0)
           .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
-          .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+          .and change { ::Packages::Nuget::Metadatum.count }.by(1)
         expect(package_file.reload.file_name).to eq(package_file_name)
         expect(package_file.package).to eq(existing_package)
       end
@@ -117,7 +117,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             .to not_change { ::Packages::Package.count }
             .and change { Packages::Dependency.count }.by(1)
             .and change { Packages::DependencyLink.count }.by(1)
-            .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+            .and change { ::Packages::Nuget::Metadatum.count }.by(1)
         end
       end
     end
@@ -158,6 +158,8 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           .and change { ::Packages::Nuget::Metadatum.count }.by(1)
 
         metadatum = package_file.reload.package.nuget_metadatum
+        expect(metadatum.authors).to eq('Author Test')
+        expect(metadatum.description).to eq('Description Test')
         expect(metadatum.license_url).to eq('https://opensource.org/licenses/MIT')
         expect(metadatum.project_url).to eq('https://gitlab.com/gitlab-org/gitlab')
         expect(metadatum.icon_url).to eq('https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png')
@@ -172,7 +174,19 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           allow(service).to receive(:metadata).and_return(metadata)
         end
 
-        it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+        it_behaves_like 'raising an', described_class::InvalidMetadataError
+      end
+
+      context 'without authors or description' do
+        %i[authors description].each do |property|
+          let(:metadata) { { package_name: package_name, package_version: package_version, license_url: 'http://localhost/', property => nil } }
+
+          before do
+            allow(service).to receive(:metadata).and_return(metadata)
+          end
+
+          it_behaves_like 'raising an', described_class::InvalidMetadataError
+        end
       end
     end
 
@@ -222,12 +236,16 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       context 'with no existing package' do
         let(:package_id) { package.id }
 
-        it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+        it_behaves_like 'raising an', described_class::InvalidMetadataError
       end
 
       context 'with existing package' do
         let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
         let(:package_id) { existing_package.id }
+
+        before do
+          allow(service).to receive(:metadata).and_return(service.send(:metadata).merge(authors: 'Author Test'))
+        end
 
         it 'link existing package and updates package file', :aggregate_failures do
           expect(service).to receive(:try_obtain_lease).and_call_original
@@ -264,7 +282,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             allow(service).to receive(:package_name).and_return(invalid_name)
           end
 
-          it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+          it_behaves_like 'raising an', described_class::InvalidMetadataError
         end
       end
     end
@@ -284,7 +302,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             allow(service).to receive(:package_version).and_return(invalid_version)
           end
 
-          it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+          it_behaves_like 'raising an', described_class::InvalidMetadataError
         end
       end
     end

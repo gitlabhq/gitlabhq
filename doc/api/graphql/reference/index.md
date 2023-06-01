@@ -1038,6 +1038,7 @@ Input type: `AiActionInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationaiactionchat"></a>`chat` | [`AiChatInput`](#aichatinput) | Input for chat AI action. |
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
@@ -27839,6 +27840,15 @@ be used as arguments).
 
 Only general use input types are listed here. For mutation input types,
 see the associated mutation type above.
+
+### `AiChatInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiExplainCodeInput`
 

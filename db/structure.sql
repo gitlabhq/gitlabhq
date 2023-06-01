@@ -19695,6 +19695,10 @@ CREATE TABLE packages_nuget_metadata (
     license_url text,
     project_url text,
     icon_url text,
+    authors text,
+    description text,
+    CONSTRAINT check_d39a5fe9ee CHECK ((char_length(description) <= 4000)),
+    CONSTRAINT check_e2fc129ebd CHECK ((char_length(authors) <= 255)),
     CONSTRAINT packages_nuget_metadata_icon_url_constraint CHECK ((char_length(icon_url) <= 255)),
     CONSTRAINT packages_nuget_metadata_license_url_constraint CHECK ((char_length(license_url) <= 255)),
     CONSTRAINT packages_nuget_metadata_project_url_constraint CHECK ((char_length(project_url) <= 255))

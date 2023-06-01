@@ -64,9 +64,31 @@ export function initScrollingTabs() {
   });
 }
 
-function initDeferred() {
-  initScrollingTabs();
+function initInviteMembers() {
+  const modalEl = document.querySelector('.js-invite-members-modal');
+  if (!modalEl) return;
 
+  import(
+    /* webpackChunkName: 'initInviteMembersModal' */ '~/invite_members/init_invite_members_modal'
+  )
+    .then(({ default: initInviteMembersModal }) => {
+      initInviteMembersModal();
+    })
+    .catch(() => {});
+
+  const inviteTriggers = document.querySelectorAll('.js-invite-members-trigger');
+  if (!inviteTriggers) return;
+
+  import(
+    /* webpackChunkName: 'initInviteMembersTrigger' */ '~/invite_members/init_invite_members_trigger'
+  )
+    .then(({ default: initInviteMembersTrigger }) => {
+      initInviteMembersTrigger();
+    })
+    .catch(() => {});
+}
+
+function initWhatsNewComponent() {
   const appEl = document.getElementById('whats-new-app');
   if (!appEl) return;
 
@@ -82,6 +104,12 @@ function initDeferred() {
       })
       .catch(() => {});
   });
+}
+
+function initDeferred() {
+  initScrollingTabs();
+  initWhatsNewComponent();
+  initInviteMembers();
 }
 
 export default function initLayoutNav() {

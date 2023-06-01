@@ -32,6 +32,10 @@ body {
   font-size: inherit;
 }
 
+pre {
+  font-size: 14px;
+}
+
 .gl-mb-5 {
   @include gl-mb-5;
 }

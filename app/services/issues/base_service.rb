@@ -124,6 +124,10 @@ module Issues
     def update_project_counter_caches?(issue)
       super || issue.confidential_changed?
     end
+
+    def log_audit_event(issue, user, event_type, message)
+      # defined in EE
+    end
   end
 end
 

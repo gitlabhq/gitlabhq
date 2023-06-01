@@ -2,9 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Nuget::Metadatum do
+RSpec.describe API::Entities::Nuget::Metadatum, feature_category: :package_registry do
   let(:metadatum) do
     {
+      authors: 'Authors',
+      description: 'Description',
       project_url: 'http://sandbox.com/project',
       license_url: 'http://sandbox.com/license',
       icon_url: 'http://sandbox.com/icon'
@@ -13,6 +15,8 @@ RSpec.describe API::Entities::Nuget::Metadatum do
 
   let(:expected) do
     {
+      'authors': 'Authors',
+      'summary': 'Description',
       'projectUrl': 'http://sandbox.com/project',
       'licenseUrl': 'http://sandbox.com/license',
       'iconUrl': 'http://sandbox.com/icon'
@@ -27,11 +31,27 @@ RSpec.describe API::Entities::Nuget::Metadatum do
 
   %i[project_url license_url icon_url].each do |optional_field|
     context "metadatum without #{optional_field}" do
-      let(:metadatum_without_a_field) { metadatum.except(optional_field) }
-      let(:expected_without_a_field) { expected.except(optional_field.to_s.camelize(:lower).to_sym) }
-      let(:entity) { described_class.new(metadatum_without_a_field) }
+      let(:metadatum) { super().merge(optional_field => nil) }
 
-      it { is_expected.to eq(expected_without_a_field) }
+      it { is_expected.not_to have_key(optional_field.to_s.camelize(:lower).to_sym) }
+    end
+  end
+
+  describe 'authors' do
+    context 'with default value' do
+      let(:metadatum) { super().merge(authors: nil) }
+
+      it { is_expected.to have_key(:authors) }
+      it { is_expected.to eq(expected.merge(authors: '')) }
+    end
+  end
+
+  describe 'description' do
+    context 'with default value' do
+      let(:metadatum) { super().merge(description: nil) }
+
+      it { is_expected.to have_key(:summary) }
+      it { is_expected.to eq(expected.merge(summary: '')) }
     end
   end
 end

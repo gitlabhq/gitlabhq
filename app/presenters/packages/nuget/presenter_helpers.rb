@@ -5,7 +5,6 @@ module Packages
     module PresenterHelpers
       include ::API::Helpers::RelatedResourcesHelpers
 
-      BLANK_STRING = ''
       PACKAGE_DEPENDENCY_GROUP = 'PackageDependencyGroup'
       PACKAGE_DEPENDENCY = 'PackageDependency'
 
@@ -45,14 +44,13 @@ module Packages
       def catalog_entry_for(package)
         {
           json_url: json_url_for(package),
-          authors: BLANK_STRING,
           dependency_groups: dependency_groups_for(package),
           package_name: package.name,
           package_version: package.version,
           archive_url: archive_url_for(package),
-          summary: BLANK_STRING,
           tags: tags_for(package),
-          metadatum: metadatum_for(package)
+          metadatum: metadatum_for(package),
+          published: package.created_at.iso8601
         }
       end
 
@@ -98,8 +96,8 @@ module Packages
         metadatum = package.nuget_metadatum
         return {} unless metadatum
 
-        metadatum.slice(:project_url, :license_url, :icon_url)
-                  .compact
+        metadatum.slice(:authors, :description, :project_url, :license_url, :icon_url)
+                 .compact
       end
 
       def base_path_for(package)

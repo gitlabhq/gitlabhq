@@ -5,14 +5,12 @@ import KubernetesOverview from '~/environments/components/kubernetes_overview.vu
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
-import { agent } from './graphql/mock_data';
+import { agent, kubernetesNamespace } from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
 const propsData = {
-  agentId: agent.id,
-  agentName: agent.name,
-  agentProjectPath: agent.project,
-  namespace: agent.kubernetesNamespace,
+  clusterAgent: agent,
+  namespace: kubernetesNamespace,
 };
 
 const provide = {
@@ -91,23 +89,19 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('renders kubernetes agent info', () => {
-      expect(findAgentInfo().props()).toEqual({
-        agentName: agent.name,
-        agentId: agent.id,
-        agentProjectPath: agent.project,
-      });
+      expect(findAgentInfo().props('clusterAgent')).toEqual(agent);
     });
 
     it('renders kubernetes pods', () => {
       expect(findKubernetesPods().props()).toEqual({
-        namespace: agent.kubernetesNamespace,
+        namespace: kubernetesNamespace,
         configuration,
       });
     });
 
     it('renders kubernetes tabs', () => {
       expect(findKubernetesTabs().props()).toEqual({
-        namespace: agent.kubernetesNamespace,
+        namespace: kubernetesNamespace,
         configuration,
       });
     });

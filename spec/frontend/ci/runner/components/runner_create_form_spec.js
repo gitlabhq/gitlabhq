@@ -126,8 +126,8 @@ describe('RunnerCreateForm', () => {
         expect(wrapper.emitted('saved')[0]).toEqual([mockCreatedRunner]);
       });
 
-      it('does not show a saving state', () => {
-        expect(findSubmitBtn().props('loading')).toBe(false);
+      it('maintains a saving state before navigating away', () => {
+        expect(findSubmitBtn().props('loading')).toBe(true);
       });
     });
 

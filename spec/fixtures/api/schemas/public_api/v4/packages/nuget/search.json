@@ -1,34 +1,83 @@
 {
   "type": "object",
-  "required": ["totalHits", "data"],
+  "required": [
+    "totalHits",
+    "data"
+  ],
   "properties": {
-    "totalHits": { "type": "integer" },
+    "totalHits": {
+      "type": "integer"
+    },
     "data": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["@type", "authors", "id", "summary", "title", "totalDownloads", "verified", "versions"],
+        "required": [
+          "@type",
+          "authors",
+          "id",
+          "summary",
+          "title",
+          "totalDownloads",
+          "verified",
+          "versions"
+        ],
         "properties": {
-          "@type": { "const": "Package" },
-          "authors": { "const": "" },
-          "id": { "type": "string" },
-          "summary": { "const": "" },
-          "title": { "type": "string" },
-          "totalDownloads": { "const": 0 },
-          "verified": { "const": true },
-          "tags": { "type": "string" },
-          "projectUrl": { "type": "string" },
-          "licenseUrl": { "type": "string" },
-          "iconUrl": { "type": "string" },
+          "@type": {
+            "const": "Package"
+          },
+          "authors": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "totalDownloads": {
+            "const": 0
+          },
+          "verified": {
+            "const": true
+          },
+          "tags": {
+            "type": "string"
+          },
+          "projectUrl": {
+            "type": "string"
+          },
+          "licenseUrl": {
+            "type": "string"
+          },
+          "iconUrl": {
+            "type": "string"
+          },
           "versions": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["@id", "version", "downloads"],
+              "required": [
+                "@id",
+                "version",
+                "downloads"
+              ],
               "properties": {
-                "@id": { "type": "string" },
-                "version": { "type": "string" },
-                "downloads": { "const": 0 }
+                "@id": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "downloads": {
+                  "const": 0
+                },
+                "published": {
+                  "type": "string"
+                }
               }
             }
           }

@@ -28,5 +28,15 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
     Issues::AfterCreateService
       .new(container: issuable.project, current_user: user)
       .execute(issuable)
+
+    log_audit_event if user.project_bot?
+  end
+
+  private
+
+  def log_audit_event
+    # defined in EE
   end
 end
+
+NewIssueWorker.prepend_mod

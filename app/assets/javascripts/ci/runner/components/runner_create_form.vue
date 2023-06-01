@@ -83,13 +83,13 @@ export default {
 
         if (errors?.length) {
           this.$emit('error', new Error(errors.join(' ')));
+          this.saving = false;
         } else {
           this.onSuccess(runner);
         }
       } catch (error) {
         captureException({ error, component: this.$options.name });
         this.$emit('error', error);
-      } finally {
         this.saving = false;
       }
     },
@@ -103,7 +103,7 @@ export default {
   <gl-form @submit.prevent="onSubmit">
     <runner-form-fields v-model="runner" />
 
-    <div class="gl-display-flex">
+    <div class="gl-display-flex gl-mt-6">
       <gl-button type="submit" variant="confirm" class="js-no-auto-disable" :loading="saving">
         {{ s__('Runners|Create runner') }}
       </gl-button>

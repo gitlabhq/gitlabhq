@@ -20,11 +20,9 @@ module Packages
 
           {
             type: 'Package',
-            authors: '',
             name: package_name,
             version: latest_version,
             versions: build_package_versions(packages),
-            summary: '',
             total_downloads: 0,
             verified: true,
             tags: tags_for(latest_package),
@@ -48,7 +46,7 @@ module Packages
 
       def latest_version(packages)
         versions = packages.map(&:version).compact
-        VersionSorter.sort(versions).last # rubocop: disable Style/RedundantSort
+        VersionSorter.sort(versions).last
       end
     end
   end

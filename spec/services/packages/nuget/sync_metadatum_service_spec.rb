@@ -6,6 +6,8 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
   let_it_be(:package, reload: true) { create(:nuget_package) }
   let_it_be(:metadata) do
     {
+      authors: 'Package authors',
+      description: 'Package description',
       project_url: 'https://test.org/test',
       license_url: 'https://test.org/MIT',
       icon_url: 'https://test.org/icon.png'
@@ -51,6 +53,40 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
           expect { subject }
             .to change { package.reload.nuget_metadatum.present? }.from(true).to(false)
         end
+      end
+    end
+
+    context 'with metadata containing only authors and description' do
+      let_it_be(:metadata) { { authors: 'Package authors 2', description: 'Package description 2' } }
+
+      it 'updates the nuget metadatum' do
+        subject
+
+        expect(nuget_metadatum.authors).to eq('Package authors 2')
+        expect(nuget_metadatum.description).to eq('Package description 2')
+      end
+    end
+
+    context 'with too long metadata' do
+      let(:metadata) { super().merge(authors: 'a' * 260, description: 'a' * 4010) }
+      let(:max_authors_length) { ::Packages::Nuget::Metadatum::MAX_AUTHORS_LENGTH }
+      let(:max_description_length) { ::Packages::Nuget::Metadatum::MAX_DESCRIPTION_LENGTH }
+
+      it 'truncates authors and description to the maximum length and logs its info' do
+        %i[authors description].each do |field|
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            class: described_class.name,
+            package_id: package.id,
+            project_id: package.project_id,
+            message: "#{field.capitalize} is too long (maximum is #{send("max_#{field}_length")} characters)",
+            field => metadata[field]
+          )
+        end
+
+        subject
+
+        expect(nuget_metadatum.authors.size).to eq(max_authors_length)
+        expect(nuget_metadatum.description.size).to eq(max_description_length)
       end
     end
   end

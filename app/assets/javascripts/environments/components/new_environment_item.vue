@@ -13,6 +13,7 @@ import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
+import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
@@ -51,7 +52,7 @@ export default {
     GlTooltip,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['helpPagePath'],
+  inject: ['helpPagePath', 'projectPath'],
   props: {
     environment: {
       required: true,
@@ -81,7 +82,7 @@ export default {
     tierTooltip: s__('Environment|Deployment tier'),
   },
   data() {
-    return { visible: false };
+    return { visible: false, clusterAgent: null };
   },
   computed: {
     icon() {
@@ -163,23 +164,33 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    agent() {
-      return this.environment?.agent || {};
-    },
     isKubernetesOverviewAvailable() {
       return this.glFeatures?.kasUserAccessProject;
     },
-    hasRequiredAgentData() {
-      const { project, id, name } = this.agent || {};
-      return project && id && name;
-    },
     showKubernetesOverview() {
-      return this.isKubernetesOverviewAvailable && this.hasRequiredAgentData;
+      return Boolean(this.isKubernetesOverviewAvailable && this.clusterAgent);
     },
   },
   methods: {
-    toggleCollapse() {
+    toggleEnvironmentCollapse() {
       this.visible = !this.visible;
+
+      if (this.visible) {
+        this.getClusterAgent();
+      }
+    },
+    getClusterAgent() {
+      if (!this.isKubernetesOverviewAvailable || this.clusterAgent) return;
+
+      this.$apollo.addSmartQuery('environmentClusterAgent', {
+        variables() {
+          return { environmentName: this.environment.name, projectFullPath: this.projectPath };
+        },
+        query: getEnvironmentClusterAgent,
+        update(data) {
+          this.clusterAgent = data?.project?.environment?.clusterAgent;
+        },
+      });
     },
   },
   deploymentClasses: [
@@ -222,7 +233,7 @@ export default {
           :aria-label="label"
           size="small"
           category="secondary"
-          @click="toggleCollapse"
+          @click="toggleEnvironmentCollapse"
         />
         <gl-link
           v-gl-tooltip
@@ -359,10 +370,8 @@ export default {
       </div>
       <div v-if="showKubernetesOverview" :class="$options.kubernetesOverviewClasses">
         <kubernetes-overview
-          :agent-project-path="agent.project"
-          :agent-name="agent.name"
-          :agent-id="agent.id"
-          :namespace="agent.kubernetesNamespace"
+          :cluster-agent="clusterAgent"
+          :namespace="environment.kubernetesNamespace"
         />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">

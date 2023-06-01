@@ -120,7 +120,9 @@ module Gitlab
         .merge(user.group_members)
         .merge(GroupMember.active_state)
 
-      union = Namespace.from_union([shared_groups, member_groups_with_ancestors])
+      union = Namespace
+        .select("namespaces.id, access_level")
+        .from_union([shared_groups, member_groups_with_ancestors])
 
       Gitlab::SQL::CTE.new(:linear_namespaces_cte, union)
     end

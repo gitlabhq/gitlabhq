@@ -99,11 +99,11 @@ module ApplicationSettingsHelper
         checked_value: level,
         unchecked_value: nil
       ) do |c|
-        c.label do
+        c.with_label do
           visibility_level_icon(level) + content_tag(:span, label, { class: 'gl-ml-2' })
         end
 
-        c.help_text do
+        c.with_help_text do
           restricted_visibility_levels_help_text.fetch(level)
         end
       end

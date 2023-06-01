@@ -28,6 +28,11 @@ module Issues
         event_service.close_issue(issue, current_user)
         create_note(issue, closed_via) if system_note
 
+        if current_user.project_bot?
+          log_audit_event(issue, current_user, "#{issue.issue_type}_closed_by_project_bot",
+            "Closed #{issue.issue_type.humanize(capitalize: false)} #{issue.title}")
+        end
+
         closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
 
         notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications

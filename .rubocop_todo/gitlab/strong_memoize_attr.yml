@@ -235,8 +235,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/packages/npm/create_tag_service.rb'
     - 'app/services/packages/nuget/metadata_extraction_service.rb'
     - 'app/services/packages/nuget/search_service.rb'
-    - 'app/services/packages/nuget/sync_metadatum_service.rb'
-    - 'app/services/packages/nuget/update_package_from_metadata_service.rb'
     - 'app/services/packages/pypi/create_package_service.rb'
     - 'app/services/packages/rpm/parse_package_service.rb'
     - 'app/services/packages/rubygems/dependency_resolver_service.rb'
