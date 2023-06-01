@@ -12,6 +12,7 @@ import CommandPaletteItems from '~/super_sidebar/components/global_search/comman
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMAND_HANDLE,
+  USER_HANDLE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -319,24 +320,27 @@ describe('GlobalSearchModal', () => {
         });
       });
 
-      describe('when FF `command_palette` is enabled', () => {
-        beforeEach(() => {
-          createComponent({ search: COMMAND_HANDLE }, undefined, undefined, {
-            commandPalette: true,
+      describe.each([COMMAND_HANDLE, USER_HANDLE])(
+        'when FF `command_palette` is enabled',
+        (handle) => {
+          beforeEach(() => {
+            createComponent({ search: handle }, undefined, undefined, {
+              commandPalette: true,
+            });
           });
-        });
 
-        it('should render command mode components', () => {
-          expect(findCommandPaletteItems().exists()).toBe(true);
-          expect(findFakeSearchInput().exists()).toBe(true);
-        });
+          it('should render command mode components', () => {
+            expect(findCommandPaletteItems().exists()).toBe(true);
+            expect(findFakeSearchInput().exists()).toBe(true);
+          });
 
-        it('should provide an alternative placeholder to the search input', () => {
-          expect(findGlobalSearchInput().attributes('placeholder')).toBe(
-            SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
-          );
-        });
-      });
+          it('should provide an alternative placeholder to the search input', () => {
+            expect(findGlobalSearchInput().attributes('placeholder')).toBe(
+              SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+            );
+          });
+        },
+      );
     });
   });
 

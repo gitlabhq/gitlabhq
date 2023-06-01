@@ -545,12 +545,13 @@ export default {
               >
                 <gl-icon name="spam" />
               </span>
-              <p
-                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
+              <a
+                href="#top"
+                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-text-black-normal"
                 :title="state.titleText"
               >
                 {{ state.titleText }}
-              </p>
+              </a>
             </div>
           </div>
         </transition>

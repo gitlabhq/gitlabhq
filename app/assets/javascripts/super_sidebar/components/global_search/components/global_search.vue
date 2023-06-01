@@ -38,7 +38,7 @@ import {
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import { COMMAND_HANDLE, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
@@ -135,7 +135,7 @@ export default {
       return this.searchText?.trim().charAt(0);
     },
     isCommandMode() {
-      return this.glFeatures?.commandPalette && this.searchTextFirstChar === COMMAND_HANDLE;
+      return this.glFeatures?.commandPalette && COMMON_HANDLES.includes(this.searchTextFirstChar);
     },
     commandPaletteQuery() {
       if (this.isCommandMode) {

@@ -16,7 +16,7 @@ RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_in
   let(:fields) do
     <<~QUERY
       nodes {
-        #{all_graphql_fields_for('CiStage')}
+        #{all_graphql_fields_for('CiStage', max_depth: 2)}
       }
     QUERY
   end
@@ -37,7 +37,7 @@ RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_in
 
   before_all do
     create(:ci_stage, pipeline: pipeline, name: 'deploy')
-    create_list(:ci_build, 2, pipeline: pipeline, stage: 'deploy')
+    create(:ci_build, pipeline: pipeline, stage: 'deploy')
   end
 
   it_behaves_like 'a working graphql query' do
@@ -58,7 +58,7 @@ RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_in
     it 'returns up to default limit jobs per stage' do
       post_query
 
-      expect(job_nodes.count).to eq(2)
+      expect(job_nodes.count).to eq(1)
     end
 
     context 'when the limit is manually set' do

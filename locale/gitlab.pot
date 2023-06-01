@@ -11111,10 +11111,16 @@ msgstr ""
 msgid "CommandPalette|Commands"
 msgstr ""
 
-msgid "CommandPalette|Type %{commandHandle} for command or search..."
+msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user or perform generic search..."
+msgstr ""
+
+msgid "CommandPalette|Users"
 msgstr ""
 
 msgid "CommandPalette|command"
+msgstr ""
+
+msgid "CommandPalette|user (enter at least 3 chars)"
 msgstr ""
 
 msgid "Commands applied"

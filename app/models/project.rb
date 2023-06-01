@@ -111,9 +111,9 @@ class Project < ApplicationRecord
   attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token,
-                                 encrypted: :required,
-                                 format_with_prefix: :runners_token_prefix,
-                                 require_prefix_for_validation: true
+    encrypted: :required,
+    format_with_prefix: :runners_token_prefix,
+    require_prefix_for_validation: true
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
@@ -225,10 +225,7 @@ class Project < ApplicationRecord
 
   has_one :wiki_repository, class_name: 'Projects::WikiRepository', inverse_of: :project
   has_one :design_management_repository, class_name: 'DesignManagement::Repository', inverse_of: :project
-  has_one :root_of_fork_network,
-          foreign_key: 'root_project_id',
-          inverse_of: :root_project,
-          class_name: 'ForkNetwork'
+  has_one :root_of_fork_network, foreign_key: 'root_project_id', inverse_of: :root_project, class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
   has_one :forked_from_project, through: :fork_network_member
@@ -248,24 +245,19 @@ class Project < ApplicationRecord
   has_many :fork_network_projects, through: :fork_network, source: :projects
 
   # Packages
-  has_many :packages,
-           class_name: 'Packages::Package'
-  has_many :package_files,
-           through: :packages, class_name: 'Packages::PackageFile'
+  has_many :packages, class_name: 'Packages::Package'
+  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :rpm_repository_files,
-           inverse_of: :project,
-           class_name: 'Packages::Rpm::RepositoryFile',
-           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    inverse_of: :project,
+    class_name: 'Packages::Rpm::RepositoryFile',
+    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions,
-           class_name: 'Packages::Debian::ProjectDistribution',
-           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :npm_metadata_caches,
-           class_name: 'Packages::Npm::MetadataCache'
-  has_one :packages_cleanup_policy,
-          class_name: 'Packages::Cleanup::Policy',
-          inverse_of: :project
+    class_name: 'Packages::Debian::ProjectDistribution',
+    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :npm_metadata_caches, class_name: 'Packages::Npm::MetadataCache'
+  has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -389,10 +381,7 @@ class Project < ApplicationRecord
   # The relation :ci_pipelines includes all those that directly contribute to the
   # latest status of a ref. This does not include dangling pipelines such as those
   # from webide, child pipelines, etc.
-  has_many :ci_pipelines,
-          -> { ci_sources },
-          class_name: 'Ci::Pipeline',
-          inverse_of: :project
+  has_many :ci_pipelines, -> { ci_sources }, class_name: 'Ci::Pipeline', inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
   has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
@@ -474,8 +463,8 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :container_expiration_policy, update_only: true
 
   accepts_nested_attributes_for :remote_mirrors,
-                                allow_destroy: true,
-                                reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
+    allow_destroy: true,
+    reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
@@ -485,23 +474,23 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level,
-           :wiki_access_level, :snippets_access_level, :builds_access_level,
-           :repository_access_level, :package_registry_access_level, :pages_access_level,
-           :metrics_dashboard_access_level, :analytics_access_level,
-           :operations_access_level, :security_and_compliance_access_level,
-           :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
-           :monitor_access_level, :releases_access_level, :infrastructure_access_level,
-           :model_experiments_access_level,
-           to: :project_feature, allow_nil: true
+    :wiki_access_level, :snippets_access_level, :builds_access_level,
+    :repository_access_level, :package_registry_access_level, :pages_access_level,
+    :metrics_dashboard_access_level, :analytics_access_level,
+    :operations_access_level, :security_and_compliance_access_level,
+    :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
+    :monitor_access_level, :releases_access_level, :infrastructure_access_level,
+    :model_experiments_access_level,
+    to: :project_feature, allow_nil: true
 
   delegate :show_default_award_emojis, :show_default_award_emojis=,
-           :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
-           :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
-           to: :project_setting, allow_nil: true
+    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
+    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
+    to: :project_setting, allow_nil: true
 
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
-           :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
-           to: :project_setting
+    :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
+    to: :project_setting
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
@@ -536,9 +525,9 @@ class Project < ApplicationRecord
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
   delegate :maven_package_requests_forwarding,
-           :pypi_package_requests_forwarding,
-           :npm_package_requests_forwarding,
-           to: :namespace
+    :pypi_package_requests_forwarding,
+    :npm_package_requests_forwarding,
+    to: :namespace
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -789,11 +778,12 @@ class Project < ApplicationRecord
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
     default: 3600, error_message: N_('Maximum job timeout has a value which could not be accepted')
 
-  validates :build_timeout, allow_nil: true,
-                            numericality: { greater_than_or_equal_to: 10.minutes,
-                                            less_than: MAX_BUILD_TIMEOUT,
-                                            only_integer: true,
-                                            message: N_('needs to be between 10 minutes and 1 month') }
+  validates :build_timeout, allow_nil: true, numericality: {
+    greater_than_or_equal_to: 10.minutes,
+    less_than: MAX_BUILD_TIMEOUT,
+    only_integer: true,
+    message: N_('needs to be between 10 minutes and 1 month')
+  }
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
@@ -820,9 +810,11 @@ class Project < ApplicationRecord
     if user.is_a?(DeployToken)
       where(id: user.accessible_projects)
     else
-      where('EXISTS (?) OR projects.visibility_level IN (?)',
-            user.authorizations_for_projects(min_access_level: min_access_level),
-            Gitlab::VisibilityLevel.levels_for_user(user))
+      where(
+        'EXISTS (?) OR projects.visibility_level IN (?)',
+        user.authorizations_for_projects(min_access_level: min_access_level),
+        Gitlab::VisibilityLevel.levels_for_user(user)
+      )
     end
   end
 

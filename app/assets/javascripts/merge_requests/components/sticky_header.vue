@@ -115,10 +115,11 @@ export default {
       >
         <div class="gl-w-full gl-display-flex gl-align-items-center">
           <status-box :initial-state="getNoteableData.state" issuable-type="merge_request" />
-          <p
+          <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
-            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4"
-          ></p>
+            href="#top"
+            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4 gl-text-black-normal"
+          ></a>
           <div class="gl-display-flex gl-align-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>

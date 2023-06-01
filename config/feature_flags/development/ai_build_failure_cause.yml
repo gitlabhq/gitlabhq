@@ -1,0 +1,8 @@
+---
+name: ai_build_failure_cause
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121447
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/411980
+milestone: '16.1'
+type: development
+group: group::pipeline execution
+default_enabled: false

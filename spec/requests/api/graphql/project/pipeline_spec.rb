@@ -15,7 +15,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
   let(:path) { %i[project pipeline] }
   let(:pipeline_graphql_data) { graphql_data_at(*path) }
   let(:depth) { 3 }
-  let(:excluded) { %w[job project] } # Project is very expensive, due to the number of fields
+  let(:excluded) { %w[job project jobs] } # Project is very expensive, due to the number of fields
   let(:fields) { all_graphql_fields_for('Pipeline', excluded: excluded, max_depth: depth) }
 
   let(:query) do
@@ -82,7 +82,11 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
   context 'when enough data is requested' do
     let(:fields) do
       query_graphql_field(:jobs, nil,
-                          query_graphql_field(:nodes, {}, all_graphql_fields_for('CiJob', max_depth: 3)))
+        query_graphql_field(
+          :nodes, {},
+          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)
+        )
+      )
     end
 
     it 'contains jobs' do
@@ -116,7 +120,12 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
     let(:fields) do
       query_graphql_field(:jobs, { retried: retried_argument },
-                          query_graphql_field(:nodes, {}, all_graphql_fields_for('CiJob', max_depth: 3)))
+        query_graphql_field(
+          :nodes,
+          {},
+          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)
+        )
+      )
     end
 
     context 'when we filter out retried jobs' do
@@ -177,7 +186,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
           pipeline(iid: $pipelineIID) {
             jobs(statuses: [$status]) {
               nodes {
-                #{all_graphql_fields_for('CiJob', max_depth: 1)}
+                #{all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)}
               }
             }
           }

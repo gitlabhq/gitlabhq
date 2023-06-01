@@ -514,7 +514,6 @@ Layout/ArgumentAlignment:
     - 'app/models/packages/rpm/metadatum.rb'
     - 'app/models/pages_domain.rb'
     - 'app/models/pages_domain_acme_order.rb'
-    - 'app/models/project.rb'
     - 'app/models/project_feature.rb'
     - 'app/services/compare_service.rb'
     - 'app/services/concerns/rate_limited_service.rb'

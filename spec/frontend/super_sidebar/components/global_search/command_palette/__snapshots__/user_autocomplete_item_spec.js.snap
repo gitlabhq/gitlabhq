@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserAutocompleteItem should render user item 1`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <gl-avatar-stub
+    alt="avatar"
+    aria-hidden="true"
+    class="gl-mr-3"
+    entityid="37"
+    entityname="Cole Dickinson"
+    shape="rect"
+    size="16"
+    src="https://www.gravatar.com/avatar/a9638f4ec70148d51e56bf05ad41e993?s=80&d=identicon"
+  />
+   
+  <span
+    class="gl-display-flex gl-flex-direction-column"
+  >
+    <span
+      class="gl-text-gray-900"
+    >
+      Cole Dickinson
+    </span>
+     
+    <span
+      class="gl-font-sm gl-text-gray-500"
+    >
+      reported_user_14
+    </span>
+  </span>
+</div>
+`;

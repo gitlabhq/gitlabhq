@@ -190,6 +190,12 @@ This error likely means that `autovacuum` is failing to complete its run:
 ERROR:  database is not accepting commands to avoid wraparound data loss in database "gitlabhq_production"
 ```
 
+Or
+
+```plaintext
+ ERROR:  failed to re-find parent key in index "XXX" for deletion target page XXX
+```
+
 To resolve the error, run `VACUUM` manually:
 
 1. Stop GitLab with the command `gitlab-ctl stop`.

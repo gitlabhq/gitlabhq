@@ -183,7 +183,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
                         #{all_graphql_fields_for('CiBuildNeed')}
                       }
                       ... on CiJob {
-                        #{all_graphql_fields_for('CiJob')}
+                        #{all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis])}
                       }
                     }
                 }
