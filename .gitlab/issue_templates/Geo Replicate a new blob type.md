@@ -693,6 +693,40 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
   }
   ```
 
+To allow the new replicable to resync and reverify via GraphQL:
+
+- [ ] Add the `CoolWidgetRegistryType` to the `GEO_REGISTRY_TYPE` constant in `ee/app/graphql/types/geo/registrable_type.rb`:
+
+  ```ruby
+    GEO_REGISTRY_TYPES = {
+      ::Geo::CoolWidgetRegistry => Types::Geo::CoolWidgetRegistryType
+    }
+  ```
+
+- [ ] Include the `CoolWidgetRegistry` in the `let(:registry_classes)` variable of `ee/spec/graphql/types/geo/registry_class_enum_spec.rb`:
+
+  ```ruby
+    let(:registry_classes) do
+      %w[
+        COOL_WIDGET_REGISTRY
+      ]
+    end
+  ```
+
+- [ ] Include the new registry in the Rspec parameterized table of `ee/spec/support/shared_contexts/graphql/geo/registries_shared_context.rb`:
+
+  ```ruby
+     # frozen_string_literal: true
+
+     RSpec.shared_context 'with geo registries shared context' do
+       using RSpec::Parameterized::TableSyntax
+
+       where(:registry_class, :registry_type, :registry_factory) do
+         Geo::CoolWidgetRegistry | Types::Geo::CoolWidgetRegistryType | :geo_cool_widget_registry
+       end
+     end
+  ```
+
 - [ ] Update the GraphQL reference documentation:
 
   ```shell

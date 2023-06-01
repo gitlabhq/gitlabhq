@@ -505,7 +505,7 @@ gem 'ssh_data', '~> 1.3'
 gem 'spamcheck', '~> 1.3.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 15.9.0-rc3'
+gem 'gitaly', '~> 16.1.0-rc1'
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.1.0'

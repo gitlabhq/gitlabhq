@@ -9,13 +9,14 @@ RSpec.describe ReMigrateRedisSlotKeys, :migration, feature_category: :service_pi
   let(:known_events) do
     [
       {
-        redis_slot: 'analytics',
+        redis_slot: 'management',
         aggregation: 'daily',
-        name: 'users_viewing_analytics_group_devops_adoption'
+        name: 'g_project_management_epic_closed'
       }, {
         aggregation: 'weekly',
-        name: 'wiki_action'
-      }, {
+        name: 'incident_management_incident_assigned'
+      },
+      {
         aggregation: 'weekly',
         name: 'non_existing_event'
       }, {
@@ -30,17 +31,17 @@ RSpec.describe ReMigrateRedisSlotKeys, :migration, feature_category: :service_pi
       allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_events)
                                                              .and_return(known_events)
 
-      expiry_daily = Gitlab::UsageDataCounters::HLLRedisCounter::DEFAULT_DAILY_KEY_EXPIRY_LENGTH
+      expiry_daily = 29.days
       expiry_weekly = Gitlab::UsageDataCounters::HLLRedisCounter::DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH
 
       default_slot = Gitlab::UsageDataCounters::HLLRedisCounter::REDIS_SLOT
 
-      old_slot_a = "#{date}-users_viewing_{analytics}_group_devops_adoption"
-      old_slot_b = "{wiki_action}-#{week}"
+      old_slot_a = "#{date}-g_project_{management}_epic_closed"
+      old_slot_b = "{incident_management_incident_assigned}-#{week}"
       old_slot_without_expiry = "{event_without_expiry}-#{week}"
 
-      new_slot_a = "#{date}-{#{default_slot}}_users_viewing_analytics_group_devops_adoption"
-      new_slot_b = "{#{default_slot}}_wiki_action-#{week}"
+      new_slot_a = "#{date}-{#{default_slot}}_g_project_management_epic_closed"
+      new_slot_b = "{#{default_slot}}_incident_management_incident_assigned-#{week}"
       new_slot_without_expiry = "{#{default_slot}}_event_without_expiry-#{week}"
 
       Gitlab::Redis::HLL.add(key: old_slot_a, value: 1, expiry: expiry_daily)

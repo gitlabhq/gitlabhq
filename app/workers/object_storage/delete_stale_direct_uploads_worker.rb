@@ -22,7 +22,7 @@ module ObjectStorage
       result = ObjectStorage::DeleteStaleDirectUploadsService.new.execute
 
       log_extra_metadata_on_done(:total_pending_entries, result[:total_pending_entries])
-      log_extra_metadata_on_done(:total_stale_entries, result[:total_stale_entries])
+      log_extra_metadata_on_done(:total_deleted_stale_entries, result[:total_deleted_stale_entries])
       log_extra_metadata_on_done(:execution_timeout, result[:execution_timeout])
     end
   end

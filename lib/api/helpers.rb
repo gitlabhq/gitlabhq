@@ -202,6 +202,7 @@ module API
       not_found!('Namespace')
     end
 
+    # find_namespace returns the namespace regardless of user access level on the namespace
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ INTEGER_ID_REGEX
@@ -212,6 +213,8 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # find_namespace! returns the namespace if the current user can read the given namespace
+    # Otherwise, returns a not_found! error
     def find_namespace!(id)
       check_namespace_access(find_namespace(id))
     end

@@ -220,6 +220,13 @@ Group items that are migrated to the destination GitLab instance include:
    - Already exists in the destination GitLab instance.
    - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
+#### Excluded items
+
+Some group items are excluded from migration because they either:
+
+- May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
+- Are not supported: push rules.
+
 ### Migrated project items (Beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
@@ -325,9 +332,24 @@ Setting-related project items that are migrated to the destination GitLab instan
 
 #### Excluded items
 
-Project items excluded from migration because they contain sensitive information:
+Some project items are excluded from migration because they either:
 
-- Pipeline triggers.
+- May contain sensitive information:
+  - CI/CD variables
+  - Deploy keys
+  - Deploy tokens
+  - Pipeline schedule variables
+  - Pipeline triggers
+  - Webhooks
+- Are not supported:
+  - Agents
+  - Container Registry
+  - Environments
+  - Feature flags
+  - Infrastructure Registry
+  - Package Registry
+  - Pages domains
+  - Remote mirrors
 
 ### Troubleshooting
 

@@ -94,6 +94,7 @@
     "ContainerRepositoryRegistry",
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
+    "DesignManagementRepositoryRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
