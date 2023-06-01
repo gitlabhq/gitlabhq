@@ -2,8 +2,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { GlToast } from '@gitlab/ui';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import GroupItem from 'jh_else_ce/groups/components/group_item.vue';
 import GroupFolder from './components/group_folder.vue';
-import GroupItem from './components/group_item.vue';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,

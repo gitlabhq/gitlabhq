@@ -281,7 +281,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
-          Gitlab::Utils::PathTraversalAttackError,
+          Gitlab::PathTraversal::PathTraversalAttackError,
           'Invalid path'
         )
       end

@@ -73,11 +73,14 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
     end
 
     describe 'formatting' do
-      it 'returns truncated digits for count value over 1000' do
-        create_list(:merge_request, 1001, :unique_branches, source_project: project, author: user, state: :opened)
-        create(:merge_request, source_project: project, state: :merged)
+      context 'when the count value is over 1000' do
+        before do
+          allow(context).to receive(:project).and_return(instance_double(Project, open_merge_requests_count: 1001))
+        end
 
-        expect(subject.pill_count).to eq('1k')
+        it 'returns truncated digits' do
+          expect(subject.pill_count).to eq('1k')
+        end
       end
     end
   end

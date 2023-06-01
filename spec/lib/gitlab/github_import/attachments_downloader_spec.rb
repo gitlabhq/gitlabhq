@@ -44,7 +44,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader do
 
       it 'raises expected exception' do
         expect { downloader.perform }.to raise_exception(
-          Gitlab::Utils::PathTraversalAttackError,
+          Gitlab::PathTraversal::PathTraversalAttackError,
           'Invalid path'
         )
       end

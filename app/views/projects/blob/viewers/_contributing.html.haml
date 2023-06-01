@@ -4,6 +4,6 @@
 - options = contribution_options(viewer.project)
 - if options.any?
   = succeed '.' do
-    = Gitlab::Utils.to_exclusive_sentence(options).html_safe
+    = Gitlab::Sentence.to_exclusive_sentence(options).html_safe
 - else
   = _("contribute to this project.")

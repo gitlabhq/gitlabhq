@@ -426,7 +426,7 @@ module ObjectStorage
     end
 
     def retrieve_from_store!(identifier)
-      Gitlab::Utils.check_path_traversal!(identifier)
+      Gitlab::PathTraversal.check_path_traversal!(identifier)
 
       # We need to force assign the value of @filename so that we will still
       # get the original_filename in cases wherein the file points to a random generated

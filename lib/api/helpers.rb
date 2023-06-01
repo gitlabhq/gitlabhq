@@ -20,6 +20,10 @@ module API
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
     INTEGER_ID_REGEX = /^-?\d+$/.freeze
 
+    def logger
+      API.logger
+    end
+
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
       declared(params, options).to_h.symbolize_keys

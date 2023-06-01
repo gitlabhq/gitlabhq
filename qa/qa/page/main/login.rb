@@ -244,9 +244,7 @@ module QA
 
           Support::WaitForRequests.wait_for_requests
 
-          wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
-            has_no_text?('GitLab is taking too much time to respond')
-          end
+          wait_for_gitlab_to_respond
 
           # For debugging invalid login attempts
           has_notice?('Invalid login or password')
@@ -255,8 +253,18 @@ module QA
             terms.accept_terms if terms.visible?
           end
 
+          Flow::UserOnboarding.onboard_user
+
+          wait_for_gitlab_to_respond
+
           Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled?
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
+        end
+
+        def wait_for_gitlab_to_respond
+          wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
+            has_no_text?('GitLab is taking too much time to respond')
+          end
         end
 
         def fill_in_credential(user)

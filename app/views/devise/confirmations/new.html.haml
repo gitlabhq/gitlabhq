@@ -15,7 +15,7 @@
         = recaptcha_tags nonce: content_security_policy_nonce
 
       .gl-mt-5
-        = render Pajamas::ButtonComponent.new(block: true, type: :submit, variant: :confirm) do
+        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'gl-mb-0' }) do
           = _("Resend")
 
 .clearfix.prepend-top-20

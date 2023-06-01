@@ -26734,6 +26734,9 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE users
+    ADD CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)) NOT VALID;
+
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
@@ -29460,8 +29463,6 @@ CREATE UNIQUE INDEX i_pm_package_version_licenses_join_ids ON pm_package_version
 CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
-
-CREATE INDEX i_users_on_last_activity_for_active_human_service_migration ON users USING btree (id, last_activity_on) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = 0) OR (user_type = 4)));
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
@@ -32781,7 +32782,7 @@ CREATE INDEX index_user_statuses_on_user_id ON user_statuses USING btree (user_i
 
 CREATE UNIQUE INDEX index_user_synced_attributes_metadata_on_user_id ON user_synced_attributes_metadata USING btree (user_id);
 
-CREATE INDEX index_users_for_active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[6, 4, 13]))) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[4, 5]))));
+CREATE INDEX index_users_for_active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND (user_type = ANY (ARRAY[0, 6, 4, 13])) AND (user_type = ANY (ARRAY[0, 4, 5])));
 
 CREATE INDEX index_users_on_accepted_term_id ON users USING btree (accepted_term_id);
 
@@ -32799,7 +32800,7 @@ CREATE INDEX index_users_on_feed_token ON users USING btree (feed_token);
 
 CREATE INDEX index_users_on_group_view ON users USING btree (group_view);
 
-CREATE INDEX index_users_on_id_and_last_activity_on_for_active_human_service ON users USING btree (id, last_activity_on) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = 4)));
+CREATE INDEX index_users_on_id_and_last_activity_on_for_active_human_service ON users USING btree (id, last_activity_on) WHERE (((state)::text = 'active'::text) AND (user_type = ANY (ARRAY[0, 4])));
 
 CREATE INDEX index_users_on_incoming_email_token ON users USING btree (incoming_email_token);
 
@@ -33120,8 +33121,6 @@ CREATE UNIQUE INDEX kubernetes_namespaces_cluster_and_namespace ON clusters_kube
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_and_note_id_index ON merge_request_user_mentions USING btree (merge_request_id, note_id);
 
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_index ON merge_request_user_mentions USING btree (merge_request_id) WHERE (note_id IS NULL);
-
-CREATE INDEX migrate_index_users_for_active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = 0) OR (user_type = ANY (ARRAY[0, 6, 4, 13]))) AND ((user_type IS NULL) OR (user_type = 0) OR (user_type = ANY (ARRAY[0, 4, 5]))));
 
 CREATE INDEX note_mentions_temp_index ON notes USING btree (id, noteable_type) WHERE (note ~~ '%@%'::text);
 

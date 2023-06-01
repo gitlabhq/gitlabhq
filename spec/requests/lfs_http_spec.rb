@@ -323,6 +323,62 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
               it_behaves_like 'process authorization header', renew_authorization: renew_authorization
             end
+
+            context 'when downloading an LFS object that is stored on object storage' do
+              before do
+                stub_lfs_object_storage
+                lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+              end
+
+              context 'when lfs.object_store.proxy_download=true' do
+                before do
+                  stub_lfs_object_storage(proxy_download: true)
+                end
+
+                it_behaves_like 'LFS http 200 response'
+
+                it 'does return proxied address URL' do
+                  expect(json_response['objects'].first).to include(sample_object)
+                  expect(json_response['objects'].first['actions']['download']['href']).to eq(objects_url(project, sample_oid))
+                end
+              end
+
+              context 'when "lfs.object_store.proxy_download" is "false"' do
+                before do
+                  stub_lfs_object_storage(proxy_download: false)
+                end
+
+                it_behaves_like 'LFS http 200 response'
+
+                it 'does return direct object storage URL' do
+                  expect(json_response['objects'].first).to include(sample_object)
+                  expect(json_response['objects'].first['actions']['download']['href']).to start_with("https://lfs-objects.s3.amazonaws.com/")
+                  expect(json_response['objects'].first['actions']['download']['href']).to include("X-Amz-Expires=3600&")
+                end
+
+                context 'when feature flag "lfs_batch_direct_downloads" is "false"' do
+                  before do
+                    stub_feature_flags(lfs_batch_direct_downloads: false)
+                  end
+
+                  it_behaves_like 'LFS http 200 response'
+
+                  it 'does return proxied address URL' do
+                    expect(json_response['objects'].first).to include(sample_object)
+                    expect(json_response['objects'].first['actions']['download']['href']).to eq(objects_url(project, sample_oid))
+                  end
+                end
+              end
+            end
+
+            context 'when sending objects=[]' do
+              let(:body) { download_body([]) }
+
+              it_behaves_like 'LFS http expected response code and message' do
+                let(:response_code) { 404 }
+                let(:message) { 'Not found.' }
+              end
+            end
           end
 
           context 'when user is authenticated' do

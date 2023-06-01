@@ -592,8 +592,8 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def remove_cached_external_diff
-    Gitlab::Utils.check_path_traversal!(external_diff_cache_dir)
-    Gitlab::Utils.check_allowed_absolute_path!(external_diff_cache_dir, [Dir.tmpdir])
+    Gitlab::PathTraversal.check_path_traversal!(external_diff_cache_dir)
+    Gitlab::PathTraversal.check_allowed_absolute_path!(external_diff_cache_dir, [Dir.tmpdir])
 
     return unless Dir.exist?(external_diff_cache_dir)
 

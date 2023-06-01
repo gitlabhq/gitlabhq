@@ -22,6 +22,14 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Understand CI/CD rules](https://www.youtube.com/watch?v=QjQc-zeL16Q) (8m 56s) |  Learn more about how to use CI/CD rules. | |
 | [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
 
+## Configure GitLab Runner
+
+Set up runners to run jobs in a pipeline.
+
+| Topic | Description | Good for beginners |
+|-------|-------------|--------------------|
+| [Configure GitLab Runner to use the Google Kubernetes Engine](configure_gitlab_runner_to_use_gke/index.md) | Learn how to configure GitLab Runner to use the GKE to run jobs. | |
+
 ## Publish a static website
 
 Use GitLab Pages to publish a static website directly from your project.

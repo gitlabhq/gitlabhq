@@ -1274,7 +1274,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         it 'raises' do
           allow(diff).to receive(:external_diff_cache_dir).and_return(File.join(cache_dir, '..'))
 
-          expect { diff.remove_cached_external_diff }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+          expect { diff.remove_cached_external_diff }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
         end
       end
 

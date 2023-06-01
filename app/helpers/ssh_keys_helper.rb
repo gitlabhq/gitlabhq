@@ -52,6 +52,6 @@ module SshKeysHelper
 
     quoted_allowed_algorithms = allowed_algorithms.map { |name| "'#{name}'" }
 
-    Gitlab::Utils.to_exclusive_sentence(quoted_allowed_algorithms)
+    Gitlab::Sentence.to_exclusive_sentence(quoted_allowed_algorithms)
   end
 end

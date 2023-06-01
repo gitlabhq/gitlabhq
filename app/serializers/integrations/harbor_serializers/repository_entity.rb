@@ -47,8 +47,8 @@ module Integrations
       private
 
       def validate_path(path)
-        Gitlab::Utils.check_path_traversal!(path)
-      rescue ::Gitlab::Utils::PathTraversalAttackError
+        Gitlab::PathTraversal.check_path_traversal!(path)
+      rescue ::Gitlab::PathTraversal::PathTraversalAttackError
         Gitlab::AppLogger.error("Path traversal attack detected #{path}")
         ''
       end

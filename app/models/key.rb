@@ -182,7 +182,7 @@ class Key < ApplicationRecord
   def forbidden_key_type_message
     allowed_types = Gitlab::CurrentSettings.allowed_key_types.map(&:upcase)
 
-    "type is forbidden. Must be #{Gitlab::Utils.to_exclusive_sentence(allowed_types)}"
+    "type is forbidden. Must be #{Gitlab::Sentence.to_exclusive_sentence(allowed_types)}"
   end
 
   def expiration

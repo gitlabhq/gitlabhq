@@ -146,7 +146,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline do
     context 'when path is being traversed' do
       it 'raises an error' do
         expect { pipeline.load(context, File.join(tmpdir, '..')) }
-          .to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+          .to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
   end

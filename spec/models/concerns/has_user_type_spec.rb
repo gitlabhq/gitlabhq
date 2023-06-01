@@ -5,12 +5,18 @@ require 'spec_helper'
 RSpec.describe User, feature_category: :system_access do
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
-      .to match_array(%w[human human_deprecated ghost alert_bot project_bot support_bot service_user security_bot
+      .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot
         visual_review_bot migration_bot automation_bot security_policy_bot admin_bot suggested_reviewers_bot
         service_account llm_bot])
     expect(described_class::USER_TYPES).to include(*described_class::BOT_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::NON_INTERNAL_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::INTERNAL_USER_TYPES)
+  end
+
+  describe 'validations' do
+    it 'validates type presence' do
+      expect(User.new).to validate_presence_of(:user_type)
+    end
   end
 
   describe 'scopes & predicates' do
@@ -20,18 +26,6 @@ RSpec.describe User, feature_category: :system_access do
     let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }
     let(:non_internal) { User::NON_INTERNAL_USER_TYPES.map { |type| public_send(type) } }
     let(:everyone) { User::USER_TYPES.keys.map { |type| public_send(type) } }
-
-    describe '.humans' do
-      it 'includes humans only' do
-        expect(described_class.humans).to match_array([human, human_deprecated])
-      end
-    end
-
-    describe '.human' do
-      it 'includes humans only' do
-        expect(described_class.human).to match_array([human, human_deprecated])
-      end
-    end
 
     describe '.bots' do
       it 'includes all bots' do
@@ -70,15 +64,6 @@ RSpec.describe User, feature_category: :system_access do
         (everyone - bots).each do |user|
           expect(user).not_to be_bot
         end
-      end
-    end
-
-    describe '#human?' do
-      it 'is true for humans only' do
-        expect(human).to be_human
-        expect(human_deprecated).to be_human
-        expect(alert_bot).not_to be_human
-        expect(User.new).to be_human
       end
     end
 

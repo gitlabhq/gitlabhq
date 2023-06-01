@@ -62,7 +62,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
 
       expect(rendered).to have_selector('[data-testid="ldap-tab"]')
       expect(rendered).to have_css('.login-box#ldapmain')
-      expect(rendered).to have_field('LDAP Username')
+      expect(rendered).to have_field(_('Username'))
       expect(rendered).not_to have_content('No authentication methods configured')
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
       render
 
       expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
-      expect(rendered).not_to have_field('LDAP Username')
+      expect(rendered).not_to have_field(_('Username'))
       expect(rendered).to have_content('No authentication methods configured')
     end
 

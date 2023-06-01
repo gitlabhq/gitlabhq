@@ -17,9 +17,9 @@ module Projects
     end
 
     def sanitized_filename(template_name)
-      path = Gitlab::Utils.check_path_traversal!("#{template_name}.md.tt")
+      path = Gitlab::PathTraversal.check_path_traversal!("#{template_name}.md.tt")
       path = TEMPLATE_PATH.join(path).to_s
-      Gitlab::Utils.check_allowed_absolute_path!(path, [TEMPLATE_PATH.to_s])
+      Gitlab::PathTraversal.check_allowed_absolute_path!(path, [TEMPLATE_PATH.to_s])
 
       path
     end

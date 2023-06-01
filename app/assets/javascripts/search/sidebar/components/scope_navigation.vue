@@ -8,7 +8,7 @@ import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../con
 import { slugifyWithUnderscore } from '../../../lib/utils/text_utility';
 
 export default {
-  name: 'ScopeLegacyNavigation',
+  name: 'ScopeNavigation',
   i18n: {
     countOverLimitLabel: s__('GlobalSearch|Result count is over limit.'),
   },

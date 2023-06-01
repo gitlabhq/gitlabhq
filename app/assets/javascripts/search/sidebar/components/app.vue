@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
-import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
+import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
+import ScopeNewNavigation from '~/search/sidebar/components/scope_new_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB } from '../constants';
 import ResultsFilters from './results_filters.vue';
@@ -11,14 +11,13 @@ export default {
   name: 'GlobalSearchSidebar',
   components: {
     ResultsFilters,
-    ScopeLegacyNavigation,
-    ScopeSidebarNavigation,
+    ScopeNavigation,
+    ScopeNewNavigation,
     LanguageFilter,
     SidebarPortal,
   },
   computed: {
-    // useSidebarNavigation refers to whether the new left sidebar navigation is enabled
-    ...mapState(['useSidebarNavigation']),
+    ...mapState(['urlQuery', 'useNewNavigation']),
     ...mapGetters(['currentScope']),
     showIssueAndMergeFilters() {
       return this.currentScope === SCOPE_ISSUES || this.currentScope === SCOPE_MERGE_REQUESTS;
@@ -26,9 +25,7 @@ export default {
     showBlobFilter() {
       return this.currentScope === SCOPE_BLOB;
     },
-    showScopeNavigation() {
-      // showLegacyNavigation refers to whether the scope navigation should be shown
-      // while the legacy navigation is being used and there are no search results the scope navigation has to be hidden
+    showOldNavigation() {
       return Boolean(this.currentScope);
     },
   },
@@ -36,18 +33,18 @@ export default {
 </script>
 
 <template>
-  <section v-if="useSidebarNavigation">
+  <section v-if="useNewNavigation">
     <sidebar-portal>
-      <scope-sidebar-navigation />
+      <scope-new-navigation />
       <results-filters v-if="showIssueAndMergeFilters" />
       <language-filter v-if="showBlobFilter" />
     </sidebar-portal>
   </section>
   <section
-    v-else-if="showScopeNavigation"
+    v-else
     class="search-sidebar gl-display-flex gl-flex-direction-column gl-md-mr-5 gl-mb-6 gl-mt-5"
   >
-    <scope-legacy-navigation />
+    <scope-navigation />
     <results-filters v-if="showIssueAndMergeFilters" />
     <language-filter v-if="showBlobFilter" />
   </section>

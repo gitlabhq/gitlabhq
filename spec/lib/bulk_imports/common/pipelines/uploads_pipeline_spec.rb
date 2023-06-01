@@ -128,7 +128,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
       context 'when path traverses' do
         it 'does not upload the file' do
           path_traversal = "#{uploads_dir_path}/avatar/../../../../etc/passwd"
-          expect { pipeline.load(context, path_traversal) }.to not_change { portable.uploads.count }.and raise_error(Gitlab::Utils::PathTraversalAttackError)
+          expect { pipeline.load(context, path_traversal) }.to not_change { portable.uploads.count }.and raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
         end
       end
 

@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ImportExport::RecursiveMergeFolders do
       Dir.mktmpdir do |tmpdir|
         expect do
           described_class.merge("#{tmpdir}/../", tmpdir)
-        end.to raise_error(Gitlab::Utils::PathTraversalAttackError)
+        end.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::ImportExport::RecursiveMergeFolders do
       Dir.mktmpdir do |tmpdir|
         expect do
           described_class.merge(tmpdir, "#{tmpdir}/../")
-        end.to raise_error(Gitlab::Utils::PathTraversalAttackError)
+        end.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
       end
     end
   end

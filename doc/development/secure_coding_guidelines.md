@@ -485,7 +485,7 @@ In order to prevent Path Traversal vulnerabilities, user-controlled filenames or
 
 #### GitLab specific validations
 
-The methods `Gitlab::Utils.check_path_traversal!()` and `Gitlab::Utils.check_allowed_absolute_path!()`
+The methods `Gitlab::PathTraversal.check_path_traversal!()` and `Gitlab::PathTraversal.check_allowed_absolute_path!()`
 can be used to validate user-supplied paths and prevent vulnerabilities.
 `check_path_traversal!()` will detect their Path Traversal payloads and accepts URL-encoded paths.
 `check_allowed_absolute_path!()` will check if a path is absolute and whether it is inside the allowed path list. By default, absolute
@@ -495,7 +495,7 @@ parameter when using `check_allowed_absolute_path!()`.
 To use a combination of both checks, follow the example below:
 
 ```ruby
-Gitlab::Utils.check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
+Gitlab::PathTraversal.check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
 ```
 
 In the REST API, we have the [`FilePath`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb)

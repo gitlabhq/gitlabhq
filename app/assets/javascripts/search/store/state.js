@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 
-const createState = ({ query, navigation, useSidebarNavigation }) => ({
+const createState = ({ query, navigation, useNewNavigation }) => ({
   urlQuery: cloneDeep(query),
   query,
   groups: [],
@@ -14,7 +14,7 @@ const createState = ({ query, navigation, useSidebarNavigation }) => ({
   },
   sidebarDirty: false,
   navigation,
-  useSidebarNavigation,
+  useNewNavigation,
   aggregations: {
     error: false,
     fetching: false,

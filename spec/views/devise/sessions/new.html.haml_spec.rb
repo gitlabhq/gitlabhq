@@ -56,7 +56,7 @@ RSpec.describe 'devise/sessions/new' do
 
           expect(rendered).to have_selector('.new-session-tabs')
           expect(rendered).to have_selector('[data-testid="ldap-tab"]')
-          expect(rendered).to have_field('LDAP Username')
+          expect(rendered).to have_field(_('Username'))
         end
 
         it 'is not shown when LDAP sign in is disabled' do
@@ -66,7 +66,7 @@ RSpec.describe 'devise/sessions/new' do
 
           expect(rendered).to have_content('No authentication methods configured')
           expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
-          expect(rendered).not_to have_field('LDAP Username')
+          expect(rendered).not_to have_field(_('Username'))
         end
       end
 

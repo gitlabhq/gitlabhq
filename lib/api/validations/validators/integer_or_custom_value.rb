@@ -15,7 +15,7 @@ module API
           return if value.is_a?(Integer)
           return if @custom_values.map(&:downcase).include?(value.to_s.downcase)
 
-          valid_options = Gitlab::Utils.to_exclusive_sentence(['an integer'] + @custom_values)
+          valid_options = Gitlab::Sentence.to_exclusive_sentence(['an integer'] + @custom_values)
           raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],
             message: "should be #{valid_options}, however got #{value}"

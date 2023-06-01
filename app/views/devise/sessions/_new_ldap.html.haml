@@ -1,19 +1,18 @@
 - server = local_assigns.fetch(:server)
+- provider = server['provider_name']
 - render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
 - submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
 
-= form_tag(omniauth_callback_path(:user, server['provider_name']), id: 'new_ldap_user', class: "gl-show-field-errors") do
-  .form-group.gl-px-5.gl-pt-5
-    = label_tag :username, "#{server['label']} Username"
-    = text_field_tag :username, nil, { class: "form-control gl-form-input top", title: _("This field is required."), autofocus: "autofocus", data: { qa_selector: 'username_field' }, required: true }
-  .form-group.gl-px-5
-    = label_tag :password
-    = password_field_tag :password, nil, { class: 'form-control gl-form-input js-password', data: { id: 'password', name: 'password', qa_selector: 'password_field' } }
-  - if render_remember_me
-    .gl-px-5
-      = render Pajamas::CheckboxTagComponent.new(name: 'remember_me') do |c|
-        - c.with_label do
-          = _('Remember me')
+= gitlab_ui_form_for(provider, url: omniauth_callback_path(:user, provider), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_ldap_user' }}) do |f|
+  .form-group
+    = f.label :username, _('Username')
+    = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input top', title: _('This field is required.'), autofocus: 'autofocus', data: { qa_selector: 'username_field' }, required: true
+  .form-group
+    = f.label :password, _('Password')
+    = f.password_field :password, name: :password, autocomplete: :current_password, class: 'form-control gl-form-input js-password', data: { id: "#{provider}-password", name: 'password', qa_selector: 'password_field' }
 
-  .submit-container.gl-px-5.gl-pb-5
-    = submit_tag submit_message, class: "gl-button btn btn-confirm", data: { qa_selector: 'sign_in_button' }
+  - if render_remember_me
+    = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
+
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { qa_selector: 'sign_in_button' } }) do
+    = submit_message

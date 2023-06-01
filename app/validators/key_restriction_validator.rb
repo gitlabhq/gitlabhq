@@ -31,7 +31,7 @@ class KeyRestrictionValidator < ActiveModel::EachValidator
     sizes << "allowed" if valid_restriction?(ALLOWED)
     sizes += self.class.supported_sizes(options[:type])
 
-    Gitlab::Utils.to_exclusive_sentence(sizes)
+    Gitlab::Sentence.to_exclusive_sentence(sizes)
   end
 
   def valid_restriction?(value)

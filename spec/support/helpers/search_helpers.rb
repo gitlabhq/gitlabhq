@@ -35,8 +35,6 @@ module SearchHelpers
   end
 
   def has_search_scope?(scope)
-    return false unless page.has_selector?('[data-testid="search-filter"]')
-
     page.within '[data-testid="search-filter"]' do
       has_link?(scope)
     end

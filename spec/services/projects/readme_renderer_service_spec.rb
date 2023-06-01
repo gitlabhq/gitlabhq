@@ -52,7 +52,7 @@ RSpec.describe Projects::ReadmeRendererService, '#execute', feature_category: :g
 
     context 'with path traversal in mind' do
       where(:template_name, :exception, :expected_path) do
-        '../path/traversal/bad' | [Gitlab::Utils::PathTraversalAttackError, 'Invalid path'] | nil
+        '../path/traversal/bad' | [Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path'] | nil
         '/bad/template' | [StandardError, 'path /bad/template.md.tt is not allowed'] | nil
         'good/template' | nil | 'good/template.md.tt'
       end

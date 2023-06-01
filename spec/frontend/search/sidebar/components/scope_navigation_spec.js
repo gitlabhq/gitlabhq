@@ -3,11 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY, MOCK_NAVIGATION } from 'jest/search/mock_data';
-import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
+import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 
 Vue.use(Vuex);
 
-describe('ScopeLegacyNavigation', () => {
+describe('ScopeNavigation', () => {
   let wrapper;
 
   const actionSpies = {
@@ -29,7 +29,7 @@ describe('ScopeLegacyNavigation', () => {
       getters: getterSpies,
     });
 
-    wrapper = shallowMount(ScopeLegacyNavigation, {
+    wrapper = shallowMount(ScopeNavigation, {
       store,
     });
   };

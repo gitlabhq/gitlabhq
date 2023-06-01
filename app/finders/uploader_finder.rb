@@ -16,12 +16,12 @@ class UploaderFinder
     retrieve_file_state!
 
     uploader
-  rescue ::Gitlab::Utils::PathTraversalAttackError
+  rescue ::Gitlab::PathTraversal::PathTraversalAttackError
     nil # no-op if for incorrect files
   end
 
   def prevent_path_traversal_attack!
-    Gitlab::Utils.check_path_traversal!(@file_path)
+    Gitlab::PathTraversal.check_path_traversal!(@file_path)
   end
 
   def retrieve_file_state!

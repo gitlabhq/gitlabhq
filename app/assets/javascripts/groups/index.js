@@ -2,11 +2,11 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
+import GroupItemComponent from 'jh_else_ce/groups/components/group_item.vue';
 import Translate from '../vue_shared/translate';
 
 import GroupsApp from './components/app.vue';
 import GroupFolderComponent from './components/group_folder.vue';
-import GroupItemComponent from './components/group_item.vue';
 import { GROUPS_LIST_HOLDER_CLASS, CONTENT_LIST_CLASS } from './constants';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsService from './service/groups_service';

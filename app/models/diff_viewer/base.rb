@@ -88,7 +88,7 @@ module DiffViewer
         {
           viewer: switcher_title,
           reason: render_error_reason,
-          options: Gitlab::Utils.to_exclusive_sentence(render_error_options)
+          options: Gitlab::Sentence.to_exclusive_sentence(render_error_options)
         }
     end
 

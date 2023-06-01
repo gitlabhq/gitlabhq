@@ -41,11 +41,11 @@ module BulkImports
     attr_reader :tmpdir, :filename, :filepath
 
     def validate_filepath
-      Gitlab::Utils.check_path_traversal!(filepath)
+      Gitlab::PathTraversal.check_path_traversal!(filepath)
     end
 
     def validate_tmpdir
-      Gitlab::Utils.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
+      Gitlab::PathTraversal.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
     end
 
     def validate_symlink

@@ -4,8 +4,7 @@ import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
-import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
-import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
+import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 
 Vue.use(Vuex);
@@ -13,16 +12,22 @@ Vue.use(Vuex);
 describe('GlobalSearchSidebar', () => {
   let wrapper;
 
+  const actionSpies = {
+    applyQuery: jest.fn(),
+    resetQuery: jest.fn(),
+  };
+
   const getterSpies = {
     currentScope: jest.fn(() => 'issues'),
   };
 
-  const createComponent = (initialState = {}, featureFlags = {}) => {
+  const createComponent = (initialState, featureFlags) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
         ...initialState,
       },
+      actions: actionSpies,
       getters: getterSpies,
     });
 
@@ -38,14 +43,13 @@ describe('GlobalSearchSidebar', () => {
 
   const findSidebarSection = () => wrapper.find('section');
   const findFilters = () => wrapper.findComponent(ResultsFilters);
-  const findScopeLegacyNavigation = () => wrapper.findComponent(ScopeLegacyNavigation);
-  const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
+  const findSidebarNavigation = () => wrapper.findComponent(ScopeNavigation);
   const findLanguageAggregation = () => wrapper.findComponent(LanguageFilter);
 
   describe('renders properly', () => {
     describe('always', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({});
       });
       it(`shows section`, () => {
         expect(findSidebarSection().exists()).toBe(true);
@@ -73,24 +77,12 @@ describe('GlobalSearchSidebar', () => {
       });
     });
 
-    describe.each`
-      currentScope | sidebarNavShown | legacyNavShown
-      ${'issues'}  | ${false}        | ${true}
-      ${''}        | ${false}        | ${false}
-      ${'issues'}  | ${true}         | ${false}
-      ${''}        | ${true}         | ${false}
-    `('renders navigation', ({ currentScope, sidebarNavShown, legacyNavShown }) => {
+    describe('renders navigation', () => {
       beforeEach(() => {
-        getterSpies.currentScope = jest.fn(() => currentScope);
-        createComponent({ useSidebarNavigation: sidebarNavShown });
+        createComponent({});
       });
-
-      it(`${!legacyNavShown ? 'hides' : 'shows'} the legacy navigation`, () => {
-        expect(findScopeLegacyNavigation().exists()).toBe(legacyNavShown);
-      });
-
-      it(`${!sidebarNavShown ? 'hides' : 'shows'} the sidebar navigation`, () => {
-        expect(findScopeSidebarNavigation().exists()).toBe(sidebarNavShown);
+      it('shows the vertical navigation', () => {
+        expect(findSidebarNavigation().exists()).toBe(true);
       });
     });
   });

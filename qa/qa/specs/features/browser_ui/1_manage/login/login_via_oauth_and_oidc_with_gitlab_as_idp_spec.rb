@@ -63,8 +63,6 @@ module QA
 
         Flow::Login.sign_in(as: user, skip_page_validation: true)
 
-        Flow::UserOnboarding.onboard_user
-
         expect(page.driver.current_url).to include(consumer_host)
 
         Page::Dashboard::Welcome.perform do |welcome|
