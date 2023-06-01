@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
@@ -33,6 +34,7 @@ describe('WorkItemDueDate component', () => {
     dueDate = null,
     startDate = null,
     mutationHandler = updateWorkItemMutationHandler,
+    stubs = {},
   } = {}) => {
     wrapper = mountExtended(WorkItemDueDate, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
@@ -43,6 +45,7 @@ describe('WorkItemDueDate component', () => {
         workItemId,
         workItemType: 'Task',
       },
+      stubs,
     });
   };
 
@@ -132,11 +135,21 @@ describe('WorkItemDueDate component', () => {
 
           describe('when the start date is later than the due date', () => {
             const startDate = new Date('2030-01-01T00:00:00.000Z');
-            let datePickerOpenSpy;
+            const datePickerOpenSpy = jest.fn();
 
             beforeEach(() => {
-              createComponent({ canUpdate: true, dueDate: '2022-12-31', startDate: '2022-12-31' });
-              datePickerOpenSpy = jest.spyOn(wrapper.vm.$refs.dueDatePicker, 'show');
+              createComponent({
+                canUpdate: true,
+                dueDate: '2022-12-31',
+                startDate: '2022-12-31',
+                stubs: {
+                  GlDatepicker: stubComponent(GlDatepicker, {
+                    methods: {
+                      show: datePickerOpenSpy,
+                    },
+                  }),
+                },
+              });
               findStartDatePicker().vm.$emit('input', startDate);
               findStartDatePicker().vm.$emit('close');
             });

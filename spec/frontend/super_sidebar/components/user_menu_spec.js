@@ -1,5 +1,6 @@
 import { GlAvatar, GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import UserNameGroup from '~/super_sidebar/components/user_name_group.vue';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
@@ -17,7 +18,9 @@ describe('UserMenu component', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const showDropdown = () => findDropdown().vm.$emit('shown');
 
-  const createWrapper = (userDataChanges = {}) => {
+  const closeDropdownSpy = jest.fn();
+
+  const createWrapper = (userDataChanges = {}, stubs = {}) => {
     wrapper = mountExtended(UserMenu, {
       propsData: {
         data: {
@@ -28,6 +31,7 @@ describe('UserMenu component', () => {
       stubs: {
         GlEmoji,
         GlAvatar: true,
+        ...stubs,
       },
       provide: {
         toggleNewNavEndpoint,
@@ -79,8 +83,8 @@ describe('UserMenu component', () => {
   describe('User status item', () => {
     let item;
 
-    const setItem = ({ can_update, busy, customized } = {}) => {
-      createWrapper({ status: { ...userMenuMockStatus, can_update, busy, customized } });
+    const setItem = ({ can_update, busy, customized, stubs } = {}) => {
+      createWrapper({ status: { ...userMenuMockStatus, can_update, busy, customized } }, stubs);
       item = wrapper.findByTestId('status-item');
     };
 
@@ -103,11 +107,19 @@ describe('UserMenu component', () => {
       });
 
       it('should close the dropdown when status modal opened', () => {
-        setItem({ can_update: true });
-        wrapper.vm.$refs.userDropdown.close = jest.fn();
-        expect(wrapper.vm.$refs.userDropdown.close).not.toHaveBeenCalled();
+        setItem({
+          can_update: true,
+          stubs: {
+            GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+              methods: {
+                close: closeDropdownSpy,
+              },
+            }),
+          },
+        });
+        expect(closeDropdownSpy).not.toHaveBeenCalled();
         item.vm.$emit('action');
-        expect(wrapper.vm.$refs.userDropdown.close).toHaveBeenCalled();
+        expect(closeDropdownSpy).toHaveBeenCalled();
       });
 
       describe('renders correct label', () => {

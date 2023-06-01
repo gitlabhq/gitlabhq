@@ -1,9 +1,18 @@
 <script>
-import { GlAccordionItem, GlFormInput, GlButton, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
-import { i18n } from '../constants';
+import {
+  GlAccordionItem,
+  GlFormInput,
+  GlButton,
+  GlFormGroup,
+  GlFormTextarea,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
+import { i18n, HELP_PATHS } from '../constants';
 
 export default {
   i18n,
+  helpPath: HELP_PATHS.servicesHelpPath,
   placeholderText: i18n.ENTRYPOINT_PLACEHOLDER_TEXT,
   components: {
     GlAccordionItem,
@@ -11,6 +20,8 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlButton,
+    GlLink,
+    GlSprintf,
   },
   props: {
     job: {
@@ -45,6 +56,13 @@ export default {
 </script>
 <template>
   <gl-accordion-item :title="$options.i18n.SERVICE">
+    <div class="gl-pb-5">
+      <gl-sprintf :message="$options.i18n.SERVICES_DESCRIPTION">
+        <template #link="{ content }">
+          <gl-link :href="$options.helpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
     <div
       v-for="(service, index) in job.services"
       :key="index"

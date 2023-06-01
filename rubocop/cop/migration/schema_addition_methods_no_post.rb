@@ -22,12 +22,24 @@ module RuboCop
           (send nil? {#{SYMBOLIZED_MATCHER}} ...)
         PATTERN
 
+        def_node_matcher :rolling_back_migration, <<~PATTERN
+          (def :down  ...)
+        PATTERN
+
         def on_send(node)
           return unless time_enforced?(node)
+
+          return if rolling_back_migration?(node)
 
           on_forbidden_method(node) do
             add_offense(node, message: MSG)
           end
+        end
+
+        private
+
+        def rolling_back_migration?(node)
+          rolling_back_migration(node.parent)
         end
       end
     end

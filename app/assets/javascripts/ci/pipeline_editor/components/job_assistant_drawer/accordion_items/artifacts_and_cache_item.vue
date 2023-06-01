@@ -1,15 +1,19 @@
 <script>
-import { GlAccordionItem, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
+import { GlAccordionItem, GlFormInput, GlFormGroup, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { get, toPath } from 'lodash';
-import { i18n } from '../constants';
+import { i18n, HELP_PATHS } from '../constants';
 
 export default {
   i18n,
+  artifactsHelpPath: HELP_PATHS.artifactsHelpPath,
+  cacheHelpPath: HELP_PATHS.cacheHelpPath,
   components: {
     GlFormGroup,
     GlAccordionItem,
     GlFormInput,
     GlButton,
+    GlLink,
+    GlSprintf,
   },
   props: {
     job: {
@@ -61,6 +65,16 @@ export default {
 </script>
 <template>
   <gl-accordion-item :title="$options.i18n.ARTIFACTS_AND_CACHE">
+    <div class="gl-pb-5">
+      <gl-sprintf :message="$options.i18n.ARTIFACTS_AND_CACHE_DESCRIPTION">
+        <template #artifactsLink="{ content }">
+          <gl-link :href="$options.artifactsHelpPath">{{ content }}</gl-link>
+        </template>
+        <template #cacheLink="{ content }">
+          <gl-link :href="$options.cacheHelpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
     <div v-for="entry in formOptions" :key="entry.key" class="form-group">
       <div class="gl-display-flex">
         <label class="gl-font-weight-bold gl-mb-3">{{ entry.title }}</label>

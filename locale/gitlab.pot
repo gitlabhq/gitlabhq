@@ -25823,6 +25823,9 @@ msgstr ""
 msgid "JobAssistant|Image name (optional)"
 msgstr ""
 
+msgid "JobAssistant|Include or exclude jobs in pipelines. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "JobAssistant|Input format"
 msgstr ""
 
@@ -25854,6 +25857,15 @@ msgid "JobAssistant|Service name (optional)"
 msgstr ""
 
 msgid "JobAssistant|Services"
+msgstr ""
+
+msgid "JobAssistant|Specify a Docker image that the job runs in. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "JobAssistant|Specify any additional Docker images that your scripts require to run successfully. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "JobAssistant|Specify the %{artifactsLinkStart}artifacts%{artifactsLinkEnd} and %{cacheLinkStart}cache%{cacheLinkEnd} of the job."
 msgstr ""
 
 msgid "JobAssistant|Stage (optional)"

@@ -24,6 +24,16 @@ The following video provides an overview of these policies.
   <iframe src="https://www.youtube-nocookie.com/embed/34qBQ9t8qO8" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+## Prerequisites to creating a new license approval policy
+
+License approval policies rely on the output of a dependency scanning job to verify that requirements have been met. If dependency scanning has not been properly configured, and therefore no dependency scanning jobs ran related to an open MR, the policy has no data with which to verify the requirements. When security policies are missing data for evaluation, they fail closed and assume the merge request could contain vulnerabilities.
+
+To ensure enforcement of your policies, you should enable dependency scanning on your target development projects. You can achieve this a few different ways:
+
+- Create a global [scan execution policy](../application_security/policies/scan-execution-policies.md) that enforces Dependency Scanning to run in all target development projects.
+- Use a [Compliance Pipeline](../../user/group/compliance_frameworks.md#compliance-frameworks) to define a Dependency Scanning job that is enforced on projects enforced by a given Compliance Framework.
+- Work with development teams to configure [Dependency Scanning](../../user/application_security/dependency_scanning/index.md) in each of their project's `.gitlab-ci.yml` files or enable by using the [Security Configuration panel](../application_security/configuration/index.md).
+
 ## Create a new license approval policy
 
 Create a license approval policy to enforce license compliance.

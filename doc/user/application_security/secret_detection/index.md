@@ -495,6 +495,36 @@ path = "/gitleaks.toml"
   ]
 ```
 
+## Specify a remote configuration file
+
+Projects can be configured with a [CI/CD variable](../../../ci/variables/index.md) in order
+to specify a ruleset configuration outside of the current repository.
+
+The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses an SCP-style syntax for specifying a URI,
+optional authentication, and optional Git SHA. The variable uses the following format:
+
+```plaintext
+<AUTH_USER>:<AUTH_PASSWORD>@<PROJECT_PATH>@<GIT_SHA>
+```
+
+NOTE:
+Loading local project configuration takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` values.
+
+The following example includes the Secret Detection template in a project to be scanned and specifies
+the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable for referencing a separate project configuration.
+
+```yaml
+include:
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
+```
+
+For more information on the syntax of remote configurations, see the
+[specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
+on the SAST customize rulesets page.
+
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 
 An offline environment has limited, restricted, or intermittent access to external resources through

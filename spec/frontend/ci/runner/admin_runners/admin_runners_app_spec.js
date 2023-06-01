@@ -84,7 +84,7 @@ const COUNT_QUERIES = TAB_COUNT_QUERIES + STATUS_COUNT_QUERIES;
 
 describe('AdminRunnersApp', () => {
   let wrapper;
-  let showToast;
+  const showToast = jest.fn();
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
@@ -122,10 +122,13 @@ describe('AdminRunnersApp', () => {
         staleTimeoutSecs,
         ...provide,
       },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
+      },
       ...options,
     });
-
-    showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
 
     return waitForPromises();
   };

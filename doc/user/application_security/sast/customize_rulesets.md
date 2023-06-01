@@ -79,6 +79,37 @@ To create the ruleset configuration file:
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a file named `sast-ruleset.toml` in the `.gitlab` directory.
 
+## Specify a remote configuration file
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.0.
+
+You can set a [CI/CD variable](../../../ci/variables/index.md) to use a ruleset configuration file that's stored outside of the current repository.
+This can help you apply the same rules across multiple projects.
+
+The `SAST_RULESET_GIT_REFERENCE` variable uses a format similar to
+[Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a project URI,
+optional authentication, and optional Git SHA. The variable uses the following format:
+
+```plaintext
+[<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
+```
+
+NOTE:
+If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
+
+The following example [enables SAST](index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file.
+In this example, the file is committed on the default branch of `example-ruleset-project` at the path `.gitlab/sast-ruleset.toml`.
+
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+
+variables:
+  SAST_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
+```
+
+See [specify a private remote configuration example](#specify-a-private-remote-configuration) for advanced usage.
+
 ## Schema
 
 ### The top-level section
@@ -352,23 +383,23 @@ The syntax used for the `value` follows the [njsscan config format](https://gith
 ---
 - nodejs-extensions:
   - .js
-  
+
   template-extensions:
   - .new
   - .hbs
   - ''
-  
+
   ignore-filenames:
   - skip.js
-  
+
   ignore-paths:
   - __MACOSX
   - skip_dir
   - node_modules
-  
+
   ignore-extensions:
   - .hbs
-  
+
   ignore-rules:
   - regex_injection_dos
   - pug_jade_template
@@ -559,4 +590,21 @@ rules:
   severity: "ERROR"
   languages:
     - "go"
+```
+
+### Specify a private remote configuration
+
+The following example [enables SAST](index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file. The file is:
+
+- Downloaded from a private project that requires authentication, by using a [Group Access Token](../../group/settings/group_access_tokens.md).
+- Checked out at a specific Git commit SHA instead of the default branch.
+
+See [group access tokens](../../group/settings/group_access_tokens.md#bot-users-for-groups) for how to find the username associated with a group token.
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SAST_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:glpat-1234567@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
 ```
