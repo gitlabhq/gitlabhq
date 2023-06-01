@@ -380,6 +380,7 @@ Dangerfile
 /lib/gitlab/url_blocker.rb
 /lib/gitlab/url_blockers/
 /lib/gitlab/utils.rb
+/lib/gitlab/path_traversal.rb
 
 ^[Gitaly] @proglottis @toon
 lib/gitlab/git_access.rb
@@ -423,6 +424,7 @@ lib/gitlab/checks/**
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
+/doc/administration/integration/diagrams_net.md @aqualls @msedlakjakubowski
 /doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @msedlakjakubowski
 /doc/administration/integration/plantuml.md @aqualls @msedlakjakubowski
@@ -706,6 +708,7 @@ lib/gitlab/checks/**
 /doc/development/graphql_guide/ @eread @ashrafkhamis
 /doc/development/graphql_guide/batchloader.md @aqualls
 /doc/development/i18n/ @eread @ashrafkhamis
+/doc/development/identity_verification.md @phillipwells
 /doc/development/image_scaling.md @lciutacu
 /doc/development/import_export.md @eread @ashrafkhamis
 /doc/development/index.md @sselhorn
@@ -784,6 +787,7 @@ lib/gitlab/checks/**
 /doc/raketasks/x509_signatures.md @aqualls @msedlakjakubowski
 /doc/security/ @jglassman1
 /doc/security/email_verification.md @phillipwells
+/doc/security/identity_verification.md @phillipwells
 /doc/subscriptions/ @fneill
 /doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
@@ -932,7 +936,6 @@ lib/gitlab/checks/**
 /doc/user/project/repository/ @aqualls @msedlakjakubowski
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/managing_large_repositories.md @axil
-/doc/user/project/repository/reducing_the_repo_size_using_git.md @eread
 /doc/user/project/repository/vscode.md @ashrafkhamis
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/requirements/ @msedlakjakubowski

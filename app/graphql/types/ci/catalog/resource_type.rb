@@ -41,6 +41,8 @@ module Types
           description: 'Root namespace of the catalog resource.',
           alpha: { milestone: '16.1' }
 
+        markdown_field :readme_html, null: false
+
         def web_path
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end
@@ -70,6 +72,10 @@ module Types
 
             projects.each { |project| loader.call(project.id, project.root_ancestor) }
           end
+        end
+
+        def readme_html_resolver
+          ::MarkupHelper.markdown(object.project.repository.readme&.data, context.to_h.dup)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

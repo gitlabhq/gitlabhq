@@ -702,6 +702,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :namespace_aggregation_schedule_lease_duration_in_seconds,
     numericality: { only_integer: true, greater_than: 0 }
 
+  validates :instance_level_code_suggestions_enabled,
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,

@@ -36,13 +36,8 @@ open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Bmil
 Select the appropriate template, and add all the necessary information about the work you are planning on doing.
 That way you can get more guidance and support from GitLab team members.
 
-If you're not sure what to work on, you can:
-
-- View issues with the
-  [`~Seeking community contributions` label](../labels/index.md#label-for-community-contributors).
-- Optimize tests. Use [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/)
-  to identify the slowest tests. These tests are good candidates for improving and checking if any
-  [best practices](../testing_guide/best_practices.md) can speed them up.
+If you're not sure what to work on, you can [view issues](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=100) with the
+  `~Seeking community contributions` and `~quick win` label.
 
 When you find an issue, leave a comment on the issue you want to work on.
 This helps the GitLab team and members of the wider GitLab community know that you will be working on that issue.
