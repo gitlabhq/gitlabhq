@@ -42,8 +42,8 @@ export default {
     };
   },
   computed: {
-    drawerHeightOffset() {
-      return getContentWrapperHeight('.content-wrapper');
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
     architectureOptions() {
       return platformArchitectures({ platform: this.selectedPlatform });
@@ -86,7 +86,7 @@ export default {
 <template>
   <gl-drawer
     :open="open"
-    :header-height="drawerHeightOffset"
+    :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     data-testid="runner-platforms-drawer"
     @close="onClose"

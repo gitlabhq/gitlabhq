@@ -6,7 +6,7 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
 import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
-import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, JOB_RULES_WHEN, i18n } from './constants';
+import { JOB_TEMPLATE, JOB_RULES_WHEN, i18n } from './constants';
 import { removeEmptyObj, trimFields, validateEmptyValue, validateStartIn } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
 import ImageItem from './accordion_items/image_item.vue';
@@ -79,8 +79,8 @@ export default {
         };
       });
     },
-    drawerHeightOffset() {
-      return getContentWrapperHeight(DRAWER_CONTAINER_CLASS);
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
     isJobValid() {
       return this.isNameValid && this.isScriptValid && this.isStartValid;
@@ -173,7 +173,7 @@ export default {
 <template>
   <gl-drawer
     class="job-assistant-drawer"
-    :header-height="drawerHeightOffset"
+    :header-height="getDrawerHeaderHeight"
     :open="isVisible"
     :z-index="zIndex"
     @close="closeDrawer"

@@ -92,7 +92,7 @@ include:
       - tmp/capybara/
       - log/*.log
     reports:
-      junit: ${JUNIT_RESULT_FILE}
+      junit: "rspec/rspec-*.xml"
 
 .rspec-base-migration:
   script:

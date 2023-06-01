@@ -150,8 +150,6 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
-  JUNIT_RESULT_FILE: rspec/junit_rspec.xml
-  JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-foss-impact.gitlab-ci.yml.erb

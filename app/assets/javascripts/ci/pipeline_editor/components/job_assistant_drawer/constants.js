@@ -1,7 +1,5 @@
 import { __, s__ } from '~/locale';
 
-export const DRAWER_CONTAINER_CLASS = '.content-wrapper';
-
 export const JOB_RULES_WHEN = {
   onSuccess: {
     value: 'on_success',

@@ -56,9 +56,9 @@ export default {
     };
   },
   computed: {
-    drawerOffsetTop() {
+    getDrawerHeaderHeight() {
       if (!this.showActionsDrawer || gon.use_new_navigation) return '0';
-      return getContentWrapperHeight('.content-wrapper');
+      return getContentWrapperHeight();
     },
     isFormValid() {
       return Object.values(this.validationState).every(Boolean);
@@ -124,7 +124,7 @@ export default {
     </gl-button>
     <gl-drawer
       :open="showActionsDrawer"
-      :header-height="drawerOffsetTop"
+      :header-height="getDrawerHeaderHeight"
       :z-index="$options.DRAWER_Z_INDEX"
       @close="toggleActionsDrawer"
     >

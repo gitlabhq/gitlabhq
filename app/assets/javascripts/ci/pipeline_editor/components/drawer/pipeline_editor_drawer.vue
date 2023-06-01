@@ -3,7 +3,6 @@ import { GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
-import { DRAWER_CONTAINER_CLASS } from '../job_assistant_drawer/constants';
 import FirstPipelineCard from './cards/first_pipeline_card.vue';
 import GettingStartedCard from './cards/getting_started_card.vue';
 import PipelineConfigReferenceCard from './cards/pipeline_config_reference_card.vue';
@@ -36,8 +35,8 @@ export default {
     },
   },
   computed: {
-    drawerHeightOffset() {
-      return getContentWrapperHeight(DRAWER_CONTAINER_CLASS);
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
   },
   methods: {
@@ -49,7 +48,7 @@ export default {
 </script>
 <template>
   <gl-drawer
-    :header-height="drawerHeightOffset"
+    :header-height="getDrawerHeaderHeight"
     :open="isVisible"
     :z-index="zIndex"
     @close="closeDrawer"

@@ -1,13 +1,16 @@
-= form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user', class: 'gl-show-field-errors') do
-  .form-group.gl-px-5.gl-pt-5
-    = label_tag :username, _('Username or email')
-    = text_field_tag :username, nil, { class: "form-control top", title: _("This field is required."), autofocus: "autofocus", required: true }
-  .form-group.gl-px-5
-    = label_tag :password
-    = password_field_tag :password, nil, { class: 'form-control gl-form-input js-password', data: { id: 'password', name: 'password' } }
-  - if remember_me_enabled?
-    .remember-me.gl-px-5
-      %label{ for: "remember_me" }
-        = check_box_tag :remember_me, '1', false, id: 'remember_me'
-        %span= _('Remember me')
-  = submit_tag _("Sign in"), class: "gl-button btn-confirm btn gl-px-5"
+- render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
+- submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
+
+= gitlab_ui_form_for(:crowd, url: omniauth_authorize_path(:user, :crowd), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_crowd_user' }}) do |f|
+  .form-group
+    = f.label :username, _('Username or email')
+    = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input', title: _('This field is required.'), autofocus: 'autofocus', required: true
+  .form-group
+    = f.label :password, _('Password')
+    = f.password_field :password, name: :password, autocomplete: :current_password, class: 'form-control gl-form-input js-password', data: { id: 'password', name: 'password' }
+
+  - if render_remember_me
+    = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
+
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+    = submit_message
