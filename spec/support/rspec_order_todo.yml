@@ -5424,7 +5424,6 @@
 - './spec/lib/bulk_imports/groups/pipelines/subgroup_entities_pipeline_spec.rb'
 - './spec/lib/bulk_imports/groups/stage_spec.rb'
 - './spec/lib/bulk_imports/groups/transformers/group_attributes_transformer_spec.rb'
-- './spec/lib/bulk_imports/groups/transformers/member_attributes_transformer_spec.rb'
 - './spec/lib/bulk_imports/groups/transformers/subgroup_to_entity_transformer_spec.rb'
 - './spec/lib/bulk_imports/ndjson_pipeline_spec.rb'
 - './spec/lib/bulk_imports/network_error_spec.rb'

@@ -366,7 +366,6 @@ module Ci
         project = pipeline&.project
 
         next unless project
-        next unless Feature.enabled?(:pipeline_trigger_merge_status, project)
 
         pipeline.run_after_commit do
           next if pipeline.child?

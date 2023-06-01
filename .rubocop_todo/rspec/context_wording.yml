@@ -1598,7 +1598,6 @@ RSpec/ContextWording:
     - 'spec/lib/bulk_imports/clients/http_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/lfs_objects_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/milestones_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/groups/transformers/member_attributes_transformer_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/ci_pipelines_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/issues_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/merge_requests_pipeline_spec.rb'

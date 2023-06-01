@@ -25,7 +25,8 @@ A user account is considered an enterprise account when:
 A user can also [manually connect an identity provider (IdP) to a GitLab account whose email address matches the subscribing organization's domain](../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 By selecting **Authorize** when connecting these two accounts, the user account
 with the matching email address is classified as an enterprise user. However, this
-user account does not have an **Enterprise** badge in GitLab.
+user account does not have an **Enterprise** badge in GitLab, and a group Owner cannot
+disable the user's two-factor authentication.
 
 Although a user can be a member of more than one group, each user account can be
 provisioned by only one group. As a result, a user is considered an enterprise
@@ -160,3 +161,9 @@ A top-level group Owner can [set up verified domains to bypass confirmation emai
 
 A top-level group Owner can use the [group and project members API](../../api/members.md)
 to access users' information, including email addresses.
+
+## Troubleshooting
+
+### Cannot disable two-factor authentication for an enterprise user
+
+If an enterprise user does not have an **Enterprise** badge, a top-level group Owner cannot [disable or reset 2FA](#disable-two-factor-authentication) for that user. Instead, the Owner should tell the enterprise user to consider available [recovery options](../profile/account/two_factor_authentication.md#recovery-options).

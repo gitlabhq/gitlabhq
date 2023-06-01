@@ -156,7 +156,10 @@ please use in your personal YAML file entry: `- reviewer database local` instead
 
 As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainers
-with [domain expertise](#domain-experts).
+with [domain expertise](#domain-experts). The optional approval of the first
+reviewer is not covered here. However, your merge request should be reviewed
+by a reviewer before passing it to a maintainer as described in the
+[overview](#getting-your-merge-request-reviewed-approved-and-merged) section.
 
 | If your merge request includes  | It must be approved by a |
 | ------------------------------- | ------------------------ |

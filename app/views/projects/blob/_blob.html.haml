@@ -10,7 +10,8 @@
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
+  - if project.licensed_feature_available?(:code_owners)
+    #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 - if project.forked?

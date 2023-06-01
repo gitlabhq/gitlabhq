@@ -29,5 +29,5 @@
 
     = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gl-link gl-display-block gl-mt-3')
 
-%a.signature-badge.gl-display-inline-block{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
+%a.signature-badge.gl-display-inline-block.gl-ml-4{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = gl_badge_tag label, variant: variant

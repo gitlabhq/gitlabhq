@@ -210,7 +210,7 @@ gem 'rack', '~> 2.2.7'
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
 group :puma do
-  gem 'puma', '~> 6.2', require: false
+  gem 'puma', '~> 6.3', require: false
   gem 'sd_notify', '~> 0.1.0', require: false
 end
 

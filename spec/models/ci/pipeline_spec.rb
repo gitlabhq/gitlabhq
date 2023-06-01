@@ -1821,14 +1821,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
         end
-
-        context 'when pipeline_trigger_merge_status feature flag is disabled' do
-          before do
-            stub_feature_flags(pipeline_trigger_merge_status: false)
-          end
-
-          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
-        end
       end
 
       context 'when pipeline has merge requests' do

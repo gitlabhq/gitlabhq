@@ -2803,7 +2803,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/bulk_imports/groups/pipelines/group_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/groups/pipelines/namespace_settings_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/groups/pipelines/subgroup_entities_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/groups/transformers/member_attributes_transformer_spec.rb'
     - 'spec/lib/bulk_imports/groups/transformers/subgroup_to_entity_transformer_spec.rb'
     - 'spec/lib/bulk_imports/network_error_spec.rb'
     - 'spec/lib/bulk_imports/pipeline/context_spec.rb'

@@ -13,8 +13,8 @@ RSpec.describe PlanLimits do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_numericality_of(:notification_limit).only_integer }
-    it { is_expected.to validate_numericality_of(:enforcement_limit).only_integer }
+    it { is_expected.to validate_numericality_of(:notification_limit).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:enforcement_limit).only_integer.is_greater_than_or_equal_to(0) }
   end
 
   describe '#exceeded?' do

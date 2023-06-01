@@ -14,6 +14,31 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
+  ignore_columns %i[
+    encrypted_tofa_access_token_expires_in
+    encrypted_tofa_access_token_expires_in_iv
+    encrypted_tofa_client_library_args
+    encrypted_tofa_client_library_args_iv
+    encrypted_tofa_client_library_class
+    encrypted_tofa_client_library_class_iv
+    encrypted_tofa_client_library_create_credentials_method
+    encrypted_tofa_client_library_create_credentials_method_iv
+    encrypted_tofa_client_library_fetch_access_token_method
+    encrypted_tofa_client_library_fetch_access_token_method_iv
+    encrypted_tofa_credentials
+    encrypted_tofa_credentials_iv
+    encrypted_tofa_host
+    encrypted_tofa_host_iv
+    encrypted_tofa_request_json_keys
+    encrypted_tofa_request_json_keys_iv
+    encrypted_tofa_request_payload
+    encrypted_tofa_request_payload_iv
+    encrypted_tofa_response_json_keys
+    encrypted_tofa_response_json_keys_iv
+    encrypted_tofa_url
+    encrypted_tofa_url_iv
+    vertex_project
+  ], remove_with: '16.2', remove_after: '2023-06-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -722,18 +747,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  # TOFA API integration settngs
-  attr_encrypted :tofa_client_library_args, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_class, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_create_credentials_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_fetch_access_token_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_host, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_request_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_request_payload, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_response_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_url, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_access_token_expires_in, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,

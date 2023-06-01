@@ -32,13 +32,13 @@ In the event of an external authentication provider outage, use the [GitLab Rail
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
 
-If you are an administrator, you might want to work in GitLab without the access that
-comes from being an administrator. While you could create a separate user account that
-doesn't have administrator access, a more secure solution is to use *Admin Mode*.
+If you're an administrator, you might want to work in GitLab without administrator access.
+You could either create a separate user account that does not have
+administrator access or use Admin Mode.
 
-With Admin Mode, your account does not have administrative access by default.
-You can continue to access groups and projects you are a member of, but to access
-administrative functionality, you must authenticate.
+With Admin Mode, your account does not have administrator access by default.
+You can continue to access groups and projects you're a member of. However, for administrative tasks,
+you must authenticate (except for [certain features](#limitations-of-admin-mode)).
 
 When Admin Mode is enabled, it applies to all administrators on the instance.
 

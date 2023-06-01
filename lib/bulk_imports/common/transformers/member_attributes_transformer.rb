@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BulkImports
-  module Groups
+  module Common
     module Transformers
       class MemberAttributesTransformer
         def transform(context, data)

@@ -4934,9 +4934,6 @@ msgstr ""
 msgid "An error occurred while loading chart data"
 msgstr ""
 
-msgid "An error occurred while loading code owners."
-msgstr ""
-
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 
@@ -10952,9 +10949,6 @@ msgstr ""
 msgid "Code owner approval is required"
 msgstr ""
 
-msgid "Code owners"
-msgstr ""
-
 msgid "Code review"
 msgstr ""
 
@@ -10971,6 +10965,24 @@ msgid "CodeIntelligence|This is the definition"
 msgstr ""
 
 msgid "CodeNavigation|No references found"
+msgstr ""
+
+msgid "CodeOwners|An error occurred while loading code owners."
+msgstr ""
+
+msgid "CodeOwners|Assign users and groups as approvers for specific file changes."
+msgstr ""
+
+msgid "CodeOwners|Code owners"
+msgstr ""
+
+msgid "CodeOwners|Hide all"
+msgstr ""
+
+msgid "CodeOwners|Learn more."
+msgstr ""
+
+msgid "CodeOwners|Show all"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
