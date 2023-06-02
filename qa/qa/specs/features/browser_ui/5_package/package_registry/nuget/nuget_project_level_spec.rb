@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage,
-product_group: :package_registry do
+    product_group: :package_registry do
     describe 'NuGet project level endpoint' do
       include Support::Helpers::MaskToken
 

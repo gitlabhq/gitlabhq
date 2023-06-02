@@ -1,30 +1,61 @@
 <script>
-import { GlBadge, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlButton,
+  GlIcon,
+  GlLink,
+  GlLoadingIcon,
+  GlModal,
+  GlModalDirective,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
+import {
+  LOAD_FAILURE,
+  POST_FAILURE,
+  DELETE_FAILURE,
+  DEFAULT,
+  BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
+} from '../constants';
+import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
+import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
+import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import getPipelineQuery from '../graphql/queries/get_pipeline_header_data.query.graphql';
 import TimeAgo from './pipelines_list/time_ago.vue';
 import { getQueryHeaders } from './graph/utils';
 
+const DELETE_MODAL_ID = 'pipeline-delete-modal';
 const POLL_INTERVAL = 10000;
 
 export default {
   name: 'PipelineDetailsHeader',
+  BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
+  pipelineCancel: 'pipelineCancel',
+  pipelineRetry: 'pipelineRetry',
   finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
     CiBadgeLink,
     ClipboardButton,
+    GlAlert,
     GlBadge,
+    GlButton,
     GlIcon,
     GlLink,
     GlLoadingIcon,
+    GlModal,
     GlSprintf,
     TimeAgo,
   },
   directives: {
+    GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
@@ -51,12 +82,34 @@ export default {
     ),
     stuckBadgeText: s__('Pipelines|stuck'),
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
+    computeCreditsTooltip: s__('Pipelines|Total amount of compute credits used for the pipeline'),
+    totalJobsTooltip: s__('Pipelines|Total number of jobs for the pipeline'),
+    retryPipelineText: __('Retry'),
+    cancelPipelineText: __('Cancel pipeline'),
+    deletePipelineText: __('Delete'),
+    clipboardTooltip: __('Copy commit SHA'),
   },
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for the pipeline header.'),
     [POST_FAILURE]: __('An error occurred while making the request.'),
     [DELETE_FAILURE]: __('An error occurred while deleting the pipeline.'),
     [DEFAULT]: __('An unknown error occurred.'),
+  },
+  modal: {
+    id: DELETE_MODAL_ID,
+    title: __('Delete pipeline'),
+    deleteConfirmationText: __(
+      'Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone.',
+    ),
+    actionPrimary: {
+      text: __('Delete pipeline'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+    },
   },
   inject: {
     graphqlResourceEtag: {
@@ -224,141 +277,306 @@ export default {
         queuedDuration: this.pipeline?.queuedDuration || 0,
       });
     },
+    canRetryPipeline() {
+      const { retryable, userPermissions } = this.pipeline;
+
+      return retryable && userPermissions.updatePipeline;
+    },
+    canCancelPipeline() {
+      const { cancelable, userPermissions } = this.pipeline;
+
+      return cancelable && userPermissions.updatePipeline;
+    },
   },
   methods: {
     reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
       this.failureMessages = errorMessages;
     },
+    async postPipelineAction(name, mutation) {
+      try {
+        const {
+          data: {
+            [name]: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation,
+          variables: { id: this.pipeline.id },
+        });
+
+        if (errors.length > 0) {
+          this.isRetrying = false;
+
+          this.reportFailure(POST_FAILURE, errors);
+        } else {
+          await this.$apollo.queries.pipeline.refetch();
+          if (!this.isFinished) {
+            this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
+          }
+        }
+      } catch {
+        this.isRetrying = false;
+
+        this.reportFailure(POST_FAILURE);
+      }
+    },
+    cancelPipeline() {
+      this.isCanceling = true;
+      this.postPipelineAction(this.$options.pipelineCancel, cancelPipelineMutation);
+    },
+    retryPipeline() {
+      this.isRetrying = true;
+      this.postPipelineAction(this.$options.pipelineRetry, retryPipelineMutation);
+    },
+    async deletePipeline() {
+      this.isDeleting = true;
+      this.$apollo.queries.pipeline.stopPolling();
+
+      try {
+        const {
+          data: {
+            pipelineDestroy: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: deletePipelineMutation,
+          variables: {
+            id: this.pipeline.id,
+          },
+        });
+
+        if (errors.length > 0) {
+          this.reportFailure(DELETE_FAILURE, errors);
+          this.isDeleting = false;
+        } else {
+          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success')); // eslint-disable-line import/no-deprecated
+        }
+      } catch {
+        this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
+        this.reportFailure(DELETE_FAILURE);
+        this.isDeleting = false;
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <div class="gl-mt-3">
+  <div class="gl-my-4">
+    <gl-alert v-if="hasError" :title="failure.text" :variant="failure.variant" :dismissible="false">
+      <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
+        {{ failureMessage }}
+      </div>
+    </gl-alert>
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
-    <template v-else>
-      <h3 v-if="name" class="gl-mt-0 gl-mb-2" data-testid="pipeline-name">{{ name }}</h3>
+    <div v-else class="gl-display-flex gl-justify-content-space-between">
       <div>
-        <ci-badge-link :status="detailedStatus" />
-        <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">
-          <gl-sprintf :message="triggeredText">
-            <template #link="{ content }">
-              <gl-link
-                :href="userPath"
-                class="gl-text-gray-900 gl-font-weight-bold"
-                target="_blank"
-              >
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-          <gl-link
-            :href="commitPath"
-            class="gl-bg-blue-50 gl-rounded-base gl-px-2 gl-mx-2"
-            data-testid="commit-link"
+        <h3 v-if="name" class="gl-mt-0 gl-mb-2" data-testid="pipeline-name">{{ name }}</h3>
+        <div>
+          <ci-badge-link :status="detailedStatus" />
+          <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">
+            <gl-sprintf :message="triggeredText">
+              <template #link="{ content }">
+                <gl-link
+                  :href="userPath"
+                  class="gl-text-gray-900 gl-font-weight-bold"
+                  target="_blank"
+                >
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+            <gl-link
+              :href="commitPath"
+              class="gl-bg-blue-50 gl-rounded-base gl-px-2 gl-mx-2"
+              data-testid="commit-link"
+            >
+              {{ shortId }}
+            </gl-link>
+            <clipboard-button
+              :text="shortId"
+              category="tertiary"
+              :title="$options.i18n.clipboardTooltip"
+              size="small"
+            />
+            <time-ago
+              v-if="isFinished"
+              :pipeline="pipeline"
+              class="gl-display-inline gl-mb-0"
+              :display-calendar-icon="false"
+              font-size="gl-font-md"
+            />
+          </div>
+        </div>
+        <div v-safe-html="refText" class="gl-mb-2" data-testid="pipeline-ref-text"></div>
+        <div>
+          <gl-badge
+            v-if="badges.schedule"
+            v-gl-tooltip
+            :title="$options.i18n.scheduleBadgeTooltip"
+            variant="info"
+            size="sm"
           >
-            {{ shortId }}
-          </gl-link>
-          <clipboard-button
-            :text="shortId"
-            category="tertiary"
-            :title="__('Copy commit SHA')"
-            size="small"
-          />
-          <time-ago
+            {{ $options.i18n.scheduleBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.child"
+            v-gl-tooltip
+            :title="$options.i18n.childBadgeTooltip"
+            variant="info"
+            size="sm"
+          >
+            <gl-sprintf :message="$options.i18n.childBadgeText">
+              <template #link="{ content }">
+                <gl-link :href="paths.triggeredByPath" target="_blank">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </gl-badge>
+          <gl-badge
+            v-if="badges.latest"
+            v-gl-tooltip
+            :title="$options.i18n.latestBadgeTooltip"
+            variant="success"
+            size="sm"
+          >
+            {{ $options.i18n.latestBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.mergeTrainPipeline"
+            v-gl-tooltip
+            :title="$options.i18n.mergeTrainBadgeTooltip"
+            variant="info"
+            size="sm"
+          >
+            {{ $options.i18n.mergeTrainBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.invalid"
+            v-gl-tooltip
+            :title="yamlErrors"
+            variant="danger"
+            size="sm"
+          >
+            {{ $options.i18n.invalidBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.failed"
+            v-gl-tooltip
+            :title="failureReason"
+            variant="danger"
+            size="sm"
+          >
+            {{ $options.i18n.failedBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.autoDevops"
+            v-gl-tooltip
+            :title="$options.i18n.autoDevopsBadgeTooltip"
+            variant="info"
+            size="sm"
+          >
+            {{ $options.i18n.autoDevopsBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.detached"
+            v-gl-tooltip
+            :title="$options.i18n.detachedBadgeTooltip"
+            variant="info"
+            size="sm"
+            data-qa-selector="merge_request_badge_tag"
+          >
+            {{ $options.i18n.detachedBadgeText }}
+          </gl-badge>
+          <gl-badge
+            v-if="badges.stuck"
+            v-gl-tooltip
+            :title="$options.i18n.stuckBadgeTooltip"
+            variant="warning"
+            size="sm"
+          >
+            {{ $options.i18n.stuckBadgeText }}
+          </gl-badge>
+          <span
+            v-gl-tooltip
+            :title="$options.i18n.totalJobsTooltip"
+            class="gl-ml-2"
+            data-testid="total-jobs"
+          >
+            <gl-icon name="pipeline" />
+            {{ totalJobsText }}
+          </span>
+          <span
             v-if="isFinished"
-            :pipeline="pipeline"
-            class="gl-display-inline gl-mb-0"
-            :display-calendar-icon="false"
-            font-size="gl-font-md"
-          />
+            v-gl-tooltip
+            :title="$options.i18n.computeCreditsTooltip"
+            class="gl-ml-2"
+            data-testid="compute-credits"
+          >
+            <gl-icon name="quota" />
+            {{ computeCredits }}
+          </span>
+          <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
+            <gl-icon name="timer" />
+            {{ inProgressText }}
+          </span>
         </div>
       </div>
-      <div v-safe-html="refText" class="gl-mb-2" data-testid="pipeline-ref-text"></div>
       <div>
-        <gl-badge
-          v-if="badges.schedule"
+        <gl-button
+          v-if="canRetryPipeline"
           v-gl-tooltip
-          :title="$options.i18n.scheduleBadgeTooltip"
-          variant="info"
+          :aria-label="$options.BUTTON_TOOLTIP_RETRY"
+          :title="$options.BUTTON_TOOLTIP_RETRY"
+          :loading="isRetrying"
+          :disabled="isRetrying"
+          variant="confirm"
+          data-testid="retry-pipeline"
+          class="js-retry-button"
+          @click="retryPipeline()"
         >
-          {{ $options.i18n.scheduleBadgeText }}
-        </gl-badge>
-        <gl-badge
-          v-if="badges.child"
+          {{ $options.i18n.retryPipelineText }}
+        </gl-button>
+
+        <gl-button
+          v-if="canCancelPipeline"
           v-gl-tooltip
-          :title="$options.i18n.childBadgeTooltip"
-          variant="info"
+          :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
+          :title="$options.BUTTON_TOOLTIP_CANCEL"
+          :loading="isCanceling"
+          :disabled="isCanceling"
+          class="gl-ml-3"
+          variant="danger"
+          data-testid="cancel-pipeline"
+          @click="cancelPipeline()"
         >
-          <gl-sprintf :message="$options.i18n.childBadgeText">
-            <template #link="{ content }">
-              <gl-link :href="paths.triggeredByPath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </gl-badge>
-        <gl-badge
-          v-if="badges.latest"
-          v-gl-tooltip
-          :title="$options.i18n.latestBadgeTooltip"
-          variant="success"
+          {{ $options.i18n.cancelPipelineText }}
+        </gl-button>
+
+        <gl-button
+          v-if="pipeline.userPermissions.destroyPipeline"
+          v-gl-modal="$options.modal.id"
+          :loading="isDeleting"
+          :disabled="isDeleting"
+          class="gl-ml-3"
+          variant="danger"
+          category="secondary"
+          data-testid="delete-pipeline"
         >
-          {{ $options.i18n.latestBadgeText }}
-        </gl-badge>
-        <gl-badge
-          v-if="badges.mergeTrainPipeline"
-          v-gl-tooltip
-          :title="$options.i18n.mergeTrainBadgeTooltip"
-          variant="info"
-        >
-          {{ $options.i18n.mergeTrainBadgeText }}
-        </gl-badge>
-        <gl-badge v-if="badges.invalid" v-gl-tooltip :title="yamlErrors" variant="danger">
-          {{ $options.i18n.invalidBadgeText }}
-        </gl-badge>
-        <gl-badge v-if="badges.failed" v-gl-tooltip :title="failureReason" variant="danger">
-          {{ $options.i18n.failedBadgeText }}
-        </gl-badge>
-        <gl-badge
-          v-if="badges.autoDevops"
-          v-gl-tooltip
-          :title="$options.i18n.autoDevopsBadgeTooltip"
-          variant="info"
-        >
-          {{ $options.i18n.autoDevopsBadgeText }}
-        </gl-badge>
-        <gl-badge
-          v-if="badges.detached"
-          v-gl-tooltip
-          :title="$options.i18n.detachedBadgeTooltip"
-          variant="info"
-          data-qa-selector="merge_request_badge_tag"
-        >
-          {{ $options.i18n.detachedBadgeText }}
-        </gl-badge>
-        <gl-badge
-          v-if="badges.stuck"
-          v-gl-tooltip
-          :title="$options.i18n.stuckBadgeTooltip"
-          variant="warning"
-        >
-          {{ $options.i18n.stuckBadgeText }}
-        </gl-badge>
-        <span class="gl-ml-2" data-testid="total-jobs">
-          <gl-icon name="pipeline" />
-          {{ totalJobsText }}
-        </span>
-        <span v-if="isFinished" class="gl-ml-2" data-testid="compute-credits">
-          <gl-icon name="quota" />
-          {{ computeCredits }}
-        </span>
-        <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
-          <gl-icon name="timer" />
-          {{ inProgressText }}
-        </span>
+          {{ $options.i18n.deletePipelineText }}
+        </gl-button>
       </div>
-    </template>
+    </div>
+    <gl-modal
+      :modal-id="$options.modal.id"
+      :title="$options.modal.title"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="deletePipeline()"
+    >
+      <p>
+        {{ $options.modal.deleteConfirmationText }}
+      </p>
+    </gl-modal>
   </div>
 </template>

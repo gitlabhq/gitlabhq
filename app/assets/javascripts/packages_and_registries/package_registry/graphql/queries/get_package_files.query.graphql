@@ -2,6 +2,9 @@ query getPackageFiles($id: PackagesPackageID!, $first: Int) {
   package(id: $id) {
     id
     packageFiles(first: $first) {
+      pageInfo {
+        hasNextPage
+      }
       nodes {
         id
         fileMd5

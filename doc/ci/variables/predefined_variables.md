@@ -35,7 +35,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_DESCRIPTION`                  | 10.8   | all    | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                      | 10.8   | all    | The full commit message. |
 | `CI_COMMIT_REF_NAME`                     | 9.0    | all    | The branch or tag name for which project is built. |
-| `CI_COMMIT_REF_PROTECTED`                | 11.11  | all    | `true` if the job is running for a protected reference. |
+| `CI_COMMIT_REF_PROTECTED`                | 11.11  | all    | `true` if the job is running for a protected reference, `false` otherwise. |
 | `CI_COMMIT_REF_SLUG`                     | 9.0    | all    | `CI_COMMIT_REF_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | `CI_COMMIT_SHA`                          | 9.0    | all    | The commit revision the project is built for. |
 | `CI_COMMIT_SHORT_SHA`                    | 11.7   | all    | The first eight characters of `CI_COMMIT_SHA`. |

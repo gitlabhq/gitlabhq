@@ -21,10 +21,7 @@ import {
   REQUEST_FORWARDING_HELP_PAGE_PATH,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   PACKAGE_TYPE_COMPOSER,
-  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
-  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-  DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
-  DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+  DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_CONAN,
@@ -32,7 +29,6 @@ import {
   PACKAGE_TYPE_NPM,
 } from '~/packages_and_registries/package_registry/constants';
 
-import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql//queries/get_package_versions.query.graphql';
 import {
@@ -41,9 +37,6 @@ import {
   packageVersions,
   dependencyLinks,
   emptyPackageDetailsQuery,
-  packageFiles,
-  packageDestroyFilesMutation,
-  packageDestroyFilesMutationError,
   defaultPackageGroupSettings,
 } from '../mock_data';
 
@@ -74,13 +67,9 @@ describe('PackagesApp', () => {
 
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
-    filesDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFilesMutation()),
     routeId = '1',
   } = {}) {
-    const requestHandlers = [
-      [getPackageDetails, resolver],
-      [destroyPackageFilesMutation, filesDeleteMutationResolver],
-    ];
+    const requestHandlers = [[getPackageDetails, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(PackagesApp, {
@@ -117,8 +106,6 @@ describe('PackagesApp', () => {
   const findDeleteModal = () => wrapper.findByTestId('delete-modal');
   const findDeleteButton = () => wrapper.findByTestId('delete-package');
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
-  const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
-  const findDeleteFilesModal = () => wrapper.findByTestId('delete-files-modal');
   const findVersionsList = () => wrapper.findComponent(PackageVersionsList);
   const findVersionsCountBadge = () => wrapper.findByTestId('other-versions-badge');
   const findNoVersionsMessage = () => wrapper.findByTestId('no-versions-message');
@@ -336,9 +323,9 @@ describe('PackagesApp', () => {
 
       expect(findPackageFiles().props()).toMatchObject({
         canDelete: packageData().canDestroy,
-        isLoading: false,
         packageId: packageData().id,
         packageType: packageData().packageType,
+        projectPath: 'gitlab-test',
       });
     });
 
@@ -356,250 +343,26 @@ describe('PackagesApp', () => {
       expect(findPackageFiles().exists()).toBe(false);
     });
 
-    describe('deleting a file', () => {
-      const [fileToDelete] = packageFiles();
-
-      const doDeleteFile = () => {
-        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
-
-        findDeleteFileModal().vm.$emit('primary');
-
-        return waitForPromises();
-      };
-
-      it('opens delete file confirmation modal', async () => {
-        createComponent();
-
-        await waitForPromises();
-
-        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
-
-        expect(showMock).toHaveBeenCalledTimes(1);
-
-        await waitForPromises();
-
-        expect(findDeleteFileModal().text()).toBe(
-          'You are about to delete foo-1.0.1.tgz. This is a destructive action that may render your package unusable. Are you sure?',
-        );
-      });
-
-      it('when its the only file opens delete package confirmation modal', async () => {
-        const [packageFile] = packageFiles();
+    describe('emits delete-all-files event', () => {
+      it('opens the delete package confirmation modal and shows confirmation text', async () => {
         const resolver = jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            extendPackage: {
-              packageFiles: {
-                pageInfo: {
-                  hasNextPage: false,
-                },
-                nodes: [packageFile],
-                __typename: 'PackageFileConnection',
-              },
-            },
+            extendPackage: {},
             packageSettings: {
               ...defaultPackageGroupSettings,
               npmPackageRequestsForwarding: false,
             },
           }),
         );
-
-        createComponent({
-          resolver,
-        });
-
-        await waitForPromises();
-
-        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
-
-        expect(showMock).toHaveBeenCalledTimes(1);
-
-        await waitForPromises();
-
-        expect(findDeleteModal().text()).toBe(
-          'Deleting the last package asset will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',
-        );
-      });
-
-      it('confirming on the modal sets the loading state', async () => {
-        createComponent();
-
-        await waitForPromises();
-
-        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
-
-        findDeleteFileModal().vm.$emit('primary');
-
-        await nextTick();
-
-        expect(findPackageFiles().props('isLoading')).toEqual(true);
-      });
-
-      it('confirming on the modal deletes the file and shows a success message', async () => {
-        const resolver = jest.fn().mockResolvedValue(packageDetailsQuery());
         createComponent({ resolver });
 
         await waitForPromises();
 
-        await doDeleteFile();
-
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
-          }),
-        );
-        // we are re-fetching the package details, so we expect the resolver to have been called twice
-        expect(resolver).toHaveBeenCalledTimes(2);
-      });
-
-      describe('errors', () => {
-        it('shows an error when the mutation request fails', async () => {
-          createComponent({ filesDeleteMutationResolver: jest.fn().mockRejectedValue() });
-          await waitForPromises();
-
-          await doDeleteFile();
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-            }),
-          );
-        });
-
-        it('shows an error when the mutation request returns an error payload', async () => {
-          createComponent({
-            filesDeleteMutationResolver: jest
-              .fn()
-              .mockResolvedValue(packageDestroyFilesMutationError()),
-          });
-          await waitForPromises();
-
-          await doDeleteFile();
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-            }),
-          );
-        });
-      });
-    });
-
-    describe('deleting multiple files', () => {
-      const doDeleteFiles = () => {
-        findPackageFiles().vm.$emit('delete-files', packageFiles());
-
-        findDeleteFilesModal().vm.$emit('primary');
-
-        return waitForPromises();
-      };
-
-      it('opens delete files confirmation modal', async () => {
-        createComponent();
-
-        await waitForPromises();
-
-        const showDeleteFilesSpy = jest.spyOn(wrapper.vm.$refs.deleteFilesModal, 'show');
-
-        findPackageFiles().vm.$emit('delete-files', packageFiles());
-
-        expect(showDeleteFilesSpy).toHaveBeenCalled();
-      });
-
-      it('confirming on the modal sets the loading state', async () => {
-        createComponent();
-
-        await waitForPromises();
-
-        findPackageFiles().vm.$emit('delete-files', packageFiles());
-
-        findDeleteFilesModal().vm.$emit('primary');
-
-        await nextTick();
-
-        expect(findPackageFiles().props('isLoading')).toEqual(true);
-      });
-
-      it('confirming on the modal deletes the file and shows a success message', async () => {
-        const resolver = jest.fn().mockResolvedValue(packageDetailsQuery());
-        createComponent({ resolver });
-
-        await waitForPromises();
-
-        await doDeleteFiles();
-
-        expect(resolver).toHaveBeenCalledTimes(2);
-
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
-          }),
-        );
-        // we are re-fetching the package details, so we expect the resolver to have been called twice
-        expect(resolver).toHaveBeenCalledTimes(2);
-      });
-
-      describe('errors', () => {
-        it('shows an error when the mutation request fails', async () => {
-          createComponent({ filesDeleteMutationResolver: jest.fn().mockRejectedValue() });
-          await waitForPromises();
-
-          await doDeleteFiles();
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
-            }),
-          );
-        });
-
-        it('shows an error when the mutation request returns an error payload', async () => {
-          createComponent({
-            filesDeleteMutationResolver: jest
-              .fn()
-              .mockResolvedValue(packageDestroyFilesMutationError()),
-          });
-          await waitForPromises();
-
-          await doDeleteFiles();
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
-            }),
-          );
-        });
-      });
-    });
-
-    describe('deleting all files', () => {
-      it('opens the delete package confirmation modal', async () => {
-        const resolver = jest.fn().mockResolvedValue(
-          packageDetailsQuery({
-            extendPackage: {
-              packageFiles: {
-                pageInfo: {
-                  hasNextPage: false,
-                },
-                nodes: packageFiles(),
-              },
-            },
-            packageSettings: {
-              ...defaultPackageGroupSettings,
-              npmPackageRequestsForwarding: false,
-            },
-          }),
-        );
-        createComponent({
-          resolver,
-        });
-
-        await waitForPromises();
-
-        findPackageFiles().vm.$emit('delete-files', packageFiles());
+        findPackageFiles().vm.$emit('delete-all-files', DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT);
 
         expect(showMock).toHaveBeenCalledTimes(1);
 
-        await waitForPromises();
+        await nextTick();
 
         expect(findDeleteModal().text()).toBe(
           'Deleting all package assets will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',

@@ -41,7 +41,7 @@ export default {
     viewType: {
       type: String,
       required: false,
-      default: 'child',
+      default: 'root',
     },
     canCreatePipelineInTargetProject: {
       type: Boolean,

@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    refType: {
+      type: String,
+      required: true,
+    },
     containingRefs: {
       type: Array,
       required: false,
@@ -60,6 +64,9 @@ export default {
       this.toggleCollapse();
       this.$emit(FETCH_CONTAINING_REFS_EVENT);
     },
+    getRefUrl(ref) {
+      return `${this.urlPart}${ref}?ref_type=${this.refType}`;
+    },
   },
   i18n: {
     containingCommit: CONTAINING_COMMIT,
@@ -73,7 +80,7 @@ export default {
     <gl-badge
       v-for="ref in tippingRefs"
       :key="ref"
-      :href="`${urlPart}${ref}`"
+      :href="getRefUrl(ref)"
       class="gl-mt-2 gl-mr-2"
       size="sm"
       >{{ ref }}</gl-badge
@@ -94,7 +101,7 @@ export default {
         <gl-badge
           v-for="ref in containingRefs"
           :key="ref"
-          :href="`${urlPart}${ref}`"
+          :href="getRefUrl(ref)"
           class="gl-mt-3 gl-mr-2"
           size="sm"
           >{{ ref }}</gl-badge

@@ -9,6 +9,8 @@ import {
   TAGS,
   FETCH_CONTAINING_REFS_EVENT,
   FETCH_COMMIT_REFERENCES_ERROR,
+  BRANCHES_REF_TYPE,
+  TAGS_REF_TYPE,
 } from '../constants';
 import RefsList from './refs_list.vue';
 
@@ -98,7 +100,9 @@ export default {
     tags: TAGS,
     errorMessage: FETCH_COMMIT_REFERENCES_ERROR,
   },
-  fetchContainingRefsEvent: FETCH_CONTAINING_REFS_EVENT,
+  FETCH_CONTAINING_REFS_EVENT,
+  BRANCHES_REF_TYPE,
+  TAGS_REF_TYPE,
 };
 </script>
 
@@ -112,7 +116,8 @@ export default {
       :containing-refs="containingBranches"
       :namespace="$options.i18n.branches"
       :url-part="commitsUrlPart"
-      @[$options.fetchContainingRefsEvent]="fetchContainingBranches"
+      :ref-type="$options.BRANCHES_REF_TYPE"
+      @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingBranches"
     />
     <refs-list
       v-if="hasTags"
@@ -122,7 +127,8 @@ export default {
       :containing-refs="containingTags"
       :namespace="$options.i18n.tags"
       :url-part="commitsUrlPart"
-      @[$options.fetchContainingRefsEvent]="fetchContainingTags"
+      :ref-type="$options.TAGS_REF_TYPE"
+      @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingTags"
     />
   </div>
 </template>

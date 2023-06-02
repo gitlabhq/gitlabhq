@@ -42,7 +42,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         wait_for_requests
 
         page.within('[data-testid="pipeline-table-row"]') do
-          expect(page).to have_selector('.ci-success')
+          expect(page).to have_selector('[data-testid="ci-badge-passed"]')
           expect(page).to have_content(pipeline.id)
           expect(page).to have_content('API')
           expect(page).to have_css('[data-testid="pipeline-mini-graph"]')

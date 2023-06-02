@@ -13,8 +13,8 @@ If you're learning about GitLab, to find more tutorial content:
 
 - Find recent tutorials on the GitLab blog by [searching by the `tutorial` tag](https://about.gitlab.com/blog/tags.html#tutorial).
 
-- Browse the **Learn@GitLab** [playlist on YouTube](https://www.youtube.com/playlist?list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+- Browse the **GitLab Snapshots** [playlist on YouTube](https://www.youtube.com/playlist?list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
   to find video tutorials.
 
 If you find an article, video, or other resource that would be a
-great addition to this page, add it in a [merge request](../development/documentation/index.md).
+great addition to the tutorial pages, add it in a [merge request](../development/documentation/index.md).

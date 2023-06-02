@@ -12761,8 +12761,7 @@ CREATE TABLE broadcast_messages (
     broadcast_type smallint DEFAULT 1 NOT NULL,
     dismissable boolean,
     target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL,
-    theme smallint DEFAULT 0 NOT NULL,
-    namespace_id bigint
+    theme smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE broadcast_messages_id_seq
@@ -29975,8 +29974,6 @@ CREATE INDEX index_boards_on_milestone_id ON boards USING btree (milestone_id);
 CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
-
-CREATE INDEX index_broadcast_messages_on_namespace_id ON broadcast_messages USING btree (namespace_id);
 
 CREATE INDEX index_btree_namespaces_traversal_ids ON namespaces USING btree (traversal_ids);
 

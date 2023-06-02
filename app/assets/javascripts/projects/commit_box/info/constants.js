@@ -17,3 +17,7 @@ export const FETCH_CONTAINING_REFS_EVENT = 'fetch-containing-refs';
 export const FETCH_COMMIT_REFERENCES_ERROR = s__(
   'Commit|There was an error fetching the commit references. Please try again later.',
 );
+
+export const BRANCHES_REF_TYPE = 'heads';
+
+export const TAGS_REF_TYPE = 'tags';

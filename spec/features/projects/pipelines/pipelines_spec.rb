@@ -120,7 +120,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
         it 'indicates that pipeline can be canceled' do
           expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('.ci-running')
+          expect(page).to have_selector('[data-testid="ci-badge-running"]')
         end
 
         context 'when canceling' do
@@ -132,7 +132,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
           it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('.ci-canceled')
+            expect(page).to have_selector('[data-testid="ci-badge-canceled"]')
           end
         end
       end
@@ -150,7 +150,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
         it 'indicates that pipeline can be retried' do
           expect(page).to have_selector('.js-pipelines-retry-button')
-          expect(page).to have_selector('.ci-failed')
+          expect(page).to have_selector('[data-testid="ci-badge-failed"]')
         end
 
         context 'when retrying' do
@@ -161,7 +161,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
           it 'shows running pipeline that is not retryable' do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
-            expect(page).to have_selector('.ci-running')
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
       end
@@ -400,7 +400,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
           end
 
           it 'shows the pipeline as preparing' do
-            expect(page).to have_selector('.ci-preparing')
+            expect(page).to have_selector('[data-testid="ci-badge-preparing"]')
           end
         end
 
@@ -421,7 +421,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
           end
 
           it 'has pipeline running' do
-            expect(page).to have_selector('.ci-running')
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
 
           context 'when canceling' do
@@ -432,7 +432,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
-              expect(page).to have_selector('.ci-canceled')
+              expect(page).to have_selector('[data-testid="ci-badge-canceled"]')
             end
           end
         end
@@ -454,7 +454,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
           end
 
           it 'has failed pipeline', :sidekiq_might_not_need_inline do
-            expect(page).to have_selector('.ci-failed')
+            expect(page).to have_selector('[data-testid="ci-badge-failed"]')
           end
         end
       end

@@ -74,66 +74,10 @@ export default {
 <template>
   <div>
     <h2 class="gl-font-size-h2 gl-my-5">
-      {{ s__('Runners|Details') }}
-      {{ __('(optional)') }}
+      {{ s__('Runners|Tags') }}
     </h2>
-
-    <gl-skeleton-loader v-if="loading" :lines="9" />
+    <gl-skeleton-loader v-if="loading" :lines="12" />
     <template v-else-if="model">
-      <gl-form-group :label="s__('Runners|Runner description')" label-for="runner-description">
-        <gl-form-input id="runner-description" v-model="model.description" name="description" />
-      </gl-form-group>
-      <runner-maintenance-note-field v-model="model.maintenanceNote" class="gl-mt-5" />
-    </template>
-
-    <hr aria-hidden="true" />
-
-    <h2 class="gl-font-size-h2 gl-my-5">
-      {{ s__('Runners|Configuration') }}
-      {{ __('(optional)') }}
-    </h2>
-
-    <gl-skeleton-loader v-if="loading" :lines="27" />
-    <template v-else-if="model">
-      <div class="gl-mb-5">
-        <gl-form-checkbox v-model="model.paused" name="paused">
-          {{ __('Paused') }}
-          <template #help>
-            {{ s__('Runners|Stop the runner from accepting new jobs.') }}
-          </template>
-        </gl-form-checkbox>
-
-        <gl-form-checkbox
-          v-model="model.accessLevel"
-          name="protected"
-          :value="$options.ACCESS_LEVEL_REF_PROTECTED"
-          :unchecked-value="$options.ACCESS_LEVEL_NOT_PROTECTED"
-        >
-          {{ __('Protected') }}
-          <template #help>
-            {{ s__('Runners|Use the runner on pipelines for protected branches only.') }}
-          </template>
-        </gl-form-checkbox>
-
-        <gl-form-checkbox v-model="model.runUntagged" name="run-untagged">
-          {{ __('Run untagged jobs') }}
-          <template #help>
-            {{ s__('Runners|Use the runner for jobs without tags in addition to tagged jobs.') }}
-          </template>
-        </gl-form-checkbox>
-
-        <gl-form-checkbox v-if="canBeLockedToProject" v-model="model.locked" name="locked">
-          {{ __('Lock to current projects') }} <gl-icon name="lock" />
-          <template #help>
-            {{
-              s__(
-                'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
-              )
-            }}
-          </template>
-        </gl-form-checkbox>
-      </div>
-
       <gl-form-group :label="__('Tags')" label-for="runner-tags">
         <template #description>
           <gl-sprintf
@@ -164,6 +108,69 @@ export default {
         </template>
         <gl-form-input id="runner-tags" v-model="model.tagList" name="tags" />
       </gl-form-group>
+      <gl-form-checkbox v-model="model.runUntagged" name="run-untagged">
+        {{ __('Run untagged jobs') }}
+        <template #help>
+          {{ s__('Runners|Use the runner for jobs without tags in addition to tagged jobs.') }}
+        </template>
+      </gl-form-checkbox>
+    </template>
+
+    <hr aria-hidden="true" />
+
+    <h2 class="gl-font-size-h2 gl-my-5">
+      {{ s__('Runners|Details') }}
+      {{ __('(optional)') }}
+    </h2>
+
+    <gl-skeleton-loader v-if="loading" :lines="15" />
+    <template v-else-if="model">
+      <gl-form-group :label="s__('Runners|Runner description')" label-for="runner-description">
+        <gl-form-input id="runner-description" v-model="model.description" name="description" />
+      </gl-form-group>
+      <runner-maintenance-note-field v-model="model.maintenanceNote" class="gl-mt-5" />
+    </template>
+
+    <hr aria-hidden="true" />
+
+    <h2 class="gl-font-size-h2 gl-my-5">
+      {{ s__('Runners|Configuration') }}
+      {{ __('(optional)') }}
+    </h2>
+
+    <gl-skeleton-loader v-if="loading" :lines="15" />
+    <template v-else-if="model">
+      <div class="gl-mb-5">
+        <gl-form-checkbox v-model="model.paused" name="paused">
+          {{ __('Paused') }}
+          <template #help>
+            {{ s__('Runners|Stop the runner from accepting new jobs.') }}
+          </template>
+        </gl-form-checkbox>
+
+        <gl-form-checkbox
+          v-model="model.accessLevel"
+          name="protected"
+          :value="$options.ACCESS_LEVEL_REF_PROTECTED"
+          :unchecked-value="$options.ACCESS_LEVEL_NOT_PROTECTED"
+        >
+          {{ __('Protected') }}
+          <template #help>
+            {{ s__('Runners|Use the runner on pipelines for protected branches only.') }}
+          </template>
+        </gl-form-checkbox>
+
+        <gl-form-checkbox v-if="canBeLockedToProject" v-model="model.locked" name="locked">
+          {{ __('Lock to current projects') }} <gl-icon name="lock" />
+          <template #help>
+            {{
+              s__(
+                'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
+              )
+            }}
+          </template>
+        </gl-form-checkbox>
+      </div>
 
       <gl-form-group
         :label="__('Maximum job timeout')"

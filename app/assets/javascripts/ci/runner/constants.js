@@ -102,6 +102,26 @@ export const I18N_CREATED_AT_BY_LABEL = s__('Runners|Created %{timeAgo} by %{ava
 export const I18N_SHOW_ONLY_INHERITED = s__('Runners|Show only inherited');
 export const I18N_ADMIN = s__('Runners|Administrator');
 
+// No runners registered
+export const I18N_GET_STARTED = s__('Runners|Get started with runners');
+export const I18N_RUNNERS_ARE_AGENTS = s__(
+  'Runners|Runners are the agents that run your CI/CD jobs.',
+);
+export const I18N_CREATE_RUNNER_LINK = s__(
+  'Runners|%{linkStart}Create a new runner%{linkEnd} to get started.',
+);
+export const I18N_STILL_USING_REGISTRATION_TOKENS = s__('Runners|Still using registration tokens?');
+export const I18N_CONTACT_ADMIN_TO_REGISTER = s__(
+  'Runners|To register new runners, contact your administrator.',
+);
+export const I18N_FOLLOW_REGISTRATION_INSTRUCTIONS = s__(
+  'Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
+);
+
+// No runners found
+export const I18N_NO_RESULTS = s__('Runners|No results found');
+export const I18N_EDIT_YOUR_SEARCH = s__('Runners|Edit your search and try again');
+
 // Runner details
 
 export const JOBS_ROUTE_PATH = '/jobs'; // vue-router route path

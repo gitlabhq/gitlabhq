@@ -308,7 +308,7 @@ export default {
       <gl-search-box-by-type
         ref="search"
         :value="search"
-        class="js-dropdown-input-field"
+        data-testid="user-search-input"
         @input="debouncedSearchKeyUpdate"
       />
     </template>

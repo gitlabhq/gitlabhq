@@ -1,4 +1,4 @@
-import { sortBy, cloneDeep, find } from 'lodash';
+import { sortBy, cloneDeep, find, inRange } from 'lodash';
 import {
   TYPENAME_BOARD,
   TYPENAME_ITERATION,
@@ -12,7 +12,7 @@ import {
   AssigneeFilterType,
   MilestoneFilterType,
   boardQuery,
-} from './constants';
+} from 'ee_else_ce/boards/constants';
 
 export function getMilestone() {
   return null;
@@ -28,6 +28,17 @@ export function updateListPosition(listObj) {
   }
 
   return { ...listObj, position };
+}
+
+export function calculateNewPosition(listPosition, initialPosition, targetPosition) {
+  if (
+    listPosition === null ||
+    !(inRange(listPosition, initialPosition, targetPosition) || listPosition === targetPosition)
+  ) {
+    return listPosition;
+  }
+  const offset = initialPosition < targetPosition ? -1 : 1;
+  return listPosition + offset;
 }
 
 export function formatBoardLists(lists) {

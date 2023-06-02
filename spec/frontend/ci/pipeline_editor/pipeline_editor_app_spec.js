@@ -1,5 +1,6 @@
+import Vue from 'vue';
 import { GlAlert, GlButton, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -53,9 +54,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
-
 const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
@@ -74,24 +72,10 @@ describe('Pipeline editor app component', () => {
   let mockLatestCommitShaQuery;
   let mockPipelineQuery;
 
-  const createComponent = ({
-    blobLoading = false,
-    options = {},
-    provide = {},
-    stubs = {},
-  } = {}) => {
+  const createComponent = ({ options = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
       provide: { ...defaultProvide, ...provide },
       stubs,
-      mocks: {
-        $apollo: {
-          queries: {
-            initialCiFileContent: {
-              loading: blobLoading,
-            },
-          },
-        },
-      },
       ...options,
     });
   };
@@ -101,6 +85,8 @@ describe('Pipeline editor app component', () => {
     stubs = {},
     withUndefinedBranch = false,
   } = {}) => {
+    Vue.use(VueApollo);
+
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
@@ -137,7 +123,6 @@ describe('Pipeline editor app component', () => {
     });
 
     const options = {
-      localVue,
       mocks: {},
       apolloProvider: mockApollo,
     };
@@ -164,7 +149,7 @@ describe('Pipeline editor app component', () => {
 
   describe('loading state', () => {
     it('displays a loading icon if the blob query is loading', () => {
-      createComponent({ blobLoading: true });
+      createComponentWithApollo();
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findEditorHome().exists()).toBe(false);
@@ -246,10 +231,6 @@ describe('Pipeline editor app component', () => {
     describe('when file exists', () => {
       beforeEach(async () => {
         await createComponentWithApollo();
-
-        jest
-          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
-          .mockImplementation(jest.fn());
       });
 
       it('shows pipeline editor home component', () => {
@@ -268,8 +249,8 @@ describe('Pipeline editor app component', () => {
         });
       });
 
-      it('does not poll for the commit sha', () => {
-        expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(0);
+      it('calls once and does not  start poll for the commit sha', () => {
+        expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -281,10 +262,6 @@ describe('Pipeline editor app component', () => {
             PipelineEditorEmptyState,
           },
         });
-
-        jest
-          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
-          .mockImplementation(jest.fn());
       });
 
       it('shows an empty state and does not show editor home component', () => {
@@ -293,8 +270,8 @@ describe('Pipeline editor app component', () => {
         expect(findEditorHome().exists()).toBe(false);
       });
 
-      it('does not poll for the commit sha', () => {
-        expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(0);
+      it('calls once and does not  start poll for the commit sha', () => {
+        expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
       });
 
       describe('because of a fetching error', () => {
@@ -381,38 +358,27 @@ describe('Pipeline editor app component', () => {
         });
 
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
-          jest
-            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
-            .mockImplementation(jest.fn());
-
-          // simulate a commit to the current branch
           findEditorHome().vm.$emit('updateCommitSha');
           await waitForPromises();
 
-          expect(wrapper.vm.$apollo.queries.commitSha.startPolling).toHaveBeenCalledTimes(1);
+          expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
         });
 
         it('stops polling for commit sha when pipeline data is available for newly committed branch', async () => {
-          jest
-            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'stopPolling')
-            .mockImplementation(jest.fn());
-
           mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
-          await wrapper.vm.$apollo.queries.commitSha.refetch();
+          await waitForPromises();
 
-          expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
+          await findEditorHome().vm.$emit('updateCommitSha');
+
+          expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
         });
 
         it('stops polling for commit sha when pipeline data is available for current branch', async () => {
-          jest
-            .spyOn(wrapper.vm.$apollo.queries.commitSha, 'stopPolling')
-            .mockImplementation(jest.fn());
-
           mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
           findEditorHome().vm.$emit('updateCommitSha');
           await waitForPromises();
 
-          expect(wrapper.vm.$apollo.queries.commitSha.stopPolling).toHaveBeenCalledTimes(1);
+          expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
         });
       });
 
@@ -497,15 +463,12 @@ describe('Pipeline editor app component', () => {
 
     it('refetches blob content', async () => {
       await createComponentWithApollo();
-      jest
-        .spyOn(wrapper.vm.$apollo.queries.initialCiFileContent, 'refetch')
-        .mockImplementation(jest.fn());
 
-      expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(0);
+      expect(mockBlobContentData).toHaveBeenCalledTimes(1);
 
-      await wrapper.vm.refetchContent();
+      findEditorHome().vm.$emit('refetchContent');
 
-      expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(1);
+      expect(mockBlobContentData).toHaveBeenCalledTimes(2);
     });
 
     it('hides start screen when refetch fetches CI file', async () => {
@@ -516,7 +479,8 @@ describe('Pipeline editor app component', () => {
       expect(findEditorHome().exists()).toBe(false);
 
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await wrapper.vm.$apollo.queries.initialCiFileContent.refetch();
+      findEmptyState().vm.$emit('refetchContent');
+      await waitForPromises();
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findEditorHome().exists()).toBe(true);
@@ -573,10 +537,6 @@ describe('Pipeline editor app component', () => {
         mockGetTemplate.mockResolvedValue(mockCiTemplateQueryResponse);
 
         await createComponentWithApollo();
-
-        jest
-          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
-          .mockImplementation(jest.fn());
       });
 
       it('skips empty state and shows editor home component', () => {

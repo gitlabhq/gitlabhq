@@ -11,7 +11,7 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
+import { createAlert } from '~/alert';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -33,27 +33,15 @@ import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
-  DELETE_PACKAGE_FILE_TRACKING_ACTION,
-  DELETE_PACKAGE_FILES_TRACKING_ACTION,
-  REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   REQUEST_FORWARDING_HELP_PAGE_PATH,
-  CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
-  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
-  DELETE_PACKAGE_FILES_ERROR_MESSAGE,
-  DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
   DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT,
-  DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   DELETE_MODAL_TITLE,
   DELETE_MODAL_CONTENT,
-  DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
-  DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
   GRAPHQL_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
 
-import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_versions.query.graphql';
 import Tracking from '~/tracking';
@@ -92,10 +80,6 @@ export default {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
     CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
-    DELETE_PACKAGE_FILE_TRACKING_ACTION,
-    REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
-    CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
-    DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   },
   data() {
     return {
@@ -158,9 +142,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
-    packageFilesMutationLoading() {
-      return this.mutationLoading;
-    },
     isValidPackage() {
       return this.isLoading || Boolean(this.packageEntity.name);
     },
@@ -196,14 +177,6 @@ export default {
         PACKAGE_TYPE_PYPI,
       ].includes(this.packageType);
     },
-    refetchQueriesData() {
-      return [
-        {
-          query: getPackageDetails,
-          variables: this.queryVariables,
-        },
-      ];
-    },
     refetchVersionsQueryData() {
       return [
         {
@@ -230,71 +203,9 @@ export default {
 
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
-    async deletePackageFiles(ids) {
-      this.mutationLoading = true;
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: destroyPackageFilesMutation,
-          variables: {
-            projectPath: this.projectPath,
-            ids,
-          },
-          awaitRefetchQueries: true,
-          refetchQueries: this.refetchQueriesData,
-        });
-        if (data?.destroyPackageFiles?.errors[0]) {
-          throw data.destroyPackageFiles.errors[0];
-        }
-        createAlert({
-          message: this.isLastItem(ids)
-            ? DELETE_PACKAGE_FILE_SUCCESS_MESSAGE
-            : DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
-          variant: VARIANT_SUCCESS,
-        });
-      } catch (error) {
-        createAlert({
-          message: this.isLastItem(ids)
-            ? DELETE_PACKAGE_FILE_ERROR_MESSAGE
-            : DELETE_PACKAGE_FILES_ERROR_MESSAGE,
-          variant: VARIANT_WARNING,
-          captureError: true,
-          error,
-        });
-      }
-      this.mutationLoading = false;
-    },
-    handleFileDelete(files) {
-      this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      if (
-        files.length === this.packageFiles.length &&
-        !this.packageEntity.packageFiles?.pageInfo?.hasNextPage
-      ) {
-        if (this.isLastItem(files)) {
-          this.deletePackageModalContent = DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT;
-        } else {
-          this.deletePackageModalContent = DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT;
-        }
-        this.$refs.deleteModal.show();
-      } else {
-        this.filesToDelete = files;
-        if (this.isLastItem(files)) {
-          this.$refs.deleteFileModal.show();
-        } else if (files.length > 1) {
-          this.$refs.deleteFilesModal.show();
-        }
-      }
-    },
-    isLastItem(items) {
-      return items.length === 1;
-    },
-    confirmFilesDelete() {
-      if (this.isLastItem(this.filesToDelete)) {
-        this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      } else {
-        this.track(DELETE_PACKAGE_FILES_TRACKING_ACTION);
-      }
-      this.deletePackageFiles(this.filesToDelete.map((file) => file.id));
-      this.filesToDelete = [];
+    handleAllFilesDelete(content) {
+      this.deletePackageModalContent = content;
+      this.$refs.deleteModal.show();
     },
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
@@ -302,10 +213,6 @@ export default {
   },
   i18n: {
     DELETE_MODAL_TITLE,
-    deleteFileModalTitle: s__(`PackageRegistry|Delete package asset`),
-    deleteFileModalContent: s__(
-      `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
-    ),
     otherVersionsTabTitle: s__('PackageRegistry|Other versions'),
   },
   links: {
@@ -374,11 +281,10 @@ export default {
           <package-files
             v-if="showFiles"
             :can-delete="packageEntity.canDestroy"
-            :is-loading="packageFilesMutationLoading"
             :package-id="packageEntity.id"
             :package-type="packageType"
-            @download-file="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
-            @delete-files="handleFileDelete"
+            :project-path="projectPath"
+            @delete-all-files="handleAllFilesDelete"
           />
         </div>
       </gl-tab>
@@ -471,51 +377,5 @@ export default {
         </gl-modal>
       </template>
     </delete-packages>
-
-    <gl-modal
-      ref="deleteFileModal"
-      size="sm"
-      modal-id="delete-file-modal"
-      :action-primary="$options.modal.fileDeletePrimaryAction"
-      :action-cancel="$options.modal.cancelAction"
-      data-testid="delete-file-modal"
-      @primary="confirmFilesDelete"
-      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
-    >
-      <template #modal-title>{{ $options.i18n.deleteFileModalTitle }}</template>
-      <gl-sprintf v-if="isLastItem(filesToDelete)" :message="$options.i18n.deleteFileModalContent">
-        <template #filename>
-          <strong>{{ filesToDelete[0].fileName }}</strong>
-        </template>
-      </gl-sprintf>
-    </gl-modal>
-
-    <gl-modal
-      ref="deleteFilesModal"
-      size="sm"
-      modal-id="delete-files-modal"
-      :action-primary="$options.modal.filesDeletePrimaryAction"
-      :action-cancel="$options.modal.cancelAction"
-      data-testid="delete-files-modal"
-      @primary="confirmFilesDelete"
-      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
-    >
-      <template #modal-title>{{
-        n__(
-          `PackageRegistry|Delete 1 asset`,
-          `PackageRegistry|Delete %d assets`,
-          filesToDelete.length,
-        )
-      }}</template>
-      <span v-if="filesToDelete.length > 0">
-        {{
-          n__(
-            `PackageRegistry|You are about to delete 1 asset. This operation is irreversible.`,
-            `PackageRegistry|You are about to delete %d assets. This operation is irreversible.`,
-            filesToDelete.length,
-          )
-        }}
-      </span>
-    </gl-modal>
   </div>
 </template>

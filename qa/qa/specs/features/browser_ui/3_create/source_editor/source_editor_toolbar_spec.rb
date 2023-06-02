@@ -17,7 +17,7 @@ module QA
       end
 
       it 'can preview markdown side-by-side while editing',
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749' do
         project.visit!
         Page::Project::Show.perform do |project|
           project.click_file('README.md')

@@ -61,7 +61,7 @@ describe('Commit references component', () => {
   it('renders links to refs', () => {
     const index = 0;
     const refBadge = findTippingRefs().at(index);
-    const refUrl = `${refsListPropsMock.urlPart}${refsListPropsMock.tippingRefs[index]}`;
+    const refUrl = `${refsListPropsMock.urlPart}${refsListPropsMock.tippingRefs[index]}?ref_type=${refsListPropsMock.refType}`;
     expect(refBadge.attributes('href')).toBe(refUrl);
   });
 

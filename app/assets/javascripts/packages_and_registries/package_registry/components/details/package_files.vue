@@ -8,8 +8,10 @@ import {
   GlButton,
   GlFormCheckbox,
   GlLoadingIcon,
+  GlModal,
+  GlSprintf,
 } from '@gitlab/ui';
-import { last } from 'lodash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, s__ } from '~/locale';
 import FileSha from '~/packages_and_registries/package_registry/components/details/file_sha.vue';
@@ -22,10 +24,22 @@ import {
   GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
   REQUEST_DELETE_SELECTED_PACKAGE_FILE_TRACKING_ACTION,
   SELECT_PACKAGE_FILE_TRACKING_ACTION,
+  DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   TRACKING_LABEL_PACKAGE_ASSET,
   TRACKING_ACTION_EXPAND_PACKAGE_ASSET,
+  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+  DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+  DELETE_PACKAGE_FILES_TRACKING_ACTION,
+  DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
+  DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackageFilesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
+import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 
 export default {
   name: 'PackageFiles',
@@ -38,18 +52,21 @@ export default {
     GlFormCheckbox,
     GlButton,
     GlLoadingIcon,
+    GlModal,
+    GlSprintf,
     FileIcon,
     TimeAgoTooltip,
     FileSha,
   },
   mixins: [Tracking.mixin()],
+  trackingActions: {
+    DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
+  },
   props: {
     canDelete: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -59,6 +76,10 @@ export default {
       required: true,
     },
     packageType: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
       type: String,
       required: true,
     },
@@ -73,7 +94,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.package?.packageFiles?.nodes || [];
+        return data.package?.packageFiles ?? {};
       },
       error() {
         this.fetchPackageFilesError = true;
@@ -83,29 +104,33 @@ export default {
   data() {
     return {
       fetchPackageFilesError: false,
-      packageFiles: [],
+      filesToDelete: [],
+      packageFiles: {},
+      mutationLoading: false,
       selectedReferences: [],
     };
   },
   computed: {
+    files() {
+      return this.packageFiles?.nodes ?? [];
+    },
     areFilesSelected() {
       return this.selectedReferences.length > 0;
     },
     areAllFilesSelected() {
-      return this.packageFiles.length > 0 && this.packageFiles.every(this.isSelected);
+      return this.files.length > 0 && this.files.every(this.isSelected);
     },
     filesTableRows() {
-      return this.packageFiles.map((pf) => ({
+      return this.files.map((pf) => ({
         ...pf,
         size: this.formatSize(pf.size),
-        pipeline: last(pf.pipelines),
       }));
     },
     hasSelectedSomeFiles() {
       return this.areFilesSelected && !this.areAllFilesSelected;
     },
-    loading() {
-      return this.$apollo.queries.packageFiles.loading || this.isLoading;
+    isLoading() {
+      return this.$apollo.queries.packageFiles.loading || this.mutationLoading;
     },
     filesTableHeaderFields() {
       return [
@@ -148,6 +173,29 @@ export default {
         category: packageTypeToTrackCategory(this.packageType),
       };
     },
+    refetchQueriesData() {
+      return [
+        {
+          query: getPackageFilesQuery,
+          variables: this.queryVariables,
+        },
+      ];
+    },
+    modalAction() {
+      return this.hasOneItem(this.filesToDelete)
+        ? this.$options.modal.fileDeletePrimaryAction
+        : this.$options.modal.filesDeletePrimaryAction;
+    },
+    modalTitle() {
+      return this.hasOneItem(this.filesToDelete)
+        ? this.$options.i18n.deleteFileModalTitle
+        : this.$options.i18n.deleteFilesModalTitle;
+    },
+    modalDescription() {
+      return this.hasOneItem(this.filesToDelete)
+        ? this.$options.i18n.deleteFileModalContent
+        : this.$options.i18n.deleteFilesModalContent;
+    },
   },
   methods: {
     formatSize(size) {
@@ -170,14 +218,96 @@ export default {
     },
     handleFileDeleteSelected() {
       this.track(REQUEST_DELETE_SELECTED_PACKAGE_FILE_TRACKING_ACTION);
-      this.$emit('delete-files', this.selectedReferences);
+      this.handleFileDelete(this.selectedReferences);
+    },
+    async deletePackageFiles(ids) {
+      this.mutationLoading = true;
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: destroyPackageFilesMutation,
+          variables: {
+            projectPath: this.projectPath,
+            ids,
+          },
+          awaitRefetchQueries: true,
+          refetchQueries: this.refetchQueriesData,
+        });
+        if (data?.destroyPackageFiles?.errors[0]) {
+          throw data.destroyPackageFiles.errors[0];
+        }
+        createAlert({
+          message: this.hasOneItem(ids)
+            ? DELETE_PACKAGE_FILE_SUCCESS_MESSAGE
+            : DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+          variant: VARIANT_SUCCESS,
+        });
+      } catch (error) {
+        createAlert({
+          message: this.hasOneItem(ids)
+            ? DELETE_PACKAGE_FILE_ERROR_MESSAGE
+            : DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+          captureError: true,
+          error,
+        });
+      } finally {
+        this.mutationLoading = false;
+        this.filesToDelete = [];
+        this.selectedReferences = [];
+      }
+    },
+    handleFileDelete(files) {
+      this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
+      if (files.length === this.files.length && !this.packageFiles?.pageInfo?.hasNextPage) {
+        this.$emit(
+          'delete-all-files',
+          this.hasOneItem(files)
+            ? DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT
+            : DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
+        );
+      } else {
+        this.filesToDelete = files;
+        this.$refs.deleteFilesModal.show();
+      }
+    },
+    hasOneItem(items) {
+      return items.length === 1;
+    },
+    confirmFilesDelete() {
+      if (this.hasOneItem(this.filesToDelete)) {
+        this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);
+      } else {
+        this.track(DELETE_PACKAGE_FILES_TRACKING_ACTION);
+      }
+      this.deletePackageFiles(this.filesToDelete.map((file) => file.id));
     },
   },
   i18n: {
-    deleteFile: __('Delete asset'),
+    deleteFile: s__('PackageRegistry|Delete asset'),
+    deleteFileModalTitle: s__('PackageRegistry|Delete package asset'),
+    deleteFileModalContent: s__(
+      'PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?',
+    ),
+    deleteFilesModalTitle: s__('PackageRegistry|Delete %{count} assets'),
+    deleteFilesModalContent: s__(
+      'PackageRegistry|You are about to delete %{count} assets. This operation is irreversible.',
+    ),
     deleteSelected: s__('PackageRegistry|Delete selected'),
     moreActionsText: __('More actions'),
     fetchPackageFilesErrorMessage: FETCH_PACKAGE_FILES_ERROR_MESSAGE,
+  },
+  modal: {
+    fileDeletePrimaryAction: {
+      text: __('Delete'),
+      attributes: { variant: 'danger', category: 'primary' },
+    },
+    filesDeletePrimaryAction: {
+      text: s__('PackageRegistry|Permanently delete assets'),
+      attributes: { variant: 'danger', category: 'primary' },
+    },
+    cancelAction: {
+      text: __('Cancel'),
+    },
   },
 };
 </script>
@@ -188,7 +318,7 @@ export default {
       <h3 class="gl-font-lg gl-mt-5">{{ __('Assets') }}</h3>
       <gl-button
         v-if="!fetchPackageFilesError && canDelete"
-        :disabled="loading || !areFilesSelected"
+        :disabled="isLoading || !areFilesSelected"
         category="secondary"
         variant="danger"
         data-testid="delete-selected"
@@ -206,7 +336,7 @@ export default {
     </gl-alert>
     <gl-table
       v-else
-      :busy="loading"
+      :busy="isLoading"
       :fields="filesTableHeaderFields"
       :items="filesTableRows"
       show-empty
@@ -255,7 +385,7 @@ export default {
           :href="item.downloadPath"
           class="gl-text-gray-500"
           data-testid="download-link"
-          @click="$emit('download-file')"
+          @click="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
         >
           <file-icon
             :file-name="item.fileName"
@@ -279,7 +409,7 @@ export default {
           no-caret
           right
         >
-          <gl-dropdown-item data-testid="delete-file" @click="$emit('delete-files', [item])">
+          <gl-dropdown-item data-testid="delete-file" @click="handleFileDelete([item])">
             {{ $options.i18n.deleteFile }}
           </gl-dropdown-item>
         </gl-dropdown>
@@ -300,5 +430,34 @@ export default {
         </div>
       </template>
     </gl-table>
+
+    <gl-modal
+      ref="deleteFilesModal"
+      size="sm"
+      modal-id="delete-files-modal"
+      :action-primary="modalAction"
+      :action-cancel="$options.modal.cancelAction"
+      data-testid="delete-files-modal"
+      @primary="confirmFilesDelete"
+      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
+    >
+      <template #modal-title>
+        <gl-sprintf :message="modalTitle">
+          <template #count>
+            {{ filesToDelete.length }}
+          </template>
+        </gl-sprintf>
+      </template>
+
+      <gl-sprintf :message="modalDescription">
+        <template #filename>
+          <strong>{{ filesToDelete[0].fileName }}</strong>
+        </template>
+
+        <template #count>
+          {{ filesToDelete.length }}
+        </template>
+      </gl-sprintf>
+    </gl-modal>
   </div>
 </template>

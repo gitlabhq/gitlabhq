@@ -21,6 +21,7 @@ describe('RunnerFormFields', () => {
   const findInput = (name) => wrapper.find(`input[name="${name}"]`);
 
   const expectRendersFields = () => {
+    expect(wrapper.text()).toContain(s__('Runners|Tags'));
     expect(wrapper.text()).toContain(s__('Runners|Details'));
     expect(wrapper.text()).toContain(s__('Runners|Configuration'));
 
@@ -42,10 +43,11 @@ describe('RunnerFormFields', () => {
     });
 
     it('renders a loading frame', () => {
+      expect(wrapper.text()).toContain(s__('Runners|Tags'));
       expect(wrapper.text()).toContain(s__('Runners|Details'));
       expect(wrapper.text()).toContain(s__('Runners|Configuration'));
 
-      expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(2);
+      expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(3);
       expect(wrapper.findAll('input')).toHaveLength(0);
     });
 
@@ -101,23 +103,23 @@ describe('RunnerFormFields', () => {
   it('checks checkbox fields', async () => {
     createComponent({
       value: {
+        runUntagged: false,
         paused: false,
         accessLevel: ACCESS_LEVEL_NOT_PROTECTED,
-        runUntagged: false,
       },
     });
 
+    findInput('run-untagged').setChecked(true);
     findInput('paused').setChecked(true);
     findInput('protected').setChecked(true);
-    findInput('run-untagged').setChecked(true);
 
     await nextTick();
 
     expect(wrapper.emitted('input').at(-1)).toEqual([
       {
+        runUntagged: true,
         paused: true,
         accessLevel: ACCESS_LEVEL_REF_PROTECTED,
-        runUntagged: true,
       },
     ]);
   });

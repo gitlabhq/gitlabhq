@@ -1023,6 +1023,7 @@ export const updateBoardListResponse = {
   data: {
     updateBoardList: {
       list: mockList,
+      errors: [],
     },
   },
 };

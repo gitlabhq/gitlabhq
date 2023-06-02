@@ -2,10 +2,10 @@
 
 module QA
   RSpec.describe 'Package', :orchestrated, :requires_admin, :packages, :object_storage, :reliable,
-  feature_flag: {
-    name: 'maven_central_request_forwarding',
-    scope: :global
-  } do
+    feature_flag: {
+      name: 'maven_central_request_forwarding',
+      scope: :global
+    } do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
@@ -218,16 +218,14 @@ module QA
       ) do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
-            gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/project/request_forwarding',
-                                                  'gitlab_ci.yaml.erb'
-                                                 )
-                                    )
-                                    .result(binding)
-            settings_xml = ERB.new(read_fixture('package_managers/maven/project/request_forwarding',
-                                                'settings.xml.erb'
-                                               )
-                                  )
-                                  .result(binding)
+            gitlab_ci_yaml = ERB.new(read_fixture(
+              'package_managers/maven/project/request_forwarding',
+              'gitlab_ci.yaml.erb'
+            )).result(binding)
+            settings_xml = ERB.new(read_fixture(
+              'package_managers/maven/project/request_forwarding',
+              'settings.xml.erb'
+            )).result(binding)
 
             commit.project = imported_project
             commit.commit_message = 'Add files'

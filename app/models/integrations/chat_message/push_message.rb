@@ -82,12 +82,12 @@ module Integrations
         if ref_type == 'tag'
           "#{project_url}/-/tags/#{ref}"
         else
-          "#{project_url}/commits/#{ref}"
+          "#{project_url}/-/commits/#{ref}"
         end
       end
 
       def compare_url
-        "#{project_url}/compare/#{before}...#{after}"
+        "#{project_url}/-/compare/#{before}...#{after}"
       end
 
       def ref_link

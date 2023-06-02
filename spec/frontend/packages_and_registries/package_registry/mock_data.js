@@ -254,9 +254,6 @@ export const packageDetailsQuery = ({
         __typename: 'PipelineConnection',
       },
       packageFiles: {
-        pageInfo: {
-          hasNextPage: true,
-        },
         nodes: packageFiles().map(({ id, size }) => ({ id, size })),
         __typename: 'PackageFileConnection',
       },
@@ -285,11 +282,15 @@ export const packagePipelinesQuery = (pipelines = packagePipelines()) => ({
   },
 });
 
-export const packageFilesQuery = (files = packageFiles()) => ({
+export const packageFilesQuery = ({ files = packageFiles(), pageInfo = {} } = {}) => ({
   data: {
     package: {
       id: 'gid://gitlab/Packages::Package/111',
       packageFiles: {
+        pageInfo: {
+          hasNextPage: true,
+          ...pageInfo,
+        },
         nodes: files,
         __typename: 'PackageFileConnection',
       },

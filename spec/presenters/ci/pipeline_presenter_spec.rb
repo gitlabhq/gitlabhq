@@ -217,7 +217,7 @@ RSpec.describe Ci::PipelinePresenter do
       let(:pipeline) { merge_request.all_pipelines.last }
 
       it 'returns a correct ref text' do
-        is_expected.to eq("For merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
+        is_expected.to eq("Related merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
                           "to merge <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a>")
       end
     end
@@ -227,7 +227,7 @@ RSpec.describe Ci::PipelinePresenter do
       let(:pipeline) { merge_request.all_pipelines.last }
 
       it 'returns a correct ref text' do
-        is_expected.to eq("For merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
+        is_expected.to eq("Related merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
                           "to merge <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a> " \
                           "into <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.target_project, merge_request.target_branch)}\">#{merge_request.target_branch}</a>")
       end

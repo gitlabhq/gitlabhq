@@ -10348,6 +10348,29 @@ The edge type for [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardp
 | <a id="productanalyticsdashboardpaneledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="productanalyticsdashboardpaneledgenode"></a>`node` | [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel) | The item at the end of the edge. |
 
+#### `ProductAnalyticsDashboardVisualizationConnection`
+
+The connection type for [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsdashboardvisualizationconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardVisualizationEdge]`](#productanalyticsdashboardvisualizationedge) | A list of edges. |
+| <a id="productanalyticsdashboardvisualizationconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboardVisualization]`](#productanalyticsdashboardvisualization) | A list of nodes. |
+| <a id="productanalyticsdashboardvisualizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProductAnalyticsDashboardVisualizationEdge`
+
+The edge type for [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsdashboardvisualizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="productanalyticsdashboardvisualizationedgenode"></a>`node` | [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization) | The item at the end of the edge. |
+
 #### `ProjectConnection`
 
 The connection type for [`Project`](#project).
@@ -12941,6 +12964,7 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | <a id="cirunnermanagerrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner manager. |
 | <a id="cirunnermanagerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner manager. |
 | <a id="cirunnermanagersystemid"></a>`systemId` | [`String!`](#string) | System ID associated with the runner manager. |
+| <a id="cirunnermanagerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Availability of upgrades for the runner manager. |
 | <a id="cirunnermanagerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiSecureFileRegistry`
@@ -19505,6 +19529,7 @@ Represents a product analytics dashboard visualization.
 | ---- | ---- | ----------- |
 | <a id="productanalyticsdashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
 | <a id="productanalyticsdashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
+| <a id="productanalyticsdashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
 | <a id="productanalyticsdashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
 
 ### `Project`
@@ -20561,6 +20586,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectproductanalyticsdashboardsslug"></a>`slug` | [`String`](#string) | Find by dashboard slug. |
+
+##### `Project.productAnalyticsVisualizations`
+
+Visualizations of the project or associated configuration project.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`ProductAnalyticsDashboardVisualizationConnection`](#productanalyticsdashboardvisualizationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectproductanalyticsvisualizationsslug"></a>`slug` | [`String`](#string) | Slug of the visualization to return. |
 
 ##### `Project.projectMembers`
 

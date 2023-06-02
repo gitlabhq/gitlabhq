@@ -1,5 +1,5 @@
 ---
-data_category: optional
+data_category: operational
 key_path: counts.groups
 description: Total count of groups as of usage ping snapshot
 product_section: dev

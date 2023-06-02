@@ -47,9 +47,6 @@ query getPackageDetails($id: PackagesPackageID!) {
       }
     }
     packageFiles(first: 100) {
-      pageInfo {
-        hasNextPage
-      }
       nodes {
         id
         size

@@ -13,6 +13,6 @@ RSpec.describe GitlabSchema.types['CiRunnerManager'], feature_category: :runner_
       runner status system_id version
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

@@ -289,4 +289,5 @@ export const refsListPropsMock = {
   tippingRefs: tippingBranchesMock,
   isLoading: false,
   urlPart: '/some/project/-/commits/',
+  refType: 'heads',
 };

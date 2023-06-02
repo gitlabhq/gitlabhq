@@ -1,12 +1,19 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash';
+import produce from 'immer';
 import Draggable from 'vuedraggable';
 import { mapState, mapActions } from 'vuex';
 import eventHub from '~/boards/eventhub';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes, flashAnimationDuration } from 'ee_else_ce/boards/constants';
+import {
+  DraggableItemTypes,
+  flashAnimationDuration,
+  listsQuery,
+  updateListQueries,
+} from 'ee_else_ce/boards/constants';
+import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import BoardColumn from './board_column.vue';
 
 export default {
@@ -20,7 +27,15 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: ['canAdminList', 'isIssueBoard', 'isEpicBoard', 'disabled', 'isApolloBoard'],
+  inject: [
+    'boardType',
+    'canAdminList',
+    'isIssueBoard',
+    'isEpicBoard',
+    'disabled',
+    'issuableType',
+    'isApolloBoard',
+  ],
   props: {
     boardId: {
       type: String,
@@ -117,6 +132,83 @@ export default {
         this.highlightedLists = this.highlightedLists.filter((id) => id !== listId);
       }, flashAnimationDuration);
     },
+    updateListPosition({
+      item: {
+        dataset: { listId: movedListId, draggableItemType },
+      },
+      newIndex,
+      to: { children },
+    }) {
+      if (!this.isApolloBoard) {
+        this.moveList({
+          item: {
+            dataset: { listId: movedListId, draggableItemType },
+          },
+          newIndex,
+          to: { children },
+        });
+        return;
+      }
+
+      if (draggableItemType !== DraggableItemTypes.list) {
+        return;
+      }
+
+      const displacedListId = children[newIndex].dataset.listId;
+
+      if (movedListId === displacedListId) {
+        return;
+      }
+      const initialPosition = this.boardListsById[movedListId].position;
+      const targetPosition = this.boardListsById[displacedListId].position;
+
+      try {
+        this.$apollo.mutate({
+          mutation: updateListQueries[this.issuableType].mutation,
+          variables: {
+            listId: movedListId,
+            position: targetPosition,
+          },
+          update: (store) => {
+            const sourceData = store.readQuery({
+              query: listsQuery[this.issuableType].query,
+              variables: this.listQueryVariables,
+            });
+            const data = produce(sourceData, (draftData) => {
+              // for current list, new position is already set by Apollo via automatic update
+              const affectedNodes = draftData[this.boardType].board.lists.nodes.filter(
+                (node) => node.id !== movedListId,
+              );
+              affectedNodes.forEach((node) => {
+                // eslint-disable-next-line no-param-reassign
+                node.position = calculateNewPosition(
+                  node.position,
+                  initialPosition,
+                  targetPosition,
+                );
+              });
+            });
+            store.writeQuery({
+              query: listsQuery[this.issuableType].query,
+              variables: this.listQueryVariables,
+              data,
+            });
+          },
+          optimisticResponse: {
+            updateBoardList: {
+              __typename: 'UpdateBoardListPayload',
+              errors: [],
+              list: {
+                ...this.boardListsApollo[movedListId],
+                position: targetPosition,
+              },
+            },
+          },
+        });
+      } catch {
+        // handle error
+      }
+    },
   },
 };
 </script>
@@ -136,7 +228,7 @@ export default {
       ref="list"
       v-bind="draggableOptions"
       class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-auto"
-      @end="moveList"
+      @end="updateListPosition"
     >
       <board-column
         v-for="(list, index) in boardListsToUse"
@@ -173,6 +265,7 @@ export default {
       :filters="filterParams"
       :highlighted-lists="highlightedLists"
       @setActiveList="$emit('setActiveList', $event)"
+      @move-list="updateListPosition"
     >
       <board-add-new-column
         v-if="addColumnFormVisible"

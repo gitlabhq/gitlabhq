@@ -9619,9 +9619,6 @@ msgstr ""
 msgid "CiStatusLabel|created"
 msgstr ""
 
-msgid "CiStatusLabel|delayed"
-msgstr ""
-
 msgid "CiStatusLabel|failed"
 msgstr ""
 
@@ -9638,6 +9635,9 @@ msgid "CiStatusLabel|pending"
 msgstr ""
 
 msgid "CiStatusLabel|preparing"
+msgstr ""
+
+msgid "CiStatusLabel|scheduled"
 msgstr ""
 
 msgid "CiStatusLabel|skipped"
@@ -9679,10 +9679,16 @@ msgstr ""
 msgid "CiStatusText|preparing"
 msgstr ""
 
+msgid "CiStatusText|scheduled"
+msgstr ""
+
 msgid "CiStatusText|skipped"
 msgstr ""
 
 msgid "CiStatusText|waiting"
+msgstr ""
+
+msgid "CiStatusText|warning"
 msgstr ""
 
 msgid "CiStatus|running"
@@ -19287,12 +19293,6 @@ msgid "For individual use, create a separate account under your personal email a
 msgstr ""
 
 msgid "For investigating IT service disruptions or outages"
-msgstr ""
-
-msgid "For merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}"
-msgstr ""
-
-msgid "For merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"
 msgstr ""
 
 msgid "For more info, read the documentation."
@@ -32155,12 +32155,13 @@ msgstr ""
 msgid "PackageRegistry|Debian"
 msgstr ""
 
-msgid "PackageRegistry|Delete 1 asset"
-msgid_plural "PackageRegistry|Delete %d assets"
-msgstr[0] ""
-msgstr[1] ""
+msgid "PackageRegistry|Delete %{count} assets"
+msgstr ""
 
 msgid "PackageRegistry|Delete Package Version"
+msgstr ""
+
+msgid "PackageRegistry|Delete asset"
 msgstr ""
 
 msgid "PackageRegistry|Delete package"
@@ -32471,6 +32472,9 @@ msgstr ""
 msgid "PackageRegistry|Yes, delete selected packages"
 msgstr ""
 
+msgid "PackageRegistry|You are about to delete %{count} assets. This operation is irreversible."
+msgstr ""
+
 msgid "PackageRegistry|You are about to delete %{count} packages. This operation is irreversible."
 msgstr ""
 
@@ -32479,11 +32483,6 @@ msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{name}, are you sure?"
 msgstr ""
-
-msgid "PackageRegistry|You are about to delete 1 asset. This operation is irreversible."
-msgid_plural "PackageRegistry|You are about to delete %d assets. This operation is irreversible."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?"
 msgstr ""
@@ -33572,6 +33571,12 @@ msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
 msgid "Pipelines|Token"
+msgstr ""
+
+msgid "Pipelines|Total amount of compute credits used for the pipeline"
+msgstr ""
+
+msgid "Pipelines|Total number of jobs for the pipeline"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
@@ -37681,6 +37686,12 @@ msgstr ""
 msgid "Related issues"
 msgstr ""
 
+msgid "Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}"
+msgstr ""
+
+msgid "Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"
+msgstr ""
+
 msgid "Related merge requests"
 msgstr ""
 
@@ -39078,6 +39089,9 @@ msgid_plural "Runners|%{highlightStart}%{duration}%{highlightEnd} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|%{linkStart}Create a new runner%{linkEnd} to get started."
+msgstr ""
+
 msgid "Runners|%{link_start}These runners%{link_end} are available to all groups and projects."
 msgstr ""
 
@@ -39304,6 +39318,9 @@ msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"
 msgstr ""
 
 msgid "Runners|Filter projects"
+msgstr ""
+
+msgid "Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
 msgstr ""
 
 msgid "Runners|Get started with runners"
@@ -39632,10 +39649,7 @@ msgstr ""
 msgid "Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}"
 msgstr ""
 
-msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
-msgstr ""
-
-msgid "Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator."
+msgid "Runners|Runners are the agents that run your CI/CD jobs."
 msgstr ""
 
 msgid "Runners|Runners performance"
@@ -39707,6 +39721,9 @@ msgstr ""
 msgid "Runners|Step 3 (optional)"
 msgstr ""
 
+msgid "Runners|Still using registration tokens?"
+msgstr ""
+
 msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
@@ -39776,6 +39793,9 @@ msgid "Runners|To install Runner in Kubernetes follow the instructions described
 msgstr ""
 
 msgid "Runners|To install Runner in a container follow the instructions described in the GitLab documentation"
+msgstr ""
+
+msgid "Runners|To register new runners, contact your administrator."
 msgstr ""
 
 msgid "Runners|To register them, go to the %{link_start}group's Runners page%{link_end}."

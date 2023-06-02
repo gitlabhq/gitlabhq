@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         wait_for_requests
 
-        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
+        expect(page).to have_css('[data-testid="ci-badge-passed"]', text: 'passed')
       end
 
       it 'shows commit`s data', :js do

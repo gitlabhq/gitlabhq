@@ -89,13 +89,13 @@ module Ci
 
     def ref_text
       if pipeline.detached_merge_request_pipeline?
-        _("For merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}")
+        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}")
           .html_safe % {
             link_to_merge_request: link_to_merge_request,
             link_to_merge_request_source_branch: link_to_merge_request_source_branch
           }
       elsif pipeline.merged_result_pipeline?
-        _("For merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
+        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
           .html_safe % {
             link_to_merge_request: link_to_merge_request,
             link_to_merge_request_source_branch: link_to_merge_request_source_branch,

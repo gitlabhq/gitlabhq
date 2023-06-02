@@ -1,5 +1,6 @@
 import pipelineHeaderSuccess from 'test_fixtures/graphql/pipelines/pipeline_header_success.json';
 import pipelineHeaderRunning from 'test_fixtures/graphql/pipelines/pipeline_header_running.json';
+import pipelineHeaderFailed from 'test_fixtures/graphql/pipelines/pipeline_header_failed.json';
 
 const PIPELINE_RUNNING = 'RUNNING';
 const PIPELINE_CANCELED = 'CANCELED';
@@ -8,7 +9,31 @@ const PIPELINE_FAILED = 'FAILED';
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
-export { pipelineHeaderSuccess, pipelineHeaderRunning };
+export { pipelineHeaderSuccess, pipelineHeaderRunning, pipelineHeaderFailed };
+
+export const pipelineRetryMutationResponseSuccess = {
+  data: { pipelineRetry: { errors: [] } },
+};
+
+export const pipelineRetryMutationResponseFailed = {
+  data: { pipelineRetry: { errors: ['error'] } },
+};
+
+export const pipelineCancelMutationResponseSuccess = {
+  data: { pipelineRetry: { errors: [] } },
+};
+
+export const pipelineCancelMutationResponseFailed = {
+  data: { pipelineRetry: { errors: ['error'] } },
+};
+
+export const pipelineDeleteMutationResponseSuccess = {
+  data: { pipelineRetry: { errors: [] } },
+};
+
+export const pipelineDeleteMutationResponseFailed = {
+  data: { pipelineRetry: { errors: ['error'] } },
+};
 
 export const mockPipelineHeader = {
   detailedStatus: {},

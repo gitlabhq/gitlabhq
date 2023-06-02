@@ -1,9 +1,11 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 import eventHub from '~/boards/eventhub';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
@@ -11,9 +13,18 @@ import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
+import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
-import { mockLists, mockListsById } from '../mock_data';
+import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
+import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
+import {
+  mockLists,
+  mockListsById,
+  updateBoardListResponse,
+  boardListsQueryResponse,
+} from '../mock_data';
 
+Vue.use(VueApollo);
 Vue.use(Vuex);
 
 const actions = {
@@ -22,6 +33,9 @@ const actions = {
 
 describe('BoardContent', () => {
   let wrapper;
+  let mockApollo;
+
+  const updateListHandler = jest.fn().mockResolvedValue(updateBoardListResponse);
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
@@ -47,21 +61,32 @@ describe('BoardContent', () => {
     isIssueBoard = true,
     isEpicBoard = false,
   } = {}) => {
+    mockApollo = createMockApollo([[updateBoardListMutation, updateListHandler]]);
+    const listQueryVariables = { isProject: true };
+
+    mockApollo.clients.defaultClient.writeQuery({
+      query: boardListsQuery,
+      variables: listQueryVariables,
+      data: boardListsQueryResponse.data,
+    });
+
     const store = createStore({
       ...defaultState,
       ...state,
     });
     wrapper = shallowMount(BoardContent, {
+      apolloProvider: mockApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
         filterParams: {},
         isSwimlanesOn: false,
         boardListsApollo: mockListsById,
-        listQueryVariables: {},
+        listQueryVariables,
         addColumnFormVisible: false,
         ...props,
       },
       provide: {
+        boardType: 'project',
         canAdminList,
         issuableType,
         isIssueBoard,
@@ -81,6 +106,7 @@ describe('BoardContent', () => {
 
   const findBoardColumns = () => wrapper.findAllComponents(BoardColumn);
   const findBoardAddNewColumn = () => wrapper.findComponent(BoardAddNewColumn);
+  const findDraggable = () => wrapper.findComponent(Draggable);
 
   describe('default', () => {
     beforeEach(() => {
@@ -128,7 +154,7 @@ describe('BoardContent', () => {
     });
 
     it('renders draggable component', () => {
-      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+      expect(findDraggable().exists()).toBe(true);
     });
   });
 
@@ -138,7 +164,7 @@ describe('BoardContent', () => {
     });
 
     it('does not render draggable component', () => {
-      expect(wrapper.findComponent(Draggable).exists()).toBe(false);
+      expect(findDraggable().exists()).toBe(false);
     });
   });
 
@@ -163,6 +189,21 @@ describe('BoardContent', () => {
       await waitForPromises();
 
       expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
+    });
+
+    it('reorders lists', async () => {
+      const movableListsOrder = [mockLists[0].id, mockLists[1].id];
+
+      findDraggable().vm.$emit('end', {
+        item: { dataset: { listId: mockLists[0].id, draggableItemType: DraggableItemTypes.list } },
+        newIndex: 1,
+        to: {
+          children: movableListsOrder.map((listId) => ({ dataset: { listId } })),
+        },
+      });
+      await waitForPromises();
+
+      expect(updateListHandler).toHaveBeenCalled();
     });
   });
 
