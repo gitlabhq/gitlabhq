@@ -11,25 +11,37 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1 GB to preserve performance.
 
-![Git LFS tracking status](img/lfs-icon.png)
-
-Files tracked by Git LFS display an icon to indicate if the file is stored as a
-blob or an LFS pointer.
-
-## How it works
-
-Git LFS client communicates with the GitLab server over HTTPS. It uses HTTP Basic Authentication
+Your Git LFS client communicates with the GitLab server over HTTPS. It uses HTTP Basic authentication
 to authorize client requests. After the request is authorized, Git LFS client receives
-instructions from where to fetch or where to push the large file.
+instructions on where to fetch or where to push the large file.
 
-## GitLab server configuration
+In the repository view, files tracked by Git LFS display an **LFS** badge next to the filename:
 
-Documentation for GitLab instance administrators is under [LFS administration doc](../../../administration/lfs/index.md).
+![Git LFS tracking status](img/lfs_badge_v16_0.png)
 
-## Prerequisites
+## Configure your GitLab server for Git LFS **(FREE SELF)**
 
-- Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
-- [Git LFS client](https://git-lfs.com/) version 1.0.1 or later must be installed.
+To install Git LFS on your self-managed GitLab server, see
+[GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md).
+
+## Enable Git LFS for a project
+
+Prerequisites:
+
+- You must have at least the Developer role in the project.
+
+To do this:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility, project features, permissions** section.
+1. Turn on the **Git Large File Storage (LFS)** toggle.
+1. Select **Save changes**.
+
+## Install the Git LFS client locally
+
+Install the [Git LFS client](https://github.com/git-lfs/git-lfs) appropriate for
+your operating system. GitLab requires version 1.0.1 or later of the Git LFS client.
 
 ## Known limitations
 

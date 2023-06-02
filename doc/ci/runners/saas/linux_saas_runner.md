@@ -37,6 +37,30 @@ We offer GPU-enabled SaaS runners for heavy compute including ModelOps or HPC wo
 | Specs             | 4 vCPU, 16 GB RAM, 1 Nvidia Tesla T4 GPU (or similar) |
 | GitLab CI/CD tags | `saas-linux-medium-amd64-gpu-standard` |
 
+As with all our Linux runners, your job runs in an isolated virtual machine (VM)
+with a bring-your-own-image policy. GitLab mounts the GPU from the host VM into
+your isolated environment. To use the GPU, you must use a Docker image with the
+GPU driver installed. For Nvidia GPUs, you can use their [CUDA Toolkit](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda).
+
+## Example of GPU job
+
+In the following example of the `.gitlab-ci.yml` file, the Nvidia CUDA base Ubuntu image is used.
+In in the `script:` section we install Python.
+
+```yaml
+gpu-job:
+  stage: build
+  tags:
+    - saas-linux-medium-amd64-gpu-standard
+  image: nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04
+  script:
+    - apt-get update
+    - apt-get install -y python3.10
+    - python3.10 --version
+```
+
+If you don't want to install larger libraries such as Tensorflow or XGBoost each time you run a job, you can create your own image with all the required components pre-installed.
+
 ## Example of how to tag a job
 
 To use a machine type other than `small`, add a `tags:` keyword to your job.
@@ -89,7 +113,7 @@ Below are the settings for SaaS runners on Linux.
   [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
   that's stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated in
   the last 14 days are automatically removed, based on the
-  [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle). The maximum size of an 
+  [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle). The maximum size of an
   uploaded cache artifact can be 5GB after the cache becomes a compressed archive.
 
 - **Timeout settings**: Jobs handled by the SaaS Runners on Linux

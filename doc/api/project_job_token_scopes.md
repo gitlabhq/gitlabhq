@@ -28,10 +28,10 @@ Supported attributes:
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
-| Attribute          | Type     | Description           |
-|:-------------------|:---------|:----------------------|
-| `inbound_enabled`  | boolean  | Indicates if the CI/CD job token generated in other projects has access to this project. |
-| `outbound_enabled` | boolean  | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0 .](../update/removals.md#limit-ci_job_token-scope-is-disabled) |
+| Attribute          | Type    | Description           |
+|:-------------------|:--------|:----------------------|
+| `inbound_enabled`  | boolean | Indicates if the CI/CD job token generated in other projects has access to this project. |
+| `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0 .](../update/removals.md#limit-ci_job_token-scope-is-disabled) |
 
 Example request:
 
@@ -58,9 +58,9 @@ PATCH /projects/:id/job_token_scope
 
 Supported attributes:
 
-| Attribute | Type           | Required                | Description |
-|-----------|----------------|-------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes  | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| Attribute | Type           | Required               | Description |
+|-----------|----------------|------------------------|-------------|
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `enabled` | boolean        | **{check-circle}** Yes | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and no response body.
@@ -69,7 +69,7 @@ Example request:
 
 ```shell
 curl --request PATCH \
-  --url "https://gitlab.example.com/api/v4/projects/7/job_token_scope" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope" \
   --header 'PRIVATE-TOKEN: <your_access_token>' \
   --header 'Content-Type: application/json' \
   --data '{ "enabled": false }'
@@ -140,4 +140,72 @@ Example response:
   {
     ...
   }
+```
+
+## Create a new project to a project's CI/CD job token inbound allowlist
+
+Add a project to the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
+
+```plaintext
+POST /projects/:id/job_token_scope/allowlist
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required               | Description |
+|---------------------|----------------|------------------------|-------------|
+| `id`                | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `target_project_id` | integer        | **{check-circle}** Yes | The ID of the project added to the CI/CD job token inbound allowlist. |
+
+If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description           |
+|:--------------------|:--------|:----------------------|
+| `source_project_id` | integer | The ID of the project whose CI/CD job token inbound allowlist is added to. |
+| `target_project_id` | integer | The ID of the project that is added to the inbound allowlist of the source project. |
+
+Example request:
+
+```shell
+curl --request PATCH \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope" \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{ "target_project_id": 2 }'
+```
+
+Example response:
+
+```json
+{
+  "source_project_id": 1,
+  "target_project_id": 2
+}
+```
+
+## Remove a project from a project's CI/CD job token inbound allowlist
+
+Remove a project from the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
+
+```plaintext
+DELETE /projects/:id/job_token_scope/allowlist/:target_project_id
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required               | Description |
+|---------------------|----------------|------------------------|-------------|
+| `id`                | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `target_project_id` | integer        | **{check-circle}** Yes | The ID of the project that is removed from the CI/CD job token inbound allowlist. |
+
+If successful, returns [`204`](rest/index.md#status-codes) and no response body.
+
+Example request:
+
+```shell
+
+curl --request DELETE \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist/2" \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header 'Content-Type: application/json'
 ```

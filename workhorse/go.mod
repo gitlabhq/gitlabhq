@@ -26,12 +26,12 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/stretchr/testify v1.8.3
-	gitlab.com/gitlab-org/gitaly/v15 v15.11.1
+	gitlab.com/gitlab-org/gitaly/v16 v16.0.1
 	gitlab.com/gitlab-org/labkit v1.18.0
 	gocloud.dev v0.29.0
 	golang.org/x/image v0.7.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/net v0.8.0
+	golang.org/x/net v0.9.0
 	golang.org/x/oauth2 v0.5.0
 	golang.org/x/tools v0.6.0
 	google.golang.org/grpc v1.54.0
@@ -58,7 +58,7 @@ require (
 	github.com/DataDog/datadog-go v4.4.0+incompatible // indirect
 	github.com/DataDog/sketches-go v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/beevik/ntp v0.3.0 // indirect
+	github.com/beevik/ntp v0.3.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
@@ -112,8 +112,8 @@ require (
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20220218215828-6cf2b201936e // indirect
 	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sync v0.2.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect

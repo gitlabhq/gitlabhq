@@ -206,7 +206,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],
-    'Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric' => %w[group],
     'InternalId' => %w[usage],
     'List' => %w[list_type],
     'NotificationSetting' => %w[level],

@@ -8,7 +8,6 @@ RSpec.describe 'dashboard/projects/index.html.haml' do
   before do
     allow(view).to receive(:limited_counter_with_delimiter)
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:project_list_cache_key)
     allow(view).to receive(:time_ago_with_tooltip)
     allow(view).to receive(:project_icon)
     assign(:projects, [build(:project, name: 'awesome stuff')])

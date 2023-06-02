@@ -49,7 +49,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:realtime_approvals, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:code_quality_inline_drawer, project)
-    push_frontend_feature_flag(:hide_create_issue_resolve_all, project)
     push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:mr_activity_filters, current_user)

@@ -2,6 +2,11 @@
 
 module API
   class Markdown < ::API::Base
+    include APIGuard
+
+    # Although this API endpoint responds to POST requests, it is a read-only operation
+    allow_access_with_scope :read_api
+
     before { authenticate! if Feature.enabled?(:authenticate_markdown_api, type: :ops) }
 
     feature_category :team_planning

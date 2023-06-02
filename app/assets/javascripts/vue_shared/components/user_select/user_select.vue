@@ -345,7 +345,7 @@ export default {
           data-testid="selected-participant"
           @click.native.capture.stop="unselect(item.username)"
         >
-          <sidebar-participant :user="item" :issuable-type="issuableType" />
+          <sidebar-participant :user="item" :issuable-type="issuableType" selected />
         </gl-dropdown-item>
         <template v-if="showCurrentUser">
           <gl-dropdown-divider />

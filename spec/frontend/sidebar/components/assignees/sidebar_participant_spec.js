@@ -16,7 +16,12 @@ describe('Sidebar participant component', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findIcon = () => wrapper.findComponent(GlIcon);
 
-  const createComponent = ({ status = null, issuableType = TYPE_ISSUE, canMerge = false } = {}) => {
+  const createComponent = ({
+    status = null,
+    issuableType = TYPE_ISSUE,
+    canMerge = false,
+    selected = false,
+  } = {}) => {
     wrapper = shallowMount(SidebarParticipant, {
       propsData: {
         user: {
@@ -25,6 +30,7 @@ describe('Sidebar participant component', () => {
           status,
         },
         issuableType,
+        selected,
       },
       stubs: {
         GlAvatarLabeled,
@@ -52,13 +58,27 @@ describe('Sidebar participant component', () => {
   });
 
   describe('when on merge request sidebar', () => {
-    it('when project member cannot merge', () => {
-      createComponent({ issuableType: TYPE_MERGE_REQUEST });
+    describe('when project member cannot merge', () => {
+      it('renders a `cannot-merge` icon', () => {
+        createComponent({ issuableType: TYPE_MERGE_REQUEST });
 
-      expect(findIcon().exists()).toBe(true);
+        expect(findIcon().exists()).toBe(true);
+      });
+
+      it('does not apply `gl-left-6!` class to an icon if participant is not selected', () => {
+        createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: false });
+
+        expect(findIcon().classes('gl-left-6!')).toBe(false);
+      });
+
+      it('applies `gl-left-6!` class to an icon if participant is selected', () => {
+        createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: false, selected: true });
+
+        expect(findIcon().classes('gl-left-6!')).toBe(true);
+      });
     });
 
-    it('when project member can merge', () => {
+    it('does not render an icon when project member can merge', () => {
       createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: true });
 
       expect(findIcon().exists()).toBe(false);

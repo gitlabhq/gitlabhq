@@ -284,6 +284,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :user
     draw :project
     draw :unmatched_project
+    draw :well_known
 
     # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
     scope as: 'deprecated' do

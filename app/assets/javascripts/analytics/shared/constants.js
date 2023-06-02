@@ -1,4 +1,5 @@
-import { masks } from '~/lib/dateformat';
+import dateFormat, { masks } from '~/lib/dateformat';
+import { nDaysBefore, getStartOfDay } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -12,6 +13,10 @@ export const dateFormats = {
   defaultDateTime: 'mmm d, yyyy h:MMtt',
   month: 'mmmm',
 };
+
+const startOfToday = getStartOfDay(new Date(), { utc: true });
+const last180Days = nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true });
+const formatDateParam = (d) => dateFormat(d, dateFormats.isoDate, true);
 
 export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
 
@@ -44,6 +49,12 @@ export const VULNERABILITY_HIGH_TYPE = 'vulnerability_high';
 export const VULNERABILITY_METRICS = {
   CRITICAL: VULNERABILITY_CRITICAL_TYPE,
   HIGH: VULNERABILITY_HIGH_TYPE,
+};
+
+export const MERGE_REQUEST_THROUGHPUT_TYPE = 'merge_request_throughput';
+
+export const MERGE_REQUEST_METRICS = {
+  THROUGHPUT: MERGE_REQUEST_THROUGHPUT_TYPE,
 };
 
 export const METRIC_TOOLTIPS = {
@@ -120,6 +131,16 @@ export const METRIC_TOOLTIPS = {
     groupLink: '-/security/vulnerabilities',
     projectLink: '-/security/vulnerability_report',
     docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
+  },
+  [MERGE_REQUEST_METRICS.THROUGHPUT]: {
+    description: s__('ValueStreamAnalytics|The number of merge requests merged by month.'),
+    groupLink: '-/analytics/productivity_analytics',
+    projectLink: `-/analytics/merge_request_analytics?start_date=${formatDateParam(
+      last180Days,
+    )}&end_date=${formatDateParam(startOfToday)}`,
+    docsLink: helpPagePath('user/analytics/merge_request_analytics', {
+      anchor: 'view-the-number-of-merge-requests-in-a-date-range',
+    }),
   },
 };
 

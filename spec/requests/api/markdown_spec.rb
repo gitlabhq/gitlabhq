@@ -5,13 +5,18 @@ require "spec_helper"
 RSpec.describe API::Markdown, feature_category: :team_planning do
   describe "POST /markdown" do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
+    let(:token) {} # No-op. It gets overwritten in the contexts below.
     let(:disable_authenticate_markdown_api) { false }
 
     before do
       stub_commonmark_sourcepos_disabled
       stub_feature_flags(authenticate_markdown_api: false) if disable_authenticate_markdown_api
 
-      post api("/markdown", user), params: params
+      if token
+        post api("/markdown", personal_access_token: token), params: params
+      else
+        post api("/markdown", user), params: params
+      end
     end
 
     shared_examples "rendered markdown text without GFM" do
@@ -84,6 +89,13 @@ RSpec.describe API::Markdown, feature_category: :team_planning do
       let(:user) { create(:user) }
       let(:issue_url) { "http://#{Gitlab.config.gitlab.host}/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
+
+      context "when personal access token has only read_api scope" do
+        let(:token) { create(:personal_access_token, user: user, scopes: [:read_api]) }
+        let(:params) { { text: text } }
+
+        it_behaves_like "rendered markdown text without GFM"
+      end
 
       context "when not using gfm" do
         context "without project" do

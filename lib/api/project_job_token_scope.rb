@@ -74,6 +74,46 @@ module API
         present paginate(inbound_projects), with: Entities::BasicProjectDetails
       end
 
+      desc 'Add target project to allowlist.' do
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        success status: 201, model: Entities::BasicProjectDetails
+        tags %w[projects_job_token_scope]
+      end
+      params do
+        requires :id,
+          allow_blank: false,
+          desc: 'ID of user project',
+          documentation: { example: 1 },
+          type: Integer
+
+        requires :target_project_id,
+          allow_blank: false,
+          desc: 'ID of target project',
+          documentation: { example: 2 },
+          type: Integer
+      end
+      post ':id/job_token_scope/allowlist' do
+        authorize_admin_project
+
+        target_project_id = declared_params(include_missing: false).fetch(:target_project_id)
+        target_project = Project.find_by_id(target_project_id)
+        break not_found!("target_project_id not found") if target_project.blank?
+
+        result = ::Ci::JobTokenScope::AddProjectService
+            .new(user_project, current_user)
+            .execute(target_project, direction: :inbound)
+
+        break bad_request!(result[:message]) if result.error?
+
+        present result.payload[:project_link], with: Entities::ProjectScopeLink
+      end
+
       desc 'Delete project from allowlist.' do
         failure [
           { code: 400, message: 'Bad Request' },
@@ -84,11 +124,18 @@ module API
         success code: 204
         tags %w[projects_job_token_scope]
       end
-
       params do
-        requires :id, type: Integer, desc: 'ID of user project', documentation: { example: 1 }
-        requires :target_project_id, type: Integer,
-          desc: 'ID of the project to be removed from the allowlist', documentation: { example: 2 }
+        requires :id,
+          allow_blank: false,
+          desc: 'ID of user project',
+          documentation: { example: 1 },
+          type: Integer
+
+        requires :target_project_id,
+          allow_blank: false,
+          desc: 'ID of the project to be removed from the allowlist',
+          documentation: { example: 2 },
+          type: Integer
       end
       delete ':id/job_token_scope/allowlist/:target_project_id' do
         target_project = find_project!(params[:target_project_id])

@@ -264,6 +264,132 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
     end
   end
 
+  describe "POST /projects/:id/job_token_scope/allowlist" do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project_inbound_allowed) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:post_job_token_scope_allowlist_path) { "/projects/#{project.id}/job_token_scope/allowlist" }
+
+    let(:post_job_token_scope_allowlist_params) do
+      { target_project_id: project_inbound_allowed.id }
+    end
+
+    subject do
+      post api(post_job_token_scope_allowlist_path, user), params: post_job_token_scope_allowlist_params
+    end
+
+    context 'when unauthenticated user (missing user)' do
+      context 'for public project' do
+        it 'does not return ci cd settings of job token' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          post api(post_job_token_scope_allowlist_path)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when authenticated user as maintainer' do
+      before_all { project.add_maintainer(user) }
+
+      it 'returns unauthorized and blank response when invalid auth credentials are given' do
+        invalid_personal_access_token = build(:personal_access_token, user: user)
+
+        post api(post_job_token_scope_allowlist_path, user, personal_access_token: invalid_personal_access_token),
+          params: post_job_token_scope_allowlist_params
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns created and creates job token scope link' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to be_present
+        expect(json_response).to include(
+          "target_project_id" => project_inbound_allowed.id,
+          "source_project_id" => project.id
+        )
+        expect(json_response).not_to include "id", "direction"
+      end
+
+      it 'returns bad_request and does not create an additional job token scope link' do
+        create(
+          :ci_job_token_project_scope_link,
+          source_project: project,
+          target_project: project_inbound_allowed,
+          direction: :inbound
+        )
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns bad_request when adding the source project' do
+        post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns not_found when project for param `project_id` does not exist' do
+        post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns :bad_request when parameter `project_id` missing' do
+        post api(post_job_token_scope_allowlist_path, user), params: {}
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns :bad_request when parameter `project_id` is nil value' do
+        post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns :bad_request when parameter `project_id` is empty value' do
+        post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: '' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns :bad_request when parameter `project_id` is float value' do
+        post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: 12.34 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when authenticated user as developer' do
+      before_all { project.add_developer(user) }
+
+      context 'for private project' do
+        it 'returns forbidden and no ci cd settings' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'for public project' do
+        it 'returns forbidden and no ci cd settings' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id/job_token_scope/allowlist/:target_project_id' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:target_project) { create(:project, :public) }

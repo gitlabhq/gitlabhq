@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"gitlab.com/gitlab-org/gitaly/v15/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
