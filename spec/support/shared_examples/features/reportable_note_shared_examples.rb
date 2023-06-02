@@ -6,7 +6,6 @@ RSpec.shared_examples 'reportable note' do |type|
 
   let(:comment) { find("##{ActionView::RecordIdentifier.dom_id(note)}") }
   let(:more_actions_selector) { '.more-actions.dropdown' }
-  let(:abuse_report_path) { new_abuse_report_path(user_id: note.author.id, ref_url: noteable_note_url(note)) }
 
   it 'has an edit button' do
     expect(comment).to have_selector('.js-note-edit')

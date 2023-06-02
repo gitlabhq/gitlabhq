@@ -133,29 +133,10 @@ module Gitlab
         def authorized_record_json(record, options)
           include_keys = options[:include].flat_map(&:keys)
           keys_to_authorize = record.try(:restricted_associations, include_keys)
+
           return record.to_json(options) if keys_to_authorize.blank?
 
-          record_hash = record.as_json(options).with_indifferent_access
-          filtered_record_hash(record, keys_to_authorize, record_hash).to_json(options)
-        end
-
-        def filtered_record_hash(record, keys_to_authorize, record_hash)
-          keys_to_authorize.each do |key|
-            next unless record_hash[key].present?
-
-            readable = record.try(:readable_records, key, current_user: current_user)
-            if record.has_many_association?(key)
-              readable_ids = readable.pluck(:id)
-
-              record_hash[key].keep_if do |association_record|
-                readable_ids.include?(association_record[:id])
-              end
-            else
-              record_hash[key] = nil unless readable.present?
-            end
-          end
-
-          record_hash
+          record.to_authorized_json(keys_to_authorize, current_user, options)
         end
 
         def batch(relation, key)
