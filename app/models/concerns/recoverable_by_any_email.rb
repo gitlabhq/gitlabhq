@@ -7,8 +7,6 @@ module RecoverableByAnyEmail
 
   class_methods do
     def send_reset_password_instructions(attributes = {})
-      return super unless Feature.enabled?(:password_reset_any_verified_email)
-
       email = attributes.delete(:email)
       super unless email
 
@@ -27,8 +25,6 @@ module RecoverableByAnyEmail
   end
 
   def send_reset_password_instructions(opts = {})
-    return super() unless Feature.enabled?(:password_reset_any_verified_email)
-
     token = set_reset_password_token
     send_reset_password_instructions_notification(token, opts)
 
@@ -38,8 +34,6 @@ module RecoverableByAnyEmail
   private
 
   def send_reset_password_instructions_notification(token, opts = {})
-    return super(token) unless Feature.enabled?(:password_reset_any_verified_email)
-
     send_devise_notification(:reset_password_instructions, token, opts)
   end
 end

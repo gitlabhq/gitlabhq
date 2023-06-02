@@ -9,9 +9,8 @@ RSpec.describe Packages::Npm::CreateMetadataCacheService, :clean_gitlab_redis_sh
   let_it_be(:package_name) { "@#{project.root_namespace.path}/npm-test" }
   let_it_be(:package) { create(:npm_package, version: '1.0.0', project: project, name: package_name) }
 
-  let(:packages) { project.packages }
   let(:lease_key) { "packages:npm:create_metadata_cache_service:metadata_caches:#{project.id}_#{package_name}" }
-  let(:service) { described_class.new(project, package_name, packages) }
+  let(:service) { described_class.new(project, package_name) }
 
   describe '#execute' do
     let(:npm_metadata_cache) { Packages::Npm::MetadataCache.last }

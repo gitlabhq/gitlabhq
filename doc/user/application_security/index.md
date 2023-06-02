@@ -499,14 +499,12 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   are recommended when:
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.
-  - Scan execution enforcement is required for SAST, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
+  - Scan execution enforcement is required for SAST, SAST IaC, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
 variable customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
 
 - Either solution can be used equally well when:
 
-  - Scan execution enforcement is required for SAST or Secret Detection when custom rulesets are not
-    used.
   - Scan execution enforcement is required for Container Scanning with no project-specific variable
     customizations.
 
@@ -514,7 +512,7 @@ Additional details about the differences between the two solutions are outlined 
 
 | | Compliance Framework Pipelines | Scan Execution Policies |
 | ------ | ------ | ------ |
-| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, Secret Detection, Dependency Scanning, and Container Scanning scans are supported. |
+| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, SAST IaC, Secret Detection, Dependency Scanning, and Container Scanning scans are supported. |
 | **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
 | **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `.gitlab-ci.yml` file. To include the project's `.gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are usually available to the CI job. |
 | **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |

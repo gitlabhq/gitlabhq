@@ -32755,10 +32755,6 @@ COMMENT ON INDEX index_user_details_on_phone IS 'JiHu-specific index';
 
 CREATE UNIQUE INDEX index_user_details_on_user_id ON user_details USING btree (user_id);
 
-CREATE INDEX index_user_details_on_user_id_for_enterprise_users_with_date ON user_details USING btree (user_id) WHERE ((provisioned_by_group_id IS NOT NULL) AND (provisioned_by_group_at IS NOT NULL));
-
-CREATE INDEX index_user_details_on_user_id_for_enterprise_users_without_date ON user_details USING btree (user_id) WHERE ((provisioned_by_group_id IS NOT NULL) AND (provisioned_by_group_at IS NULL));
-
 CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING btree (group_id);
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);

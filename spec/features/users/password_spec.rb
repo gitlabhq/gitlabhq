@@ -34,11 +34,7 @@ RSpec.describe 'User password', feature_category: :system_access do
       let_it_be(:verified_email) { create(:email, :confirmed, user: user, email: 'second@example.com') }
       let_it_be(:unverified_email) { create(:email, user: user, email: 'unverified@example.com') }
 
-      let(:ff_enabled) { true }
-
       before do
-        stub_feature_flags(password_reset_any_verified_email: ff_enabled)
-
         perform_enqueued_jobs do
           visit new_user_password_path
           fill_in 'user_email', with: email
@@ -57,18 +53,8 @@ RSpec.describe 'User password', feature_category: :system_access do
       context 'when user enters a secondary verified email' do
         let(:email) { verified_email.email }
 
-        context 'when password_reset_any_verified_email FF is enabled' do
-          it 'send the email to the correct email address' do
-            expect(ActionMailer::Base.deliveries.first.to).to include(email)
-          end
-        end
-
-        context 'when password_reset_any_verified_email FF is not enabled' do
-          let(:ff_enabled) { false }
-
-          it 'does not send an email' do
-            expect(ActionMailer::Base.deliveries.count).to eq(0)
-          end
+        it 'send the email to the correct email address' do
+          expect(ActionMailer::Base.deliveries.first.to).to include(email)
         end
       end
 
