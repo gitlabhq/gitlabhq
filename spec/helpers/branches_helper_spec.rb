@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BranchesHelper do
+RSpec.describe BranchesHelper, feature_category: :source_code_management do
   describe '#access_levels_data' do
     subject { helper.access_levels_data(access_levels) }
 
@@ -45,6 +45,55 @@ RSpec.describe BranchesHelper do
 
         expect(subject).to eq(expected_array)
       end
+    end
+  end
+
+  describe '#merge_request_status' do
+    subject { helper.merge_request_status(merge_request) }
+
+    let(:merge_request) { build(:merge_request, title: title) }
+    let(:title) { 'Test MR' }
+
+    context 'when merge request is missing' do
+      let(:merge_request) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when merge request is closed' do
+      before do
+        merge_request.close
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when merge request is open' do
+      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :success) }
+    end
+
+    context 'when merge request is locked' do
+      let(:merge_request) { build(:merge_request, :locked, title: title) }
+
+      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :success) }
+    end
+
+    context 'when merge request is draft' do
+      let(:title) { 'Draft: Test MR' }
+
+      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :warning) }
+    end
+
+    context 'when merge request is merged' do
+      let(:merge_request) { build(:merge_request, :merged, title: title) }
+
+      it { is_expected.to eq(icon: 'merge', title: "Merged - #{title}", variant: :info) }
+    end
+
+    context 'when merge request status is unsupported' do
+      let(:merge_request) { build(:merge_request, state_id: -1) }
+
+      it { is_expected.to be_nil }
     end
   end
 end

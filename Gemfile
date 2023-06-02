@@ -195,7 +195,7 @@ gem 'asciidoctor-plantuml', '~> 0.0.16'
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false
 gem 'rouge', '~> 4.1.2'
 gem 'truncato', '~> 0.7.12'
-gem 'nokogiri', '~> 1.15'
+gem 'nokogiri', '~> 1.15', '>= 1.15.2'
 
 # Calendar rendering
 gem 'icalendar'
@@ -290,7 +290,7 @@ gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 2.0'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.21.1'
+gem 'loofah', '~> 2.21.3'
 
 # Working with license
 # Detects the open source license the repository includes

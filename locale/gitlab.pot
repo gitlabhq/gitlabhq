@@ -900,7 +900,7 @@ msgstr ""
 msgid "%{milliseconds}ms"
 msgstr ""
 
-msgid "%{minutesUsed} minutes"
+msgid "%{minutesUsed} units"
 msgstr ""
 
 msgid "%{model_name} not found"
@@ -2921,9 +2921,6 @@ msgstr ""
 msgid "Additional diagram formats"
 msgstr ""
 
-msgid "Additional minutes"
-msgstr ""
-
 msgid "Additional minutes:"
 msgstr ""
 
@@ -2940,6 +2937,9 @@ msgid "Additional text to show on the Help page"
 msgstr ""
 
 msgid "Additional text to show on the sign-in page"
+msgstr ""
+
+msgid "Additional units"
 msgstr ""
 
 msgid "Address"
@@ -8107,16 +8107,10 @@ msgstr ""
 msgid "Branches|Filter by branch name"
 msgstr ""
 
-msgid "Branches|Merged into %{default_branch}"
-msgstr ""
-
 msgid "Branches|New branch"
 msgstr ""
 
 msgid "Branches|No branches to show"
-msgstr ""
-
-msgid "Branches|Only a project maintainer or owner can delete a protected branch"
 msgstr ""
 
 msgid "Branches|Overview"
@@ -8158,9 +8152,6 @@ msgstr ""
 msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
 msgstr ""
 
-msgid "Branches|The default branch cannot be deleted"
-msgstr ""
-
 msgid "Branches|This branch hasn't been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
@@ -8198,9 +8189,6 @@ msgid "Branches|You're about to permanently delete the protected branch %{branch
 msgstr ""
 
 msgid "Branches|diverged from upstream"
-msgstr ""
-
-msgid "Branches|merged"
 msgstr ""
 
 msgid "Branches|protected"
@@ -8561,9 +8549,6 @@ msgid "CI/CD configuration file"
 msgstr ""
 
 msgid "CI/CD limits"
-msgstr ""
-
-msgid "CI/CD minutes"
 msgstr ""
 
 msgid "CI/CD|No projects have been added to the scope"
@@ -48362,6 +48347,9 @@ msgstr ""
 msgid "Unhappy?"
 msgstr ""
 
+msgid "Units of compute"
+msgstr ""
+
 msgid "Units|d"
 msgstr ""
 
@@ -48725,25 +48713,25 @@ msgstr ""
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
-msgid "UsageQuota|Buy additional minutes"
+msgid "UsageQuota|Buy additional units of compute"
 msgstr ""
 
 msgid "UsageQuota|Buy storage"
 msgstr ""
 
-msgid "UsageQuota|CI minutes usage by month"
-msgstr ""
-
-msgid "UsageQuota|CI minutes usage by project"
-msgstr ""
-
-msgid "UsageQuota|CI/CD minutes usage"
-msgstr ""
-
-msgid "UsageQuota|CI/CD minutes usage since %{usageSince}"
-msgstr ""
-
 msgid "UsageQuota|Code packages and container images."
+msgstr ""
+
+msgid "UsageQuota|Compute usage"
+msgstr ""
+
+msgid "UsageQuota|Compute usage by month"
+msgstr ""
+
+msgid "UsageQuota|Compute usage by project"
+msgstr ""
+
+msgid "UsageQuota|Compute usage since %{usageSince}"
 msgstr ""
 
 msgid "UsageQuota|Container Registry"
@@ -48800,7 +48788,7 @@ msgstr ""
 msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
-msgid "UsageQuota|No CI minutes usage data available."
+msgid "UsageQuota|No compute usage data available."
 msgstr ""
 
 msgid "UsageQuota|No projects to display."
@@ -48881,7 +48869,7 @@ msgstr ""
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr ""
 
-msgid "UsageQuota|This table omits projects that used 0 CI/CD minutes or 0 shared runners duration"
+msgid "UsageQuota|This table omits projects that used 0 units of compute or 0 shared runners duration"
 msgstr ""
 
 msgid "UsageQuota|Transfer"

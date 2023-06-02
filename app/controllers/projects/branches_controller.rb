@@ -27,6 +27,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
         # Fetch branches for the specified mode
         fetch_branches_by_mode
+        fetch_merge_requests_for_branches
 
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
@@ -197,6 +198,15 @@ class Projects::BranchesController < Projects::ApplicationController
 
     @branches, @prev_path, @next_path =
       Projects::BranchesByModeService.new(@project, params.merge(sort: @sort, mode: @mode)).execute
+  end
+
+  def fetch_merge_requests_for_branches
+    @related_merge_requests = @project
+                                .source_of_merge_requests
+                                .including_target_project
+                                .by_target_branch(@project.default_branch)
+                                .by_sorted_source_branches(@branches.map(&:name))
+                                .group_by(&:source_branch)
   end
 
   def fetch_branches_for_overview

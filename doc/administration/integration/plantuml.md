@@ -10,12 +10,7 @@ type: reference, howto
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
 
-To set up the integration on a self-managed instance, you must:
-
-1. [Configure your PlantUML server](#configure-your-plantuml-server).
-1. [Configure local PlantUML access](#configure-local-plantuml-access).
-1. [Configure PlantUML security](#configure-plantuml-security).
-1. [Enable the integration](#enable-plantuml-integration).
+To set up the integration on a self-managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
 
 After completing the integration, PlantUML converts `plantuml`
 blocks to an HTML image tag, with the source pointing to the PlantUML instance. The PlantUML
@@ -123,41 +118,7 @@ services:
     container_name: plantuml
 ```
 
-### Debian/Ubuntu
-
-You can install and configure a PlantUML server in Debian/Ubuntu distributions
-using Tomcat:
-
-1. Run these commands to create a `plantuml.war` file from the source code:
-
-   ```shell
-   sudo apt-get install graphviz openjdk-8-jdk git-core maven
-   git clone https://github.com/plantuml/plantuml-server.git
-   cd plantuml-server
-   mvn package
-   ```
-
-1. Deploy the `.war` file from the previous step with these commands:
-
-   ```shell
-   sudo apt-get install tomcat8
-   sudo cp target/plantuml.war /var/lib/tomcat8/webapps/plantuml.war
-   sudo chown tomcat8:tomcat8 /var/lib/tomcat8/webapps/plantuml.war
-   sudo service tomcat8 restart
-   ```
-
-The Tomcat service should restart. After the restart is complete, the
-PlantUML integration is ready and listening for requests on port 8080:
-`http://localhost:8080/plantuml`
-
-To change these defaults, edit the `/etc/tomcat8/server.xml` file.
-
-NOTE:
-The default URL is different when using this approach. The Docker-based image
-makes the service available at the root URL, with no relative path. Adjust
-the configuration below accordingly.
-
-## Configure local PlantUML access
+#### Configure local PlantUML access
 
 The PlantUML server runs locally on your server, so it can't be accessed
 externally by default. Your server must catch external PlantUML
@@ -180,9 +141,6 @@ To enable this redirection:
    ```ruby
    # Docker deployment
    nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
-
-   # Built from source
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
    ```
 
 1. To activate the changes, run the following command:
@@ -190,6 +148,146 @@ To enable this redirection:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+### Debian/Ubuntu
+
+You can install and configure a PlantUML server in Debian/Ubuntu distributions
+using Tomcat or Jetty.
+
+Prerequisites:
+
+- JRE/JDK version 11 or later.
+- Apache Maven version 3.0.2 or later.
+- (Recommended) Jetty version 11 or later.
+- (Recommended) Tomcat version 10 or later.
+
+#### Installation
+
+PlantUML recommends to install Tomcat 10 or above. The scope of this page only
+includes setting up a basic Tomcat server. For more production-ready configurations,
+see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
+
+1. Install JDK/JRE 11 and Maven:
+
+   ```shell
+   sudo apt update
+   sudo apt-get install graphviz default-jdk git-core maven
+   ```
+
+1. Add a user for Tomcat:
+
+   ```shell
+   sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
+   ```
+
+1. Install and configure Tomcat 10:
+
+   ```shell
+   cd /tmp & wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.9/bin/apache-tomcat-10.1.9.tar.gz
+   sudo tar xzvf apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
+   sudo chown -R tomcat:tomcat /opt/tomcat/
+   sudo chmod -R u+x /opt/tomcat/bin
+   ```
+
+1. Create a systemd service. Edit the `/etc/systemd/system/tomcat.service` file and add:
+
+   ```shell
+   [Unit]
+   Description=Tomcat
+   After=network.target
+
+   [Service]
+   Type=forking
+
+   User=tomcat
+   Group=tomcat
+
+   Environment="JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64"
+   Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom"
+   Environment="CATALINA_BASE=/opt/tomcat"
+   Environment="CATALINA_HOME=/opt/tomcat"
+   Environment="CATALINA_PID=/opt/tomcat/temp/tomcat.pid"
+   Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+   ExecStart=/opt/tomcat/bin/startup.sh
+   ExecStop=/opt/tomcat/bin/shutdown.sh
+
+   RestartSec=10
+   Restart=always
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+   `JAVA_HOME` should be the same path as seen in `sudo update-java-alternatives -l`.
+
+1. To configure ports, edit your `/opt/tomcat/conf/server.xml` and choose your
+   ports. Avoid using port `8080`, as [Puma](../operations/puma.md) listens on port `8080` for metrics.
+
+   ```shell
+   <Server port="8006" shutdown="SHUTDOWN">
+   ...
+       <Connector port="8005" protocol="HTTP/1.1"
+   ...
+   ```
+
+1. Reload and start Tomcat:
+
+   ```shell
+   sudo systemctl daemon-reload
+   sudo systemctl start tomcat
+   sudo systemctl status tomcat
+   sudo systemctl enable tomcat
+   ```
+
+   The Java process should be listening on these ports:
+
+   ```shell
+   root@gitlab-omnibus:/plantuml-server# netstat -plnt | grep java
+   tcp6       0      0 127.0.0.1:8006          :::*                    LISTEN      14935/java
+   tcp6       0      0 :::8005                 :::*                    LISTEN      14935/java
+   ```
+
+1. Modify your NGINX configuration. The `proxy_pass` port matches the Connector port in the `server.xml`:
+
+   ```shell
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml {
+       rewrite ^/-/(plantuml.*) /$1 break;
+       proxy_set_header  HOST               $host;
+       proxy_set_header  X-Forwarded-Host   $host;
+       proxy_set_header  X-Forwarded-Proto  $scheme;
+       proxy_cache off;
+       proxy_pass http://localhost:8005/plantuml;
+   }"
+   ```
+
+1. Reconfigure GitLab to read the new changes:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Install PlantUML and copy the `.war` file:
+
+   ```shell
+   cd / & git clone https://github.com/plantuml/plantuml-server.git
+   cd plantuml-server
+   mvn package
+   cp /plantuml-server/target/plantuml.war  /opt/tomcat/webapps/plantuml.war
+   chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war
+   systemctl restart tomcat
+   ```
+
+The Tomcat service should restart. After the restart is complete, the
+PlantUML integration is ready and listening for requests on port `8005`:
+`http://localhost:8005/plantuml`
+
+To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
+
+NOTE:
+The default URL is different when using this approach. The Docker-based image
+makes the service available at the root URL, with no relative path. Adjust
+the configuration below accordingly.
 
 ### Configure PlantUML security
 

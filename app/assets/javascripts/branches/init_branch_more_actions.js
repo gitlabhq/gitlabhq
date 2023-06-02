@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import DeleteBranchButton from '~/branches/components/delete_branch_button.vue';
+import DeleteBranchButton from '~/branches/components/branch_more_actions.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
-export default function initDeleteBranchButton(el) {
+export default function initBranchMoreActions(el) {
   if (!el) {
     return false;
   }
@@ -10,11 +10,11 @@ export default function initDeleteBranchButton(el) {
   const {
     branchName,
     defaultBranchName,
-    deletePath,
-    tooltip,
-    disabled,
+    canDeleteBranch,
     isProtectedBranch,
     merged,
+    comparePath,
+    deletePath,
   } = el.dataset;
 
   return new Vue({
@@ -24,11 +24,11 @@ export default function initDeleteBranchButton(el) {
         props: {
           branchName,
           defaultBranchName,
-          deletePath,
-          tooltip,
-          disabled: parseBoolean(disabled),
+          canDeleteBranch: parseBoolean(canDeleteBranch),
           isProtectedBranch: parseBoolean(isProtectedBranch),
           merged: parseBoolean(merged),
+          comparePath,
+          deletePath,
         },
       }),
   });

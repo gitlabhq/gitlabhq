@@ -16,7 +16,7 @@ is tracked with a quota of CI/CD minutes.
 
 By default, one minute of execution time by a single job uses
 one CI/CD minute. The total amount of CI/CD minutes used by a pipeline is
-[the sum of all its jobs' durations](#how-cicd-minute-usage-is-calculated).
+[the sum of all its jobs' durations](#how-compute-usage-is-calculated).
 Jobs can run concurrently, so the total CI/CD minute usage can be higher than the
 end-to-end duration of a pipeline.
 
@@ -86,7 +86,7 @@ NOTE:
 You can set a compute quota for only top-level groups or user namespaces.
 If you set a quota for a subgroup, it is not used.
 
-## View CI/CD minutes
+## View compute usage
 
 Prerequisite:
 
@@ -101,17 +101,15 @@ Prerequisite:
 
 - You must have the Owner role for the group.
 
-To view CI/CD minutes being used for your group:
+To view compute usage for your group:
 
 1. On the top bar, select **Main menu > Groups** and find your group. The group must not be a subgroup.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
 
-![Group CI/CD minutes quota](img/group_cicd_minutes_quota.png)
-
-The projects list shows projects with CI/CD minute usage or shared runners usage
+The projects list shows projects with compute usage or shared runners usage
 in the current month only. The list includes all projects in the namespace and its
-subgroups, sorted in descending order of CI/CD minute usage.
+subgroups, sorted in descending order of compute usage.
 
 ### View Usage Quota reports for a personal namespace
 
@@ -121,15 +119,15 @@ Prerequisite:
 
 - The namespace must be your personal namespace.
 
-You can view the number of CI/CD minutes being used by a personal namespace:
+You can view the compute usage for a personal namespace:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 
 The projects list shows [personal projects](../../user/project/working_with_projects.md#view-personal-projects)
-with CI/CD minutes usage or shared runners usage in the current month only. The list
-is sorted in descending order of CI/CD minute usage.
+with compute usage or shared runners usage in the current month only. The list
+is sorted in descending order of compute usage.
 
 ## Purchase additional CI/CD minutes **(FREE SAAS)**
 
@@ -191,9 +189,9 @@ To purchase additional minutes for your personal namespace:
 After your payment is processed, the additional CI/CD minutes are added to your personal
 namespace.
 
-## How CI/CD minute usage is calculated
+## How compute usage is calculated
 
-GitLab uses this formula to calculate the CI/CD minute usage of a job:
+GitLab uses this formula to calculate the compute usage of a job:
 
 ```plaintext
 Job duration * Cost factor
@@ -203,18 +201,18 @@ Job duration * Cost factor
   not including time spent in the `created` or `pending` statuses.
 - [**Cost factor**](#cost-factor): A number based on project visibility.
 
-The value is transformed into minutes and added to the count of used CI/CD minutes
+The value is transformed into units of compute and added to the count of used units
 in the job's top-level namespace.
 
 For example, if a user `alice` runs a pipeline:
 
-- Under the `gitlab-org` namespace, the CI/CD minutes used by each job in the pipeline are
+- Under the `gitlab-org` namespace, the units of compute used by each job in the pipeline are
   added to the overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
-- For one of the personal projects in their namespace, the CI/CD minutes are added
+- For one of the personal projects in their namespace, the units of compute are added
   to the overall consumption for the `alice` namespace.
 
-The CI/CD minutes used by one pipeline is the total CI/CD minutes used by all the jobs
-that ran in the pipeline. Jobs can run concurrently, so the total CI/CD minutes usage
+The compute used by one pipeline is the total units of compute used by all the jobs
+that ran in the pipeline. Jobs can run concurrently, so the total compute usage
 can be higher than the end-to-end duration of a pipeline.
 
 ### Cost factor
@@ -225,24 +223,24 @@ The cost factors for jobs running on shared runners on GitLab.com are:
 - Exceptions for public projects:
   - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
   - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
-  you use 1 CI/CD minute.
+  you use 1 unit of compute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
 
-- `0` for public projects, so they do not consume CI/CD minutes.
+- `0` for public projects, so they do not consume units of compute.
 - `1` for internal and private projects.
 
 #### Cost factor for community contributions to GitLab projects
 
 Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
-is reduced by the CI/CD minutes used by pipelines from other projects.
+is reduced by the units of compute used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
-- `Monthly minute quota / 300,000 job duration minutes = Cost factor`
+- `Monthly compute quota / 300,000 job duration minutes = Cost factor`
 
-For example, with the 10,000 CI/CD minutes per month in the Premium tier:
+For example, with a monthly compute quota of 10,000 in the Premium tier:
 
 - 10,000 / 300,000 = 0.03333333333 cost factor.
 
@@ -261,41 +259,41 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type | Machine Size | CI/CD minutes cost factor  |
-| :--------- | :------------------- | :--------- |
-| Linux OS amd64 | small  |1|
-| Linux OS amd64 | medium  |2|
-| Linux OS amd64 | large |3|
-| Linux OS amd64 + GPU-enabled | medium, GPU standard |7|
-| macOS M1 | Medium |6|
+| GitLab SaaS runner type      | Machine Size         | Cost factor |
+|:-----------------------------|:---------------------|:------------|
+| Linux OS amd64               | small                | 1           |
+| Linux OS amd64               | medium               | 2           |
+| Linux OS amd64               | large                | 3           |
+| Linux OS amd64 + GPU-enabled | medium, GPU standard | 7           |
+| macOS M1                     | Medium               | 6           |
 
-### Monthly reset of CI/CD minutes
+### Monthly reset of compute usage
 
-On the first day of each calendar month, the accumulated usage of CI/CD minutes is reset to `0`
+On the first day of each calendar month, the accumulated compute usage is reset to `0`
 for all namespaces that use shared runners. This means your full quota is available, and
 calculations start again from `0`.
 
-For example, if you have a monthly quota of `10,000` CI/CD minutes:
+For example, if you have a monthly quota of `10,000` units of compute:
 
-- On **April 1**, you have `10,000` minutes.
-- During April, you use only `6,000` of the `10,000` minutes.
-- On **May 1**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
+- On **April 1**, you have `10,000` units of compute.
+- During April, you use only `6,000` of the `10,000` units of compute.
+- On **May 1**, the accumulated compute usage resets to `0`, and you have `10,000` units of compute to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
 
-### Monthly rollover of purchased CI/CD minutes
+### Monthly rollover of purchased units of compute
 
-If you purchase additional CI/CD minutes and don't use the full amount, the remaining amount rolls over to
+If you purchase additional units of compute and don't use the full amount, the remaining amount rolls over to
 the next month.
 
 For example:
 
-- On **April 1**, you purchase `5,000` additional CI/CD minutes.
-- During April, you use only `3,000` of the `5,000` additional minutes.
-- On **May 1**, the unused minute roll over, so you have `2,000` additional minutes available for May.
+- On **April 1**, you purchase `5,000` additional units of compute.
+- During April, you use only `3,000` of the `5,000` additional units of compute.
+- On **May 1**, the unused units of compute roll over, so you have `2,000` additional units of compute available for May.
 
-Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
+Additional units of compute are a one-time purchase and do not renew or refresh each month.
 
 ## What happens when you exceed the quota
 

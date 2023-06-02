@@ -180,6 +180,26 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.by_sorted_source_branches' do
+      let(:fork_for_project) { fork_project(project) }
+
+      let!(:merge_request_to_master) { create(:merge_request, :closed, target_project: project, source_branch: 'a-feature') }
+      let!(:merge_request_to_other_branch) { create(:merge_request, target_project: project, source_branch: 'b-feature') }
+      let!(:merge_request_to_master2) { create(:merge_request, target_project: project, source_branch: 'a-feature') }
+      let!(:merge_request_from_fork_to_master) { create(:merge_request, source_project: fork_for_project, target_project: project, source_branch: 'b-feature') }
+
+      it 'returns merge requests sorted by name and id' do
+        expect(described_class.by_sorted_source_branches(%w[a-feature b-feature non-existing-feature])).to eq(
+          [
+            merge_request_to_master2,
+            merge_request_to_master,
+            merge_request_from_fork_to_master,
+            merge_request_to_other_branch
+          ]
+        )
+      end
+    end
+
     describe '.without_hidden', feature_category: :insider_threat do
       let_it_be(:banned_user) { create(:user, :banned) }
       let_it_be(:hidden_merge_request) { create(:merge_request, :unique_branches, author: banned_user) }

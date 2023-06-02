@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Every controller" do
+RSpec.describe "Every controller", feature_category: :scalability do
   context "feature categories" do
     let_it_be(:feature_categories) do
       Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set

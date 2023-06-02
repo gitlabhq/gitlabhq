@@ -50,6 +50,7 @@
 - disaster_recovery
 - dora_metrics
 - dynamic_application_security_testing
+- editor_extensions
 - environment_management
 - error_budgets
 - error_tracking
@@ -125,6 +126,7 @@
 - source_code_management
 - static_application_security_testing
 - subscription_management
+- switchboard
 - system_access
 - team_planning
 - tracing

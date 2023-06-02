@@ -54,9 +54,7 @@ RSpec.describe Resolvers::ReleasesResolver, feature_category: :release_orchestra
   private
 
   def resolve_releases
-    batch_sync do
-      context = { current_user: current_user }
-      resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
-    end
+    context = { current_user: current_user }
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

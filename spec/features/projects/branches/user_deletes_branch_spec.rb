@@ -23,7 +23,8 @@ RSpec.describe "User deletes branch", :js, feature_category: :groups_and_project
     branch_search.native.send_keys(:enter)
 
     page.within(".js-branch-improve\\/awesome") do
-      find('.js-delete-branch-button').click
+      click_button 'More actions'
+      find('[data-testid="delete-branch-button"]').click
     end
 
     accept_gl_confirm(button_text: 'Yes, delete branch')

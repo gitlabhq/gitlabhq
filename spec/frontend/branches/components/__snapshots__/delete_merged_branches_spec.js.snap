@@ -4,7 +4,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
 <div>
   <gl-base-dropdown-stub
     category="tertiary"
-    class="gl-disclosure-dropdown"
+    class="gl-disclosure-dropdown gl-display-none gl-md-display-block!"
     data-qa-selector="delete_merged_branches_dropdown_button"
     icon="ellipsis_v"
     nocaret="true"
@@ -30,6 +30,27 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
     </ul>
      
   </gl-base-dropdown-stub>
+   
+  <b-button-stub
+    class="gl-display-block gl-md-display-none! gl-button btn-danger-secondary"
+    data-qa-selector="delete_merged_branches_button"
+    size="md"
+    tag="button"
+    type="button"
+    variant="danger"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
+    >
+      
+    Delete merged branches
+  
+    </span>
+  </b-button-stub>
    
   <div>
     <form

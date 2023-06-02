@@ -8,6 +8,8 @@ module Resolvers
              required: false, default_value: :released_at_desc,
              description: 'Sort releases by given criteria.'
 
+    alias_method :project, :object
+
     # This resolver has a custom singular resolver
     def self.single
       Resolvers::ReleaseResolver
@@ -21,24 +23,11 @@ module Resolvers
     }.freeze
 
     def resolve(sort:)
-      BatchLoader::GraphQL.for(project).batch do |projects, loader|
-        releases = ReleasesFinder.new(
-          projects,
-          current_user,
-          SORT_TO_PARAMS_MAP[sort]
-        ).execute
-
-        # group_by will not cause N+1 queries here because ReleasesFinder preloads projects
-        releases.group_by(&:project).each do |project, versions|
-          loader.call(project, versions)
-        end
-      end
-    end
-
-    private
-
-    def project
-      object.respond_to?(:project) ? object.project : object
+      ReleasesFinder.new(
+        project,
+        current_user,
+        SORT_TO_PARAMS_MAP[sort]
+      ).execute
     end
   end
 end

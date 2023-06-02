@@ -16,6 +16,7 @@ RSpec.describe 'projects/branches/index.html.haml' do
     assign(:mode, 'overview')
     assign(:active_branches, [active_branch])
     assign(:stale_branches, [stale_branch])
+    assign(:related_merge_requests, {})
     assign(:overview_max_branches, 5)
     assign(:branch_pipeline_statuses, {})
     assign(:refs_pipelines, {})

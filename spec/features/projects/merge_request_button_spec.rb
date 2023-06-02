@@ -50,10 +50,17 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
         end
 
         it 'does not show Create merge request button' do
+          href = project_new_merge_request_path(
+            project,
+            merge_request: {
+              source_branch: 'feature'
+            }.merge(extra_mr_params)
+          )
+
           visit url
 
           within('#content-body') do
-            expect(page).not_to have_link(label)
+            expect(page).not_to have_link(label, href: href)
           end
         end
       end
@@ -105,7 +112,7 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
 
   context 'on branches page' do
     it_behaves_like 'Merge request button only shown when allowed' do
-      let(:label) { 'Merge request' }
+      let(:label) { 'New' }
       let(:url) { project_branches_filtered_path(project, state: 'all', search: 'feature') }
       let(:fork_url) { project_branches_filtered_path(forked_project, state: 'all', search: 'feature') }
     end

@@ -27,7 +27,7 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         find('input[data-testid="branch-search"]').set('fix')
         find('input[data-testid="branch-search"]').native.send_keys(:enter)
 
-        expect(page).to have_button('Only a project maintainer or owner can delete a protected branch', disabled: true)
+        expect(page).not_to have_button('Delete protected branch')
       end
     end
   end
@@ -64,9 +64,11 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
 
+        find('[data-testid="branch-more-actions"] button').click
+        wait_for_requests
         expect(page).to have_button('Delete protected branch', disabled: false)
 
-        page.find('.js-delete-branch-button').click
+        find('[data-testid="delete-branch-button"]').click
         fill_in 'delete_branch_input', with: 'fix'
         click_button 'Yes, delete protected branch'
 

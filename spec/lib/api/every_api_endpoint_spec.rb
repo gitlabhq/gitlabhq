@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Every API endpoint' do
+RSpec.describe 'Every API endpoint', feature_category: :scalability do
   context 'feature categories' do
     let_it_be(:feature_categories) do
       Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set
