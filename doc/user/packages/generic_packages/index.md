@@ -225,12 +225,12 @@ If you are receiving `HTTP 500: Internal Server Error` responses when publishing
 # Consolidated Object Storage settings
 gitlab_rails['object_store']['connection'] = {
   # Other connection settings
-  `aws_signature_version` => '4'
+  'aws_signature_version' => '4'
 }
 # OR 
 # Storage-specific form settings
 gitlab_rails['packages_object_store_connection'] = {
   # Other connection settings
-  `aws_signature_version` => '4'
+  'aws_signature_version' => '4'
 }
 ```

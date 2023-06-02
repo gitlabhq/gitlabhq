@@ -43,7 +43,6 @@ are supported:
 | `.gitignore`            | `gitignore`          | `.gitignore`  |
 | `.gitlab-ci.yml`        | `gitlab-ci`          | `.yml`        |
 | `LICENSE`               | `LICENSE`            | `.txt`        |
-| `metrics-dashboard.yml` | `metrics-dashboards` | `.yml`        |
 
 Each template must go in its respective subdirectory, have the correct
 extension and not be empty. So, the hierarchy should look like this:
@@ -62,9 +61,6 @@ extension and not be empty. So, the hierarchy should look like this:
 |-- LICENSE
     |-- custom_license.txt
     |-- another_license.txt
-|-- metrics-dashboards
-    |-- custom_metrics-dashboard.yml
-    |-- another_metrics-dashboard.yml
 ```
 
 Your custom templates are displayed on the dropdown list when a new file is added through the GitLab UI:

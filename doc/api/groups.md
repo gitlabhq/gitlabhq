@@ -1269,6 +1269,32 @@ Example response:
 ]
 ```
 
+## Service Accounts **(PREMIUM)**
+
+### Create Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+
+Creates a service account user with an auto-generated email address and username.
+
+```plaintext
+POST /groups/:id/service_accounts
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user"
+}
+```
+
 ## Hooks **(PREMIUM)**
 
 Also called Group Hooks and Webhooks.

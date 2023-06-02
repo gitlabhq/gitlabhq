@@ -1110,6 +1110,30 @@ msgstr ""
 msgid "%{start} to %{end}"
 msgstr ""
 
+msgid "%{statusStart}Dismissed%{statusEnd}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd} at %{projectLink}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd} on pipeline %{pipelineLink}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd} on pipeline %{pipelineLink} at %{projectLink}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} at %{projectLink}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} on pipeline %{pipelineLink}"
+msgstr ""
+
+msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} on pipeline %{pipelineLink} at %{projectLink}"
+msgstr ""
+
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 
@@ -16093,15 +16117,6 @@ msgid "Dismiss trial promotion"
 msgstr ""
 
 msgid "Dismissed"
-msgstr ""
-
-msgid "Dismissed at %{projectLink}"
-msgstr ""
-
-msgid "Dismissed on pipeline %{pipelineLink}"
-msgstr ""
-
-msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
 msgid "Display"

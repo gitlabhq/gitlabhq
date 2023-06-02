@@ -128,6 +128,10 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## AI, artificial intelligence
+
+Use **AI**. Do not spell out **artificial intelligence**.
+
 ## air gap, air-gapped
 
 Use **offline environment** to describe installations that have physical barriers or security policies that prevent or limit internet access. Do not use **air gap**, **air gapped**, or **air-gapped**. For example:

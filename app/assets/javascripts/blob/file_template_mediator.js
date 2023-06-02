@@ -10,7 +10,6 @@ import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';
 import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
-import MetricsDashboardSelector from './template_selectors/metrics_dashboard_selector';
 
 export default class FileTemplateMediator {
   constructor({ editor, currentAction, projectId }) {
@@ -30,7 +29,6 @@ export default class FileTemplateMediator {
     this.templateSelectors = [
       GitignoreSelector,
       BlobCiYamlSelector,
-      MetricsDashboardSelector,
       DockerfileSelector,
       LicenseSelector,
     ].map((TemplateSelectorClass) => new TemplateSelectorClass({ mediator: this }));

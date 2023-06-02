@@ -199,7 +199,8 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [GitLab chart with Geo](https://docs.gitlab.com/charts/advanced/geo/) does not support [Unified URLs](secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites). See [GitLab issue #3522](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3522) for more details.
 - [Disaster recovery](disaster_recovery/index.md) for multi-secondary sites causes downtime due to the complete re-synchronization and re-configuration of all non-promoted secondaries.
-- For Git over SSH, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
 
 ### Limitations on replication/verification
 
@@ -275,7 +276,7 @@ For information on configuring Geo for multiple nodes, see [Geo for multiple ser
 
 ### Configuring Geo with Object Storage
 
-For information on configuring Geo with object storage, see [Geo with Object storage](replication/object_storage.md).
+For information on configuring Geo with Object storage, see [Geo with Object storage](replication/object_storage.md).
 
 ### Disaster Recovery
 

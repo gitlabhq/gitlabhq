@@ -141,10 +141,6 @@ module BlobHelper
     @gitlab_ci_ymls ||= TemplateFinder.all_template_names(project, :gitlab_ci_ymls)
   end
 
-  def metrics_dashboard_ymls(project)
-    @metrics_dashboard_ymls ||= TemplateFinder.all_template_names(project, :metrics_dashboard_ymls)
-  end
-
   def dockerfile_names(project)
     @dockerfile_names ||= TemplateFinder.all_template_names(project, :dockerfiles)
   end

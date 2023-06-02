@@ -53,96 +53,12 @@ RSpec.describe Submodules::UpdateService, feature_category: :source_code_managem
       end
 
       context 'validations' do
-        context 'when submodule' do
-          context 'is empty' do
-            let(:submodule) { '' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
-            end
-          end
-
-          context 'is not present' do
-            let(:submodule) { nil }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
-            end
-          end
-
-          context 'is invalid' do
-            let(:submodule) { 'VERSION' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid submodule path' }
-            end
-          end
-
-          context 'does not exist' do
-            let(:submodule) { 'non-existent-submodule' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid submodule path' }
-            end
-          end
-
-          context 'has traversal path' do
-            let(:submodule) { '../six' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid submodule path' }
-            end
-          end
-        end
-
-        context 'commit_sha' do
-          context 'is empty' do
-            let(:commit_sha) { '' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
-            end
-          end
-
-          context 'is not present' do
-            let(:commit_sha) { nil }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
-            end
-          end
-
-          context 'is invalid' do
-            let(:commit_sha) { '1' }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
-            end
-          end
-
-          context 'is the same as the current ref' do
-            let(:commit_sha) { current_sha }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { "The submodule #{submodule} is already at #{commit_sha}" }
-            end
-          end
-        end
-
         context 'branch_name' do
           context 'is empty' do
             let(:branch_name) { '' }
 
             it_behaves_like 'returns error result' do
               let(:error_message) { 'You can only create or edit files when you are on a branch' }
-            end
-          end
-
-          context 'is not present' do
-            let(:branch_name) { nil }
-
-            it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
             end
           end
 

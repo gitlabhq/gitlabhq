@@ -992,6 +992,20 @@ Example response:
 }
 ```
 
+## Create Service Account User **(PREMIUM)**
+
+> Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
+
+Creates a service account user with an auto-generated email address and username.
+
+```plaintext
+POST /service_accounts
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts"
+```
+
 ## List user projects
 
 See the [list of user projects](projects.md#list-user-projects).

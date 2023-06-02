@@ -1666,9 +1666,7 @@ class User < ApplicationRecord
   DELETION_DELAY_IN_DAYS = 7.days
 
   def delete_async(deleted_by:, params: {})
-    is_deleting_own_record = deleted_by.id == id
-
-    if is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
+    if should_delay_delete?(deleted_by)
       new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
       self.note = "#{new_note}\n#{note}".strip
 
@@ -2349,6 +2347,11 @@ class User < ApplicationRecord
     UserCustomAttribute.set_banned_by_abuse_report(abuse_report)
 
     ban
+  end
+
+  def should_delay_delete?(deleted_by)
+    is_deleting_own_record = deleted_by.id == id
+    is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
   end
 
   def pbkdf2?

@@ -142,9 +142,12 @@ module API
           @base_model ||= Gitlab::Database.database_base_models[database]
         end
 
+        # Force progress evaluation to occur now while we're using the right connection
         def present_entity(result)
-          present result,
-            with: ::API::Entities::BatchedBackgroundMigration
+          representation = entity_representation_for(::API::Entities::BatchedBackgroundMigration, result, {})
+          json_representation = Gitlab::Json.dump(representation)
+
+          body Gitlab::Json::PrecompiledJson.new(json_representation)
         end
       end
     end

@@ -5,7 +5,7 @@ import createState from '~/ide/stores/state';
 describe('IDE file templates getters', () => {
   describe('templateTypes', () => {
     it('returns list of template types', () => {
-      expect(getters.templateTypes().length).toBe(5);
+      expect(getters.templateTypes().length).toBe(4);
     });
   });
 

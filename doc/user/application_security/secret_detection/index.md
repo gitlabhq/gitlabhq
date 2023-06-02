@@ -107,7 +107,8 @@ Secret Detection can detect if a secret was added in one commit and removed in a
 
   In a merge request, Secret Detection scans every commit made on the source branch. To use this
   feature, you must use the [`latest` Secret Detection template](#templates), as it supports
-  [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md).
+  [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
+  results are only available after the pipeline is completed.
 
 ## Templates
 
@@ -116,7 +117,7 @@ provided with GitLab upgrades, allowing you to benefit from any improvements and
 
 Available templates:
 
-- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable version of the Secret Detection CI/CD template.
+- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable, default version of the Secret Detection CI/CD template.
 - [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml): Latest version of the Secret Detection template.
 
 WARNING:

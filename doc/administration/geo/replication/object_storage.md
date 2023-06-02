@@ -9,7 +9,7 @@ type: howto
 
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
-Currently, **secondary** sites can use either:
+**Secondary** sites can use one of the following:
 
 - The same storage bucket as the **primary** site.
 - A replicated storage bucket.
