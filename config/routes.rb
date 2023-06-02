@@ -207,7 +207,7 @@ InitializerConnections.raise_if_new_database_connection do
       end
 
       # Spam reports
-      resources :abuse_reports, only: [:new, :create] do
+      resources :abuse_reports, only: [:create] do
         collection do
           post :add_category
         end

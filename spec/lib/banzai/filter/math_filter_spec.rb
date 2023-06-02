@@ -215,6 +215,14 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
     expect(doc.search('.js-render-math').count).to eq(2)
   end
 
+  it 'protects against malicious backtracking' do
+    doc = pipeline_filter("$$#{' ' * 1_000_000}$")
+
+    expect do
+      Timeout.timeout(3.seconds) { filter(doc) }
+    end.not_to raise_error
+  end
+
   def pipeline_filter(text)
     context = { project: nil, no_sourcepos: true }
     doc = Banzai::Pipeline::PreProcessPipeline.call(text, {})

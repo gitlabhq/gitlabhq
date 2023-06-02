@@ -200,6 +200,11 @@ Prerequisite:
 
 - You must have the Maintainer or Owner role.
 
+If the importing member's role in the target project is:
+
+- Maintainer, then members with the Owner role in the source project are imported with the Maintainer role.
+- Owner, then members with the Owner role in the source project are imported with the Owner role.
+
 To import users:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

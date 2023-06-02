@@ -10,7 +10,8 @@ module Gitlab
           'Only a project maintainer or owner can delete a protected tag.',
         delete_protected_tag_non_web: 'You can only delete protected tags using the web interface.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
-        default_branch_collision: 'You cannot use default branch name to create a tag'
+        default_branch_collision: 'You cannot use default branch name to create a tag',
+        prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.'
       }.freeze
 
       LOG_MESSAGES = {
@@ -29,10 +30,19 @@ module Gitlab
         end
 
         default_branch_collision_check
+        prohibited_tag_checks
         protected_tag_checks
       end
 
       private
+
+      def prohibited_tag_checks
+        return if deletion?
+
+        if tag_name.start_with?("refs/tags/") # rubocop: disable Style/GuardClause
+          raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name]
+        end
+      end
 
       def protected_tag_checks
         logger.log_timed(LOG_MESSAGES[__method__]) do
