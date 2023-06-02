@@ -12,6 +12,8 @@ The fields returned in responses vary based on the [permissions](../user/permiss
 
 ## List groups
 
+> Support for keyset pagination introduced in GitLab 14.3.
+
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
@@ -19,7 +21,7 @@ By default, this request returns 20 results at a time because the API results [a
 
 When accessed without authentication, this endpoint also supports [keyset pagination](rest/index.md#keyset-based-pagination):
 
-- When requesting consecutive pages of results, we recommend you use keyset pagination.
+- When requesting consecutive pages of results, you should use keyset pagination.
 - Beyond a specific offset limit (specified by [max offset allowed by the REST API for offset-based pagination](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)), offset pagination is unavailable.
 
 Parameters:

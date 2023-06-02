@@ -22,6 +22,9 @@ fragment ListItemShared on CiRunner {
     updateRunner
     deleteRunner
   }
+  managers {
+    count
+  }
   groups(first: 1) {
     nodes {
       id

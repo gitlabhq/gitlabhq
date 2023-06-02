@@ -311,13 +311,297 @@ growth of references in object pools.
 
 ## Design and implementation details
 
-<!--
+### Moving lifecycle management of object pools into Gitaly
 
-This section intentionally left blank. I first want to reach consensus on the
-bigger picture I'm proposing in this blueprint before I iterate and fill in the
-lower-level design and implementation details.
+As stated, the goal is to move the ownership of object pools into Gitaly.
+Ideally, the concept of object pools should not be exposed to callers at all
+anymore. Instead, we want to only expose the higher-level concept of networks of
+repositories that share objects with each other in order to deduplicate them.
 
--->
+The following subsections review the current object pool-based architecture and
+then propose the new object deduplication network-based architecture.
+
+#### Object pool-based architecture
+
+Managing the object pool lifecycle in the current architecture requires a
+plethora of RPC calls and requires a lot of knowledge from the calling side. The
+following sequence diagram shows a simplified version of the lifecycle of an
+object pool. It is simplified insofar as we only consider there to be a single
+object pool member.
+
+```mermaid
+sequenceDiagram
+    Rails->>+Gitaly: CreateObjectPool
+    Gitaly->>+Object Pool: Create
+    activate Object Pool
+    Object Pool-->>-Gitaly: Success
+    Gitaly-->>-Rails: Success
+
+    Rails->>+Gitaly: LinkRepositoryToObjectPool
+    Gitaly->>+Upstream: Link
+    Upstream-->>-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    Rails->>+Gitaly: OptimizeRepository
+    Gitaly->>+Upstream: Optimize
+    Upstream-->-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    Rails->>+Gitaly: CreateFork
+    Gitaly->>+Fork: Create
+    activate Fork
+    Fork-->>-Gitaly: Success
+    Gitaly-->>-Rails: CreateFork
+
+    note over Rails, Fork: Fork exists but is not connected to the object pool.
+
+    Rails->>+Gitaly: LinkRepositoryToObjectPool
+    Gitaly->>+Fork: Link
+    Fork-->>-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    note over Rails, Fork: Fork is connected to object pool, but objects are duplicated.
+
+    Rails->>+Gitaly: OptimizeRepository
+    Gitaly->>+Fork: Optimize
+    Fork-->-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    loop Regularly
+        note over Rails, Fork: Rails needs to ensure that the object pool is regularly updated.
+
+        Rails->>+Gitaly: FetchIntoObjectPool
+        Gitaly->>+Object Pool: Fetch
+        Object Pool-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    end
+
+    alt Disconnect Fork
+        note over Rails, Fork: Forks can be disconnected to stop deduplicating objects.
+
+        Rails->>+Gitaly: DisconnectGitAlternates
+        Gitaly->>+Fork: Disconnect
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    else Delete Fork
+        note over Rails, Fork: Or the fork is deleted eventually.
+
+        Rails->>+Gitaly: RemoveRepository
+        Gitaly->>+Fork: Remove
+        Fork-->>-Gitaly: Success
+        deactivate Fork
+        Gitaly-->>-Rails: Success
+    end
+
+    Rails->>+Gitaly: DisconnectGitAlternates
+    Gitaly->>+Upstream: Disconnect
+    Upstream-->>-Gitaly: Success
+    Gitaly-->>-Rails: Success
+
+    Rails->>+Gitaly: DeleteObjectPool
+    Gitaly->>+Object Pool: Remove
+    Object Pool-->>-Gitaly: Success
+    deactivate Object Pool
+    Gitaly-->>-Rails: Success
+```
+
+The following steps are involved in creating the object pool:
+
+1. The object pool is created from its upstream repository by calling
+   `CreateObjectPool()`. It contains all the objects that the upstream
+   repository contains at the time of creation.
+1. The upstream repository is linked to the object pool by calling
+   `LinkRepositoryToObjectPool()`. Its objects are not automatically
+   deduplicated.
+1. Objects in the upstream repository get deduplicated by calling
+   `OptimizeRepository()`.
+1. The fork is created by calling `CreateFork()`. This RPC call only takes the
+   upstream repository as input and does not know about the already-created
+   object pool. It thus performs a second full copy of objects.
+1. Fork and object pool are linked by calling `LinkRepositoryToObjectPool()`.
+   This writes the `info/alternates` file in the fork so that it becomes
+   aware of the additional object database, but doesn't cause the objects to
+   become deduplicated.
+1. Objects in the fork get deduplicated by calling `OptimizeRepository()`.
+1. The calling side is now expected to regularly call `FetchIntoObjectPool()` to
+   fetch new objects from the upstream repository into the object pool. Fetched
+   objects are not automatically deduplicated in the upstream repository.
+1. The fork can be detached from the object pool in two ways:
+   - Explicitly by calling `DisconnectGitAlternates()`, which removes the
+     `info/alternates` file and reduplicates all objects.
+   - By calling `RemoveRepository()` to delete the fork altogether.
+1. When the object pool is empty, it must be removed by calling
+   `DeleteObjectPool()`.
+
+It is clear that the whole lifecycle management is not well-abstracted and that
+the clients need to be aware of many of its intricacies. Furthermore, we have
+multiple sources of truth for object pool memberships that can (and in practice
+do) diverge.
+
+#### Object deduplication network-based architecture
+
+The proposed new architecture simplifies this process by completely removing the
+notion of object pools from the public interface. Instead, Gitaly exposes the
+high-level notion of "object deduplication networks". Repositories can join
+these networks with one of two roles:
+
+- Read-write object deduplication network members regularly update the set of
+  objects that are part of the object deduplication network.
+- Read-only object deduplication network members are passive members and never
+  update the set of objects that are part of the object deduplication network.
+
+The set of objects that can be deduplicated across members of the object
+deduplication network thus consists only of objects fetched from the read-write
+members. All members benefit from the deduplication regardless of their role.
+Typically:
+
+- The original upstream repository is designated as the read-write member of
+  the object deduplication network.
+- Forks are read-only object deduplication network members.
+
+It is valid for object deduplication networks to only have read-only members.
+In that case the network is not updated with new shared objects, but the
+existing shared objects remain in use.
+
+Though object pools continue to be the underlying mechanism, the higher level of
+abstraction would allow us to swap out the mechanism if we ever decide to do so.
+
+While clients of Gitaly need to perform fine-grained lifecycle management of
+object pools in the object pool-based architecture, the object deduplication
+network-based architecture only requires them to manage memberships of object
+deduplication networks. The following diagram shows the equivalent flow to the
+object pool-based architecture in the object deduplication network-based
+architecture:
+
+```mermaid
+sequenceDiagram
+    Rails->>+Gitaly: CreateFork
+    Gitaly->>+Object Pool: Create
+    activate Object Pool
+    Object Pool -->>-Gitaly: Success
+    Gitaly->>+Fork: Create
+    Fork->>+Object Pool: Join
+    Object Pool-->>-Fork: Success
+    Fork-->>-Gitaly: Success
+    activate Fork
+    Gitaly-->>-Rails: CreateFork
+
+    loop Regularly
+        Rails->>+Gitaly: OptimizeRepository
+        Gitaly->>+Fork: Optimize
+        Gitaly->>+Object Pool: Optimize
+        Object Pool-->>-Gitaly: Success
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    end
+
+    alt Disconnect Fork
+        Rails->>+Gitaly: RemoveRepositoryFromObjectDeduplicationNetwork
+        Gitaly->>+Fork: Disconnect
+
+        alt Last member
+            Gitaly->>+Object Pool: Remove
+            Object Pool-->>-Gitaly: Success
+        end
+
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    else Delete Fork
+        Rails->>+Gitaly: RemoveRepository
+        Gitaly->>+Fork: Remove
+
+        alt Last member
+            Gitaly->>+Object Pool: Remove
+            Object Pool-->>-Gitaly: Success
+        end
+
+        Fork-->>-Gitaly: Success
+        deactivate Fork
+        Gitaly-->>-Rails: Success
+    end
+```
+
+The following major steps are involved:
+
+1. The fork is created, where the request instructs Gitaly to have both
+   upstream and fork repository join an object deduplication network. If the
+   upstream project is part of an object deduplication network already, then
+   the fork joins that object deduplication network. If it isn't, Gitaly
+   creates an object pool and joins the upstream repository as a read-write
+   member and the fork as a read-only member. Objects of the fork are
+   immediately deduplicated. Gitaly records the membership of both repositories
+   in the object pool.
+1. The client regularly calls `OptimizeRepository()` on either the upstream or
+   the fork project, which is something that clients already know to do. The
+   behavior changes depending on the role of the object deduplication network
+   member:
+   - When executed on a read-write object deduplication network member, the
+     object pool may be updated based on a set of heuristics. This will pull
+     objects which have been newly created in the read-write object
+     deduplication network member into the object pool so that they are
+     available for all members in the object deduplication network.
+   - When executed on a read-only object deduplication network member, the
+     object pool will not be updated so that objects which are only part of the
+     read-only object deduplication network member will not get shared across
+     members. The object pool may still be optimized though as required, for
+     example by repacking objects.
+1. Both the upstream and the fork project can leave the object deduplication
+   network by calling `RemoveRepositoryFromObjectNetwork()`. This reduplicates
+   all objects and disconnects the repositories from the object pool.
+   Furthermore, if the repository was a read-write object deduplication network
+   member, Gitaly will stop using it as a source to update the pool.
+
+   Alternatively, the fork can be deleted with a call to `RemoveRepository()`.
+
+   Both calls update the memberships of the object pool to reflect that
+   repositories have left it. Gitaly deletes the object pool if it has no
+   members left.
+
+With this proposed flow the creation, maintenance, and removal of object pools
+is handled opaquely inside of Gitaly. In addition to the above, two more
+supporting RPCs may be provided:
+
+- `AddRepositoryToObjectDeduplicationNetwork()` to let a preexisting repository
+  join into an object deduplication network with a specified role.
+- `ListObjectDeduplicationNetworkMembers()` to list all members and their roles
+  of the object deduplication network that a repository is a member of.
+
+#### Migration to the object deduplication network-based architecture
+
+Migration towards the object deduplication network-based architecture involves
+a lot of small steps:
+
+1. `CreateFork()` starts automatically linking against preexisting object
+   pools. This allows fast forking and removes the notion of object pools for
+   callers when creating a fork.
+1. Introduce `AddRepositoryToObjectDeduplicationNetwork()` and
+   `RemoveRepositoryFromObjectDeduplicationNetwork()`. Deprecate
+   `AddRepositoryToObjectPool()` and `DisconnectGitAlternates()` and migrate
+   Rails to use the new RPCs. The object deduplication network is identified
+   via a repository, so this drops the notion of object pools when handling
+   memberships.
+1. Start recording object deduplication network memberships in `CreateFork()`,
+   `AddRepositoryToObjectDeduplicationNetwork()`,
+   `RemoveRepositoryFromObjectDeduplicationNetwork()` and `RemoveRepository()`.
+   This information empowers Gitaly to take control over the object pool
+   lifecycle.
+1. Implement a migration so that we can be sure that Gitaly has an up-to-date
+   view of all members of object pools. A migration is required so that Gitaly
+   can automatically handle the lifecycle of on object pool, which:
+   - Enables `OptimizeRepository()` to automatically fetch objects from
+     read-write object pool members.
+   - Allows Gitaly to automatically remove empty object pools.
+1. Change `OptimizeRepository()` so that it also optimizes object pools
+   connected to the repository, which allows us to deprecate and eventually
+   remove `FetchIntoObjectPool()`.
+1. Adapt `RemoveRepositoryFromObjectDeduplicationNetwork()` and
+   `RemoveRepository()` to remove empty object pools.
+1. Adapt `CreateFork()` to automatically create object pools, which allows us
+   to remove the `CreateObjectPool()` RPC.
+1. Remove the `ObjectPoolService` and the notion of object pools from the Gitaly
+   public API.
+
+This plan is of course subject to change.
 
 ## Problems with the design
 

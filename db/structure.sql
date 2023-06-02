@@ -11848,6 +11848,8 @@ CREATE TABLE application_settings (
     encrypted_vertex_ai_credentials_iv bytea,
     vertex_ai_project text,
     instance_level_code_suggestions_enabled boolean DEFAULT false NOT NULL,
+    delete_unconfirmed_users boolean DEFAULT false NOT NULL,
+    unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -17083,6 +17085,26 @@ CREATE SEQUENCE insights_id_seq
     CACHE 1;
 
 ALTER SEQUENCE insights_id_seq OWNED BY insights.id;
+
+CREATE TABLE instance_audit_events_streaming_headers (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    instance_external_audit_event_destination_id bigint NOT NULL,
+    key text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_d52adbbabb CHECK ((char_length(value) <= 255)),
+    CONSTRAINT check_e92010d531 CHECK ((char_length(key) <= 255))
+);
+
+CREATE SEQUENCE instance_audit_events_streaming_headers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE instance_audit_events_streaming_headers_id_seq OWNED BY instance_audit_events_streaming_headers.id;
 
 CREATE TABLE integrations (
     id integer NOT NULL,
@@ -25280,6 +25302,8 @@ ALTER TABLE ONLY index_statuses ALTER COLUMN id SET DEFAULT nextval('index_statu
 
 ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq'::regclass);
 
+ALTER TABLE ONLY instance_audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('instance_audit_events_streaming_headers_id_seq'::regclass);
+
 ALTER TABLE ONLY integrations ALTER COLUMN id SET DEFAULT nextval('integrations_id_seq'::regclass);
 
 ALTER TABLE ONLY internal_ids ALTER COLUMN id SET DEFAULT nextval('internal_ids_id_seq'::regclass);
@@ -27367,6 +27391,9 @@ ALTER TABLE ONLY index_statuses
 
 ALTER TABLE ONLY insights
     ADD CONSTRAINT insights_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY instance_audit_events_streaming_headers
+    ADD CONSTRAINT instance_audit_events_streaming_headers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT integrations_pkey PRIMARY KEY (id);
@@ -29517,11 +29544,15 @@ CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_me
 
 CREATE UNIQUE INDEX idx_external_audit_event_destination_id_key_uniq ON audit_events_streaming_headers USING btree (key, external_audit_event_destination_id);
 
+CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
+
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
 
 CREATE INDEX idx_installable_npm_pkgs_on_project_id_name_version_id ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 2) AND (status = 0));
+
+CREATE UNIQUE INDEX idx_instance_external_audit_event_destination_id_key_uniq ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id, key);
 
 CREATE INDEX idx_issues_on_health_status_not_null ON issues USING btree (health_status) WHERE (health_status IS NOT NULL);
 
@@ -37207,6 +37238,9 @@ ALTER TABLE ONLY board_user_preferences
 
 ALTER TABLE ONLY vulnerability_occurrence_pipelines
     ADD CONSTRAINT fk_rails_dc3ae04693 FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY instance_audit_events_streaming_headers
+    ADD CONSTRAINT fk_rails_dc933c1f3c FOREIGN KEY (instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deployment_merge_requests
     ADD CONSTRAINT fk_rails_dcbce9f4df FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;

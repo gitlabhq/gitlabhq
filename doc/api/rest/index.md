@@ -325,6 +325,7 @@ The following table shows the possible return codes for API requests.
 | `422 Unprocessable`       | The entity couldn't be processed.                                                                                                                        |
 | `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits).                                                    |
 | `500 Server Error`        | While handling the request, something went wrong on the server.                                                                                          |
+| `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded.                                                                               |
 
 ## Pagination
 
@@ -485,14 +486,14 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                                                          | Options                          | Availability                                                                                                  |
-|:------------------------------------------------------------------|:---------------------------------|:--------------------------------------------------------------------------------------------------------------|
-| [Group audit events](../audit_events.md#group-audit-events)       | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2)  |
-| [Groups](../groups.md)                                            | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                    |
-| [Instance audit events](../audit_events.md#instance-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11) |
-| [Jobs](../jobs.md)                                                | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9)  |
-| [Project audit events](../audit_events.md#project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10) |
-| [Projects](../projects.md)                                        | `order_by=id` only               | Authenticated and unauthenticated users                                                                       |
+| Resource                                                                       | Options                          | Availability                             |
+|:-------------------------------------------------------------------------------|:---------------------------------|:-----------------------------------------|
+| [Group audit events](../audit_events.md#retrieve-all-group-audit-events)       | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
+| [Groups](../groups.md#list-groups)                                             | `order_by=name`, `sort=asc` only | Unauthenticated users only.              |
+| [Instance audit events](../audit_events.md#retrieve-all-instance-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
+| [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
+| [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
+| [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |
 
 ### Pagination response headers
 

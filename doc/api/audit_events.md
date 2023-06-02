@@ -8,7 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
 > - [Author Email added to the response body](https://gitlab.com/gitlab-org/gitlab/-/issues/386322) in GitLab 15.9.
-> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
 
 ## Instance Audit Events **(PREMIUM SELF)**
 
@@ -19,15 +18,17 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/in
 
 ### Retrieve all instance audit events
 
+> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
+
 ```plaintext
 GET /audit_events
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
+| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`.  |
+| `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`. |
 | `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
 
 This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination. You should use keyset-based
@@ -137,9 +138,6 @@ Example response:
 
 ## Group Audit Events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
-> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
-
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 This API cannot retrieve project audit events.
 
@@ -152,6 +150,8 @@ This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset
 pagination is recommended when requesting consecutive pages of results.
 
 ### Retrieve all group audit events
+
+> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 ```plaintext
 GET /groups/:id/audit_events
@@ -254,17 +254,16 @@ Example response:
 
 ## Project Audit Events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
-> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
 
-When requesting consecutive pages of results, you should use [keyset pagination](rest/index.md#keyset-based-pagination).
-
 ### Retrieve all project audit events
+
+> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 ```plaintext
 GET /projects/:id/audit_events
@@ -276,8 +275,8 @@ GET /projects/:id/audit_events
 | `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
+By default, `GET` requests return 20 results at a time because the API results are paginated.
+When requesting consecutive pages of results, you should use [keyset pagination](rest/index.md#keyset-based-pagination).
 
 Read more on [pagination](rest/index.md#pagination).
 

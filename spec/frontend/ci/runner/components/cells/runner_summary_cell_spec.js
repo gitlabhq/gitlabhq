@@ -3,6 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import RunnerSummaryCell from '~/ci/runner/components/cells/runner_summary_cell.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import RunnerManagersBadge from '~/ci/runner/components/runner_managers_badge.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -23,6 +24,7 @@ const mockRunner = allRunnersWithCreatorData.data.runners.nodes[0];
 describe('RunnerTypeCell', () => {
   let wrapper;
 
+  const findRunnerManagersBadge = () => wrapper.findComponent(RunnerManagersBadge);
   const findLockIcon = () => wrapper.findByTestId('lock-icon');
   const findRunnerTags = () => wrapper.findComponent(RunnerTags);
   const findRunnerSummaryField = (icon) =>
@@ -52,6 +54,18 @@ describe('RunnerTypeCell', () => {
     expect(wrapper.text()).toContain(
       `#${getIdFromGraphQLId(mockRunner.id)} (${mockRunner.shortSha})`,
     );
+  });
+
+  it('Displays no runner manager count', () => {
+    createComponent({
+      managers: { count: 0 },
+    });
+
+    expect(findRunnerManagersBadge().html()).toBe('');
+  });
+
+  it('Displays runner manager count', () => {
+    expect(findRunnerManagersBadge().text()).toBe('2');
   });
 
   it('Does not display the locked icon', () => {

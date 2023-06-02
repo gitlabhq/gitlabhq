@@ -1,5 +1,6 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
+import { throttle } from 'lodash';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
@@ -76,6 +77,9 @@ export default {
     hasCodequalityChanges() {
       return this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0;
     },
+  },
+  created() {
+    this.onDragOverThrottled = throttle((line) => this.onDragOver(line), 100, { leading: true });
   },
   methods: {
     ...mapActions(['setSelectedCommentPosition']),
@@ -255,7 +259,7 @@ export default {
           ({ lineCode, expanded }) =>
             toggleLineDiscussions({ lineCode, fileHash: diffFile.file_hash, expanded })
         "
-        @enterdragging="onDragOver"
+        @enterdragging="onDragOverThrottled"
         @startdragging="onStartDragging"
         @stopdragging="onStopDragging"
       />

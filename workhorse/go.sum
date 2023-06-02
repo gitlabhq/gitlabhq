@@ -1932,8 +1932,8 @@ github.com/yvasiyarov/go-metrics v0.0.0-20140926110328-57bccd1ccd43/go.mod h1:aX
 github.com/yvasiyarov/gorelic v0.0.0-20141212073537-a9bba5b9ab50/go.mod h1:NUSPSUX/bi6SeDMUh6brw0nXpxHnc96TguQh0+r/ssA=
 github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go.mod h1:GlGEuHIJweS1mbCqG+7vt2nvWLzLLnRHbXz5JKd/Qbg=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-gitlab.com/gitlab-org/gitaly/v15 v15.11.0 h1:m1O8Z8qlKo5rkQpRtfkLAai03sNWjpxjt3xD+2g2BUU=
-gitlab.com/gitlab-org/gitaly/v15 v15.11.0/go.mod h1:9iVjU+Rr+6pBkX7uHrocEubpjN4k7LrwD9ezvzSrN+Y=
+gitlab.com/gitlab-org/gitaly/v15 v15.11.1 h1:tVQ6DDeEtz/hoOck52BEzhcZ1jwL2PwaiqJcIhZ3l1U=
+gitlab.com/gitlab-org/gitaly/v15 v15.11.1/go.mod h1:9iVjU+Rr+6pBkX7uHrocEubpjN4k7LrwD9ezvzSrN+Y=
 gitlab.com/gitlab-org/labkit v1.18.0 h1:uYCIqDt/5V1hLIecTR4UNc1sD2+xiYplyKeyfpNN26A=
 gitlab.com/gitlab-org/labkit v1.18.0/go.mod h1:nlLJvKgXcIclqWMI+rga2TckNBVHOtRCHMxBoVByNoE=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

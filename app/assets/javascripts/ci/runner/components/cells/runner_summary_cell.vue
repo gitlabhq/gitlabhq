@@ -8,6 +8,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerName from '../runner_name.vue';
 import RunnerTags from '../runner_tags.vue';
 import RunnerTypeBadge from '../runner_type_badge.vue';
+import RunnerManagersBadge from '../runner_managers_badge.vue';
 
 import { formatJobCount } from '../../utils';
 import {
@@ -29,6 +30,7 @@ export default {
     RunnerName,
     RunnerTags,
     RunnerTypeBadge,
+    RunnerManagersBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
     UserAvatarLink,
@@ -44,6 +46,9 @@ export default {
     },
   },
   computed: {
+    managersCount() {
+      return this.runner.managers?.count || 0;
+    },
     jobCount() {
       return formatJobCount(this.runner.jobCount);
     },
@@ -75,6 +80,8 @@ export default {
       <slot :runner="runner" name="runner-name">
         <runner-name :runner="runner" />
       </slot>
+
+      <runner-managers-badge :count="managersCount" size="sm" class="gl-vertical-align-middle" />
       <gl-icon
         v-if="runner.locked"
         v-gl-tooltip
