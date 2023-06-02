@@ -26,7 +26,9 @@ export default class SingleFileDiff {
     this.content = $('.diff-content', this.file);
     this.$chevronRightIcon = $('.diff-toggle-caret .chevron-right', this.file);
     this.$chevronDownIcon = $('.diff-toggle-caret .chevron-down', this.file);
-    this.diffForPath = this.content.find('[data-diff-for-path]').data('diffForPath');
+    this.diffForPath = this.content
+      .find('div:not(.note-text)[data-diff-for-path]')
+      .data('diffForPath');
     this.isOpen = !this.diffForPath;
     if (this.diffForPath) {
       this.collapsedContent = this.content;

@@ -13,6 +13,7 @@ class Label < ApplicationRecord
   cache_markdown_field :description, pipeline: :single_line
 
   DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
+  DESCRIPTION_LENGTH_MAX = 512.kilobytes
 
   attribute :color, ::Gitlab::Database::Type::Color.new, default: DEFAULT_COLOR
 
@@ -30,6 +31,10 @@ class Label < ApplicationRecord
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
   validates :title, length: { maximum: 255 }
+
+  # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
+  # the description changes to avoid breaking the existing labels which may have their descriptions longer
+  validates :description, bytesize: { maximum: -> { DESCRIPTION_LENGTH_MAX } }, if: :validate_description_length?
 
   default_scope { order(title: :asc) } # rubocop:disable Cop/DefaultScope
 
@@ -276,6 +281,16 @@ class Label < ApplicationRecord
   end
 
   private
+
+  def validate_description_length?
+    return false unless description_changed?
+
+    previous_description = changes['description'].first
+    # previous_description will be nil for new records
+    return true if previous_description.blank?
+
+    previous_description.bytesize <= DESCRIPTION_LENGTH_MAX || description.bytesize > previous_description.bytesize
+  end
 
   def issues_count(user, params = {})
     params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')

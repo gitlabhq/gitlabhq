@@ -67,6 +67,21 @@ describe('SingleFileDiff', () => {
     expect(mock.history.get.length).toBe(1);
   });
 
+  it('ignores user-defined diff path attributes', () => {
+    setHTMLFixture(`
+    <div class="diff-file">
+      <div class="diff-content">
+        <div class="diff-viewer" data-type="simple">
+          <div class="note-text"><a data-diff-for-path="test/note/path">Test note</a></div>
+          <div data-diff-for-path="${blobDiffPath}">MOCK CONTENT</div>
+        </div>
+      </div>
+    </div>
+`);
+    const { diffForPath } = new SingleFileDiff(document.querySelector('.diff-file'));
+    expect(diffForPath).toEqual(blobDiffPath);
+  });
+
   it('does not load diffs via axios for already expanded diffs', async () => {
     setHTMLFixture(`
     <div class="diff-file">

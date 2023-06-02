@@ -18,43 +18,6 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
     sign_in(reporter)
   end
 
-  describe 'GET new' do
-    let(:ref_url) { 'http://example.com' }
-
-    it 'sets the instance variables' do
-      get new_abuse_report_path(user_id: user.id, ref_url: ref_url)
-
-      expect(assigns(:abuse_report)).to be_kind_of(AbuseReport)
-      expect(assigns(:abuse_report)).to have_attributes(
-        user_id: user.id,
-        reported_from_url: ref_url
-      )
-    end
-
-    context 'when the user has already been deleted' do
-      it 'redirects the reporter to root_path' do
-        user_id = user.id
-        user.destroy!
-
-        get new_abuse_report_path(user_id: user_id)
-
-        expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq(_('Cannot create the abuse report. The user has been deleted.'))
-      end
-    end
-
-    context 'when the user has already been blocked' do
-      it 'redirects the reporter to the user\'s profile' do
-        user.block
-
-        get new_abuse_report_path(user_id: user.id)
-
-        expect(response).to redirect_to user
-        expect(flash[:alert]).to eq(_('Cannot create the abuse report. This user has been blocked.'))
-      end
-    end
-  end
-
   describe 'POST add_category', :aggregate_failures do
     subject(:request) { post add_category_abuse_reports_path, params: request_params }
 

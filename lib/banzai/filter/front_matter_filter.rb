@@ -6,13 +6,13 @@ module Banzai
       def call
         lang_mapping = Gitlab::FrontMatter::DELIM_LANG
 
-        html.sub(Gitlab::FrontMatter::PATTERN) do |_match|
-          lang = $~[:lang].presence || lang_mapping[$~[:delim]]
+        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.replace_gsub(html) do |match|
+          lang = match[:lang].presence || lang_mapping[match[:delim]]
 
-          before = $~[:before]
-          before = "\n#{before}" if $~[:encoding].presence
+          before = match[:before]
+          before = "\n#{before}" if match[:encoding].presence
 
-          "#{before}```#{lang}:frontmatter\n#{$~[:front_matter]}```\n"
+          "#{before}```#{lang}:frontmatter\n#{match[:front_matter]}```\n"
         end
       end
     end
