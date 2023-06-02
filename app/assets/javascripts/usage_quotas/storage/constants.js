@@ -26,44 +26,44 @@ export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
 
 export const PROJECT_STORAGE_TYPES = [
   {
-    id: 'containerRegistrySize',
+    id: 'containerRegistry',
     name: __('Container Registry'),
     description: s__(
       'UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.',
     ),
   },
   {
-    id: 'buildArtifactsSize',
+    id: 'buildArtifacts',
     name: __('Job artifacts'),
     description: s__('UsageQuota|Job artifacts created by CI/CD.'),
   },
   {
-    id: 'pipelineArtifactsSize',
+    id: 'pipelineArtifacts',
     name: __('Pipeline artifacts'),
     description: s__('UsageQuota|Pipeline artifacts created by CI/CD.'),
   },
   {
-    id: 'lfsObjectsSize',
+    id: 'lfsObjects',
     name: __('LFS'),
     description: s__('UsageQuota|Audio samples, videos, datasets, and graphics.'),
   },
   {
-    id: 'packagesSize',
+    id: 'packages',
     name: __('Packages'),
     description: s__('UsageQuota|Code packages and container images.'),
   },
   {
-    id: 'repositorySize',
+    id: 'repository',
     name: __('Repository'),
     description: s__('UsageQuota|Git repository.'),
   },
   {
-    id: 'snippetsSize',
+    id: 'snippets',
     name: __('Snippets'),
     description: s__('UsageQuota|Shared bits of code and text.'),
   },
   {
-    id: 'wikiSize',
+    id: 'wiki',
     name: __('Wiki'),
     description: s__('UsageQuota|Wiki content.'),
   },

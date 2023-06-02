@@ -19,8 +19,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
     it 'shows enter password form' do
       render
 
-      expect(rendered).to have_selector('[data-testid="sign-in-tab"]')
-      expect(rendered).to have_css('#login-pane.active')
+      expect(rendered).to have_css('.login-box')
       expect(rendered).to have_selector('[data-testid="password-field"]')
     end
 
@@ -29,7 +28,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
 
       render
 
-      expect(rendered).not_to have_css('#login-pane')
+      expect(rendered).not_to have_css('.login-box')
       expect(rendered).to have_content _('No authentication methods configured.')
     end
   end

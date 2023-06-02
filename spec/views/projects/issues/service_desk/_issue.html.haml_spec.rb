@@ -14,7 +14,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
 
   describe 'timestamp', :freeze_time do
     context 'when issue is open' do
-      let(:issue) { create(:issue, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      let(:issue) { create(:issue, updated_at: 1.day.ago) }
 
       it 'shows last updated date' do
         expect(rendered).to have_content("updated #{format_timestamp(1.day.ago)}")
@@ -22,7 +22,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
     end
 
     context 'when issue is closed' do
-      let(:issue) { create(:issue, :closed, closed_at: 2.days.ago, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      let(:issue) { create(:issue, :closed, closed_at: 2.days.ago, updated_at: 1.day.ago) }
 
       it 'shows closed date' do
         expect(rendered).to have_content("closed #{format_timestamp(2.days.ago)}")
@@ -30,7 +30,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
     end
 
     context 'when issue is closed but closed_at is empty' do
-      let(:issue) { create(:issue, :closed, closed_at: nil, updated_at: 1.day.ago) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      let(:issue) { create(:issue, :closed, closed_at: nil, updated_at: 1.day.ago) }
 
       it 'shows last updated date' do
         expect(rendered).to have_content("updated #{format_timestamp(1.day.ago)}")
@@ -40,7 +40,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
     context 'when issue is service desk issue' do
       let_it_be(:email) { 'user@example.com' }
       let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
-      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) }
 
       context 'with anonymous user' do
         it 'obfuscates service_desk_reply_to email for anonymous user' do
@@ -49,7 +49,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
       end
 
       context 'with signed in user' do
-        let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+        let_it_be(:user) { create(:user) }
 
         before do
           allow(view).to receive(:current_user).and_return(user)

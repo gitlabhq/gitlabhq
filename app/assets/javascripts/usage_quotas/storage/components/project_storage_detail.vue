@@ -82,7 +82,15 @@ export default {
         />
         <div>
           <p class="gl-font-weight-bold gl-mb-0" :data-testid="`${item.storageType.id}-name`">
-            {{ item.storageType.name }}
+            <gl-link
+              v-if="item.storageType.detailsPath && item.value"
+              :data-testid="`${item.storageType.id}-details-link`"
+              :href="item.storageType.detailsPath"
+              >{{ item.storageType.name }}</gl-link
+            >
+            <template v-else>
+              {{ item.storageType.name }}
+            </template>
             <gl-link
               v-if="item.storageType.helpPath"
               :href="item.storageType.helpPath"

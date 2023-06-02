@@ -1,11 +1,10 @@
 <script>
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PROJECT_STORAGE_TYPES } from '../constants';
 import { descendingStorageUsageSort } from '../utils';
 
 export default {
-  mixins: [glFeatureFlagMixin()],
+  name: 'UsageGraph',
   props: {
     rootStorageStatistics: {
       required: true,
@@ -36,49 +35,49 @@ export default {
 
       return [
         {
-          id: 'repositorySize',
+          id: 'repository',
           style: this.usageStyle(this.barRatio(repositorySize)),
           class: 'gl-bg-data-viz-blue-500',
           size: repositorySize,
         },
         {
-          id: 'lfsObjectsSize',
+          id: 'lfsObjects',
           style: this.usageStyle(this.barRatio(lfsObjectsSize)),
           class: 'gl-bg-data-viz-orange-600',
           size: lfsObjectsSize,
         },
         {
-          id: 'packagesSize',
+          id: 'packages',
           style: this.usageStyle(this.barRatio(packagesSize)),
           class: 'gl-bg-data-viz-aqua-500',
           size: packagesSize,
         },
         {
-          id: 'containerRegistrySize',
+          id: 'containerRegistry',
           style: this.usageStyle(this.barRatio(containerRegistrySize)),
           class: 'gl-bg-data-viz-aqua-800',
           size: containerRegistrySize,
         },
         {
-          id: 'buildArtifactsSize',
+          id: 'buildArtifacts',
           style: this.usageStyle(this.barRatio(buildArtifactsSize)),
           class: 'gl-bg-data-viz-green-500',
           size: buildArtifactsSize,
         },
         {
-          id: 'pipelineArtifactsSize',
+          id: 'pipelineArtifacts',
           style: this.usageStyle(this.barRatio(pipelineArtifactsSize)),
           class: 'gl-bg-data-viz-green-800',
           size: pipelineArtifactsSize,
         },
         {
-          id: 'wikiSize',
+          id: 'wiki',
           style: this.usageStyle(this.barRatio(wikiSize)),
           class: 'gl-bg-data-viz-magenta-500',
           size: wikiSize,
         },
         {
-          id: 'snippetsSize',
+          id: 'snippets',
           style: this.usageStyle(this.barRatio(snippetsSize)),
           class: 'gl-bg-data-viz-orange-800',
           size: snippetsSize,

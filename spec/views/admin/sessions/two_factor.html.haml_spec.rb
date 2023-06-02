@@ -24,7 +24,7 @@ RSpec.describe 'admin/sessions/two_factor.html.haml' do
     it 'shows enter otp form' do
       render
 
-      expect(rendered).to have_css('#login-pane.active')
+      expect(rendered).to have_css('.login-box')
       expect(rendered).to have_field('user[otp_attempt]')
     end
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# TODO: change to fast_spec_helper in scope of https://gitlab.com/gitlab-org/gitlab/-/issues/413779
+require 'spec_helper'
 require 'html/pipeline'
 require 'addressable'
 
@@ -27,9 +28,13 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     " &#14;  javascript:"
   ]
 
-  invalid_schemes.each do |scheme|
-    context "with the scheme: #{scheme}" do
-      describe "#remove_unsafe_links" do
+  describe "#remove_unsafe_links" do
+    subject { object.remove_unsafe_links(env, remove_invalid_links: true) }
+
+    let(:env) { { node: node } }
+
+    invalid_schemes.each do |scheme|
+      context "with the scheme: #{scheme}" do
         tags = {
           a: {
             doc: HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>"),
@@ -55,19 +60,67 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
 
         tags.each do |tag, opts|
           context "<#{tag}> tags" do
-            it "removes the unsafe link" do
-              node = opts[:node_to_check].call(opts[:doc])
+            let(:node) { opts[:node_to_check].call(opts[:doc]) }
 
-              expect { object.remove_unsafe_links({ node: node }, remove_invalid_links: true) }
-                .to change { node[opts[:attr]] }
+            it "removes the unsafe link" do
+              expect { subject }.to change { node[opts[:attr]] }
 
               expect(node[opts[:attr]]).to be_blank
             end
           end
         end
       end
+    end
 
-      describe "#safe_protocol?" do
+    context 'when URI is valid' do
+      let(:doc) { HTML::Pipeline.parse("<a href='http://example.com'>foo</a>") }
+      let(:node) { doc.children.first }
+
+      it 'does not remove it' do
+        subject
+
+        expect(node[:href]).to eq('http://example.com')
+      end
+    end
+
+    context 'when URI is invalid' do
+      let(:doc) { HTML::Pipeline.parse("<a href='http://example:wrong_port.com'>foo</a>") }
+      let(:node) { doc.children.first }
+
+      it 'removes the link' do
+        subject
+
+        expect(node[:href]).to be_nil
+      end
+    end
+
+    context 'when URI is encoded but still invalid' do
+      let(:doc) { HTML::Pipeline.parse("<a href='http://example%EF%BC%9A%E7%BD%91'>foo</a>") }
+      let(:node) { doc.children.first }
+
+      it 'removes the link' do
+        subject
+
+        expect(node[:href]).to be_nil
+      end
+
+      context 'when feature flag "normalize_links_for_sanitizing" is disabled' do
+        before do
+          stub_feature_flags(normalize_links_for_sanitizing: false)
+        end
+
+        it 'does not remove it' do
+          subject
+
+          expect(node[:href]).to eq('http://example%EF%BC%9A%E7%BD%91')
+        end
+      end
+    end
+  end
+
+  describe "#safe_protocol?" do
+    invalid_schemes.each do |scheme|
+      context "with the scheme: #{scheme}" do
         let(:doc) { HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>") }
         let(:node) { doc.children.first }
         let(:uri) { Addressable::URI.parse(node['href']) }
@@ -76,6 +129,16 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
           expect(object.safe_protocol?(scheme)).to be_falsy
         end
       end
+    end
+  end
+
+  describe '#sanitize_unsafe_links' do
+    let(:env) { { node: 'node' } }
+
+    it 'makes a call to #remove_unsafe_links_method' do
+      expect(object).to receive(:remove_unsafe_links).with(env)
+
+      object.sanitize_unsafe_links(env)
     end
   end
 end

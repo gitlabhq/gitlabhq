@@ -26,7 +26,7 @@ describe('ProjectStorageDetail', () => {
     );
   };
 
-  const generateStorageType = (id = 'buildArtifactsSize') => {
+  const generateStorageType = (id = 'buildArtifacts') => {
     return {
       storageType: {
         id,
@@ -56,7 +56,7 @@ describe('ProjectStorageDetail', () => {
         expect(wrapper.findByTestId(`${id}-description`).text()).toBe(description);
         expect(wrapper.findByTestId(`${id}-icon`).props('name')).toBe(id);
         expect(wrapper.findByTestId(`${id}-help-link`).attributes('href')).toBe(
-          projectHelpLinks[id.replace(`Size`, ``)],
+          projectHelpLinks[id],
         );
       },
     );
@@ -71,6 +71,14 @@ describe('ProjectStorageDetail', () => {
         const expectedUsageAmount = numberToHumanSize(storageType.value, 1);
         expect(rowUsageAmount).toBe(expectedUsageAmount);
       });
+    });
+  });
+
+  describe('with details links', () => {
+    it.each(storageTypes)('each $storageType.id', (item) => {
+      const shouldExist = Boolean(item.storageType.detailsPath && item.value);
+      const detailsLink = wrapper.findByTestId(`${item.storageType.id}-details-link`);
+      expect(detailsLink.exists()).toBe(shouldExist);
     });
   });
 

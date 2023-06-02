@@ -4,7 +4,7 @@ import { ARCHIVE_FILE_TYPE, METADATA_FILE_TYPE, JOB_STATUS_GROUP_SUCCESS } from 
 export const totalArtifactsSizeForJob = (job) =>
   numberToHumanSize(
     job.artifacts.nodes
-      .map((artifact) => artifact.size)
+      .map((artifact) => Number(artifact.size))
       .reduce((total, artifact) => total + artifact, 0),
   );
 

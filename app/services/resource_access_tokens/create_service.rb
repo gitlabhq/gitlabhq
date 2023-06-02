@@ -17,6 +17,8 @@ module ResourceAccessTokens
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
       return error("Could not provision owner access to project access token") if do_not_allow_owner_access_level_for_project_bot?(access_level)
 
+      return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
+
       user = create_user
 
       return error(user.errors.full_messages.to_sentence) unless user.persisted?
@@ -44,6 +46,10 @@ module ResourceAccessTokens
     private
 
     attr_reader :resource_type, :resource
+
+    def reached_access_token_limit?
+      false
+    end
 
     def username_and_email_generator
       Gitlab::Utils::UsernameAndEmailGenerator.new(

@@ -79,10 +79,6 @@ class PersonalAccessToken < ApplicationRecord
     fuzzy_search(query, [:name])
   end
 
-  def project_access_token?
-    user&.project_bot?
-  end
-
   protected
 
   def validate_scopes

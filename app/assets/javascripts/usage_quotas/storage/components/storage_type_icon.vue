@@ -14,10 +14,10 @@ export default {
     iconName(storageTypeName) {
       const defaultStorageTypeIcon = 'disk';
       const storageTypeIconMap = {
-        lfsObjectsSize: 'doc-image',
-        snippetsSize: 'snippet',
-        repositorySize: 'infrastructure-registry',
-        packagesSize: 'package',
+        lfsObjects: 'doc-image',
+        snippets: 'snippet',
+        repository: 'infrastructure-registry',
+        packages: 'package',
       };
 
       return storageTypeIconMap[`${storageTypeName}`] ?? defaultStorageTypeIcon;

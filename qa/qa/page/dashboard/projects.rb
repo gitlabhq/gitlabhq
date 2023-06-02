@@ -17,6 +17,14 @@ module QA
           element :new_project_button
         end
 
+        view 'app/views/dashboard/projects/_blank_state_welcome.html.haml' do
+          element :new_project_button
+        end
+
+        view 'app/views/dashboard/projects/_blank_state_admin_welcome.html.haml' do
+          element :new_project_button
+        end
+
         def has_project_with_access_role?(project_name, access_role)
           within_element(:project_content, text: project_name) do
             has_element?(:user_role_content, text: access_role)

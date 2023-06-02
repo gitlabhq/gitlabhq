@@ -4,7 +4,7 @@
   - if has_start_trial?
     = render_if_exists "dashboard/projects/blank_state_ee_trial"
 
-  = link_to new_project_path, class: link_classes do
+  = link_to new_project_path, class: link_classes, data: { qa_selector: 'new_project_button' } do
     .blank-state-icon
       = custom_icon("add_new_project", size: 50)
     .blank-state-body.gl-sm-pl-6

@@ -31,7 +31,7 @@ See [Externalization for GitLab](externalization.md).
 
 ## Translate strings
 
-The translation process is managed at [https://translate.gitlab.com](https://translate.gitlab.com)
+The translation process is managed at [https://crowdin.com/project/gitlab-ee](https://crowdin.com/project/gitlab-ee)
 using [Crowdin](https://crowdin.com/).
 You must create a Crowdin account before you can submit translations. Once you are signed in, select
 the language you wish to contribute translations to.

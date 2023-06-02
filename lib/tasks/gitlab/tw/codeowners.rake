@@ -57,7 +57,7 @@ namespace :tw do
       # CodeOwnerRule.new('Observability', ''),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
       CodeOwnerRule.new('Organization', '@lciutacu'),
-      CodeOwnerRule.new('Package Registry', '@marcel.amirault'),
+      CodeOwnerRule.new('Package Registry', '@phillipwells'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),

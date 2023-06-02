@@ -12,7 +12,10 @@ import {
 } from './mock_data';
 
 describe('getStorageTypesFromProjectStatistics', () => {
-  const projectStatistics = mockGetProjectStorageStatisticsGraphQLResponse.data.project.statistics;
+  const {
+    statistics: projectStatistics,
+    statisticsDetailsPaths,
+  } = mockGetProjectStorageStatisticsGraphQLResponse.data.project;
 
   describe('matches project statistics value with matching storage type', () => {
     const typesWithStats = getStorageTypesFromProjectStatistics(projectStatistics);
@@ -22,29 +25,39 @@ describe('getStorageTypesFromProjectStatistics', () => {
         storageType: expect.objectContaining({
           id,
         }),
-        value: projectStatistics[id],
+        value: projectStatistics[`${id}Size`],
       });
     });
   });
 
   it('adds helpPath to a relevant type', () => {
-    const trimTypeId = (id) => id.replace('Size', '');
     const helpLinks = PROJECT_STORAGE_TYPES.reduce((acc, { id }) => {
-      const key = trimTypeId(id);
       return {
         ...acc,
-        [key]: `url://${id}`,
+        [id]: `url://${id}`,
       };
     }, {});
 
     const typesWithStats = getStorageTypesFromProjectStatistics(projectStatistics, helpLinks);
 
     typesWithStats.forEach((type) => {
-      const key = trimTypeId(type.storageType.id);
+      const key = type.storageType.id;
       expect(type.storageType.helpPath).toBe(helpLinks[key]);
     });
   });
+
+  it('adds details page path', () => {
+    const typesWithStats = getStorageTypesFromProjectStatistics(
+      projectStatistics,
+      {},
+      statisticsDetailsPaths,
+    );
+    typesWithStats.forEach((type) => {
+      expect(type.storageType.detailsPath).toBe(statisticsDetailsPaths[type.storageType.id]);
+    });
+  });
 });
+
 describe('parseGetProjectStorageResults', () => {
   it('parses project statistics correctly', () => {
     expect(
