@@ -16,7 +16,7 @@ export const initHeaderSearchApp = (search = '') => {
   }
 
   const searchContainer = headerEl.querySelector('.global-search-container');
-  const newHeader = headerEl.querySelector('.header-search-new');
+  const newHeader = headerEl.querySelector('.header-search');
 
   const { searchPath, issuesPath, mrPath, autocompletePath } = el.dataset;
   let { searchContext } = el.dataset;

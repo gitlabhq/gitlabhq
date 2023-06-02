@@ -214,10 +214,16 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
   end
 
   context 'broadcast message banner exists' do
-    it 'outputs a broadcast message' do
-      broadcast_message = create(:broadcast_message)
+    it 'outputs a broadcast message when show_in_cli is true' do
+      broadcast_message = create(:broadcast_message, show_in_cli: true)
 
       expect(subject).to include(build_alert_message(broadcast_message.message))
+    end
+
+    it 'does not output a broadcast message when show_in_cli is false' do
+      create(:broadcast_message, show_in_cli: false)
+
+      expect(has_alert_messages?(subject)).to be_falsey
     end
   end
 

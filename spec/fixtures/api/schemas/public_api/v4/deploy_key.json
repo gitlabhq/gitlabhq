@@ -50,6 +50,12 @@
       "items": {
         "$ref": "project/identity.json"
       }
+    },
+    "projects_with_readonly_access": {
+      "type": "array",
+      "items": {
+        "$ref": "project/identity.json"
+      }
     }
   },
   "additionalProperties": false

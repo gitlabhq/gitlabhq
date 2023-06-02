@@ -5,6 +5,7 @@ FactoryBot.define do
     message { "MyText" }
     starts_at { 1.day.ago }
     ends_at { 1.day.from_now }
+    show_in_cli { true }
 
     broadcast_type { :banner }
 

@@ -8,5 +8,9 @@ FactoryBot.define do
     trait :write_access do
       can_push { true }
     end
+
+    trait :readonly_access do
+      can_push { false }
+    end
   end
 end

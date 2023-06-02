@@ -30,4 +30,5 @@ export const NEW_BROADCAST_MESSAGE = {
   targetAccessLevels: [],
   startsAt: new Date(),
   endsAt: new Date(),
+  showInCli: true,
 };

@@ -36,6 +36,7 @@ describe('MessageForm', () => {
   const findSubmitButton = () => wrapper.findComponent('[data-testid=submit-button]');
   const findCancelButton = () => wrapper.findComponent('[data-testid=cancel-button]');
   const findForm = () => wrapper.findComponent(GlForm);
+  const findShowInCli = () => wrapper.findComponent('[data-testid=show-in-cli-checkbox]');
 
   function createComponent({ broadcastMessage = {} } = {}) {
     wrapper = mount(MessageForm, {
@@ -96,6 +97,18 @@ describe('MessageForm', () => {
     it('does not render for Notifications', () => {
       createComponent({ broadcastMessage: { broadcastType: TYPE_NOTIFICATION } });
       expect(findDismissable().exists()).toBe(false);
+    });
+  });
+
+  describe('showInCli checkbox', () => {
+    it('renders for Banners', () => {
+      createComponent({ broadcastMessage: { broadcastType: TYPE_BANNER } });
+      expect(findShowInCli().exists()).toBe(true);
+    });
+
+    it('does not render for Notifications', () => {
+      createComponent({ broadcastMessage: { broadcastType: TYPE_NOTIFICATION } });
+      expect(findShowInCli().exists()).toBe(false);
     });
   });
 

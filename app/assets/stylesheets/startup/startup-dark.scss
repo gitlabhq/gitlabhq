@@ -826,15 +826,15 @@ kbd {
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
 }
-.navbar-gitlab .header-search {
+.navbar-gitlab .header-search-form {
   min-width: 320px;
 }
 @media (min-width: 768px) and (max-width: 1199.98px) {
-  .navbar-gitlab .header-search {
+  .navbar-gitlab .header-search-form {
     min-width: 200px;
   }
 }
-.navbar-gitlab .header-search .keyboard-shortcut-helper {
+.navbar-gitlab .header-search-form .keyboard-shortcut-helper {
   transform: translateY(calc(50% - 2px));
   box-shadow: none;
   border-color: transparent;
@@ -1720,7 +1720,7 @@ body.gl-dark .navbar-gitlab .navbar-sub-nav {
 body.gl-dark .navbar-gitlab .nav > li {
   color: #ececef;
 }
-body.gl-dark .navbar-gitlab .nav > li.header-search-new {
+body.gl-dark .navbar-gitlab .nav > li.header-search {
   color: #ececef;
 }
 body.gl-dark .navbar-gitlab .nav > li > a .notification-dot {
@@ -1757,25 +1757,25 @@ body.gl-dark
   .notification-dot {
   background-color: #ececef;
 }
-body.gl-dark .header-search {
+body.gl-dark .header-search-form {
   background-color: rgba(236, 236, 239, 0.2) !important;
   border-radius: 4px;
 }
-body.gl-dark .header-search svg.gl-search-box-by-type-search-icon {
+body.gl-dark .header-search-form svg.gl-search-box-by-type-search-icon {
   color: rgba(236, 236, 239, 0.8);
 }
-body.gl-dark .header-search input {
+body.gl-dark .header-search-form input {
   background-color: transparent;
   color: rgba(236, 236, 239, 0.8);
   box-shadow: inset 0 0 0 1px rgba(236, 236, 239, 0.4);
 }
-body.gl-dark .header-search input::placeholder {
+body.gl-dark .header-search-form input::placeholder {
   color: rgba(236, 236, 239, 0.8);
 }
-body.gl-dark .header-search input:active::placeholder {
+body.gl-dark .header-search-form input:active::placeholder {
   color: #737278;
 }
-body.gl-dark .header-search .keyboard-shortcut-helper {
+body.gl-dark .header-search-form .keyboard-shortcut-helper {
   color: #ececef;
   background-color: rgba(236, 236, 239, 0.2);
 }
@@ -1799,11 +1799,11 @@ body.gl-dark .navbar-gitlab .navbar-nav li.active > button {
   color: var(--gl-text-color);
   background-color: var(--gray-200);
 }
-body.gl-dark .navbar-gitlab .header-search {
+body.gl-dark .navbar-gitlab .header-search-form {
   background-color: var(--gray-100) !important;
   box-shadow: inset 0 0 0 1px var(--border-color) !important;
 }
-body.gl-dark .navbar-gitlab .header-search:active {
+body.gl-dark .navbar-gitlab .header-search-form:active {
   background-color: var(--gray-100) !important;
   box-shadow: inset 0 0 0 1px var(--blue-200) !important;
 }

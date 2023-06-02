@@ -8227,6 +8227,9 @@ msgstr ""
 msgid "BroadcastMessages|Ends at"
 msgstr ""
 
+msgid "BroadcastMessages|Git remote responses"
+msgstr ""
+
 msgid "BroadcastMessages|Green"
 msgstr ""
 
@@ -8258,6 +8261,9 @@ msgid "BroadcastMessages|Paths can contain wildcards, like */welcome"
 msgstr ""
 
 msgid "BroadcastMessages|Red"
+msgstr ""
+
+msgid "BroadcastMessages|Show the broadcast message in a command-line interface as a Git remote response"
 msgstr ""
 
 msgid "BroadcastMessages|Starts at"

@@ -12761,7 +12761,8 @@ CREATE TABLE broadcast_messages (
     broadcast_type smallint DEFAULT 1 NOT NULL,
     dismissable boolean,
     target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL,
-    theme smallint DEFAULT 0 NOT NULL
+    theme smallint DEFAULT 0 NOT NULL,
+    show_in_cli boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE broadcast_messages_id_seq

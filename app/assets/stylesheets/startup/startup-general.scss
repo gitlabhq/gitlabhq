@@ -826,15 +826,15 @@ kbd {
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
 }
-.navbar-gitlab .header-search {
+.navbar-gitlab .header-search-form {
   min-width: 320px;
 }
 @media (min-width: 768px) and (max-width: 1199.98px) {
-  .navbar-gitlab .header-search {
+  .navbar-gitlab .header-search-form {
     min-width: 200px;
   }
 }
-.navbar-gitlab .header-search .keyboard-shortcut-helper {
+.navbar-gitlab .header-search-form .keyboard-shortcut-helper {
   transform: translateY(calc(50% - 2px));
   box-shadow: none;
   border-color: transparent;

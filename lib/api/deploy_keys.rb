@@ -41,8 +41,10 @@ module API
       authenticated_as_admin!
 
       deploy_keys = params[:public] ? DeployKey.are_public : DeployKey.all
+      deploy_keys = deploy_keys.including_projects_with_write_access.including_projects_with_readonly_access
 
-      present paginate(deploy_keys.including_projects_with_write_access), with: Entities::DeployKey, include_projects_with_write_access: true
+      present paginate(deploy_keys),
+        with: Entities::DeployKey, include_projects_with_write_access: true, include_projects_with_readonly_access: true
     end
 
     params do

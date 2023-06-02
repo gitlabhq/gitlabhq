@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BroadcastMessage do
+RSpec.describe BroadcastMessage, feature_category: :onboarding do
   subject { build(:broadcast_message) }
 
   it { is_expected.to be_valid }
@@ -24,10 +24,16 @@ RSpec.describe BroadcastMessage do
     it { is_expected.to allow_value(1).for(:broadcast_type) }
     it { is_expected.not_to allow_value(nil).for(:broadcast_type) }
     it { is_expected.not_to allow_value(nil).for(:target_access_levels) }
+    it { is_expected.not_to allow_value(nil).for(:show_in_cli) }
 
     it do
       is_expected.to validate_inclusion_of(:target_access_levels)
                  .in_array(described_class::ALLOWED_TARGET_ACCESS_LEVELS)
+    end
+
+    it do
+      is_expected.to validate_inclusion_of(:show_in_cli)
+                       .in_array([true, false])
     end
   end
 
@@ -331,6 +337,18 @@ RSpec.describe BroadcastMessage do
     end
   end
 
+  describe '.current_show_in_cli_banner_messages', :use_clean_rails_memory_store_caching do
+    subject { -> { described_class.current_show_in_cli_banner_messages } }
+
+    it 'only returns banner messages that has show_in_cli as true' do
+      show_in_cli_message = create(:broadcast_message)
+      create(:broadcast_message, broadcast_type: :notification)
+      create(:broadcast_message, show_in_cli: false)
+
+      expect(subject.call).to contain_exactly(show_in_cli_message)
+    end
+  end
+
   describe '#attributes' do
     it 'includes message_html field' do
       expect(subject.attributes.keys).to include("cached_markdown_version", "message_html")
@@ -402,6 +420,16 @@ RSpec.describe BroadcastMessage do
       expect(Rails.cache).to receive(:delete).with("#{described_class::NOTIFICATION_CACHE_KEY}:#{Gitlab.revision}")
 
       message.flush_redis_cache
+    end
+  end
+
+  describe '#current_and_future_messages' do
+    let_it_be(:message_a) { create(:broadcast_message, ends_at: 1.day.ago) }
+    let_it_be(:message_b) { create(:broadcast_message, ends_at: Time.current + 2.days) }
+    let_it_be(:message_c) { create(:broadcast_message, ends_at: Time.current + 7.days) }
+
+    it 'returns only current and future messages by ascending ends_at' do
+      expect(described_class.current_and_future_messages).to eq [message_b, message_c]
     end
   end
 end

@@ -72,6 +72,10 @@ export default {
     update: s__('BroadcastMessages|Update broadcast message'),
     updateError: s__('BroadcastMessages|There was an error updating broadcast message.'),
     cancel: __('Cancel'),
+    showInCli: s__('BroadcastMessages|Git remote responses'),
+    showInCliDescription: s__(
+      'BroadcastMessages|Show the broadcast message in a command-line interface as a Git remote response',
+    ),
   },
   messageThemes: THEMES,
   messageTypes: TYPES,
@@ -97,6 +101,7 @@ export default {
       startsAt: new Date(this.broadcastMessage.startsAt.getTime()),
       endsAt: new Date(this.broadcastMessage.endsAt.getTime()),
       renderedMessage: '',
+      showInCli: this.broadcastMessage.showInCli,
     };
   },
   computed: {
@@ -127,6 +132,7 @@ export default {
         target_access_levels: this.targetAccessLevels,
         starts_at: this.startsAt.toISOString(),
         ends_at: this.endsAt.toISOString(),
+        show_in_cli: this.showInCli,
       });
     },
   },
@@ -224,6 +230,17 @@ export default {
           data-testid="dismissable-checkbox"
         >
           <span>{{ $options.i18n.dismissableDescription }}</span>
+        </gl-form-checkbox>
+      </gl-form-group>
+
+      <gl-form-group :label="$options.i18n.showInCli" label-for="show-in-cli-checkbox">
+        <gl-form-checkbox
+          id="show-in-cli-checkbox"
+          v-model="showInCli"
+          class="gl-mt-3"
+          data-testid="show-in-cli-checkbox"
+        >
+          <span>{{ $options.i18n.showInCliDescription }}</span>
         </gl-form-checkbox>
       </gl-form-group>
     </template>

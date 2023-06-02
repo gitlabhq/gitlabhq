@@ -173,7 +173,7 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     it 'returns the expected message data attributes' do
       keys = [
         :id, :message, :broadcast_type, :theme, :dismissable, :target_access_levels, :messages_path,
-        :preview_path, :target_path, :starts_at, :ends_at, :target_access_level_options
+        :preview_path, :target_path, :starts_at, :ends_at, :target_access_level_options, :show_in_cli
       ]
 
       expect(broadcast_message_data(message).keys).to match(keys)

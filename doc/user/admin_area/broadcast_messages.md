@@ -19,7 +19,7 @@ Broadcast messages can be managed using the [broadcast messages API](../../api/b
 
 ## Banners
 
-Banners are shown on the top of a page and in Git remote responses.
+Banners are shown on the top of a page and optionally in the command line as a Git remote response.
 
 ![Broadcast Message Banner](img/broadcast_messages_banner_v15_0.png)
 
@@ -32,7 +32,7 @@ remote:
 ...
 ```
 
-If more than one banner is active at one time, they are displayed in a stack in order of creation.
+If more than one banner is active at one time, they are displayed at the top of the page in order of creation. In the command line, only the latest banner is shown.
 
 ## Notifications
 
@@ -69,6 +69,7 @@ To add a broadcast message:
     - `text-decoration`
 1. Select a **Theme**. The default theme is `indigo`.
 1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
+1. Optional. Clear the **Git remote responses** checkbox to prevent broadcast messages from being displayed in the command line as Git remote responses.
 1. Optional. Select **Target roles** to only show the broadcast message to users with the selected roles. The message displays on group, subgroup, and project pages, and does not display in Git remote responses.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date and time (UTC) for the message to start and end.

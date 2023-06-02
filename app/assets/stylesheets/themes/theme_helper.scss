@@ -68,7 +68,7 @@
       > li {
         color: $search-and-nav-links;
 
-        &.header-search-new {
+        &.header-search {
           color: $gray-900;
         }
 
@@ -151,7 +151,7 @@
     }
   }
 
-  .header-search {
+  .header-search-form {
     background-color: $search-and-nav-links-a20 !important;
     border-radius: $border-radius-default;
 

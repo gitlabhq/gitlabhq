@@ -93,6 +93,7 @@ module Admin
           target_path
           broadcast_type
           dismissable
+          show_in_cli
         ], target_access_levels: []).reverse_merge!(target_access_levels: [])
     end
   end
