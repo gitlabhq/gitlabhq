@@ -132,6 +132,8 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'infrastructure-settings' });
   const findReleasesSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findMonitorSettings = () => wrapper.findComponent({ ref: 'monitor-settings' });
+  const findModelExperimentsSettings = () =>
+    wrapper.findComponent({ ref: 'model-experiments-settings' });
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -723,6 +725,13 @@ describe('Settings Panel', () => {
       expect(findMonitorSettings().findComponent(ProjectFeatureSetting).props('options')).toEqual(
         expectedAccessLevel,
       );
+    });
+  });
+  describe('Model experiments', () => {
+    it('shows model experiments toggle', () => {
+      wrapper = mountComponent({});
+
+      expect(findModelExperimentsSettings().exists()).toBe(true);
     });
   });
 });

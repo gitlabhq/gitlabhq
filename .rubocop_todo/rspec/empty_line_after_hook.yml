@@ -41,7 +41,6 @@ RSpec/EmptyLineAfterHook:
     - 'spec/requests/api/pages/internal_access_spec.rb'
     - 'spec/requests/api/pages/private_access_spec.rb'
     - 'spec/requests/api/pages/public_access_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
     - 'spec/services/merge_requests/execute_approval_hooks_service_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
     - 'spec/services/notes/quick_actions_service_spec.rb'

@@ -48,7 +48,6 @@ Layout/LineContinuationLeadingSpace:
     - 'rubocop/cop/graphql/descriptions.rb'
     - 'rubocop/cop/migration/add_columns_to_wide_tables.rb'
     - 'rubocop/cop/migration/background_migrations.rb'
-    - 'rubocop/cop/migration/update_column_in_batches.rb'
     - 'scripts/lib/glfm/parse_examples.rb'
     - 'scripts/qa/testcases-check'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'

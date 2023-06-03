@@ -985,6 +985,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           releases_access_level
           monitor_access_level
           infrastructure_access_level
+          model_experiments_access_level
         ]
       end
 

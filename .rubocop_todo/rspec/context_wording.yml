@@ -2578,7 +2578,6 @@ RSpec/ContextWording:
     - 'spec/rubocop/cop/migration/safer_boolean_column_spec.rb'
     - 'spec/rubocop/cop/migration/schedule_async_spec.rb'
     - 'spec/rubocop/cop/migration/timestamps_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
     - 'spec/rubocop/cop/migration/versioned_migration_class_spec.rb'
     - 'spec/rubocop/cop/performance/ar_exists_and_present_blank_spec.rb'
     - 'spec/rubocop/cop/qa/ambiguous_page_object_name_spec.rb'

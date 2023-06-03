@@ -5336,7 +5336,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/rubocop/cop/migration/schema_addition_methods_no_post_spec.rb'
     - 'spec/rubocop/cop/migration/sidekiq_queue_migrate_spec.rb'
     - 'spec/rubocop/cop/migration/timestamps_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
     - 'spec/rubocop/cop/migration/with_lock_retries_disallowed_method_spec.rb'
     - 'spec/rubocop/cop/migration/with_lock_retries_with_change_spec.rb'
     - 'spec/rubocop/cop/performance/active_record_subtransaction_methods_spec.rb'

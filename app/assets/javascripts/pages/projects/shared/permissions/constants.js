@@ -4,6 +4,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const visibilityLevelDescriptions = {
   [VISIBILITY_LEVEL_PRIVATE_INTEGER]: __(
@@ -43,3 +44,7 @@ export const featureAccessLevelEveryone = [
 export const CVE_ID_REQUEST_BUTTON_I18N = {
   cve_request_toggle_label: s__('CVE|Enable CVE ID requests in the issue sidebar'),
 };
+
+export const modelExperimentsHelpPath = helpPagePath(
+  'user/project/ml/experiment_tracking/index.md',
+);

@@ -7,6 +7,7 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
   let_it_be(:project) { build(:project_empty_repo, group: group) }
   let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+  let_it_be(:note) { build(:note_on_merge_request, noteable: merge_request, project: project) }
 
   let(:target_user) { user }
   let(:event) { build(:event, :merged, author: user, project: project, target: merge_request) }
@@ -24,7 +25,7 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
     expect(subject[:action]).to eq(event.action)
     expect(subject[:author][:id]).to eq(target_user.id)
     expect(subject[:author][:name]).to eq(target_user.name)
-    expect(subject[:author][:path]).to eq(target_user.username)
+    expect(subject[:author][:username]).to eq(target_user.username)
   end
 
   context 'for push events' do
@@ -39,6 +40,8 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
       expect(subject[:ref][:count]).to eq(event.ref_count)
       expect(subject[:ref][:name]).to eq(event.ref_name)
       expect(subject[:ref][:path]).to be_nil
+      expect(subject[:ref][:is_new]).to be false
+      expect(subject[:ref][:is_removed]).to be false
     end
 
     shared_examples 'returns ref path' do
@@ -90,25 +93,51 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
     end
   end
 
-  context 'with target' do
-    let_it_be(:note) { build(:note_on_merge_request, :with_attachment, noteable: merge_request, project: project) }
+  context 'for noteable events' do
+    let(:event) { build(:event, :commented, project: project, target: note, author: target_user) }
 
+    it 'exposes noteable fields' do
+      expect(subject[:noteable][:type]).to eq(note.noteable_type)
+      expect(subject[:noteable][:reference_link_text]).to eq(note.noteable.reference_link_text)
+      expect(subject[:noteable][:web_url]).to be_present
+      expect(subject[:noteable][:first_line_in_markdown]).to be_present
+    end
+  end
+
+  context 'with target' do
     context 'when target does not responds to :reference_link_text' do
       let(:event) { build(:event, :commented, project: project, target: note, author: target_user) }
 
       it 'exposes target fields' do
         expect(subject[:target]).not_to include(:reference_link_text)
-        expect(subject[:target][:target_type]).to eq(note.class.to_s)
-        expect(subject[:target][:target_url]).to be_present
+        expect(subject[:target][:type]).to eq(note.class.to_s)
+        expect(subject[:target][:web_url]).to be_present
         expect(subject[:target][:title]).to eq(note.title)
-        expect(subject[:target][:first_line_in_markdown]).to be_present
-        expect(subject[:target][:attachment][:url]).to eq(note.attachment.url)
       end
     end
 
     context 'when target responds to :reference_link_text' do
       it 'exposes reference_link_text' do
         expect(subject[:target][:reference_link_text]).to eq(merge_request.reference_link_text)
+      end
+    end
+
+    context 'when target is a wiki page' do
+      let(:event) { build(:wiki_page_event, :created, project: project, author: target_user) }
+
+      it 'exposes web_url' do
+        expect(subject[:target][:web_url]).to be_present
+      end
+    end
+
+    context 'when target is a work item' do
+      let(:incident) { create(:work_item, :incident, author: target_user, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      let(:event) do
+        build(:event, :created, :for_work_item, author: target_user, project: project, target: incident)
+      end
+
+      it 'exposes `issue_type`' do
+        expect(subject[:target][:issue_type]).to eq('incident')
       end
     end
   end
@@ -134,7 +163,7 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
         expect(subject[:action]).to eq('private')
         expect(subject[:author][:id]).to eq(target_user.id)
         expect(subject[:author][:name]).to eq(target_user.name)
-        expect(subject[:author][:path]).to eq(target_user.username)
+        expect(subject[:author][:username]).to eq(target_user.username)
 
         is_expected.not_to include(:ref, :commit, :target, :resource_parent)
       end

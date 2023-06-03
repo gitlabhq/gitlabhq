@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
+RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
   include JavaScriptFixturesHelpers
   include ApiHelpers
 
@@ -12,6 +12,25 @@ RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
   describe API::Users, '(JavaScript fixtures)', type: :request do
     it 'api/users/followers/get.json' do
       get api("/users/#{user.id}/followers", user)
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe UsersController, '(JavaScript fixtures)', type: :controller do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project_empty_repo, group: group) }
+
+    include_context 'with user contribution events'
+
+    before do
+      group.add_owner(user)
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    it 'controller/users/activity.json' do
+      get :activity, params: { username: user.username, limit: 50 }, format: :json
 
       expect(response).to be_successful
     end

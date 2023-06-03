@@ -456,6 +456,7 @@ class ProjectsController < Projects::ApplicationController
       feature_flags_access_level
       monitor_access_level
       infrastructure_access_level
+      model_experiments_access_level
     ]
   end
 

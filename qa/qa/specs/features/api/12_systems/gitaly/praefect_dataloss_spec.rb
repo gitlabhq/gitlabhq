@@ -17,14 +17,14 @@ module QA
       end
 
       it 'confirms that changes are synced across all storages',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352691' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352691' do
         expect { praefect_manager.praefect_dataloss_information(project.id) }
-        .to(eventually_include('All repositories are fully available on all assigned storages!')
-        .within(max_duration: 60))
+          .to(eventually_include('All repositories are fully available on all assigned storages!')
+          .within(max_duration: 60))
       end
 
       it 'identifies how many changes are not in sync across storages',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352692' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352692' do
         # Ensure our test repository is replicated and in a consistent state prior to test
         praefect_manager.wait_for_project_synced_across_all_storages(project.id)
 
@@ -59,7 +59,7 @@ module QA
       end
 
       it 'allows admin resolve scenario where data cannot be recovered',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352708' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352708' do
         # Ensure everything is in sync before begining test
         praefect_manager.wait_for_project_synced_across_all_storages(project.id)
 

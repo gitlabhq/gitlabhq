@@ -221,7 +221,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/migration/create_table_with_foreign_keys.rb'
     - 'rubocop/cop/migration/prevent_strings.rb'
     - 'rubocop/cop/migration/remove_concurrent_index.rb'
-    - 'rubocop/cop/migration/update_column_in_batches.rb'
     - 'rubocop/cop/migration/with_lock_retries_with_change.rb'
     - 'rubocop/cop/performance/active_record_subtransaction_methods.rb'
     - 'rubocop/cop/performance/active_record_subtransactions.rb'

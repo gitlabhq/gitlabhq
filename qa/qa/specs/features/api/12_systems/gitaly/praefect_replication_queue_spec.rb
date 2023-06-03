@@ -23,7 +23,7 @@ module QA
       end
 
       it 'allows replication of different repository after interruption',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
         # We want to fill the replication queue with 10 `in_progress` jobs,
         # while a lock has been acquired, which is when the problem occurred
         # as reported in https://gitlab.com/gitlab-org/gitaly/-/issues/2801

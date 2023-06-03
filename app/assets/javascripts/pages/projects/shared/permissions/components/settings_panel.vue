@@ -15,6 +15,7 @@ import {
   featureAccessLevel,
   CVE_ID_REQUEST_BUTTON_I18N,
   featureAccessLevelDescriptions,
+  modelExperimentsHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -56,6 +57,10 @@ export default {
     packageRegistryForEveryoneLabel: s__(
       'ProjectSettings|Allow anyone to pull from Package Registry',
     ),
+    modelExperimentsLabel: s__('ProjectSettings|Model experiments'),
+    modelExperimentsHelpText: s__(
+      'ProjectSettings|Track machine learning model experiments and artifacts.',
+    ),
     pagesLabel: s__('ProjectSettings|Pages'),
     ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
@@ -76,6 +81,7 @@ export default {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
+  modelExperimentsHelpPath,
 
   components: {
     ProjectFeatureSetting,
@@ -245,6 +251,7 @@ export default {
       forkingAccessLevel: featureAccessLevel.EVERYONE,
       mergeRequestsAccessLevel: featureAccessLevel.EVERYONE,
       packageRegistryAccessLevel: featureAccessLevel.EVERYONE,
+      modelExperimentsAccessLevel: featureAccessLevel.EVERYONE,
       buildsAccessLevel: featureAccessLevel.EVERYONE,
       wikiAccessLevel: featureAccessLevel.EVERYONE,
       snippetsAccessLevel: featureAccessLevel.EVERYONE,
@@ -387,6 +394,10 @@ export default {
         ) {
           this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
+        this.modelExperimentsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.modelExperimentsAccessLevel,
+        );
         this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
         this.snippetsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -449,6 +460,8 @@ export default {
           this.buildsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.wikiAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.wikiAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.modelExperimentsAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.modelExperimentsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.snippetsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.snippetsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.pagesAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
@@ -872,6 +885,19 @@ export default {
           :value="packageRegistryAccessLevel"
           type="hidden"
           name="project[project_feature_attributes][package_registry_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="model-experiments-settings"
+        :label="$options.i18n.modelExperimentsLabel"
+        :help-text="$options.i18n.modelExperimentsHelpText"
+        :help-path="$options.modelExperimentsHelpPath"
+      >
+        <project-feature-setting
+          v-model="modelExperimentsAccessLevel"
+          :label="$options.i18n.modelExperimentsLabel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][model_experiments_access_level]"
         />
       </project-setting-row>
       <project-setting-row

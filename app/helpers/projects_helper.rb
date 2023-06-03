@@ -746,7 +746,8 @@ module ProjectsHelper
       environmentsAccessLevel: feature.environments_access_level,
       featureFlagsAccessLevel: feature.feature_flags_access_level,
       releasesAccessLevel: feature.releases_access_level,
-      infrastructureAccessLevel: feature.infrastructure_access_level
+      infrastructureAccessLevel: feature.infrastructure_access_level,
+      modelExperimentsAccessLevel: feature.model_experiments_access_level
     }
   end
 

@@ -10,18 +10,22 @@ module RuboCop
       class UpdateColumnInBatches < RuboCop::Cop::Base
         include MigrationHelpers
 
-        MSG = 'Migration running `update_column_in_batches` must have a spec file at' \
-          ' `%s`.'
+        MSG = 'Migration running `update_column_in_batches` must have a spec file at `%s`.'
+
+        RESTRICT_ON_SEND = %i[update_column_in_batches].freeze
 
         def on_send(node)
           return unless in_migration?(node)
-          return unless node.children[1] == :update_column_in_batches
 
           spec_path = spec_filename(node)
-
           return if File.exist?(File.expand_path(spec_path, rails_root))
 
           add_offense(node, message: format(MSG, spec_path))
+        end
+
+        # Used by RuboCop to invalidate its cache if specs change.
+        def external_dependency_checksum
+          @external_dependency_checksum ||= checksum_filenames('{,ee/}spec/migrations/**/*_spec.rb')
         end
 
         private
@@ -38,6 +42,16 @@ module RuboCop
 
         def rails_root
           Pathname.new(File.expand_path('../../..', __dir__))
+        end
+
+        def checksum_filenames(pattern)
+          digest = Digest::SHA256.new
+
+          rails_root.glob(pattern) do |path|
+            digest.update(path.relative_path_from(rails_root).to_path)
+          end
+
+          digest.hexdigest
         end
       end
     end
