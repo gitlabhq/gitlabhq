@@ -661,6 +661,12 @@ For example, in a [multi-project pipeline](#multi-project-pipelines):
          artifacts: true
    ```
 
+### Control what type of variables to forward to downstream pipelines
+
+Use the [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify
+what type of variables to forward to the downstream pipeline. Forwarded variables
+are considered trigger variables, which have the [highest precedence](../variables/index.md#cicd-variable-precedence).
+
 ## Troubleshooting
 
 ### Trigger job fails and does not create multi-project pipeline

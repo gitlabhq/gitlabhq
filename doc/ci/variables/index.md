@@ -718,6 +718,10 @@ use this setting for control over the environment the pipeline runs in.
   The example can be copied to your own group or instance for testing. More details
   on what other GitLab CI patterns are demonstrated are available at the project page.
 
+- You can [pass CI/CD variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
+  Use [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify what type of variables
+  to pass to the downstream pipeline.
+
 ## Troubleshooting
 
 ### List all variables
