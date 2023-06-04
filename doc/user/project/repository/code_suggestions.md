@@ -113,6 +113,12 @@ Start typing and receive suggestions for your GitLab projects.
   <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+## Enable Code Suggestions in other IDEs and editors
+
+We have experimental support for Code Suggestions in Visual Studio, JetBrains, Neovim, Emacs, Sublime, etc.
+
+More details in this [blog](https://about.gitlab.com/blog/2023/06/01/extending-code-suggestions/).
+
 ## Why aren't Code Suggestions displayed?
 
 If Code Suggestions are not displayed, try the following troubleshooting steps.
