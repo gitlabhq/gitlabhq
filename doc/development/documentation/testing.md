@@ -48,6 +48,24 @@ To run tests locally, it's important to:
 
 ### Lint checks
 
+Merge requests containing changes to Markdown (`.md`) files run a `docs-lint markdown`
+job. This job runs `markdownlint`, and a set of tests from
+[`/scripts/lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh)
+that look for page content problems that Vale and markdownlint cannot test for.
+The job fails if any of these tests fail:
+
+- Curl (`curl`) commands must use long-form options (`--header`) instead of short options, like `-h`.
+- Documentation pages must contain front matter indicating ownership of the page.
+- Non-standard Unicode space characters (NBSP, NNBSP, ZWSP) must not be used in documentation,
+  because they can cause irregularities in search indexing and grepping.
+- `CHANGELOG.md` must not contain duplicate versions.
+- No files in the `doc/` directory may be executable.
+- Use `index.md` instead of `README.md`.
+- Directories and file names must use underscores instead of dashes.
+- Directories and file names must be in lower case.
+
+#### Run lint checks locally
+
 Lint checks are performed by the [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh)
 script and can be executed with the help of a Rake task as follows:
 
