@@ -74,6 +74,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     end
 
     it 'retrieves expected fields' do
+      stub_commonmark_sourcepos_disabled
+
       post_graphql(query, current_user: user)
 
       runner_data = graphql_data_at(:runner)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::InlineMetricsFilter do
+RSpec.describe Banzai::Filter::InlineMetricsFilter, feature_category: :metrics do
   include FilterSpecHelper
 
   let(:environment_id) { 12 }

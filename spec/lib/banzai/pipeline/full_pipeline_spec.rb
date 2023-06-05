@@ -9,6 +9,10 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }
 
+    before do
+      stub_commonmark_sourcepos_disabled
+    end
+
     it 'handles markdown inside a reference' do
       markdown = "[some `code` inside](#{issue.to_reference})"
       result = described_class.call(markdown, project: project)
@@ -135,6 +139,8 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
       end
 
       it 'does not insert a table of contents' do
+        stub_commonmark_sourcepos_disabled
+
         output = described_class.to_html(invalid_markdown, project: project)
 
         expect(output).to include("test #{tag_html}")
@@ -163,6 +169,8 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     end
 
     it 'converts user reference with escaped underscore because of italics' do
+      stub_commonmark_sourcepos_disabled
+
       markdown = '_@test\__'
       output = described_class.to_html(markdown, project: project)
 

@@ -199,6 +199,21 @@ Only the latest version of the designs can be archived.
 Archived designs are not permanently lost. You can browse
 [previous versions](#add-a-new-version-of-a-design).
 
+<!-- When content_editor_on_issues flag is removed, move version notes
+     to "Add a design to an issue", update that topic, and delete the one below. -->
+
+## Markdown and rich text editors for descriptions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.
+It's the same editor you use for comments across GitLab.
+
 ## Reorder designs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34382) in GitLab 13.3.

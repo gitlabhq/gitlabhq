@@ -138,3 +138,7 @@ export const MAXIMUM_FILE_UPLOAD_LIMIT_REACHED = sprintf(
     upload_limit: MAXIMUM_FILE_UPLOAD_LIMIT,
   },
 );
+
+export const UPDATE_DESCRIPTION_ERROR = s__(
+  'DesignManagement|Could not update description. Please try again.',
+);

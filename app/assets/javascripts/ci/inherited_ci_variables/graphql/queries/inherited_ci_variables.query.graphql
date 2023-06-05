@@ -1,0 +1,24 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getInheritedCiVariables($after: String, $first: Int, $fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    inheritedCiVariables(after: $after, first: $first) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        __typename
+        id
+        key
+        variableType
+        environmentScope
+        groupCiCdSettingsPath
+        groupName
+        masked
+        protected
+        raw
+      }
+    }
+  }
+}

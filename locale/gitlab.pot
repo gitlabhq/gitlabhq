@@ -8958,9 +8958,6 @@ msgstr ""
 msgid "Card number:"
 msgstr ""
 
-msgid "CascadingSettings|Enforce deletion protection for all subgroups"
-msgstr ""
-
 msgid "CascadingSettings|Enforce for all subgroups"
 msgstr ""
 
@@ -9721,6 +9718,9 @@ msgstr ""
 msgid "CiVariables|Expanded"
 msgstr ""
 
+msgid "CiVariables|Group"
+msgstr ""
+
 msgid "CiVariables|Input variable key"
 msgstr ""
 
@@ -9731,6 +9731,9 @@ msgid "CiVariables|Key"
 msgstr ""
 
 msgid "CiVariables|Masked"
+msgstr ""
+
+msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
 msgstr ""
 
 msgid "CiVariables|Maximum number of variables reached."
@@ -9764,6 +9767,9 @@ msgid "CiVariables|Specify variable values to be used in this run. The variables
 msgstr ""
 
 msgid "CiVariables|State"
+msgstr ""
+
+msgid "CiVariables|There was an error fetching the inherited CI variables."
 msgstr ""
 
 msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
@@ -14851,22 +14857,13 @@ msgstr ""
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
 msgstr ""
 
-msgid "DeletionSettings|All projects are deleted immediately."
-msgstr ""
-
 msgid "DeletionSettings|Deletion protection"
-msgstr ""
-
-msgid "DeletionSettings|Keep deleted"
 msgstr ""
 
 msgid "DeletionSettings|Keep deleted projects for %{number} day"
 msgid_plural "DeletionSettings|Keep deleted projects for %{number} days"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "DeletionSettings|None, delete immediately"
-msgstr ""
 
 msgid "DeletionSettings|Only administrators can delete projects."
 msgstr ""
@@ -14875,9 +14872,6 @@ msgid "DeletionSettings|Owners and administrators can delete projects."
 msgstr ""
 
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for. Personal projects are always deleted immediately."
-msgstr ""
-
-msgid "DeletionSettings|Retention period that deleted groups and projects will remain restorable. Personal projects are always deleted immediately. Some groups can opt-out their projects."
 msgstr ""
 
 msgid "Denied"
@@ -15589,6 +15583,9 @@ msgstr ""
 msgid "DesignManagement|Are you sure you want to cancel editing this comment?"
 msgstr ""
 
+msgid "DesignManagement|Cancel"
+msgstr ""
+
 msgid "DesignManagement|Click the image where you'd like to start a new discussion"
 msgstr ""
 
@@ -15613,10 +15610,16 @@ msgstr ""
 msgid "DesignManagement|Could not update comment. Please try again."
 msgstr ""
 
+msgid "DesignManagement|Could not update description. Please try again."
+msgstr ""
+
 msgid "DesignManagement|Could not update discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Deselect all"
+msgstr ""
+
+msgid "DesignManagement|Design description"
 msgstr ""
 
 msgid "DesignManagement|Designs"
@@ -15631,6 +15634,9 @@ msgstr ""
 msgid "DesignManagement|Download design"
 msgstr ""
 
+msgid "DesignManagement|Edit description"
+msgstr ""
+
 msgid "DesignManagement|Error uploading a new design. Please try again."
 msgstr ""
 
@@ -15643,6 +15649,9 @@ msgstr ""
 msgid "DesignManagement|Go to previous design"
 msgstr ""
 
+msgid "DesignManagement|None"
+msgstr ""
+
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
 msgstr ""
 
@@ -15650,6 +15659,9 @@ msgid "DesignManagement|Resolve thread"
 msgstr ""
 
 msgid "DesignManagement|Resolved Comments"
+msgstr ""
+
+msgid "DesignManagement|Save"
 msgstr ""
 
 msgid "DesignManagement|Save comment"
@@ -15680,6 +15692,9 @@ msgid "DesignManagement|Upload designs"
 msgstr ""
 
 msgid "DesignManagement|Upload skipped. %{reason}"
+msgstr ""
+
+msgid "DesignManagement|Write a comment or drag your files here…"
 msgstr ""
 
 msgid "DesignManagement|Your designs are being copied and are on their way… Please refresh to update."
@@ -53851,9 +53866,6 @@ msgstr[1] ""
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""
 
-msgid "for"
-msgstr ""
-
 msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
 msgstr ""
 
@@ -53905,12 +53917,6 @@ msgid "group members"
 msgstr ""
 
 msgid "groups"
-msgstr ""
-
-msgid "groups and projects"
-msgstr ""
-
-msgid "groups only"
 msgstr ""
 
 msgid "had %{count} failed job"

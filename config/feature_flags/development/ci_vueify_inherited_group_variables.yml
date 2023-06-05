@@ -1,0 +1,8 @@
+---
+name: ci_vueify_inherited_group_variables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119026
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409040
+milestone: '16.1'
+type: development
+group: group::pipeline security
+default_enabled: false

@@ -1,9 +1,9 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
 import { EXCEEDS_VARIABLE_LIMIT_TEXT, projectString } from '~/ci/ci_variable_list/constants';
-import { mockVariables } from '../mocks';
+import { mockInheritedVariables, mockVariables } from '../mocks';
 
 describe('Ci variable table', () => {
   let wrapper;
@@ -29,6 +29,7 @@ describe('Ci variable table', () => {
         glFeatures: {
           ciVariablesPages: false,
         },
+        isInheritedGroupVars: false,
         ...provide,
       },
     });
@@ -43,6 +44,10 @@ describe('Ci variable table', () => {
   const findRevealedValues = () => wrapper.findAllByTestId('revealedValue');
   const findOptionsValues = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-options').at(rowIndex).text();
+  const findTableColumnText = (index) => wrapper.findAll('th').at(index).text();
+  const findGroupCiCdSettingsLink = (rowIndex) =>
+    wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
+  const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
     return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
@@ -69,17 +74,26 @@ describe('Ci variable table', () => {
       });
     });
 
-    describe('When table has variables', () => {
+    describe('When table has CI variables', () => {
       beforeEach(() => {
         createComponent({ provide });
       });
 
-      it('does not display the empty message', () => {
-        expect(findEmptyVariablesPlaceholder().exists()).toBe(false);
+      // last column is for the edit button, which has no text
+      it.each`
+        index | text
+        ${0}  | ${'Type'}
+        ${1}  | ${'Key (Click to sort descending)'}
+        ${2}  | ${'Value'}
+        ${3}  | ${'Options'}
+        ${4}  | ${'Environments'}
+        ${5}  | ${''}
+      `('renders the $text column', ({ index, text }) => {
+        expect(findTableColumnText(index)).toEqual(text);
       });
 
-      it('displays the reveal button', () => {
-        expect(findRevealButton().exists()).toBe(true);
+      it('does not display the empty message', () => {
+        expect(findEmptyVariablesPlaceholder().exists()).toBe(false);
       });
 
       it('displays the correct amount of variables', () => {
@@ -91,8 +105,56 @@ describe('Ci variable table', () => {
         expect(findOptionsValues(1)).toBe('Masked');
       });
 
+      it('renders action buttons', () => {
+        expect(findRevealButton().exists()).toBe(true);
+        expect(findAddButton().exists()).toBe(true);
+        expect(findEditButton().exists()).toBe(true);
+      });
+
       it('enables the Add Variable button', () => {
         expect(findAddButton().props('disabled')).toBe(false);
+      });
+    });
+
+    describe('When table has inherited CI variables', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { variables: mockInheritedVariables },
+          provide: { isInheritedGroupVars: true, ...provide },
+        });
+      });
+
+      it.each`
+        index | text
+        ${0}  | ${'Type'}
+        ${1}  | ${'Key'}
+        ${2}  | ${'Options'}
+        ${3}  | ${'Environments'}
+        ${4}  | ${'Group'}
+      `('renders the $text column', ({ index, text }) => {
+        expect(findTableColumnText(index)).toEqual(text);
+      });
+
+      it('does not render action buttons', () => {
+        expect(findRevealButton().exists()).toBe(false);
+        expect(findAddButton().exists()).toBe(false);
+        expect(findEditButton().exists()).toBe(false);
+        expect(findKeysetPagination().exists()).toBe(false);
+      });
+
+      it('displays the correct amount of variables', () => {
+        expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(mockInheritedVariables.length);
+      });
+
+      it('displays the correct variable options', () => {
+        expect(findOptionsValues(0)).toBe('Protected, Masked, Expanded');
+        expect(findOptionsValues(1)).toBe('');
+        expect(findOptionsValues(2)).toBe('Protected');
+      });
+
+      it('displays link to the group settings', () => {
+        expect(findGroupCiCdSettingsLink(0)).toBe(mockInheritedVariables[0].groupCiCdSettingsPath);
+        expect(findGroupCiCdSettingsLink(1)).toBe(mockInheritedVariables[1].groupCiCdSettingsPath);
       });
     });
 

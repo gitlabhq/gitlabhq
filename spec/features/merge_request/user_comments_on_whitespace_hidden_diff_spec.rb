@@ -27,22 +27,35 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
       wait_for_requests
     end
 
-    it 'allows commenting on line combinations that are not present in the real diff' do
-      # Comment on line combination old: 19, new 20
-      # This line combination does not exist when whitespace is shown
-      click_diff_line(
-        find_by_scrolling('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="19"]').find(:xpath,
-          '../..'), 'left')
+    context 'when commenting on line combinations that are not present in the real diff' do
+      before do
+        # Comment on line combination old: 19, new 20
+        # This line combination does not exist when whitespace is shown
+        click_diff_line(
+          find_by_scrolling('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="19"]').find(:xpath,
+            '../..'), 'left')
+        page.within('.js-discussion-note-form') do
+          fill_in(:note_note, with: 'Comment on diff with whitespace')
+          click_button('Add comment now')
+        end
 
-      page.within('.js-discussion-note-form') do
-        fill_in(:note_note, with: 'Comment on diff with whitespace')
-        click_button('Add comment now')
+        wait_for_requests
       end
 
-      wait_for_requests
+      it 'shows the comments in the diff' do
+        page.within('.notes_holder') do
+          expect(page).to have_content('Comment on diff with whitespace')
+        end
+      end
 
-      page.within('.notes_holder') do
-        expect(page).to have_content('Comment on diff with whitespace')
+      it 'allows replies to comments in the diff' do
+        click_button('Reply to comment')
+        fill_in(:note_note, with: 'reply to whitespace comment')
+        click_button('Add comment now')
+        wait_for_requests
+        page.within('.notes_holder') do
+          expect(page).to have_content('reply to whitespace comment')
+        end
       end
     end
   end

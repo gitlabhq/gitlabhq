@@ -82,9 +82,13 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
   end
 
   describe "#refresh_markdown_cache!" do
+    before do
+      stub_commonmark_sourcepos_disabled
+    end
+
     it "stores the value in redis" do
       expected_results = { "title_html" => "`Hello`",
-                           "description_html" => "<p data-sourcepos=\"1:1-1:7\" dir=\"auto\"><code>World</code></p>",
+                           "description_html" => "<p dir=\"auto\"><code>World</code></p>",
                            "cached_markdown_version" => cache_version.to_s }
 
       thing.refresh_markdown_cache!
@@ -101,7 +105,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
       thing.refresh_markdown_cache!
 
       expect(thing.title_html).to eq('`Hello`')
-      expect(thing.description_html).to eq("<p data-sourcepos=\"1:1-1:7\" dir=\"auto\"><code>World</code></p>")
+      expect(thing.description_html).to eq("<p dir=\"auto\"><code>World</code></p>")
       expect(thing.cached_markdown_version).to eq(cache_version)
     end
   end

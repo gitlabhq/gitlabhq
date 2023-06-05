@@ -14,8 +14,8 @@ RSpec.describe DiffDiscussion do
   describe '#reply_attributes' do
     it 'includes position and original_position' do
       attributes = subject.reply_attributes
-      expect(attributes[:position]).to eq(diff_note.position.to_json)
-      expect(attributes[:original_position]).to eq(diff_note.original_position.to_json)
+      expect(attributes[:position]).to eq(Gitlab::Json.dump(diff_note.position.to_h))
+      expect(attributes[:original_position]).to eq(Gitlab::Json.dump(diff_note.original_position.to_h))
     end
   end
 

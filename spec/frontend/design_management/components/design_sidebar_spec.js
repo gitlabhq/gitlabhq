@@ -26,6 +26,13 @@ const $route = {
   },
 };
 
+const mockDesignVariables = {
+  fullPath: 'project-path',
+  iid: '1',
+  filenames: ['gid::/gitlab/Design/1'],
+  atVersion: null,
+};
+
 const mutate = jest.fn().mockResolvedValue();
 
 describe('Design management design sidebar component', () => {
@@ -47,6 +54,7 @@ describe('Design management design sidebar component', () => {
         resolvedDiscussionsExpanded: false,
         markdownPreviewPath: '',
         isLoading: false,
+        designVariables: mockDesignVariables,
         ...props,
       },
       mocks: {

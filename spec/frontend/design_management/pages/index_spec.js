@@ -310,6 +310,8 @@ describe('Design management index page', () => {
                 },
                 image: '',
                 imageV432x230: '',
+                description: '',
+                descriptionHtml: '',
                 filename: 'test',
                 fullPath: '',
                 event: 'NONE',

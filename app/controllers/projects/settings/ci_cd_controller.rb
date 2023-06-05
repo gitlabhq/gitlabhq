@@ -18,6 +18,7 @@ module Projects
         push_frontend_feature_flag(:create_runner_workflow_for_namespace, @project.namespace)
         push_frontend_feature_flag(:frozen_outbound_job_token_scopes, @project)
         push_frontend_feature_flag(:frozen_outbound_job_token_scopes_override, @project)
+        push_frontend_feature_flag(:ci_vueify_inherited_group_variables, @project)
       end
 
       helper_method :highlight_badge

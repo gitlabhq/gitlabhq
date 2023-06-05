@@ -5,6 +5,7 @@ import {
   GlLoadingIcon,
   GlModalDirective,
   GlKeysetPagination,
+  GlLink,
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -21,7 +22,7 @@ import { convertEnvironmentScope } from '../utils';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
-  fields: [
+  defaultFields: [
     {
       key: 'variableType',
       label: s__('CiVariables|Type'),
@@ -54,10 +55,34 @@ export default {
       thClass: 'gl-w-5p',
     },
   ],
+  inheritedVarsFields: [
+    {
+      key: 'variableType',
+      label: s__('CiVariables|Type'),
+    },
+    {
+      key: 'key',
+      label: s__('CiVariables|Key'),
+      tdClass: 'text-plain',
+    },
+    {
+      key: 'options',
+      label: s__('CiVariables|Options'),
+    },
+    {
+      key: 'environmentScope',
+      label: s__('CiVariables|Environments'),
+    },
+    {
+      key: 'group',
+      label: s__('CiVariables|Group'),
+    },
+  ],
   components: {
     GlAlert,
     GlButton,
     GlKeysetPagination,
+    GlLink,
     GlLoadingIcon,
     GlTable,
   },
@@ -66,6 +91,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['isInheritedGroupVars'],
   props: {
     entity: {
       type: String,
@@ -112,6 +138,9 @@ export default {
     showAlert() {
       return !this.isLoading && this.exceedsVariableLimit;
     },
+    showPagination() {
+      return this.glFeatures.ciVariablesPages;
+    },
     valuesButtonText() {
       return this.areValuesHidden ? __('Reveal values') : __('Hide values');
     },
@@ -119,7 +148,12 @@ export default {
       return !this.variables || this.variables.length === 0;
     },
     fields() {
-      return this.$options.fields;
+      return this.isInheritedGroupVars
+        ? this.$options.inheritedVarsFields
+        : this.$options.defaultFields;
+    },
+    tableDataTestId() {
+      return this.isInheritedGroupVars ? 'inherited-ci-variable-table' : 'ci-variable-table';
     },
     variablesWithOptions() {
       return this.variables?.map((item, index) => ({
@@ -161,7 +195,7 @@ export default {
 </script>
 
 <template>
-  <div class="ci-variable-table" data-testid="ci-variable-table">
+  <div class="ci-variable-table" :data-testid="tableDataTestId">
     <gl-loading-icon v-if="isLoading" />
     <gl-alert
       v-if="showAlert"
@@ -172,7 +206,7 @@ export default {
       {{ exceedsVariableLimitText }}
     </gl-alert>
     <div
-      v-if="glFeatures.ciVariablesPages"
+      v-if="showPagination && !isInheritedGroupVars"
       class="ci-variable-actions gl-display-flex gl-justify-content-end gl-my-3"
     >
       <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
@@ -231,7 +265,7 @@ export default {
           />
         </div>
       </template>
-      <template #cell(value)="{ item }">
+      <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
         <div
           class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
         >
@@ -277,7 +311,21 @@ export default {
           />
         </div>
       </template>
-      <template #cell(actions)="{ item }">
+      <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
+        <div
+          class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+        >
+          <gl-link
+            :id="`ci-variable-group-${item.id}`"
+            data-testid="ci-variable-table-row-cicd-path"
+            class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+            :href="item.groupCiCdSettingsPath"
+          >
+            {{ item.groupName }}
+          </gl-link>
+        </div>
+      </template>
+      <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">
         <gl-button
           v-gl-modal-directive="$options.modalId"
           icon="pencil"
@@ -300,28 +348,32 @@ export default {
     >
       {{ exceedsVariableLimitText }}
     </gl-alert>
-    <div v-if="!glFeatures.ciVariablesPages" class="ci-variable-actions gl-display-flex gl-mt-5">
-      <gl-button
-        v-gl-modal-directive="$options.modalId"
-        class="gl-mr-3"
-        data-qa-selector="add_ci_variable_button"
-        variant="confirm"
-        category="primary"
-        :aria-label="__('Add')"
-        :disabled="exceedsVariableLimit"
-        @click="setSelectedVariable()"
-        >{{ __('Add variable') }}</gl-button
-      >
-      <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
-    </div>
-    <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="__('Previous')"
-        :next-text="__('Next')"
-        @prev="$emit('handle-prev-page')"
-        @next="$emit('handle-next-page')"
-      />
+    <div v-if="!isInheritedGroupVars">
+      <div v-if="!showPagination" class="ci-variable-actions gl-display-flex gl-mt-5">
+        <gl-button
+          v-gl-modal-directive="$options.modalId"
+          class="gl-mr-3"
+          data-qa-selector="add_ci_variable_button"
+          variant="confirm"
+          category="primary"
+          :aria-label="__('Add')"
+          :disabled="exceedsVariableLimit"
+          @click="setSelectedVariable()"
+          >{{ __('Add variable') }}</gl-button
+        >
+        <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{
+          valuesButtonText
+        }}</gl-button>
+      </div>
+      <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
+        <gl-keyset-pagination
+          v-bind="pageInfo"
+          :prev-text="__('Previous')"
+          :next-text="__('Next')"
+          @prev="$emit('handle-prev-page')"
+          @next="$emit('handle-next-page')"
+        />
+      </div>
     </div>
   </div>
 </template>

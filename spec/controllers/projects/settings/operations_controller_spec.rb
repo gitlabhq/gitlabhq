@@ -11,8 +11,6 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
   end
 
   before do
-    stub_feature_flags(remove_monitor_metrics: false)
-
     sign_in(user)
   end
 
@@ -64,20 +62,6 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
         .and_return(operations_update_service)
       expect(operations_update_service).to receive(:execute)
         .and_return(return_value)
-    end
-  end
-
-  shared_examples 'PATCHable without metrics dashboard' do
-    context 'when metrics dashboard feature is unavailable' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: true)
-      end
-
-      include_examples 'PATCHable' do
-        let(:permitted_params) do
-          ActionController::Parameters.new({}).permit!
-        end
-      end
     end
   end
 
@@ -336,38 +320,6 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
       end
 
       it_behaves_like 'PATCHable'
-    end
-  end
-
-  context 'metrics dashboard setting', feature_category: :metrics do
-    describe 'PATCH #update' do
-      let(:params) do
-        {
-          metrics_setting_attributes: {
-            external_dashboard_url: 'https://gitlab.com'
-          }
-        }
-      end
-
-      include_examples 'PATCHable'
-      include_examples 'PATCHable without metrics dashboard'
-    end
-  end
-
-  context 'grafana integration', feature_category: :metrics do
-    describe 'PATCH #update' do
-      let(:params) do
-        {
-          grafana_integration_attributes: {
-            grafana_url: 'https://grafana.gitlab.com',
-            token: 'eyJrIjoicDRlRTREdjhhOEZ5WjZPWXUzazJOSW0zZHJUejVOd3IiLCJuIjoiVGVzdCBLZXkiLCJpZCI6MX0=',
-            enabled: 'true'
-          }
-        }
-      end
-
-      include_examples 'PATCHable'
-      include_examples 'PATCHable without metrics dashboard'
     end
   end
 

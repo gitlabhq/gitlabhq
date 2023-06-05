@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::InlineClusterMetricsFilter do
+RSpec.describe Banzai::Filter::InlineClusterMetricsFilter, feature_category: :metrics do
   include FilterSpecHelper
 
   let!(:cluster) { create(:cluster) }

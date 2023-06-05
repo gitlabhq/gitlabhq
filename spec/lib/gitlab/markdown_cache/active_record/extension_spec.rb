@@ -27,10 +27,14 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
+  let(:html) { '<p dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Bar</code></p>' }
+  let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
+
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
 
   context 'an unchanged markdown field' do
     let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, title: markdown) }

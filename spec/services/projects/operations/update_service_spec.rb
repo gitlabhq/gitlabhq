@@ -92,61 +92,6 @@ RSpec.describe Projects::Operations::UpdateService, feature_category: :groups_an
       end
     end
 
-    context 'metrics dashboard setting' do
-      let(:params) do
-        {
-          metrics_setting_attributes: {
-            external_dashboard_url: 'http://gitlab.com',
-            dashboard_timezone: 'utc'
-          }
-        }
-      end
-
-      context 'without existing metrics dashboard setting' do
-        it 'creates a setting' do
-          expect(result[:status]).to eq(:success)
-
-          expect(project.reload.metrics_setting.external_dashboard_url).to eq(
-            'http://gitlab.com'
-          )
-          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
-        end
-      end
-
-      context 'with existing metrics dashboard setting' do
-        before do
-          create(:project_metrics_setting, project: project)
-        end
-
-        it 'updates the settings' do
-          expect(result[:status]).to eq(:success)
-
-          expect(project.reload.metrics_setting.external_dashboard_url).to eq(
-            'http://gitlab.com'
-          )
-          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
-        end
-      end
-
-      context 'with blank external_dashboard_url' do
-        let(:params) do
-          {
-            metrics_setting_attributes: {
-              external_dashboard_url: '',
-              dashboard_timezone: 'utc'
-            }
-          }
-        end
-
-        it 'updates dashboard_timezone' do
-          expect(result[:status]).to eq(:success)
-
-          expect(project.reload.metrics_setting.external_dashboard_url).to be(nil)
-          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
-        end
-      end
-    end
-
     context 'error tracking' do
       context 'with existing error tracking setting' do
         let(:params) do
@@ -351,62 +296,6 @@ RSpec.describe Projects::Operations::UpdateService, feature_category: :groups_an
       it 'ignores params' do
         expect(result[:status]).to eq(:success)
         expect(project.reload.name).to eq(original_name)
-      end
-    end
-
-    context 'grafana integration' do
-      let(:params) do
-        {
-          grafana_integration_attributes: {
-            grafana_url: 'http://new.grafana.com',
-            token: 'VerySecureToken='
-          }
-        }
-      end
-
-      context 'without existing grafana integration' do
-        it 'creates an integration' do
-          expect(result[:status]).to eq(:success)
-
-          expected_attrs = params[:grafana_integration_attributes]
-          integration = project.reload.grafana_integration
-
-          expect(integration.grafana_url).to eq(expected_attrs[:grafana_url])
-          expect(integration.send(:token)).to eq(expected_attrs[:token])
-        end
-      end
-
-      context 'with an existing grafana integration' do
-        before do
-          create(:grafana_integration, project: project)
-        end
-
-        it 'updates the settings' do
-          expect(result[:status]).to eq(:success)
-
-          expected_attrs = params[:grafana_integration_attributes]
-          integration = project.reload.grafana_integration
-
-          expect(integration.grafana_url).to eq(expected_attrs[:grafana_url])
-          expect(integration.send(:token)).to eq(expected_attrs[:token])
-        end
-
-        context 'with all grafana attributes blank in params' do
-          let(:params) do
-            {
-              grafana_integration_attributes: {
-                grafana_url: '',
-                token: ''
-              }
-            }
-          end
-
-          it 'destroys the metrics_setting entry in DB' do
-            expect(result[:status]).to eq(:success)
-
-            expect(project.reload.grafana_integration).to be_nil
-          end
-        end
       end
     end
 

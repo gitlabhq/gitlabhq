@@ -37,8 +37,8 @@ class DiffDiscussion < Discussion
 
   def reply_attributes
     super.merge(
-      original_position: Gitlab::Json.dump(original_position),
-      position: Gitlab::Json.dump(position)
+      original_position: Gitlab::Json.dump(original_position.to_h),
+      position: Gitlab::Json.dump(position.to_h)
     )
   end
 

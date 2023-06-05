@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter do
+RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter, feature_category: :metrics do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project) }

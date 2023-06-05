@@ -46,6 +46,7 @@ Vue.use(VueApollo);
 const mockProvide = {
   endpoint: '/variables',
   isGroup: false,
+  isInheritedGroupVars: false,
   isProject: false,
 };
 

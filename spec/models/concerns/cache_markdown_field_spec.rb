@@ -41,10 +41,10 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
+  let(:html) { '<p dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Bar</code></p>' }
+  let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
 
@@ -112,6 +112,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
       before do
+        stub_commonmark_sourcepos_disabled
         thing.description = updated_markdown
       end
 
@@ -139,6 +140,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
       before do
+        stub_commonmark_sourcepos_disabled
         thing.description = updated_markdown
       end
 
@@ -253,6 +255,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
 
       context 'when the markdown cache is up to date' do
         before do
+          stub_commonmark_sourcepos_disabled
           thing.try(:save)
         end
 
@@ -269,6 +272,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
 
       context 'when a field can be cached' do
         it 'returns the html' do
+          stub_commonmark_sourcepos_disabled
           thing.description = updated_markdown
 
           expect(thing.rendered_field_content(:description)).to eq updated_html
@@ -332,6 +336,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       describe '#save' do
         context 'when cache is outdated' do
           before do
+            stub_commonmark_sourcepos_disabled
             thing.cached_markdown_version += 1
           end
 
@@ -433,6 +438,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       end
 
       it 'correctly updates cached HTML even if refresh_markdown_cache is called before updating the attribute' do
+        stub_commonmark_sourcepos_disabled
         thing.refresh_markdown_cache
 
         thing.update!(description: updated_markdown)

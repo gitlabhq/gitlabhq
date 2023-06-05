@@ -122,22 +122,14 @@ module Projects
         {
           incident_management_setting_attributes: ::Gitlab::Tracking::IncidentManagement.tracking_keys.keys,
 
-          metrics_setting_attributes: [:external_dashboard_url, :dashboard_timezone],
-
           error_tracking_setting_attributes: [
             :enabled,
             :integrated,
             :api_host,
             :token,
             project: [:slug, :name, :organization_slug, :organization_name, :sentry_project_id]
-          ],
-
-          grafana_integration_attributes: [:token, :grafana_url, :enabled]
-        }.tap do |potential_params|
-          if Feature.enabled?(:remove_monitor_metrics)
-            potential_params.except!(:metrics_setting_attributes, :grafana_integration_attributes)
-          end
-        end
+          ]
+        }
       end
     end
   end
