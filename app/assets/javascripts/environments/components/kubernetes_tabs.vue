@@ -134,7 +134,12 @@ export default {
 </script>
 <template>
   <gl-tabs>
-    <kubernetes-summary :namespace="namespace" :configuration="configuration" />
+    <kubernetes-summary
+      :namespace="namespace"
+      :configuration="configuration"
+      @loading="$emit('loading', $event)"
+      @failed="$emit('failed')"
+    />
 
     <gl-tab>
       <template #title>

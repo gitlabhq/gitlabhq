@@ -57,6 +57,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
 | <a id="queryaimessagesroles"></a>`roles` | [`[AiCachedMessageRole!]`](#aicachedmessagerole) | Array of roles to fetch. |
 
+### `Query.auditEventDefinitions`
+
+Definitions for all audit events available on the instance.
+
+Returns [`AuditEventDefinitionConnection!`](#auditeventdefinitionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.boardList`
 
 Find an issue board list.
@@ -7411,6 +7421,29 @@ The edge type for [`ApprovalProjectRule`](#approvalprojectrule).
 | <a id="approvalprojectruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="approvalprojectruleedgenode"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
 
+#### `AuditEventDefinitionConnection`
+
+The connection type for [`AuditEventDefinition`](#auditeventdefinition).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventdefinitionconnectionedges"></a>`edges` | [`[AuditEventDefinitionEdge]`](#auditeventdefinitionedge) | A list of edges. |
+| <a id="auditeventdefinitionconnectionnodes"></a>`nodes` | [`[AuditEventDefinition]`](#auditeventdefinition) | A list of nodes. |
+| <a id="auditeventdefinitionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AuditEventDefinitionEdge`
+
+The edge type for [`AuditEventDefinition`](#auditeventdefinition).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventdefinitionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="auditeventdefinitionedgenode"></a>`node` | [`AuditEventDefinition`](#auditeventdefinition) | The item at the end of the edge. |
+
 #### `AuditEventStreamingHeaderConnection`
 
 The connection type for [`AuditEventStreamingHeader`](#auditeventstreamingheader).
@@ -12073,6 +12106,23 @@ Represents a vulnerability asset type.
 | <a id="assettypetype"></a>`type` | [`String!`](#string) | Type of the asset. |
 | <a id="assettypeurl"></a>`url` | [`String!`](#string) | URL of the asset. |
 
+### `AuditEventDefinition`
+
+Represents the YAML definitions for audit events defined under ee/config/audit_events/types/<event-type-name>.yml and config/audit_events/types/<event-type-name>.yml.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventdefinitiondescription"></a>`description` | [`String!`](#string) | Description of what action the audit event tracks. |
+| <a id="auditeventdefinitionfeaturecategory"></a>`featureCategory` | [`String!`](#string) | Feature category associated with the event. |
+| <a id="auditeventdefinitionintroducedbyissue"></a>`introducedByIssue` | [`String`](#string) | Link to the issue introducing the event. For olderaudit events, it can be a commit URL rather than amerge request URL. |
+| <a id="auditeventdefinitionintroducedbymr"></a>`introducedByMr` | [`String`](#string) | Link to the merge request introducing the event. Forolder audit events, it can be a commit URL rather thana merge request URL. |
+| <a id="auditeventdefinitionmilestone"></a>`milestone` | [`String!`](#string) | Milestone the event was introduced in. |
+| <a id="auditeventdefinitionname"></a>`name` | [`String!`](#string) | Key name of the audit event. |
+| <a id="auditeventdefinitionsavedtodatabase"></a>`savedToDatabase` | [`Boolean!`](#boolean) | Indicates if the event is saved to PostgreSQL database. |
+| <a id="auditeventdefinitionstreamed"></a>`streamed` | [`Boolean!`](#boolean) | Indicates if the event is streamed to an external destination. |
+
 ### `AuditEventStreamingHeader`
 
 Represents a HTTP header key/value that belongs to an audit streaming destination.
@@ -13243,6 +13293,35 @@ Returns [`CommitParentNames`](#commitparentnames).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="commitreferencestippingtagslimit"></a>`limit` | [`Int!`](#int) | Number of ref names to return. |
+
+### `ComparedSecurityReport`
+
+Represents compared security report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="comparedsecurityreportadded"></a>`added` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. New vulnerability findings. |
+| <a id="comparedsecurityreportbasereportcreatedat"></a>`baseReportCreatedAt` | [`Time`](#time) | Time of the base report creation. |
+| <a id="comparedsecurityreportbasereportoutofdate"></a>`baseReportOutOfDate` | [`Boolean`](#boolean) | Indicates whether the base report out of date. |
+| <a id="comparedsecurityreportfixed"></a>`fixed` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Fixed vulnerability findings. |
+| <a id="comparedsecurityreportheadreportcreatedat"></a>`headReportCreatedAt` | [`Time`](#time) | Time of the base report creation. |
+
+### `ComparedSecurityReportFinding`
+
+Represents finding.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="comparedsecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
+| <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
+| <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
+| <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
+| <a id="comparedsecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
+| <a id="comparedsecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
 
 ### `ComplianceFramework`
 
@@ -15053,6 +15132,18 @@ Describes an external status check.
 | <a id="fileuploadid"></a>`id` | [`UploadID!`](#uploadid) | Global ID of the upload. |
 | <a id="fileuploadpath"></a>`path` | [`String!`](#string) | Path of the upload. |
 | <a id="fileuploadsize"></a>`size` | [`Int!`](#int) | Size of the upload in bytes. |
+
+### `FindingReportsComparer`
+
+Represents security reports comparison for vulnerability findings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="findingreportscomparerreport"></a>`report` **{warning-solid}** | [`ComparedSecurityReport`](#comparedsecurityreport) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Compared security report. |
+| <a id="findingreportscomparerstatus"></a>`status` | [`FindingReportsComparerStatus`](#findingreportscomparerstatus) | Comparison status. |
+| <a id="findingreportscomparerstatusreason"></a>`statusReason` | [`String`](#string) | Text explaining the status. |
 
 ### `Forecast`
 
@@ -17313,6 +17404,22 @@ Returns [`[DiffStats!]`](#diffstats).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestdiffstatspath"></a>`path` | [`String`](#string) | Specific file path. |
+
+##### `MergeRequest.findingReportsComparer`
+
+Vulnerability finding reports comparison reported on the merge request.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`FindingReportsComparer`](#findingreportscomparer).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestfindingreportscomparerreporttype"></a>`reportType` | [`ComparableSecurityReportType!`](#comparablesecurityreporttype) | Filter vulnerability findings by report type. |
 
 ##### `MergeRequest.pipelines`
 
@@ -24450,6 +24557,20 @@ Mode of a commit action.
 | <a id="commitencodingbase64"></a>`BASE64` | Base64 encoding. |
 | <a id="commitencodingtext"></a>`TEXT` | Text encoding. |
 
+### `ComparableSecurityReportType`
+
+Comparable security report type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="comparablesecurityreporttypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing report. |
+| <a id="comparablesecurityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning report. |
+| <a id="comparablesecurityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing report. |
+| <a id="comparablesecurityreporttypedast"></a>`DAST` | DAST report. |
+| <a id="comparablesecurityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning report. |
+| <a id="comparablesecurityreporttypesast"></a>`SAST` | SAST report. |
+| <a id="comparablesecurityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
+
 ### `ComplianceFrameworkPresenceFilter`
 
 ComplianceFramework of a project for filtering.
@@ -24964,6 +25085,16 @@ Event action.
 | <a id="eventactionpushed"></a>`PUSHED` | Pushed action. |
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
+
+### `FindingReportsComparerStatus`
+
+Report comparison status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="findingreportscomparerstatuserror"></a>`ERROR` | An error happened while generating the report. |
+| <a id="findingreportscomparerstatusparsed"></a>`PARSED` | Report is generated. |
+| <a id="findingreportscomparerstatusparsing"></a>`PARSING` | Report is being generated. |
 
 ### `ForecastStatus`
 

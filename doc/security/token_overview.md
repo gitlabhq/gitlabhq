@@ -70,7 +70,7 @@ Bot users for groups are service accounts and do not count as licensed seats.
 
 You can use the [group access tokens API](../api/group_access_tokens.md) to
 programmatically take action, such as
-[rotating a project access token](../api/group_access_tokens.md#rotate-a-group-access-token).
+[rotating a group access token](../api/group_access_tokens.md#rotate-a-group-access-token).
 
 ## Deploy tokens
 

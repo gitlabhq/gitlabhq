@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
-import { RUNNING } from './constants';
+import { RUNNING, WILL_DEPLOY } from './constants';
 
 export default {
   name: 'DeploymentActionButton',
@@ -42,40 +41,50 @@ export default {
   },
   computed: {
     isActionInProgress() {
-      return Boolean(this.computedDeploymentStatus === RUNNING || this.actionInProgress);
-    },
-    actionInProgressTooltip() {
-      switch (this.actionInProgress) {
-        case this.actionsConfiguration.actionName:
-          return this.actionsConfiguration.busyText;
-        case null:
-          return '';
-        default:
-          return __('Another action is currently in progress');
-      }
+      return Boolean(
+        this.computedDeploymentStatus === RUNNING ||
+          this.computedDeploymentStatus === WILL_DEPLOY ||
+          this.actionInProgress,
+      );
     },
     isLoading() {
-      return this.actionInProgress === this.actionsConfiguration.actionName;
+      return (
+        this.actionInProgress === this.actionsConfiguration.actionName ||
+        this.computedDeploymentStatus === WILL_DEPLOY
+      );
     },
   },
 };
 </script>
 
 <template>
-  <span v-gl-tooltip :title="actionInProgressTooltip" class="gl-display-inline-block" tabindex="0">
-    <gl-button
-      v-gl-tooltip
-      category="primary"
-      size="small"
-      :title="buttonTitle"
-      :aria-label="buttonTitle"
-      :loading="isLoading"
-      :disabled="isActionInProgress"
-      :class="`inline gl-ml-3 ${containerClasses}`"
-      :icon="icon"
-      @click="$emit('click')"
-    >
-      <slot> </slot>
-    </gl-button>
-  </span>
+  <gl-button
+    v-if="isLoading || isActionInProgress"
+    category="primary"
+    size="small"
+    :title="buttonTitle"
+    :aria-label="buttonTitle"
+    :loading="isLoading"
+    :disabled="isActionInProgress"
+    :class="`inline gl-ml-3 ${containerClasses}`"
+    :icon="icon"
+    @click="$emit('click')"
+  >
+    <slot> </slot>
+  </gl-button>
+  <gl-button
+    v-else
+    v-gl-tooltip.hover
+    category="primary"
+    size="small"
+    :title="buttonTitle"
+    :aria-label="buttonTitle"
+    :loading="isLoading"
+    :disabled="isActionInProgress"
+    :class="`inline gl-ml-3 ${containerClasses}`"
+    :icon="icon"
+    @click="$emit('click')"
+  >
+    <slot> </slot>
+  </gl-button>
 </template>

@@ -13,6 +13,10 @@ module Gitlab
         validate :validate_schema
         validate :validate_file_name
 
+        def self.declarative_policy_class
+          'AuditEvents::DefinitionPolicy'
+        end
+
         InvalidAuditEventTypeError = Class.new(StandardError)
 
         AUDIT_EVENT_TYPE_SCHEMA_PATH = Rails.root.join('config', 'audit_events', 'types', 'type_schema.json')

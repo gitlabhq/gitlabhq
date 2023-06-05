@@ -1052,6 +1052,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it 'includes membersPagePath' do
       expect(subject).to include(membersPagePath: project_project_members_path(project))
     end
+
+    it 'includes canAddCatalogResource' do
+      allow(helper).to receive(:can?) { false }
+
+      expect(subject).to include(canAddCatalogResource: false)
+    end
   end
 
   describe '#project_classes' do

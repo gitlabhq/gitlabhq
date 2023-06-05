@@ -481,6 +481,50 @@ for how it works.
     committed. More context can be found at:
     [Setting it to `false` to skip it](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118938#note_1374688877)
 
+##### Why do we have both the mirror project and validation project?
+
+We have separate projects for a several reasons.
+
+- **Security**: Previously, we had the mirror project only. However, to fully
+  mitigate a [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369898),
+  we had to make the mirror project private.
+- **Isolation**: We want to run JH code in a completely isolated and standalone project.
+  We should not run it under the `gitlab-org` group, which is where the mirror
+  project is. The validation project is completely isolated.
+- **Cost**: We don't want to connect to JiHuLab.com from each merge request.
+  It is more cost effective to mirror the code from JiHuLab.com to
+  somewhere at GitLab.com, and have our merge requests fetch code from there.
+  This means that the validation project can fetch code from the mirror, rather
+  than from JiHuLab.com. The mirror project will periodically fetch from
+  JiHuLab.com.
+- **Branch separation/security/efficiency**: We want to mirror all branches,
+  so that we can fetch the corresponding JH branch from JiHuLab.com. However,
+  we don't want to overwrite the `as-if-jh-code-sync` branch in the validation project,
+  because we use it to control the validation pipeline and it has access to
+  `AS_IF_JH_TOKEN`. However, we cannot mirror all branches except a single
+  one. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/413032) for details.
+
+  Given this issue, the validation project is set to only mirror `master` and
+  `main-jh`. Technically, we don't even need those branches, but we do want to
+  keep the repository up-to-date with all the default branches so that when
+  we push changes from the merge request, we only need to push changes from
+  the merge request, which can be more efficient.
+
+- Separation of concerns:
+  - Validation project only has the following branches:
+    - `master` and `main-jh` to keep changes up-to-date.
+    - `as-if-jh-code-sync` for dependency synchronization.
+      We should never mirror this.
+    - `as-if-jh/*` branches from the merge requests.
+      We should never mirror these.
+  - All branches from the mirror project are all coming from JiHuLab.com.
+    We never push anything to the mirror project, nor does it run any
+    pipelines. CI/CD is disabled in the mirror project.
+
+We can consider merging the two projects to simplify the
+setup and process, but we need to make sure that all of these reasons
+are no longer concerns.
+
 ### `rspec:undercoverage` job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.

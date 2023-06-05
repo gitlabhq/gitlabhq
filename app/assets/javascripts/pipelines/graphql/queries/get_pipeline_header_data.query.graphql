@@ -35,6 +35,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       commit {
         id
         shortId
+        title
         webPath
       }
       finishedAt

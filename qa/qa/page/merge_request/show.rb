@@ -211,7 +211,7 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:edit_title_button))
+          click_by_javascript(find_element(:edit_title_button, skip_finished_loading_check: true))
         end
 
         def fast_forward_not_possible?

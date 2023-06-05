@@ -259,6 +259,9 @@ export default {
     commitPath() {
       return this.pipeline?.commit?.webPath || '';
     },
+    commitTitle() {
+      return this.pipeline?.commit?.title || '';
+    },
     totalJobsText() {
       return sprintf(__('%{jobs} Jobs'), {
         jobs: this.totalJobs,
@@ -371,6 +374,9 @@ export default {
     <div v-else class="gl-display-flex gl-justify-content-space-between">
       <div>
         <h3 v-if="name" class="gl-mt-0 gl-mb-2" data-testid="pipeline-name">{{ name }}</h3>
+        <h3 v-else class="gl-mt-0 gl-mb-2" data-testid="pipeline-commit-title">
+          {{ commitTitle }}
+        </h3>
         <div>
           <ci-badge-link :status="detailedStatus" />
           <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">

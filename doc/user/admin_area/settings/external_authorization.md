@@ -32,12 +32,12 @@ authorization service.
 
 Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`. Read more about the logs GitLab keeps in
-the [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
+the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
 
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
-using Omnibus, learn to install a custom CA in the
-[Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+using the Linux package, learn to install a custom CA in the
+[Linux package documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
 

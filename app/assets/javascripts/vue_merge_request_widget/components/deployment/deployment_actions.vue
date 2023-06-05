@@ -71,10 +71,24 @@ export default {
       return this.deployment.details?.playable_build?.play_path;
     },
     redeployPath() {
+      if (this.redeployMrWidgetFeatureFlagEnabled) {
+        return this.deployment.retry_url;
+      }
       return this.deployment.details?.playable_build?.retry_path;
     },
     stopUrl() {
       return this.deployment.stop_url;
+    },
+    environmentAvailable() {
+      return Boolean(this.deployment.environment_available);
+    },
+    redeployMrWidgetFeatureFlagEnabled() {
+      return this.glFeatures.reviewAppsRedeployMrWidget;
+    },
+    showDeploymentActionButton() {
+      return (
+        this.redeployPath && !this.environmentAvailable && this.redeployMrWidgetFeatureFlagEnabled
+      );
     },
   },
   actionsConfiguration: {
@@ -124,6 +138,10 @@ export default {
 
         MRWidgetService.executeInlineAction(endpoint)
           .then((resp) => {
+            if (this.redeployMrWidgetFeatureFlagEnabled) {
+              return;
+            }
+
             const redirectUrl = resp?.data?.redirect_url;
             if (redirectUrl) {
               visitUrl(redirectUrl);
@@ -167,7 +185,7 @@ export default {
       <span>{{ $options.actionsConfiguration[constants.DEPLOYING].buttonText }}</span>
     </deployment-action-button>
     <deployment-action-button
-      v-if="canBeManuallyRedeployed"
+      v-if="canBeManuallyRedeployed && !redeployMrWidgetFeatureFlagEnabled"
       :action-in-progress="actionInProgress"
       :actions-configuration="$options.actionsConfiguration[constants.REDEPLOYING]"
       :computed-deployment-status="computedDeploymentStatus"
@@ -178,12 +196,12 @@ export default {
       <span>{{ $options.actionsConfiguration[constants.REDEPLOYING].buttonText }}</span>
     </deployment-action-button>
     <deployment-view-button
-      v-if="hasExternalUrls"
+      v-if="hasExternalUrls && environmentAvailable"
       :app-button-text="appButtonText"
       :deployment="deployment"
     />
     <deployment-action-button
-      v-if="stopUrl"
+      v-if="stopUrl && environmentAvailable"
       :action-in-progress="actionInProgress"
       :computed-deployment-status="computedDeploymentStatus"
       :actions-configuration="$options.actionsConfiguration[constants.STOPPING]"
@@ -191,6 +209,16 @@ export default {
       :icon="$options.btnIcons.stop"
       container-classes="js-stop-env"
       @click="stopEnvironment"
+    />
+    <deployment-action-button
+      v-if="showDeploymentActionButton"
+      :action-in-progress="actionInProgress"
+      :computed-deployment-status="computedDeploymentStatus"
+      :actions-configuration="$options.actionsConfiguration[constants.REDEPLOYING]"
+      :button-title="$options.actionsConfiguration[constants.REDEPLOYING].buttonText"
+      :icon="$options.btnIcons.repeat"
+      container-classes="js-redeploy-action"
+      @click="redeploy"
     />
   </div>
 </template>

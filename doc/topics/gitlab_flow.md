@@ -444,7 +444,7 @@ However, as discussed in [the section about rebasing](#squashing-commits-with-re
 
 Rebasing could create more work, as every time you rebase, you may need to resolve the same conflicts.
 Sometimes you can reuse recorded resolutions (`rerere`), but merging is better, because you only have to resolve conflicts once.
-You can read a more thorough explanation of the tradeoffs between merging and rebasing [here](https://git-scm.com/book/en/v2/Git-Branching-Rebasing#:~:text=Final%20commit%20history-,The,-Perils%20of%20Rebasing).
+The Git documentation has a thorough explanation of the [tradeoffs between merging and rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing#:~:text=Final%20commit%20history-,The,-Perils%20of%20Rebasing).
 
 A good way to prevent creating many merge commits is to not frequently merge `main` into the feature branch.
 Three reasons to merge in `main`:
@@ -543,9 +543,17 @@ In GitLab Flow, your can include automated CI tests in your branch or merge requ
 
 ## Working with feature branches
 
-When creating a feature branch, always branch from an up-to-date `main`.
-If you know before you start that your work depends on another branch, you can also branch from there.
-If you need to merge in another branch after starting, explain the reason in the merge commit.
-If you have not pushed your commits to a shared location yet, you can also incorporate changes by rebasing on `main` or another feature branch.
-Do not merge from upstream again if your code can work and merge cleanly without doing so.
-Merging only when needed prevents creating merge commits in your feature branch that later end up littering the `main` history.
+Some tips for working with feature branches:
+
+- When you create a feature branch locally, always update your local copy of `main` before
+  branching off from it.
+- When creating a feature branch, always branch from `main` unless you know your work
+  depends on some other branch. For example, to create `feature-x-update`, branch from
+  `feature-x` instead of `main`.
+- If you merge in another branch after starting, explain the reason in the merge commit.
+- If you have not pushed your branch upstream yet, you can still pull in new changes
+  by rebasing your local feature branch against your local copy of its parent branch.
+- Do not merge recent changes from other branches into your local feature branch if your code
+  can work and merge cleanly without those extra changes. Each time you merge commits into your
+  feature branch, you add a merge commit to your feature branch. These merge commits
+  later end up littering the history in your `main` branch.

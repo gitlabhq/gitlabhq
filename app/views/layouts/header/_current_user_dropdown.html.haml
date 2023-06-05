@@ -42,9 +42,8 @@
     %li.d-md-none
       = link_to _("Switch to GitLab Next"), Gitlab::Saas.canary_toggle_com_url, data: { track_action: "click_link", track_label: "switch_to_canary", track_property: "navigation_top" }
 
-  - if Feature.enabled?(:super_sidebar_nav, current_user)
-    %li.divider
-    .js-new-nav-toggle{ data: { enabled: show_super_sidebar?.to_s, endpoint: profile_preferences_url} }
+  %li.divider
+  .js-new-nav-toggle{ data: { enabled: show_super_sidebar?.to_s, endpoint: profile_preferences_url} }
 
   - if current_user_menu?(:sign_out)
     %li.divider

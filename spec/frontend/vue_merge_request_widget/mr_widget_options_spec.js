@@ -626,6 +626,7 @@ describe('MrWidgetOptions', () => {
         deployed_at_formatted: 'Mar 22, 2017 10:44pm',
         changes,
         status: SUCCESS,
+        environment_available: true,
       };
 
       beforeEach(() => {

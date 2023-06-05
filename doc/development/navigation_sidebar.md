@@ -15,10 +15,7 @@ the sidebar is a work in progress, and so is this documentation.
 
 ## Enable the new navigation sidebar
 
-To enable the new navigation sidebar:
-
-- Enable the `super_sidebar_nav` feature flag.
-- Select your avatar, then turn on the **New navigation** toggle.
+To enable the new navigation sidebar, select your avatar, then turn on the **New navigation** toggle.
 
 ## Adding items to the sidebar
 

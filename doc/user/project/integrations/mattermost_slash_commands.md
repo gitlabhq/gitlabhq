@@ -17,9 +17,9 @@ separately configured [Mattermost notifications](mattermost.md).
 GitLab provides different ways to configure Mattermost slash commands. For any of these options,
 you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
-- **Omnibus GitLab installations**: Mattermost is bundled with
-  [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab,
-  read the [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
+- **Linux package installations**: Mattermost is bundled with
+  [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
+  installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
   [automated configuration](#configure-automatically).
 - **For all other installations**, use the [manual configuration](#configure-manually).
@@ -133,7 +133,7 @@ The available slash commands for Mattermost are:
 ## Related topics
 
 - [Mattermost slash commands](https://developers.mattermost.com/integrate/slash-commands/)
-- [Omnibus GitLab Mattermost](../../../integration/mattermost/index.md)
+- [Linux package Mattermost](../../../integration/mattermost/index.md)
 
 ## Troubleshooting
 

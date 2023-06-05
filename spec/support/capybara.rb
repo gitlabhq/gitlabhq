@@ -53,7 +53,11 @@ Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
     # In cases of multiple installations of chromedriver, prioritize the version installed by SeleniumManager
     # selenium-manager doesn't work with Linux arm64 yet:
     # https://github.com/SeleniumHQ/selenium/issues/11357
-    if RUBY_PLATFORM =~ /x86_64-linux|darwin/
+    if RUBY_PLATFORM.include?('x86_64-linux') ||
+        # Rosetta is required on macOS because the selenium-manager
+        # binaries (https://github.com/SeleniumHQ/selenium/tree/trunk/common/manager/macos)
+        # are only compiled for macOS x86.
+        (RUBY_PLATFORM.include?('darwin') && system('/usr/bin/pgrep -q oahd'))
       chrome_options = Selenium::WebDriver::Chrome::Options.chrome
       chromedriver_path = File.dirname(Selenium::WebDriver::SeleniumManager.driver_path(chrome_options))
       ENV['PATH'] = "#{chromedriver_path}:#{ENV['PATH']}" # rubocop:disable RSpec/EnvAssignment

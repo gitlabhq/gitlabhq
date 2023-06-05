@@ -59,6 +59,14 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
+    it('emits loading state', async () => {
+      createWrapper();
+      expect(wrapper.emitted('loading')[0]).toEqual([true]);
+
+      await waitForPromises();
+      expect(wrapper.emitted('loading')[1]).toEqual([false]);
+    });
+
     describe('when workloads data is loaded', () => {
       beforeEach(async () => {
         await createWrapper();
@@ -92,6 +100,10 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
           }
         },
       );
+    });
+
+    it('emits a failed event when there are failed workload types', () => {
+      expect(wrapper.emitted('failed')).toHaveLength(1);
     });
 
     it('emits an error message when gets an error from the cluster_client API', async () => {

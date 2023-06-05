@@ -352,7 +352,7 @@ error, the [max attachment size](#max-attachment-size)
 is probably larger than the web server's allowed value.
 
 To increase the max attachment size to 200 MB in a
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) install, you may need to
+[Linux package](https://docs.gitlab.com/omnibus/) install, you may need to
 add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
 
 ```ruby

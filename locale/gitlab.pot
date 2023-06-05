@@ -5376,9 +5376,6 @@ msgstr ""
 msgid "Anonymous"
 msgstr ""
 
-msgid "Another action is currently in progress"
-msgstr ""
-
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr ""
 
@@ -9577,6 +9574,9 @@ msgstr ""
 msgid "Ci config already present"
 msgstr ""
 
+msgid "CiCatalog|CI/CD Catalog resource"
+msgstr ""
+
 msgid "CiCatalog|CI/CD catalog"
 msgstr ""
 
@@ -9589,6 +9589,12 @@ msgstr ""
 msgid "CiCatalog|Learn more"
 msgstr ""
 
+msgid "CiCatalog|Mark project as a CI/CD Catalog resource"
+msgstr ""
+
+msgid "CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgstr ""
+
 msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
 msgstr ""
 
@@ -9598,7 +9604,22 @@ msgstr ""
 msgid "CiCatalog|Repositories of pipeline components available in this namespace."
 msgstr ""
 
+msgid "CiCatalog|The project must contain a README.md file and a template.yml file. When enabled, the repository is available in the CI/CD Catalog."
+msgstr ""
+
+msgid "CiCatalog|There was a problem fetching the CI/CD Catalog setting."
+msgstr ""
+
+msgid "CiCatalog|There was a problem marking the project as a CI/CD Catalog resource."
+msgstr ""
+
 msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
+msgstr ""
+
+msgid "CiCatalog|This project is now a CI/CD Catalog resource."
+msgstr ""
+
+msgid "CiCatalog|This project will be marked as a CI/CD Catalog resource and will be visible in the CI/CD Catalog. This action is not reversible."
 msgstr ""
 
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
@@ -17400,10 +17421,16 @@ msgstr ""
 msgid "Environment|Deployments"
 msgstr ""
 
+msgid "Environment|Environment health"
+msgstr ""
+
 msgid "Environment|External IP"
 msgstr ""
 
 msgid "Environment|Failed"
+msgstr ""
+
+msgid "Environment|Healthy"
 msgstr ""
 
 msgid "Environment|Jobs"
@@ -17437,6 +17464,9 @@ msgid "Environment|Succeeded"
 msgstr ""
 
 msgid "Environment|Summary"
+msgstr ""
+
+msgid "Environment|Unhealthy"
 msgstr ""
 
 msgid "Epic"
@@ -33678,9 +33708,6 @@ msgstr ""
 msgid "Pipeline|Failed"
 msgstr ""
 
-msgid "Pipeline|In progress"
-msgstr ""
-
 msgid "Pipeline|Manual"
 msgstr ""
 
@@ -48932,19 +48959,7 @@ msgstr ""
 msgid "UsageQuota|User settings &gt; Usage quotas"
 msgstr ""
 
-msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked if the storage limit was reached."
-msgstr ""
-
 msgid "UsageQuota|Wiki content."
-msgstr ""
-
-msgid "UsageQuota|You have consumed all of your additional storage. Purchase more to unlock projects over the limit."
-msgstr ""
-
-msgid "UsageQuota|You have reached the free storage limit on %{projectsLockedText}. To unlock them, purchase additional storage."
-msgstr ""
-
-msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, purchase more storage."
 msgstr ""
 
 msgid "UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again."

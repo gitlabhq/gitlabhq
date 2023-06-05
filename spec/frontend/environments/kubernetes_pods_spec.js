@@ -50,6 +50,14 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
+    it('emits loading state', async () => {
+      createWrapper();
+      expect(wrapper.emitted('loading')[0]).toEqual([true]);
+
+      await waitForPromises();
+      expect(wrapper.emitted('loading')[1]).toEqual([false]);
+    });
+
     it('hides the loading icon when the list of pods loaded', async () => {
       createWrapper();
       await waitForPromises();
@@ -84,6 +92,13 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
         });
       },
     );
+
+    it('emits a failed event when there are failed pods', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(wrapper.emitted('failed')).toHaveLength(1);
+    });
   });
 
   describe('when gets an error from the cluster_client API', () => {

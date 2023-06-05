@@ -59,6 +59,7 @@ describe('Pipeline details header', () => {
   const findTimeAgo = () => wrapper.findComponent(TimeAgo);
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
+  const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
   const findComputeCredits = () => wrapper.findByTestId('compute-credits');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
@@ -175,6 +176,19 @@ describe('Pipeline details header', () => {
 
     it('displays ref text', () => {
       expect(findPipelineRefText()).toBe('Related merge request !1 to merge test');
+    });
+  });
+
+  describe('without pipeline name', () => {
+    it('displays commit title', async () => {
+      createComponent(defaultHandlers, { ...defaultProps, name: '' });
+
+      await waitForPromises();
+
+      const expectedTitle = pipelineHeaderSuccess.data.project.pipeline.commit.title;
+
+      expect(findPipelineName().exists()).toBe(false);
+      expect(findCommitTitle().text()).toBe(expectedTitle);
     });
   });
 

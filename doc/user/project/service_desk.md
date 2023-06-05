@@ -238,9 +238,10 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
 
 NOTE:
 In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
-To use `webhook` on an Omnibus installation running GitLab 15.3, you must generate a secret file.
+To use `webhook` on a Linux package installation running GitLab 15.3, you must generate a secret file.
 For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
-In GitLab 15.4, reconfiguring an Omnibus installation generates this secret file automatically, so no secret file configuration setting is needed.
+In GitLab 15.4, reconfiguring a Linux package installation generates this secret file automatically, so no
+secret file configuration setting is needed.
 For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
 ```ruby
@@ -419,7 +420,7 @@ Service Desk can be configured to read Microsoft Exchange Online mailboxes with 
 Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 [the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
-- Example for Omnibus GitLab installations:
+- Example for Linux package installations:
 
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
@@ -502,8 +503,8 @@ and the [common settings for `service_desk_email`](https://docs.gitlab.com/chart
 
 #### Linux package (Omnibus)
 
-In multi-node Linux package (Omnibus) environments, run `mail_room` only on one node. Run it either on a single
-`rails` node (for example, [Omnibus role](https://docs.gitlab.com/omnibus/roles/index.html) `application_role`)
+In multi-node Linux package installation environments, run `mail_room` only on one node. Run it either on a single
+`rails` node (for example, `application_role`)
 or completely separately.
 
 ##### Set up all nodes

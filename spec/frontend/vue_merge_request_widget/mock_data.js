@@ -427,6 +427,7 @@ export const mockStore = {
       external_url: 'https://fake.com',
       external_url_formatted: 'https://fake.com',
       status: SUCCESS,
+      environment_available: true,
     },
     {
       id: 1,
@@ -434,6 +435,7 @@ export const mockStore = {
       external_url: 'https://fake.com',
       external_url_formatted: 'https://fake.com',
       status: SUCCESS,
+      environment_available: true,
     },
   ],
   postMergeDeployments: [

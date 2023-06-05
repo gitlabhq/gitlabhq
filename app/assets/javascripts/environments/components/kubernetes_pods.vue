@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
 import k8sPodsQuery from '../graphql/queries/k8s_pods.query.graphql';
+import { PHASE_RUNNING, PHASE_PENDING, PHASE_SUCCEEDED, PHASE_FAILED } from '../constants';
 
 export default {
   components: {
@@ -25,6 +26,9 @@ export default {
         this.error = error;
         this.$emit('cluster-error', this.error);
       },
+      watchLoading(isLoading) {
+        this.$emit('loading', isLoading);
+      },
     },
   },
   props: {
@@ -42,41 +46,39 @@ export default {
       error: '',
     };
   },
-
   computed: {
     podStats() {
       if (!this.k8sPods) return null;
 
       return [
         {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          value: this.getPodsByPhase('Running'),
+          value: this.countPodsByPhase(PHASE_RUNNING),
           title: this.$options.i18n.runningPods,
         },
         {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          value: this.getPodsByPhase('Pending'),
+          value: this.countPodsByPhase(PHASE_PENDING),
           title: this.$options.i18n.pendingPods,
         },
         {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          value: this.getPodsByPhase('Succeeded'),
+          value: this.countPodsByPhase(PHASE_SUCCEEDED),
           title: this.$options.i18n.succeededPods,
         },
         {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          value: this.getPodsByPhase('Failed'),
+          value: this.countPodsByPhase(PHASE_FAILED),
           title: this.$options.i18n.failedPods,
         },
       ];
     },
     loading() {
-      return this.$apollo.queries.k8sPods.loading;
+      return this.$apollo?.queries?.k8sPods?.loading;
     },
   },
   methods: {
-    getPodsByPhase(phase) {
+    countPodsByPhase(phase) {
       const filteredPods = this.k8sPods.filter((item) => item.status.phase === phase);
+      if (phase === PHASE_FAILED && filteredPods.length) {
+        this.$emit('failed');
+      }
       return filteredPods.length;
     },
   },

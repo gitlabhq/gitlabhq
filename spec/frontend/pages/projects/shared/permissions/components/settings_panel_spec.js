@@ -1,6 +1,7 @@
 import { GlSprintf, GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
+import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
 import {
   featureAccessLevel,
@@ -34,6 +35,7 @@ const defaultProps = {
     warnAboutPotentiallyUnwantedCharacters: true,
   },
   isGitlabCom: true,
+  canAddCatalogResource: false,
   canDisableEmails: true,
   canChangeVisibilityLevel: true,
   allowedVisibilityOptions: [0, 10, 20],
@@ -118,6 +120,7 @@ describe('Settings Panel', () => {
   const findPagesSettings = () => wrapper.findComponent({ ref: 'pages-settings' });
   const findPagesAccessLevels = () =>
     wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
+  const findCiCatalogSettings = () => wrapper.findComponent(CiCatalogSettings);
   const findEmailSettings = () => wrapper.findComponent({ ref: 'email-settings' });
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
@@ -644,6 +647,19 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({ pagesAvailable: true, pagesAccessControlEnabled: true });
 
       expect(findPagesSettings().props('helpPath')).toBe(defaultProps.pagesHelpPath);
+    });
+  });
+
+  describe('CI Catalog Settings', () => {
+    it('should show the CI Catalog settings if user has permission', () => {
+      wrapper = mountComponent({ canAddCatalogResource: true });
+
+      expect(findCiCatalogSettings().exists()).toBe(true);
+    });
+    it('should not show the CI Catalog settings if user does not have permission', () => {
+      wrapper = mountComponent();
+
+      expect(findCiCatalogSettings().exists()).toBe(false);
     });
   });
 

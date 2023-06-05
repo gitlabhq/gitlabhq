@@ -20,6 +20,7 @@ import {
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
 import ProjectSettingRow from './project_setting_row.vue';
+import CiCatalogSettings from './ci_catalog_settings.vue';
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
@@ -34,6 +35,7 @@ export default {
     ...CVE_ID_REQUEST_BUTTON_I18N,
     analyticsLabel: s__('ProjectSettings|Analytics'),
     containerRegistryLabel: s__('ProjectSettings|Container registry'),
+    ciCdLabel: __('CI/CD'),
     forksLabel: s__('ProjectSettings|Forks'),
     issuesLabel: s__('ProjectSettings|Issues'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
@@ -62,7 +64,6 @@ export default {
       'ProjectSettings|Track machine learning model experiments and artifacts.',
     ),
     pagesLabel: s__('ProjectSettings|Pages'),
-    ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
     requirementsLabel: s__('ProjectSettings|Requirements'),
     releasesLabel: s__('ProjectSettings|Releases'),
@@ -84,6 +85,7 @@ export default {
   modelExperimentsHelpPath,
 
   components: {
+    CiCatalogSettings,
     ProjectFeatureSetting,
     ProjectSettingRow,
     GlButton,
@@ -102,6 +104,11 @@ export default {
 
   props: {
     requestCveAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canAddCatalogResource: {
       type: Boolean,
       required: false,
       default: false,
@@ -364,6 +371,9 @@ export default {
     },
     packageRegistryApiForEveryoneEnabledShown() {
       return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
+    },
+    monitorOperationsFeatureAccessLevelOptions() {
+      return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
     },
   },
 
@@ -985,6 +995,11 @@ export default {
         />
       </project-setting-row>
     </div>
+    <ci-catalog-settings
+      v-if="canAddCatalogResource"
+      class="gl-mb-5"
+      :full-path="confirmationPhrase"
+    />
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">
         <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />

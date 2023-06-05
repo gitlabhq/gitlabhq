@@ -68,7 +68,7 @@ All AI features are experimental.
 1. Enable the specific feature flag for the feature you want to test
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For all other providers, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
+   1. For all other providers, like Anthropic or OpenAI, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
 
 ### Set up the embedding database
 
@@ -84,7 +84,7 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
-### Setup for GitLab chat
+### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:
 

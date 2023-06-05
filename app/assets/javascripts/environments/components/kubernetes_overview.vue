@@ -6,6 +6,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
+import KubernetesStatusBar from './kubernetes_status_bar.vue';
 
 export default {
   components: {
@@ -15,6 +16,7 @@ export default {
     KubernetesAgentInfo,
     KubernetesPods,
     KubernetesTabs,
+    KubernetesStatusBar,
   },
   inject: ['kasTunnelUrl'],
   props: {
@@ -32,6 +34,9 @@ export default {
     return {
       isVisible: false,
       error: '',
+      hasFailedState: false,
+      podsLoading: false,
+      workloadTypesLoading: false,
     };
   },
   computed: {
@@ -51,6 +56,14 @@ export default {
           headers: { 'GitLab-Agent-Id': this.gitlabAgentId, ...csrf.headers },
         },
       };
+    },
+    clusterHealthStatus() {
+      const clusterDataLoading = this.podsLoading || this.workloadTypesLoading;
+      if (clusterDataLoading) {
+        return '';
+      }
+
+      return this.hasFailedState ? 'error' : 'success';
     },
   },
   methods: {
@@ -82,6 +95,7 @@ export default {
     </p>
     <gl-collapse :visible="isVisible" class="gl-md-pl-7 gl-md-pr-5 gl-mt-4">
       <template v-if="isVisible">
+        <kubernetes-status-bar :cluster-health-status="clusterHealthStatus" class="gl-mb-4" />
         <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-5" />
 
         <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
@@ -92,12 +106,16 @@ export default {
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
-          @cluster-error="onClusterError" />
+          @cluster-error="onClusterError"
+          @loading="podsLoading = $event"
+          @failed="hasFailedState = true" />
         <kubernetes-tabs
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
           @cluster-error="onClusterError"
+          @loading="workloadTypesLoading = $event"
+          @failed="hasFailedState = true"
       /></template>
     </gl-collapse>
   </div>

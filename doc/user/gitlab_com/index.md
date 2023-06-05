@@ -468,7 +468,7 @@ and can't be configured on GitLab.com to expire. You can erase job logs
 
 ## GitLab.com at scale
 
-In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
+In addition to the GitLab Enterprise Edition Linux package install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
 publicly available, as [Kubernetes configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com)
 or [Chef cookbooks](https://gitlab.com/gitlab-cookbooks).

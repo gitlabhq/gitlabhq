@@ -28,12 +28,23 @@ The reviewer can:
 - Give you a second opinion on the chosen solution and implementation.
 - Help look for bugs, logic problems, or uncovered edge cases.
 
-If the merge request is trivial to review (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
-you can skip the reviewer step and directly ask a [maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
-Otherwise, a merge request should always be first reviewed by a reviewer in each
-[category (e.g. backend, database)](#approval-guidelines)
-the MR touches, as maintainers may not have the relevant domain knowledge, and
-also to spread the workload.
+If the merge request is small and straightforward to review, you can skip the reviewer step and
+directly ask a
+[maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
+
+What constitutes "small and straightforward" is a gray area. Here are
+some examples of small and straightforward changes:
+
+- Fixing a typo or making small copy changes ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121337#note_1399406719)).
+- A tiny refactor that doesn't change any behavior or data.
+- Removing references to a feature flag that has been default enabled for > 1 month.
+- Removing unused methods or classes.
+- A well-understood logic change that requires changes to < 5 lines of code.
+
+Otherwise, a merge request should be first reviewed by a reviewer in each
+[category (for example: backend, database)](#approval-guidelines)
+the MR touches, as maintainers may not have the relevant domain knowledge. This
+also helps to spread the workload.
 
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
@@ -51,7 +62,9 @@ Some domain areas (like `Verify`) require an approval from a domain expert, base
 CODEOWNERS rules. Because CODEOWNERS sections are independent approval rules, we could have certain
 rules (for example `Verify`) that may be a subset of other more generic approval rules (for example `backend`).
 For a more efficient process, authors should look for domain-specific approvals before generic approvals.
-Domain-specific approvers may also be maintainers, and if so they should review the domain specifics and broader change at the same time and approve once for both roles.
+Domain-specific approvers may also be maintainers, and if so they should review
+the domain specifics and broader change at the same time and approve once for
+both roles.
 
 Read more about [author responsibilities](#the-responsibility-of-the-merge-request-author) below.
 
@@ -180,14 +193,14 @@ by a reviewer before passing it to a maintainer as described in the
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
 | Changes related to authentication or authorization | [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
 
-- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code within Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
+- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
   request is potentially introducing expensive queries. It is most efficient to comment
   on the line of code in question with the SQL queries so they can give their advice.
 - (*3*): User-facing changes include both visual changes (regardless of how minor),
   and changes to the rendered DOM which impact how a screen reader may announce
   the content.
-- (*4*): End-to-end changes include all files within the `qa` directory.
+- (*4*): End-to-end changes include all files in the `qa` directory.
 
 #### Acceptance checklist
 
@@ -382,7 +395,7 @@ codebase, and not that of any specific domain, they can review, approve, and mer
 merge requests from any team and in any product area.
 
 Maintainers are the DRI of assuring that the acceptance criteria of a merge request are reasonably met.
-In general, [quality is everyone’s responsibility](https://about.gitlab.com/handbook/engineering/quality/),
+In general, [quality is everyone's responsibility](https://about.gitlab.com/handbook/engineering/quality/),
 but maintainers of an MR are held responsible for **ensuring** that an MR meets those general quality standards.
 
 If a maintainer feels that an MR is substantial enough, or requires a [domain expert](#domain-experts),

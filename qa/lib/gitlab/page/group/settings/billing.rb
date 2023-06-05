@@ -33,10 +33,13 @@ module Gitlab
           # Waits for subscription to be synced and UI to be updated
           #
           # @param subscription_plan [String]
-          def wait_for_subscription(subscription_plan, page:)
+          def wait_for_subscription(subscription_plan)
             ::QA::Support::Waiter.wait_until(
-              max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT, sleep_interval: 2, reload_page: page,
-              message: "Subscription plan '#{subscription_plan}' failed to appear") do
+              max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT,
+              sleep_interval: 2,
+              reload_page: Chemlab.configuration.browser.session,
+              message: "Subscription plan '#{subscription_plan}' failed to appear"
+            ) do
               billing_plan_header.match?(/currently using the #{subscription_plan} saas plan/i)
             end
           end

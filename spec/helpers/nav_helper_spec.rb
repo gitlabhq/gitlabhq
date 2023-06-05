@@ -138,55 +138,34 @@ RSpec.describe NavHelper, feature_category: :navigation do
   describe '#show_super_sidebar?' do
     shared_examples 'show_super_sidebar is supposed to' do
       before do
-        stub_feature_flags(super_sidebar_nav: new_nav_ff)
         user.update!(use_new_navigation: user_preference)
       end
 
-      context 'with feature flag off' do
-        let(:new_nav_ff) { false }
+      context 'when user has not interacted with the new nav toggle yet' do
+        let(:user_preference) { nil }
 
-        context 'when user has new nav disabled' do
-          let(:user_preference) { false }
+        specify { expect(subject).to eq false }
 
-          specify { expect(subject).to eq false }
-        end
-
-        context 'when user has new nav enabled' do
-          let(:user_preference) { true }
-
-          specify { expect(subject).to eq false }
-        end
-      end
-
-      context 'with feature flag on' do
-        let(:new_nav_ff) { true }
-
-        context 'when user has not interacted with the new nav toggle yet' do
-          let(:user_preference) { nil }
-
-          specify { expect(subject).to eq false }
-
-          context 'when the user was enrolled into the new nav via a special feature flag' do
-            before do
-              # this ff is disabled in globally to keep tests of the old nav working
-              stub_feature_flags(super_sidebar_nav_enrolled: true)
-            end
-
-            specify { expect(subject).to eq true }
+        context 'when the user was enrolled into the new nav via a special feature flag' do
+          before do
+            # this ff is disabled in globally to keep tests of the old nav working
+            stub_feature_flags(super_sidebar_nav_enrolled: true)
           end
-        end
-
-        context 'when user has new nav disabled' do
-          let(:user_preference) { false }
-
-          specify { expect(subject).to eq false }
-        end
-
-        context 'when user has new nav enabled' do
-          let(:user_preference) { true }
 
           specify { expect(subject).to eq true }
         end
+      end
+
+      context 'when user has new nav disabled' do
+        let(:user_preference) { false }
+
+        specify { expect(subject).to eq false }
+      end
+
+      context 'when user has new nav enabled' do
+        let(:user_preference) { true }
+
+        specify { expect(subject).to eq true }
       end
     end
 

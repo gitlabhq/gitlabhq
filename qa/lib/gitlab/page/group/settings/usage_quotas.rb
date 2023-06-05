@@ -82,6 +82,34 @@ module Gitlab
 
             purchased_usage_total[/(\d+){2}.\d+/].to_f
           end
+
+          # Waits for additional CI minutes to be available on the page
+          def wait_for_additional_ci_minutes_available
+            ::QA::Support::Waiter.wait_until(
+              max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT,
+              sleep_interval: 2,
+              reload_page: Chemlab.configuration.browser.session,
+              message: 'Expected additional CI minutes but they did not appear.'
+            ) do
+              additional_ci_minutes_added?
+            end
+          end
+
+          # Waits for additional CI minutes amount to match the expected number of minutes
+          #
+          # @param [String] minutes
+          def wait_for_additional_ci_minute_limits(minutes)
+            wait_for_additional_ci_minutes_available
+
+            ::QA::Support::Waiter.wait_until(
+              max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT,
+              sleep_interval: 2,
+              reload_page: Chemlab.configuration.browser.session,
+              message: "Expected additional CI minutes to equal #{minutes}"
+            ) do
+              additional_ci_limits == minutes
+            end
+          end
         end
       end
     end

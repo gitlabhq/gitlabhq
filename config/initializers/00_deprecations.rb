@@ -18,7 +18,7 @@ if Rails.env.production?
 else
   ActiveSupport::Deprecation.silenced = false
   ActiveSupport::Deprecation.behavior = [:stderr, :notify]
-  ActiveSupport::Deprecation.disallowed_behavior = :raise
+  ActiveSupport::Deprecation.disallowed_behavior = [:stderr, :raise]
 
   rails7_deprecation_warnings = [
     # https://gitlab.com/gitlab-org/gitlab/-/issues/366910

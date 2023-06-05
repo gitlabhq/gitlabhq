@@ -9,6 +9,7 @@ import {
   FAILED,
   DEPLOYING,
   REDEPLOYING,
+  SUCCESS,
   STOPPING,
 } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -35,7 +36,8 @@ describe('DeploymentAction component', () => {
 
   const findStopButton = () => wrapper.find('.js-stop-env');
   const findDeployButton = () => wrapper.find('.js-manual-deploy-action');
-  const findRedeployButton = () => wrapper.find('.js-manual-redeploy-action');
+  const findManualRedeployButton = () => wrapper.find('.js-manual-redeploy-action');
+  const findRedeployButton = () => wrapper.find('.js-redeploy-action');
 
   beforeEach(() => {
     executeActionSpy = jest.spyOn(MRWidgetService, 'executeInlineAction');
@@ -79,17 +81,17 @@ describe('DeploymentAction component', () => {
 
     describe('when there is no retry_path in details', () => {
       it('the manual redeploy button does not appear', () => {
-        expect(findRedeployButton().exists()).toBe(false);
+        expect(findManualRedeployButton().exists()).toBe(false);
       });
     });
   });
 
   describe('when conditions are met', () => {
     describe.each`
-      configConst    | computedDeploymentStatus | displayConditionChanges | finderFn              | endpoint
-      ${STOPPING}    | ${CREATED}               | ${{}}                   | ${findStopButton}     | ${deploymentMockData.stop_url}
-      ${DEPLOYING}   | ${MANUAL_DEPLOY}         | ${playDetails}          | ${findDeployButton}   | ${playDetails.playable_build.play_path}
-      ${REDEPLOYING} | ${FAILED}                | ${retryDetails}         | ${findRedeployButton} | ${retryDetails.playable_build.retry_path}
+      configConst    | computedDeploymentStatus | displayConditionChanges | finderFn                    | endpoint
+      ${STOPPING}    | ${CREATED}               | ${{}}                   | ${findStopButton}           | ${deploymentMockData.stop_url}
+      ${DEPLOYING}   | ${MANUAL_DEPLOY}         | ${playDetails}          | ${findDeployButton}         | ${playDetails.playable_build.play_path}
+      ${REDEPLOYING} | ${FAILED}                | ${retryDetails}         | ${findManualRedeployButton} | ${retryDetails.playable_build.retry_path}
     `(
       '$configConst action',
       ({ configConst, computedDeploymentStatus, displayConditionChanges, finderFn, endpoint }) => {
@@ -230,5 +232,142 @@ describe('DeploymentAction component', () => {
         });
       },
     );
+  });
+
+  describe('with the reviewAppsRedeployMrWidget feature flag turned on', () => {
+    beforeEach(() => {
+      factory({
+        propsData: {
+          computedDeploymentStatus: SUCCESS,
+          deployment: {
+            ...deploymentMockData,
+            details: undefined,
+            retry_url: retryDetails.playable_build.retry_path,
+            environment_available: false,
+          },
+        },
+        provide: {
+          glFeatures: {
+            reviewAppsRedeployMrWidget: true,
+          },
+        },
+      });
+    });
+
+    it('should display the redeploy button', () => {
+      expect(findRedeployButton().exists()).toBe(true);
+    });
+
+    describe('when the redeploy button is clicked', () => {
+      describe('should show a confirm dialog but not call executeInlineAction when declined', () => {
+        beforeEach(() => {
+          executeActionSpy.mockResolvedValueOnce();
+          confirmAction.mockResolvedValueOnce(false);
+          findRedeployButton().trigger('click');
+        });
+
+        it('should show the confirm dialog', () => {
+          expect(confirmAction).toHaveBeenCalled();
+          expect(confirmAction).toHaveBeenCalledWith(
+            actionButtonMocks[REDEPLOYING].confirmMessage,
+            {
+              primaryBtnVariant: actionButtonMocks[REDEPLOYING].buttonVariant,
+              primaryBtnText: actionButtonMocks[REDEPLOYING].buttonText,
+            },
+          );
+        });
+
+        it('should not execute the action', () => {
+          expect(MRWidgetService.executeInlineAction).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('should show a confirm dialog and call executeInlineAction when accepted', () => {
+        beforeEach(() => {
+          executeActionSpy.mockResolvedValueOnce();
+          confirmAction.mockResolvedValueOnce(true);
+          findRedeployButton().trigger('click');
+        });
+
+        it('should show the confirm dialog', () => {
+          expect(confirmAction).toHaveBeenCalled();
+          expect(confirmAction).toHaveBeenCalledWith(
+            actionButtonMocks[REDEPLOYING].confirmMessage,
+            {
+              primaryBtnVariant: actionButtonMocks[REDEPLOYING].buttonVariant,
+              primaryBtnText: actionButtonMocks[REDEPLOYING].buttonText,
+            },
+          );
+        });
+
+        it('should not throw an error', () => {
+          expect(createAlert).not.toHaveBeenCalled();
+        });
+
+        describe('response includes redirect_url', () => {
+          const url = '/root/example';
+          beforeEach(async () => {
+            executeActionSpy.mockResolvedValueOnce({
+              data: { redirect_url: url },
+            });
+
+            await waitForPromises();
+
+            confirmAction.mockResolvedValueOnce(true);
+            findRedeployButton().trigger('click');
+          });
+
+          it('does not call visit url', () => {
+            expect(visitUrl).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('it should call the executeAction method', () => {
+          beforeEach(async () => {
+            jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
+            jest.spyOn(eventHub, '$emit');
+
+            await waitForPromises();
+
+            confirmAction.mockResolvedValueOnce(true);
+            findRedeployButton().trigger('click');
+          });
+
+          it('calls with the expected arguments', () => {
+            expect(wrapper.vm.executeAction).toHaveBeenCalled();
+            expect(wrapper.vm.executeAction).toHaveBeenCalledWith(
+              retryDetails.playable_build.retry_path,
+              actionButtonMocks[REDEPLOYING],
+            );
+          });
+
+          it('emits the FetchDeployments event', () => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+          });
+        });
+
+        describe('when executeInlineAction errors', () => {
+          beforeEach(async () => {
+            executeActionSpy.mockRejectedValueOnce();
+            jest.spyOn(eventHub, '$emit');
+
+            await waitForPromises();
+
+            confirmAction.mockResolvedValueOnce(true);
+            findRedeployButton().trigger('click');
+          });
+
+          it('should call createAlert with error message', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: actionButtonMocks[REDEPLOYING].errorMessage,
+            });
+          });
+
+          it('emits the FetchDeployments event', () => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+          });
+        });
+      });
+    });
   });
 });

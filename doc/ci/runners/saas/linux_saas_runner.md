@@ -180,7 +180,7 @@ sentry_dsn = "X"
     MachineOptions = [
       "google-project=PROJECT",
       "google-disk-size=25",
-      "google-machine-type=n1-standard-1",
+      "google-machine-type=n2d-standard-2",
       "google-username=core",
       "google-tags=gitlab-com,srm",
       "google-use-internal-ip",

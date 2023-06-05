@@ -131,7 +131,7 @@ GitLab. For example:
    - Set `Gitlab-Bypass-Rate-Limiting` to a value other than `1` on all requests that
      should be affected by rate limiting.
 1. Set the environment variable  `GITLAB_THROTTLE_BYPASS_HEADER`.
-   - For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+   - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
      set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
    - For source installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
      in `/etc/default/gitlab`.
@@ -163,7 +163,7 @@ the `GITLAB_THROTTLE_USER_ALLOWLIST` environment variable. If you want
 users 1, 53 and 217 to bypass the authenticated request rate limiter,
 the allowlist configuration would be `1,53,217`.
 
-- For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+- For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
   set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
 - For source installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
   in `/etc/default/gitlab`.

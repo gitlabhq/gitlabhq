@@ -42,7 +42,7 @@ export GITLAB_ACTIVATION_CODE=your_activation_code
 
 If you have a license, you can also import it when you install GitLab.
 
-- **For installations from source**
+- For self-compiled installations:
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.
   - To specify a custom location and filename for the license, set the
     `GITLAB_LICENSE_FILE` environment variable with the path to the file:
@@ -51,7 +51,7 @@ If you have a license, you can also import it when you install GitLab.
     export GITLAB_LICENSE_FILE="/path/to/license/file"
     ```
 
-- **For Omnibus package**
+- For Linux package installations:
   - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
   - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
 

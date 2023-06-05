@@ -301,10 +301,6 @@ $tabs-holder-z-index: 250;
 }
 
 .tree-list-icon {
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-
   &,
   svg {
     fill: var(--gray-400, $gray-400);

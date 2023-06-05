@@ -190,13 +190,12 @@ After components are added to a components repository, they can immediately be [
 However, this repository is not discoverable. You must mark this project as a catalog resource to allow it to be visible in the CI Catalog
 so other users can discover it.
 
-To mark a project as a catalog resource, run the following [graphQL](../../api/graphql/index.md)
-mutation:
+To mark a project as a catalog resource:
 
-```graphql
-mutation {
-    catalogResourcesCreate(input: { projectPath: "path-to-project"}) {
-      errors
-  }
-}
-```
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
+
+NOTE:
+This action is not reversible.
