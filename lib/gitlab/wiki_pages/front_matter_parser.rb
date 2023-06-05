@@ -53,7 +53,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         def initialize(delim = nil, lang = '', text = nil)
-          @lang = lang.downcase.presence || Gitlab::FrontMatter::DELIM_LANG[delim]
+          @lang = lang&.downcase.presence || Gitlab::FrontMatter::DELIM_LANG[delim]
           @text = text&.strip!
         end
 
@@ -109,11 +109,17 @@ module Gitlab
       end
 
       def parse_front_matter_block
-        wiki_content.match(Gitlab::FrontMatter::PATTERN) { |m| Block.new(m[:delim], m[:lang], m[:front_matter]) } || Block.new
+        if match = Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.match(wiki_content)
+          Block.new(match[:delim], match[:lang], match[:front_matter])
+        else
+          Block.new
+        end
       end
 
       def strip_front_matter_block
-        wiki_content.gsub(Gitlab::FrontMatter::PATTERN, '')
+        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.replace_gsub(wiki_content) do
+          ''
+        end
       end
     end
   end

@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
 class AbuseReportsController < ApplicationController
-  before_action :set_user, only: [:new, :add_category]
+  before_action :set_user, only: [:add_category]
 
   feature_category :insider_threat
-
-  def new
-    @abuse_report = AbuseReport.new(
-      user_id: @user.id,
-      reported_from_url: params.fetch(:ref_url, '')
-    )
-  end
 
   def add_category
     @abuse_report = AbuseReport.new(

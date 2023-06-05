@@ -1079,4 +1079,22 @@ RSpec.describe Issuable do
       end
     end
   end
+
+  context 'with exportable associations' do
+    let_it_be(:project) { create(:project, group: create(:group, :private)) }
+
+    context 'for issues' do
+      let_it_be_with_reload(:resource) { create(:issue, project: project) }
+
+      it_behaves_like 'an exportable'
+    end
+
+    context 'for merge requests' do
+      let_it_be_with_reload(:resource) do
+        create(:merge_request, source_project: project, project: project)
+      end
+
+      it_behaves_like 'an exportable'
+    end
+  end
 end

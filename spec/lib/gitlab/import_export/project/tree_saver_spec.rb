@@ -7,6 +7,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
   let_it_be(:exportable_path) { 'project' }
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:private_project) { create(:project, :private, group: group) }
+  let_it_be(:private_mr) { create(:merge_request, source_project: private_project, project: private_project) }
   let_it_be(:project) { setup_project }
 
   shared_examples 'saves project tree successfully' do |ndjson_enabled|
@@ -124,6 +126,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
           expect(reviewer).not_to be_nil
           expect(reviewer['user_id']).to eq(user.id)
+        end
+
+        it 'has merge requests system notes' do
+          system_notes = subject.first['notes'].select { |note| note['system'] }
+
+          expect(system_notes.size).to eq(1)
+          expect(system_notes.first['note']).to eq('merged')
         end
       end
 
@@ -512,6 +521,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     create(:milestone, project: project)
     discussion_note = create(:discussion_note, noteable: issue, project: project)
     mr_note = create(:note, noteable: merge_request, project: project)
+    create(:system_note, noteable: merge_request, project: project, author: user, note: 'merged')
+    private_system_note = "mentioned in merge request #{private_mr.to_reference(project)}"
+    create(:system_note, noteable: merge_request, project: project, author: user, note: private_system_note)
     create(:note, noteable: snippet, project: project)
     create(:note_on_commit,
       author: user,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::TagCheck do
+RSpec.describe Gitlab::Checks::TagCheck, feature_category: :source_code_management do
   include_context 'change access checks context'
 
   describe '#validate!' do
@@ -12,6 +12,29 @@ RSpec.describe Gitlab::Checks::TagCheck do
       allow(user_access).to receive(:can_do_action?).with(:admin_tag).and_return(false)
 
       expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You are not allowed to change existing tags on this project.')
+    end
+
+    context "prohibited tags check" do
+      it "prohibits tag names that include refs/tags/ at the head" do
+        allow(subject).to receive(:tag_name).and_return("refs/tags/foo")
+
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "You cannot create a tag with a prohibited pattern.")
+      end
+
+      it "doesn't prohibit a nested refs/tags/ string in a tag name" do
+        allow(subject).to receive(:tag_name).and_return("fix-for-refs/tags/foo")
+
+        expect { subject.validate! }.not_to raise_error
+      end
+
+      context "deleting a refs/tags headed tag" do
+        let(:newrev) { "0000000000000000000000000000000000000000" }
+        let(:ref) { "refs/tags/refs/tags/267208abfe40e546f5e847444276f7d43a39503e" }
+
+        it "doesn't prohibit the deletion of a refs/tags/ tag name" do
+          expect { subject.validate! }.not_to raise_error
+        end
+      end
     end
 
     context 'with protected tag' do

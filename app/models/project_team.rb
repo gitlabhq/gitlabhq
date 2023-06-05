@@ -117,11 +117,13 @@ class ProjectTeam
     owners.include?(user)
   end
 
-  def import(source_project, current_user = nil)
+  def import(source_project, current_user)
     target_project = project
 
     source_members = source_project.project_members.to_a
     target_user_ids = target_project.project_members.pluck(:user_id)
+
+    importer_access_level = max_member_access(current_user.id)
 
     source_members.reject! do |member|
       # Skip if user already present in team
@@ -132,6 +134,8 @@ class ProjectTeam
       new_member = member.dup
       new_member.id = nil
       new_member.source = target_project
+      # So that a maintainer cannot import a member with owner access
+      new_member.access_level = [new_member.access_level, importer_access_level].min
       new_member.created_by = current_user
       new_member
     end

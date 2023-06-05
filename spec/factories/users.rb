@@ -20,6 +20,10 @@ FactoryBot.define do
       public_email { email }
     end
 
+    trait :notification_email do
+      notification_email { email }
+    end
+
     trait :private_profile do
       private_profile { true }
     end
