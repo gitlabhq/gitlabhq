@@ -183,16 +183,28 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#merge_request_source_branch' do
-    let_it_be(:project) { create(:project) }
-    let(:forked_project) { fork_project(project) }
-    let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
+    branch_name = 'name<script>test</script>'
+    let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request_forked) do
+      create(
+        :merge_request,
+        source_project: forked_project,
+        source_branch: branch_name,
+        target_project: project
+      )
+    end
 
     context 'when merge request is a fork' do
       subject { merge_request_source_branch(merge_request_forked) }
 
       it 'does show the fork icon' do
         expect(subject).to match(/fork/)
+      end
+
+      it 'escapes properly' do
+        expect(subject).to include(html_escape(branch_name))
       end
     end
 

@@ -2,6 +2,35 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.2 (2023-06-05)
+
+### Fixed (1 change)
+
+- [Fix Sidekiq crash when gitlab.yml contains UTF-8 characters](gitlab-org/security/gitlab@bb3f94f25f14068e11ff242e00841ec6ad4952a5)
+
+### Changed (1 change)
+
+- [Introduce parallelised BitBucket Server Importer](gitlab-org/security/gitlab@6aa9cf0799d3fa30d7498a9d119dbfb52a839247)
+
+### Security (16 changes)
+
+- [Fix DoS on test report artifacts](gitlab-org/security/gitlab@1058018d0f40165150742f2703e3feb0e0810799) ([merge request](gitlab-org/security/gitlab!3271))
+- [Fix XSS in Abuse Reports form action](gitlab-org/security/gitlab@c5ab6568c8d9d084876b8680394cfe18d6c58ba1) ([merge request](gitlab-org/security/gitlab!3289))
+- [Escape the source branch link correctly](gitlab-org/security/gitlab@40a3d27c0293190fb094216a8d7a193751e61acd) ([merge request](gitlab-org/security/gitlab!3286))
+- [Import source owners with maintainer access if importer is a maintainer](gitlab-org/security/gitlab@2d580f269e4285834f478df6601132f7cdc3130a) ([merge request](gitlab-org/security/gitlab!3282))
+- [Filter inaccessible issuable notes when exporting project](gitlab-org/security/gitlab@ca46e35908072748b5ae68d099acf46f8f667cfc) ([merge request](gitlab-org/security/gitlab!3275))
+- [Block tag names that are prepended with refs/tags/, due to conflicts](gitlab-org/security/gitlab@80e86cec6ea8a87c6b869eeeaa8c9a317f53d26d) ([merge request](gitlab-org/security/gitlab!3269))
+- [Set IP in ActionContoller filter before IP enforcement is evaluated](gitlab-org/security/gitlab@121f1270bed598cf1ca249fc5fd27c9806765421) ([merge request](gitlab-org/security/gitlab!3278))
+- [Prevent primary email returned as verified on unsaved change](gitlab-org/security/gitlab@506533fc3a1928361ea451dbb7a702da2912f16f) ([merge request](gitlab-org/security/gitlab!3259))
+- [Use UntrustedRegexp to protect FrontMatter filter](gitlab-org/security/gitlab@50e26a058850e907970ea12d94a72e8be4c6b296) ([merge request](gitlab-org/security/gitlab!3258))
+- [Improve ambiguous_ref? logic to include heads and tags](gitlab-org/security/gitlab@0d24382ab68543cafb08e88e25ff973cd7fbd17e) ([merge request](gitlab-org/security/gitlab!3294))
+- [Use UntrustedRegexp to protect InlineDiff filter](gitlab-org/security/gitlab@2dc1ecf6a4f89b43a6e75f07580ee4076d9073dc) ([merge request](gitlab-org/security/gitlab!3253))
+- [Ignore user-defined diff paths in diff notes](gitlab-org/security/gitlab@5f4dc756d0aa396e808d556d82e74a1832728b09) ([merge request](gitlab-org/security/gitlab!3266))
+- [Reject NPM metadata requests with invalid package_name](gitlab-org/security/gitlab@28e13218559dc1fe3e82400fe438d09d20f210c1) ([merge request](gitlab-org/security/gitlab!3281))
+- [Use UntrustedRegexp to protect MathFilter regex](gitlab-org/security/gitlab@d686081bc5a93b7e55bca0fde388bca7cc8d3626) ([merge request](gitlab-org/security/gitlab!3252))
+- [Resolve Overall Project Vulnerability Disclosure](gitlab-org/security/gitlab@0b2770814ad2f6c741b146c25025773678efbcb1) ([merge request](gitlab-org/security/gitlab!3270))
+- [Validate description length in labels](gitlab-org/security/gitlab@688225aba7e485de365b1ad914049acbc6bd07d2) ([merge request](gitlab-org/security/gitlab!3244))
+
 ## 16.0.1 (2023-05-22)
 
 ### Security (1 change)

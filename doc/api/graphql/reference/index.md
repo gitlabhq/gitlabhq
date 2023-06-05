@@ -15831,7 +15831,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Represents vulnerable project counts for each grade.
 
-Returns [`[VulnerableProjectsByGrade!]!`](#vulnerableprojectsbygrade).
+Returns [`[VulnerableProjectsByGrade!]`](#vulnerableprojectsbygrade).
 
 ###### Arguments
 

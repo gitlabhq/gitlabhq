@@ -106,36 +106,6 @@ RSpec.describe ProjectMember do
     end
   end
 
-  describe '.import_team' do
-    before do
-      @project_1 = create(:project)
-      @project_2 = create(:project)
-
-      @user_1 = create :user
-      @user_2 = create :user
-
-      @project_1.add_developer(@user_1)
-      @project_2.add_reporter(@user_2)
-
-      @status = @project_2.team.import(@project_1)
-    end
-
-    it { expect(@status).to be_truthy }
-
-    describe 'project 2 should get user 1 as developer. user_2 should not be changed' do
-      it { expect(@project_2.users).to include(@user_1) }
-      it { expect(@project_2.users).to include(@user_2) }
-
-      it { expect(Ability.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
-      it { expect(Ability.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
-    end
-
-    describe 'project 1 should not be changed' do
-      it { expect(@project_1.users).to include(@user_1) }
-      it { expect(@project_1.users).not_to include(@user_2) }
-    end
-  end
-
   describe '.truncate_teams' do
     before do
       @project_1 = create(:project)

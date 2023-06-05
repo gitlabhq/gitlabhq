@@ -80,7 +80,6 @@ module BitbucketServer
           state: state,
           title: title,
           source_branch_name: source_branch_name,
-          source_branch_sha: source_branch_sha,
           target_branch_name: target_branch_name,
           target_branch_sha: target_branch_sha
         }

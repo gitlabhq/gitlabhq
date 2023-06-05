@@ -7,6 +7,6 @@ RSpec.describe Gitlab::BackgroundMigration::Mailers::UnconfirmMailer do
   let(:subject) { described_class.unconfirm_notification_email(user) }
 
   it 'contains abuse report url' do
-    expect(subject.body.encoded).to include(Rails.application.routes.url_helpers.new_abuse_report_url(user_id: user.id))
+    expect(subject.body.encoded).to include(Gitlab::Routing.url_helpers.user_url(user.id))
   end
 end

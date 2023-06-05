@@ -351,14 +351,6 @@ RSpec.describe InvitesController, 'routing' do
   end
 end
 
-RSpec.describe AbuseReportsController, 'routing' do
-  let_it_be(:user) { create(:user) }
-
-  it 'to #new' do
-    expect(get("/-/abuse_reports/new?user_id=#{user.id}")).to route_to('abuse_reports#new', user_id: user.id.to_s)
-  end
-end
-
 RSpec.describe SentNotificationsController, 'routing' do
   it 'to #unsubscribe' do
     expect(get("/-/sent_notifications/4bee17d4a63ed60cf5db53417e9aeb4c/unsubscribe"))
