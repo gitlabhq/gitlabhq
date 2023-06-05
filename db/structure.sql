@@ -19240,6 +19240,8 @@ CREATE TABLE organizations (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     name text DEFAULT ''::text NOT NULL,
+    path text NOT NULL,
+    CONSTRAINT check_0b4296b5ea CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_d130d769e0 CHECK ((char_length(name) <= 255))
 );
 
@@ -33275,6 +33277,8 @@ CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_sett
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX unique_organizations_on_path ON organizations USING btree (path);
 
 CREATE UNIQUE INDEX unique_packages_project_id_and_name_and_version_when_debian ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 9) AND (status <> 4));
 

@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :organization, class: 'Organizations::Organization' do
     sequence(:name) { |n| "Organization ##{n}" }
+    path { name.parameterize }
 
     trait :default do
       id { Organizations::Organization::DEFAULT_ORGANIZATION_ID }

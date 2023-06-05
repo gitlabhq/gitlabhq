@@ -8,10 +8,14 @@ module Issuable
     end
 
     def execute(issuable)
+      before_destroy(issuable)
       after_destroy(issuable) if issuable.destroy
     end
 
     private
+
+    # overriden in EE
+    def before_destroy(issuable); end
 
     def after_destroy(issuable)
       delete_associated_records(issuable)

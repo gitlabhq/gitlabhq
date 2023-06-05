@@ -15,6 +15,10 @@ module Organizations
       presence: true,
       length: { maximum: 255 }
 
+    validates :path,
+      presence: true,
+      length: { minimum: 2, maximum: 255 }
+
     def default?
       id == DEFAULT_ORGANIZATION_ID
     end
