@@ -42,7 +42,7 @@ body {
 
 .content-wrapper {
   padding-top: var(--top-bar-height);
-  padding-bottom: 100px;
+  padding-bottom: $content-wrapper-padding;
 }
 
 .container {

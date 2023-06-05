@@ -1,6 +1,5 @@
 ---
 SidekiqLoadBalancing/WorkerDataConsistency:
-  Details: grace period
   Exclude:
     - 'app/workers/admin_email_worker.rb'
     - 'app/workers/analytics/usage_trends/count_job_trigger_worker.rb'

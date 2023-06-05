@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/FirstArgumentIndentation:
-  Details: grace period
   Exclude:
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/cycle_analytics/project_level_stage_adapter.rb'

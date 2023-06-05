@@ -1,6 +1,5 @@
 ---
 Graphql/EnumValues:
-  Details: grace period
   Exclude:
     - 'app/graphql/types/alert_management/domain_filter_enum.rb'
     - 'app/graphql/types/blob_viewers/type_enum.rb'

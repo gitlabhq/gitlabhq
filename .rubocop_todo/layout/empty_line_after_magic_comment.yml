@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/EmptyLineAfterMagicComment:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/instance_review_controller.rb'
     - 'app/controllers/concerns/render_access_tokens.rb'

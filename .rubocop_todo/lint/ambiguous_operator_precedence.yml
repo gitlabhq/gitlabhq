@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/AmbiguousOperatorPrecedence:
-  Details: grace period
   Exclude:
     - 'app/controllers/explore/projects_controller.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'

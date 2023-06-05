@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/system_info_controller.rb'
     - 'app/controllers/concerns/milestone_actions.rb'

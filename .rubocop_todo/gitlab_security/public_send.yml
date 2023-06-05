@@ -1,6 +1,5 @@
 ---
 GitlabSecurity/PublicSend:
-  Details: grace period
   Exclude:
     - 'ee/app/helpers/push_rules_helper.rb'
     - 'ee/app/models/ee/namespace_setting.rb'

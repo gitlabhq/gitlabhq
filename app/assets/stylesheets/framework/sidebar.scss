@@ -492,7 +492,7 @@
             $issue-sticky-header-height: 76px;
 
             top: calc(#{$calc-application-header-height} + #{$issue-sticky-header-height});
-            height: calc(#{$calc-application-viewport-height} - #{$issue-sticky-header-height} - var(--mr-review-bar-height));
+            height: calc(#{$calc-application-viewport-height} - #{$issue-sticky-header-height} - var(--mr-review-bar-height) - $content-wrapper-padding);
             position: sticky;
             overflow: auto;
             padding: 0 15px;

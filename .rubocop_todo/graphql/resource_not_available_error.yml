@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Graphql/ResourceNotAvailableError:
-  Details: grace period
   Exclude:
     - 'app/graphql/mutations/achievements/create.rb'
     - 'app/graphql/mutations/admin/sidekiq_queues/delete_jobs.rb'

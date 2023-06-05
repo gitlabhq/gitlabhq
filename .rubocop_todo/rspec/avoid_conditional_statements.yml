@@ -1,6 +1,5 @@
 ---
 RSpec/AvoidConditionalStatements:
-  Details: grace period
   Exclude:
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/analytics/code_analytics_spec.rb'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/UnusedMethodArgument:
-  Details: grace period
   Exclude:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/concerns/authenticates_with_two_factor.rb'

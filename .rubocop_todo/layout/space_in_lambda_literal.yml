@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/SpaceInLambdaLiteral:
-  Details: grace period
   Exclude:
     - 'app/models/bulk_imports/tracker.rb'
     - 'app/models/ci/build.rb'

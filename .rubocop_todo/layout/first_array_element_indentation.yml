@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/FirstArrayElementIndentation:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/plan_limits_controller.rb'
     - 'app/finders/user_groups_counter.rb'

@@ -25,6 +25,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'artifacts' => { 'enabled' => true },
           'external_diffs' => { 'enabled' => false },
           'pages' => { 'enabled' => true },
+          'ci_secure_files' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -43,6 +44,9 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
               },
               'pages' => {
                 'bucket' => 'pages'
+              },
+              'ci_secure_files' => {
+                'bucket' => 'ci_secure_files'
               }
             }
           }
@@ -97,6 +101,14 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.external_diffs['enabled']).to be false
         expect(settings.external_diffs['object_store']).to be_nil
         expect(settings.external_diffs).to eq(settings['external_diffs'])
+
+        expect(settings.ci_secure_files['enabled']).to be true
+        expect(settings.ci_secure_files['object_store']['enabled']).to be true
+        expect(settings.ci_secure_files['object_store']['connection'].to_hash).to eq(connection)
+        expect(settings.ci_secure_files['object_store']['remote_directory']).to eq('ci_secure_files')
+        expect(settings.ci_secure_files['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.ci_secure_files['object_store']['consolidated_settings']).to be true
+        expect(settings.ci_secure_files).to eq(settings['ci_secure_files'])
       end
 
       it 'supports bucket prefixes' do

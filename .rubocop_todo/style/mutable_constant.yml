@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/MutableConstant:
-  Details: grace period
   Exclude:
     - 'app/finders/group_members_finder.rb'
     - 'app/graphql/mutations/container_repositories/destroy_tags.rb'

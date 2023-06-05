@@ -1,6 +1,5 @@
 ---
 Style/NumberedParameters:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/web_hooks/hook_actions.rb'
     - 'app/controllers/graphql_controller.rb'

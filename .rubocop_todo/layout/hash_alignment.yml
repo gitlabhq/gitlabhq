@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/HashAlignment:
-  Details: grace period
   Exclude:
     - 'config/initializers/rspec_profiling.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/admin/plan_limits_controller.rb'

@@ -1958,6 +1958,9 @@ msgstr ""
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
+msgid "AI|The existing description will be replaced when you submit."
+msgstr ""
+
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 

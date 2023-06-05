@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Layout/SpaceInsidePercentLiteralDelimiters:
-  Details: grace period
   Exclude:
     - 'spec/deprecation_toolkit_env.rb'

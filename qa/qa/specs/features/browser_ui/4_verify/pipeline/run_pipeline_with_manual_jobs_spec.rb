@@ -142,7 +142,7 @@ module QA
         end
 
         acceptable_statuses = %w[skipped manual]
-        pipeline.pipeline_jobs.select { |job| !(acceptable_statuses.include? job[:status]) }
+        pipeline.jobs.select { |job| !(acceptable_statuses.include? job[:status]) }
       end
     end
   end

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
-  Details: grace period
   Exclude:
     - 'ee/app/models/ee/dependency_proxy/blob.rb'
     - 'ee/app/models/ee/dependency_proxy/manifest.rb'

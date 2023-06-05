@@ -152,6 +152,34 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+### `Elastic::MigrationCreateIndex`
+
+Creates a new index.
+
+Requires:
+
+- The `target_class` and `document_type` methods
+- Mappings and index settings for the class in `ee/lib/elastic/latest/` and `ee/lib/elastic/v12p1/`
+
+WARNING:
+You must perform a follow-up migration to populate the index in the same milestone.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationCreateIndex
+
+  retry_on_failure
+
+  def document_type
+    :epic
+  end
+
+  def target_class
+    Epic
+  end
+end
+```
+
 #### `Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.

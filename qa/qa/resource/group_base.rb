@@ -84,6 +84,14 @@ module QA
         end
       end
 
+      # Get group runners
+      #
+      # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/runners.html#list-groups-runners
+      # @return [Array]
+      def runners(**kwargs)
+        auto_paginated_response(request_url(api_runners_path, **kwargs))
+      end
+
       # API get path
       #
       # @return [String]
@@ -110,6 +118,14 @@ module QA
       # @return [String]
       def api_delete_path
         "/groups/#{id}"
+      end
+
+      # API path to GET runners
+      # See https://docs.gitlab.com/ee/api/runners.html#list-groups-runners
+      #
+      # @return [String]
+      def api_runners_path
+        "#{api_get_path}/runners"
       end
 
       # Object comparison

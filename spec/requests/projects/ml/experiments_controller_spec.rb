@@ -3,27 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
-  let_it_be(:project_with_feature) { create(:project, :repository) }
-  let_it_be(:user) { project_with_feature.first_owner }
-  let_it_be(:project_without_feature) do
-    create(:project, :repository).tap { |p| p.add_developer(user) }
-  end
-
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.first_owner }
   let_it_be(:experiment) do
-    create(:ml_experiments, project: project_with_feature, user: user).tap do |e|
+    create(:ml_experiments, project: project, user: user).tap do |e|
       create(:ml_candidates, experiment: e, user: user)
     end
   end
 
   let(:params) { basic_params }
   let(:ff_value) { true }
-  let(:project) { project_with_feature }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
   let(:experiment_iid) { experiment.iid }
+  let(:model_experiments_enabled) { true }
 
   before do
-    stub_feature_flags(ml_experiment_tracking: false)
-    stub_feature_flags(ml_experiment_tracking: project_with_feature) if ff_value
+    allow(Ability).to receive(:allowed?).and_call_original
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :read_model_experiments, project)
+                        .and_return(model_experiments_enabled)
 
     sign_in(user)
   end
@@ -42,9 +40,9 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
   end
 
-  shared_examples '404 if feature flag disabled' do
-    context 'when :ml_experiment_tracking disabled' do
-      let(:ff_value) { false }
+  shared_examples '404 when model experiments is unavailable' do
+    context 'when user does not have access' do
+      let(:model_experiments_enabled) { false }
 
       it_behaves_like 'renders 404'
     end
@@ -71,7 +69,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
 
     describe 'pagination' do
       let_it_be(:experiments) do
-        create_list(:ml_experiments, 3, project: project_with_feature)
+        create_list(:ml_experiments, 3, project: project)
       end
 
       let(:params) { basic_params.merge(id: experiment.iid) }
@@ -102,19 +100,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       end
     end
 
-    context 'when :ml_experiment_tracking is disabled for the project' do
-      let(:project) { project_without_feature }
-
-      before do
-        list_experiments
-      end
-
-      it 'responds with a 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    it_behaves_like '404 if feature flag disabled' do
+    it_behaves_like '404 when model experiments is unavailable' do
       before do
         list_experiments
       end
@@ -225,7 +211,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
 
         it_behaves_like '404 if experiment does not exist'
-        it_behaves_like '404 if feature flag disabled'
+        it_behaves_like '404 when model experiments is unavailable'
       end
     end
 
@@ -257,14 +243,14 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
 
         it_behaves_like '404 if experiment does not exist'
-        it_behaves_like '404 if feature flag disabled'
+        it_behaves_like '404 when model experiments is unavailable'
       end
     end
   end
 
   describe 'DELETE #destroy' do
     let_it_be(:experiment_for_deletion) do
-      create(:ml_experiments, project: project_with_feature, user: user).tap do |e|
+      create(:ml_experiments, project: project, user: user).tap do |e|
         create(:ml_candidates, experiment: e, user: user)
       end
     end
@@ -282,7 +268,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
 
     it_behaves_like '404 if experiment does not exist'
-    it_behaves_like '404 if feature flag disabled'
+    it_behaves_like '404 when model experiments is unavailable'
   end
 
   private

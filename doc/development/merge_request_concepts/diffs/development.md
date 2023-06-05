@@ -72,6 +72,14 @@ contents, individual commits, and the files containing changes.
 Diff content is usually accessed through this class. Logic is often applied
 to diff, file, and commit content before it is returned to a user.
 
+#### `MergeRequestDiff#commits_count`
+
+When `MergeRequestDiff` is saved, associated `MergeRequestDiffCommit` records are
+counted and cached into the `commits_count` column. This number displays on the
+merge request page as the counter for the **Commits** tab.
+
+If `MergeRequestDiffCommit` records are deleted, the counter doesn't update.
+
 ### `MergeRequestDiffCommit`
 
 `MergeRequestDiffCommit` is defined in `app/models/merge_request_diff_commit.rb`.

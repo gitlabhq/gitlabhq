@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/SymbolConversion:
-  Details: grace period
   Exclude:
     - 'app/controllers/projects/environments/sample_metrics_controller.rb'
     - 'app/helpers/breadcrumbs_helper.rb'

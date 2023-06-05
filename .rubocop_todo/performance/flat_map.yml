@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Performance/FlatMap:
-  Details: grace period
   Exclude:
     - 'app/presenters/packages/nuget/service_index_presenter.rb'
     - 'app/services/projects/apple_target_platform_detector_service.rb'

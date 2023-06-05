@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/LineContinuationLeadingSpace:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/issues/base_resolver.rb'
     - 'app/graphql/resolvers/work_items/types_resolver.rb'

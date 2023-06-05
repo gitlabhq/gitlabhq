@@ -5,7 +5,7 @@ module Projects
     class ExperimentsController < ::Projects::ApplicationController
       include Projects::Ml::ExperimentsHelper
 
-      before_action :check_feature_flag
+      before_action :check_feature_enabled
       before_action :set_experiment, only: [:show, :destroy]
 
       feature_category :mlops
@@ -55,8 +55,8 @@ module Projects
 
       private
 
-      def check_feature_flag
-        render_404 unless Feature.enabled?(:ml_experiment_tracking, @project)
+      def check_feature_enabled
+        render_404 unless can?(current_user, :read_model_experiments, @project)
       end
 
       def set_experiment

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/NonAtomicFileOperation:
-  Details: grace period
   Exclude:
     - 'app/models/merge_request_diff.rb'
     - 'app/services/bulk_imports/file_decompression_service.rb'

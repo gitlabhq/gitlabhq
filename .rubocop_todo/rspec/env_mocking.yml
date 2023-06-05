@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/EnvMocking:
-  Details: grace period
   Exclude:
     - 'ee/spec/lib/gitlab/elastic/client_spec.rb'
     - 'spec/initializers/net_http_patch_spec.rb'

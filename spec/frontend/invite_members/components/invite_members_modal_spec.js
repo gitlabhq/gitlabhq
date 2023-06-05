@@ -63,6 +63,7 @@ describe('InviteMembersModal', () => {
   let wrapper;
   let mock;
   let trackingSpy;
+  const showToast = jest.fn();
 
   const expectTracking = (action, label = undefined, property = undefined) =>
     expect(trackingSpy).toHaveBeenCalledWith(INVITE_MEMBER_MODAL_TRACKING_CATEGORY, action, {
@@ -93,6 +94,11 @@ describe('InviteMembersModal', () => {
         }),
         GlEmoji,
         ...stubs,
+      },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
       },
     });
   };
@@ -470,7 +476,6 @@ describe('InviteMembersModal', () => {
           createComponent({ reloadPageOnSubmit: true });
           await triggerMembersTokenSelect([user1, user2]);
 
-          wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
           clickInviteButton();
         });
@@ -484,7 +489,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('does not show the toast message', () => {
-          expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+          expect(showToast).not.toHaveBeenCalled();
         });
       });
 
@@ -493,7 +498,6 @@ describe('InviteMembersModal', () => {
           createComponent();
           await triggerMembersTokenSelect([user1, user2]);
 
-          wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
         });
 
@@ -507,7 +511,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {
@@ -630,7 +634,6 @@ describe('InviteMembersModal', () => {
           await triggerMembersTokenSelect([user3]);
 
           trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-          wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: emailPostData });
         });
 
@@ -644,7 +647,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {
@@ -858,7 +861,6 @@ describe('InviteMembersModal', () => {
           await triggerMembersTokenSelect([user1, user3]);
 
           trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-          wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: singleUserPostData });
         });
 
@@ -877,7 +879,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {

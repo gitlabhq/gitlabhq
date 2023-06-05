@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/StrongMemoizeAttr:
-  Details: grace period
   Exclude:
     - 'app/components/pajamas/avatar_component.rb'
     - 'app/controllers/application_controller.rb'

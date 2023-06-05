@@ -2,11 +2,14 @@
 
 class UserPreference < ApplicationRecord
   include IgnorableColumns
+  include SafelyChangeColumnDefault
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
+
+  columns_changing_default :tab_width, :time_display_relative, :render_whitespace_in_code
 
   belongs_to :user
 

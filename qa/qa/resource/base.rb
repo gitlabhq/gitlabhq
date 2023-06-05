@@ -203,8 +203,10 @@ module QA
         attribute_names.each { |attribute_name| public_send(attribute_name) }
       end
 
-      def wait_until(max_duration: 60, sleep_interval: 0.1, &block)
-        QA::Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, &block)
+      def wait_until(max_duration: 60, sleep_interval: 0.1, message: nil, &block)
+        QA::Support::Waiter.wait_until(
+          max_duration: max_duration, sleep_interval: sleep_interval, message: message, &block
+        )
       end
 
       # Object comparison

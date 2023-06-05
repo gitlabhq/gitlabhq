@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Graphql/Descriptions:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/admin/analytics/usage_trends/measurements_resolver.rb'
     - 'app/graphql/resolvers/alert_management/alert_resolver.rb'

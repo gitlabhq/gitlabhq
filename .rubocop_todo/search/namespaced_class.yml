@@ -1,6 +1,5 @@
 ---
 Search/NamespacedClass:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/search_rate_limitable.rb'
     - 'app/controllers/search_controller.rb'
@@ -54,6 +53,7 @@ Search/NamespacedClass:
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
     - 'ee/app/workers/concerns/elastic/indexing_control.rb'
     - 'ee/app/workers/concerns/elastic/migration_backfill_helper.rb'
+    - 'ee/app/workers/concerns/elastic/migration_create_index.rb'
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
     - 'ee/app/workers/concerns/elastic/migration_options.rb'

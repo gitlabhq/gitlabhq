@@ -1,6 +1,5 @@
 ---
 Lint/ConstantDefinitionInBlock:
-  Details: grace period
   Exclude:
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/partitioned_table.rb'

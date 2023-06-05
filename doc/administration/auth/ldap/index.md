@@ -233,6 +233,7 @@ These configuration settings are available:
 | `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | Some examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
 | `lowercase_usernames` | If enabled, GitLab converts the name to lower case. | **{dotted-circle}** No | boolean |
 | `retry_empty_result_with_codes` | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. | **{dotted-circle}** No | `[80]` |
+| `attributes` | A hash of attribute mappings to LDAP for GitLab to use ([see attributes section](#attribute-configuration-settings)). | **{dotted-circle}** No | `'attributes' => { 'username' => ['uid'], 'email' => ['mail', 'email'] },` |
 
 ### SSL configuration settings
 
@@ -255,6 +256,8 @@ attribute can be either:
 - An array of attribute names to try in order. For example, `['mail', 'email']`.
 
 The user's LDAP sign in is the LDAP attribute [specified as `uid`](#basic-configuration-settings).
+
+You must define the following attributes in an `attributes` hash.
 
 | Setting      | Description | Required | Examples |
 |--------------|-------------|----------|----------|

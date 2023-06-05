@@ -404,14 +404,27 @@ module QA
         parse_body(response)
       end
 
-      def pipelines(auto_paginate: false, attempts: 0)
+      def pipelines(auto_paginate: false, attempts: 0, **kwargs)
         return parse_body(api_get_from(api_pipelines_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
+        auto_paginated_response(request_url(api_pipelines_path, per_page: '100', **kwargs), attempts: attempts)
       end
 
       def latest_pipeline
         parse_body(api_get_from(api_latest_pipeline_path))
+      end
+
+      # Waits for a pipeline to be available with the attributes as specified.
+      #
+      # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines
+      # @return [Hash] the pipeline
+      def wait_for_pipeline(**kwargs)
+        wait_until(sleep_interval: 1, message: "Wait for pipeline with '#{kwargs}' to be available") do
+          result = pipelines(auto_paginate: true, **kwargs)
+          next unless result.present? && result.size == 1
+
+          result.first
+        end
       end
 
       def jobs

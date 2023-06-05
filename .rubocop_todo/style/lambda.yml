@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/Lambda:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/project_unauthorized.rb'
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
