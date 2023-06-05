@@ -136,7 +136,7 @@ export const fetchSidebarCount = ({ commit, state }) => {
   return Promise.all(promises);
 };
 
-export const fetchLanguageAggregation = ({ commit, state }) => {
+export const fetchAllAggregation = ({ commit, state }) => {
   commit(types.REQUEST_AGGREGATIONS);
   return axios
     .get(getAggregationsUrl())

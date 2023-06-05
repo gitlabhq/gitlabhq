@@ -4,10 +4,7 @@ $search-dropdown-max-height: 400px;
 $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
-$search-keyboard-shortcut: '/';
 $language-filter-max-height: 20rem;
-
-$border-radius-medium: 3px;
 
 .search-results {
   .search-result-row {
@@ -21,6 +18,13 @@ $border-radius-medium: 3px;
   }
 }
 
+.hr-x {
+  margin-left: -$gl-spacing-scale-5;
+  margin-right: -$gl-spacing-scale-5;
+  margin-top: $gl-spacing-scale-3;
+  margin-bottom: $gl-spacing-scale-5;
+}
+
 .language-filter-checkbox {
   .custom-control-label {
     flex-grow: 1;
@@ -28,14 +32,61 @@ $border-radius-medium: 3px;
 }
 
 .search-sidebar {
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-down(lg) {
+    max-width: 100%;
+  }
+
+  @include media-breakpoint-down(xl) {
     min-width: $search-sidebar-min-width;
+    max-width: $search-sidebar-min-width;
+  }
+
+  @include media-breakpoint-up(xl) {
+    min-width: $search-sidebar-max-width;
     max-width: $search-sidebar-max-width;
   }
 
   .language-filter-max-height {
     max-height: $language-filter-max-height;
   }
+}
+
+.issue-filters {
+  .label-filter {
+    list-style: none;
+
+    .header-search-dropdown-menu {
+      max-height: $language-filter-max-height;
+
+      @include media-breakpoint-down(xl) {
+        min-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
+        max-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
+      }
+
+      @include media-breakpoint-up(xl) {
+        min-width: calc(#{$search-sidebar-max-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
+        max-width: calc(#{$search-sidebar-max-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
+      }
+
+      .label-with-color-checkbox {
+        max-height: $gl-spacing-scale-5;
+
+        .custom-control-label {
+          margin-bottom: 0;
+          max-height: $gl-spacing-scale-5;
+
+          .label-title {
+            margin-left: -$gl-spacing-scale-2;
+          }
+        }
+      }
+    }
+  }
+}
+
+.advanced-search-promote {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .search-max-w-inherit {

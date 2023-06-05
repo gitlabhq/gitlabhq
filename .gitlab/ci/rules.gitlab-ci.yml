@@ -12,10 +12,10 @@
   if: '$CI_PROJECT_NAME != "gitlab-foss" && $CI_PROJECT_NAME != "gitlab-ce" && $CI_PROJECT_NAME != "gitlabhq"'
 
 .if-jh: &if-jh
-  # Example of these projects:
+  # Matches these two projects:
   # https://jihulab.com/gitlab-cn/gitlab
   # https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation
-  if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/ || $CI_PROJECT_NAME =~ /^gitlab-jh/'
+  if: '$CI_PROJECT_PATH == "gitlab-cn/gitlab" || $CI_PROJECT_PATH == "gitlab-org-sandbox/gitlab-jh-validation"'
 
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'

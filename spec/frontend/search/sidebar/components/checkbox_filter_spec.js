@@ -7,7 +7,7 @@ import { MOCK_QUERY, MOCK_LANGUAGE_AGGREGATIONS_BUCKETS } from 'jest/search/mock
 import CheckboxFilter, {
   TRACKING_LABEL_CHECKBOX,
   TRACKING_LABEL_SET,
-} from '~/search/sidebar/components/checkbox_filter.vue';
+} from '~/search/sidebar/components/language_filter/checkbox_filter.vue';
 
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { convertFiltersData } from '~/search/sidebar/utils';

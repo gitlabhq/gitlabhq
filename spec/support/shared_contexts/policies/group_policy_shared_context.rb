@@ -37,6 +37,7 @@ RSpec.shared_context 'GroupPolicy context' do
       read_crm_contact
       read_crm_organization
       read_internal_note
+      read_confidential_issues
     ]
   end
 

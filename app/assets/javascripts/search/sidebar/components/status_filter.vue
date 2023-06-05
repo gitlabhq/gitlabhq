@@ -19,7 +19,7 @@ export default {
 
 <template>
   <div>
-    <radio-filter class="gl-px-5" :filter-data="$options.stateFilterData" />
+    <radio-filter :filter-data="$options.stateFilterData" />
     <hr v-if="!useNewNavigation" :class="$options.HR_DEFAULT_CLASSES" />
   </div>
 </template>

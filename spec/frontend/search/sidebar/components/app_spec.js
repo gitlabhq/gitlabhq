@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
-import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
+import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 
@@ -42,7 +42,7 @@ describe('GlobalSearchSidebar', () => {
   };
 
   const findSidebarSection = () => wrapper.find('section');
-  const findFilters = () => wrapper.findComponent(ResultsFilters);
+  const findFilters = () => wrapper.findComponent(IssuesFilters);
   const findSidebarNavigation = () => wrapper.findComponent(ScopeNavigation);
   const findLanguageAggregation = () => wrapper.findComponent(LanguageFilter);
 

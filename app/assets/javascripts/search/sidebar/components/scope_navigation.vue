@@ -80,6 +80,6 @@ export default {
         </span>
       </gl-nav-item>
     </gl-nav>
-    <hr class="gl-mt-5 gl-mx-5 gl-mb-0 gl-border-gray-100 gl-md-display-none" />
+    <hr class="gl-mt-3 gl-mb-5 gl-border-gray-100 gl-md-display-none" />
   </nav>
 </template>

@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
-import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
+import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
 import StatusFilter from '~/search/sidebar/components/status_filter.vue';
 
@@ -31,7 +31,7 @@ describe('GlobalSearchSidebarFilters', () => {
       getters: defaultGetters,
     });
 
-    wrapper = shallowMount(ResultsFilters, {
+    wrapper = shallowMount(IssuesFilters, {
       store,
     });
   };

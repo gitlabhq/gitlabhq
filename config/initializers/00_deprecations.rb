@@ -35,7 +35,10 @@ else
     /Using `return`, `break` or `throw` to exit a transaction block/
   ]
 
-  ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings
+  view_component_3_warnings = [
+    /Setting a slot with `#\w+` is deprecated and will be removed from ViewComponent 3.0.0/
+  ]
+  ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings
 end
 
 unless ActiveSupport::Deprecation.silenced
