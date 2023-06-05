@@ -9,6 +9,7 @@ module Ci
 
     STORE_COLUMN = :file_store
     NotSupportedAdapterError = Class.new(StandardError)
+
     FILE_FORMAT_ADAPTERS = {
       # While zip is a streamable file format, performing streaming
       # reads requires that each entry in the zip has certain headers
@@ -40,6 +41,9 @@ module Ci
       unless file_format_adapter_class
         raise NotSupportedAdapterError, 'This file format requires a dedicated adapter'
       end
+
+      ::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator
+        .new(file: file, file_format: file_format.to_sym).validate!
 
       log_artifacts_filesize(file.model)
 

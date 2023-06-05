@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.7 (2023-06-05)
+
+### Security (16 changes)
+
+- [Fix DoS on test report artifacts](gitlab-org/security/gitlab@76133e75ad38326bf971e2d913263349781aecbe) ([merge request](gitlab-org/security/gitlab!3200))
+- [Fix XSS in Abuse Reports form action](gitlab-org/security/gitlab@e9f9b656b34bb30a7bd66ce82a9d8f6ac43c1ba8) ([merge request](gitlab-org/security/gitlab!3290))
+- [Escape the source branch link correctly](gitlab-org/security/gitlab@77ed3e8c2ef51e7bcc89ad1c8c549424a69e3478) ([merge request](gitlab-org/security/gitlab!3288))
+- [Import source owners with maintainer access if importer is a maintainer](gitlab-org/security/gitlab@98f939c9ba3efd5e51807adbaee189f180131544) ([merge request](gitlab-org/security/gitlab!3283))
+- [Filter inaccessible issuable notes when exporting project](gitlab-org/security/gitlab@29fe6582dd81855cdb263e118459aba370a7c7eb) ([merge request](gitlab-org/security/gitlab!3274))
+- [Block tag names that are prepended with refs/tags/, due to conflicts](gitlab-org/security/gitlab@2b39d58eb21cf2ecc581bc5e1bd4dd48dcfd20bc) ([merge request](gitlab-org/security/gitlab!3262))
+- [Set IP in ActionContoller filter before IP enforcement is evaluated](gitlab-org/security/gitlab@8d6e83ff72564f3fa3b24e2040072024b715a073) ([merge request](gitlab-org/security/gitlab!3279))
+- [Prevent primary email returned as verified on unsaved change](gitlab-org/security/gitlab@8ac9a3e3efea62d9b3e6d758ab3f1c43f2354ea5) ([merge request](gitlab-org/security/gitlab!3223))
+- [Use UntrustedRegexp to protect FrontMatter filter](gitlab-org/security/gitlab@5d300c3af9c37a7607d795868ae2b4e51b8802c5) ([merge request](gitlab-org/security/gitlab!3257))
+- [Improve ambiguous_ref? logic to include heads and tags](gitlab-org/security/gitlab@f478b7673efd183971e9375be84ad06af641893f) ([merge request](gitlab-org/security/gitlab!3247))
+- [Use UntrustedRegexp to protect InlineDiff filter](gitlab-org/security/gitlab@4056d6ccc5b592029ea92ebb90b6e6a66c6eb157) ([merge request](gitlab-org/security/gitlab!3254))
+- [Ignore user-defined diff paths in diff notes](gitlab-org/security/gitlab@b21208f4c10e8bd4e6754f9bfd2cc5fc96c8be20) ([merge request](gitlab-org/security/gitlab!3267))
+- [Reject NPM metadata requests with invalid package_name](gitlab-org/security/gitlab@c4d0f6256bae18d9bb9f6afc87afeeb3ff971335) ([merge request](gitlab-org/security/gitlab!3285))
+- [Use UntrustedRegexp to protect MathFilter regex](gitlab-org/security/gitlab@fd8298b140dba65ac77ed340a5f78e1fc8032db6) ([merge request](gitlab-org/security/gitlab!3251))
+- [Resolve Overall Project Vulnerability Disclosure](gitlab-org/security/gitlab@199048eb1c61063409e25d3433e7276faf95709b) ([merge request](gitlab-org/security/gitlab!3230))
+- [Validate description length in labels](gitlab-org/security/gitlab@208342903aabd7c4b78c24c0b9b173dfbd62e405) ([merge request](gitlab-org/security/gitlab!3242))
+
 ## 15.11.6 (2023-05-24)
 
 ### Changed (1 change)
