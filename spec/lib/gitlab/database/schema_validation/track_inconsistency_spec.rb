@@ -39,7 +39,12 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
     context 'when the issue creation fails' do
       let(:issue_creation) { instance_double(Mutations::Issues::Create, resolve: { errors: 'error' }) }
 
+      let(:convert_object) do
+        instance_double('Gitlab::Database::ConvertFeatureCategoryToGroupLabel', execute: 'group_label')
+      end
+
       before do
+        allow(Gitlab::Database::ConvertFeatureCategoryToGroupLabel).to receive(:new).and_return(convert_object)
         allow(Mutations::Issues::Create).to receive(:new).and_return(issue_creation)
       end
 
@@ -51,7 +56,12 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
     end
 
     context 'when a new inconsistency is found' do
+      let(:convert_object) do
+        instance_double('Gitlab::Database::ConvertFeatureCategoryToGroupLabel', execute: 'group_label')
+      end
+
       before do
+        allow(Gitlab::Database::ConvertFeatureCategoryToGroupLabel).to receive(:new).and_return(convert_object)
         project.add_developer(user)
       end
 
@@ -116,12 +126,63 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
       end
 
       context 'when the GitLab is not open' do
+        let(:convert_object) do
+          instance_double('Gitlab::Database::ConvertFeatureCategoryToGroupLabel', execute: 'group_label')
+        end
+
+        before do
+          allow(Gitlab::Database::ConvertFeatureCategoryToGroupLabel).to receive(:new).and_return(convert_object)
+          project.add_developer(user)
+        end
+
         it 'creates a new schema inconsistency record' do
           allow(Gitlab).to receive(:com?).and_return(true)
           schema_inconsistency.issue.update!(state_id: Issue.available_states[:closed])
 
           expect { execute }.to change { Gitlab::Database::SchemaValidation::SchemaInconsistency.count }
         end
+      end
+    end
+
+    context 'when the dictionary file is not present' do
+      before do
+        allow(Gitlab::Database::GitlabSchema).to receive(:dictionary_paths).and_return(['dictionary_not_found_path/'])
+
+        project.add_developer(user)
+      end
+
+      it 'add the default labels' do
+        allow(Gitlab).to receive(:com?).and_return(true)
+
+        inconsistency = execute
+
+        labels = inconsistency.issue.labels.map(&:name)
+
+        expect(labels).to eq %w[database database-inconsistency-report type::maintenance severity::4]
+      end
+    end
+
+    context 'when dictionary feature_categories are available' do
+      let(:convert_object) do
+        instance_double('Gitlab::Database::ConvertFeatureCategoryToGroupLabel', execute: 'group_label')
+      end
+
+      before do
+        allow(Gitlab::Database::ConvertFeatureCategoryToGroupLabel).to receive(:new).and_return(convert_object)
+
+        allow(Gitlab::Database::GitlabSchema).to receive(:dictionary_paths).and_return(['spec/fixtures/'])
+
+        project.add_developer(user)
+      end
+
+      it 'add the default labels + group labels' do
+        allow(Gitlab).to receive(:com?).and_return(true)
+
+        inconsistency = execute
+
+        labels = inconsistency.issue.labels.map(&:name)
+
+        expect(labels).to eq %w[database database-inconsistency-report type::maintenance severity::4 group_label]
       end
     end
   end

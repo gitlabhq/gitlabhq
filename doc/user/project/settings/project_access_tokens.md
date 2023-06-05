@@ -32,7 +32,7 @@ The ability to create project access tokens without expiry was [deprecated](http
 
 You can use project access tokens:
 
-- On GitLab SaaS: If you have the Premium or Ultimate license tier. Project access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
+- On GitLab SaaS: If you have the Premium or Ultimate license tier. Only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
 - On self-managed instances of GitLab: With any license tier. If you have the Free tier:
   - Review your security and compliance policies around
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
@@ -139,4 +139,4 @@ See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-
 
 ## Token availability
 
-Project access tokens are only available in paid subscriptions, and not available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+More than one project access token is only available in paid subscriptions, and only one is available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).

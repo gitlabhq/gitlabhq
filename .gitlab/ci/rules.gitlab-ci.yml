@@ -2313,17 +2313,6 @@
     - <<: *if-default-refs
       changes: *python-patterns
 
-.reports:rules:yarn-audit-dependency_scanning:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
-      when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
-      changes: *nodejs-patterns
-
 .reports:rules:test-dast:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite

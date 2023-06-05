@@ -961,10 +961,13 @@ job:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 
-FLAG:
+WARNING:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
-GitLab.com, this feature is not available.
+GitLab.com, this feature is not available. Due to [issue 413822](https://gitlab.com/gitlab-org/gitlab/-/issues/413822),
+the keyword can be used when the feature flag is disabled, but the feature does not work.
+Do not attempt to use this feature when the feature flag is disabled, and always test
+with non-production data first.
 
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.

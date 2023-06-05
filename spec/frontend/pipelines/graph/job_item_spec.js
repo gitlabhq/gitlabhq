@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { GlBadge, GlModal, GlToast } from '@gitlab/ui';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
@@ -7,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
 
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   delayedJob,
   mockJob,
@@ -44,23 +43,21 @@ describe('pipeline graph job item', () => {
     job: mockJob,
   };
 
-  const createWrapper = ({ props, data, mountFn = mount, mocks = {} } = {}) => {
-    wrapper = extendedWrapper(
-      mountFn(JobItem, {
-        data() {
-          return {
-            ...data,
-          };
-        },
-        propsData: {
-          ...defaultProps,
-          ...props,
-        },
-        mocks: {
-          ...mocks,
-        },
-      }),
-    );
+  const createWrapper = ({ props, data, mountFn = mountExtended, mocks = {} } = {}) => {
+    wrapper = mountFn(JobItem, {
+      data() {
+        return {
+          ...data,
+        };
+      },
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+      mocks: {
+        ...mocks,
+      },
+    });
   };
 
   const triggerActiveClass = 'gl-shadow-x0-y0-b3-s1-blue-500';
@@ -219,7 +216,7 @@ describe('pipeline graph job item', () => {
       });
 
       expect(findJobWithLink().attributes('title')).toBe(
-        `delayed job - delayed manual action (${wrapper.vm.remainingTime})`,
+        `delayed job - delayed manual action (00:00:00)`,
       );
     });
   });
@@ -249,10 +246,7 @@ describe('pipeline graph job item', () => {
 
       beforeEach(async () => {
         createWrapper({
-          mountFn: shallowMount,
-          data: {
-            currentSkipModalValue: true,
-          },
+          mountFn: shallowMountExtended,
           props: {
             skipRetryModal: true,
             job: triggerJobWithRetryAction,
@@ -263,8 +257,6 @@ describe('pipeline graph job item', () => {
             },
           },
         });
-
-        jest.spyOn(wrapper.vm.$toast, 'show');
 
         await findActionVueComponent().vm.$emit('pipelineActionRequestComplete');
         await nextTick();

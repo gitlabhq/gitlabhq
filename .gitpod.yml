@@ -117,11 +117,11 @@ ports:
 
 vscode:
   extensions:
+    - GitLab.gitlab-workflow
     - rebornix.ruby@0.28.1
     - wingrunr21.vscode-ruby@0.28.0
     - karunamurti.haml@1.4.1
-    - octref.vetur@0.36.0
-    - dbaeumer.vscode-eslint@2.2.6
-    - GitLab.gitlab-workflow@3.56.0
-    - DavidAnson.vscode-markdownlint@0.47.0
+    - octref.vetur@0.37.3
+    - dbaeumer.vscode-eslint@2.4.0
+    - DavidAnson.vscode-markdownlint@0.49.0
     - esbenp.prettier-vscode

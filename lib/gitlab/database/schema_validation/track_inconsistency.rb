@@ -41,7 +41,7 @@ module Gitlab
             title: issue_title,
             description: description,
             issue_type: 'issue',
-            labels: %w[database database-inconsistency-report]
+            labels: default_labels + group_labels
           }
         end
 
@@ -82,6 +82,24 @@ module Gitlab
 
             For more information, please contact the database team.
           MSG
+        end
+
+        def group_labels
+          dictionary = YAML.safe_load(File.read(table_file_path))
+
+          dictionary['feature_categories'].to_a.filter_map do |feature_category|
+            Gitlab::Database::ConvertFeatureCategoryToGroupLabel.new(feature_category).execute
+          end
+        rescue Errno::ENOENT
+          []
+        end
+
+        def default_labels
+          %w[database database-inconsistency-report type::maintenance severity::4]
+        end
+
+        def table_file_path
+          Rails.root.join(Gitlab::Database::GitlabSchema.dictionary_paths.first, "#{inconsistency.table_name}.yml")
         end
 
         def schema_inconsistency_model

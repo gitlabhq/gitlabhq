@@ -59,7 +59,14 @@ module QA
         project.visit!
       end
 
-      it 'lists branches correctly after CRUD operations', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347740' do
+      it(
+        'lists branches correctly after CRUD operations',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347740',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414026',
+          type: :stale
+        }
+      ) do
         Page::Project::Menu.perform(&:go_to_repository_branches)
 
         expect(page).to have_content(master_branch)

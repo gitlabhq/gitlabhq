@@ -288,8 +288,11 @@ rspec:coverage:
     - rspec migration pg13
     - rspec background_migration pg13
     - rspec unit pg13
+    - rspec unit pg13 single-redis
     - rspec integration pg13
+    - rspec integration pg13 single-redis
     - rspec system pg13
+    - rspec system pg13 single-redis
     # as-if-foss jobs
     - rspec migration pg13-as-if-foss
     - rspec background_migration pg13-as-if-foss
@@ -300,8 +303,11 @@ rspec:coverage:
     - rspec-ee migration pg13
     - rspec-ee background_migration pg13
     - rspec-ee unit pg13
+    - rspec-ee unit pg13 single-redis
     - rspec-ee integration pg13
+    - rspec-ee integration pg13 single-redis
     - rspec-ee system pg13
+    - rspec-ee system pg13 single-redis
     # Memory jobs
     - memory-on-boot
   script:
