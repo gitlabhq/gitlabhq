@@ -115,6 +115,7 @@ RSpec.describe BitbucketServer::Representation::PullRequest, feature_category: :
           author: "root",
           description: "Test",
           source_branch_name: "refs/heads/root/CODE_OF_CONDUCTmd-1530600625006",
+          source_branch_sha: "074e2b4dddc5b99df1bf9d4a3f66cfc15481fdc8",
           target_branch_name: "refs/heads/master",
           target_branch_sha: "839fa9a2d434eb697815b8fcafaecc51accfdbbc",
           title: "Added a new line"
