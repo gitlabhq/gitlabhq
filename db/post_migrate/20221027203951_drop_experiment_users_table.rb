@@ -6,7 +6,7 @@ class DropExperimentUsersTable < Gitlab::Database::Migration[2.0]
   end
 
   def down
-    create_table :experiment_users do |t| # rubocop:disable Migration/SchemaAdditionMethodsNoPost
+    create_table :experiment_users do |t|
       t.bigint :experiment_id, null: false
       t.bigint :user_id, null: false
       t.integer :group_type, limit: 2, null: false, default: 0

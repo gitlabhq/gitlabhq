@@ -17886,7 +17886,8 @@ CREATE TABLE member_roles (
     updated_at timestamp with time zone NOT NULL,
     base_access_level integer NOT NULL,
     read_code boolean DEFAULT false,
-    read_vulnerability boolean DEFAULT false NOT NULL
+    read_vulnerability boolean DEFAULT false NOT NULL,
+    admin_vulnerability boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE member_roles_id_seq
@@ -22289,7 +22290,11 @@ CREATE TABLE scan_result_policies (
     orchestration_policy_idx smallint NOT NULL,
     license_states text[] DEFAULT '{}'::text[],
     match_on_inclusion boolean,
-    role_approvers integer[] DEFAULT '{}'::integer[]
+    role_approvers integer[] DEFAULT '{}'::integer[],
+    age_value integer,
+    age_operator smallint,
+    age_interval smallint,
+    CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0)))
 );
 
 CREATE SEQUENCE scan_result_policies_id_seq

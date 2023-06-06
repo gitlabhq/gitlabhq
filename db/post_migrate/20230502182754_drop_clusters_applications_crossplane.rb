@@ -10,7 +10,6 @@ class DropClustersApplicationsCrossplane < Gitlab::Database::Migration[2.1]
 
   # Based on original migration:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/8b1637296b286a5c46e0d8fdf6da42a43a7c9986/db/migrate/20191017191341_create_clusters_applications_crossplane.rb
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   def down
     create_table :clusters_applications_crossplane, id: :integer do |t|
       t.timestamps_with_timezone null: false
@@ -22,5 +21,4 @@ class DropClustersApplicationsCrossplane < Gitlab::Database::Migration[2.1]
       t.index :cluster_id, unique: true
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 end

@@ -93,15 +93,16 @@ module QA
       # Download files from GCS bucket by environment name
       # Delete the files afterward
       def download(ci_project_name)
-        bucket_items = gcs_storage.list_objects(BUCKET, prefix: ci_project_name).items
+        logger.info("Downloading resource files from GCS for #{ci_project_name}...")
+        bucket_items = gcs_storage.list_objects(BUCKET, prefix: "#{ci_project_name}/").items
 
-        files_list = bucket_items&.each_with_object([]) do |obj, arr|
-          arr << obj.name
-        end
-
-        if files_list.blank?
+        if bucket_items.blank?
           logger.info("\nNothing to download!")
           return
+        end
+
+        files_list = bucket_items.each_with_object([]) do |obj, arr|
+          arr << obj.name
         end
 
         FileUtils.mkdir_p('tmp/')

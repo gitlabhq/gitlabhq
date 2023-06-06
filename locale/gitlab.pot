@@ -28013,6 +28013,9 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
+msgstr ""
+
 msgid "MemberRole|%{role} - custom"
 msgstr ""
 
@@ -50089,7 +50092,7 @@ msgstr ""
 msgid "Viewing commit"
 msgstr ""
 
-msgid "Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly. %{geo_help_url}"
+msgid "Viewing projects data from a primary site is not possible when using a unified URL. Visit the secondary site directly. %{geo_help_url}"
 msgstr ""
 
 msgid "Violation"

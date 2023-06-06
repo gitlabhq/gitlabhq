@@ -14,9 +14,9 @@ class RemoveNamespacesTmpProjectIdColumn < Gitlab::Database::Migration[2.0]
   def down
     unless column_exists?(:namespaces, :tmp_project_id)
       with_lock_retries do
-        # rubocop:disable Migration/SchemaAdditionMethodsNoPost, Migration/AddColumnsToWideTables
+        # rubocop:disable Migration/AddColumnsToWideTables
         add_column :namespaces, :tmp_project_id, :integer
-        # rubocop:enable Migration/SchemaAdditionMethodsNoPost, Migration/AddColumnsToWideTables
+        # rubocop:enable Migration/AddColumnsToWideTables
       end
     end
 

@@ -10,7 +10,6 @@ class DropClustersApplicationsCilium < Gitlab::Database::Migration[2.1]
 
   # Based on original migration:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/b237f836df215a4ada92b9406733e6cd2483ca2d/db/migrate/20200615234047_create_clusters_applications_cilium.rb
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   def down
     create_table :clusters_applications_cilium do |t|
       t.references :cluster, null: false, index: { unique: true }
@@ -19,5 +18,4 @@ class DropClustersApplicationsCilium < Gitlab::Database::Migration[2.1]
       t.text :status_reason # rubocop:disable Migration/AddLimitToTextColumns
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 end

@@ -10,9 +10,7 @@ class RemoveBroadcastMessagesNamespaceIdColumn < Gitlab::Database::Migration[2.1
   end
 
   def down
-    # rubocop:disable Migration/SchemaAdditionMethodsNoPost
     add_column :broadcast_messages, :namespace_id, :bigint unless column_exists?(:broadcast_messages, :namespace_id)
-    # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 
     add_concurrent_index :broadcast_messages, :namespace_id, name: INDEX_NAME
   end

@@ -737,6 +737,13 @@ To resolve this error, you must apply a new license to the GitLab instance witho
 1. Enter the [Rails console and add the license key](../../../user/admin_area/license_file.md#add-a-license-through-the-console).
 1. Re-enable the additional LDAP servers in the GitLab configuration and reconfigure GitLab again.
 
+## Users are being removed from group and re-added again
+
+If a user has been added to a group during group sync, and removed at the next sync, and this has happened repeatedly, make sure that the user doesn't have
+multiple or redundant LDAP identities.
+
+If one of those identities was added for an older LDAP provider that is no longer in use, [remove the `identity` records that relate to the removed LDAP server](#remove-the-identity-records-that-relate-to-the-removed-ldap-server).
+
 ## Debugging Tools
 
 ### LDAP check

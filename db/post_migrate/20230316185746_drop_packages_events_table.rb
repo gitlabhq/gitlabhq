@@ -8,7 +8,7 @@ class DropPackagesEventsTable < Gitlab::Database::Migration[2.1]
   def down
     return if table_exists?(:packages_events)
 
-    create_table :packages_events do |t| # rubocop:disable Migration/SchemaAdditionMethodsNoPost
+    create_table :packages_events do |t|
       t.integer :event_type, limit: 2, null: false
       t.integer :event_scope, limit: 2, null: false
       t.integer :originator_type, limit: 2, null: false

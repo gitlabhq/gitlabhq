@@ -8,7 +8,6 @@ RSpec/AvoidConditionalStatements:
     - 'ee/spec/features/boards/user_visits_board_spec.rb'
     - 'ee/spec/features/ci_shared_runner_warnings_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
-    - 'ee/spec/features/epics/epic_show_spec.rb'
     - 'ee/spec/features/epics/gfm_autocomplete_spec.rb'
     - 'ee/spec/features/group_protected_branches_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'

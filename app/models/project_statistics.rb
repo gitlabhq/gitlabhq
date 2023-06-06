@@ -132,11 +132,6 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def self.bulk_increment_statistic(project, key, increments)
-    unless Feature.enabled?(:project_statistics_bulk_increment, type: :development)
-      total_amount = Gitlab::Counters::Increment.new(amount: increments.sum(&:amount))
-      return increment_statistic(project, key, total_amount)
-    end
-
     return if project.pending_delete?
 
     project.statistics.try do |project_statistics|

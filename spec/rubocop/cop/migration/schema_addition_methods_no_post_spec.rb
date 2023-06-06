@@ -42,5 +42,13 @@ RSpec.describe RuboCop::Cop::Migration::SchemaAdditionMethodsNoPost, feature_cat
         end
       CODE
     end
+
+    it "allows forbidden method to be called within nested statement" do
+      expect_no_offenses(<<~CODE)
+        def down
+          add_column(:table, :column, :boolean) unless column_exists?(:table, :column)
+        end
+      CODE
+    end
   end
 end

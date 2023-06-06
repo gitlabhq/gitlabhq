@@ -70,7 +70,7 @@ Support for PDF files is tracked in [issue 32811](https://gitlab.com/gitlab-org/
   - [A project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429).
   - [An issue is deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427).
 - In GitLab 12.7 and later, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
-  by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/-/issues/32467).
+  and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## View a design
 

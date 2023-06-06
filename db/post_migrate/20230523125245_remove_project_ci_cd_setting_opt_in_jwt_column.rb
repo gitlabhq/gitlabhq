@@ -8,8 +8,6 @@ class RemoveProjectCiCdSettingOptInJwtColumn < Gitlab::Database::Migration[2.1]
   end
 
   def down
-    # rubocop:disable Migration/SchemaAdditionMethodsNoPost
     add_column(:project_ci_cd_settings, :opt_in_jwt, :boolean, default: false, null: false, if_not_exists: true)
-    # rubocop:enable Migration/SchemaAdditionMethodsNoPost
   end
 end
