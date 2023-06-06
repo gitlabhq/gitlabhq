@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.3 (2023-06-06)
+
+### Fixed (3 changes)
+
+- [Fix memory leak in CI config includes entry](gitlab-org/gitlab@1e42968f69e556d13b4765ccd685dd47c87c4493) ([merge request](gitlab-org/gitlab!122539))
+- [Fix MR approval rules sync when disabling scan result policy](gitlab-org/gitlab@d708d6e5ca85dbc806e76c320661ffc8c2ea694d) ([merge request](gitlab-org/gitlab!122466)) **GitLab Enterprise Edition**
+- [Fix serialization of pull requests in BitbucketServer Import](gitlab-org/gitlab@8b3dce34122aa9a40921db7e957353f42750d3c5) ([merge request](gitlab-org/gitlab!122395))
+
+### Performance (1 change)
+
+- [LFS: Serve pre-signed URLs in `/lfs/objects/batch`](gitlab-org/gitlab@086ded4a9ed937e44b816a2ad835bb20d99e084e) ([merge request](gitlab-org/gitlab!122349))
+
 ## 16.0.2 (2023-06-05)
 
 ### Fixed (1 change)
