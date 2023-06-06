@@ -1,0 +1,8 @@
+---
+name: lfs_batch_direct_downloads
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122221
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413684
+milestone: '16.1'
+type: development
+group: group::tenant scale
+default_enabled: false
