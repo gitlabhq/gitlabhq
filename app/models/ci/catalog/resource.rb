@@ -29,3 +29,5 @@ module Ci
     end
   end
 end
+
+Ci::Catalog::Resource.prepend_mod_with('Ci::Catalog::Resource')

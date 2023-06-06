@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlListboxItem, GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -39,9 +39,9 @@ describe('Tags sort dropdown', () => {
     });
 
     it('should have a sort order dropdown', () => {
-      const branchesDropdown = findTagsDropdown();
+      const tagsDropdown = findTagsDropdown();
 
-      expect(branchesDropdown.exists()).toBe(true);
+      expect(tagsDropdown.exists()).toBe(true);
     });
   });
 
@@ -63,9 +63,9 @@ describe('Tags sort dropdown', () => {
     });
 
     it('should send a sort parameter', () => {
-      const sortDropdownItems = findTagsDropdown().findAllComponents(GlDropdownItem).at(0);
+      const sortDropdownItem = findTagsDropdown().findAllComponents(GlListboxItem).at(0);
 
-      sortDropdownItems.vm.$emit('click');
+      sortDropdownItem.trigger('click');
 
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(
         '/root/ci-cd-project-demo/-/tags?sort=name_asc',

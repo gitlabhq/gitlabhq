@@ -81,6 +81,20 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
     end
   end
 
+  describe '#dup' do
+    it 'returns a deep copy' do
+      new_options = options.dup
+      expect(options.to_hash).to eq('foo' => { 'bar' => 'baz' })
+      expect(new_options.to_hash).to eq(options.to_hash)
+
+      new_options['test'] = 1
+      new_options['foo']['bar'] = 'zzz'
+
+      expect(options.to_hash).to eq('foo' => { 'bar' => 'baz' })
+      expect(new_options.to_hash).to eq('test' => 1, 'foo' => { 'bar' => 'zzz' })
+    end
+  end
+
   describe '#merge' do
     it 'merges a hash to the existing options' do
       expect(options.merge(more: 'configs').to_hash).to eq(

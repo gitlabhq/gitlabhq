@@ -182,6 +182,10 @@ module QA
       end
 
       def fabricate_large_merge_request
+        # requires admin access
+        QA::Support::Helpers::ImportSource.enable(%w[gitlab_project])
+        Flow::Login.sign_in
+
         @project = Resource::ImportProject.fabricate_via_browser_ui!
         # Setting the name here, since otherwise some tests will look for an existing file in
         # the project without ever knowing what is in it.

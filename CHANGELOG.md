@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.3 (2023-06-06)
+
+### Fixed (3 changes)
+
+- [Fix memory leak in CI config includes entry](gitlab-org/gitlab@1e42968f69e556d13b4765ccd685dd47c87c4493) ([merge request](gitlab-org/gitlab!122539))
+- [Fix MR approval rules sync when disabling scan result policy](gitlab-org/gitlab@d708d6e5ca85dbc806e76c320661ffc8c2ea694d) ([merge request](gitlab-org/gitlab!122466)) **GitLab Enterprise Edition**
+- [Fix serialization of pull requests in BitbucketServer Import](gitlab-org/gitlab@8b3dce34122aa9a40921db7e957353f42750d3c5) ([merge request](gitlab-org/gitlab!122395))
+
+### Performance (1 change)
+
+- [LFS: Serve pre-signed URLs in `/lfs/objects/batch`](gitlab-org/gitlab@086ded4a9ed937e44b816a2ad835bb20d99e084e) ([merge request](gitlab-org/gitlab!122349))
+
 ## 16.0.2 (2023-06-05)
 
 ### Fixed (1 change)
@@ -808,6 +820,21 @@ entry.
 - [Purges legacy bg migration helpers from partitioning helpers](gitlab-org/gitlab@e51304127b8032819e1689d297e8a5c21e958572) ([merge request](gitlab-org/gitlab!116601))
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
+
+## 15.11.8 (2023-06-06)
+
+### Fixed (2 changes)
+
+- [Fix memory leak in CI config includes entry](gitlab-org/gitlab@3e367e614c855352295e3bcab25bf5af4ec66bf5) ([merge request](gitlab-org/gitlab!122540))
+- [Fix serialization of pull_requests in Bitbucket Server Import](gitlab-org/gitlab@201ad93dfdf8f4acfb6d6eee32e2bd6a4ff68157) ([merge request](gitlab-org/gitlab!122396))
+
+### Security (1 change)
+
+- [Validate description length in labels](gitlab-org/gitlab@2c821ee0823e37a57a6dc049591097232c933713) ([merge request](gitlab-org/gitlab!122697))
+
+### Performance (1 change)
+
+- [LFS: Serve pre-signed URLs in `/lfs/objects/batch`](gitlab-org/gitlab@df3a9655a0e8f0bdab3433cefcbd37acfb8ebcff) ([merge request](gitlab-org/gitlab!122348))
 
 ## 15.11.7 (2023-06-05)
 
