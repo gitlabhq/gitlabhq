@@ -103,10 +103,6 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
       end
 
       it_behaves_like 'snippet edit usage data counters'
-
-      it_behaves_like 'a mutation which can mutate a spammable' do
-        let(:service) { Snippets::CreateService }
-      end
     end
 
     context 'with PersonalSnippet' do
@@ -165,7 +161,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
 
         it do
           expect(::Snippets::CreateService).to receive(:new)
-            .with(project: nil, current_user: user, params: hash_including(files: expected_value), spam_params: instance_of(::Spam::SpamParams))
+            .with(project: nil, current_user: user, params: hash_including(files: expected_value))
             .and_return(double(execute: creation_response))
 
           subject

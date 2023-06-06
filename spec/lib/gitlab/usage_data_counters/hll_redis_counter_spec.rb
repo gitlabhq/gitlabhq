@@ -26,10 +26,12 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   describe '.track_event' do
     # ToDo: remove during https://gitlab.com/groups/gitlab-org/-/epics/9542 cleanup
     describe 'daily to weekly key migration precautions' do
-      let(:event_name) { 'example_event' }
+      let(:event_a_name) { 'example_event_a' }
+      let(:event_b_name) { 'example_event_b' }
       let(:known_events) do
         [
-          { name: event_name, aggregation: 'daily' }
+          { name: event_a_name, aggregation: 'daily' },
+          { name: event_b_name, aggregation: 'weekly' }
         ].map(&:with_indifferent_access)
       end
 
@@ -44,7 +46,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       end
 
       before do
-        allow(described_class).to receive(:known_events).and_return(known_events)
+        allow(described_class).to receive(:load_events).with(described_class::KNOWN_EVENTS_PATH).and_return(known_events)
+        allow(described_class).to receive(:load_events).with(/ee/).and_return([])
       end
 
       shared_examples 'writes daily events to daily and weekly keys' do
@@ -52,7 +55,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect(Gitlab::Redis::HLL).to receive(:add).with(expiry: 29.days, key: daily_key, value: 1).and_call_original
           expect(Gitlab::Redis::HLL).to receive(:add).with(expiry: 6.weeks, key: weekly_key, value: 1).and_call_original
 
-          described_class.track_event(event_name, values: 1, time: start_date)
+          described_class.track_event(event_a_name, values: 1, time: start_date)
         end
       end
 
@@ -67,7 +70,14 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [weekly_key]).and_call_original
           expect(Gitlab::Redis::HLL).not_to receive(:count).with(keys: [daily_key]).and_call_original
 
-          described_class.unique_events(event_names: [event_name], start_date: start_date, end_date: end_date)
+          described_class.unique_events(event_names: [event_a_name], start_date: start_date, end_date: end_date)
+        end
+
+        it 'does not persists changes to event aggregation attribute' do
+          described_class.unique_events(event_names: [event_a_name], start_date: start_date, end_date: end_date)
+
+          expect(described_class.known_events.find { |e| e[:name] == event_a_name }[:aggregation])
+            .to eql 'daily'
         end
       end
 
@@ -83,7 +93,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [daily_key]).and_call_original
           expect(Gitlab::Redis::HLL).not_to receive(:count).with(keys: [weekly_key]).and_call_original
 
-          described_class.unique_events(event_names: [event_name], start_date: start_date, end_date: start_date)
+          described_class.unique_events(event_names: [event_a_name], start_date: start_date, end_date: start_date)
         end
       end
     end

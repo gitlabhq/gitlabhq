@@ -48,8 +48,7 @@ module Mutations
 
         process_args_for_params!(args)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        service = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args, spam_params: spam_params)
+        service = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args)
         service_response = service.execute
 
         # Only when the user is not an api user and the operation was successful

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController, feature_category: :team_planning do
+RSpec.describe Projects::IssuesController, :request_store, feature_category: :team_planning do
   include ProjectForksHelper
   include_context 'includes Spam constants'
 
@@ -11,6 +11,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
 
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
+
+  before do
+    # We need the spam_params object to be present in the request context
+    Gitlab::RequestContext.start_request_context(request: request)
+  end
 
   describe "GET #index" do
     context 'external issue tracker' do
@@ -937,13 +942,8 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
             let(:spammy_title) { 'Whatever' }
             let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
 
-            before do
-              request.headers['X-GitLab-Captcha-Response'] = 'a-valid-captcha-response'
-              request.headers['X-GitLab-Spam-Log-Id'] = spam_logs.last.id
-            end
-
             def update_verified_issue
-              update_issue(issue_params: { title: spammy_title })
+              update_issue(issue_params: { title: spammy_title }, additional_params: { spam_log_id: spam_logs.last.id, 'g-recaptcha-response': 'a-valid-captcha-response' })
             end
 
             it 'returns 200 status' do
@@ -960,10 +960,9 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
             end
 
             it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
-              spam_log = create(:spam_log)
-              request.headers['X-GitLab-Spam-Log-Id'] = spam_log.id
+              create(:spam_log)
 
-              expect { update_issue }
+              expect { update_verified_issue }
                 .not_to change { SpamLog.last.recaptcha_verified }
             end
           end
@@ -1314,6 +1313,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     context 'user agent details are saved' do
       before do
         request.env['action_dispatch.remote_ip'] = '127.0.0.1'
+        Gitlab::RequestContext.start_request_context(request: request)
       end
 
       it 'creates a user agent detail' do

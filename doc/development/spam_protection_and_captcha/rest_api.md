@@ -16,8 +16,8 @@ related to changing a model's confidential/public flag.
 The main steps are:
 
 1. Add `helpers SpammableActions::CaptchaCheck::RestApiActionsSupport` in your `resource`.
-1. Create a `spam_params` instance based on the request.
-1. Pass `spam_params` to the relevant Service class constructor.
+1. Pass `perform_spam_check: true` to the Update Service class constructor.
+   It is set to `true` by default in the Create Service.
 1. After you create or update the `Spammable` model instance, call `#check_spam_action_response!`,
    save the created or updated instance in a variable.
 1. Identify the error handling logic for the `failure` case of the request,
@@ -53,8 +53,7 @@ module API
 
       post do
         #...
-        spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute
+        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs).execute
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
@@ -71,8 +70,7 @@ module API
 
       put ':id' do
         #...
-        spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute(snippet)
+        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs, perform_spam_check: true).execute(snippet)
 
         snippet = service_response.payload[:snippet]
 

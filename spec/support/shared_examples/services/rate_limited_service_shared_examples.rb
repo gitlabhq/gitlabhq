@@ -7,7 +7,7 @@
 #    let(:key) { :issues_create }
 #    let(:key_scope) { %i[project current_user external_author] }
 #    let(:application_limit_key) { :issues_create_limit }
-#    let(:service) { described_class.new(project: project, current_user: user, params: { title: 'title' }, spam_params: double) }
+#    let(:service) { described_class.new(project: project, current_user: user, params: { title: 'title' }) }
 #    let(:created_model) { Issue }
 #  end
 
@@ -29,10 +29,6 @@ RSpec.shared_examples 'rate limited service' do
   end
 
   describe '#execute' do
-    before do
-      stub_spam_services
-    end
-
     context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
       let(:user) { create(:user) }
 

@@ -120,12 +120,11 @@ module Gitlab
           aggregation = events.first[:aggregation]
 
           if Feature.disabled?(:revert_daily_hll_events_to_weekly_aggregation)
-            aggregation = :weekly
-            events.each { |e| e[:aggregation] = :weekly }
+            aggregation = 'weekly'
+            events = events.map { |e| e.merge(aggregation: 'weekly') }
           end
 
           keys = keys_for_aggregation(aggregation, events: events, start_date: start_date, end_date: end_date, context: context)
-
           return FALLBACK unless keys.any?
 
           redis_usage_data { Gitlab::Redis::HLL.count(keys: keys) }

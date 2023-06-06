@@ -113,9 +113,7 @@ module API
         authorize! :create_snippet
 
         attrs = process_create_params(declared_params(include_missing: false))
-
-        spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute
+        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs).execute
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
@@ -162,9 +160,7 @@ module API
         validate_params_for_multiple_files(snippet)
 
         attrs = process_update_params(declared_params(include_missing: false))
-
-        spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute(snippet)
+        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs, perform_spam_check: true).execute(snippet)
 
         snippet = service_response.payload[:snippet]
 

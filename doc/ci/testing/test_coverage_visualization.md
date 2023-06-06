@@ -297,7 +297,7 @@ run tests:
 The following [`.gitlab-ci.yml`](../yaml/index.md) example for PHP uses [PHPUnit](https://phpunit.readthedocs.io/)
 to collect test coverage data and generate the report.
 
-With a minimal [`phpunit.xml`](https://phpunit.readthedocs.io/en/9.5/configuration.html) file (you may reference
+With a minimal [`phpunit.xml`](https://docs.phpunit.de/en/10.2/configuration.html) file (you may reference
 [this example repository](https://gitlab.com/yookoala/code-coverage-visualization-with-php/)), you can run the test and
 generate the `coverage.xml`:
 

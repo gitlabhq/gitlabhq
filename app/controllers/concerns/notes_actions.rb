@@ -62,7 +62,7 @@ module NotesActions
         end
 
         if @note.errors.present? && @note.errors.attribute_names != [:commands_only, :command_names]
-          render json: json, status: :unprocessable_entity
+          render json: { errors: errors_on_create(@note.errors) }, status: :unprocessable_entity
         else
           render json: json
         end
@@ -308,6 +308,12 @@ module NotesActions
     return false if params['html']
 
     noteable.discussions_rendered_on_frontend?
+  end
+
+  def errors_on_create(errors)
+    return { commands_only: errors.messages[:commands_only] } if errors.key?(:commands_only)
+
+    errors.full_messages.to_sentence
   end
 end
 

@@ -53,8 +53,12 @@ module AppearancesHelper
     image_path('logo.svg')
   end
 
-  def brand_text
-    markdown_field(current_appearance, :description)
+  def custom_sign_in_description
+    [
+      markdown_field(current_appearance, :description),
+      markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text),
+      markdown(Gitlab::CurrentSettings.help_text)
+    ].compact_blank.join("<br>").html_safe
   end
 
   def brand_new_project_guidelines

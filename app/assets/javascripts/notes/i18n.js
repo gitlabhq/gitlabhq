@@ -4,6 +4,7 @@ export const COMMENT_FORM = {
   GENERIC_UNSUBMITTABLE_NETWORK: __(
     'Your comment could not be submitted! Please check your network connection and try again.',
   ),
+  error: __('Your comment could not be submitted because %{reason}.'),
   note: __('Note'),
   comment: __('Comment'),
   internalComment: __('Add internal note'),

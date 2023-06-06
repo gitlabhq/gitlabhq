@@ -158,8 +158,7 @@ class Projects::IssuesController < Projects::ApplicationController
       discussion_to_resolve: params[:discussion_to_resolve]
     )
 
-    spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    service = ::Issues::CreateService.new(container: project, current_user: current_user, params: create_params, spam_params: spam_params)
+    service = ::Issues::CreateService.new(container: project, current_user: current_user, params: create_params)
     result = service.execute
 
     # Only irrecoverable errors such as unauthorized user won't contain an issue in the response
@@ -373,8 +372,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update_service
-    spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    ::Issues::UpdateService.new(container: project, current_user: current_user, params: issue_params, spam_params: spam_params)
+    ::Issues::UpdateService.new(
+      container: project,
+      current_user: current_user,
+      params: issue_params,
+      perform_spam_check: true)
   end
 
   def finder_type

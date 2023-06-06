@@ -2498,13 +2498,13 @@ msgstr ""
 msgid "AccountValidation|I'll bring my own runners"
 msgstr ""
 
-msgid "AccountValidation|In order to use free CI/CD minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
+msgid "AccountValidation|In order to use free units of compute on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
 msgstr ""
 
 msgid "AccountValidation|Learn more."
 msgstr ""
 
-msgid "AccountValidation|Looks like you’ll need to validate your account to use free CI/CD minutes"
+msgid "AccountValidation|Looks like you'll need to validate your account to use free units of compute"
 msgstr ""
 
 msgid "AccountValidation|Validate your account"
@@ -7127,28 +7127,28 @@ msgstr ""
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr ""
 
-msgid "BillingPlans|10,000 CI/CD minutes per month"
+msgid "BillingPlans|10,000 units of compute per month"
 msgstr ""
 
-msgid "BillingPlans|10000 CI/CD minutes"
+msgid "BillingPlans|10000 units of compute"
 msgstr ""
 
 msgid "BillingPlans|10GB transfer per month"
 msgstr ""
 
-msgid "BillingPlans|400 CI/CD minutes"
+msgid "BillingPlans|400 units of compute"
 msgstr ""
 
-msgid "BillingPlans|400 CI/CD minutes per month"
+msgid "BillingPlans|400 units of compute per month"
 msgstr ""
 
 msgid "BillingPlans|5 users per namespace"
 msgstr ""
 
-msgid "BillingPlans|50,000 CI/CD minutes per month"
+msgid "BillingPlans|50,000 units of compute per month"
 msgstr ""
 
-msgid "BillingPlans|50000 CI/CD minutes"
+msgid "BillingPlans|50000 units of compute"
 msgstr ""
 
 msgid "BillingPlans|5GB storage"
@@ -7409,10 +7409,10 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
-msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -7424,7 +7424,7 @@ msgstr ""
 msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|You'll now be able to take advantage of free CI/CD minutes on shared runners."
+msgid "Billings|You'll now be able to take advantage of free units of compute on shared runners."
 msgstr ""
 
 msgid "Billings|Your account has been validated"
@@ -9258,18 +9258,15 @@ msgstr ""
 msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
 msgstr ""
 
-msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 minutes"
+msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 units of compute"
 msgstr ""
 
-msgid "Checkout|%d CI minute pack"
-msgid_plural "Checkout|%d CI minute packs"
+msgid "Checkout|%d compute pack"
+msgid_plural "Checkout|%d compute packs"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "Checkout|%{cardType} ending in %{lastFourDigits}"
-msgstr ""
-
-msgid "Checkout|%{name}'s CI minutes"
 msgstr ""
 
 msgid "Checkout|%{name}'s GitLab subscription"
@@ -9278,7 +9275,7 @@ msgstr ""
 msgid "Checkout|%{name}'s storage subscription"
 msgstr ""
 
-msgid "Checkout|%{quantity} CI minutes"
+msgid "Checkout|%{name}'s units of compute"
 msgstr ""
 
 msgid "Checkout|%{quantity} GB of storage"
@@ -9288,6 +9285,9 @@ msgid "Checkout|%{quantity} storage pack"
 msgid_plural "Checkout|%{quantity} storage packs"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Checkout|%{quantity} units of compute"
+msgstr ""
 
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
@@ -9313,12 +9313,6 @@ msgstr ""
 msgid "Checkout|Billing address"
 msgstr ""
 
-msgid "Checkout|CI minute pack"
-msgstr ""
-
-msgid "Checkout|CI minute packs are only used after you've used your subscription's monthly quota. The additional minutes will roll over month to month and are valid for one year."
-msgstr ""
-
 msgid "Checkout|CI minutes"
 msgstr ""
 
@@ -9329,6 +9323,12 @@ msgid "Checkout|Checkout"
 msgstr ""
 
 msgid "Checkout|City"
+msgstr ""
+
+msgid "Checkout|Compute pack"
+msgstr ""
+
+msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional units of compute will roll over month to month and are valid for one year."
 msgstr ""
 
 msgid "Checkout|Confirm purchase"
@@ -9469,10 +9469,10 @@ msgstr ""
 msgid "Checkout|Total"
 msgstr ""
 
-msgid "Checkout|Total minutes: %{quantity}"
+msgid "Checkout|Total storage: %{quantity} GB"
 msgstr ""
 
-msgid "Checkout|Total storage: %{quantity} GB"
+msgid "Checkout|Total units of compute: %{quantity}"
 msgstr ""
 
 msgid "Checkout|Users"
@@ -9499,7 +9499,7 @@ msgstr ""
 msgid "Checkout|company or team"
 msgstr ""
 
-msgid "Checkout|minutes"
+msgid "Checkout|units of compute"
 msgstr ""
 
 msgid "Checkout|x %{quantity} %{units} per pack"
@@ -29934,9 +29934,6 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
-msgid "Need help?"
-msgstr ""
-
 msgid "Needs"
 msgstr ""
 
@@ -37656,7 +37653,7 @@ msgstr ""
 msgid "RegistrationVerification|Are you sure you want to skip this step?"
 msgstr ""
 
-msgid "RegistrationVerification|Enable free CI/CD minutes"
+msgid "RegistrationVerification|Enable free units of compute"
 msgstr ""
 
 msgid "RegistrationVerification|GitLab will not charge your card, it will only be used for validation."
@@ -37668,7 +37665,7 @@ msgstr ""
 msgid "RegistrationVerification|Skip this for now"
 msgstr ""
 
-msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free CI/CD minutes to build your application."
+msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free units of compute to build your application."
 msgstr ""
 
 msgid "RegistrationVerification|Validate account"
@@ -49864,7 +49861,7 @@ msgstr ""
 msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free CI/CD minutes on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free units of compute on shared runners."
 msgstr ""
 
 msgid "Verified"
@@ -52749,7 +52746,7 @@ msgstr ""
 msgid "Your changes have been successfully committed."
 msgstr ""
 
-msgid "Your comment could not be submitted because %{error}"
+msgid "Your comment could not be submitted because %{reason}."
 msgstr ""
 
 msgid "Your comment could not be submitted! Please check your network connection and try again."

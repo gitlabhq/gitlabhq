@@ -173,7 +173,6 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubMemberAccessLevel
-  config.include StubSpamServices
   config.include SnowplowHelpers
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark

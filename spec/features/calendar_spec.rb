@@ -155,14 +155,12 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
           Issues::CreateService.new(
             container: contributed_project,
             current_user: user,
-            params: issue_params,
-            spam_params: nil
+            params: issue_params
           ).execute
           WorkItems::CreateService.new(
             container: contributed_project,
             current_user: user,
-            params: { title: 'new task' },
-            spam_params: nil
+            params: { title: 'new task' }
           ).execute
         end
 
@@ -204,8 +202,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
             Issues::CreateService.new(
               container: contributed_project,
               current_user: user,
-              params: issue_params,
-              spam_params: nil
+              params: issue_params
             ).execute
           end
         end
@@ -301,14 +298,12 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
           Issues::CreateService.new(
             container: contributed_project,
             current_user: user,
-            params: issue_params,
-            spam_params: nil
+            params: issue_params
           ).execute
           WorkItems::CreateService.new(
             container: contributed_project,
             current_user: user,
-            params: { title: 'new task' },
-            spam_params: nil
+            params: { title: 'new task' }
           ).execute
         end
 
@@ -339,8 +334,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
             Issues::CreateService.new(
               container: contributed_project,
               current_user: user,
-              params: issue_params,
-              spam_params: nil
+              params: issue_params
             ).execute
           end
         end

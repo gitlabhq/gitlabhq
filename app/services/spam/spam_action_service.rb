@@ -4,9 +4,8 @@ module Spam
   class SpamActionService
     include SpamConstants
 
-    def initialize(spammable:, spam_params:, user:, action:, extra_features: {})
+    def initialize(spammable:, user:, action:, extra_features: {})
       @target = spammable
-      @spam_params = spam_params
       @user = user
       @action = action
       @extra_features = extra_features
@@ -14,10 +13,6 @@ module Spam
 
     # rubocop:disable Metrics/AbcSize
     def execute
-      # If spam_params is passed as `nil`, no check will be performed. This is the easiest way to allow
-      # composed services which may not need to do spam checking to "opt out".  For example, when
-      # MoveService is calling CreateService, spam checking is not necessary, as no new content is
-      # being created.
       return ServiceResponse.success(message: 'Skipped spam check because spam_params was not present') unless spam_params
 
       recaptcha_verified = Captcha::CaptchaVerificationService.new(spam_params: spam_params).execute
@@ -41,7 +36,11 @@ module Spam
 
     private
 
-    attr_reader :user, :action, :target, :spam_params, :spam_log, :extra_features
+    attr_reader :user, :action, :target, :spam_log, :extra_features
+
+    def spam_params
+      Gitlab::RequestContext.instance.spam_params
+    end
 
     ##
     # In order to be proceed to the spam check process, the target must be

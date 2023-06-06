@@ -874,26 +874,6 @@ describe('Actions Notes Store', () => {
       });
     });
 
-    describe('if response contains errors.base', () => {
-      const res = { errors: { base: ['something went wrong'] } };
-      const error = { message: 'Unprocessable entity', response: { data: res } };
-
-      it('sets an alert using errors.base message', async () => {
-        const resp = await actions.saveNote(
-          {
-            commit() {},
-            dispatch: () => Promise.reject(error),
-          },
-          { ...payload, flashContainer },
-        );
-        expect(resp.hasAlert).toBe(true);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'Your comment could not be submitted because something went wrong',
-          parent: flashContainer,
-        });
-      });
-    });
-
     describe('if response contains no errors', () => {
       const res = { valid: true };
 

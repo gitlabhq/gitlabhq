@@ -82,7 +82,7 @@ export default {
       const note = discussions[i];
       const children = note.notes;
 
-      if (children.length && !note.individual_note) {
+      if (children.length > 1) {
         // remove placeholder from discussions
         for (let j = children.length - 1; j >= 0; j -= 1) {
           if (children[j].isPlaceholderNote) {

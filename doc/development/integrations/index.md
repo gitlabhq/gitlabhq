@@ -10,7 +10,7 @@ description: "GitLab's development guidelines for Integrations"
 This page provides development guidelines for implementing [GitLab integrations](../../user/project/integrations/index.md),
 which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab).
 
-Also see our [direction page](https://about.gitlab.com/direction/manage/integrations/) for an overview of our strategy around integrations.
+Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
 
 This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/integrations`
 if you need clarification or spot any outdated information.

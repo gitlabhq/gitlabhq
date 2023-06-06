@@ -25,7 +25,7 @@ module IncidentManagement
             severity: severity,
             alert_management_alerts: [alert].compact
           },
-          spam_params: nil
+          perform_spam_check: false
         ).execute
 
         if alert

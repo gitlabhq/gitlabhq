@@ -941,7 +941,6 @@ RSpec/VerifiedDoubles:
     - 'spec/support/helpers/ldap_helpers.rb'
     - 'spec/support/helpers/project_forks_helper.rb'
     - 'spec/support/helpers/stub_metrics.rb'
-    - 'spec/support/helpers/stub_spam_services.rb'
     - 'spec/support/import_export/common_util.rb'
     - 'spec/support/prometheus/additional_metrics_shared_examples.rb'
     - 'spec/support/shared_contexts/lib/gitlab/sidekiq_middleware/server_metrics_shared_context.rb'

@@ -31,7 +31,7 @@ module Quality
             }
             params[:closed_at] = params[:created_at] + rand(35).days if params[:state] == 'closed'
 
-            create_result = ::Issues::CreateService.new(container: project, current_user: team.sample, params: params, spam_params: nil).execute_without_rate_limiting
+            create_result = ::Issues::CreateService.new(container: project, current_user: team.sample, params: params, perform_spam_check: false).execute_without_rate_limiting
 
             if create_result.success?
               created_issues_count += 1

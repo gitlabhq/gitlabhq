@@ -34,7 +34,7 @@ To complete this tutorial:
 1. [Grant permissions for the service principal](#grant-permissions-for-the-service-principal).
 1. [Retrieve a temporary credential](#retrieve-a-temporary-credential).
 
-For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation).
+For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation).
 
 ## Create Azure AD application and service principal
 

@@ -11,6 +11,7 @@ type: reference, howto
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
+> - [Became available in trial subscriptions](https://gitlab.com/gitlab-org/gitlab/-/issues/386041) in GitLab 16.1. Default prefix added.
 
 Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
 select a limited role, and provide an expiry date.
@@ -32,7 +33,7 @@ The ability to create project access tokens without expiry was [deprecated](http
 
 You can use project access tokens:
 
-- On GitLab SaaS: If you have the Premium or Ultimate license tier. Only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
+- On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
 - On self-managed instances of GitLab: With any license tier. If you have the Free tier:
   - Review your security and compliance policies around
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
@@ -139,4 +140,4 @@ See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-
 
 ## Token availability
 
-More than one project access token is only available in paid subscriptions, and only one is available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+More than one project access token is only available in paid subscriptions. In Premium and Ultimate trial subscriptions, only one project access token is included. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).

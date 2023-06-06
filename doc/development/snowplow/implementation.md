@@ -14,7 +14,7 @@ This page describes how to:
 ## Event definitions
 
 Every Snowplow event, regardless of frontend or backend, requires a corresponding event definition. These definitions document the event and its properties to make it easier to maintain and analyze.
-These defintions can be browsed in the [event dictionary](https://metrics.gitlab.com/snowplow). The [event dictionary guide](event_dictionary_guide.md) provides instructions for setting up an event definition.
+These definitions can be browsed in the [event dictionary](https://metrics.gitlab.com/snowplow/). The [event dictionary guide](event_dictionary_guide.md) provides instructions for setting up an event definition.
 
 ## Snowplow JavaScript frontend tracking
 

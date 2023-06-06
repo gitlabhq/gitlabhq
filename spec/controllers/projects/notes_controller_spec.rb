@@ -276,6 +276,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
           it "returns status 422 for json" do
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(response.body).to eq('{"errors":"Note can\'t be blank"}')
           end
         end
       end
@@ -467,6 +468,30 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['command_names']).to include('move', 'title')
+          end
+        end
+
+        context 'with commands that return an error' do
+          let(:extra_request_params) { { format: :json } }
+
+          before do
+            errors = ActiveModel::Errors.new(note)
+            errors.add(:commands_only, 'Failed to apply commands.')
+            errors.add(:command_names, ['label'])
+            errors.add(:commands, 'Failed to apply commands.')
+
+            allow(note).to receive(:errors).and_return(errors)
+
+            allow_next_instance_of(Notes::CreateService) do |service|
+              allow(service).to receive(:execute).and_return(note)
+            end
+          end
+
+          it 'returns status 422 with error message' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(response.body).to eq('{"errors":{"commands_only":["Failed to apply commands."]}}')
           end
         end
       end

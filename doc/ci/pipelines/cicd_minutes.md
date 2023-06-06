@@ -5,38 +5,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# CI/CD minutes quota **(PREMIUM)**
+# Compute quota **(PREMIUM)**
 
 NOTE:
 The term `CI/CD minutes` is being renamed to `units of compute`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `units of compute`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 Administrators can limit the amount of time that projects can use to run jobs on
 [shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
-is tracked with a quota of CI/CD minutes.
+is tracked with a compute quota.
 
 By default, one minute of execution time by a single job uses
-one CI/CD minute. The total amount of CI/CD minutes used by a pipeline is
+one unit of compute. The total execution time for a pipeline is
 [the sum of all its jobs' durations](#how-compute-usage-is-calculated).
-Jobs can run concurrently, so the total CI/CD minute usage can be higher than the
+Jobs can run concurrently, so the total usage can be higher than the
 end-to-end duration of a pipeline.
 
 On GitLab.com:
 
-- CI/CD minutes quotas are enabled for all projects, but certain
-  projects [consume CI/CD minutes at a slower rate](#cost-factor).
-- The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/namespace/index.md)
+- Compute quotas are enabled for all projects, but certain
+  projects [consume units of compute at a slower rate](#cost-factor).
+- The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
-- You can [purchase additional CI/CD minutes](#purchase-additional-cicd-minutes)
-  if you need more than the number of CI/CD minutes in your monthly quota.
+- You can [purchase additional units of compute](#purchase-additional-units-of-compute)
+  if you need more than the amount of compute in your monthly quota.
 
 On self-managed GitLab instances:
 
-- CI/CD minutes quotas are disabled by default.
-- When enabled, CI/CD minutes quotas apply to private projects only.
-- Administrators can [assign more CI/CD minutes](#set-the-compute-quota-for-a-specific-namespace)
-  if a namespace uses all the CI/CD minutes in its monthly quota.
+- Compute quotas are disabled by default.
+- When enabled, compute quotas apply to private projects only.
+- Administrators can [assign more units of compute](#set-the-compute-quota-for-a-specific-namespace)
+  if a namespace uses all its monthly quota.
 
-[Project runners](../runners/runners_scope.md#project-runners) are not subject to a quota of CI/CD minutes.
+[Project runners](../runners/runners_scope.md#project-runners) are not subject to a compute quota.
 
 ## Set the compute quota for all namespaces
 
@@ -129,64 +129,64 @@ The projects list shows [personal projects](../../user/project/working_with_proj
 with compute usage or shared runners usage in the current month only. The list
 is sorted in descending order of compute usage.
 
-## Purchase additional CI/CD minutes **(FREE SAAS)**
+## Purchase additional units of compute **(FREE SAAS)**
 
-If you're using GitLab SaaS, you can purchase additional packs of CI/CD minutes.
-These additional CI/CD minutes:
+If you're using GitLab SaaS, you can purchase additional packs of units of compute.
+These additional units of compute:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not enforced.
+- Are valid for 12 months from date of purchase or until all units of compute are consumed, whichever comes first. Expiry of units of compute is not enforced.
 
 For example, with a GitLab SaaS Premium license:
 
-- You have `10,000` monthly minutes.
-- You purchase an additional `5,000` minutes.
-- Your total limit is `15,000` minutes.
+- You have `10,000` monthly units of compute.
+- You purchase an additional `5,000` units of compute.
+- Your total limit is `15,000` units of compute.
 
-If you use `13,000` minutes during the month, the next month your additional minutes become
-`2,000`. If you use `9,000` minutes during the month, your additional minutes remain the same.
+If you use `13,000` units of compute during the month, the next month your additional units of compute become
+`2,000`. If you use `9,000` units of compute during the month, your additional units of compute remain the same.
 
-If you bought additional CI/CD minutes while on a trial subscription, those minutes are available after the trial ends or you upgrade to a paid plan.
+If you bought additional units of compute while on a trial subscription, those units of compute are available after the trial ends or you upgrade to a paid plan.
 
-You can find pricing for additional CI/CD minutes on the
+You can find pricing for additional units of compute on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
-### Purchase CI/CD minutes for a group **(FREE SAAS)**
+### Purchase units of compute for a group **(FREE SAAS)**
 
 Prerequisite:
 
 - You must have the Owner role for the group.
 
-You can purchase additional CI/CD minutes for your group.
-You cannot transfer purchased CI/CD minutes from one group to another,
+You can purchase additional units of compute for your group.
+You cannot transfer purchased units of compute from one group to another,
 so be sure to select the correct group.
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
-1. Select **Buy additional minutes**.
+1. Select **Buy additional units of compute**.
 1. Complete the details of the transaction.
 
-After your payment is processed, the additional CI/CD minutes are added to your group
+After your payment is processed, the additional units of compute are added to your group
 namespace.
 
-### Purchase CI/CD minutes for a personal namespace **(FREE SAAS)**
+### Purchase units of compute for a personal namespace **(FREE SAAS)**
 
 Prerequisite:
 
 - The namespace must be your personal namespace.
 
-To purchase additional minutes for your personal namespace:
+To purchase additional units of compute for your personal namespace:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
-1. Select **Buy additional minutes**. GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, select **Buy more CI minutes**,
+1. Select **Buy additional units of compute**. GitLab redirects you to the Customers Portal.
+1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, select **Buy more units of compute**,
    and complete the details of the transaction.
 
-After your payment is processed, the additional CI/CD minutes are added to your personal
+After your payment is processed, the additional units of compute are added to your personal
 namespace.
 
 ## How compute usage is calculated

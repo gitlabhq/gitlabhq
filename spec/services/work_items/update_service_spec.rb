@@ -9,7 +9,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
   let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
-  let(:spam_params) { double }
   let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
@@ -25,16 +24,11 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         container: project,
         current_user: current_user,
         params: opts,
-        spam_params: spam_params,
         widget_params: widget_params
       )
     end
 
     subject(:update_work_item) { service.execute(work_item) }
-
-    before do
-      stub_spam_services
-    end
 
     shared_examples 'update service that triggers graphql dates updated subscription' do
       it 'triggers graphql subscription issueableDatesUpdated' do
@@ -176,7 +170,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           container: project,
           current_user: current_user,
           params: opts,
-          spam_params: spam_params,
           widget_params: widget_params
         )
       end
@@ -392,7 +385,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
               container: project,
               current_user: current_user,
               params: update_params,
-              spam_params: spam_params,
               widget_params: widget_params
             ).execute(work_item)
           end

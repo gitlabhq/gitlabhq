@@ -16,8 +16,11 @@ module Gitlab
           return unless Gitlab.com?
           return refresh_issue if inconsistency_record.present?
 
-          result = ::Issues::CreateService.new(container: project, current_user: user, params: params,
-            spam_params: nil).execute
+          result = ::Issues::CreateService.new(
+            container: project,
+            current_user: user,
+            params: params,
+            perform_spam_check: false).execute
 
           track_inconsistency(result[:issue]) if result.success?
         end

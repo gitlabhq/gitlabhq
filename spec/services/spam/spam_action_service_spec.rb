@@ -30,11 +30,15 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
   before do
     issue.spam = false
     personal_snippet.spam = false
+
+    allow_next_instance_of(described_class) do |service|
+      allow(service).to receive(:spam_params).and_return(spam_params)
+    end
   end
 
   describe 'constructor argument validation' do
     subject do
-      described_service = described_class.new(spammable: issue, spam_params: spam_params, user: user, action: :create)
+      described_service = described_class.new(spammable: issue, user: user, action: :create)
       described_service.execute
     end
 
@@ -108,7 +112,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
     let_it_be(:existing_spam_log) { create(:spam_log, user: user, recaptcha_verified: false) }
 
     subject do
-      described_service = described_class.new(spammable: target, spam_params: spam_params, extra_features:
+      described_service = described_class.new(spammable: target, extra_features:
                                               extra_features, user: user, action: :create)
       described_service.execute
     end

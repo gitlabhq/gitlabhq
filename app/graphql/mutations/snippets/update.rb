@@ -33,8 +33,7 @@ module Mutations
 
         process_args_for_params!(args)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        service = ::Snippets::UpdateService.new(project: snippet.project, current_user: current_user, params: args, spam_params: spam_params)
+        service = ::Snippets::UpdateService.new(project: snippet.project, current_user: current_user, params: args, perform_spam_check: true)
         service_response = service.execute(snippet)
 
         # TODO: DRY this up - From here down, this is all duplicated with Mutations::Snippets::Create#resolve, except for

@@ -555,36 +555,11 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     return res;
   };
 
-  const processErrors = (error) => {
-    if (error.response) {
-      const {
-        response: { data = {} },
-      } = error;
-      const { errors = {} } = data;
-      const { base = [] } = errors;
-
-      // we handle only errors.base for now
-      if (base.length > 0) {
-        const errorMsg = sprintf(__('Your comment could not be submitted because %{error}'), {
-          error: base[0].toLowerCase(),
-        });
-        createAlert({
-          message: errorMsg,
-          parent: noteData.flashContainer,
-        });
-        return { ...data, hasAlert: true };
-      }
-    }
-
-    throw error;
-  };
-
   return dispatch(methodToDispatch, postData, { root: true })
     .then(processQuickActions)
     .then(processEmojiAward)
     .then(processTimeTracking)
-    .then(removePlaceholder)
-    .catch(processErrors);
+    .then(removePlaceholder);
 };
 
 export const setFetchingState = ({ commit }, fetchingState) =>

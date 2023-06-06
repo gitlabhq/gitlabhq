@@ -110,10 +110,6 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
         end
       end
 
-      it_behaves_like 'a mutation which can mutate a spammable' do
-        let(:service) { Snippets::UpdateService }
-      end
-
       def blob_at(filename)
         snippet.repository.blob_at('HEAD', filename)
       end

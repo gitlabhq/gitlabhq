@@ -24,10 +24,6 @@ RSpec.describe Gitlab::Database::SchemaValidation::TrackInconsistency, feature_c
 
     subject(:execute) { described_class.new(inconsistency, project, user).execute }
 
-    before do
-      stub_spam_services
-    end
-
     context 'when is not GitLab.com' do
       it 'does not create a schema inconsistency record' do
         allow(Gitlab).to receive(:com?).and_return(false)

@@ -35,10 +35,6 @@ RSpec.describe Mutations::Issues::Update do
 
     subject { mutation.resolve(**mutation_params) }
 
-    before do
-      stub_spam_services
-    end
-
     it_behaves_like 'permission level for issue mutation is correctly verified'
 
     context 'when the user can update the issue' do

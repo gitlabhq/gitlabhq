@@ -16,7 +16,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 
 The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
-Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
+Qualifying open source projects also get 50,000 units of compute and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
@@ -355,18 +355,18 @@ To change the contacts:
    [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
-## CI/CD minutes
+## Compute
 
-CI/CD minutes are the execution time for your [pipelines](../../ci/pipelines/index.md)
+Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
 on GitLab shared runners.
 
-Refer to [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
+Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.
 
-### Purchase additional CI/CD minutes
+### Purchase additional units of compute
 
-You can [purchase additional minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-cicd-minutes)
-for your personal or group namespace. CI/CD minutes are a **one-time purchase**, so they do not renew.
+You can [purchase additional units of compute](../../ci/pipelines/cicd_minutes.md#purchase-additional-units-of-compute)
+for your personal or group namespace. Units of compute are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer
 

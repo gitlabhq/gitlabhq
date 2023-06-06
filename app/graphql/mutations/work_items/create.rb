@@ -60,7 +60,6 @@ module Mutations
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
         type = ::WorkItems::Type.find(attributes[:work_item_type_id])
         widget_params = extract_widget_params!(type, params)
@@ -69,7 +68,6 @@ module Mutations
           container: container,
           current_user: current_user,
           params: params,
-          spam_params: spam_params,
           widget_params: widget_params
         ).execute
 

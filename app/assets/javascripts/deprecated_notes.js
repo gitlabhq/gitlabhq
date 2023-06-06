@@ -25,6 +25,7 @@ import syntaxHighlight from '~/syntax_highlight';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { COMMENT_FORM } from '~/notes/i18n';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
@@ -687,17 +688,22 @@ export default class Notes {
     return this.renderNote(note);
   }
 
-  addNoteError($form) {
+  addNoteError(error, $form) {
     let formParentTimeline;
     if ($form.hasClass('js-main-target-form')) {
       formParentTimeline = $form.parents('.timeline');
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
+
+    const serverErrorMessage = error?.response?.data?.errors;
+
+    const alertMessage = serverErrorMessage
+      ? sprintf(COMMENT_FORM.error, { reason: serverErrorMessage.toLowerCase() }, false)
+      : COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK;
+
     return this.addAlert({
-      message: __(
-        'Your comment could not be submitted! Please check your network connection and try again.',
-      ),
+      message: alertMessage,
       parent: formParentTimeline.get(0),
     });
   }
@@ -1777,7 +1783,7 @@ export default class Notes {
 
         $form.trigger('ajax:success', [note]);
       })
-      .catch(() => {
+      .catch((error) => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
         $submitBtn.prop('disabled', false);
@@ -1806,7 +1812,7 @@ export default class Notes {
 
         $form.find('.js-note-text').val(formContentOriginal);
         this.reenableTargetFormSubmitButton(e);
-        this.addNoteError($form);
+        this.addNoteError(error, $form);
       });
   }
 

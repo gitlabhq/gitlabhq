@@ -1,14 +1,24 @@
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import Vuex from 'vuex';
+import MockAdapter from 'axios-mock-adapter';
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
+import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
+import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
-import createStore from '~/notes/stores';
+import { COMMENT_FORM } from '~/notes/i18n';
+import notesModule from '~/notes/stores/modules';
+import { sprintf } from '~/locale';
+import { createAlert } from '~/alert';
+
 import {
   noteableDataMock,
   discussionMock,
@@ -17,22 +27,46 @@ import {
   userDataMock,
 } from '../mock_data';
 
+Vue.use(Vuex);
+
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/alert');
 
 describe('noteable_discussion component', () => {
   let store;
   let wrapper;
+  let axiosMock;
 
-  beforeEach(() => {
-    window.mrTabs = {};
-    store = createStore();
+  const createStore = ({ saveNoteMock = jest.fn() } = {}) => {
+    const baseModule = notesModule();
+
+    return new Vuex.Store({
+      ...baseModule,
+      actions: {
+        ...baseModule.actions,
+        saveNote: saveNoteMock,
+      },
+    });
+  };
+
+  const createComponent = ({ storeMock = createStore() } = {}) => {
+    store = storeMock;
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    wrapper = mount(NoteableDiscussion, {
+    wrapper = mountExtended(NoteableDiscussion, {
       store,
       propsData: { discussion: discussionMock },
     });
+  };
+
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+    createComponent();
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
   });
 
   it('should not render thread header for non diff threads', () => {
@@ -158,6 +192,39 @@ describe('noteable_discussion component', () => {
       const button = wrapper.findComponent(ResolveWithIssueButton);
 
       expect(button.exists()).toBe(true);
+    });
+  });
+
+  describe('save reply', () => {
+    describe('if response contains validation errors', () => {
+      beforeEach(async () => {
+        const storeMock = createStore({
+          saveNoteMock: jest.fn().mockRejectedValue({
+            response: {
+              status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+              data: { errors: 'error 1 and error 2' },
+            },
+          }),
+        });
+
+        createComponent({ storeMock });
+
+        wrapper.findComponent(ReplyPlaceholder).vm.$emit('focus');
+        await nextTick();
+
+        wrapper
+          .findComponent(NoteForm)
+          .vm.$emit('handleFormUpdate', 'invalid note', null, () => {});
+
+        await waitForPromises();
+      });
+
+      it('renders an error message', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: sprintf(COMMENT_FORM.error, { reason: 'error 1 and error 2' }),
+          parent: wrapper.vm.$el,
+        });
+      });
     });
   });
 

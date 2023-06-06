@@ -15,6 +15,7 @@ import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secr
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
+import { getErrorMessages } from '../utils';
 import DiffDiscussionHeader from './diff_discussion_header.vue';
 import DiffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
@@ -244,26 +245,24 @@ export default {
       };
 
       this.saveNote(replyData)
-        .then((res) => {
-          if (res.hasAlert !== true) {
-            this.isReplying = false;
-            clearDraft(this.autosaveKey);
-          }
+        .then(() => {
+          this.isReplying = false;
+          clearDraft(this.autosaveKey);
+
           callback();
         })
         .catch((err) => {
-          this.removePlaceholderNotes();
           this.handleSaveError(err); // The 'err' parameter is being used in JH, don't remove it
-          this.$refs.noteForm.note = noteText;
+          this.removePlaceholderNotes();
+
           callback(err);
         });
     },
-    handleSaveError() {
-      const msg = __(
-        'Your comment could not be submitted! Please check your network connection and try again.',
-      );
+    handleSaveError({ response }) {
+      const errorMessage = getErrorMessages(response.data, response.status)[0];
+
       createAlert({
-        message: msg,
+        message: errorMessage,
         parent: this.$el,
       });
     },

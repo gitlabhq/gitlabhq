@@ -5,12 +5,12 @@ module WorkItems
     extend ::Gitlab::Utils::Override
     include WidgetableService
 
-    def initialize(container:, spam_params:, current_user: nil, params: {}, widget_params: {})
+    def initialize(container:, perform_spam_check: true, current_user: nil, params: {}, widget_params: {})
       super(
         container: container,
         current_user: current_user,
         params: params,
-        spam_params: spam_params,
+        perform_spam_check: perform_spam_check,
         build_service: ::WorkItems::BuildService.new(container: container, current_user: current_user, params: params)
       )
       @widget_params = widget_params

@@ -249,6 +249,18 @@
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "14"
 
+.use-pg15:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.2-alpine
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "15"
+
 .use-pg12-es7-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-12-pgvector-0.4.1
@@ -303,6 +315,24 @@
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
+.use-pg15-es7-ee:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.2-alpine
+    - name: elasticsearch:7.17.6
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "15"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
 .use-pg13-es8-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
@@ -336,6 +366,25 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "14"
+    ES_SETTING_DISCOVERY_TYPE: "single-node"
+    ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg15-es8-ee:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.0-alpine
+    - name: elasticsearch:8.6.2
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "15"
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
@@ -414,6 +463,44 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "14"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg15-opensearch1-ee:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:1.3.5
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "15"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg15-opensearch2-ee:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:2.2.1
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "15"
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 

@@ -13,6 +13,8 @@ import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line imp
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
 import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
 import playJobMutation from '~/jobs/components/job/graphql/mutations/job_play_with_variables.mutation.graphql';
+import retryJobMutation from '~/jobs/components/job/graphql/mutations/job_retry_with_variables.mutation.graphql';
+
 import {
   mockFullPath,
   mockId,
@@ -38,9 +40,32 @@ const defaultProvide = {
 describe('Manual Variables Form', () => {
   let wrapper;
   let mockApollo;
-  let getJobQueryResponse;
+  let requestHandlers;
 
-  const createComponent = ({ options = {}, props = {} } = {}) => {
+  const getJobQueryResponseHandlerWithVariables = jest.fn().mockResolvedValue(mockJobResponse);
+  const playJobMutationHandler = jest.fn().mockResolvedValue({});
+  const retryJobMutationHandler = jest.fn().mockResolvedValue({});
+
+  const defaultHandlers = {
+    getJobQueryResponseHandlerWithVariables,
+    playJobMutationHandler,
+    retryJobMutationHandler,
+  };
+
+  const createComponent = ({ props = {}, handlers = defaultHandlers } = {}) => {
+    requestHandlers = handlers;
+
+    mockApollo = createMockApollo([
+      [getJobQuery, handlers.getJobQueryResponseHandlerWithVariables],
+      [playJobMutation, handlers.playJobMutationHandler],
+      [retryJobMutation, handlers.retryJobMutationHandler],
+    ]);
+
+    const options = {
+      localVue,
+      apolloProvider: mockApollo,
+    };
+
     wrapper = mountExtended(ManualVariablesForm, {
       propsData: {
         jobId: mockId,
@@ -51,22 +76,6 @@ describe('Manual Variables Form', () => {
         ...defaultProvide,
       },
       ...options,
-    });
-  };
-
-  const createComponentWithApollo = ({ props = {} } = {}) => {
-    const requestHandlers = [[getJobQuery, getJobQueryResponse]];
-
-    mockApollo = createMockApollo(requestHandlers);
-
-    const options = {
-      localVue,
-      apolloProvider: mockApollo,
-    };
-
-    createComponent({
-      props,
-      options,
     });
 
     return waitForPromises();
@@ -96,18 +105,13 @@ describe('Manual Variables Form', () => {
     nextTick();
   };
 
-  beforeEach(() => {
-    getJobQueryResponse = jest.fn();
-  });
-
   afterEach(() => {
     createAlert.mockClear();
   });
 
   describe('when page renders', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobResponse);
-      await createComponentWithApollo();
+      await createComponent();
     });
 
     it('renders help text with provided link', () => {
@@ -120,8 +124,11 @@ describe('Manual Variables Form', () => {
 
   describe('when query is unsuccessful', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockRejectedValue({});
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest.fn().mockRejectedValue({}),
+        },
+      });
     });
 
     it('shows an alert with error', () => {
@@ -133,8 +140,13 @@ describe('Manual Variables Form', () => {
 
   describe('when job has not been retried', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobWithVariablesResponse);
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
+        },
+      });
     });
 
     it('does not render the cancel button', () => {
@@ -145,8 +157,13 @@ describe('Manual Variables Form', () => {
 
   describe('when job has variables', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobWithVariablesResponse);
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
+        },
+      });
     });
 
     it('sets manual job variables', () => {
@@ -161,8 +178,11 @@ describe('Manual Variables Form', () => {
 
   describe('when play mutation fires', () => {
     beforeEach(async () => {
-      await createComponentWithApollo();
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobPlayMutationData);
+      await createComponent({
+        handlers: {
+          playJobMutationHandler: jest.fn().mockResolvedValue(mockJobPlayMutationData),
+        },
+      });
     });
 
     it('passes variables in correct format', async () => {
@@ -172,18 +192,15 @@ describe('Manual Variables Form', () => {
 
       await findRunBtn().vm.$emit('click');
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: playJobMutation,
-        variables: {
-          id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
-          variables: [
-            {
-              key: 'new key',
-              value: 'new value',
-            },
-          ],
-        },
+      expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledTimes(1);
+      expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledWith({
+        id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
+        variables: [
+          {
+            key: 'new key',
+            value: 'new value',
+          },
+        ],
       });
     });
 
@@ -191,15 +208,18 @@ describe('Manual Variables Form', () => {
       findRunBtn().vm.$emit('click');
       await waitForPromises();
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+      expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath); // eslint-disable-line import/no-deprecated
     });
   });
 
   describe('when play mutation is unsuccessful', () => {
     beforeEach(async () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          playJobMutationHandler: jest.fn().mockRejectedValue({}),
+        },
+      });
     });
 
     it('shows an alert with error', async () => {
@@ -214,8 +234,12 @@ describe('Manual Variables Form', () => {
 
   describe('when job is retryable', () => {
     beforeEach(async () => {
-      await createComponentWithApollo({ props: { isRetryable: true } });
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobRetryMutationData);
+      await createComponent({
+        props: { isRetryable: true },
+        handlers: {
+          retryJobMutationHandler: jest.fn().mockResolvedValue(mockJobRetryMutationData),
+        },
+      });
     });
 
     it('renders cancel button', () => {
@@ -226,15 +250,19 @@ describe('Manual Variables Form', () => {
       findRunBtn().vm.$emit('click');
       await waitForPromises();
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+      expect(requestHandlers.retryJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath); // eslint-disable-line import/no-deprecated
     });
   });
 
   describe('when retry mutation is unsuccessful', () => {
     beforeEach(async () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
-      await createComponentWithApollo({ props: { isRetryable: true } });
+      await createComponent({
+        props: { isRetryable: true },
+        handlers: {
+          retryJobMutationHandler: jest.fn().mockRejectedValue({}),
+        },
+      });
     });
 
     it('shows an alert with error', async () => {
@@ -249,8 +277,11 @@ describe('Manual Variables Form', () => {
 
   describe('updating variables in UI', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobResponse);
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
+        },
+      });
     });
 
     it('creates a new variable when user enters a new key value', async () => {
@@ -305,8 +336,11 @@ describe('Manual Variables Form', () => {
 
   describe('variable delete button placeholder', () => {
     beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobResponse);
-      await createComponentWithApollo();
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
+        },
+      });
     });
 
     it('delete variable button placeholder should only exist when a user cannot remove', () => {

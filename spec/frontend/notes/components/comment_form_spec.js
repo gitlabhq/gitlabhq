@@ -19,6 +19,7 @@ import * as constants from '~/notes/constants';
 import eventHub from '~/notes/event_hub';
 import { COMMENT_FORM } from '~/notes/i18n';
 import notesModule from '~/notes/stores/modules';
+import { sprintf } from '~/locale';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -194,6 +195,35 @@ describe('issue_comment_form component', () => {
           });
         },
       );
+
+      describe('if response contains validation errors', () => {
+        beforeEach(() => {
+          store = createStore({
+            actions: {
+              saveNote: jest.fn().mockRejectedValue({
+                response: {
+                  status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+                  data: { errors: 'error 1 and error 2' },
+                },
+              }),
+            },
+          });
+
+          mountComponent({ mountFunction: mount, initialData: { note: 'invalid note' } });
+
+          clickCommentButton();
+        });
+
+        it('renders an error message', () => {
+          const errorAlerts = findErrorAlerts();
+
+          expect(errorAlerts.length).toBe(1);
+
+          expect(errorAlerts[0].text()).toBe(
+            sprintf(COMMENT_FORM.error, { reason: 'error 1 and error 2' }),
+          );
+        });
+      });
 
       it('should remove the correct error from the list when it is dismissed', async () => {
         const commandErrors = ['1', '2', '3'];
