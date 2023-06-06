@@ -41,23 +41,6 @@ RSpec.describe 'BulkDestroy', feature_category: :build_artifacts do
     expect(first_artifact.reload).to be_persisted
   end
 
-  context 'when the `ci_job_artifact_bulk_destroy` feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_job_artifact_bulk_destroy: false)
-      project.add_maintainer(maintainer)
-    end
-
-    it 'returns a resource not available error' do
-      post_graphql_mutation(mutation, current_user: maintainer)
-
-      expect(graphql_errors).to contain_exactly(
-        hash_including(
-          'message' => '`ci_job_artifact_bulk_destroy` feature flag is disabled.'
-        )
-      )
-    end
-  end
-
   context "when the user is a developer in a project" do
     before do
       project.add_developer(developer)

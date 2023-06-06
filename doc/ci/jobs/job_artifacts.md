@@ -294,12 +294,8 @@ You can also delete individual artifacts from the [**Artifacts** page](#bulk-del
 
 ### Bulk delete artifacts
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1.
 
 You can delete multiple artifacts at the same time:
 

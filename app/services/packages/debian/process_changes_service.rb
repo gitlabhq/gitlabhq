@@ -76,10 +76,9 @@ module Packages
       end
 
       def metadata
-        strong_memoize(:metadata) do
-          ::Packages::Debian::ExtractChangesMetadataService.new(package_file).execute
-        end
+        ::Packages::Debian::ExtractChangesMetadataService.new(package_file).execute
       end
+      strong_memoize_attr :metadata
 
       def files
         metadata[:files]
@@ -90,16 +89,15 @@ module Packages
       end
 
       def package
-        strong_memoize(:package) do
-          params = {
-            'name': metadata[:fields]['Source'],
-            'version': metadata[:fields]['Version'],
-            'distribution_name': metadata[:fields]['Distribution']
-          }
-          response = Packages::Debian::FindOrCreatePackageService.new(project, creator, params).execute
-          response.payload[:package]
-        end
+        params = {
+          'name': metadata[:fields]['Source'],
+          'version': metadata[:fields]['Version'],
+          'distribution_name': metadata[:fields]['Distribution']
+        }
+        response = Packages::Debian::FindOrCreatePackageService.new(project, creator, params).execute
+        response.payload[:package]
       end
+      strong_memoize_attr :package
 
       # used by ExclusiveLeaseGuard
       def lease_key

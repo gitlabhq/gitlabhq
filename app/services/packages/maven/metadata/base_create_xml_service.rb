@@ -19,12 +19,11 @@ module Packages
         attr_reader :logger
 
         def xml_doc
-          strong_memoize(:xml_doc) do
-            Nokogiri::XML(@metadata_content) do |config|
-              config.default_xml.noblanks
-            end
+          Nokogiri::XML(@metadata_content) do |config|
+            config.default_xml.noblanks
           end
         end
+        strong_memoize_attr :xml_doc
 
         def xml_node(name, content)
           xml_doc.create_element(name).tap { |e| e.content = content }

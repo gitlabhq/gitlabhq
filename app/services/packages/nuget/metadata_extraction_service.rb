@@ -39,10 +39,9 @@ module Packages
       private
 
       def package_file
-        strong_memoize(:package_file) do
-          ::Packages::PackageFile.find_by_id(@package_file_id)
-        end
+        ::Packages::PackageFile.find_by_id(@package_file_id)
       end
+      strong_memoize_attr :package_file
 
       def valid_package_file?
         package_file &&

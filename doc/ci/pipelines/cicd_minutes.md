@@ -76,7 +76,7 @@ To set a compute quota for a namespace:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
-1. In the **Compute quota** box, enter the maximum number of CI/CD minutes.
+1. In the **Compute quota** box, enter the maximum number of units of compute.
 1. Select **Save changes**.
 
 You can also use the [update group API](../../api/groups.md#update-group) or the

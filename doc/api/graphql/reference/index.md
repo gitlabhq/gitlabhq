@@ -5637,8 +5637,8 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="mutationrunnerupdatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
-| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "minutes cost factor" associated with the runner (GitLab.com only). |
-| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "minutes cost factor" associated with the runner (GitLab.com only). |
+| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
+| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="mutationrunnerupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 
@@ -12934,9 +12934,9 @@ CI/CD variables for a project.
 | <a id="cirunnerownerproject"></a>`ownerProject` | [`Project`](#project) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
 | <a id="cirunnerplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner. |
-| <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "minutes cost factor" associated with the runner (GitLab.com only). |
+| <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. |
-| <a id="cirunnerpublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "minutes cost factor" associated with the runner (GitLab.com only). |
+| <a id="cirunnerpublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerregisteradminurl"></a>`registerAdminUrl` | [`String`](#string) | URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators. |
 | <a id="cirunnerrevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |

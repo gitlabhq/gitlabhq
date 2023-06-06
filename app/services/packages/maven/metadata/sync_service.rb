@@ -70,25 +70,22 @@ module Packages
         end
 
         def metadata_package_file_for_versions
-          strong_memoize(:metadata_file_for_versions) do
-            metadata_package_file_for(versionless_package_for_versions)
-          end
+          metadata_package_file_for(versionless_package_for_versions)
         end
+        strong_memoize_attr :metadata_package_file_for_versions
 
         def versionless_package_for_versions
-          strong_memoize(:versionless_package_for_versions) do
-            versionless_package_named(package_name)
-          end
+          versionless_package_named(package_name)
         end
+        strong_memoize_attr :versionless_package_for_versions
 
         def metadata_package_file_for_plugins
-          strong_memoize(:metadata_package_file_for_plugins) do
-            pkg_name = package_name_for_plugins
-            next unless pkg_name
+          pkg_name = package_name_for_plugins
+          return unless pkg_name
 
-            metadata_package_file_for(versionless_package_named(package_name_for_plugins))
-          end
+          metadata_package_file_for(versionless_package_named(package_name_for_plugins))
         end
+        strong_memoize_attr :metadata_package_file_for_plugins
 
         def metadata_package_file_for(package)
           return unless package

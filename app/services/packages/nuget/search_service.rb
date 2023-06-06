@@ -89,17 +89,16 @@ module Packages
       end
 
       def base_matching_package_names
-        strong_memoize(:base_matching_package_names) do
-          # rubocop: disable CodeReuse/ActiveRecord
-          pkgs = nuget_packages.order_name
+        # rubocop: disable CodeReuse/ActiveRecord
+        pkgs = nuget_packages.order_name
                                .select_distinct_name
                                .where(project_id: project_ids)
-          pkgs = pkgs.without_version_like(PRE_RELEASE_VERSION_MATCHING_TERM) unless include_prerelease_versions?
-          pkgs = pkgs.search_by_name(@search_term) if @search_term.present?
-          pkgs
-          # rubocop: enable CodeReuse/ActiveRecord
-        end
+        pkgs = pkgs.without_version_like(PRE_RELEASE_VERSION_MATCHING_TERM) unless include_prerelease_versions?
+        pkgs = pkgs.search_by_name(@search_term) if @search_term.present?
+        pkgs
+        # rubocop: enable CodeReuse/ActiveRecord
       end
+      strong_memoize_attr :base_matching_package_names
 
       def nuget_packages
         Packages::Package.nuget
@@ -111,11 +110,10 @@ module Packages
       def project_ids_cte
         return unless use_project_ids_cte?
 
-        strong_memoize(:project_ids_cte) do
-          query = projects_visible_to_user(@current_user, within_group: @project_or_group)
-          Gitlab::SQL::CTE.new(:project_ids, query.select(:id))
-        end
+        query = projects_visible_to_user(@current_user, within_group: @project_or_group)
+        Gitlab::SQL::CTE.new(:project_ids, query.select(:id))
       end
+      strong_memoize_attr :project_ids_cte
 
       def project_ids
         return @project_or_group.id if project?

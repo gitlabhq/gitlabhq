@@ -2924,9 +2924,6 @@ msgstr ""
 msgid "Additional diagram formats"
 msgstr ""
 
-msgid "Additional minutes:"
-msgstr ""
-
 msgid "Additional text"
 msgstr ""
 
@@ -2943,6 +2940,9 @@ msgid "Additional text to show on the sign-in page"
 msgstr ""
 
 msgid "Additional units"
+msgstr ""
+
+msgid "Additional units of compute:"
 msgstr ""
 
 msgid "Address"
@@ -9583,9 +9583,6 @@ msgstr ""
 msgid "CiCatalog|Get started with the CI/CD catalog"
 msgstr ""
 
-msgid "CiCatalog|Learn more"
-msgstr ""
-
 msgid "CiCatalog|Mark project as a CI/CD Catalog resource"
 msgstr ""
 
@@ -11704,6 +11701,9 @@ msgstr ""
 msgid "Compute quota"
 msgstr ""
 
+msgid "Compute quota:"
+msgstr ""
+
 msgid "Confidence"
 msgstr ""
 
@@ -13782,6 +13782,9 @@ msgstr ""
 msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr ""
 
+msgid "DORA4Metrics|Closed issues"
+msgstr ""
+
 msgid "DORA4Metrics|Critical Vulnerabilities over time"
 msgstr ""
 
@@ -13900,6 +13903,9 @@ msgid "DORA4Metrics|The chart displays the frequency of deployments to productio
 msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
+msgstr ""
+
+msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
 msgstr ""
 
 msgid "DORA4Metrics|Time to Restore Service"
@@ -22041,9 +22047,6 @@ msgid "Groups|Group path is available."
 msgstr ""
 
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
-msgstr ""
-
-msgid "Groups|Learn more"
 msgstr ""
 
 msgid "Groups|Learn more about subgroups"
@@ -34485,10 +34488,10 @@ msgstr ""
 msgid "Private profile:"
 msgstr ""
 
-msgid "Private projects Minutes cost factor"
+msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
-msgid "Private projects can be created in your personal namespace with:"
+msgid "Private projects compute cost factor"
 msgstr ""
 
 msgid "Problem with %{name} command: %{message}."
@@ -34975,9 +34978,6 @@ msgid "Profiles|Key titles are publicly visible."
 msgstr ""
 
 msgid "Profiles|Last used:"
-msgstr ""
-
-msgid "Profiles|Learn more"
 msgstr ""
 
 msgid "Profiles|Location"
@@ -36678,9 +36678,6 @@ msgstr ""
 msgid "Promotions|Keep track of events in your project"
 msgstr ""
 
-msgid "Promotions|Learn more"
-msgstr ""
-
 msgid "Promotions|Merge request approvals"
 msgstr ""
 
@@ -37165,10 +37162,10 @@ msgstr ""
 msgid "Public pipelines"
 msgstr ""
 
-msgid "Public projects Minutes cost factor"
+msgid "Public projects are an easy way to allow everyone to have read-only access."
 msgstr ""
 
-msgid "Public projects are an easy way to allow everyone to have read-only access."
+msgid "Public projects compute cost factor"
 msgstr ""
 
 msgid "Publish to status page"
@@ -37409,9 +37406,6 @@ msgid "Quick help"
 msgstr ""
 
 msgid "Quick range"
-msgstr ""
-
-msgid "Quota of CI/CD minutes:"
 msgstr ""
 
 msgid "README"
@@ -49756,6 +49750,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Number of issues closed by month."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Number of new issues created."
 msgstr ""
 
@@ -54456,9 +54453,6 @@ msgid "mrWidget|If the %{type} branch exists in your local repository, you can m
 msgstr ""
 
 msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
-msgstr ""
-
-msgid "mrWidget|Learn more"
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"

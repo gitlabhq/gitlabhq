@@ -29,12 +29,12 @@ If you are using a self-managed instance of GitLab:
   and selecting **Show runner installation instructions**.
   These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
 - The administrator can also configure a maximum number of shared runner
-  [CI/CD minutes for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
+  [units of compute for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
 
 If you are using GitLab.com:
 
 - You can select from a list of [shared runners that GitLab maintains](index.md).
-- The shared runners consume the [CI/CD minutes](../pipelines/cicd_minutes.md)
+- The shared runners consume the [units of compute](../pipelines/cicd_minutes.md)
   included with your account.
 
 ### Enable shared runners for a project

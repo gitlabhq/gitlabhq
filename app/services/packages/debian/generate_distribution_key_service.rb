@@ -43,10 +43,9 @@ module Packages
       attr_reader :params
 
       def passphrase
-        strong_memoize(:passphrase) do
-          params[:passphrase] || ::User.random_password
-        end
+        params[:passphrase] || ::User.random_password
       end
+      strong_memoize_attr :passphrase
 
       def pinentry_script_content
         escaped_passphrase = Shellwords.escape(passphrase)

@@ -43,10 +43,9 @@ module Packages
       end
 
       def package_tags
-        strong_memoize(:package_tags) do
-          rpm.tags
-        end
+        rpm.tags
       end
+      strong_memoize_attr :package_tags
 
       def extract_static_attributes
         STATIC_ATTRIBUTES.index_with do |attribute|

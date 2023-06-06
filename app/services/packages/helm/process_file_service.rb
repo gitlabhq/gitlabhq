@@ -57,28 +57,25 @@ module Packages
       end
 
       def temp_package
-        strong_memoize(:temp_package) do
-          package_file.package
-        end
+        package_file.package
       end
+      strong_memoize_attr :temp_package
 
       def package
-        strong_memoize(:package) do
-          project_packages = package_file.package.project.packages
-          package = project_packages.with_package_type(:helm)
-                                    .with_name(metadata['name'])
-                                    .with_version(metadata['version'])
-                                    .not_pending_destruction
-                                    .last
-          package || temp_package
-        end
+        project_packages = package_file.package.project.packages
+        package = project_packages.with_package_type(:helm)
+                                  .with_name(metadata['name'])
+                                  .with_version(metadata['version'])
+                                  .not_pending_destruction
+                                  .last
+        package || temp_package
       end
+      strong_memoize_attr :package
 
       def metadata
-        strong_memoize(:metadata) do
-          ::Packages::Helm::ExtractFileMetadataService.new(package_file).execute
-        end
+        ::Packages::Helm::ExtractFileMetadataService.new(package_file).execute
       end
+      strong_memoize_attr :metadata
 
       def file_name
         "#{metadata['name']}-#{metadata['version']}.tgz"

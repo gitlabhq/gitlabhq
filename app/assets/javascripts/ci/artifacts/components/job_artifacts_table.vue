@@ -15,7 +15,6 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes } from '../utils';
@@ -39,7 +38,6 @@ import {
   INITIAL_NEXT_PAGE_CURSOR,
   JOBS_PER_PAGE,
   INITIAL_LAST_PAGE_SIZE,
-  BULK_DELETE_FEATURE_FLAG,
   I18N_BULK_DELETE_ERROR,
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
@@ -83,7 +81,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts'],
   apollo: {
     jobArtifacts: {
@@ -161,7 +158,7 @@ export default {
       return this.selectedArtifacts.length >= SELECTED_ARTIFACTS_MAX_COUNT;
     },
     canBulkDestroyArtifacts() {
-      return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
+      return this.canDestroyArtifacts;
     },
     isDeletingArtifactsForJob() {
       return this.jobArtifactsToDelete.length > 0;

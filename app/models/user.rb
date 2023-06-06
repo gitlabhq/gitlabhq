@@ -2408,9 +2408,10 @@ class User < ApplicationRecord
   def authorized_groups_without_shared_membership
     Group.from_union(
       [
-        groups.select(Namespace.default_select_columns),
-        authorized_projects.joins(:namespace).select(Namespace.default_select_columns)
-      ])
+        groups,
+        Group.id_in(authorized_projects.select(:namespace_id))
+      ]
+    )
   end
 
   def authorized_groups_with_shared_membership

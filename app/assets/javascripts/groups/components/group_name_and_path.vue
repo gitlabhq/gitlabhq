@@ -56,7 +56,7 @@ export default {
       'An error occurred while checking group path. Please refresh and try again.',
     ),
     changingUrlWarningMessage: s__('Groups|Changing group URL can have unintended side effects.'),
-    learnMore: s__('Groups|Learn more'),
+    learnMore: __('Learn more'),
   },
   inputSize: { md: 'lg' },
   changingGroupPathHelpPagePath: helpPagePath('user/group/manage', {

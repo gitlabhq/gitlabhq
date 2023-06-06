@@ -20,10 +20,13 @@ const formatDateParam = (d) => dateFormat(d, dateFormats.isoDate, true);
 
 export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
 
-export const KEY_METRICS = {
+export const ISSUES_COMPLETED_TYPE = 'issues_completed';
+
+export const FLOW_METRICS = {
   LEAD_TIME: 'lead_time',
   CYCLE_TIME: 'cycle_time',
   ISSUES: 'issues',
+  ISSUES_COMPLETED: ISSUES_COMPLETED_TYPE,
   COMMITS: 'commits',
   DEPLOYS: 'deploys',
 };
@@ -38,7 +41,7 @@ export const DORA_METRICS = {
 const VSA_FLOW_METRICS_GROUP = {
   key: 'key_metrics',
   title: s__('ValueStreamAnalytics|Key metrics'),
-  keys: Object.values(KEY_METRICS),
+  keys: Object.values(FLOW_METRICS),
 };
 
 export const VSA_METRICS_GROUPS = [VSA_FLOW_METRICS_GROUP];
@@ -90,7 +93,7 @@ export const METRIC_TOOLTIPS = {
     projectLink: '-/pipelines/charts?chart=change-failure-rate',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'change-failure-rate' }),
   },
-  [KEY_METRICS.LEAD_TIME]: {
+  [FLOW_METRICS.LEAD_TIME]: {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
@@ -98,7 +101,7 @@ export const METRIC_TOOLTIPS = {
       anchor: 'view-the-lead-time-and-cycle-time-for-issues',
     }),
   },
-  [KEY_METRICS.CYCLE_TIME]: {
+  [FLOW_METRICS.CYCLE_TIME]: {
     description: s__(
       "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
     ),
@@ -108,13 +111,21 @@ export const METRIC_TOOLTIPS = {
       anchor: 'view-the-lead-time-and-cycle-time-for-issues',
     }),
   },
-  [KEY_METRICS.ISSUES]: {
+  [FLOW_METRICS.ISSUES]: {
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
     docsLink: helpPagePath('user/analytics/issue_analytics'),
   },
-  [KEY_METRICS.DEPLOYS]: {
+  [FLOW_METRICS.ISSUES_COMPLETED]: {
+    description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
+    groupLink: '-/analytics/value_stream_analytics',
+    projectLink: '-/value_stream_analytics',
+    docsLink: helpPagePath('user/analytics/value_streams_dashboard', {
+      anchor: 'dashboard-metrics-and-drill-down-reports',
+    }),
+  },
+  [FLOW_METRICS.DEPLOYS]: {
     description: s__('ValueStreamAnalytics|Total number of deploys to production.'),
     groupLink: '-/analytics/productivity_analytics',
     projectLink: '-/analytics/merge_request_analytics',

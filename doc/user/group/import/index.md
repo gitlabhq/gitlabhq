@@ -77,6 +77,13 @@ transfer.
 | 8 hours     | Time until migration times out.                                                                                                                                                 |
 | 90 minutes  | Time the destination is waiting for export to complete.                                                                                                                         |
 
+You can test the maximum relation size limit using these APIs:
+
+- [Group relations export API](../../../api/group_relations_export.md).
+- [Project relations export API](../../../api/project_relations_export.md)
+
+If either API produces files larger than the maximum relation size limit, group migration by direct transfer fails.
+
 ### Visibility rules
 
 After migration:

@@ -29,10 +29,9 @@ module Packages
       private
 
       def created_package
-        strong_memoize(:created_package) do
-          find_or_create_package!(:pypi)
-        end
+        find_or_create_package!(:pypi)
       end
+      strong_memoize_attr :created_package
 
       def file_params
         {

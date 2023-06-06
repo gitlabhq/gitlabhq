@@ -23,12 +23,11 @@ module Packages
       private
 
       def existing_tag
-        strong_memoize(:existing_tag) do
-          Packages::TagsFinder
+        Packages::TagsFinder
             .new(package.project, package.name, package_type: package.package_type)
             .find_by_name(tag_name)
-        end
       end
+      strong_memoize_attr :existing_tag
     end
   end
 end

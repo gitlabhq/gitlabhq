@@ -79,10 +79,9 @@ module Packages
       end
 
       def batch_deadline
-        strong_memoize(:batch_deadline) do
-          MAX_EXECUTION_TIME.from_now
-        end
+        MAX_EXECUTION_TIME.from_now
       end
+      strong_memoize_attr :batch_deadline
 
       def response_success(timeout:)
         ServiceResponse.success(

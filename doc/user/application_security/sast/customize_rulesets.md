@@ -81,7 +81,7 @@ To create the ruleset configuration file:
 
 ## Specify a remote configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.1.
 
 You can set a [CI/CD variable](../../../ci/variables/index.md) to use a ruleset configuration file that's stored outside of the current repository.
 This can help you apply the same rules across multiple projects.

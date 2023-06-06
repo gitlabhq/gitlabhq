@@ -21,10 +21,9 @@ module Packages
     private
 
     def existing_tags
-      strong_memoize(:existing_tags) do
-        @package.tag_names
-      end
+      @package.tag_names
     end
+    strong_memoize_attr :existing_tags
 
     def rows(tags)
       now = Time.zone.now

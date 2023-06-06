@@ -91,49 +91,43 @@ module Packages
         end
 
         def versioning_xml_node
-          strong_memoize(:versioning_xml_node) do
-            xml_doc.xpath(XPATH_VERSIONING).first
-          end
+          xml_doc.xpath(XPATH_VERSIONING).first
         end
+        strong_memoize_attr :versioning_xml_node
 
         def versions_xml_node
-          strong_memoize(:versions_xml_node) do
-            versioning_xml_node&.xpath(XPATH_VERSIONS)
+          versioning_xml_node&.xpath(XPATH_VERSIONS)
                                &.first
-          end
         end
+        strong_memoize_attr :versions_xml_node
 
         def version_xml_nodes
           versions_xml_node&.xpath(XPATH_VERSION)
         end
 
         def latest_xml_node
-          strong_memoize(:latest_xml_node) do
-            versioning_xml_node&.xpath(XPATH_LATEST)
+          versioning_xml_node&.xpath(XPATH_LATEST)
                                &.first
-          end
         end
+        strong_memoize_attr :latest_xml_node
 
         def release_xml_node
-          strong_memoize(:release_xml_node) do
-            versioning_xml_node&.xpath(XPATH_RELEASE)
+          versioning_xml_node&.xpath(XPATH_RELEASE)
                                &.first
-          end
         end
+        strong_memoize_attr :release_xml_node
 
         def last_updated_xml_node
-          strong_memoize(:last_updated_xml_mode) do
-            versioning_xml_node.xpath(XPATH_LAST_UPDATED)
+          versioning_xml_node.xpath(XPATH_LAST_UPDATED)
                                .first
-          end
         end
+        strong_memoize_attr :last_updated_xml_node
 
         def versions_from_xml
-          strong_memoize(:versions_from_xml) do
-            versions_xml_node.xpath(XPATH_VERSION)
+          versions_xml_node.xpath(XPATH_VERSION)
                              .map(&:text)
-          end
         end
+        strong_memoize_attr :versions_from_xml
 
         def latest_from_xml
           latest_xml_node&.text
@@ -144,27 +138,25 @@ module Packages
         end
 
         def versions_from_database
-          strong_memoize(:versions_from_database) do
-            @package.project.packages
+          @package.project.packages
                             .maven
                             .displayable
                             .with_name(@package.name)
                             .has_version
                             .order_created
                             .pluck_versions
-          end
         end
+        strong_memoize_attr :versions_from_database
 
         def latest_from_database
           versions_from_database.last
         end
 
         def release_from_database
-          strong_memoize(:release_from_database) do
-            non_snapshot_versions_from_database = versions_from_database.reject { |v| v.ends_with?('SNAPSHOT') }
-            non_snapshot_versions_from_database.last
-          end
+          non_snapshot_versions_from_database = versions_from_database.reject { |v| v.ends_with?('SNAPSHOT') }
+          non_snapshot_versions_from_database.last
         end
+        strong_memoize_attr :release_from_database
 
         def log_malformed_content(reason)
           logger.warn(

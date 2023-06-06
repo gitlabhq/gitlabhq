@@ -39,10 +39,10 @@ You can set all new projects to have the instance's shared runners available by 
 
 Any time a new project is created, the shared runners are available.
 
-## Shared runners CI/CD minutes
+## Shared runners compute quota
 
 As an administrator you can set either a global or namespace-specific
-limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
+limit on the number of [units of compute](../../../ci/pipelines/cicd_minutes.md) you can use.
 
 ## Enable a project runner for multiple projects
 

@@ -17,20 +17,22 @@ Group exports include the following:
 - Group labels
 - Group badges
 - Group members
-- Subgroups. Each subgroup includes all data above
 - Group wikis **(PREMIUM SELF)**
+- Subgroups. Each subgroup includes all data above
 
-To preserve group-level relationships from imported projects, you should run group import and export first. This way, you can import project exports into the desired group structure.
+To preserve group-level relationships from imported projects, you should run group export and import first. This way,
+you can import project exports into the desired group structure.
 
-Imported groups have a `private` visibility level unless you import them into a parent group.
-If you import groups into a parent group, the subgroups inherit by default a similar level of visibility.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/405168), imported groups have a `private`
+visibility level unless you import them into a parent group. By default, if you import groups into a parent group,
+the subgroups inherit the same level of visibility as the parent.
 
 To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make sure these users exist before importing the desired groups.
 
 ## Prerequisites
 
-For information on prerequisites for group import and export API, see prerequisites for
-[migrating groups by uploading an export file](../user/group/import/index.md#preparation).
+- For information on prerequisites for group import and export API, see prerequisites for
+  [migrating groups by uploading an export file](../user/group/import/index.md#preparation).
 
 ## Schedule new export
 
@@ -88,6 +90,15 @@ returns either:
 
 ## Import a file
 
+The maximum import file size can be set by the Administrator on self-managed instances (default is `0` (unlimited)).
+As an administrator, you can modify the maximum import file size either:
+
+- The admin [Admin Area](../user/admin_area/settings/account_and_limit_settings.md).
+- The `max_import_size` option in the [Application settings API](settings.md#change-application-settings).
+
+For information on the maximum import file size on GitLab.com, see
+[Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).
+
 ```plaintext
 POST /groups/import
 ```
@@ -110,6 +121,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/groups/import"
 ```
 
-NOTE:
-The maximum import file size can be set by the Administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
+## Related topics
+
+- [Project import and export API](project_import_export.md)

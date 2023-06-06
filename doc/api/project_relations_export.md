@@ -4,22 +4,17 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project Relations Export API **(FREE)**
+# Project relations export API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70330) in GitLab 14.4 behind the `bulk_import` [feature flag](../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70330) in GitLab 14.4 behind the `bulk_import` [feature flag](../administration/feature_flags.md), disabled by default.
+> - New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
 
-FLAG:
-On GitLab.com, this feature is available.
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
-[disable the `bulk_import` flag](../administration/feature_flags.md).
-The feature is not ready for production use. It is still in experimental stage and might change in the future.
+The project relations export API partially exports a project's structure as separate files for each top-level
+relation (for example, milestones, issues, and labels).
 
-With the Project Relations Export API, you can partially export project structure. This API is
-similar to [project export](project_import_export.md),
-but it exports each top-level relation (for example, milestones/boards/labels) as a separate file
-instead of one archive. The project relations export API is primarily used in
-[group migration](../user/group/import/index.md)
-to support group project import.
+The project relations export API is primarily used in
+[group migration](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) can't be used with the
+[project import and export API](project_import_export.md).
 
 ## Schedule new export
 
@@ -109,3 +104,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
 ls labels.ndjson.gz
 labels.ndjson.gz
 ```
+
+## Related topics
+
+- [Group relations export API](group_relations_export.md)

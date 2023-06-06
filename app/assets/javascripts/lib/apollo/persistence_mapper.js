@@ -32,7 +32,9 @@ export const persistenceMapper = async (data) => {
           persistEntities.push(...entities);
         } else {
           const entity = rootQuery[key].__ref;
-          persistEntities.push(entity);
+          if (entity) {
+            persistEntities.push(entity);
+          }
         }
       }
 
