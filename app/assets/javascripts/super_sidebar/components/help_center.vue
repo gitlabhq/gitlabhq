@@ -204,22 +204,13 @@ export default {
       });
     },
   },
-  popperOptions: {
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
-        },
-      },
-    ],
-  },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    :popper-options="$options.popperOptions"
+    :dropdown-offset="$options.dropdownOffset"
     @shown="trackDropdownToggle(true)"
     @hidden="trackDropdownToggle(false)"
   >

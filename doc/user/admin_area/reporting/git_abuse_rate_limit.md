@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Git abuse rate limit (administration) **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/394996) in GitLab 15.10. Feature flag `git_abuse_rate_limit_feature_flag` removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/394996) in GitLab 15.11. Feature flag `git_abuse_rate_limit_feature_flag` removed.
 
 This is the administration documentation. For information about Git abuse rate limiting at the group level, see the [group-level documentation](../../group/reporting/git_abuse_rate_limit.md).
 

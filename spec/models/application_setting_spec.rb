@@ -23,6 +23,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.id).to eq(1) }
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
+    it { expect(setting.default_branch_protection_defaults).to eq({}) }
   end
 
   describe 'validations' do
@@ -1228,6 +1229,25 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
       it { is_expected.not_to allow_value(nil, 0, Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme) }
     end
+
+    context 'default_branch_protections_defaults validations' do
+      let(:charset) { [*'a'..'z'] + [*0..9] }
+      let(:value) { Array.new(byte_size) { charset.sample }.join }
+
+      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
+
+      context 'when json is more than 1kb' do
+        let(:byte_size) { 1.1.kilobytes }
+
+        it { is_expected.not_to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
+
+      context 'when json less than 1kb' do
+        let(:byte_size) { 0.5.kilobytes }
+
+        it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -1495,6 +1515,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       expect(subject.kroki_formats_blockdiag).to eq(true)
       expect(subject.kroki_formats_bpmn).to eq(false)
       expect(subject.kroki_formats_excalidraw).to eq(true)
+    end
+  end
+
+  describe 'default_branch_protection_defaults' do
+    let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
+
+    it 'returns the value for default_branch_protection_defaults' do
+      subject.default_branch_protection_defaults = defaults
+      expect(subject.default_branch_protection_defaults['name']).to eq('main')
+      expect(subject.default_branch_protection_defaults['push_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['merge_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
+    end
+
+    context 'when provided with content that does not match the JSON schema' do
+      # valid json
+      it { is_expected.to allow_value({ name: 'bar' }).for(:default_branch_protection_defaults) }
+
+      # invalid json
+      it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
     end
   end
 

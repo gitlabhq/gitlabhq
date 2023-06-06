@@ -253,10 +253,6 @@ export const packageDetailsQuery = ({
         nodes: packagePipelines(),
         __typename: 'PipelineConnection',
       },
-      packageFiles: {
-        nodes: packageFiles().map(({ id, size }) => ({ id, size })),
-        __typename: 'PackageFileConnection',
-      },
       versions: {
         count: packageVersions().length,
       },

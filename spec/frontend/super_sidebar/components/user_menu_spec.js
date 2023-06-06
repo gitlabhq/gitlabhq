@@ -41,11 +41,12 @@ describe('UserMenu component', () => {
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
-  it('passes popper options to the dropdown', () => {
+  it('passes custom offset to the dropdown', () => {
     createWrapper();
 
-    expect(findDropdown().props('popperOptions')).toEqual({
-      modifiers: [{ name: 'offset', options: { offset: [-211, 4] } }],
+    expect(findDropdown().props('dropdownOffset')).toEqual({
+      crossAxis: -211,
+      mainAxis: 4,
     });
   });
 

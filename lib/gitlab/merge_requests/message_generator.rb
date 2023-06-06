@@ -51,6 +51,7 @@ module Gitlab
         end,
         'description' => ->(merge_request, _, _) { merge_request.description },
         'reference' => ->(merge_request, _, _) { merge_request.to_reference(full: true) },
+        'local_reference' => ->(merge_request, _, _) { merge_request.to_reference(full: false) },
         'first_commit' => -> (merge_request, _, _) {
           return unless merge_request.persisted? || merge_request.compare_commits.present?
 

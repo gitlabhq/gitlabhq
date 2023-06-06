@@ -690,7 +690,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('.gl-new-dropdown-item', text: '2-mb-file').click
+          find('.gl-new-dropdown-item', text: 'spooky-stuff').click
           wait_for_requests
         end
 

@@ -44,16 +44,7 @@ export default {
     },
   },
   toggleId: 'create-menu-toggle',
-  popperOptions: {
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
-        },
-      },
-    ],
-  },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 };
 </script>
@@ -67,7 +58,7 @@ export default {
       text-sr-only
       :toggle-text="$options.i18n.createNew"
       :toggle-id="$options.toggleId"
-      :popper-options="$options.popperOptions"
+      :dropdown-offset="$options.dropdownOffset"
       data-qa-selector="new_menu_toggle"
       data-testid="new-menu-toggle"
       @shown="dropdownOpen = true"

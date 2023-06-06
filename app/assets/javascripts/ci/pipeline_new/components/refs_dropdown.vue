@@ -28,6 +28,13 @@ export default {
       required: false,
       default: () => ({}),
     },
+    queryParams: {
+      type: Object,
+      required: false,
+      default: () => ({
+        sort: 'updated_desc',
+      }),
+    },
   },
   computed: {
     refShortName() {
@@ -51,6 +58,7 @@ export default {
     :project-id="projectId"
     :translations="$options.i18n"
     :use-symbolic-ref-names="true"
+    :query-params="queryParams"
     toggle-button-class="gl-w-auto! gl-mb-0!"
     @input="setRefSelected"
   />

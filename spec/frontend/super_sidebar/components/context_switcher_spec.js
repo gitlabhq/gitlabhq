@@ -158,12 +158,6 @@ describe('ContextSwitcher component', () => {
       expect(findContextSwitcherToggle().props('expanded')).toEqual(false);
     });
 
-    it("passes Popper.js' options to the disclosure dropdown", () => {
-      expect(findDisclosureDropdown().props('popperOptions')).toMatchObject({
-        modifiers: expect.any(Array),
-      });
-    });
-
     it('does not emit the `toggle` event initially', () => {
       expect(wrapper.emitted('toggle')).toBe(undefined);
     });

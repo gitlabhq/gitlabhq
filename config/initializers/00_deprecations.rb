@@ -18,7 +18,15 @@ if Rails.env.production?
 else
   ActiveSupport::Deprecation.silenced = false
   ActiveSupport::Deprecation.behavior = [:stderr, :notify]
-  ActiveSupport::Deprecation.disallowed_behavior = [:stderr, :raise]
+
+  # rubocop:disable Lint/RaiseException
+  # Raising an `Exception` instead of `DeprecationException` or `StandardError`
+  # increases the probability that this exception is not caught in application
+  # code.
+  raise_exception = ->(message, _, _, _) { raise Exception, message }
+  # rubocop:enable Lint/RaiseException
+
+  ActiveSupport::Deprecation.disallowed_behavior = [:stderr, raise_exception]
 
   rails7_deprecation_warnings = [
     # https://gitlab.com/gitlab-org/gitlab/-/issues/366910

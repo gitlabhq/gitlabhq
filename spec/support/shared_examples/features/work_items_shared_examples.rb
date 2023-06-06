@@ -376,6 +376,10 @@ RSpec.shared_examples 'work items award emoji' do
     wait_for_requests
   end
 
+  before do
+    emoji_upvote
+  end
+
   it 'adds award to the work item for current user' do
     select_emoji
 

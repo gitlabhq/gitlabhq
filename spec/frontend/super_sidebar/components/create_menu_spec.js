@@ -37,11 +37,12 @@ describe('CreateMenu component', () => {
       createWrapper();
     });
 
-    it('passes popper options to the dropdown', () => {
+    it('passes custom offset to the dropdown', () => {
       createWrapper();
 
-      expect(findGlDisclosureDropdown().props('popperOptions')).toEqual({
-        modifiers: [{ name: 'offset', options: { offset: [-147, 4] } }],
+      expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
+        crossAxis: -147,
+        mainAxis: 4,
       });
     });
 

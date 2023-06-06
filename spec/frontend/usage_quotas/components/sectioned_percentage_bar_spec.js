@@ -65,7 +65,7 @@ describe('SectionedPercentageBar', () => {
       'background-color: rgb(0, 144, 177); width: 21.4286%;',
     );
     expect(section4.attributes('style')).toBe(
-      'background-color: rgb(54, 104, 0); width: 35.7143%;',
+      'background-color: rgb(78, 127, 14); width: 35.7143%;',
     );
     expect(section1.text()).toMatchInterpolatedText('Section 1 14.3%');
     expect(section2.text()).toMatchInterpolatedText('Section 2 28.6%');
@@ -96,6 +96,6 @@ describe('SectionedPercentageBar', () => {
     ).toBe('background-color: rgb(0, 144, 177);');
     expect(
       section4.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).attributes('style'),
-    ).toBe('background-color: rgb(54, 104, 0);');
+    ).toBe('background-color: rgb(78, 127, 14);');
   });
 });

@@ -498,6 +498,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.ci_and_security_orchestration_sources' do
+    subject { described_class.ci_and_security_orchestration_sources }
+
+    let_it_be(:push_pipeline)   { create(:ci_pipeline, source: :push) }
+    let_it_be(:web_pipeline)    { create(:ci_pipeline, source: :web) }
+    let_it_be(:api_pipeline)    { create(:ci_pipeline, source: :api) }
+    let_it_be(:webide_pipeline) { create(:ci_pipeline, source: :webide) }
+    let_it_be(:child_pipeline)  { create(:ci_pipeline, source: :parent_pipeline) }
+    let_it_be(:merge_request_pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline) }
+    let_it_be(:sec_orchestration_pipeline) { create(:ci_pipeline, :security_orchestration_policy) }
+
+    it 'contains pipelines having CI and security_orchestration_policy sources' do
+      expect(subject).to contain_exactly(push_pipeline, web_pipeline, api_pipeline, merge_request_pipeline, sec_orchestration_pipeline)
+    end
+
+    it 'filters on expected sources' do
+      expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
+        *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
+            external_pull_request_event security_orchestration_policy])
+    end
+  end
+
   describe '.outside_pipeline_family' do
     subject(:outside_pipeline_family) { described_class.outside_pipeline_family(upstream_pipeline) }
 

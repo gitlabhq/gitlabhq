@@ -55,6 +55,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     archive_builds_in_seconds: 'Archive job value'
   }.freeze
 
+  # matches the size set in the database constraint
+  DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -110,12 +113,16 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attribute :id, default: 1
   attribute :repository_storages_weighted, default: -> { {} }
   attribute :kroki_formats, default: -> { {} }
+  attribute :default_branch_protection_defaults, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :group_runner_token_expiration_interval_human_readable, :group_runner_token_expiration_interval
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
+
+  validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
+  validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
 
   validates :grafana_url,
     system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({

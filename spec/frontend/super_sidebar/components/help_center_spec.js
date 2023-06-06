@@ -91,9 +91,10 @@ describe('HelpCenter component', () => {
       ]);
     });
 
-    it('passes popper options to the dropdown', () => {
-      expect(findDropdown().props('popperOptions')).toEqual({
-        modifiers: [{ name: 'offset', options: { offset: [-4, 4] } }],
+    it('passes custom offset to the dropdown', () => {
+      expect(findDropdown().props('dropdownOffset')).toEqual({
+        crossAxis: -4,
+        mainAxis: 4,
       });
     });
 

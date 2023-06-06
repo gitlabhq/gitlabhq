@@ -133,9 +133,6 @@ export default {
         id: convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.packageId),
       };
     },
-    packageFiles() {
-      return this.packageEntity.packageFiles?.nodes;
-    },
     packageType() {
       return this.packageEntity.packageType;
     },

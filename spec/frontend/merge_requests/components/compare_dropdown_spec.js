@@ -62,10 +62,10 @@ describe('Merge requests compare dropdown component', () => {
     wrapper.find('[data-testid="base-dropdown-toggle"]').trigger('click');
 
     await waitForPromises();
-
-    expect(wrapper.findAll('li').length).toBe(2);
-    expect(wrapper.findAll('li').at(0).text()).toBe('root/gitlab-test');
-    expect(wrapper.findAll('li').at(1).text()).toBe('gitlab-org/gitlab-test');
+    const items = wrapper.findAll('[role="option"]');
+    expect(items.length).toBe(2);
+    expect(items.at(0).text()).toBe('root/gitlab-test');
+    expect(items.at(1).text()).toBe('gitlab-org/gitlab-test');
   });
 
   it('searches projects', async () => {
@@ -98,6 +98,6 @@ describe('Merge requests compare dropdown component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAll('li').length).toBe(1);
+    expect(wrapper.findAll('[role="option"]').length).toBe(1);
   });
 });

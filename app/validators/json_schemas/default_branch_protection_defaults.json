@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Default settings for default branch protection",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "allow_force_push": {
+      "type": "boolean"
+    },
+    "allowed_to_merge": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "group_id": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "access_level": {
+                "type": "integer"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "allowed_to_push": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "group_id": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "access_level": {
+                "type": "integer"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "code_owner_approval_required": {
+      "type": "boolean"
+    },
+    "merge_access_level": {
+      "type": "integer"
+    },
+    "push_access_level": {
+      "type": "integer"
+    },
+    "unprotect_access_level": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false
+}

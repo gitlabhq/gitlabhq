@@ -71,6 +71,7 @@ GitLab creates a squash commit message with this template:
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/20421) `co_authored_by` variable in GitLab 14.7.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/26303) `all_commits` variable in GitLab 14.9.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/378352) `reviewed_by` variable in GitLab 15.7.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/199823) `local_reference` variable in GitLab 16.1.
 
 Commit message templates support these variables:
 
@@ -82,6 +83,7 @@ Commit message templates support these variables:
 | `%{issues}`        | String with phrase `Closes <issue numbers>`. Contains all issues mentioned in the merge request description that match [issue closing patterns](../issues/managing_issues.md#closing-issues-automatically). Empty if no issues are mentioned. | `Closes #465, #190 and #400` |
 | `%{description}`   | Description of the merge request. | `Merge request description.`<br>`Can be multiline.` |
 | `%{reference}`     | Reference to the merge request. | `group-name/project-name!72359` |
+| `%{local_reference}` | Local reference to the merge request. | `!72359` |
 | `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
 | `%{url}`           | Full URL to the merge request. | `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1` |

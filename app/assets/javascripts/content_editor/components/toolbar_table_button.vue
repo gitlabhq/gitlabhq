@@ -79,9 +79,6 @@ export default {
   },
   MAX_COLS,
   MAX_ROWS,
-  popperOptions: {
-    strategy: 'fixed',
-  },
 };
 </script>
 <template>
@@ -93,7 +90,7 @@ export default {
     icon="table"
     :aria-label="__('Insert table')"
     :toggle-text="__('Insert table')"
-    :popper-opts="$options.popperOptions"
+    positioning-strategy="fixed"
     class="content-editor-table-dropdown"
     text-sr-only
     :fluid-width="true"

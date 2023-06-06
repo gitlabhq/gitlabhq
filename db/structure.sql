@@ -11850,6 +11850,7 @@ CREATE TABLE application_settings (
     instance_level_code_suggestions_enabled boolean DEFAULT false NOT NULL,
     delete_unconfirmed_users boolean DEFAULT false NOT NULL,
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
+    default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -18754,6 +18755,7 @@ CREATE TABLE namespace_settings (
     code_suggestions boolean DEFAULT false NOT NULL,
     experiment_features_enabled boolean DEFAULT false NOT NULL,
     third_party_ai_features_enabled boolean DEFAULT true NOT NULL,
+    default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -27096,6 +27098,12 @@ ALTER TABLE ONLY dast_site_validations
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT dast_sites_pkey PRIMARY KEY (id);
 
+ALTER TABLE namespace_settings
+    ADD CONSTRAINT default_branch_protection_defaults_size_constraint CHECK ((octet_length((default_branch_protection_defaults)::text) <= 1024)) NOT VALID;
+
+ALTER TABLE application_settings
+    ADD CONSTRAINT default_branch_protection_defaults_size_constraint CHECK ((octet_length((default_branch_protection_defaults)::text) <= 1024)) NOT VALID;
+
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT dependency_list_exports_pkey PRIMARY KEY (id);
 
@@ -33263,8 +33271,6 @@ CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes US
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
 CREATE INDEX tmp_index_migrated_container_registries ON container_repositories USING btree (project_id) WHERE ((migration_state = 'import_done'::text) OR (created_at >= '2022-01-23 00:00:00'::timestamp without time zone));
-
-CREATE INDEX tmp_index_oauth_access_tokens_on_id_where_expires_in_null ON oauth_access_tokens USING btree (id) WHERE (expires_in IS NULL);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 

@@ -383,6 +383,10 @@ module Ci
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
     scope :ci_branch_sources, -> { where(source: Enums::Ci::Pipeline.ci_branch_sources.values) }
     scope :ci_and_parent_sources, -> { where(source: Enums::Ci::Pipeline.ci_and_parent_sources.values) }
+    scope :ci_and_security_orchestration_sources, -> do
+      where(source: Enums::Ci::Pipeline.ci_and_security_orchestration_sources.values)
+    end
+
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :where_not_sha, -> (sha) { where.not(sha: sha) }

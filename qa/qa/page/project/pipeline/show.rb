@@ -7,8 +7,15 @@ module QA
         class Show < QA::Page::Base
           include Component::CiBadgeLink
 
+          # TODO: remove element with FF pipeline_details_header_vue removal
           view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
-            element :pipeline_header, required: true
+            element :pipeline_header
+          end
+
+          # TODO: make this a requirement at page render - `required: true`
+          # together with FF pipeline_details_header_vue removal
+          view 'app/assets/javascripts/pipelines/components/pipeline_details_header.vue' do
+            element :pipeline_details_header
           end
 
           view 'app/views/projects/pipelines/_info.html.haml' do
@@ -56,7 +63,12 @@ module QA
           end
 
           def running?(wait: 0)
-            within_element(:pipeline_header) do
+            # TODO: remove condition check together with FF pipeline_details_header_vue removal
+            # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/411442
+
+            element = has_element?(:pipeline_details_header) ? :pipeline_details_header : :pipeline_header
+
+            within_element(element) do
               page.has_content?('running', wait: wait)
             end
           end

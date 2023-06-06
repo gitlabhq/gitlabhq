@@ -653,7 +653,7 @@ lib/gitlab/checks/**
 /doc/architecture/blueprints/database/scalability/patterns/ @aqualls
 /doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/ci/ @marcel.amirault
-/doc/ci/chatops/ @eread @ashrafkhamis
+/doc/ci/chatops/ @phillipwells
 /doc/ci/cloud_deployment/ @phillipwells
 /doc/ci/docker/using_docker_images.md @fneill
 /doc/ci/environments/ @phillipwells
@@ -676,7 +676,7 @@ lib/gitlab/checks/**
 /doc/development/bulk_import.md @eread @ashrafkhamis
 /doc/development/cached_queries.md @jglassman1
 /doc/development/cascading_settings.md @jglassman1
-/doc/development/chatops_on_gitlabcom.md @eread @ashrafkhamis
+/doc/development/chatops_on_gitlabcom.md @phillipwells
 /doc/development/cicd/ @marcel.amirault
 /doc/development/code_intelligence/ @aqualls
 /doc/development/code_owners/ @aqualls @msedlakjakubowski

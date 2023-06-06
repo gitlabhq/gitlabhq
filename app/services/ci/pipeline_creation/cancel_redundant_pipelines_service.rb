@@ -6,6 +6,7 @@ module Ci
       include Gitlab::Utils::StrongMemoize
 
       BATCH_SIZE = 25
+      PAGE_SIZE = 500
 
       def initialize(pipeline)
         @pipeline = pipeline
@@ -17,10 +18,20 @@ module Ci
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        Gitlab::OptimisticLocking
-        .retry_lock(parent_and_child_pipelines, name: 'cancel_pending_pipelines') do |cancelables|
-          cancelables.select(:id).each_batch(of: BATCH_SIZE) do |cancelables_batch|
-            auto_cancel_interruptible_pipelines(cancelables_batch.ids)
+        if Feature.enabled?(:use_offset_pagination_for_canceling_redundant_pipelines, project)
+          paginator.each do |ids|
+            pipelines = parent_and_child_pipelines(ids)
+
+            Gitlab::OptimisticLocking.retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
+              auto_cancel_interruptible_pipelines(cancelables.ids)
+            end
+          end
+        else
+          Gitlab::OptimisticLocking
+            .retry_lock(parent_and_child_pipelines, name: 'cancel_pending_pipelines') do |cancelables|
+            cancelables.select(:id).each_batch(of: BATCH_SIZE) do |cancelables_batch|
+              auto_cancel_interruptible_pipelines(cancelables_batch.ids)
+            end
           end
         end
       end
@@ -29,17 +40,40 @@ module Ci
 
       attr_reader :pipeline, :project
 
-      def parent_auto_cancelable_pipelines
-        project.all_pipelines
+      def paginator
+        page = 1
+        Enumerator.new do |yielder|
+          loop do
+            # leverage the index_ci_pipelines_on_project_id_and_status_and_created_at index
+            records = project.all_pipelines
+              .created_after(1.week.ago)
+              .order(:status, :created_at)
+              .page(page) # use offset pagination because there is no other way to loop over the data
+              .per(PAGE_SIZE)
+              .pluck(:id)
+
+            raise StopIteration if records.empty?
+
+            yielder << records
+            page += 1
+          end
+        end
+      end
+
+      def parent_auto_cancelable_pipelines(ids = nil)
+        scope = project.all_pipelines
           .created_after(1.week.ago)
           .for_ref(pipeline.ref)
           .where_not_sha(project.commit(pipeline.ref).try(:id))
           .where("created_at < ?", pipeline.created_at)
           .ci_sources
+
+        scope = scope.id_in(ids) if ids.present?
+        scope
       end
 
-      def parent_and_child_pipelines
-        Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines, project_condition: :same)
+      def parent_and_child_pipelines(ids = nil)
+        Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines(ids), project_condition: :same)
           .base_and_descendants
           .alive_or_scheduled
       end

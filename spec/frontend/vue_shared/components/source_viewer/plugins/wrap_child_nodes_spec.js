@@ -6,9 +6,9 @@ describe('Highlight.js plugin for wrapping _emitter nodes', () => {
       _emitter: {
         rootNode: {
           children: [
-            { kind: 'string', children: ['Text 1'] },
-            { kind: 'string', children: ['Text 2', { kind: 'comment', children: ['Text 3'] }] },
-            { kind: undefined, sublanguage: true, children: ['Text 3 (sublanguage)'] },
+            { scope: 'string', children: ['Text 1'] },
+            { scope: 'string', children: ['Text 2', { scope: 'comment', children: ['Text 3'] }] },
+            { scope: undefined, sublanguage: true, children: ['Text 3 (sublanguage)'] },
             'Text4\nText5',
           ],
         },

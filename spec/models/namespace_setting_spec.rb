@@ -14,6 +14,12 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   it { is_expected.to define_enum_for(:jobs_to_be_done).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other]).with_suffix }
   it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_values([:all, :ssh, :http]).with_suffix }
 
+  describe 'default values' do
+    subject(:setting) { described_class.new }
+
+    it { expect(setting.default_branch_protection_defaults).to eq({}) }
+  end
+
   describe "validations" do
     it { is_expected.to validate_inclusion_of(:code_suggestions).in_array([true, false]) }
 
@@ -136,6 +142,25 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
           expect(settings).to be_valid
         end
+      end
+    end
+
+    context 'default_branch_protections_defaults validations' do
+      let(:charset) { [*'a'..'z'] + [*0..9] }
+      let(:value) { Array.new(byte_size) { charset.sample }.join }
+
+      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
+
+      context 'when json is more than 1kb' do
+        let(:byte_size) { 1.1.kilobytes }
+
+        it { is_expected.not_to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
+
+      context 'when json less than 1kb' do
+        let(:byte_size) { 0.5.kilobytes }
+
+        it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
       end
     end
   end
@@ -403,5 +428,25 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
   describe '#delayed_project_removal' do
     it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :delayed_project_removal
+  end
+
+  describe 'default_branch_protection_defaults' do
+    let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
+
+    it 'returns the value for default_branch_protection_defaults' do
+      subject.default_branch_protection_defaults = defaults
+      expect(subject.default_branch_protection_defaults['name']).to eq('main')
+      expect(subject.default_branch_protection_defaults['push_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['merge_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
+    end
+
+    context 'when provided with content that does not match the JSON schema' do
+      # valid json
+      it { is_expected.to allow_value({ name: 'bar' }).for(:default_branch_protection_defaults) }
+
+      # invalid json
+      it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
+    end
   end
 end
