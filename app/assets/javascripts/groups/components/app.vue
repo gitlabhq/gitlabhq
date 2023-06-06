@@ -41,10 +41,6 @@ export default {
       type: Object,
       required: true,
     },
-    hideProjects: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {

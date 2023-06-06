@@ -91,7 +91,7 @@ module Sidebars
         end
 
         def model_experiments_menu_item
-          if Feature.disabled?(:ml_experiment_tracking, context.project)
+          unless can?(context.current_user, :read_model_experiments, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :model_experiments)
           end
 

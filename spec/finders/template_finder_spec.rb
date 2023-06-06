@@ -102,10 +102,6 @@ RSpec.describe TemplateFinder do
   describe '#build' do
     let(:project) { build_stubbed(:project) }
 
-    before do
-      stub_feature_flags(remove_monitor_metrics: false)
-    end
-
     where(:type, :expected_class) do
       :dockerfiles    | described_class
       :gitignores     | described_class

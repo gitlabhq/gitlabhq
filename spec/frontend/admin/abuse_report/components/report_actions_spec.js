@@ -15,6 +15,8 @@ import {
   SUCCESS_ALERT,
   FAILED_ALERT,
   ERROR_MESSAGE,
+  NO_ACTION,
+  USER_ACTION_OPTIONS,
 } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
@@ -29,11 +31,12 @@ describe('ReportActions', () => {
     reason: 'spam',
   };
 
-  const { report } = mockAbuseReport;
+  const { user, report } = mockAbuseReport;
 
   const clickActionsButton = () => wrapper.findByTestId('actions-button').vm.$emit('click');
   const isDrawerOpen = () => wrapper.findComponent(GlDrawer).props('open');
   const findErrorFor = (id) => wrapper.findByTestId(id).find('.d-block.invalid-feedback');
+  const findUserActionOptions = () => wrapper.findByTestId('action-select');
   const setCloseReport = (close) => wrapper.findByTestId('close').find('input').setChecked(close);
   const setSelectOption = (id, value) =>
     wrapper.findByTestId(`${id}-select`).find(`option[value=${value}]`).setSelected();
@@ -45,6 +48,7 @@ describe('ReportActions', () => {
   const createComponent = (props = {}) => {
     wrapper = mountExtended(ReportActions, {
       propsData: {
+        user,
         report,
         ...props,
       },
@@ -62,6 +66,38 @@ describe('ReportActions', () => {
 
   it('initially hides the drawer', () => {
     expect(isDrawerOpen()).toBe(false);
+  });
+
+  describe('actions', () => {
+    describe('when logged in user is not the user being reported', () => {
+      beforeEach(() => {
+        clickActionsButton();
+      });
+
+      it('shows "No action", "Block user", "Ban user" and "Delete user" options', () => {
+        const options = findUserActionOptions().findAll('option');
+
+        expect(options).toHaveLength(USER_ACTION_OPTIONS.length);
+
+        USER_ACTION_OPTIONS.forEach((action, index) => {
+          expect(options.at(index).text()).toBe(action.text);
+        });
+      });
+    });
+
+    describe('when logged in user is the user being reported', () => {
+      beforeEach(() => {
+        gon.current_username = user.username;
+        clickActionsButton();
+      });
+
+      it('only shows "No action" option', () => {
+        const options = findUserActionOptions().findAll('option');
+
+        expect(options).toHaveLength(1);
+        expect(options.at(0).text()).toBe(NO_ACTION.text);
+      });
+    });
   });
 
   describe('when clicking the actions button', () => {

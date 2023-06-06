@@ -278,12 +278,12 @@ export default {
         this.requestDiff();
       }
     },
-    requestDiff() {
+    requestDiff(params = {}) {
       const { idState, file } = this;
 
       idState.isLoadingCollapsedDiff = true;
 
-      this.loadCollapsedDiff(file)
+      this.loadCollapsedDiff({ file, params })
         .then(() => {
           idState.isLoadingCollapsedDiff = false;
           idState.hasLoadedCollapsedDiff = true;
@@ -461,6 +461,7 @@ export default {
             :class="hasBodyClasses.content"
             :diff-file="file"
             :help-page-path="helpPagePath"
+            @load-file="requestDiff"
           />
         </template>
       </div>

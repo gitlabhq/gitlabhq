@@ -3,8 +3,8 @@
 require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
 require 'active_support/testing/time_helpers'
-require './spec/support/helpers/cycle_analytics_helpers.rb'
-require './ee/db/seeds/shared/dora_metrics.rb' if Gitlab.ee?
+require './spec/support/helpers/cycle_analytics_helpers'
+require './ee/db/seeds/shared/dora_metrics' if Gitlab.ee?
 
 # Usage:
 #
@@ -82,6 +82,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
     seed_staging_stage!
 
     if Gitlab.ee?
+      create_vulnerabilities_count_report!
       seed_dora_metrics!
       create_custom_value_stream!
       create_value_stream_aggregation(project.group)
@@ -191,6 +192,23 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       travel_to(start_time + rand(5).days) do
         title = "#{FFaker::Product.brand}-#{suffix}"
         @issues << Issue.create!(project: project, title: title, author: developers.sample)
+      end
+    end
+  end
+
+  def create_vulnerabilities_count_report!
+    4.times do |i|
+      critical_count = rand(5..10)
+      high_count = rand(5..10)
+
+      [i.months.ago.end_of_month, i.months.ago.beginning_of_month].each do |date|
+        FactoryBot.create(:vulnerability_historical_statistic,
+          date: date,
+          total: critical_count + high_count,
+          critical: critical_count,
+          high: high_count,
+          project: project
+        )
       end
     end
   end

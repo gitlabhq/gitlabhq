@@ -33,7 +33,6 @@ Style/PercentLiteralDelimiters:
     - 'app/models/blob_viewer/godeps_json.rb'
     - 'app/models/blob_viewer/license.rb'
     - 'app/models/blob_viewer/markup.rb'
-    - 'app/models/blob_viewer/metrics_dashboard_yml.rb'
     - 'app/models/blob_viewer/notebook.rb'
     - 'app/models/blob_viewer/open_api.rb'
     - 'app/models/blob_viewer/package_json.rb'

@@ -6,7 +6,7 @@ workflow:
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 7.2.0
+    ref: 7.2.1
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -66,94 +66,6 @@ stages:
   # pipeline is not allowed to fail, so without allowing QA to fail, we will be
   # blocking merges due to flaky tests.
   allow_failure: true
-
-.trigger-omnibus-env:
-  stage: .pre
-  needs:
-    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
-    - pipeline: $PARENT_PIPELINE_ID
-      job: build-assets-image
-  variables:
-    BUILD_ENV: build.env
-  before_script:
-    - |
-      # This is duplicating the function from `scripts/utils.sh` since `.gitlab/ci/package-and-test/main.gitlab-ci.yml` can be included in other projects.
-      function assets_image_tag() {
-        local cache_assets_hash_file="cached-assets-hash.txt"
-
-        if [[ -n "${CI_COMMIT_TAG}" ]]; then
-          echo -n "${CI_COMMIT_REF_NAME}"
-        elif [[ -f "${cache_assets_hash_file}" ]]; then
-          echo -n "assets-hash-$(cat ${cache_assets_hash_file} | cut -c1-10)"
-        else
-          echo -n "${CI_COMMIT_SHA}"
-        fi
-      }
-  script:
-    - |
-      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
-      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
-      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
-      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
-      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
-      target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
-      echo "TRIGGER_BRANCH=$([[ "${target_branch_name}" =~ ^[0-9-]+-stable(-ee)?$ ]] && echo ${target_branch_name%-ee} || echo 'master')" >> $BUILD_ENV
-    - |
-      echo "Built environment file for omnibus build:"
-      cat $BUILD_ENV
-  artifacts:
-    expire_in: 3 days
-    reports:
-      dotenv: $BUILD_ENV
-    paths:
-      - $BUILD_ENV
-
-.trigger-omnibus-env-ce:
-  extends: .trigger-omnibus-env
-  needs:
-    - pipeline: $PARENT_PIPELINE_ID
-      job: build-assets-image as-if-foss
-
-.trigger-omnibus:
-  stage: .pre
-  inherit:
-    variables: false
-  variables:
-    GITALY_SERVER_VERSION: $GITALY_SERVER_VERSION
-    GITLAB_ELASTICSEARCH_INDEXER_VERSION: $GITLAB_ELASTICSEARCH_INDEXER_VERSION
-    GITLAB_KAS_VERSION: $GITLAB_KAS_VERSION
-    GITLAB_METRICS_EXPORTER_VERSION: $GITLAB_METRICS_EXPORTER_VERSION
-    GITLAB_PAGES_VERSION: $GITLAB_PAGES_VERSION
-    GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
-    GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
-    GITLAB_VERSION: $CI_COMMIT_SHA
-    GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
-    IMAGE_TAG: $CI_COMMIT_SHA
-    TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
-    SECURITY_SOURCES: $SECURITY_SOURCES
-    CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
-    RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
-    RUBY2_BUILD: $OMNIBUS_GITLAB_RUBY2_BUILD
-    CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
-    BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
-    SKIP_QA_TEST: "true"
-    ee: $EE
-  trigger:
-    project: gitlab-org/build/omnibus-gitlab-mirror
-    branch: $TRIGGER_BRANCH
-    strategy: depend
-
-.trigger-omnibus-ce:
-  extends:
-    - .trigger-omnibus
-  variables:
-    # Override gitlab repository so that omnibus doesn't use foss repository for CE build
-    GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL
 
 .download-knapsack-report:
   extends:

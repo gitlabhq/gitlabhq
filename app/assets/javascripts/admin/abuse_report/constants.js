@@ -24,8 +24,10 @@ export const ACTIONS_I18N = {
   requiredFieldFeedback: __('This field is required.'),
 };
 
+export const NO_ACTION = { value: '', text: s__('AbuseReport|No action') };
+
 export const USER_ACTION_OPTIONS = [
-  { value: '', text: s__('AbuseReport|No action') },
+  NO_ACTION,
   { value: 'block_user', text: s__('AbuseReport|Block user') },
   { value: 'ban_user', text: s__('AbuseReport|Ban user') },
   { value: 'delete_user', text: s__('AbuseReport|Delete user') },

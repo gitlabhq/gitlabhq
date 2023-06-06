@@ -15,7 +15,7 @@ export default {
     }),
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters('batchComments', ['shouldRenderDraftRowInDiscussion', 'draftForDiscussion']),
-    ...mapState('diffs', ['commit']),
+    ...mapState('diffs', ['commit', 'showWhitespace']),
   },
   methods: {
     ...mapActions('diffs', ['cancelCommentForm']),
@@ -67,6 +67,7 @@ export default {
         positionType,
         ...this.diffFileCommentForm,
         lineRange,
+        showWhitespace: this.showWhitespace,
       });
 
       const diffFileHeadSha = this.commit && this?.diffFile?.diff_refs?.head_sha;

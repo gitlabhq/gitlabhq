@@ -81,6 +81,7 @@ export default {
         {{ $options.i18n.adminProfile }}
       </gl-button>
       <report-actions
+        :user="user"
         :report="report"
         class="gl-sm-ml-3 gl-mt-3 gl-sm-mt-0"
         @closeReport="closeReport"

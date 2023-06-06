@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
@@ -21,6 +21,7 @@ import ImageDiffOverlay from './image_diff_overlay.vue';
 export default {
   components: {
     GlLoadingIcon,
+    GlButton,
     DiffView,
     DiffViewer,
     NoteForm,
@@ -59,7 +60,10 @@ export default {
       return this.diffFile.viewer.name;
     },
     isTextFile() {
-      return this.diffViewerMode === diffViewerModes.text;
+      return this.diffViewerMode === diffViewerModes.text && !this.diffFile.viewer.whitespace_only;
+    },
+    isWhitespaceOnly() {
+      return this.diffFile.viewer.whitespace_only;
     },
     noPreview() {
       return this.diffViewerMode === diffViewerModes.no_preview;
@@ -122,6 +126,23 @@ export default {
         />
         <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="mt-3" />
       </template>
+      <div
+        v-else-if="isWhitespaceOnly"
+        class="gl-bg-gray-10 gl--flex-center gl-h-13"
+        data-testid="diff-whitespace-only-state"
+      >
+        {{ __('Contains only whitespace changes.') }}
+        <gl-button
+          category="tertiary"
+          variant="info"
+          size="small"
+          class="gl-ml-3"
+          data-testid="diff-load-file-button"
+          @click="$emit('load-file', { w: '0' })"
+        >
+          {{ __('Show changes') }}
+        </gl-button>
+      </div>
       <not-diffable-viewer v-else-if="notDiffable" />
       <no-preview-viewer v-else-if="noPreview" />
       <diff-viewer

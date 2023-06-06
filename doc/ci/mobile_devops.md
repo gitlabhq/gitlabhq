@@ -43,7 +43,7 @@ test:
 
 [GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are currently available in beta.
 
-After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos/environment.md#available-images)
+After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos_saas_runner.md#supported-macos-images)
 and add it to your `.gitlab-ci.yml` file.
 
 For example:

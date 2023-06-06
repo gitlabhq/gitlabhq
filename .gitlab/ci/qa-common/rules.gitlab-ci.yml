@@ -56,18 +56,6 @@
   rules:
     - when: always
 
-.rules:omnibus-build:
-  rules:
-    - if: $SKIP_OMNIBUS_TRIGGER == "true"
-      when: never
-    - if: $FOSS_ONLY != "1"
-
-.rules:omnibus-build-ce:
-  rules:
-    - if: $SKIP_OMNIBUS_TRIGGER == "true"
-      when: never
-    - if: $FOSS_ONLY == "1"
-
 .rules:update-cache:
   rules:
     - if: '$UPDATE_QA_CACHE == "true"'

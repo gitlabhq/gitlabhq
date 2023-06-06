@@ -7,7 +7,7 @@ module Gitlab
       # immediate cache expiry of all avatar caches.
       #
       # @return [Integer]
-      VERSION = 1
+      VERSION = 2
 
       # @return [Symbol]
       BASE_KEY = :avatar_cache

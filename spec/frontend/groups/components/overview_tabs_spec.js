@@ -93,7 +93,6 @@ describe('OverviewTabs', () => {
       action: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
       store: new GroupsStore({ showSchemaMarkup: true }),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
-      hideProjects: false,
     });
 
     await waitForPromises();
@@ -117,7 +116,6 @@ describe('OverviewTabs', () => {
       action: ACTIVE_TAB_SHARED,
       store: new GroupsStore(),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_SHARED]),
-      hideProjects: false,
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
@@ -143,7 +141,6 @@ describe('OverviewTabs', () => {
       action: ACTIVE_TAB_ARCHIVED,
       store: new GroupsStore(),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_ARCHIVED]),
-      hideProjects: false,
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);

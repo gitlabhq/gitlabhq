@@ -115,6 +115,35 @@ describe('DiffContent', () => {
     });
   });
 
+  describe('with whitespace only change', () => {
+    afterEach(() => {
+      [isParallelViewGetterMock, isInlineViewGetterMock].forEach((m) => m.mockRestore());
+    });
+
+    const textDiffFile = {
+      ...defaultProps.diffFile,
+      viewer: { name: diffViewerModes.text, whitespace_only: true },
+    };
+
+    it('should render empty state', () => {
+      createComponent({
+        props: { diffFile: textDiffFile },
+      });
+
+      expect(wrapper.find('[data-testid="diff-whitespace-only-state"]').exists()).toBe(true);
+    });
+
+    it('emits load-file event when clicking show changes button', () => {
+      createComponent({
+        props: { diffFile: textDiffFile },
+      });
+
+      wrapper.find('[data-testid="diff-load-file-button"]').vm.$emit('click');
+
+      expect(wrapper.emitted('load-file')).toEqual([[{ w: '0' }]]);
+    });
+  });
+
   describe('with empty files', () => {
     const emptyDiffFile = {
       ...defaultProps.diffFile,

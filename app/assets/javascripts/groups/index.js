@@ -73,17 +73,15 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     },
     data() {
       const { dataset } = dataEl || this.$options.el;
-      const hideProjects = parseBoolean(dataset.hideProjects);
       const showSchemaMarkup = parseBoolean(dataset.showSchemaMarkup);
       const renderEmptyState = parseBoolean(dataset.renderEmptyState);
       const service = new GroupsService(endpoint || dataset.endpoint);
-      const store = new GroupsStore({ hideProjects, showSchemaMarkup });
+      const store = new GroupsStore({ hideProjects: true, showSchemaMarkup });
 
       return {
         action,
         store,
         service,
-        hideProjects,
         renderEmptyState,
         loading: true,
         containerId,
@@ -120,7 +118,6 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
           action: this.action,
           store: this.store,
           service: this.service,
-          hideProjects: this.hideProjects,
           renderEmptyState: this.renderEmptyState,
           containerId: this.containerId,
         },

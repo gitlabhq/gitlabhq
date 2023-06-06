@@ -42,7 +42,7 @@ describe('AppComponent', () => {
   let mock;
   let getGroupsSpy;
 
-  const store = new GroupsStore({ hideProjects: false });
+  const store = new GroupsStore({});
   const service = new GroupsService(mockEndpoint);
 
   const createShallowComponent = ({ propsData = {} } = {}) => {
@@ -51,7 +51,6 @@ describe('AppComponent', () => {
       propsData: {
         store,
         service,
-        hideProjects: false,
         containerId: 'js-groups-tree',
         ...propsData,
       },

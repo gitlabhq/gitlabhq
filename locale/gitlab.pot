@@ -12352,6 +12352,9 @@ msgstr ""
 msgid "Containers"
 msgstr ""
 
+msgid "Contains only whitespace changes."
+msgstr ""
+
 msgid "Content"
 msgstr ""
 
@@ -42444,6 +42447,9 @@ msgid "Show archived projects"
 msgstr ""
 
 msgid "Show archived projects only"
+msgstr ""
+
+msgid "Show changes"
 msgstr ""
 
 msgid "Show closed epics"

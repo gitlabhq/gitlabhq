@@ -13,6 +13,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import {
   ACTIONS_I18N,
+  NO_ACTION,
   USER_ACTION_OPTIONS,
   REASON_OPTIONS,
   STATUS_OPEN,
@@ -40,6 +41,10 @@ export default {
     GlDrawer,
   },
   props: {
+    user: {
+      type: Object,
+      required: true,
+    },
     report: {
       type: Object,
       required: true,
@@ -65,6 +70,12 @@ export default {
     },
     isOpen() {
       return this.report.status === STATUS_OPEN;
+    },
+    isNotCurrentUser() {
+      return this.user.username !== gon.current_username;
+    },
+    userActionOptions() {
+      return this.isNotCurrentUser ? USER_ACTION_OPTIONS : [NO_ACTION];
     },
   },
   methods: {
@@ -111,7 +122,6 @@ export default {
     },
   },
   i18n: ACTIONS_I18N,
-  userActionOptions: USER_ACTION_OPTIONS,
   reasonOptions: REASON_OPTIONS,
   DRAWER_Z_INDEX,
 };
@@ -144,7 +154,7 @@ export default {
               id="action"
               v-model="form.user_action"
               data-testid="action-select"
-              :options="$options.userActionOptions"
+              :options="userActionOptions"
               :state="validationState.action"
               @change="validateAction"
             />

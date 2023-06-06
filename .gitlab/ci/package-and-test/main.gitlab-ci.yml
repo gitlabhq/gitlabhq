@@ -20,30 +20,6 @@ check-release-set:
         echo "Omnibus installation image is set to '$RELEASE'"
       fi
 
-trigger-omnibus-env:
-  extends:
-    - .trigger-omnibus-env
-    - .rules:omnibus-build
-
-trigger-omnibus-env-ce:
-  extends:
-    - .trigger-omnibus-env-ce
-    - .rules:omnibus-build-ce
-
-trigger-omnibus:
-  extends:
-    - .trigger-omnibus
-    - .rules:omnibus-build
-  needs:
-    - trigger-omnibus-env
-
-trigger-omnibus-ce:
-  extends:
-    - .trigger-omnibus-ce
-    - .rules:omnibus-build-ce
-  needs:
-    - trigger-omnibus-env-ce
-
 download-knapsack-report:
   extends:
     - .download-knapsack-report

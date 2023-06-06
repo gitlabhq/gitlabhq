@@ -525,11 +525,12 @@ export const scrollToLineIfNeededParallel = (_, line) => {
   }
 };
 
-export const loadCollapsedDiff = ({ commit, getters, state }, file) => {
+export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {} }) => {
   const versionPath = state.mergeRequestDiff?.version_path;
   const loadParams = {
     commit_id: getters.commitId,
     w: state.showWhitespace ? '0' : '1',
+    ...params,
   };
 
   if (versionPath) {
@@ -830,7 +831,7 @@ export const toggleFullDiff = ({ dispatch, commit, getters, state }, filePath) =
   commit(types.REQUEST_FULL_DIFF, filePath);
 
   if (file.isShowingFullFile) {
-    dispatch('loadCollapsedDiff', file)
+    dispatch('loadCollapsedDiff', { file })
       .then(() => dispatch('assignDiscussionsToDiff', getters.getDiffFileDiscussions(file)))
       .catch(() => dispatch('receiveFullDiffError', filePath));
   } else {

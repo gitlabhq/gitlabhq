@@ -18,6 +18,17 @@ The number of minutes you can use on these runners depends on the
 [maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
 
+## VM instances and images for SaaS runners
+
+When you use SaaS runners:
+
+- Each of your jobs runs in a newly provisioned VM, which is dedicated to the specific job.
+- The VM is active only for the duration of the job and immediately deleted. This means that any changes that your job makes to the virtual machine will not be available to a subsequent job.
+- The virtual machine where your job runs has `sudo` access with no password.
+
+NOTE:
+Jobs handled by SaaS runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
+
 ## Security for GitLab SaaS runners
 
 GitLab SaaS runners on Linux and Windows run on Google Compute Platform. The [Google Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf) provides an overview of how Google designs security into its technical infrastructure. The GitLab [Trust Center](https://about.gitlab.com/security/) and [GitLab Security Compliance Controls](https://about.staging.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/sec-controls.html) pages provide an overview of the security and compliance controls that govern the GitLab SaaS runners.

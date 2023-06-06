@@ -790,7 +790,7 @@ describe('DiffsStoreActions', () => {
       mock.onGet(file.loadCollapsedDiffUrl).reply(HTTP_STATUS_OK, data);
 
       return diffActions
-        .loadCollapsedDiff({ commit, getters: { commitId: null }, state }, file)
+        .loadCollapsedDiff({ commit, getters: { commitId: null }, state }, { file })
         .then(() => {
           expect(commit).toHaveBeenCalledWith(types.ADD_COLLAPSED_DIFFS, { file, data });
         });
@@ -804,10 +804,25 @@ describe('DiffsStoreActions', () => {
 
       jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
 
-      diffActions.loadCollapsedDiff({ commit() {}, getters, state }, file);
+      diffActions.loadCollapsedDiff({ commit() {}, getters, state }, { file });
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
         params: { commit_id: null, w: '0' },
+      });
+    });
+
+    it('should pass through params', () => {
+      const file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+      const getters = {
+        commitId: null,
+      };
+
+      jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
+
+      diffActions.loadCollapsedDiff({ commit() {}, getters, state }, { file, params: { w: '1' } });
+
+      expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+        params: { commit_id: null, w: '1' },
       });
     });
 
@@ -819,7 +834,7 @@ describe('DiffsStoreActions', () => {
 
       jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
 
-      diffActions.loadCollapsedDiff({ commit() {}, getters, state }, file);
+      diffActions.loadCollapsedDiff({ commit() {}, getters, state }, { file });
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
         params: { commit_id: '123', w: '0' },
@@ -843,7 +858,7 @@ describe('DiffsStoreActions', () => {
       });
 
       it('fetches the data when there is no mergeRequestDiff', () => {
-        diffActions.loadCollapsedDiff({ commit() {}, getters, state }, file);
+        diffActions.loadCollapsedDiff({ commit() {}, getters, state }, { file });
 
         expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
           params: expect.any(Object),
@@ -861,7 +876,7 @@ describe('DiffsStoreActions', () => {
 
         diffActions.loadCollapsedDiff(
           { commit() {}, getters, state: { mergeRequestDiff: { version_path: versionPath } } },
-          file,
+          { file },
         );
 
         expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {

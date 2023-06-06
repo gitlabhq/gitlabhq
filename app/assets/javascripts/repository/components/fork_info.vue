@@ -3,7 +3,6 @@ import { GlIcon, GlLink, GlSkeletonLoader, GlLoadingIcon, GlSprintf, GlButton } 
 import { s__, sprintf, n__ } from '~/locale';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import syncForkMutation from '~/repository/mutations/sync_fork.mutation.graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import {
   POLLING_INTERVAL_DEFAULT,
@@ -43,7 +42,6 @@ export default {
     ConflictsModal,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   apollo: {
     project: {
       query: forkDetailsQuery,
@@ -198,7 +196,6 @@ export default {
     },
     hasUpdateButton() {
       return (
-        this.glFeatures.synchronizeFork &&
         this.canSyncBranch &&
         ((this.sourceName && this.forkDetails && this.behind) || this.isUnknownDivergence)
       );

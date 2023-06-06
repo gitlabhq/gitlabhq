@@ -49,7 +49,7 @@ coverage-report-is-string:
       coverage_report: cobertura
 
 # invalid artifact:reports:performance
-# Superceded by: artifact:reports:browser_performance
+# Superseded by: artifact:reports:browser_performance
 performance string path:
   artifacts:
     reports:

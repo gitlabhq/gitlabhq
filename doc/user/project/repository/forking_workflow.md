@@ -54,12 +54,8 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 ### From the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `synchronize_fork`.
-On GitLab.com, this feature is available for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
 
 To update your fork from the GitLab UI:
 

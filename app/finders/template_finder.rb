@@ -27,14 +27,9 @@ class TemplateFinder
     end
 
     def type_allowed?(type)
-      case type.to_s
-      when 'licenses'
-        true
-      when 'metrics_dashboard_ymls'
-        !Feature.enabled?(:remove_monitor_metrics)
-      else
-        VENDORED_TEMPLATES.key?(type)
-      end
+      return true if type.to_s == 'licenses'
+
+      VENDORED_TEMPLATES.key?(type)
     end
   end
 
