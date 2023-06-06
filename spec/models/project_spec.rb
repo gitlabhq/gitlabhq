@@ -82,6 +82,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:ewm_integration) }
     it { is_expected.to have_one(:external_wiki_integration) }
     it { is_expected.to have_one(:confluence_integration) }
+    it { is_expected.to have_one(:gitlab_slack_application_integration) }
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:container_expiration_policy) }
@@ -2128,6 +2129,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:project, :jira_dvcs_cloud)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
+    end
+  end
+
+  describe '.with_slack_application_disabled' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project3) { create(:project) }
+
+    before_all do
+      create(:gitlab_slack_application_integration, project: project2)
+      create(:gitlab_slack_application_integration, project: project3).update!(active: false)
+    end
+
+    context 'when the Slack app setting is enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it 'includes only projects where Slack app is disabled or absent' do
+        projects = described_class.with_slack_application_disabled
+
+        expect(projects).to include(project1, project3)
+        expect(projects).not_to include(project2)
+      end
+    end
+
+    context 'when the Slack app setting is not enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: false)
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+      end
+
+      it 'includes all projects' do
+        projects = described_class.with_slack_application_disabled
+
+        expect(projects).to include(project1, project2, project3)
+      end
     end
   end
 
@@ -6777,6 +6815,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           have_attributes(title: 'Pushover')
         ]
       end
+    end
+  end
+
+  describe '#disabled_integrations' do
+    subject { build(:project).disabled_integrations }
+
+    it { is_expected.to include('gitlab_slack_application') }
+    it { is_expected.not_to include('slack_slash_commands') }
+
+    context 'when slack_app_enabled setting is enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it { is_expected.to include('slack_slash_commands') }
+      it { is_expected.not_to include('gitlab_slack_application') }
+    end
+
+    context 'when Rails.env.development?' do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(true)
+      end
+
+      it { is_expected.not_to include('slack_slash_commands') }
+      it { is_expected.not_to include('gitlab_slack_application') }
     end
   end
 

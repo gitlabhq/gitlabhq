@@ -1,4 +1,3 @@
-# pulled from GraphiQL query
 query IntrospectionQuery {
   __schema {
     queryType {

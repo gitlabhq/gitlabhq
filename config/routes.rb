@@ -66,9 +66,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
-        resources :groups, only: [:new, :create] do
-          post :import, on: :collection
-        end
+        resources :groups, only: [:new, :create]
         draw :verification
       end
     end

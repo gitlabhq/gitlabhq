@@ -1,0 +1,5 @@
+query IntrospectionQuery {
+  project(fullPath: "gitlab-org/gitlab") {
+    id
+  }
+}

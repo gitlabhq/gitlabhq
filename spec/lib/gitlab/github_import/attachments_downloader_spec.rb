@@ -56,7 +56,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader do
       it 'raises expected exception' do
         expect { downloader.perform }.to raise_exception(
           Gitlab::GithubImport::AttachmentsDownloader::DownloadError,
-          'File size 26 MB exceeds limit of 25 MB'
+          'File size 26 MiB exceeds limit of 25 MiB'
         )
       end
     end

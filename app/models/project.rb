@@ -195,6 +195,7 @@ class Project < ApplicationRecord
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_integration, class_name: 'Integrations::Ewm'
   has_one :external_wiki_integration, class_name: 'Integrations::ExternalWiki'
+  has_one :gitlab_slack_application_integration, class_name: 'Integrations::GitlabSlackApplication'
   has_one :google_play_integration, class_name: 'Integrations::GooglePlay'
   has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
@@ -794,6 +795,20 @@ class Project < ApplicationRecord
 
   def self.with_web_entity_associations
     preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner])
+  end
+
+  def self.with_slack_application_disabled
+    # Using Arel to avoid exposing what the column backing the type: attribute is
+    # rubocop: disable GitlabSecurity/PublicSend
+    with_active_slack = Integration.active.by_name(:gitlab_slack_application)
+    join_contraint = arel_table[:id].eq(Integration.arel_table[:project_id])
+    constraint = with_active_slack.where_clause.send(:predicates).reduce(join_contraint) { |a, b| a.and(b) }
+    join = arel_table.join(Integration.arel_table, Arel::Nodes::OuterJoin).on(constraint).join_sources
+    # rubocop: enable GitlabSecurity/PublicSend
+
+    joins(join).where(integrations: { id: nil })
+  rescue Integration::UnknownType
+    all
   end
 
   def self.eager_load_namespace_and_owner
@@ -1707,7 +1722,13 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    %w[shimo zentao]
+    return [] if Rails.env.development?
+
+    names = %w[shimo zentao]
+
+    # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
+    # The GitLab for Slack app integration is only available when enabled through settings.
+    names << (Gitlab::CurrentSettings.slack_app_enabled ? 'slack_slash_commands' : 'gitlab_slack_application')
   end
 
   def find_or_initialize_integration(name)

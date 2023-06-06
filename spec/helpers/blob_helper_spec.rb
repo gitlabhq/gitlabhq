@@ -106,7 +106,7 @@ RSpec.describe BlobHelper do
           let(:blob) { fake_blob(size: 10.megabytes) }
 
           it 'returns an error message' do
-            expect(helper.blob_render_error_reason(viewer)).to eq('it is larger than 5 MB')
+            expect(helper.blob_render_error_reason(viewer)).to eq('it is larger than 5 MiB')
           end
         end
 
@@ -114,7 +114,7 @@ RSpec.describe BlobHelper do
           let(:blob) { fake_blob(size: 2.megabytes) }
 
           it 'returns an error message' do
-            expect(helper.blob_render_error_reason(viewer)).to eq('it is larger than 1 MB')
+            expect(helper.blob_render_error_reason(viewer)).to eq('it is larger than 1 MiB')
           end
         end
       end

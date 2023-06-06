@@ -5,19 +5,19 @@ require "spec_helper"
 RSpec.describe StorageHelper do
   describe "#storage_counter" do
     it "formats bytes to one decimal place" do
-      expect(helper.storage_counter(1.23.megabytes)).to eq("1.2 MB")
+      expect(helper.storage_counter(1.23.megabytes)).to eq("1.2 MiB")
     end
 
-    it "does not add decimals for sizes < 1 MB" do
-      expect(helper.storage_counter(23.5.kilobytes)).to eq("24 KB")
+    it "does not add decimals for sizes < 1 MiB" do
+      expect(helper.storage_counter(23.5.kilobytes)).to eq("24 KiB")
     end
 
     it "does not add decimals for zeroes" do
-      expect(helper.storage_counter(2.megabytes)).to eq("2 MB")
+      expect(helper.storage_counter(2.megabytes)).to eq("2 MiB")
     end
 
     it "uses commas as thousands separator" do
-      expect(helper.storage_counter(100_000_000_000_000_000_000_000)).to eq("86,736.2 EB")
+      expect(helper.storage_counter(100_000_000_000_000_000_000_000)).to eq("86,736.2 EiB")
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe StorageHelper do
       )
     end
 
-    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / Pipeline Artifacts: 11 MB / LFS: 20 GB / Snippets: 40 MB / Packages: 12 MB / Uploads: 15 MB' }
+    let(:message) { 'Repository: 10 KiB / Wikis: 10 B / Build Artifacts: 30 MiB / Pipeline Artifacts: 11 MiB / LFS: 20 GiB / Snippets: 40 MiB / Packages: 12 MiB / Uploads: 15 MiB' }
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)

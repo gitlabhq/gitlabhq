@@ -253,7 +253,7 @@ RSpec.describe Emails::MergeRequests do
         }
       end
 
-      it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MB.') }
+      it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MiB.') }
     end
   end
 

@@ -92,7 +92,7 @@ RSpec.shared_examples 'Sentry API response size limit' do
   it 'raises an exception when response is too large' do
     expect { subject }.to raise_error(
       ErrorTracking::SentryClient::ResponseInvalidSizeError,
-      'Sentry API response is too big. Limit is 1 MB.'
+      'Sentry API response is too big. Limit is 1 MiB.'
     )
   end
 end

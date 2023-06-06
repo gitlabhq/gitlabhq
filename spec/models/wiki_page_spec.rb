@@ -230,7 +230,7 @@ RSpec.describe WikiPage do
 
           expect(subject).not_to be_valid
           expect(subject.errors.messages).to eq(
-            content: ['is too long (11 Bytes). The maximum size is 10 Bytes.']
+            content: ['is too long (11 B). The maximum size is 10 B.']
           )
         end
 
@@ -239,7 +239,7 @@ RSpec.describe WikiPage do
 
           expect(subject).not_to be_valid
           expect(subject.errors.messages).to eq(
-            content: ['is too long (12 Bytes). The maximum size is 10 Bytes.']
+            content: ['is too long (12 B). The maximum size is 10 B.']
           )
         end
       end
@@ -261,7 +261,7 @@ RSpec.describe WikiPage do
 
           expect(subject).not_to be_valid
           expect(subject.errors.messages).to eq(
-            content: ['is too long (12 Bytes). The maximum size is 11 Bytes.']
+            content: ['is too long (12 B). The maximum size is 11 B.']
           )
         end
       end

@@ -33,8 +33,8 @@ RSpec.describe "User browses artifacts", feature_category: :build_artifacts do
       page.within(".tree-table") do
         expect(page).to have_no_content("..")
                    .and have_content("other_artifacts_0.1.2")
-                   .and have_content("ci_artifacts.txt 27 Bytes")
-                   .and have_content("rails_sample.jpg 34.4 KB")
+                   .and have_content("ci_artifacts.txt 27 B")
+                   .and have_content("rails_sample.jpg 34.4 KiB")
       end
 
       page.within(".build-header") do

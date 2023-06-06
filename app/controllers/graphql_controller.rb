@@ -12,6 +12,9 @@ class GraphqlController < ApplicationController
   # Max size of the query text in characters
   MAX_QUERY_SIZE = 10_000
 
+  # The query string of a standard IntrospectionQuery, used to compare incoming requests for caching
+  CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string
+
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
   # We can't enable this for anonymous users because that would cause users using
@@ -54,7 +57,12 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = multiplex? ? execute_multiplex : execute_query
+    result = if Feature.enabled?(:cache_introspection_query) && params[:operationName] == 'IntrospectionQuery'
+               execute_introspection_query
+             else
+               multiplex? ? execute_multiplex : execute_query
+             end
+
     render json: result
   end
 
@@ -258,5 +266,31 @@ class GraphqlController < ApplicationController
 
   def logs
     RequestStore.store[:graphql_logs].to_a
+  end
+
+  def execute_introspection_query
+    if introspection_query_can_use_cache?
+      # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
+      Rails.cache.fetch(
+        introspection_query_cache_key,
+        expires_in: 1.day) do
+          execute_query.to_json
+        end
+    else
+      execute_query
+    end
+  end
+
+  def introspection_query_can_use_cache?
+    graphql_query = GraphQL::Query.new(GitlabSchema, query: query, variables: build_variables(params[:variables]))
+
+    CACHED_INTROSPECTION_QUERY_STRING == graphql_query.query_string.squish
+  end
+
+  def introspection_query_cache_key
+    # We use context[:remove_deprecated] here as an introspection query result can differ based on the
+    # visibility of schema items. Visibility can be affected by the remove_deprecated param. For more context, see:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/409448#note_1377558096
+    ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
   end
 end

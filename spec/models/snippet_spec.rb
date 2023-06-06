@@ -42,7 +42,7 @@ RSpec.describe Snippet do
       is_expected
         .to validate_length_of(:content)
         .is_at_most(Gitlab::CurrentSettings.snippet_size_limit)
-        .with_message("is too long (2 Bytes). The maximum size is 1 Byte.")
+        .with_message("is too long (2 B). The maximum size is 1 B.")
     end
 
     context 'content validations' do
@@ -86,7 +86,7 @@ RSpec.describe Snippet do
 
           aggregate_failures do
             expect(snippet).not_to be_valid
-            expect(snippet.errors[:content]).to include("is too long (#{snippet.content.size} Bytes). The maximum size is #{limit} Bytes.")
+            expect(snippet.errors[:content]).to include("is too long (#{snippet.content.size} B). The maximum size is #{limit} B.")
           end
         end
       end
@@ -125,7 +125,7 @@ RSpec.describe Snippet do
 
           aggregate_failures do
             expect(snippet).not_to be_valid
-            expect(snippet.errors.messages_for(:description)).to include("is too long (2 MB). The maximum size is 1 MB.")
+            expect(snippet.errors.messages_for(:description)).to include("is too long (2 MiB). The maximum size is 1 MiB.")
           end
         end
       end

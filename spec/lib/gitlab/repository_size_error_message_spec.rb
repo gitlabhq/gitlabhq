@@ -14,7 +14,7 @@ RSpec.describe Gitlab::RepositorySizeErrorMessage do
   end
 
   let(:message) { checker.error_message }
-  let(:base_message) { 'because this repository has exceeded its size limit of 10 MB by 5 MB' }
+  let(:base_message) { 'because this repository has exceeded its size limit of 10 MiB by 5 MiB' }
 
   before do
     allow(namespace).to receive(:total_repository_size_excess).and_return(0)
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::RepositorySizeErrorMessage do
     describe '#push_error' do
       context 'with exceeded_limit value' do
         let(:rejection_message) do
-          'because this repository has exceeded its size limit of 10 MB by 15 MB'
+          'because this repository has exceeded its size limit of 10 MiB by 15 MiB'
         end
 
         it 'returns the correct message' do
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::RepositorySizeErrorMessage do
 
       context 'when no additional repo storage is available' do
         it 'returns the correct message' do
-          expect(message.new_changes_error).to eq("Your push to this repository would cause it to exceed the size limit of 10 MB so it has been rejected. #{message.more_info_message}")
+          expect(message.new_changes_error).to eq("Your push to this repository would cause it to exceed the size limit of 10 MiB so it has been rejected. #{message.more_info_message}")
         end
       end
     end

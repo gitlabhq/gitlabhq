@@ -2158,7 +2158,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     shared_examples 'capped upload attachments' do |upload_allowed|
-      it "limits the upload to 1 GB" do
+      it "limits the upload to 1 GiB" do
         expect_next_instance_of(UploadService) do |instance|
           expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
         end

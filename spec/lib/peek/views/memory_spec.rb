@@ -17,12 +17,12 @@ RSpec.describe Peek::Views::Memory, :request_store do
     it 'returns memory instrumentation data when it has fired' do
       publish_notification
 
-      expect(subject.results[:calls]).to eq('2 MB')
+      expect(subject.results[:calls]).to eq('2 MiB')
       expect(subject.results[:details]).to all(have_key(:item_header))
       expect(subject.results[:details]).to all(have_key(:item_content))
       expect(subject.results[:summary]).to include('Objects allocated' => '200 k')
       expect(subject.results[:summary]).to include('Allocator calls' => '500')
-      expect(subject.results[:summary]).to include('Large allocations' => '1 KB')
+      expect(subject.results[:summary]).to include('Large allocations' => '1 KiB')
     end
   end
 

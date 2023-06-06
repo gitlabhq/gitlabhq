@@ -248,7 +248,7 @@ RSpec.shared_examples 'User updates wiki page' do
       click_on 'Save changes'
 
       expect(page).to have_content('The form contains the following error:')
-      expect(page).to have_content('Content is too long (11 Bytes). The maximum size is 10 Bytes.')
+      expect(page).to have_content('Content is too long (11 B). The maximum size is 10 B.')
     end
   end
 end

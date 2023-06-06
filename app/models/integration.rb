@@ -28,7 +28,7 @@ class Integration < ApplicationRecord
   # TODO Shimo is temporary disabled on group and instance-levels.
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    apple_app_store google_play jenkins shimo
+    apple_app_store gitlab_slack_application google_play jenkins shimo
   ].freeze
 
   # Fake integrations to help with local development.
@@ -282,7 +282,6 @@ class Integration < ApplicationRecord
 
   # Returns a list of available integration names.
   # Example: ["asana", ...]
-  # @deprecated
   def self.available_integration_names(include_project_specific: true, include_dev: true)
     names = integration_names
     names += project_specific_integration_names if include_project_specific
@@ -302,7 +301,9 @@ class Integration < ApplicationRecord
   end
 
   def self.project_specific_integration_names
-    PROJECT_SPECIFIC_INTEGRATION_NAMES
+    names = PROJECT_SPECIFIC_INTEGRATION_NAMES.dup
+    names.delete('gitlab_slack_application') unless Gitlab::CurrentSettings.slack_app_enabled || Rails.env.test?
+    names
   end
 
   # Returns a list of available integration types.
