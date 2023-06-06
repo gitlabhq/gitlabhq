@@ -690,34 +690,116 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe '#commit_email=' do
-      subject(:user) { create(:user) }
+    shared_examples 'for user notification, public, and commit emails' do
+      context 'when confirmed primary email' do
+        let(:user) { create(:user) }
+        let(:email) { user.email }
 
-      it 'can be set to a confirmed email' do
-        confirmed = create(:email, :confirmed, user: user)
-        user.commit_email = confirmed.email
+        it 'can be set' do
+          set_email
 
-        expect(user).to be_valid
+          expect(user).to be_valid
+        end
+
+        context 'when primary email is changed' do
+          before do
+            user.email = generate(:email)
+          end
+
+          it 'can not be set' do
+            set_email
+
+            expect(user).not_to be_valid
+          end
+        end
+
+        context 'when confirmed secondary email' do
+          let(:email) { create(:email, :confirmed, user: user).email }
+
+          it 'can be set' do
+            set_email
+
+            expect(user).to be_valid
+          end
+        end
+
+        context 'when unconfirmed secondary email' do
+          let(:email) { create(:email, user: user).email }
+
+          it 'can not be set' do
+            set_email
+
+            expect(user).not_to be_valid
+          end
+        end
+
+        context 'when invalid confirmed secondary email' do
+          let(:email) { create(:email, :confirmed, :skip_validate, user: user, email: 'invalid') }
+
+          it 'can not be set' do
+            set_email
+
+            expect(user).not_to be_valid
+          end
+        end
       end
 
-      it 'can not be set to an unconfirmed email' do
-        unconfirmed = create(:email, user: user)
-        user.commit_email = unconfirmed.email
+      context 'when unconfirmed primary email ' do
+        let(:user) { create(:user, :unconfirmed) }
+        let(:email) { user.email }
 
-        expect(user).not_to be_valid
+        it 'can not be set' do
+          set_email
+
+          expect(user).not_to be_valid
+        end
       end
 
-      it 'can not be set to a non-existent email' do
-        user.commit_email = 'non-existent-email@nonexistent.nonexistent'
+      context 'when new record' do
+        let(:user) { build(:user, :unconfirmed) }
+        let(:email) { user.email }
 
-        expect(user).not_to be_valid
+        it 'can not be set' do
+          set_email
+
+          expect(user).not_to be_valid
+        end
+
+        context 'when skipping confirmation' do
+          before do
+            user.skip_confirmation = true
+          end
+
+          it 'can be set' do
+            set_email
+
+            expect(user).to be_valid
+          end
+        end
       end
+    end
 
-      it 'can not be set to an invalid email, even if confirmed' do
-        confirmed = create(:email, :confirmed, :skip_validate, user: user, email: 'invalid')
-        user.commit_email = confirmed.email
+    describe 'notification_email' do
+      include_examples 'for user notification, public, and commit emails' do
+        subject(:set_email) do
+          user.notification_email = email
+        end
+      end
+    end
 
-        expect(user).not_to be_valid
+    describe 'public_email' do
+      include_examples 'for user notification, public, and commit emails' do
+        subject(:set_email) do
+          user.public_email = email
+        end
+      end
+    end
+
+    describe 'commit_email' do
+      include_examples 'for user notification, public, and commit emails' do
+        subject(:set_email) do
+          user.commit_email = email
+        end
       end
     end
 
@@ -3588,15 +3670,40 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#verified_emails' do
     let(:user) { create(:user) }
+    let!(:confirmed_email) { create(:email, :confirmed, user: user) }
+
+    before do
+      create(:email, user: user)
+    end
 
     it 'returns only confirmed emails' do
-      email_confirmed = create :email, user: user, confirmed_at: Time.current
-      create :email, user: user
-
       expect(user.verified_emails).to contain_exactly(
         user.email,
         user.private_commit_email,
-        email_confirmed.email
+        confirmed_email.email
+      )
+    end
+
+    it 'does not return primary email when primary email is changed' do
+      original_email = user.email
+      user.email = generate(:email)
+
+      expect(user.verified_emails).to contain_exactly(
+        user.private_commit_email,
+        confirmed_email.email,
+        original_email
+      )
+    end
+
+    it 'does not return unsaved primary email even if skip_confirmation is enabled' do
+      original_email = user.email
+      user.skip_confirmation = true
+      user.email = generate(:email)
+
+      expect(user.verified_emails).to contain_exactly(
+        user.private_commit_email,
+        confirmed_email.email,
+        original_email
       )
     end
   end

@@ -270,6 +270,21 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
         let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
         it_behaves_like 'search results filtered by archived'
+
+        context 'when the search_projects_hide_archived feature flag is disabled' do
+          before do
+            stub_feature_flags(search_projects_hide_archived: false)
+          end
+
+          context 'when filter not provided' do
+            let(:filters) { {} }
+
+            it 'returns archived and unarchived results', :aggregate_failures do
+              expect(results.objects('projects')).to include unarchived_project
+              expect(results.objects('projects')).to include archived_project
+            end
+          end
+        end
       end
     end
 

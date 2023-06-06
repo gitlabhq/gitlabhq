@@ -67,4 +67,12 @@ RSpec.describe Banzai::Filter::InlineDiffFilter do
     doc = "<tt>START {+something added+} END</tt>"
     expect(filter(doc).to_html).to eq(doc)
   end
+
+  it 'protects against malicious backtracking' do
+    doc = '[-{-' * 250_000
+
+    expect do
+      Timeout.timeout(3.seconds) { filter(doc) }
+    end.not_to raise_error
+  end
 end

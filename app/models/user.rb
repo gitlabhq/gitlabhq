@@ -1553,7 +1553,9 @@ class User < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def primary_email_verified?
-    confirmed? && !temp_oauth_email?
+    return false unless confirmed? && !temp_oauth_email?
+
+    !email_changed? || new_record?
   end
 
   def accept_pending_invitations!

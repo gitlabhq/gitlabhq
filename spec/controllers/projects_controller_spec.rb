@@ -193,37 +193,78 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           end
         end
 
-        context 'when the default branch name can resolve to another ref' do
-          let!(:project_with_default_branch) do
-            create(:project, :public, :custom_repo, files: ['somefile']).tap do |p|
-              p.repository.create_branch("refs/heads/refs/heads/#{other_ref}", 'master')
-              p.change_head("refs/heads/#{other_ref}")
-            end.reload
+        context 'when the default branch name is ambiguous' do
+          let_it_be(:project_with_default_branch) do
+            create(:project, :public, :custom_repo, files: ['somefile'])
           end
 
-          let(:other_ref) { 'branch-name' }
-
-          context 'but there is no other ref' do
-            it 'responds with ok' do
-              get :show, params: { namespace_id: project_with_default_branch.namespace, id: project_with_default_branch }
-              expect(response).to be_ok
-            end
-          end
-
-          context 'and that other ref exists' do
-            let(:tree_with_default_branch) do
-              branch = project_with_default_branch.repository.find_branch(project_with_default_branch.default_branch)
-              project_tree_path(project_with_default_branch, branch.target)
-            end
+          shared_examples 'ambiguous ref redirects' do
+            let(:project) { project_with_default_branch }
+            let(:branch_ref) { "refs/heads/#{ref}" }
+            let(:repo) { project.repository }
 
             before do
-              project_with_default_branch.repository.create_branch(other_ref, 'master')
+              repo.create_branch(branch_ref, 'master')
+              repo.change_head(ref)
             end
 
-            it 'redirects to tree view for the default branch' do
-              get :show, params: { namespace_id: project_with_default_branch.namespace, id: project_with_default_branch }
-              expect(response).to redirect_to(tree_with_default_branch)
+            after do
+              repo.change_head('master')
+              repo.delete_branch(branch_ref)
             end
+
+            subject do
+              get(
+                :show,
+                params: {
+                  namespace_id: project.namespace,
+                  id: project
+                }
+              )
+            end
+
+            context 'when there is no conflicting ref' do
+              let(:other_ref) { 'non-existent-ref' }
+
+              it { is_expected.to have_gitlab_http_status(:ok) }
+            end
+
+            context 'and that other ref exists' do
+              let(:other_ref) { 'master' }
+
+              let(:project_default_root_tree_path) do
+                sha = repo.find_branch(project.default_branch).target
+                project_tree_path(project, sha)
+              end
+
+              it 'redirects to tree view for the default branch' do
+                is_expected.to redirect_to(project_default_root_tree_path)
+              end
+            end
+          end
+
+          context 'when ref starts with ref/heads/' do
+            let(:ref) { "refs/heads/#{other_ref}" }
+
+            include_examples 'ambiguous ref redirects'
+          end
+
+          context 'when ref starts with ref/tags/' do
+            let(:ref) { "refs/tags/#{other_ref}" }
+
+            include_examples 'ambiguous ref redirects'
+          end
+
+          context 'when ref starts with heads/' do
+            let(:ref) { "heads/#{other_ref}" }
+
+            include_examples 'ambiguous ref redirects'
+          end
+
+          context 'when ref starts with tags/' do
+            let(:ref) { "tags/#{other_ref}" }
+
+            include_examples 'ambiguous ref redirects'
           end
         end
       end

@@ -197,6 +197,26 @@ Feedback on this experimental feature can be provided in [issue 408995](https://
 - Contents of the file
 - The file name
 
+### Summarize issue discussions **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's
+GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
+
+You can generate a summary of discussions on an issue:
+
+1. In an issue, scroll to the **Activity** section.
+1. Select **View summary** (**{comment}**).
+
+The comments in the issue are summarized in as many as 10 list items.
+The summary is displayed only for you.
+
+Provide feedback on this experimental feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
+
+**Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
+language model referenced above.
+
 ## Data Usage
 
 GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function.

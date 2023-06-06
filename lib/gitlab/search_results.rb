@@ -175,7 +175,7 @@ module Gitlab
 
     def projects
       scope = limit_projects
-      scope = filters[:include_archived] ? scope : scope.non_archived
+      scope = scope.non_archived if Feature.enabled?(:search_projects_hide_archived) && !filters[:include_archived]
       scope.search(query)
     end
 

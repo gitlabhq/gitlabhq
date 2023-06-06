@@ -157,11 +157,11 @@ module ExtractsRef
   end
 
   def ambiguous_ref?(project, ref)
+    return false unless ref
     return true if project.repository.ambiguous_ref?(ref)
+    return false unless ref.starts_with?(%r{(refs|heads|tags)/})
 
-    return false unless ref&.starts_with?('refs/')
-
-    unprefixed_ref = ref.sub(%r{^refs/(heads|tags)/}, '')
+    unprefixed_ref = ref.sub(%r{^(refs/)?(heads|tags)/}, '')
     project.repository.commit(unprefixed_ref).present?
   end
 end

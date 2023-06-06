@@ -34,18 +34,12 @@ module Gitlab
           def load!
             ensure_custom_tags
 
-            if project.present? && ::Feature.enabled?(:ci_multi_doc_yaml, project)
-              ::Gitlab::Config::Loader::MultiDocYaml.new(
-                content,
-                max_documents: MAX_DOCUMENTS,
-                additional_permitted_classes: AVAILABLE_TAGS,
-                reject_empty: true
-              ).load!
-            else
-              ::Gitlab::Config::Loader::Yaml
-                .new(content, additional_permitted_classes: AVAILABLE_TAGS)
-                .load!
-            end
+            ::Gitlab::Config::Loader::MultiDocYaml.new(
+              content,
+              max_documents: MAX_DOCUMENTS,
+              additional_permitted_classes: AVAILABLE_TAGS,
+              reject_empty: true
+            ).load!
           end
         end
       end

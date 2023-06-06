@@ -26,11 +26,12 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  DAST_IMAGE_SUFFIX: ""
 
 dast:
   stage: dast
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
   allow_failure: true
@@ -59,6 +60,12 @@ dast:
           $REVIEW_DISABLED == '1'
       when: never
 
+    # Add the job to merge request pipelines if there's an open merge request. (FIPS)
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $CI_GITLAB_FIPS_MODE == "true" &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
     # Add the job to merge request pipelines if there's an open merge request.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdast\b/
@@ -67,6 +74,12 @@ dast:
     - if: $CI_OPEN_MERGE_REQUESTS
       when: never
 
+    # Add the job to branch pipelines. (FIPS)
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true" &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
     # Add the job to branch pipelines.
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/

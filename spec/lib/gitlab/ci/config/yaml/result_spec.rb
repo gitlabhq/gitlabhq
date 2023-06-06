@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_com
       result = described_class.new(config: [nil, { a: 1 }])
 
       expect(result).not_to have_header
-      expect(result.content).to be_nil
+      expect(result.content).to be_empty
     end
   end
 

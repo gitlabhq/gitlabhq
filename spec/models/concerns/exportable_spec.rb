@@ -9,6 +9,7 @@ RSpec.describe Exportable, feature_category: :importers do
   let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }
   let_it_be(:note1) { create(:system_note, project: project, noteable: issue) }
   let_it_be(:note2) { create(:system_note, project: project, noteable: issue) }
+  let_it_be(:options) { { include: [{ notes: { only: [:note] }, milestone: { only: :title } }] } }
 
   let_it_be(:model_klass) do
     Class.new(ApplicationRecord) do
@@ -28,19 +29,27 @@ RSpec.describe Exportable, feature_category: :importers do
 
   subject { model_klass.new }
 
-  describe '.readable_records' do
+  describe '.to_authorized_json' do
     let_it_be(:model_record) { model_klass.new }
 
-    context 'when model does not respond to association name' do
-      it 'returns nil' do
-        expect(subject.readable_records(:foo, current_user: user)).to be_nil
+    context 'when key to authorize is not an association name' do
+      it 'returns string without given key' do
+        expect(subject.to_authorized_json([:foo], user, options)).not_to include('foo')
       end
     end
 
-    context 'when model does respond to association name' do
+    context 'when key to authorize is an association name' do
+      let(:key_to_authorize) { :notes }
+
+      subject(:record_json) { model_record.to_authorized_json([key_to_authorize], user, options) }
+
       context 'when there are no records' do
-        it 'returns nil' do
-          expect(model_record.readable_records(:notes, current_user: user)).to be_nil
+        before do
+          allow(model_record).to receive(:notes).and_return(Note.none)
+        end
+
+        it 'returns string including the empty association' do
+          expect(record_json).to include("\"notes\":[]")
         end
       end
 
@@ -57,8 +66,9 @@ RSpec.describe Exportable, feature_category: :importers do
             end
           end
 
-          it 'returns collection of readable records' do
-            expect(model_record.readable_records(:notes, current_user: user)).to contain_exactly(note1, note2)
+          it 'returns string containing all records' do
+            expect(record_json)
+              .to include("\"notes\":[{\"note\":\"#{note1.note}\"},{\"note\":\"#{note2.note}\"}]")
           end
         end
 
@@ -70,8 +80,19 @@ RSpec.describe Exportable, feature_category: :importers do
             end
           end
 
-          it 'returns collection of readable records' do
-            expect(model_record.readable_records(:notes, current_user: user)).to eq([])
+          it 'returns string including the empty association' do
+            expect(record_json).to include("\"notes\":[]")
+          end
+        end
+
+        context 'when user can read some records' do
+          before do
+            allow(model_record).to receive(:readable_records).with(:notes, current_user: user)
+                                                             .and_return([note1])
+          end
+
+          it 'returns string containing readable records only' do
+            expect(record_json).to include("\"notes\":[{\"note\":\"#{note1.note}\"}]")
           end
         end
       end
@@ -87,13 +108,15 @@ RSpec.describe Exportable, feature_category: :importers do
         it 'calls #readable_by?' do
           expect(note1).to receive(:readable_by?).with(user)
 
-          model_record.readable_records(:notes, current_user: user)
+          record_json
         end
       end
 
       context 'with single relation' do
+        let(:key_to_authorize) { :milestone }
+
         before do
-          allow(model_record).to receive(:try).with(:milestone).and_return(issue.milestone)
+          allow(model_record).to receive(:milestone).and_return(issue.milestone)
         end
 
         context 'when user can read the record' do
@@ -101,8 +124,8 @@ RSpec.describe Exportable, feature_category: :importers do
             allow(milestone).to receive(:readable_by?).with(user).and_return(true)
           end
 
-          it 'returns collection of readable records' do
-            expect(model_record.readable_records(:milestone, current_user: user)).to eq(milestone)
+          it 'returns string including association' do
+            expect(record_json).to include("\"milestone\":{\"title\":\"#{milestone.title}\"}")
           end
         end
 
@@ -111,8 +134,8 @@ RSpec.describe Exportable, feature_category: :importers do
             allow(milestone).to receive(:readable_by?).with(user).and_return(false)
           end
 
-          it 'returns collection of readable records' do
-            expect(model_record.readable_records(:milestone, current_user: user)).to be_nil
+          it 'returns string with null association' do
+            expect(record_json).to include("\"milestone\":null")
           end
         end
       end
@@ -208,28 +231,6 @@ RSpec.describe Exportable, feature_category: :importers do
 
       it 'returns array with restricted keys' do
         expect(subject.restricted_associations(model_associations)).to contain_exactly(:notes)
-      end
-    end
-  end
-
-  describe '.has_many_association?' do
-    let(:model_associations) { [:notes, :labels] }
-
-    context 'when association type is `has_many`' do
-      it 'returns true' do
-        expect(subject.has_many_association?(:notes)).to eq(true)
-      end
-    end
-
-    context 'when association type is `has_one`' do
-      it 'returns true' do
-        expect(subject.has_many_association?(:milestone)).to eq(false)
-      end
-    end
-
-    context 'when association type is `belongs_to`' do
-      it 'returns true' do
-        expect(subject.has_many_association?(:project)).to eq(false)
       end
     end
   end

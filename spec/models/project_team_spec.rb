@@ -164,6 +164,57 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#import_team' do
+    let_it_be(:source_project) { create(:project) }
+    let_it_be(:target_project) { create(:project) }
+    let_it_be(:source_project_owner) { source_project.first_owner }
+    let_it_be(:source_project_developer) { create(:user) { |user| source_project.add_developer(user) } }
+    let_it_be(:current_user) { create(:user) { |user| target_project.add_maintainer(user) } }
+
+    subject(:import) { target_project.team.import(source_project, current_user) }
+
+    it { is_expected.to be_truthy }
+
+    it 'target project includes source member with the same access' do
+      import
+
+      imported_member_access = target_project.members.find_by!(user: source_project_developer).access_level
+      expect(imported_member_access).to eq(Gitlab::Access::DEVELOPER)
+    end
+
+    it 'does not change the source project members' do
+      import
+
+      expect(source_project.users).to include(source_project_developer)
+      expect(source_project.users).not_to include(current_user)
+    end
+
+    shared_examples 'imports source owners with correct access' do
+      specify do
+        import
+
+        source_owner_access_in_target = target_project.members.find_by!(user: source_project_owner).access_level
+        expect(source_owner_access_in_target).to eq(target_access_level)
+      end
+    end
+
+    context 'when importer is a maintainer in target project' do
+      it_behaves_like 'imports source owners with correct access' do
+        let(:target_access_level) { Gitlab::Access::MAINTAINER }
+      end
+    end
+
+    context 'when importer is an owner in target project' do
+      before do
+        target_project.add_owner(current_user)
+      end
+
+      it_behaves_like 'imports source owners with correct access' do
+        let(:target_access_level) { Gitlab::Access::OWNER }
+      end
+    end
+  end
+
   describe '#find_member' do
     context 'personal project' do
       let(:project) do

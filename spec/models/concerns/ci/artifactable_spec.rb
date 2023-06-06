@@ -36,6 +36,21 @@ RSpec.describe Ci::Artifactable do
           expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(3).times
         end
       end
+
+      context 'when decompressed artifact size validator fails' do
+        let(:artifact) { build(:ci_job_artifact, :junit) }
+
+        before do
+          allow_next_instance_of(Gitlab::Ci::DecompressedGzipSizeValidator) do |instance|
+            allow(instance).to receive(:valid?).and_return(false)
+          end
+        end
+
+        it 'fails on blob' do
+          expect { |b| artifact.each_blob(&b) }
+            .to raise_error(::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
+        end
+      end
     end
 
     context 'when file format is raw' do

@@ -27,6 +27,7 @@ module Issuable
   include ClosedAtFilterable
   include VersionedDescription
   include SortableTitle
+  include Exportable
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800
@@ -228,6 +229,10 @@ module Issuable
       return IssuableSeverity::DEFAULT unless supports_severity?
 
       issuable_severity&.severity || IssuableSeverity::DEFAULT
+    end
+
+    def exportable_restricted_associations
+      super + [:notes]
     end
 
     private
