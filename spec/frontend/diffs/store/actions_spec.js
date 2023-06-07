@@ -1889,4 +1889,28 @@ describe('DiffsStoreActions', () => {
       },
     );
   });
+
+  describe('toggleFileCommentForm', () => {
+    it('commits TOGGLE_FILE_COMMENT_FORM', () => {
+      return testAction(
+        diffActions.toggleFileCommentForm,
+        'path',
+        {},
+        [{ type: types.TOGGLE_FILE_COMMENT_FORM, payload: 'path' }],
+        [],
+      );
+    });
+  });
+
+  describe('addDraftToFile', () => {
+    it('commits ADD_DRAFT_TO_FILE', () => {
+      return testAction(
+        diffActions.addDraftToFile,
+        { filePath: 'path', draft: 'draft' },
+        {},
+        [{ type: types.ADD_DRAFT_TO_FILE, payload: { filePath: 'path', draft: 'draft' } }],
+        [],
+      );
+    });
+  });
 });

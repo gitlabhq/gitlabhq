@@ -56,6 +56,26 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
         end
       end
 
+      context 'when the feature is disabled at the instance level' do
+        before do
+          stub_config(ci_secure_files: { enabled: false })
+        end
+
+        it 'returns a 403 when attempting to upload a file' do
+          expect do
+            post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
+          end.not_to change { project.secure_files.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'returns a 403 when downloading a file' do
+          get api("/projects/#{project.id}/secure_files", developer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       context 'when the flag is disabled' do
         it 'returns a 201 when uploading a file when the ci_secure_files_read_only feature flag is disabled' do
           expect do

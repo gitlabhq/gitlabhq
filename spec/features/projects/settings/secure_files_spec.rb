@@ -12,6 +12,17 @@ RSpec.describe 'Secure Files', :js, feature_category: :groups_and_projects do
     sign_in(user)
   end
 
+  context 'when disabled at the instance level' do
+    before do
+      stub_config(ci_secure_files: { enabled: false })
+    end
+
+    it 'does not show the secure files settings' do
+      visit project_settings_ci_cd_path(project)
+      expect(page).not_to have_content('Secure Files')
+    end
+  end
+
   context 'authenticated user with admin permissions' do
     it 'shows the secure files settings' do
       visit project_settings_ci_cd_path(project)

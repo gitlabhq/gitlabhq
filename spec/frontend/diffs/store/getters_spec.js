@@ -188,6 +188,24 @@ describe('Diffs Module Getters', () => {
       expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(true);
     });
 
+    it('returns true when file discussion is expanded', () => {
+      const diffFile = {
+        discussions: [{ ...discussionMock, expanded: true }],
+        highlighted_diff_lines: [],
+      };
+
+      expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(true);
+    });
+
+    it('returns false when file discussion is expanded', () => {
+      const diffFile = {
+        discussions: [{ ...discussionMock, expanded: false }],
+        highlighted_diff_lines: [],
+      };
+
+      expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(false);
+    });
+
     it('returns false when there are no discussions', () => {
       const diffFile = {
         parallel_diff_lines: [],
@@ -226,6 +244,15 @@ describe('Diffs Module Getters', () => {
             discussionsExpanded: false,
           },
         ],
+      };
+
+      expect(getters.diffHasDiscussions(localState)(diffFile)).toEqual(true);
+    });
+
+    it('returns true when file has discussions', () => {
+      const diffFile = {
+        discussions: [discussionMock, discussionMock],
+        highlighted_diff_lines: [],
       };
 
       expect(getters.diffHasDiscussions(localState)(diffFile)).toEqual(true);

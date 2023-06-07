@@ -109,6 +109,7 @@ module QA
         # Happens on clean GDK installations when seeded root admin password is expired
         #
         def set_up_new_password_if_required(user:, skip_page_validation:)
+          Support::WaitForRequests.wait_for_requests
           return unless has_content?('Set up new password', wait: 1)
 
           Profile::Password.perform do |new_password_page|

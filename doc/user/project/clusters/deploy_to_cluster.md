@@ -78,7 +78,7 @@ You can customize the deployment namespace in a few ways:
 - For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
   but the user is responsible for ensuring its existence. You can fully customize
   this value using
-  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments-deprecated)
+  [`environment:kubernetes:namespace`](../../../ci/environments/configure_kubernetes_deployments.md)
   in `.gitlab-ci.yml`.
 
 When you customize the namespace, existing environments remain linked to their current

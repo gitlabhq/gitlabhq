@@ -689,6 +689,7 @@ class Note < ApplicationRecord
   def show_outdated_changes?
     return false unless for_merge_request?
     return false unless system?
+    return false if change_position&.on_file?
     return false unless change_position&.line_range
 
     change_position.line_range["end"] || change_position.line_range["start"]

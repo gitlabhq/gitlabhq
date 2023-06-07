@@ -269,6 +269,53 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
+    it('should add discussions to the given file', () => {
+      const diffPosition = {
+        base_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        head_sha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        new_line: null,
+        new_path: '500-lines-4.txt',
+        old_line: 5,
+        old_path: '500-lines-4.txt',
+        start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        type: 'file',
+      };
+
+      const state = {
+        latestDiff: true,
+        diffFiles: [
+          {
+            file_hash: 'ABC',
+            [INLINE_DIFF_LINES_KEY]: [],
+            discussions: [],
+          },
+        ],
+      };
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        resolvable: true,
+        original_position: diffPosition,
+        position: diffPosition,
+        diff_file: {
+          file_hash: state.diffFiles[0].file_hash,
+        },
+      };
+
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        discussion,
+        diffPositionByLineCode,
+      });
+
+      expect(state.diffFiles[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].discussions[0].id).toEqual(1);
+    });
+
     it('should not duplicate discussions on line', () => {
       const diffPosition = {
         base_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
@@ -955,6 +1002,27 @@ describe('DiffsStoreMutations', () => {
       mutations[types.SET_MR_FILE_REVIEWS](state, newReviews);
 
       expect(state.mrReviews).toStrictEqual(newReviews);
+    });
+  });
+
+  describe('TOGGLE_FILE_COMMENT_FORM', () => {
+    it('toggles diff files hasCommentForm', () => {
+      const state = { diffFiles: [{ file_path: 'path', hasCommentForm: false }] };
+
+      mutations[types.TOGGLE_FILE_COMMENT_FORM](state, 'path');
+
+      expect(state.diffFiles[0].hasCommentForm).toEqual(true);
+    });
+  });
+
+  describe('ADD_DRAFT_TO_FILE', () => {
+    it('adds draft to diff file', () => {
+      const state = { diffFiles: [{ file_path: 'path', drafts: [] }] };
+
+      mutations[types.ADD_DRAFT_TO_FILE](state, { filePath: 'path', draft: 'test' });
+
+      expect(state.diffFiles[0].drafts.length).toEqual(1);
+      expect(state.diffFiles[0].drafts[0]).toEqual('test');
     });
   });
 });

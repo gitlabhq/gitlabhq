@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 import service from '../../../services/drafts_service';
 import * as types from './mutation_types';
@@ -56,7 +57,9 @@ export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
     .then((data) => commit(types.SET_BATCH_COMMENTS_DRAFTS, data))
     .then(() => {
       state.drafts.forEach((draft) => {
-        if (!draft.line_code) {
+        if (draft.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+          dispatch('diffs/addDraftToFile', { filePath: draft.file_path, draft }, { root: true });
+        } else if (!draft.line_code) {
           dispatch('convertToDiscussion', draft.discussion_id, { root: true });
         }
       });

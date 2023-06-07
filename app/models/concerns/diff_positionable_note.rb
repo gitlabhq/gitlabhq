@@ -4,7 +4,7 @@ module DiffPositionableNote
 
   included do
     before_validation :set_original_position, on: :create
-    before_validation :update_position, on: :create, if: :on_text?, unless: :importing?
+    before_validation :update_position, on: :create, if: :should_update_position?, unless: :importing?
 
     serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
     serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
@@ -37,8 +37,16 @@ module DiffPositionableNote
     end
   end
 
+  def should_update_position?
+    on_text? || on_file?
+  end
+
   def on_text?
     !!position&.on_text?
+  end
+
+  def on_file?
+    !!position&.on_file?
   end
 
   def on_image?

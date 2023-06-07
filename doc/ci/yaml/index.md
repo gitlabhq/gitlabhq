@@ -1850,7 +1850,7 @@ environment, using the `production`
 
 **Related topics**:
 
-- [Available settings for `kubernetes`](../environments/index.md#configure-kubernetes-deployments-deprecated).
+- [Available settings for `kubernetes`](../environments/configure_kubernetes_deployments.md).
 
 #### `environment:deployment_tier`
 

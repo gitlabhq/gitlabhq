@@ -115,6 +115,7 @@ export default {
   computed: {
     ...mapState('diffs', ['latestDiff']),
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    ...mapGetters(['getNoteableData']),
     diffContentIDSelector() {
       return `#diff-content-${this.diffFile.file_hash}`;
     },
@@ -210,6 +211,9 @@ export default {
     labelToggleFile() {
       return this.expanded ? __('Hide file contents') : __('Show file contents');
     },
+    showCommentButton() {
+      return this.getNoteableData.current_user.can_create_note && this.glFeatures.commentOnFiles;
+    },
   },
   watch: {
     'idState.moreActionsShown': {
@@ -233,6 +237,7 @@ export default {
       'reviewFile',
       'setFileCollapsedByUser',
       'setGenerateTestFilePath',
+      'toggleFileCommentForm',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -389,6 +394,18 @@ export default {
       >
         {{ $options.i18n.fileReviewLabel }}
       </gl-form-checkbox>
+      <gl-button
+        v-if="showCommentButton"
+        v-gl-tooltip.hover
+        :title="__('Comment on this file')"
+        :aria-label="__('Comment on this file')"
+        icon="comment"
+        category="tertiary"
+        size="small"
+        class="gl-mr-3 btn-icon"
+        data-testid="comment-files-button"
+        @click="toggleFileCommentForm(diffFile.file_path)"
+      />
       <gl-button-group class="gl-pt-0!">
         <gl-button
           v-if="diffFile.external_url"

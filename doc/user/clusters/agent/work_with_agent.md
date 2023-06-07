@@ -30,6 +30,22 @@ On this page, you can view:
 - The version of `agentk` installed on your cluster.
 - The path to each agent configuration file.
 
+## View shared agents
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
+
+In addition to the agents owned by your project, you can also view agents shared with the
+[`ci_access`](ci_cd_workflow.md) and [`user_access`](user_access.md) keywords. Once an agent
+is shared with a project, it automatically appears in the project agent tab.
+
+To view the list of shared agents:
+
+1. On the top bar, select **Main menu > Projects** and find the project.
+1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select the **Agent** tab.
+
+The list of shared agents and their clusters are displayed.
+
 ## View an agent's activity information
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.

@@ -63,9 +63,12 @@ export const diffHasAllCollapsedDiscussions = (state, getters) => (diff) => {
  * @returns {Boolean}
  */
 export const diffHasExpandedDiscussions = () => (diff) => {
-  return diff[INLINE_DIFF_LINES_KEY].filter((l) => l.discussions.length >= 1).some(
-    (l) => l.discussionsExpanded,
-  );
+  const diffLineDiscussionsExpanded = diff[INLINE_DIFF_LINES_KEY].filter(
+    (l) => l.discussions.length >= 1,
+  ).some((l) => l.discussionsExpanded);
+  const diffFileDiscussionsExpanded = diff.discussions?.some((d) => d.expanded);
+
+  return diffFileDiscussionsExpanded || diffLineDiscussionsExpanded;
 };
 
 /**
@@ -74,7 +77,10 @@ export const diffHasExpandedDiscussions = () => (diff) => {
  * @returns {Boolean}
  */
 export const diffHasDiscussions = () => (diff) => {
-  return diff[INLINE_DIFF_LINES_KEY].some((l) => l.discussions.length >= 1);
+  return (
+    diff.discussions?.length >= 1 ||
+    diff[INLINE_DIFF_LINES_KEY].some((l) => l.discussions.length >= 1)
+  );
 };
 
 /**

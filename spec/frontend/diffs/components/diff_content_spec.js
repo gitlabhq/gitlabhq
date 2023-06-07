@@ -176,7 +176,12 @@ describe('DiffContent', () => {
       getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
       createComponent({
         props: {
-          diffFile: { ...imageDiffFile, discussions: [{ name: 'discussion-stub ' }] },
+          diffFile: {
+            ...imageDiffFile,
+            discussions: [
+              { name: 'discussion-stub', position: { position_type: IMAGE_DIFF_POSITION_TYPE } },
+            ],
+          },
         },
       });
 
@@ -186,7 +191,12 @@ describe('DiffContent', () => {
     it('emits saveDiffDiscussion when note-form emits `handleFormUpdate`', () => {
       const noteStub = {};
       getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
-      const currentDiffFile = { ...imageDiffFile, discussions: [{ name: 'discussion-stub ' }] };
+      const currentDiffFile = {
+        ...imageDiffFile,
+        discussions: [
+          { name: 'discussion-stub', position: { position_type: IMAGE_DIFF_POSITION_TYPE } },
+        ],
+      };
       createComponent({
         props: {
           diffFile: currentDiffFile,

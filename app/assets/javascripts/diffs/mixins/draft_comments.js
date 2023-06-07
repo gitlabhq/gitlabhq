@@ -1,4 +1,5 @@
 import { mapGetters } from 'vuex';
+import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 
 export default {
   computed: {
@@ -10,8 +11,10 @@ export default {
       'hasParallelDraftLeft',
       'hasParallelDraftRight',
     ]),
-    imageDiscussions() {
-      return this.diffFile.discussions.concat(this.draftsForFile(this.diffFile.file_hash));
+    imageDiscussionsWithDrafts() {
+      return this.diffFile.discussions
+        .filter((f) => f.position?.position_type === IMAGE_DIFF_POSITION_TYPE)
+        .concat(this.draftsForFile(this.diffFile.file_hash));
     },
   },
 };

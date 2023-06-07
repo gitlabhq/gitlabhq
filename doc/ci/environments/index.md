@@ -300,54 +300,6 @@ The `when: manual` action:
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
-## Configure Kubernetes deployments (deprecated)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/index.md)
-associated with your project, you can configure these deployments from your
-`.gitlab-ci.yml` file.
-
-NOTE:
-Kubernetes configuration isn't supported for Kubernetes clusters
-[managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-
-The following configuration options are supported:
-
-- [`namespace`](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
-
-In the following example, the job deploys your application to the
-`production` Kubernetes namespace.
-
-```yaml
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploy to production server"
-  environment:
-    name: production
-    url: https://example.com
-    kubernetes:
-      namespace: production
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-```
-
-When you use the GitLab Kubernetes integration to deploy to a Kubernetes cluster,
-you can view cluster and namespace information. On the deployment
-job page, it's displayed above the job trace:
-
-![Deployment cluster information](../img/environments_deployment_cluster_v12_8.png)
-
-### Configure incremental rollouts
-
-Learn how to release production changes to only a portion of your Kubernetes pods with
-[incremental rollouts](../environments/incremental_rollouts.md).
-
 ## Track newly included merge requests per deployment
 
 GitLab can track newly included merge requests per deployment.
@@ -971,14 +923,14 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
 ## Related topics
 
-- [Use GitLab CI to deploy to multiple environments (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Review Apps](../review_apps/index.md): Use dynamic environments to deploy your code for every branch.
-- [Deploy boards](../../user/project/deploy_boards.md): View the status of your applications running on Kubernetes.
-- [Protected environments](protected_environments.md): Determine who can deploy code to your environments.
-- [Environments Dashboard](../environments/environments_dashboard.md): View a summary of each
-  environment's operational health. **(PREMIUM)**
-- [Deployment safety](deployment_safety.md#restrict-write-access-to-a-critical-environment): Secure your deployments.
-- [Track deployments of an external deployment tool](external_deployment_tools.md): Use an external deployment tool instead of built-in deployment solution.
+- [Kubernetes dashboard](kubernetes_dashboard.md)
+- [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
+- [Review Apps](../review_apps/index.md)
+- [Protected environments](protected_environments.md)
+- [Environments Dashboard](../environments/environments_dashboard.md)
+- [Deployment safety](deployment_safety.md#restrict-write-access-to-a-critical-environment)
+- [Track deployments of an external deployment tool](external_deployment_tools.md)
+- [Configure Kubernetes deployments (deprecated)](configure_kubernetes_deployments.md)
 
 ## Troubleshooting
 

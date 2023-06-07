@@ -20311,8 +20311,18 @@ CREATE TABLE pm_checkpoints (
     purl_type smallint NOT NULL,
     chunk smallint NOT NULL,
     data_type smallint DEFAULT 1 NOT NULL,
-    version_format smallint DEFAULT 1 NOT NULL
+    version_format smallint DEFAULT 1 NOT NULL,
+    id bigint NOT NULL
 );
+
+CREATE SEQUENCE pm_checkpoints_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_checkpoints_id_seq OWNED BY pm_checkpoints.id;
 
 CREATE TABLE pm_licenses (
     id bigint NOT NULL,
@@ -25668,6 +25678,8 @@ ALTER TABLE ONLY pm_advisories ALTER COLUMN id SET DEFAULT nextval('pm_advisorie
 
 ALTER TABLE ONLY pm_affected_packages ALTER COLUMN id SET DEFAULT nextval('pm_affected_packages_id_seq'::regclass);
 
+ALTER TABLE ONLY pm_checkpoints ALTER COLUMN id SET DEFAULT nextval('pm_checkpoints_id_seq'::regclass);
+
 ALTER TABLE ONLY pm_licenses ALTER COLUMN id SET DEFAULT nextval('pm_licenses_id_seq'::regclass);
 
 ALTER TABLE ONLY pm_package_version_licenses ALTER COLUMN id SET DEFAULT nextval('pm_package_version_licenses_id_seq'::regclass);
@@ -27977,7 +27989,7 @@ ALTER TABLE ONLY pm_affected_packages
     ADD CONSTRAINT pm_affected_packages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_checkpoints
-    ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (purl_type, data_type, version_format);
+    ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);
@@ -33505,6 +33517,8 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orches
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
+
+CREATE UNIQUE INDEX pm_checkpoints_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format);
 
 CREATE INDEX scan_finding_approval_mr_rule_index_id ON approval_merge_request_rules USING btree (id) WHERE (report_type = 4);
 

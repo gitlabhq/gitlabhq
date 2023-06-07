@@ -1271,3 +1271,32 @@ $tabs-holder-z-index: 250;
   margin-right: 8px;
   border: 2px solid var(--gray-50, $gray-50);
 }
+
+.diff-file-discussions-wrapper {
+  @include gl-w-full;
+
+  max-width: 800px;
+
+  .diff-discussions > .notes {
+    @include gl-p-5;
+  }
+
+  .diff-discussions:not(:first-child) >.notes {
+    @include gl-pt-0;
+  }
+
+  .note-discussion {
+    @include gl-rounded-base;
+
+    border: 1px solid var(--gray-100, $gray-100) !important;
+  }
+
+  .discussion-collapsible {
+    @include gl-m-0;
+    @include gl-border-l-0;
+    @include gl-border-r-0;
+    @include gl-border-b-0;
+    @include gl-rounded-top-left-none;
+    @include gl-rounded-top-right-none;
+  }
+}

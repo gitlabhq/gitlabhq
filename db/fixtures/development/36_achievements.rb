@@ -58,7 +58,7 @@ class Gitlab::Seeder::Achievements
 end
 
 Gitlab::Seeder.quiet do
-  puts "\nGenerating ahievements"
+  puts "\nGenerating achievements"
 
   group = Group.first
   users = User.first(4).pluck(:id)

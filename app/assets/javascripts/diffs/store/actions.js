@@ -50,6 +50,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
+  FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
@@ -614,6 +615,11 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
     .then((discussion) => dispatch('assignDiscussionsToDiff', [discussion]))
     .then(() => dispatch('updateResolvableDiscussionsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
+    .then(() => {
+      if (formData.positionType === FILE_DIFF_POSITION_TYPE) {
+        dispatch('toggleFileCommentForm', formData.diffFile.file_path);
+      }
+    })
     .catch(() =>
       createAlert({
         message: s__('MergeRequests|Saving the comment failed'),
@@ -1012,3 +1018,9 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
 }
 
 export const disableVirtualScroller = ({ commit }) => commit(types.DISABLE_VIRTUAL_SCROLLING);
+
+export const toggleFileCommentForm = ({ commit }, filePath) =>
+  commit(types.TOGGLE_FILE_COMMENT_FORM, filePath);
+
+export const addDraftToFile = ({ commit }, { filePath, draft }) =>
+  commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });

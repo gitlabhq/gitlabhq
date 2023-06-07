@@ -75,7 +75,10 @@ export default {
       return this.getCommentFormForDiffFile(this.diffFileHash);
     },
     showNotesContainer() {
-      return this.imageDiscussions.length || this.diffFileCommentForm;
+      return (
+        this.diffViewerMode === diffViewerModes.image &&
+        (this.imageDiscussionsWithDrafts.length || this.diffFileCommentForm)
+      );
     },
     diffFileHash() {
       return this.diffFile.file_hash;
@@ -86,6 +89,11 @@ export default {
     mappedLines() {
       // TODO: Do this data generation when we receive a response to save a computed property being created
       return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
+    },
+    imageDiscussions() {
+      return this.diffFile.discussions.filter(
+        (f) => f.position?.position_type === IMAGE_DIFF_POSITION_TYPE,
+      );
     },
   },
   updated() {
@@ -111,6 +119,7 @@ export default {
       });
     },
   },
+  IMAGE_DIFF_POSITION_TYPE,
 };
 </script>
 
@@ -181,13 +190,17 @@ export default {
             class="d-none d-sm-block new-comment"
           />
           <diff-discussions
-            v-if="diffFile.discussions.length"
+            v-if="imageDiscussions.length"
             class="diff-file-discussions"
-            :discussions="diffFile.discussions"
+            :discussions="imageDiscussions"
             should-collapse-discussions
             render-avatar-badge
           />
-          <diff-file-drafts :file-hash="diffFileHash" class="diff-file-discussions" />
+          <diff-file-drafts
+            :file-hash="diffFileHash"
+            :position-type="$options.IMAGE_DIFF_POSITION_TYPE"
+            class="diff-file-discussions"
+          />
           <note-form
             v-if="diffFileCommentForm"
             ref="noteForm"

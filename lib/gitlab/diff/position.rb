@@ -150,6 +150,10 @@ module Gitlab
         @file_hash ||= Digest::SHA1.hexdigest(file_path)
       end
 
+      def on_file?
+        position_type == 'file'
+      end
+
       def on_image?
         position_type == 'image'
       end
@@ -185,6 +189,8 @@ module Gitlab
         case type
         when 'image'
           Gitlab::Diff::Formatters::ImageFormatter
+        when 'file'
+          Gitlab::Diff::Formatters::FileFormatter
         else
           Gitlab::Diff::Formatters::TextFormatter
         end

@@ -13,62 +13,48 @@ eventually.
 
 ## What are the potential cause for a test to be flaky?
 
-### Unclean environment
+### State leak
 
-**Label:** `flaky-test::unclean environment`
+**Label:** `flaky-test::state leak`
 
-**Description:** The environment got dirtied by a previous test. The actual cause is probably not the flaky test here.
+**Description:** Data state has leaked from a previous test. The actual cause is probably not the flaky test here.
 
 **Difficulty to reproduce:** Moderate. Usually, running the same spec files until the one that's failing reproduces the problem.
 
-**Resolution:** Fix the previous tests and/or places where the environment is modified, so that
+**Resolution:** Fix the previous tests and/or places where the test data or environment is modified, so that
 it's reset to a pristine test after each test.
 
 **Examples:**
 
-- [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/378414#note_1142026988): A migration
+- [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/402915): State leakage can result from
+  data records created with `let_it_be` shared between test examples, while some test modifies the model
+  either deliberately or unwillingly causing out-of-sync data in test examples. This can result in `PG::QueryCanceled: ERROR` in the subsequent test examples or retries.
+  For more information about state leakages and resolution options, see [GitLab testing best practices](best_practices.md#lets-talk-about-let).
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/378414#note_1142026988): A migration
   test might roll-back the database, perform its testing, and then roll-up the database in an
   inconsistent state, so that following tests might not know about certain columns.
-- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/368500): A test modifies data that is
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/368500): A test modifies data that is
   used by a following test.
-- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a
+- [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a
   CI/CD pipeline where the database is used to process previous test sequences, the test fails. This likely
-    means that the query itself needs to be updated to work in a non-clean database.
-
-### Ordering assertion
-
-**Label:** `flaky-test::ordering assertion`
-
-**Description:** The test is expecting a specific order in the data under test yet the data is in
-a non-deterministic order.
-
-**Difficulty to reproduce:** Easy. Usually, running the test locally several times would reproduce
-the problem.
-
-**Resolution:** Depending on the problem, you might want to:
-
-- loosen the assertion if the test shouldn't care about ordering but only on the elements
-- fix the test by specifying a deterministic ordering
-- fix the app code by specifying a deterministic ordering
-
-**Examples:**
-
-- [Example 1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10148/diffs): Without
-  specifying `ORDER BY`, database will not give deterministic ordering, or data race happening
-  in the tests.
-- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
+  means that the query itself needs to be updated to work in a non-clean database.
 
 ### Dataset-specific
 
 **Label:** `flaky-test::dataset-specific`
 
-**Description:** The test assumes the dataset is in a particular (usually limited) state, which
+**Description:** The test assumes the dataset is in a particular (usually limited) state or order, which
 might not be true depending on when the test run during the test suite.
 
 **Difficulty to reproduce:** Moderate, as the amount of data needed to reproduce the issue might be
-difficult to achieve locally.
+difficult to achieve locally. Ordering issues are easier to reproduce by repeatedly running the tests several times.
 
-**Resolution:** Fix the test to not assume that the dataset is in a particular state, don't hardcode IDs.
+**Resolution:**
+
+- Fix the test to not assume that the dataset is in a particular state, don't hardcode IDs.
+- Loosen the assertion if the test shouldn't care about ordering but only on the elements.
+- Fix the test by specifying a deterministic ordering.
+- Fix the app code by specifying a deterministic ordering.
 
 **Examples:**
 
@@ -81,11 +67,10 @@ difficult to achieve locally.
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
   start to fail.
-- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/402915): State leakage can result from
-  data records created with `let_it_be` shared between test examples, while some test modifies the model
-  either deliberately or unwillingly causing out-of-sync data in test examples. This can result in `PG::QueryCanceled: ERROR` in the subsequent test examples or retries.
-  For more information about state leakages and resolution options,
-  see [GitLab testing best practices](best_practices.md#lets-talk-about-let).
+- [Example 3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10148/diffs): Without
+  specifying `ORDER BY`, database is not given deterministic ordering, or data race can happen
+  in the tests.
+- [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
 
 ### Random input
 

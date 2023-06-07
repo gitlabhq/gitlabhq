@@ -11207,6 +11207,9 @@ msgstr ""
 msgid "Comment on lines %{startLine} to %{endLine}"
 msgstr ""
 
+msgid "Comment on this file"
+msgstr ""
+
 msgid "Comment template actions"
 msgstr ""
 
@@ -28501,6 +28504,12 @@ msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr ""
 
 msgid "MergeRequests|started a thread"
+msgstr ""
+
+msgid "MergeRequests|started a thread on %{linkStart}a file%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a thread on %{linkStart}an old version of a file%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}"

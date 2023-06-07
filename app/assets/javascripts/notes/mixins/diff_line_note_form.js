@@ -1,6 +1,10 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
-import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import {
+  TEXT_DIFF_POSITION_TYPE,
+  IMAGE_DIFF_POSITION_TYPE,
+  FILE_DIFF_POSITION_TYPE,
+} from '~/diffs/constants';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { s__ } from '~/locale';
@@ -18,7 +22,7 @@ export default {
     ...mapState('diffs', ['commit', 'showWhitespace']),
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm']),
+    ...mapActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
     ...mapActions('batchComments', ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
     addReplyToReview(noteText, isResolving) {
       const postData = getDraftReplyFormData({
@@ -47,13 +51,13 @@ export default {
           });
         });
     },
-    addToReview(note) {
+    addToReview(note, positionType = null) {
       const lineRange =
         (this.line && this.commentLineStart && formatLineRange(this.commentLineStart, this.line)) ||
         {};
-      const positionType = this.diffFileCommentForm
-        ? IMAGE_DIFF_POSITION_TYPE
-        : TEXT_DIFF_POSITION_TYPE;
+      const position =
+        positionType ||
+        (this.diffFileCommentForm ? IMAGE_DIFF_POSITION_TYPE : TEXT_DIFF_POSITION_TYPE);
       const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
       const postData = getDraftFormData({
         note,
@@ -64,7 +68,7 @@ export default {
         diffViewType: this.diffViewType,
         diffFile: selectedDiffFile,
         linePosition: this.position,
-        positionType,
+        positionType: position,
         ...this.diffFileCommentForm,
         lineRange,
         showWhitespace: this.showWhitespace,
@@ -76,10 +80,12 @@ export default {
 
       return this.saveDraft(postData)
         .then(() => {
-          if (positionType === IMAGE_DIFF_POSITION_TYPE) {
+          if (position === IMAGE_DIFF_POSITION_TYPE) {
             this.closeDiffFileCommentForm(this.diffFileHash);
-          } else {
+          } else if (this.line?.line_code) {
             this.handleClearForm(this.line.line_code);
+          } else if (position === FILE_DIFF_POSITION_TYPE) {
+            this.toggleFileCommentForm(this.diffFile.file_path);
           }
         })
         .catch(() => {

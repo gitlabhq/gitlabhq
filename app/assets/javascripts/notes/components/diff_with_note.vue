@@ -8,6 +8,7 @@ import { getDiffMode } from '~/diffs/store/utils';
 import { diffViewerModes } from '~/ide/constants';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { isCollapsed } from '~/diffs/utils/diff_file';
+import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
@@ -53,6 +54,12 @@ export default {
     isCollapsed() {
       return isCollapsed(this.discussion.diff_file);
     },
+    positionType() {
+      return this.discussion.position?.position_type;
+    },
+    isFileDiscussion() {
+      return this.positionType === FILE_DIFF_POSITION_TYPE;
+    },
   },
   mounted() {
     if (this.isTextFile && !this.hasTruncatedDiffLines) {
@@ -87,43 +94,52 @@ export default {
     />
     <div v-if="isTextFile" class="diff-content">
       <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">
-        <template v-if="hasTruncatedDiffLines">
-          <tr
-            v-for="line in discussion.truncated_diff_lines"
-            v-once
-            :key="line.line_code"
-            class="line_holder"
-          >
-            <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
-            <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
-            <td v-safe-html="trimChar(line.rich_text)" :class="line.type" class="line_content"></td>
+        <template v-if="!isFileDiscussion">
+          <template v-if="hasTruncatedDiffLines">
+            <tr
+              v-for="line in discussion.truncated_diff_lines"
+              v-once
+              :key="line.line_code"
+              class="line_holder"
+            >
+              <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
+              <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
+              <td
+                v-safe-html="trimChar(line.rich_text)"
+                :class="line.type"
+                class="line_content"
+              ></td>
+            </tr>
+          </template>
+          <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
+            <td class="old_line diff-line-num"></td>
+            <td class="new_line diff-line-num"></td>
+            <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
+              {{ __('Unable to load the diff') }}
+              <button
+                class="gl-button btn-link btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button gl-reset-font-size!"
+                @click="fetchDiff"
+              >
+                {{ __('Try again') }}
+              </button>
+            </td>
+            <td v-else class="line_content js-success-lazy-load">
+              <span></span>
+              <gl-skeleton-loader />
+              <span></span>
+            </td>
           </tr>
         </template>
-        <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
-          <td class="old_line diff-line-num"></td>
-          <td class="new_line diff-line-num"></td>
-          <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
-            {{ __('Unable to load the diff') }}
-            <button
-              class="gl-button btn-link btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button gl-reset-font-size!"
-              @click="fetchDiff"
-            >
-              {{ __('Try again') }}
-            </button>
-          </td>
-          <td v-else class="line_content js-success-lazy-load">
-            <span></span>
-            <gl-skeleton-loader />
-            <span></span>
-          </td>
-        </tr>
         <tr class="notes_holder">
-          <td class="notes-content" colspan="3"><slot></slot></td>
+          <td :class="{ 'gl-border-top-0!': isFileDiscussion }" class="notes-content" colspan="3">
+            <slot></slot>
+          </td>
         </tr>
       </table>
     </div>
-    <div v-else>
+    <div v-else class="diff-content">
       <diff-viewer
+        v-if="!isFileDiscussion"
         :diff-file="discussion.diff_file"
         :diff-mode="diffMode"
         :diff-viewer-mode="diffViewerMode"
