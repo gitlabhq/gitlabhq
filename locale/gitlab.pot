@@ -19508,6 +19508,9 @@ msgstr ""
 msgid "Framework successfully deleted"
 msgstr ""
 
+msgid "Frameworks can not be added to projects in personal namespaces. %{linkStart}What are personal namespaces?%{linkEnd}"
+msgstr ""
+
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 

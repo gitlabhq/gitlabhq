@@ -59,6 +59,9 @@ compliance framework using either:
   compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user has the
   correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
+NOTE:
+Frameworks can not be added to projects in personal namespaces.
+
 ## Configure project visibility, features, and permissions
 
 To configure visibility, features, and permissions for a project:

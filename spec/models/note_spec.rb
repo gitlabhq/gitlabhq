@@ -1695,6 +1695,30 @@ RSpec.describe Note, feature_category: :team_planning do
         end
       end
     end
+
+    describe '.authored_by' do
+      subject(:notes_by_author) { described_class.authored_by(author) }
+
+      let(:author) { create(:user) }
+
+      it 'returns the notes with the matching author' do
+        note = create(:note, author: author)
+        create(:note)
+
+        expect(notes_by_author).to contain_exactly(note)
+      end
+
+      context 'With ID integer' do
+        subject(:notes_by_author) { described_class.authored_by(author.id) }
+
+        it 'returns the notes with the matching author' do
+          note = create(:note, author: author)
+          create(:note)
+
+          expect(notes_by_author).to contain_exactly(note)
+        end
+      end
+    end
   end
 
   describe 'banzai_render_context' do

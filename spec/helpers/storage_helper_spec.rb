@@ -42,7 +42,10 @@ RSpec.describe StorageHelper do
       )
     end
 
-    let(:message) { 'Repository: 10 KiB / Wikis: 10 B / Build Artifacts: 30 MiB / Pipeline Artifacts: 11 MiB / LFS: 20 GiB / Snippets: 40 MiB / Packages: 12 MiB / Uploads: 15 MiB' }
+    let(:message) do
+      'Repository: 10 KiB / Wikis: 10 B / Build Artifacts: 30 MiB / Pipeline Artifacts: 11 MiB / ' \
+        'LFS: 20 GiB / Snippets: 40 MiB / Packages: 12 MiB / Uploads: 15 MiB'
+    end
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)

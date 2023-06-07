@@ -19,8 +19,6 @@ Use the GitLab for Slack app to:
 
 - Create GitLab incidents from Slack.
 - Receive incident notifications.
-<!-- The below content is commented out until these features are implemented in https://gitlab.com/groups/gitlab-org/-/epics/8545 -->
-<!-- - Send important updates between Slack and GitLab incidents. -->
 
 Incident management for Slack is only available for GitLab.com. Some of the functionality
 described might be available for
@@ -43,18 +41,6 @@ Prerequisites:
    like `/gitlab <project-alias> issue show <id>`.
    The `<project-alias>` you select must be a project that has the GitLab for Slack app set up.
    For more information, see [issue 377548](https://gitlab.com/gitlab-org/gitlab/-/issues/377548).
-
-<!-- The below content is commented out until these features are implemented in https://gitlab.com/groups/gitlab-org/-/epics/8545 -->
-<!--
-To manage incidents, use the following slash commands in Slack:
-
-| Command                            | Description                                 |
-| ---------------------------------- | ------------------------------------------- |
-| `/gitlab incident declare`         | Creates an incident in GitLab.              |
-| `/gitlab incident comment <text>`  | Adds a comment on a GitLab incident.        |
-| `/gitlab incident timeline <text>` | Adds a timeline event to a GitLab incident. |
-| `/gitlab incident close`           | Closes an incident in GitLab.               |
--->
 
 After the GitLab for Slack app is configured, you can also use any of the existing [Slack slash commands](../../user/project/integrations/slack_slash_commands.md).
 
@@ -93,24 +79,6 @@ a GitLab incident from Slack. The following quick actions might be most relevant
 | `/label ~label1 ~label2` | Adds labels to the GitLab incident.       |
 | `/link <URL> <text>`     | Adds a link to a dedicated Slack channel, runbook, or any relevant resource to the `Related resources` section of an incident. |
 | `/zoom <URL>`            | Adds a Zoom meeting link to the incident. |
-
-<!-- The below content is commented out until these features are implemented in https://gitlab.com/groups/gitlab-org/-/epics/8545 -->
-<!-- ### Comment on a GitLab incident
-
-To comment on a GitLab incident from Slack, enter the `/gitlab incident comment <text>` slash command.
-Slack shows a prompt asking you to confirm which incident you'd like to post your comment to.
-
-### Add a timeline event
-
-To add a [timeline event](incident_timeline_events.md) to a GitLab incident from Slack, enter the
-`/gitlab incident timeline <text>` slash command.
-Slack shows a prompt asking you to confirm which incident you'd like to add your timeline event to.
-
-### Close an incident
-
-To close a GitLab incident from Slack when it is resolved, enter the `/gitlab incident close`
-slash command.
-Slack shows a prompt asking you to confirm which incident you'd like to close.  -->
 
 ## Send GitLab incident notifications to Slack
 

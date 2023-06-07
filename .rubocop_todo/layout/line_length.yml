@@ -3721,7 +3721,6 @@ Layout/LineLength:
     - 'spec/helpers/snippets_helper_spec.rb'
     - 'spec/helpers/sorting_helper_spec.rb'
     - 'spec/helpers/sourcegraph_helper_spec.rb'
-    - 'spec/helpers/storage_helper_spec.rb'
     - 'spec/helpers/submodule_helper_spec.rb'
     - 'spec/helpers/tab_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'

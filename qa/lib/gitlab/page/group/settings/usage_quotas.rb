@@ -35,7 +35,6 @@ module Gitlab
           span :container_registry_size
           div :purchased_usage_total
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
-          div :additional_storage_alert, text: /purchase additional storage/
 
           # Pending members
           div :pending_members
@@ -56,15 +55,6 @@ module Gitlab
             additional_ci_minutes?
           end
 
-          # Waits and Checks if storage available alert presents on the page
-          #
-          # @return [Boolean] True if the alert presents, false if not after 5 second wait
-          def additional_storage_available?
-            additional_storage_alert_element.wait_until(timeout: 5, &:present?)
-          rescue Watir::Wait::TimeoutError
-            false
-          end
-
           # Waits and Checks if storage project data loaded
           #
           # @return [Boolean] True if the alert presents, false if not after 5 second wait
@@ -78,7 +68,7 @@ module Gitlab
           #
           # @return [Float] Total purchased storage value in GiB
           def total_purchased_storage
-            additional_storage_alert_element.wait_until(&:present?)
+            ::QA::Support::WaitForRequests.wait_for_requests
 
             purchased_usage_total[/(\d+){2}.\d+/].to_f
           end

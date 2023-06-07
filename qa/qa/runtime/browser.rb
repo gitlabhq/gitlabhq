@@ -4,8 +4,6 @@ require 'rspec/core'
 require 'rspec/expectations'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
-require 'webdrivers/chromedriver'
-require 'webdrivers/geckodriver'
 
 require 'gitlab_handbook'
 
@@ -46,8 +44,7 @@ module QA
         new.visit(address, page_class, &block)
       end
 
-      # rubocop: disable Metrics/AbcSize
-      def self.configure!
+      def self.configure! # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         return if @configured
 
         RSpec.configure do |config|
@@ -64,45 +61,31 @@ module QA
         end
 
         Capybara.server_port = 9887 + ENV['TEST_ENV_NUMBER'].to_i
-
         Capybara.register_driver QA::Runtime::Env.browser do |app|
-          capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser)
+          webdriver_options = Selenium::WebDriver::Options.send(QA::Runtime::Env.browser)
 
           case QA::Runtime::Env.browser
           when :chrome
-            capabilities['acceptInsecureCerts'] = true if QA::Runtime::Env.accept_insecure_certs?
-
-            # set logging preferences
-            # this enables access to logs with `page.driver.manage.get_log(:browser)`
-            capabilities['goog:loggingPrefs'] = {
-              browser: 'ALL',
-              client: 'ALL',
-              driver: 'ALL',
-              server: 'ALL'
-            }
-
             # Chrome won't work properly in a Docker container in sandbox mode
-            capabilities['goog:chromeOptions'] = {
-              args: %w[no-sandbox]
-            }
+            chrome_options = { args: %w[no-sandbox] }
 
             # Run headless by default unless WEBDRIVER_HEADLESS is false
             if QA::Runtime::Env.webdriver_headless?
-              capabilities['goog:chromeOptions'][:args] << 'headless'
+              chrome_options[:args] << 'headless'
 
               # Chrome documentation says this flag is needed for now
               # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-              capabilities['goog:chromeOptions'][:args] << 'disable-gpu'
+              chrome_options[:args] << 'disable-gpu'
             end
 
             # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
-            capabilities['goog:chromeOptions'][:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
+            chrome_options[:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
 
             # Set chrome default download path
             # TODO: Set for remote grid as well once Sauce Labs tests are deprecated and Options.chrome is added
             # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112258
             unless QA::Runtime::Env.remote_grid
-              capabilities['goog:chromeOptions'][:prefs] = {
+              chrome_options[:prefs] = {
                 'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
                 'download.prompt_for_download' => false
               }
@@ -111,16 +94,16 @@ module QA
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
             unless QA::Runtime::Env.user_agent.blank?
-              capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}"
+              chrome_options[:args] << "user-agent=#{QA::Runtime::Env.user_agent}"
             end
 
             if QA::Runtime::Env.remote_mobile_device_name
-              capabilities['platformName'] = 'Android'
-              capabilities['appium:automationName'] = 'UiAutomator2'
-              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
-              capabilities['appium:platformVersion'] = 'latest'
+              webdriver_options.platform_name = 'Android'
+              webdriver_options.add_option('appium:automationName', 'UiAutomator2')
+              webdriver_options.add_option('appium:deviceName', QA::Runtime::Env.remote_mobile_device_name)
+              webdriver_options.add_option('appium:platformVersion', 'latest')
             else
-              capabilities['goog:chromeOptions'][:args] << "window-size=#{DEFAULT_WINDOW_SIZE}"
+              chrome_options[:args] << "window-size=#{DEFAULT_WINDOW_SIZE}"
             end
 
             # Slack tries to open an external URL handler
@@ -138,7 +121,7 @@ module QA
               }
 
               default_profile = File.join("#{chrome_profile_location}/Default")
-              FileUtils.mkdir_p(default_profile) unless Dir.exist?(default_profile)
+              FileUtils.mkdir_p(default_profile)
               preferences = slack_default_preference
 
               # mutate the preferences if it exists
@@ -152,56 +135,63 @@ module QA
               end
 
               File.write("#{default_profile}/Preferences", preferences.to_json)
-              append_chrome_profile_to_capabilities(capabilities)
+              append_chrome_profile_to_capabilities(chrome_options)
             end
 
+            # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
+            # Useful to speed up local QA.
+            append_chrome_profile_to_capabilities(chrome_options) if QA::Runtime::Env.reuse_chrome_profile?
+
+            webdriver_options.args = chrome_options[:args]
+            webdriver_options.prefs = chrome_options[:prefs]
+            webdriver_options.accept_insecure_certs = true if QA::Runtime::Env.accept_insecure_certs?
+            # set logging preferences
+            # this enables access to logs with `page.driver.manage.get_log(:browser)`
+            webdriver_options.logging_prefs = {
+              browser: 'ALL',
+              client: 'ALL',
+              driver: 'ALL',
+              server: 'ALL'
+            }
           when :safari
             if QA::Runtime::Env.remote_mobile_device_name
-              capabilities['platformName'] = 'iOS'
-              capabilities['appium:automationName'] = 'XCUITest'
-              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
-              capabilities['appium:platformVersion'] = 'latest'
+              webdriver_options.platform_name = 'iOS'
+              webdriver_options.add_option('appium:automationName', 'XCUITest')
+              webdriver_options.add_option('appium:deviceName', QA::Runtime::Env.remote_mobile_device_name)
+              webdriver_options.add_option('appium:platformVersion', 'latest')
             end
-
           when :firefox
-            capabilities['acceptInsecureCerts'] = true if QA::Runtime::Env.accept_insecure_certs?
-
+            webdriver_options.add_option('acceptInsecureCerts', true) if QA::Runtime::Env.accept_insecure_certs?
           when :edge
-            capabilities['ms:edgeOptions'] = { args: ["--window-size=#{DEFAULT_WINDOW_SIZE}"] }
+            webdriver_options.args << "--window-size=#{DEFAULT_WINDOW_SIZE}"
           end
-
-          # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
-          # Useful to speed up local QA.
-          append_chrome_profile_to_capabilities(capabilities) if QA::Runtime::Env.reuse_chrome_profile?
 
           selenium_options = {
             browser: QA::Runtime::Env.browser,
-            clear_local_storage: true,
-            capabilities: capabilities
+            clear_local_storage: true
           }
 
           if QA::Runtime::Env.remote_grid
             selenium_options[:browser] = :remote
             selenium_options[:url] = QA::Runtime::Env.remote_grid
-            capabilities[:browserVersion] = QA::Runtime::Env.browser_version
+            webdriver_options.browser_version = QA::Runtime::Env.browser_version
           end
 
           if QA::Runtime::Env.remote_tunnel_id
-            capabilities['sauce:options'] = { tunnelIdentifier: QA::Runtime::Env.remote_tunnel_id }
+            webdriver_options.add_option('sauce:options', {
+              tunnelIdentifier: QA::Runtime::Env.remote_tunnel_id
+            })
           end
 
           if QA::Runtime::Env.record_video?
-            capabilities['selenoid:options'] = {
+            webdriver_options.add_option('selenoid:options', {
               enableVideo: true,
               videoScreenSize: video_screen_size,
               videoName: "#{QA::Runtime::Env.browser}-#{QA::Runtime::Env.browser_version}-#{Time.now}.mp4"
-            }
+            })
           end
 
-          Capybara::Selenium::Driver.new(
-            app,
-            **selenium_options
-          )
+          Capybara::Selenium::Driver.new(app, options: webdriver_options, **selenium_options)
         end
 
         # Keep only the screenshots generated from the last failing test suite
@@ -241,12 +231,11 @@ module QA
 
         @configured = true
       end
-      # rubocop: enable Metrics/AbcSize
 
-      def self.append_chrome_profile_to_capabilities(capabilities)
-        return if capabilities['goog:chromeOptions'][:args].include?(chrome_profile_location)
+      def self.append_chrome_profile_to_capabilities(chrome_options)
+        return if chrome_options[:args].include?(chrome_profile_location)
 
-        capabilities['goog:chromeOptions'][:args] << "user-data-dir=#{chrome_profile_location}"
+        chrome_options[:args] << "user-data-dir=#{chrome_profile_location}"
       end
 
       def self.chrome_profile_location

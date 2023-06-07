@@ -17,9 +17,11 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`. You can use bulk actions in the rails console to move projects to
 different namespaces.
 
-If you are importing to a self-managed GitLab instance, you can use the
-[GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
-without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+- If you are importing to a self-managed GitLab instance, you can use the [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. The
+  Rake task imports projects without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+- If you are importing from GitHub Enterprise to GitLab.com, use the
+  [GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. This allows you to provide a different domain to import the project from.
+  Using the UI, the GitHub importer always imports from the `github.com` domain.
 
 When importing projects:
 
@@ -185,7 +187,7 @@ To open an repository in GitLab URL after it has been imported, select its GitLa
 
 Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
-![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
+![GitHub importer page](img/import_projects_from_github_importer_v16_0.png)
 
 ### Check status of imports
 
@@ -193,9 +195,9 @@ Completed imports can be re-imported by selecting **Re-import** and specifying n
 
 After imports are completed, they can be in one of three states:
 
-- **Completed**: GitLab imported all repository entities.
+- **Complete**: GitLab imported all repository entities.
 - **Partially completed**: GitLab failed to import some repository entities.
-- **Failed**: GitLab imported no repository entities.
+- **Failed**: GitLab aborted the import after a critical error occurred.
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
