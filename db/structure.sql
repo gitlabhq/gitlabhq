@@ -12484,6 +12484,7 @@ CREATE TABLE batched_background_migrations (
     started_at timestamp with time zone,
     on_hold_until timestamp with time zone,
     gitlab_schema text NOT NULL,
+    finished_at timestamp with time zone,
     CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),

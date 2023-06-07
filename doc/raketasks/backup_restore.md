@@ -570,7 +570,7 @@ after which users must reactivate 2FA.
 
    These are the variables that you need to delete.
 
-1. Drop the table:
+1. Delete all variables:
 
    ```sql
    DELETE FROM ci_group_variables;

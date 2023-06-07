@@ -31,8 +31,6 @@ import {
 import { I18N_ERROR_TRACKING_LIST } from '../constants';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 
-export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
-
 const isValidErrorId = (errorId) => {
   return /^[0-9]+$/.test(errorId);
 };
@@ -46,30 +44,29 @@ export default {
       key: 'error',
       label: __('Error'),
       thClass: 'w-60p',
-      tdClass: `${tableDataClass} px-3 rounded-top`,
     },
     {
       key: 'events',
       label: __('Events'),
-      thClass: 'text-right',
-      tdClass: `${tableDataClass}`,
+      thClass: 'gl-text-right',
+      tdClass: 'gl-text-right',
     },
     {
       key: 'users',
       label: __('Users'),
-      thClass: 'text-right',
-      tdClass: `${tableDataClass}`,
+      thClass: 'gl-text-right',
+      tdClass: 'gl-text-right',
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'w-15p',
-      tdClass: `${tableDataClass}`,
+      thClass: 'gl-w-15p',
+      tdClass: 'gl-text-left',
     },
     {
       key: 'status',
       label: '',
-      tdClass: `${tableDataClass}`,
+      tdClass: 'gl-text-center',
     },
   ],
   statusFilters: {
@@ -275,6 +272,7 @@ export default {
 <template>
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
+      <!-- Enable ET -->
       <gl-alert
         v-if="showIntegratedDisabledAlert"
         variant="danger"
@@ -303,18 +301,20 @@ export default {
           </gl-button>
         </div>
       </gl-alert>
+
+      <!-- Search / Filter Bar -->
       <div
-        class="row flex-column flex-md-row align-items-md-center m-0 mt-sm-2 p-3 p-sm-3 bg-secondary border"
+        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center gl-m-0 gl-p-5 gl-bg-gray-50 gl-border"
       >
-        <div class="search-box flex-fill mb-1 mb-md-0">
-          <div class="filtered-search-box mb-0">
+        <div class="search-box gl-display-flex gl-flex-grow-1 gl-mb-2 gl-md-mb-0">
+          <div class="filtered-search-box gl-mb-0">
             <gl-dropdown
               :text="__('Recent searches')"
               class="filtered-search-history-dropdown-wrapper"
               toggle-class="filtered-search-history-dropdown-toggle-button gl-shadow-none! gl-border-r-gray-200! gl-border-1! gl-rounded-0!"
               :disabled="loading"
             >
-              <div v-if="!$options.hasLocalStorage" class="px-3">
+              <div v-if="!$options.hasLocalStorage" class="gl-px-5">
                 {{ __('This feature requires local storage to be enabled') }}
               </div>
               <template v-else-if="recentSearches.length > 0">
@@ -329,12 +329,12 @@ export default {
                   >{{ __('Clear recent searches') }}
                 </gl-dropdown-item>
               </template>
-              <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
+              <div v-else class="gl-px-5">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
             <div class="filtered-search-input-container gl-flex-grow-1">
               <gl-form-input
                 v-model="errorSearchQuery"
-                class="pl-2 filtered-search"
+                class="gl-pl-3! filtered-search"
                 :disabled="loading"
                 :placeholder="__('Search or filter results…')"
                 autofocus
@@ -346,7 +346,7 @@ export default {
                 v-if="errorSearchQuery.length > 0"
                 v-gl-tooltip.hover
                 :title="__('Clear')"
-                class="clear-search text-secondary"
+                class="clear-search gl-text-secondary"
                 name="clear"
                 icon="close"
                 @click="errorSearchQuery = ''"
@@ -357,7 +357,7 @@ export default {
 
         <gl-dropdown
           :text="$options.statusFilters[statusFilter]"
-          class="status-dropdown mx-md-1 mb-1 mb-md-0"
+          class="status-dropdown gl-md-ml-2 gl-md-mr-2 gl-mb-2 gl-md-mb-0"
           :disabled="loading"
           right
         >
@@ -366,7 +366,7 @@ export default {
             :key="status"
             @click="filterErrors(status, label)"
           >
-            <span class="d-flex">
+            <span class="gl-display-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentStatusFilter(status) }"
@@ -383,7 +383,7 @@ export default {
             :key="field"
             @click="sortErrorsByField(field)"
           >
-            <span class="d-flex">
+            <span class="gl-display-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentSortField(field) }"
@@ -395,58 +395,65 @@ export default {
         </gl-dropdown>
       </div>
 
-      <div v-if="loading" class="py-3">
+      <div v-if="loading" class="gl-py-5">
         <gl-loading-icon size="lg" />
       </div>
 
+      <!-- Results Table -->
       <template v-else>
-        <h4 class="d-block d-md-none my-3">{{ __('Open errors') }}</h4>
+        <h4 class="gl-display-block gl-md-display-none! gl-my-5">{{ __('Open errors') }}</h4>
 
         <gl-table
-          class="error-list-table mt-3"
+          class="error-list-table gl-mt-5"
           :items="errors"
           :fields="$options.fields"
           :show-empty="true"
           fixed
           stacked="md"
-          tbody-tr-class="table-row mb-4"
+          tbody-tr-class="table-row"
         >
+          <!-- table head -->
           <template #head(error)>
-            <div class="d-none d-md-block">{{ __('Open errors') }}</div>
+            <div class="gl-display-none gl-md-display-block">{{ __('Open errors') }}</div>
           </template>
           <template #head(events)="data">
-            <div class="text-md-right">{{ data.label }}</div>
+            {{ data.label }}
           </template>
           <template #head(users)="data">
-            <div class="text-md-right">{{ data.label }}</div>
+            {{ data.label }}
           </template>
 
+          <!-- table row -->
           <template #cell(error)="errors">
-            <div class="d-flex flex-column">
-              <gl-link class="d-flex mw-100 text-dark" :href="getDetailsLink(errors.item.id)">
-                <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
+            <div class="gl-display-flex gl-flex-direction-column">
+              <gl-link
+                class="gl-display-flex gl-max-w-full gl-text-body"
+                :href="getDetailsLink(errors.item.id)"
+              >
+                <strong class="gl-text-truncate">{{ errors.item.title.trim() }}</strong>
               </gl-link>
-              <span class="text-secondary text-truncate mw-100">
+              <span class="gl-text-secondary gl-text-truncate gl-max-w-full">
                 {{ errors.item.culprit }}
               </span>
             </div>
           </template>
+
           <template #cell(events)="errors">
-            <div class="text-right">{{ errors.item.count }}</div>
+            {{ errors.item.count }}
           </template>
 
           <template #cell(users)="errors">
-            <div class="text-right">{{ errors.item.userCount }}</div>
+            {{ errors.item.userCount }}
           </template>
 
           <template #cell(lastSeen)="errors">
-            <div class="text-lg-left text-right">
-              <time-ago :time="errors.item.lastSeen" class="text-secondary" />
-            </div>
+            <time-ago :time="errors.item.lastSeen" class="gl-text-secondary" />
           </template>
+
           <template #cell(status)="errors">
             <error-tracking-actions :error="errors.item" @update-issue-status="updateErrosStatus" />
           </template>
+
           <template #empty>
             {{ __('No errors to display.') }}
             <gl-link class="js-try-again" @click="restartPolling">
@@ -465,6 +472,7 @@ export default {
         />
       </template>
     </div>
+    <!-- Get Started with ET -->
     <div v-else>
       <gl-empty-state :title="__('Get started with error tracking')" :svg-path="illustrationPath">
         <template #description>

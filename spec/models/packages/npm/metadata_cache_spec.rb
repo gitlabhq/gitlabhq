@@ -7,6 +7,7 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
   let_it_be(:package_name) { '@root/test' }
 
   it { is_expected.to be_a FileStoreMounter }
+  it { is_expected.to be_a Packages::Downloadable }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:project).inverse_of(:npm_metadata_caches) }

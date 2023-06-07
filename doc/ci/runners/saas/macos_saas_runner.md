@@ -25,7 +25,7 @@ Intel x86-64 runners were deprecated in favor of Apple silicon. To build for an 
 
 ## VM images
 
-In comparison to our SaaS runners on Linux, where you can run any Docker image, 
+In comparison to our SaaS runners on Linux, where you can run any Docker image,
 GitLab SaaS provides a set of VM images for macOS.
 
 ### Supported macOS images

@@ -22,12 +22,32 @@ To view the new sidebar:
 
 To turn off this sidebar, return to your avatar and turn off the toggle.
 
+## Layout of the left sidebar
+
+At the top of the left sidebar are several shortcuts. Use these shortcuts to
+quickly create new items, view your profile, search, and view your list of issues,
+merge requests, and to-do items.
+
+![Top of sidebar](img/sidebar_top_v16_1.png)
+
+The next area of the left sidebar changes based on the information you're viewing. For example,
+you might be viewing a project, exploring projects or groups, or viewing your profile.
+Use this area to switch to other areas of the left sidebar.
+
+![Context switching](img/sidebar_middle_v16_1.png)
+
+The rest of the left sidebar is populated based on the option you choose. For example,
+if you're in a project, the sidebar is project-specific:
+
+![Project-specific options](img/sidebar_bottom_v16_1.png)
+
 ## Find your project
 
-Let's get started exploring the GitLab UI and left sidebar.
+Now let's go over a few common tasks you'll use the left sidebar for.
 
-1. Start by finding the project you want to work on.
-   To explore all available projects, on the left sidebar, select **Explore**:
+To start, we will find the project we want to work on.
+
+1. To explore all available projects, on the left sidebar, select **Explore**:
 
    ![Explore](img/explore_v16_0.png)
 
@@ -40,11 +60,6 @@ Let's get started exploring the GitLab UI and left sidebar.
    The left sidebar now shows project-specific options.
 
    ![Project-specific options](img/project_selected_v16_0.png)
-
-Your issues, merge requests, and to-do items are listed in the shortcuts
-at the top:
-
-![shortcuts](img/shortcuts_v16_0.png)
 
 ## Customize the sidebar
 

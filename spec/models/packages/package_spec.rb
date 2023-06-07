@@ -7,6 +7,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to be_a Packages::Downloadable }
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:creator) }
@@ -1418,18 +1420,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it { is_expected.to eq(normalized_name) }
-    end
-  end
-
-  describe '#touch_last_downloaded_at' do
-    let_it_be(:package) { create(:package) }
-
-    subject { package.touch_last_downloaded_at }
-
-    it 'updates the downloaded_at' do
-      expect(::Gitlab::Database::LoadBalancing::Session).to receive(:without_sticky_writes).and_call_original
-      expect { subject }
-        .to change(package, :last_downloaded_at).from(nil).to(instance_of(ActiveSupport::TimeWithZone))
     end
   end
 

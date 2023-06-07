@@ -237,7 +237,7 @@ export default {
 
 <template>
   <div>
-    <div v-if="errorLoading" class="py-3">
+    <div v-if="errorLoading" class="gl-py-5">
       <gl-loading-icon size="lg" />
     </div>
 
@@ -258,23 +258,25 @@ export default {
         {{ __('No stack trace for this error') }}
       </gl-alert>
 
-      <div class="error-details-header d-flex py-2 justify-content-between">
+      <div
+        class="error-details-header gl-border-b gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-py-3 gl-justify-content-space-between"
+      >
         <div
           v-if="!loadingStacktrace && stacktrace"
-          class="error-details-meta my-auto"
+          class="gl-my-auto gl-text-truncate"
           data-qa-selector="reported_text"
         >
           <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
             <template #reportedBy>
-              <strong class="error-details-meta-culprit">{{ error.culprit }}</strong>
+              <strong>{{ error.culprit }}</strong>
             </template>
             <template #timeAgo>
               <time-ago-tooltip :time="stacktraceData.date_received" />
             </template>
           </gl-sprintf>
         </div>
-        <div class="error-details-actions">
-          <div class="d-inline-flex bv-d-sm-down-none">
+        <div>
+          <div class="gl-display-none gl-md-display-inline-flex">
             <gl-button
               :loading="updatingIgnoreStatus"
               data-testid="update-ignore-status-btn"
@@ -283,7 +285,7 @@ export default {
               {{ ignoreBtnLabel }}
             </gl-button>
             <gl-button
-              class="ml-2"
+              class="gl-ml-3"
               category="secondary"
               variant="confirm"
               :loading="updatingResolveStatus"
@@ -294,7 +296,7 @@ export default {
             </gl-button>
             <gl-button
               v-if="error.gitlabIssuePath"
-              class="ml-2"
+              class="gl-ml-3"
               data-testid="view_issue_button"
               :href="error.gitlabIssuePath"
               variant="confirm"
@@ -305,7 +307,7 @@ export default {
               ref="sentryIssueForm"
               :action="projectIssuesPath"
               method="POST"
-              class="d-inline-block ml-2"
+              class="gl-display-inline-block gl-ml-3"
             >
               <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
               <input name="issue[description]" :value="issueDescription" type="hidden" />
@@ -329,7 +331,7 @@ export default {
           </div>
           <gl-dropdown
             text="Options"
-            class="error-details-options d-md-none"
+            class="gl-w-full gl-md-display-none"
             right
             :disabled="issueUpdateInProgress"
           >
@@ -362,7 +364,7 @@ export default {
       </div>
       <div>
         <tooltip-on-truncate :title="error.title" truncate-target="child" placement="top">
-          <h2 class="text-truncate">{{ error.title }}</h2>
+          <h2 class="gl-text-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
           <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="gl-mr-3">
@@ -373,12 +375,12 @@ export default {
 
         <error-details-info :error="error" />
 
-        <div v-if="loadingStacktrace" class="py-3">
+        <div v-if="loadingStacktrace" class="gl-py-5">
           <gl-loading-icon size="lg" />
         </div>
 
         <template v-else-if="showStacktrace">
-          <h3 class="my-4">{{ __('Stack trace') }}</h3>
+          <h3 class="gl-my-6">{{ __('Stack trace') }}</h3>
           <stacktrace :entries="stacktrace" />
         </template>
       </div>

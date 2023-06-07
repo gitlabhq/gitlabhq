@@ -24,11 +24,14 @@ export const newCandidate = () => ({
       path: 'path/to/job',
       merge_request: {
         path: 'path/to/mr',
+        iid: 1,
         title: 'Some MR',
       },
       user: {
         path: 'path/to/ci/user',
+        name: 'CI User',
         username: 'ciuser',
+        avatar: '/img.png',
       },
     },
   },

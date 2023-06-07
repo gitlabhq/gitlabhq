@@ -49,14 +49,14 @@ describe('noteable_discussion component', () => {
     });
   };
 
-  const createComponent = ({ storeMock = createStore() } = {}) => {
+  const createComponent = ({ storeMock = createStore(), discussion = discussionMock } = {}) => {
     store = storeMock;
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     wrapper = mountExtended(NoteableDiscussion, {
       store,
-      propsData: { discussion: discussionMock },
+      propsData: { discussion },
     });
   };
 
@@ -159,6 +159,23 @@ describe('noteable_discussion component', () => {
       expect(wrapper.find('*[data-original-title="Jump to next unresolved thread"]').exists()).toBe(
         false,
       );
+    });
+
+    it('should add `internal-note` class when the discussion is internal', async () => {
+      const softCopyInternalNotes = [...discussionMock.notes];
+      const mockInternalNotes = softCopyInternalNotes.splice(0, 2);
+      mockInternalNotes[0].internal = true;
+
+      const mockDiscussion = {
+        ...discussionMock,
+        notes: [...mockInternalNotes],
+      };
+      wrapper.setProps({ discussion: mockDiscussion });
+      await nextTick();
+
+      const replyWrapper = wrapper.find('[data-testid="reply-wrapper"]');
+      expect(replyWrapper.exists()).toBe(true);
+      expect(replyWrapper.classes('internal-note')).toBe(true);
     });
   });
 

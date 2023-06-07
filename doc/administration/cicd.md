@@ -15,7 +15,7 @@ GitLab CI/CD is enabled by default in all new projects on an instance. You can s
 CI/CD to be disabled by default in new projects by modifying the settings in:
 
 - `gitlab.yml` for source installations.
-- `gitlab.rb` for Omnibus GitLab installations.
+- `gitlab.rb` for Linux package installations.
 
 Existing projects that already had CI/CD enabled are unchanged. Also, this setting only changes
 the project default, so project owners [can still enable CI/CD in the project settings](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
@@ -42,7 +42,7 @@ For installations from source:
    sudo service gitlab restart
    ```
 
-For Omnibus GitLab installations:
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add this line:
 

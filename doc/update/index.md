@@ -292,7 +292,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
-- Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions 
+- Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 
 ### 15.11.1

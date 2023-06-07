@@ -71,7 +71,7 @@ the status of the flag and the command to enable or disable it.
 The first thing you must do to enable or disable a feature behind a flag is to
 start a session on GitLab Rails console.
 
-For Omnibus installations:
+For Linux package installations:
 
 ```shell
 sudo gitlab-rails console

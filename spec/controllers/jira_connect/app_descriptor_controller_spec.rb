@@ -37,7 +37,8 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
           url: 'https://gitlab.com'
         },
         links: {
-          documentation: 'http://test.host/help/integration/jira_development_panel#gitlabcom-1'
+          documentation: 'http://test.host/help/integration/jira_development_panel#gitlabcom-1',
+          feedback: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413652'
         },
         authentication: {
           type: 'jwt'
@@ -89,6 +90,20 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
           key: 'gitlab-feature-flags'
         )
       )
+    end
+
+    context 'when feature flag jira_for_cloud_app_feedback_link is disabled' do
+      before do
+        stub_feature_flags(jira_for_cloud_app_feedback_link: false)
+      end
+
+      it 'does not include the feedback link' do
+        get :show
+
+        expect(descriptor[:links]).not_to include(
+          feedback: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413652'
+        )
+      end
     end
   end
 end

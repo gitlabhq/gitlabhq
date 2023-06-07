@@ -6,6 +6,7 @@ class Packages::Package < ApplicationRecord
   include UsageStatistics
   include Gitlab::Utils::StrongMemoize
   include Packages::Installable
+  include Packages::Downloadable
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
@@ -359,12 +360,6 @@ class Packages::Package < ApplicationRecord
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
   end
 
-  def touch_last_downloaded_at
-    ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-      update_column(:last_downloaded_at, Time.zone.now)
-    end
-  end
-
   def publish_creation_event
     ::Gitlab::EventStore.publish(
       ::Packages::PackageCreatedEvent.new(data: {
@@ -437,5 +432,3 @@ class Packages::Package < ApplicationRecord
     end
   end
 end
-
-Packages::Package.prepend_mod

@@ -25,7 +25,7 @@ You can use only the MD5 hash in the URL for the Libravatar service. See [issue 
 In the [`gitlab.yml` gravatar section](https://gitlab.com/gitlab-org/gitlab/-/blob/68dac188ec6b1b03d53365e7579422f44cbe7a1c/config/gitlab.yml.example#L469-476), set
 the configuration options as follows:
 
-**For Omnibus installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -39,7 +39,7 @@ the configuration options as follows:
 
 1. To apply the changes, run `sudo gitlab-ctl reconfigure`.
 
-**For installations from source**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml`:
 
@@ -57,12 +57,12 @@ the configuration options as follows:
 
 ## Set the Libravatar service to default (Gravatar)
 
-**For Omnibus installations**
+For Linux package installations:
 
 1. Delete `gitlab_rails['gravatar_ssl_url']` or `gitlab_rails['gravatar_plain_url']` from `/etc/gitlab/gitlab.rb`.
 1. To apply the changes, run `sudo gitlab-ctl reconfigure`.
 
-**For installations from source**
+For self-compiled installations:
 
 1. Remove `gravatar:` section from `config/gitlab.yml`.
 1. Save the file, then [restart](restart_gitlab.md#installations-from-source)
@@ -72,7 +72,7 @@ the configuration options as follows:
 
 To disable Gravatar, for example, to prohibit third-party services, complete the following steps:
 
-**For Omnibus installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -82,7 +82,7 @@ To disable Gravatar, for example, to prohibit third-party services, complete the
 
 1. To apply the changes, run `sudo gitlab-ctl reconfigure`.
 
-**For installations from source**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml`:
 

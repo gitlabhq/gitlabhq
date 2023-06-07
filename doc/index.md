@@ -43,9 +43,9 @@ Have a look at some of our most popular topics:
 | [Back up and restore GitLab](raketasks/backup_restore.md)                                  | Rake tasks for backing up and restoring GitLab self-managed instances. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
 | [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |
-| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for Omnibus GitLab self-managed instances. |
-| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html)       | NGINX settings for Omnibus GitLab self-managed instances. |
-| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html)      | SSL settings for Omnibus GitLab self-managed instances. |
+| [Database settings for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for self-managed instances installed using Linux packages. |
+| [NGINX settings for Linux package installations](https://docs.gitlab.com/omnibus/settings/nginx.html)       | NGINX settings for self-managed instances installed using Linux packages. |
+| [SSL configuration for Linux package installations](https://docs.gitlab.com/omnibus/settings/ssl/index.html)      | SSL settings for self-managed instances installed using Linux packages. |
 | [GitLab.com settings](user/gitlab_com/index.md)                                            | Settings used for GitLab.com. |
 
 ## The entire DevOps lifecycle

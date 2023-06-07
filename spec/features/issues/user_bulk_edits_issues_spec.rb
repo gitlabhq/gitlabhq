@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Multiple issue updating from issues#index', :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user) }
@@ -18,8 +20,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
 
       click_button 'Bulk edit'
       check 'Select all'
-      click_button 'Select status'
-      click_button 'Closed'
+      select_from_listbox('Closed', from: 'Select status')
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)
@@ -31,8 +32,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
 
       click_button 'Bulk edit'
       check 'Select all'
-      click_button 'Select status'
-      click_button 'Open'
+      select_from_listbox('Open', from: 'Select status')
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)

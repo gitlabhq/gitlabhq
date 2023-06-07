@@ -393,6 +393,8 @@ The following user actions on a GitLab instance generate instance audit events:
 - User was unblocked using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727) in GitLab 15.11.
 - User was banned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) in GitLab 15.11.
 - User was unbanned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221) in GitLab 15.11.
+- User was deactivated using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117776) in GitLab 16.0.
+- User was activated using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121708) in GitLab 16.1.
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

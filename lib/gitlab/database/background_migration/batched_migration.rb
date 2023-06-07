@@ -79,6 +79,10 @@ module Gitlab
             transition any => :finalizing
           end
 
+          before_transition any => :finished do |migration|
+            migration.finished_at = Time.current if migration.respond_to?(:finished_at)
+          end
+
           before_transition any => :active do |migration|
             migration.started_at = Time.current if migration.respond_to?(:started_at)
           end

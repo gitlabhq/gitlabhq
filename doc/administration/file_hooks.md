@@ -34,13 +34,12 @@ where you can find some basic examples.
 
 Follow the steps below to set up a custom hook:
 
-1. On the GitLab server, navigate to the plugin directory.
-   For an installation from source the path is usually
-   `/home/git/gitlab/file_hooks/`. For Omnibus installs the path is
-   usually `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
+1. On the GitLab server, locate the plugin directory. For self-compiled installations, the path is usually
+   `/home/git/gitlab/file_hooks/`. For Linux package installations, the path is usually
+   `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
 
-    For [configurations with multiple servers](reference_architectures/index.md),
-    your hook file should exist on each application server.
+   For [configurations with multiple servers](reference_architectures/index.md), your hook file should exist on each
+   application server.
 
 1. Inside the `file_hooks` directory, create a file with a name of your choice,
    without spaces or special characters.
@@ -59,11 +58,8 @@ need to restart GitLab to apply a new file hook.
 If a file hook executes with non-zero exit code or GitLab fails to execute it, a
 message is logged to:
 
-- `gitlab-rails/file_hook.log` in an Omnibus installation.
-- `log/file_hook.log` in a source installation.
-
-NOTE:
-In GitLab 13.12 and earlier, the filename was `plugin.log`
+- `gitlab-rails/file_hook.log` in a Linux package installation.
+- `log/file_hook.log` in a self-compiled installation.
 
 ## Creating file hooks
 

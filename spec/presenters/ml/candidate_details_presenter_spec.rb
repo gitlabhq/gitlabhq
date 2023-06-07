@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
-  let_it_be(:project) { create(:project, :private) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
-  let_it_be(:user) { project.creator }
+  let_it_be(:user) { create(:user, :with_avatar) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+  let_it_be(:project) { create(:project, :private, creator: user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
   let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
   let_it_be(:candidate) do
     create(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project) # rubocop:disable RSpec/FactoryBot/AvoidCreate
@@ -74,7 +74,9 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
           'name' => 'test',
           'user' => {
             'path' => "/#{pipeline.user.username}",
-            'username' => pipeline.user.username
+            'name' => pipeline.user.name,
+            'username' => pipeline.user.username,
+            'avatar' => user.avatar_url
           }
         }
 
@@ -100,6 +102,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
         it 'generates the correct ci' do
           expected_info = {
             'path' => "/#{project.full_path}/-/merge_requests/#{mr.iid}",
+            'iid' => mr.iid,
             'title' => mr.title
           }
 

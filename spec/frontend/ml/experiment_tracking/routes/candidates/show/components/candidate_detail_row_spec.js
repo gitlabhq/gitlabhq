@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
 import DetailRow from '~/ml/experiment_tracking/routes/candidates/show/components/candidate_detail_row.vue';
 
 describe('CandidateDetailRow', () => {
@@ -9,14 +8,14 @@ describe('CandidateDetailRow', () => {
 
   let wrapper;
 
-  const createWrapper = (href = '') => {
+  const createWrapper = ({ slots = {} } = {}) => {
     wrapper = shallowMount(DetailRow, {
-      propsData: { sectionLabel: 'Section', label: 'Item', text: 'Text', href },
+      propsData: { sectionLabel: 'Section', label: 'Item' },
+      slots,
     });
   };
 
   const findCellAt = (index) => wrapper.findAll('td').at(index);
-  const findLink = () => findCellAt(ROW_VALUE_CELL).findComponent(GlLink);
 
   beforeEach(() => createWrapper());
 
@@ -28,22 +27,15 @@ describe('CandidateDetailRow', () => {
     expect(findCellAt(ROW_LABEL_CELL).text()).toBe('Item');
   });
 
-  describe('No href', () => {
-    it('Renders text', () => {
-      expect(findCellAt(ROW_VALUE_CELL).text()).toBe('Text');
-    });
-
-    it('Does not render as link', () => {
-      expect(findLink().exists()).toBe(false);
-    });
+  it('renders nothing on item cell', () => {
+    expect(findCellAt(ROW_VALUE_CELL).text()).toBe('');
   });
 
-  describe('With href', () => {
-    beforeEach(() => createWrapper('LINK'));
+  describe('With slot', () => {
+    beforeEach(() => createWrapper({ slots: { default: 'Some content' } }));
 
-    it('Renders link', () => {
-      expect(findLink().attributes().href).toBe('LINK');
-      expect(findLink().text()).toBe('Text');
+    it('Renders slot', () => {
+      expect(findCellAt(ROW_VALUE_CELL).text()).toBe('Some content');
     });
   });
 });

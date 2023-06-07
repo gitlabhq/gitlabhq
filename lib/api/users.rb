@@ -710,9 +710,13 @@ module API
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
-        forbidden!('A blocked user must be unblocked to be activated') if user.blocked?
 
-        user.activate
+        result = ::Users::ActivateService.new(current_user).execute(user)
+        if result[:status] == :success
+          true
+        else
+          render_api_error!(result[:message], result[:reason] || :bad_request)
+        end
       end
 
       desc 'Approve a pending user. Available only for admins.'

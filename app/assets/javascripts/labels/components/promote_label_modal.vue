@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
+import { stripQuotes } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import eventHub from '../event_hub';
 
 export default {
@@ -52,6 +53,12 @@ export default {
         },
       );
     },
+    cleanedLabelColor() {
+      return stripQuotes(this.labelColor);
+    },
+    cleanedLabelTextColor() {
+      return stripQuotes(this.labelTextColor);
+    },
   },
   methods: {
     onSubmit() {
@@ -97,7 +104,7 @@ export default {
           <template #labelTitle>
             <span
               class="label color-label"
-              :style="`background-color: ${labelColor}; color: ${labelTextColor};`"
+              :style="`background-color: ${cleanedLabelColor}; color: ${cleanedLabelTextColor};`"
             >
               {{ labelTitle }}
             </span>

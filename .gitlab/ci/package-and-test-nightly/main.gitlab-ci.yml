@@ -37,7 +37,7 @@ airgapped:
     - .parallel
   variables:
     QA_SCENARIO: "Test::Instance::Airgapped"
-    QA_RSPEC_TAGS: "--tag '~github' --tag '~skip_live_env'"
+    QA_RSPEC_TAGS: "--tag '~github' --tag '~external_api_calls' --tag '~skip_live_env'"
 
 instance-image-slow-network:
   extends:

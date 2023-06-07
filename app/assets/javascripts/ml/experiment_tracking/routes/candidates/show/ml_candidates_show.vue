@@ -1,4 +1,5 @@
 <script>
+import { GlAvatarLabeled, GlLink } from '@gitlab/ui';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import DetailRow from './components/candidate_detail_row.vue';
@@ -29,6 +30,8 @@ export default {
     ModelExperimentsHeader,
     DeleteButton,
     DetailRow,
+    GlAvatarLabeled,
+    GlLink,
   },
   props: {
     candidate: {
@@ -94,52 +97,51 @@ export default {
       <tbody>
         <tr class="divider"></tr>
 
-        <detail-row
-          :label="$options.i18n.ID_LABEL"
-          :section-label="$options.i18n.INFO_LABEL"
-          :text="info.iid"
-        />
+        <detail-row :label="$options.i18n.ID_LABEL" :section-label="$options.i18n.INFO_LABEL">
+          {{ info.iid }}
+        </detail-row>
 
-        <detail-row :label="$options.i18n.MLFLOW_ID_LABEL" :text="info.eid" />
+        <detail-row :label="$options.i18n.MLFLOW_ID_LABEL">{{ info.eid }}</detail-row>
 
-        <detail-row :label="$options.i18n.STATUS_LABEL" :text="info.status" />
+        <detail-row :label="$options.i18n.STATUS_LABEL">{{ info.status }}</detail-row>
 
-        <detail-row
-          :label="$options.i18n.EXPERIMENT_LABEL"
-          :text="info.experiment_name"
-          :href="info.path_to_experiment"
-        />
+        <detail-row :label="$options.i18n.EXPERIMENT_LABEL">
+          <gl-link :href="info.path_to_experiment">
+            {{ info.experiment_name }}
+          </gl-link>
+        </detail-row>
 
-        <detail-row
-          v-if="info.path_to_artifact"
-          :label="$options.i18n.ARTIFACTS_LABEL"
-          :href="info.path_to_artifact"
-          :text="$options.i18n.ARTIFACTS_LABEL"
-        />
+        <detail-row v-if="info.path_to_artifact" :label="$options.i18n.ARTIFACTS_LABEL">
+          <gl-link :href="info.path_to_artifact">
+            {{ $options.i18n.ARTIFACTS_LABEL }}
+          </gl-link>
+        </detail-row>
 
         <template v-if="ciJob">
           <tr class="divider"></tr>
 
           <detail-row
             :label="$options.i18n.JOB_LABEL"
-            :text="ciJob.name"
-            :href="ciJob.path"
             :section-label="$options.i18n.CI_SECTION_LABEL"
-          />
+          >
+            <gl-link :href="ciJob.path">
+              {{ ciJob.name }}
+            </gl-link>
+          </detail-row>
 
-          <detail-row
-            v-if="ciJob.user"
-            :label="$options.i18n.CI_USER_LABEL"
-            :href="ciJob.user.path"
-            :text="ciJob.user.username"
-          />
+          <detail-row v-if="ciJob.user" :label="$options.i18n.CI_USER_LABEL">
+            <gl-avatar-labeled label="" :size="24" :src="ciJob.user.avatar">
+              <gl-link :href="ciJob.user.path">
+                {{ ciJob.user.name }}
+              </gl-link>
+            </gl-avatar-labeled>
+          </detail-row>
 
-          <detail-row
-            v-if="ciJob.merge_request"
-            :label="$options.i18n.CI_MR_LABEL"
-            :text="ciJob.merge_request.title"
-            :href="ciJob.merge_request.path"
-          />
+          <detail-row v-if="ciJob.merge_request" :label="$options.i18n.CI_MR_LABEL">
+            <gl-link :href="ciJob.merge_request.path">
+              !{{ ciJob.merge_request.iid }} {{ ciJob.merge_request.title }}
+            </gl-link>
+          </detail-row>
         </template>
 
         <template v-for="{ sectionName, sectionValues } in sections">
@@ -150,8 +152,9 @@ export default {
             :key="item.name"
             :label="item.name"
             :section-label="index === 0 ? sectionName : ''"
-            :text="item.value"
-          />
+          >
+            {{ item.value }}
+          </detail-row>
         </template>
       </tbody>
     </table>

@@ -356,7 +356,7 @@ RSpec.describe Admin::UsersController do
         put :activate, params: { id: user.username }
         user.reload
         expect(user.active?).to be_falsey
-        expect(flash[:notice]).to eq('Error occurred. A blocked user must be unblocked to be activated')
+        expect(flash[:alert]).to eq('Error occurred. A blocked user must be unblocked to be activated')
       end
     end
   end

@@ -163,6 +163,15 @@ export default {
 
       return true;
     },
+    isDiscussionInternal() {
+      return this.discussion.notes[0]?.internal;
+    },
+    discussionHolderClass() {
+      return {
+        'is-replying gl-pt-0!': this.isReplying,
+        'internal-note': this.isDiscussionInternal,
+      };
+    },
   },
   created() {
     eventHub.$on('startReplying', this.onStartReplying);
@@ -318,8 +327,9 @@ export default {
                 />
                 <li
                   v-else-if="canShowReplyActions && showReplies"
-                  :class="{ 'is-replying gl-bg-white! gl-pt-0!': isReplying }"
+                  data-testid="reply-wrapper"
                   class="discussion-reply-holder gl-border-t-0! clearfix"
+                  :class="discussionHolderClass"
                 >
                   <discussion-actions
                     v-if="!isReplying && userCanReply"

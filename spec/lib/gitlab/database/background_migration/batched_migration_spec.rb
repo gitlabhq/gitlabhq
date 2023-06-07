@@ -46,6 +46,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
         expect(batched_migration.status_name).to be :finished
       end
+
+      it 'updates the finished_at' do
+        freeze_time do
+          expect { batched_migration.finish! }.to change(batched_migration, :finished_at).from(nil).to(Time.current)
+        end
+      end
     end
   end
 

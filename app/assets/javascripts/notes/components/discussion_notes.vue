@@ -82,6 +82,9 @@ export default {
         url: this.discussion.discussion_path,
       };
     },
+    isDiscussionInternal() {
+      return this.discussion.notes[0]?.internal;
+    },
   },
   methods: {
     ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
@@ -139,6 +142,7 @@ export default {
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
+          :internal-note="isDiscussionInternal"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -171,6 +175,7 @@ export default {
               :note="componentData(note)"
               :help-page-path="helpPagePath"
               :line="line"
+              :internal-note="isDiscussionInternal"
               @handleDeleteNote="$emit('deleteNote')"
             />
           </template>
@@ -190,6 +195,7 @@ export default {
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
+          :internal-note="isDiscussionInternal"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <template #avatar-badge>

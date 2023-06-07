@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { subscriptionsDropdownOptions } from '../../constants';
 
@@ -8,27 +8,27 @@ export default {
   i18n: {
     defaultDropdownText: __('Select subscription'),
     headerText: __('Change subscription'),
+    resetText: __('Reset'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   data() {
     return {
-      subscription: undefined,
+      selectedValue: undefined,
     };
   },
   computed: {
     dropdownText() {
-      return this.subscription?.text ?? this.$options.i18n.defaultDropdownText;
-    },
-    selectedValue() {
-      return this.subscription?.value;
+      const selected = this.$options.subscriptionsDropdownOptions.find(
+        (option) => option.value === this.selectedValue,
+      );
+      return selected?.text || this.$options.i18n.defaultDropdownText;
     },
   },
   methods: {
-    handleClick(option) {
-      this.subscription = option.value === this.subscription?.value ? undefined : option;
+    handleReset() {
+      this.selectedValue = undefined;
     },
   },
 };
@@ -36,16 +36,14 @@ export default {
 <template>
   <div>
     <input type="hidden" name="update[subscription_event]" :value="selectedValue" />
-    <gl-dropdown class="gl-w-full" :header-text="$options.i18n.headerText" :text="dropdownText">
-      <gl-dropdown-item
-        v-for="subscriptionsOption in $options.subscriptionsDropdownOptions"
-        :key="subscriptionsOption.value"
-        is-check-item
-        :is-checked="selectedValue === subscriptionsOption.value"
-        @click="handleClick(subscriptionsOption)"
-      >
-        {{ subscriptionsOption.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      v-model="selectedValue"
+      block
+      :header-text="$options.i18n.headerText"
+      :reset-button-label="$options.i18n.resetText"
+      :toggle-text="dropdownText"
+      :items="$options.subscriptionsDropdownOptions"
+      @reset="handleReset"
+    />
   </div>
 </template>

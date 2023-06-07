@@ -3480,7 +3480,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             activate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user must be unblocked to be activated')
+            expect(json_response['message']).to eq('Error occurred. A blocked user must be unblocked to be activated')
             expect(blocked_user.reload.state).to eq('blocked')
           end
         end
@@ -3494,7 +3494,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             activate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user must be unblocked to be activated')
+            expect(json_response['message']).to eq('Error occurred. A blocked user must be unblocked to be activated')
             expect(user.reload.state).to eq('ldap_blocked')
           end
         end
