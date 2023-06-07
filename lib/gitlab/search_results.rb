@@ -107,7 +107,11 @@ module Gitlab
     def users
       return User.none unless Ability.allowed?(current_user, :read_users_list)
 
-      UsersFinder.new(current_user, search: query).execute
+      if Feature.enabled?(:autocomplete_users_use_search_service)
+        UsersFinder.new(current_user, { search: query, use_minimum_char_limit: false }).execute
+      else
+        UsersFinder.new(current_user, search: query).execute
+      end
     end
 
     # highlighting is only performed by Elasticsearch backed results

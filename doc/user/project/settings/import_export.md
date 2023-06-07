@@ -182,6 +182,7 @@ Items that are **not** exported include:
 - [Activity logs for Git-related events](https://gitlab.com/gitlab-org/gitlab/-/issues/214700) (for example, pushing and creating tags)
 - Security policies associated with your project
 - Links between issues and linked items
+- Links to related merge requests
 
 Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
 [instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.

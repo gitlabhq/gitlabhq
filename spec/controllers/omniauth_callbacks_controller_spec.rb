@@ -18,6 +18,39 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
+    context 'authentication succeeds' do
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :github }
+
+      context 'without signed-in user' do
+        it 'increments Prometheus counter' do
+          expect { post(provider) }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(provider: 'github', status: 'succeeded')
+            end.by(1)
+          )
+        end
+      end
+
+      context 'with signed-in user' do
+        before do
+          sign_in user
+        end
+
+        it 'increments Prometheus counter' do
+          expect { post(provider) }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(provider: 'github', status: 'succeeded')
+            end.by(1)
+          )
+        end
+      end
+    end
+
     context 'a deactivated user' do
       let(:provider) { :github }
       let(:extern_uid) { 'my-uid' }
@@ -96,20 +129,30 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:extern_uid) { 'my-uid' }
       let(:provider) { :saml }
 
-      def stub_route_as(path)
-        allow(@routes).to receive(:generate_extras) { [path, []] }
+      before do
+        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
+        allow(@routes).to receive(:generate_extras).and_return(['/users/auth/saml/callback', []])
       end
 
       it 'calls through to the failure handler' do
-        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
-        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
-        stub_route_as('/users/auth/saml/callback')
-
         ForgeryProtection.with_forgery_protection do
           post :failure
         end
 
         expect(flash[:alert]).to match(/Fingerprint mismatch/)
+      end
+
+      it 'increments Prometheus counter' do
+        ForgeryProtection.with_forgery_protection do
+          expect { post :failure }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(provider: 'saml', status: 'failed')
+            end.by(1)
+          )
+        end
       end
     end
 

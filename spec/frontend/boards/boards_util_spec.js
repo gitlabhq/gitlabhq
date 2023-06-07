@@ -1,4 +1,5 @@
-import { formatIssueInput, filterVariables } from '~/boards/boards_util';
+import { formatIssueInput, filterVariables, FiltersInfo } from '~/boards/boards_util';
+import { FilterFields } from '~/boards/constants';
 
 describe('formatIssueInput', () => {
   const issueInput = {
@@ -145,6 +146,42 @@ describe('filterVariables', () => {
         issue: ['filterA', 'filterB', 'filterC', 'filterD'],
         epic: ['filterE'],
       },
+    });
+
+    expect(result).toEqual(expected);
+  });
+
+  it.each([
+    [
+      'converts milestone wild card',
+      {
+        filters: {
+          milestoneTitle: 'Started',
+        },
+        expected: {
+          milestoneWildcardId: 'STARTED',
+          not: {},
+        },
+      },
+    ],
+    [
+      'converts assignee wild card',
+      {
+        filters: {
+          assigneeUsername: 'Any',
+        },
+        expected: {
+          assigneeWildcardId: 'ANY',
+          not: {},
+        },
+      },
+    ],
+  ])('%s', (_, { filters, issuableType = 'issue', expected }) => {
+    const result = filterVariables({
+      filters,
+      issuableType,
+      filterInfo: FiltersInfo,
+      filterFields: FilterFields,
     });
 
     expect(result).toEqual(expected);

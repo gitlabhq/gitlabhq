@@ -26206,10 +26206,10 @@ Values for sorting timelogs.
 | ----- | ----------- |
 | <a id="timelogsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="timelogsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
-| <a id="timelogsortspent_at_asc"></a>`SPENT_AT_ASC` | Spent at by ascending order. |
-| <a id="timelogsortspent_at_desc"></a>`SPENT_AT_DESC` | Spent at by descending order. |
-| <a id="timelogsorttime_spent_asc"></a>`TIME_SPENT_ASC` | Time spent by ascending order. |
-| <a id="timelogsorttime_spent_desc"></a>`TIME_SPENT_DESC` | Time spent by descending order. |
+| <a id="timelogsortspent_at_asc"></a>`SPENT_AT_ASC` | Spent at ascending order. |
+| <a id="timelogsortspent_at_desc"></a>`SPENT_AT_DESC` | Spent at descending order. |
+| <a id="timelogsorttime_spent_asc"></a>`TIME_SPENT_ASC` | Time spent ascending order. |
+| <a id="timelogsorttime_spent_desc"></a>`TIME_SPENT_DESC` | Time spent descending order. |
 | <a id="timelogsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="timelogsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="timelogsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |

@@ -577,11 +577,16 @@ is recreated with the correct up-to-date schema.
 
 ### All migrations must be finished before doing a major upgrade
 
-Before doing a major version GitLab upgrade, you should have completed all
+Before upgrading to a major GitLab version, you must complete all
 migrations that exist up until the latest minor version before that major
-version. If you have halted migrations, these need to be resolved and
-[retried](#retry-a-halted-migration) before proceeding with a major version
-upgrade. Read more about [upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
+version. You must also resolve and [retry any halted migrations](#retry-a-halted-migration)
+before proceeding with a major version upgrade. For more information, see [Upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
+
+Migrations that have been removed are
+[marked as obsolete](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63001).
+If you upgrade GitLab before all pending advanced search migrations are completed,
+those migrations are made obsolete and cannot be executed. In this case, you must
+[re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
 
 ## GitLab advanced search Rake tasks
 

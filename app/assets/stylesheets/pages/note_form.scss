@@ -257,6 +257,12 @@ table {
 
     &.is-replying {
       padding-bottom: $gl-padding;
+      background-color: $white;
+    }
+
+    &.internal-note,
+    &.internal-note.is-replying {
+      background-color: $orange-50;
     }
 
     .user-avatar-link {

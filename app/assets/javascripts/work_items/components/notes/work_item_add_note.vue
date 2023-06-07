@@ -152,8 +152,8 @@ export default {
         // eslint-disable-next-line @gitlab/require-i18n-strings
         'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix': !this
           .isNewDiscussion,
-        'gl-bg-white! gl-pt-0!': this.isEditing,
-        'gl-bg-orange-50!': this.isInternalThread,
+        'gl-pt-0! is-replying': this.isEditing,
+        'internal-note': this.isInternalThread,
       };
     },
   },

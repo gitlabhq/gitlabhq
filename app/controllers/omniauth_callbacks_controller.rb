@@ -30,6 +30,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Extend the standard implementation to also increment
   # the number of failed sign in attempts
   def failure
+    update_login_counter_metric(failed_strategy.name, 'failed')
+
     if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
       user = User.find_by_login(params[:username])
 
@@ -79,6 +81,21 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  def track_event(user, provider, status)
+    log_audit_event(user, with: provider)
+    update_login_counter_metric(provider, status)
+  end
+
+  def update_login_counter_metric(provider, status)
+    omniauth_login_counter.increment(provider: provider, status: status)
+  end
+
+  def omniauth_login_counter
+    @counter ||= Gitlab::Metrics.counter(
+      :gitlab_omniauth_login_total,
+      'Counter of OmniAuth login attempts')
+  end
+
   def log_failed_login(user, provider)
     # overridden in EE
   end
@@ -99,7 +116,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if current_user
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
-      log_audit_event(current_user, with: oauth['provider'])
+      track_event(current_user, oauth['provider'], 'succeeded')
 
       if Gitlab::CurrentSettings.admin_mode
         return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
@@ -151,7 +168,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # from that in `#context_user`. Pushing it manually here makes the information
       # available in the logs for this request.
       Gitlab::ApplicationContext.push(user: user)
-      log_audit_event(user, with: oauth['provider'])
+      track_event(user, oauth['provider'], 'succeeded')
       Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: user) if new_user
 
       set_remember_me(user)

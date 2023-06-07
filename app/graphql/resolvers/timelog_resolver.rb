@@ -37,7 +37,7 @@ module Resolvers
     argument :sort, Types::TimeTracking::TimelogSortEnum,
              description: 'List timelogs in a particular order.',
              required: false,
-             default_value: { field: 'spent_at', direction: :asc }
+             default_value: :spent_at_asc
 
     def resolve_with_lookahead(**args)
       validate_args!(object, args)
@@ -144,10 +144,7 @@ module Resolvers
     def apply_sorting(timelogs, args)
       return timelogs unless args[:sort]
 
-      field = args[:sort][:field]
-      direction = args[:sort][:direction]
-
-      timelogs.sort_by_field(field, direction)
+      timelogs.sort_by_field(args[:sort])
     end
 
     def raise_argument_error(message)

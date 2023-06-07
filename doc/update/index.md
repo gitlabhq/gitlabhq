@@ -140,6 +140,11 @@ To clean up the migration, upgrade to 15.1 or later.
 
 For other advanced search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
+If you upgrade GitLab before all pending advanced search migrations are completed, any pending migrations
+that have been removed in the new version cannot be executed or retried.
+In this case, you must
+[re-create your index from scratch](../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+
 ### What do you do for the error `Elasticsearch version not compatible`
 
 Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).

@@ -60,7 +60,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
-      context 'for users' do
+      shared_examples 'for users' do
         let_it_be(:another_user) { create(:user, name: 'Jane Doe') }
         let(:term) { 'jane' }
 
@@ -150,6 +150,16 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             result = search_autocomplete_opts(term)
             expect(result.size).to eq(5)
           end
+        end
+      end
+
+      [true, false].each do |enabled|
+        context "with feature flag autcomplete_users_use_search_service #{enabled}" do
+          before do
+            stub_feature_flags(autocomplete_users_use_search_service: enabled)
+          end
+
+          include_examples 'for users'
         end
       end
 

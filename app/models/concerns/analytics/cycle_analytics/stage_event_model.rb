@@ -5,6 +5,8 @@ module Analytics
       extend ActiveSupport::Concern
 
       included do
+        include FromUnion
+
         scope :by_stage_event_hash_id, ->(id) { where(stage_event_hash_id: id) }
         scope :by_project_id, ->(id) { where(project_id: id) }
         scope :by_group_id, ->(id) { where(group_id: id) }
@@ -20,7 +22,7 @@ module Analytics
           # start_event_timestamp must be included in the ORDER BY clause for the duration
           # calculation to work: SELECT end_event_timestamp - start_event_timestamp
           keyset_order(
-            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false },
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
             issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
             :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false }
           )

@@ -41,6 +41,7 @@ describe('Work item add note', () => {
     signedIn = true,
     isEditing = true,
     workItemType = 'Task',
+    isInternalThread = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
     if (signedIn) {
@@ -65,6 +66,7 @@ describe('Work item add note', () => {
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
+        isInternalThread,
       },
       stubs: {
         WorkItemCommentLocked,
@@ -256,5 +258,11 @@ describe('Work item add note', () => {
     await createComponent({ workItemIid: '', isEditing: false });
 
     expect(workItemResponseHandler).not.toHaveBeenCalled();
+  });
+
+  it('wrapper adds `internal-note` class when internal thread', async () => {
+    await createComponent({ isInternalThread: true });
+
+    expect(wrapper.attributes('class')).toContain('internal-note');
   });
 });

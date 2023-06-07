@@ -3,6 +3,7 @@
 class Timelog < ApplicationRecord
   include Importable
   include IgnorableColumns
+  include Sortable
 
   ignore_column :note_id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
@@ -45,11 +46,13 @@ class Timelog < ApplicationRecord
     issue || merge_request
   end
 
-  def self.sort_by_field(field, direction)
-    if direction == :asc
-      order_scope_asc(field)
-    else
-      order_scope_desc(field)
+  def self.sort_by_field(field)
+    case field.to_s
+    when 'spent_at_asc' then order_scope_asc(:spent_at)
+    when 'spent_at_desc' then order_scope_desc(:spent_at)
+    when 'time_spent_asc' then order_scope_asc(:time_spent)
+    when 'time_spent_desc' then order_scope_desc(:time_spent)
+    else order_by(field)
     end
   end
 

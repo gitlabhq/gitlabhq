@@ -429,6 +429,8 @@ the coverage report itself and verify that:
 - The file you are viewing in the diff view is mentioned in the coverage report.
 - The `source` and `filename` nodes in the report follows the [expected structure](#automatic-class-path-correction)
   to match the files in your repository.
+- The pipeline has completed. If the pipeline is [blocked on a manual job](../jobs/job_control.md#types-of-manual-jobs),
+  the pipeline is not considered complete.
 
 Report artifacts are not downloadable by default. If you want the report to be downloadable
 from the job details page, add your coverage report to the artifact `paths`:
