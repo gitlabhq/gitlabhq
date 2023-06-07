@@ -317,6 +317,16 @@ class CommitStatus < Ci::ApplicationRecord
     ci_stage&.name
   end
 
+  # For AiAction
+  def to_ability_name
+    'build'
+  end
+
+  # For AiAction
+  def resource_parent
+    project
+  end
+
   private
 
   def unrecoverable_failure?

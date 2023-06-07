@@ -27677,6 +27677,9 @@ msgstr ""
 msgid "Marks to do as done."
 msgstr ""
 
+msgid "Mask this variable in job logs if it meets %{linkStart}regular expression requirements%{linkEnd}."
+msgstr ""
+
 msgid "Mask variable"
 msgstr ""
 
@@ -38739,9 +38742,6 @@ msgstr[1] ""
 msgid "Requires a verified GitLab email address."
 msgstr ""
 
-msgid "Requires values to meet regular expression requirements."
-msgstr ""
-
 msgid "Requires you to deploy or set up cloud-hosted Sentry."
 msgstr ""
 
@@ -46939,7 +46939,7 @@ msgstr ""
 msgid "This user is the author of this %{noteable}."
 msgstr ""
 
-msgid "This variable can not be masked."
+msgid "This variable value does not meet the masking requirements."
 msgstr ""
 
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset."
@@ -49681,6 +49681,9 @@ msgstr ""
 msgid "Value might contain a variable reference"
 msgstr ""
 
+msgid "Value must meet regular expression requirements to be masked."
+msgstr ""
+
 msgid "Value stream"
 msgstr ""
 
@@ -49823,9 +49826,6 @@ msgid "Variable name '%{variable}' must not start with '%{prefix}'"
 msgstr ""
 
 msgid "Variable value will be evaluated as raw string."
-msgstr ""
-
-msgid "Variable will be masked in job logs."
 msgstr ""
 
 msgid "Variables"

@@ -458,7 +458,8 @@ describe('Ci variable modal', () => {
   });
 
   describe('Validations', () => {
-    const maskError = 'This variable can not be masked.';
+    const maskError = 'This variable value does not meet the masking requirements.';
+    const helpText = 'Value must meet regular expression requirements to be masked.';
 
     describe('when the variable is raw', () => {
       const [variable] = mockVariables;
@@ -488,6 +489,10 @@ describe('Ci variable modal', () => {
 
         expect(findModal().text()).toContain(maskError);
       });
+
+      it('does not show the masked variable help text', () => {
+        expect(findModal().text()).not.toContain(helpText);
+      });
     });
 
     describe('when the mask state is invalid', () => {
@@ -510,8 +515,9 @@ describe('Ci variable modal', () => {
         expect(findAddorUpdateButton().attributes('disabled')).toBeDefined();
       });
 
-      it('shows the correct error text', () => {
+      it('shows the correct error text and help text', () => {
         expect(findModal().text()).toContain(maskError);
+        expect(findModal().text()).toContain(helpText);
       });
 
       it('sends the correct tracking event', () => {
@@ -576,6 +582,10 @@ describe('Ci variable modal', () => {
           mountFn: mountExtended,
           props: { selectedVariable: validMaskandKeyVariable },
         });
+      });
+
+      it('shows the help text', () => {
+        expect(findModal().text()).toContain(helpText);
       });
 
       it('does not disable the submit button', () => {

@@ -201,8 +201,6 @@ module WorkerAttributes
     end
 
     def defer_on_database_health_signal?
-      return false unless Feature.enabled?(:defer_sidekiq_workers_on_database_health_signal, type: :worker)
-
       database_health_check_attrs.present?
     end
 

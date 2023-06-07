@@ -435,6 +435,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
           call_subject(job, 'test_queue') do
             job['deferred'] = true
+            job['deferred_by'] = :feature_flag
           end
         end
       end

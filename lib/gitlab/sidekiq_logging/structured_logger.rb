@@ -86,6 +86,8 @@ module Gitlab
 
         payload['message'] = "#{message}: #{job_status}: #{payload['duration_s']} sec"
         payload['job_status'] = job_status
+        payload['job_deferred_by'] = job['deferred_by'] if job['deferred']
+
         Gitlab::ExceptionLogFormatter.format!(job_exception, payload) if job_exception
 
         db_duration = ActiveRecord::LogSubscriber.runtime

@@ -1745,6 +1745,52 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#all_projects_except_soft_deleted' do
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { create(:group) }
+      let_it_be(:child) { create(:group, parent: namespace) }
+      let_it_be(:project1) { create(:project_empty_repo, namespace: namespace) }
+      let_it_be(:project2) { create(:project_empty_repo, namespace: child) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(namespace, child)
+      end
+
+      it { expect(namespace.all_projects_except_soft_deleted.to_a).to match_array([project2, project1]) }
+      it { expect(child.all_projects_except_soft_deleted.to_a).to match_array([project2]) }
+
+      context 'with soft deleted projects' do
+        let_it_be(:delayed_deletion_project) { create(:project, namespace: child, marked_for_deletion_at: Date.current) }
+
+        it 'skips delayed deletion project' do
+          expect(namespace.all_projects_except_soft_deleted.to_a).to match_array([project2, project1])
+        end
+      end
+    end
+
+    context 'when namespace is a user namespace' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:user_namespace) { create(:namespace, owner: user) }
+      let_it_be(:project) { create(:project, namespace: user_namespace) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(user_namespace)
+      end
+
+      it { expect(user_namespace.all_projects_except_soft_deleted.to_a).to match_array([project]) }
+
+      context 'with soft deleted projects' do
+        let_it_be(:delayed_deletion_project) { create(:project, namespace: user_namespace, marked_for_deletion_at: Date.current) }
+
+        it 'skips delayed deletion project' do
+          expect(user_namespace.all_projects_except_soft_deleted.to_a).to match_array([project])
+        end
+      end
+    end
+  end
+
   describe '#all_projects' do
     context 'with use_traversal_ids feature flag enabled' do
       before do

@@ -154,7 +154,9 @@ export default {
       return createJoinedEnvironments(this.variables, this.environments, this.newEnvironments);
     },
     maskedFeedback() {
-      return this.displayMaskedError ? __('This variable can not be masked.') : '';
+      return this.displayMaskedError
+        ? __('This variable value does not meet the masking requirements.')
+        : '';
     },
     maskedState() {
       if (this.displayMaskedError) {
@@ -189,6 +191,11 @@ export default {
     },
     variableValidationState() {
       return this.variable.value === '' || (this.tokenValidationState && this.maskedState);
+    },
+    variableValueHelpText() {
+      return this.variable.masked
+        ? __('Value must meet regular expression requirements to be masked.')
+        : '';
     },
   },
   watch: {
@@ -324,6 +331,7 @@ export default {
         :label="__('Value')"
         label-for="ci-variable-value"
         :state="variableValidationState"
+        :description="variableValueHelpText"
         :invalid-feedback="variableValidationFeedback"
       >
         <gl-form-textarea
@@ -423,17 +431,19 @@ export default {
         >
           {{ __('Mask variable') }}
           <p class="gl-mt-2 text-secondary">
-            {{ __('Variable will be masked in job logs.') }}
-            <span
-              :class="{
-                'bold text-plain': displayMaskedError,
-              }"
+            <gl-sprintf
+              :message="
+                __(
+                  'Mask this variable in job logs if it meets %{linkStart}regular expression requirements%{linkEnd}.',
+                )
+              "
             >
-              {{ __('Requires values to meet regular expression requirements.') }}</span
-            >
-            <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">{{
-              __('Learn more.')
-            }}</gl-link>
+              <template #link="{ content }"
+                ><gl-link target="_blank" :href="maskedEnvironmentVariablesLink">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
           </p>
         </gl-form-checkbox>
         <gl-form-checkbox

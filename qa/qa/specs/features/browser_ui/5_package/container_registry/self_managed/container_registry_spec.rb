@@ -27,13 +27,6 @@ module QA
         end
       end
 
-      let(:registry_repository) do
-        Resource::RegistryRepository.fabricate! do |repository|
-          repository.name = project.path_with_namespace.to_s
-          repository.project = project
-        end
-      end
-
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -51,7 +44,6 @@ module QA
       end
 
       after do
-        registry_repository&.remove_via_api!
         runner.remove_via_api!
       end
 

@@ -186,7 +186,7 @@ RSpec.shared_examples 'variable list' do
     click_button('Add variable')
 
     fill_variable('empty_mask_key', '???', protected: true, masked: true) do
-      expect(page).to have_content('This variable can not be masked')
+      expect(page).to have_content('This variable value does not meet the masking requirements.')
       expect(find_button('Add variable', disabled: true)).to be_present
     end
   end

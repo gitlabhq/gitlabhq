@@ -36,7 +36,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqVersioning::Middleware
         chain.add ::Gitlab::SidekiqStatus::ServerMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Server
-        # DuplicateJobs::Server should be placed  at the bottom, but before the SidekiqServerMiddleware,
+        # DuplicateJobs::Server should be placed at the bottom, but before the SidekiqServerMiddleware,
         # so we can compare the latest WAL location against replica
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server
         chain.add ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
