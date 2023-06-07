@@ -5,8 +5,8 @@ module Types
     class DefinitionType < ::Types::BaseObject
       graphql_name 'AuditEventDefinition'
       description 'Represents the YAML definitions for audit events defined ' \
-                  'under ee/config/audit_events/types/<event-type-name>.yml ' \
-                  'and config/audit_events/types/<event-type-name>.yml.'
+                  'in `ee/config/audit_events/types/<event-type-name>.yml` ' \
+                  'and `config/audit_events/types/<event-type-name>.yml`.'
 
       authorize :audit_event_definitions
 

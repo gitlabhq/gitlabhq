@@ -7,7 +7,8 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addAwardEmojiMutation from '../../graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
@@ -30,6 +31,7 @@ export default {
     GlDisclosureDropdownItem,
     ReplyButton,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    UserAccessRoleBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -73,12 +75,26 @@ export default {
       required: false,
       default: false,
     },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    isWorkItemAuthor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     assignUserActionText() {
       return this.isAuthorAnAssignee
         ? this.$options.i18n.unassignUserText
         : this.$options.i18n.assignUserText;
+    },
+    displayAuthorBadgeText() {
+      return sprintf(__('This user is the author of this %{workItemType}.'), {
+        workItemType: this.workItemType.toLowerCase(),
+      });
     },
   },
 
@@ -115,6 +131,15 @@ export default {
 
 <template>
   <div class="note-actions">
+    <user-access-role-badge
+      v-if="isWorkItemAuthor"
+      v-gl-tooltip
+      :title="displayAuthorBadgeText"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      data-testid="author-badge"
+    >
+      {{ __('Author') }}
+    </user-access-role-badge>
     <emoji-picker
       v-if="showAwardEmoji && glFeatures.workItemsMvc2"
       toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
@@ -173,7 +198,7 @@ export default {
         @action="emitEvent('notifyCopyDone')"
       >
         <template #list-item>
-          {{ $options.i18n.copyLinkText , }}
+          {{ $options.i18n.copyLinkText }}
         </template>
       </gl-disclosure-dropdown-item>
       <gl-disclosure-dropdown-item

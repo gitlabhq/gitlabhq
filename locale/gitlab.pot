@@ -46942,6 +46942,9 @@ msgstr ""
 msgid "This user is the author of this %{noteable}."
 msgstr ""
 
+msgid "This user is the author of this %{workItemType}."
+msgstr ""
+
 msgid "This variable value does not meet the masking requirements."
 msgstr ""
 

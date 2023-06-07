@@ -38,6 +38,7 @@ as base:
 | `project_id` | `456` |
 | `source` | `"gitlab-rails"` |
 | `user_id` | `789`* |
+| `is_gitlab_team_member` | `true`|
 
 _\* Undergoes a pseudonymization process at the collector level._
 

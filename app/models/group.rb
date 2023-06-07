@@ -473,7 +473,7 @@ class Group < Namespace
   def has_owner?(user)
     return false unless user
 
-    members_with_parents.owners.exists?(user_id: user)
+    members_with_parents.all_owners.exists?(user_id: user)
   end
 
   def blocked_owners
@@ -494,35 +494,23 @@ class Group < Namespace
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
   def last_owner?(user)
-    has_owner?(user) && member_owners_excluding_project_bots.size == 1
-  end
+    return false unless user
 
-  def member_last_owner?(member)
-    return member.last_owner unless member.last_owner.nil?
+    all_owners = member_owners_excluding_project_bots
 
-    last_owner?(member.user)
+    all_owners.size == 1 && all_owners.first.user_id == user.id
   end
 
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
   def member_owners_excluding_project_bots
-    if root?
-      members
-    else
-      members_with_parents
-    end.owners.merge(User.without_project_bot)
-  end
+    members_from_hiearchy = if root?
+                              members.non_minimal_access.without_invites_and_requests
+                            else
+                              members_with_parents(only_active_users: false)
+                            end
 
-  def single_blocked_owner?
-    blocked_owners.size == 1
-  end
-
-  def member_last_blocked_owner?(member)
-    return member.last_blocked_owner unless member.last_blocked_owner.nil?
-
-    return false if member_owners_excluding_project_bots.any?
-
-    single_blocked_owner? && blocked_owners.exists?(user_id: member.user)
+    members_from_hiearchy.all_owners.left_outer_joins(:user).merge(User.without_project_bot)
   end
 
   def ldap_synced?
@@ -610,7 +598,7 @@ class Group < Namespace
                             members_from_self_and_ancestor_group_shares]).authorizable
   end
 
-  def members_with_parents
+  def members_with_parents(only_active_users: true)
     # Avoids an unnecessary SELECT when the group has no parents
     source_ids =
       if has_parent?
@@ -619,10 +607,15 @@ class Group < Namespace
         id
       end
 
-    group_hierarchy_members = GroupMember.active_without_invites_and_requests
-                                         .non_minimal_access
+    group_hierarchy_members = GroupMember.non_minimal_access
                                          .where(source_id: source_ids)
                                          .select(*GroupMember.cached_column_list)
+
+    group_hierarchy_members = if only_active_users
+                                group_hierarchy_members.active_without_invites_and_requests
+                              else
+                                group_hierarchy_members.without_invites_and_requests
+                              end
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares])

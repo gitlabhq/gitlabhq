@@ -585,7 +585,8 @@ before proceeding with a major version upgrade. For more information, see [Upgra
 Migrations that have been removed are
 [marked as obsolete](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63001).
 If you upgrade GitLab before all pending advanced search migrations are completed,
-those migrations are made obsolete and cannot be executed. In this case, you must
+any pending migrations that have been removed in the new version cannot be executed or retried.
+In this case, you must
 [re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
 
 ## GitLab advanced search Rake tasks

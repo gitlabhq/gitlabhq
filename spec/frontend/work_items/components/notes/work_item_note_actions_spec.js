@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -23,6 +24,7 @@ describe('Work Item Note Actions', () => {
   const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
   const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
   const findReportAbuseToAdminButton = () => wrapper.find('[data-testid="abuse-note-action"]');
+  const findAuthorBadge = () => wrapper.find('[data-testid="author-badge"]');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -41,6 +43,8 @@ describe('Work Item Note Actions', () => {
     showAwardEmoji = true,
     showAssignUnassign = false,
     canReportAbuse = false,
+    workItemType = 'Task',
+    isWorkItemAuthor = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
@@ -50,6 +54,8 @@ describe('Work Item Note Actions', () => {
         showAwardEmoji,
         showAssignUnassign,
         canReportAbuse,
+        workItemType,
+        isWorkItemAuthor,
       },
       provide: {
         glFeatures: {
@@ -60,6 +66,9 @@ describe('Work Item Note Actions', () => {
         EmojiPicker: EmojiPickerStub,
       },
       apolloProvider: createMockApollo([[addAwardEmojiMutation, addEmojiMutationResolver]]),
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
     wrapper.vm.$refs.dropdown.close = jest.fn();
   };
@@ -223,6 +232,24 @@ describe('Work Item Note Actions', () => {
       findReportAbuseToAdminButton().vm.$emit('action');
 
       expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
+    });
+  });
+
+  describe('user role badges', () => {
+    describe('author badge', () => {
+      it('does not show the author badge by default', () => {
+        createComponent();
+
+        expect(findAuthorBadge().exists()).toBe(false);
+      });
+
+      it('shows the author badge when the work item is author by the current User', () => {
+        createComponent({ isWorkItemAuthor: true });
+
+        expect(findAuthorBadge().exists()).toBe(true);
+        expect(findAuthorBadge().text()).toBe('Author');
+        expect(findAuthorBadge().attributes('title')).toBe('This user is the author of this task.');
+      });
     });
   });
 });

@@ -12108,7 +12108,7 @@ Represents a vulnerability asset type.
 
 ### `AuditEventDefinition`
 
-Represents the YAML definitions for audit events defined under ee/config/audit_events/types/<event-type-name>.yml and config/audit_events/types/<event-type-name>.yml.
+Represents the YAML definitions for audit events defined in `ee/config/audit_events/types/<event-type-name>.yml` and `config/audit_events/types/<event-type-name>.yml`.
 
 #### Fields
 

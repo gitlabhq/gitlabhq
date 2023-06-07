@@ -25,7 +25,7 @@ class GroupMember < Member
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?
 
-  attr_accessor :last_owner, :last_blocked_owner
+  attr_accessor :last_owner
 
   # For those who get to see a modal with a role dropdown, here are the options presented
   def self.permissible_access_level_roles(_, _)
@@ -52,8 +52,11 @@ class GroupMember < Member
 
   def last_owner_of_the_group?
     return false unless access_level == Gitlab::Access::OWNER
+    return last_owner unless last_owner.nil?
 
-    group.member_last_owner?(self) || group.member_last_blocked_owner?(self)
+    group.member_owners_excluding_project_bots.where.not(
+      group: group, user_id: user_id
+    ).empty?
   end
 
   private

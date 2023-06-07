@@ -148,8 +148,11 @@ export default {
     currentUserId() {
       return window.gon.current_user_id;
     },
-    canReportAbuse() {
-      return getIdFromGraphQLId(this.author.id) !== this.currentUserId;
+    isCurrentUserAuthorOfNote() {
+      return getIdFromGraphQLId(this.author.id) === this.currentUserId;
+    },
+    isWorkItemAuthor() {
+      return getIdFromGraphQLId(this.workItem?.author?.id) === getIdFromGraphQLId(this.author.id);
     },
   },
   apollo: {
@@ -323,7 +326,9 @@ export default {
               :note-id="note.id"
               :is-author-an-assignee="isAuthorAnAssignee"
               :show-assign-unassign="canSetWorkItemMetadata"
-              :can-report-abuse="canReportAbuse"
+              :can-report-abuse="!isCurrentUserAuthorOfNote"
+              :is-work-item-author="isWorkItemAuthor"
+              :work-item-type="workItemType"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @error="($event) => $emit('error', $event)"

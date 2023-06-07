@@ -33,6 +33,23 @@ describe('Work Item Note', () => {
   const updatedNoteBody = '<h1 data-sourcepos="1:1-1:12" dir="auto">Some title</h1>';
   const mockWorkItemId = workItemQueryResponse.data.workItem.id;
 
+  const mockWorkItemByDifferentUser = {
+    data: {
+      workItem: {
+        ...workItemQueryResponse.data.workItem,
+        author: {
+          avatarUrl:
+            'http://127.0.0.1:3000/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          id: 'gid://gitlab/User/2',
+          name: 'User 1',
+          username: 'user1',
+          webUrl: 'http://127.0.0.1:3000/user1',
+          __typename: 'UserCore',
+        },
+      },
+    },
+  };
+
   const successHandler = jest.fn().mockResolvedValue({
     data: {
       updateNote: {
@@ -47,6 +64,9 @@ describe('Work Item Note', () => {
   });
 
   const workItemResponseHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const workItemByAuthoredByDifferentUser = jest
+    .fn()
+    .mockResolvedValue(mockWorkItemByDifferentUser);
 
   const updateWorkItemMutationSuccessHandler = jest
     .fn()
@@ -69,6 +89,7 @@ describe('Work Item Note', () => {
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
+    workItemByIidResponseHandler = workItemResponseHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       provide: {
@@ -85,7 +106,7 @@ describe('Work Item Note', () => {
         assignees,
       },
       apolloProvider: mockApollo([
-        [workItemByIidQuery, workItemResponseHandler],
+        [workItemByIidQuery, workItemByIidResponseHandler],
         [updateWorkItemNoteMutation, updateNoteMutationHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
@@ -334,6 +355,24 @@ describe('Work Item Note', () => {
         });
         expect(findTimelineEntryItem().classes()).toContain('internal-note');
         expect(findNoteHeader().props('isInternalNote')).toBe(true);
+      });
+    });
+
+    describe('author and user role badges', () => {
+      describe('author badge props', () => {
+        it.each`
+          isWorkItemAuthor | sameAsCurrentUser | workItemByIidResponseHandler
+          ${true}          | ${'same as'}      | ${workItemResponseHandler}
+          ${false}         | ${'not same as'}  | ${workItemByAuthoredByDifferentUser}
+        `(
+          'should pass correct isWorkItemAuthor `$isWorkItemAuthor` to note actions when author is $sameAsCurrentUser as current note',
+          async ({ isWorkItemAuthor, workItemByIidResponseHandler }) => {
+            createComponent({ workItemByIidResponseHandler });
+            await waitForPromises();
+
+            expect(findNoteActions().props('isWorkItemAuthor')).toBe(isWorkItemAuthor);
+          },
+        );
       });
     });
   });
