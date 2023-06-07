@@ -176,31 +176,31 @@ by a reviewer before passing it to a maintainer as described in the
 
 | If your merge request includes  | It must be approved by a |
 | ------------------------------- | ------------------------ |
-| `~backend` changes (*1*)        | [Backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend). |
-| `~database` migrations or changes to expensive queries (*2*) | [Database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database). Refer to the [database review guidelines](database_review.md) for more details. |
+| `~backend` changes <sup>1</sup>        | [Backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend). |
+| `~database` migrations or changes to expensive queries <sup>2</sup> | [Database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database). Refer to the [database review guidelines](database_review.md) for more details. |
 | `~workhorse` changes | [Workhorse maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_workhorse). |
-| `~frontend` changes (*1*)       | [Frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
-| `~UX` user-facing changes (*3*) | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
-| Adding a new JavaScript library (*1*) | - [Frontend foundations member](https://about.gitlab.com/direction/manage/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
+| `~frontend` changes <sup>1</sup>       | [Frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
+| `~UX` user-facing changes <sup>3</sup> | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
+| Adding a new JavaScript library <sup>1</sup> | - [Frontend foundations member](https://about.gitlab.com/direction/manage/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
 | A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For RubyGems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
 | `~documentation` or `~UI text` changes | [Technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
-| End-to-end **and** non-end-to-end changes (*4*) | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
-| Only End-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
+| End-to-end **and** non-end-to-end changes <sup>4</sup> | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
+| Only End-to-end changes <sup>4</sup> **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
 | A new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits) | [Product manager](https://about.gitlab.com/company/team/). |
 | Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
 | Changes related to authentication or authorization | [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
 
-- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
-- (*2*): We encourage you to seek guidance from a database maintainer if your merge
-  request is potentially introducing expensive queries. It is most efficient to comment
-  on the line of code in question with the SQL queries so they can give their advice.
-- (*3*): User-facing changes include both visual changes (regardless of how minor),
-  and changes to the rendered DOM which impact how a screen reader may announce
-  the content.
-- (*4*): End-to-end changes include all files in the `qa` directory.
+1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
+1. We encourage you to seek guidance from a database maintainer if your merge
+   request is potentially introducing expensive queries. It is most efficient to comment
+   on the line of code in question with the SQL queries so they can give their advice.
+1. User-facing changes include both visual changes (regardless of how minor),
+   and changes to the rendered DOM which impact how a screen reader may announce
+   the content.
+1. End-to-end changes include all files in the `qa` directory.
 
 #### Acceptance checklist
 
@@ -428,10 +428,10 @@ On March 18th 2021, an updated process was put in place aimed at efficiently and
 
 Here is a summary of the changes, also reflected in this section above.
 
-- Merge request authors and DRIs stay as Assignees
-- Authors request a review from Reviewers when they are expected to review
-- Reviewers remove themselves after they're done reviewing/approving
-- The last approver stays as Reviewer upon merging
+- Merge request authors and DRIs stay as Assignees.
+- Authors request a review by assigning users as Reviewers.
+- Reviewers unassign themselves after they're done reviewing and approving.
+- The last approver (who merges the MR) stays assigned as Reviewer.
 
 ## Best practices
 
@@ -569,8 +569,6 @@ must seek a maintainer who has not contributed to the MR to approve and merge it
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
 [Change Management Controls](https://about.gitlab.com/handbook/security/change-management-policy.html).
-
-<!-- Or should it link to: https://about.gitlab.com/handbook/engineering/infrastructure/change-management/ ? -->
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:

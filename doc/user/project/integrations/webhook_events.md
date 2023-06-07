@@ -786,7 +786,7 @@ Payload example:
     "noteable_id": 53,
     "system": false,
     "st_diff": null,
-    "url": "http://example.com/gitlab-org/gitlab-test/snippets/53#note_1245"
+    "url": "http://example.com/gitlab-org/gitlab-test/-/snippets/53#note_1245"
   },
   "snippet": {
     "id": 53,
@@ -799,7 +799,8 @@ Payload example:
     "file_name": "test.rb",
     "expires_at": null,
     "type": "ProjectSnippet",
-    "visibility_level": 0
+    "visibility_level": 0,
+    "url": "http://example.com/gitlab-org/gitlab-test/-/snippets/53"
   }
 }
 ```

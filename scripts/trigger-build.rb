@@ -19,7 +19,7 @@ module Trigger
 
   def self.variables_for_env_file(variables)
     variables.map do |key, value|
-      %Q(#{key}=#{value})
+      %(#{key}=#{value})
     end.join("\n")
   end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
@@ -12,8 +12,7 @@ export default {
   components: {
     CiIcon,
     ClipboardButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     GlLink,
     GlSprintf,
   },
@@ -32,6 +31,15 @@ export default {
     },
   },
   computed: {
+    dropdownItems() {
+      return this.stages.map((stage) => ({
+        text: stage.name,
+        action: () => {
+          this.onStageClick(stage);
+        },
+      }));
+    },
+
     hasRef() {
       return !isEmpty(this.pipeline.ref);
     },
@@ -153,15 +161,6 @@ export default {
       </gl-sprintf>
     </div>
 
-    <gl-dropdown :text="selectedStage" class="js-selected-stage gl-w-full gl-mt-3">
-      <gl-dropdown-item
-        v-for="stage in stages"
-        :key="stage.name"
-        class="js-stage-item stage-item"
-        @click="onStageClick(stage)"
-      >
-        {{ stage.name }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-disclosure-dropdown :toggle-text="selectedStage" :items="dropdownItems" class="gl-mt-3" />
   </div>
 </template>

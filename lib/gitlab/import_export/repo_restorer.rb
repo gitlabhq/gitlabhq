@@ -42,7 +42,7 @@ module Gitlab
       def ensure_repository_does_not_exist!
         if repository.exists?
           shared.logger.info(
-            message: %Q{Deleting existing "#{repository.disk_path}" to re-import it.}
+            message: %{Deleting existing "#{repository.disk_path}" to re-import it.}
           )
 
           Repositories::DestroyService.new(repository).execute

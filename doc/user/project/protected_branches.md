@@ -30,13 +30,17 @@ When a branch is protected, the default behavior enforces these restrictions on 
 |:-------------------------|:------------------------------------------------------------------|
 | Protect a branch         | At least the Maintainer role.                                     |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one.                                                           |
+| Force push to the branch | No one. (3)                                                       |
 | Delete the branch        | No one. (2)                                                       |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](repository/branches/default.md).
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
+1. If the `group_protected_branches` feature flag is enabled _and_ the same branch is
+   protected at both the group and project levels, force push settings configured
+   for that branch at the project level are ignored. All other protections continue
+   to use project level settings.
 
 ### When a branch matches multiple rules
 
@@ -108,14 +112,19 @@ The protected branch displays in the list of protected branches.
 
 ### For all projects in a group **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
-
-Group owners can create protected branches for a group. These settings are inherited by all projects in the group and can't be overridden by project settings.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md)
 named `group_protected_branches`. On GitLab.com, this feature is not available.
+
+Group owners can create protected branches for a group. These settings are inherited
+by all projects in the group and can't be overridden by project settings. If a
+specific branch is configured with **Allowed to force push** settings at both the
+group and project levels, the **Allowed to force push** setting at the _project_ level
+is ignored in favor of the group level setting.
 
 Prerequisite:
 
@@ -271,6 +280,30 @@ To enable force pushes on branches that are already protected:
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
 Members who can push to this branch can now also force push.
+
+### When a branch matches multiple rules
+
+When a branch matches multiple rules, the **most permissive rule** determines the
+level of protection for the branch. For example, consider these rules, which include
+[wildcards](#protect-multiple-branches-with-wildcard-rules):
+
+| Branch name pattern | Allow force push |
+|---------------------|------------------|
+| `v1.x`              | Yes              |
+| `v1.*`              | No               |
+| `v*`                | No               |
+
+A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
+As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
+
+- **Allow force push:** Of the three settings, `Yes` is most permissive,
+  and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
+  (which each have stricter permissions), any user that can push to this branch can also force push.
+
+NOTE:
+Force push settings for a branch at the project level are overridden by group level settings
+if the `group_protected_branches` feature flag is enabled and a group owner has set
+[group level protection for the same branch](#for-all-projects-in-a-group).
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 

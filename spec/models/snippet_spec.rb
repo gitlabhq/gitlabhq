@@ -805,6 +805,34 @@ RSpec.describe Snippet do
     include_examples 'size checker for snippet'
   end
 
+  describe '#hook_attrs' do
+    let_it_be(:snippet) { create(:personal_snippet, secret_token: 'foo') }
+
+    subject(:attrs) { snippet.hook_attrs }
+
+    it 'includes the expected attributes' do
+      is_expected.to match(
+        'id' => snippet.id,
+        'title' => snippet.title,
+        'content' => snippet.content,
+        'description' => snippet.description,
+        'file_name' => snippet.file_name,
+        'author_id' => snippet.author_id,
+        'project_id' => snippet.project_id,
+        'visibility_level' => snippet.visibility_level,
+        'encrypted_secret_token' => snippet.encrypted_secret_token,
+        'encrypted_secret_token_iv' => snippet.encrypted_secret_token_iv,
+        'secret' => false,
+        'secret_token' => nil,
+        'repository_read_only' => snippet.repository_read_only?,
+        'url' => Gitlab::UrlBuilder.build(snippet),
+        'type' => 'PersonalSnippet',
+        'created_at' => be_like_time(snippet.created_at),
+        'updated_at' => be_like_time(snippet.updated_at)
+      )
+    end
+  end
+
   describe '#can_cache_field?' do
     using RSpec::Parameterized::TableSyntax
 

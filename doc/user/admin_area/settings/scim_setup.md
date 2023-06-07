@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
 - Create users.
-- Remove users (deactivate SCIM identity).
+- Block users.
 
 The [internal GitLab SCIM API](../../../development/internal_api/index.md#instance-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 
@@ -32,3 +32,11 @@ To configure GitLab SCIM:
 1. For configuration of your identity provider, save the:
     - Token from the **Your SCIM token** field.
     - URL from the **SCIM API endpoint URL** field.
+
+## Remove access
+
+Removing or deactivating a user on the identity provider blocks the user on
+the GitLab instance, while the SCIM identity remains linked to the GitLab user.
+
+To update the user SCIM identity, use the
+[internal GitLab SCIM API](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user-1).

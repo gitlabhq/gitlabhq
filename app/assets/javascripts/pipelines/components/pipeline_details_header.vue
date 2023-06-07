@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__, sprintf } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -247,11 +248,11 @@ export default {
           };
       }
     },
-    usersName() {
-      return this.pipeline?.user?.name || '';
+    user() {
+      return this.pipeline?.user;
     },
-    userPath() {
-      return this.pipeline?.user?.webPath || '';
+    userId() {
+      return getIdFromGraphQLId(this.user?.id);
     },
     shortId() {
       return this.pipeline?.commit?.shortId || '';
@@ -268,8 +269,8 @@ export default {
       });
     },
     triggeredText() {
-      return sprintf(__('%{linkStart}%{name}%{linkEnd} triggered pipeline for commit'), {
-        name: this.usersName,
+      return sprintf(__('triggered pipeline for commit %{linkStart}%{shortId}%{linkEnd}'), {
+        shortId: this.shortId,
       });
     },
     inProgress() {
@@ -384,24 +385,28 @@ export default {
         <div>
           <ci-badge-link :status="detailedStatus" />
           <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">
+            <gl-link
+              v-if="user"
+              :href="user.webUrl"
+              class="gl-display-inline-block gl-text-gray-900 gl-font-weight-bold js-user-link"
+              :data-user-id="userId"
+              :data-username="user.username"
+              data-testid="pipeline-user-link"
+            >
+              {{ user.name }}
+            </gl-link>
             <gl-sprintf :message="triggeredText">
               <template #link="{ content }">
                 <gl-link
-                  :href="userPath"
-                  class="gl-text-gray-900 gl-font-weight-bold"
+                  :href="commitPath"
+                  class="gl-bg-blue-50 gl-rounded-base gl-px-2 gl-mx-2"
+                  data-testid="commit-link"
                   target="_blank"
                 >
                   {{ content }}
                 </gl-link>
               </template>
             </gl-sprintf>
-            <gl-link
-              :href="commitPath"
-              class="gl-bg-blue-50 gl-rounded-base gl-px-2 gl-mx-2"
-              data-testid="commit-link"
-            >
-              {{ shortId }}
-            </gl-link>
             <clipboard-button
               :text="shortId"
               category="tertiary"

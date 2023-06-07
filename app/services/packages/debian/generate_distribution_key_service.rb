@@ -89,7 +89,7 @@ module Packages
             'Name-Email': params[:name_email] || Gitlab.config.gitlab.email_reply_to,
             'Name-Comment': params[:name_comment] || 'GitLab Debian repository automatic signing key',
             'Expire-Date': params[:expire_date] || 0,
-            'Passphrase': passphrase
+            Passphrase: passphrase
           }.map { |k, v| "#{k}: #{v}\n" }.join +
           '</GnupgKeyParms>'
       end

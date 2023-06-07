@@ -242,7 +242,7 @@ class Snippet < ApplicationRecord
   end
 
   def hook_attrs
-    attributes
+    attributes.merge('url' => Gitlab::UrlBuilder.build(self))
   end
 
   def file_name

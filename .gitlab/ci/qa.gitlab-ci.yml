@@ -85,6 +85,7 @@ trigger-omnibus:
     - .qa:rules:package-and-test-ee
   needs:
     - trigger-omnibus-env
+    - build-assets-image
   inherit:
     variables: false
   variables:
@@ -118,6 +119,7 @@ trigger-omnibus as-if-foss:
     - .qa:rules:package-and-test-ce
   needs:
     - trigger-omnibus-env as-if-foss
+    - build-assets-image as-if-foss
   variables:
     # Override gitlab repository so that omnibus doesn't use foss repository for CE build
     GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL

@@ -219,8 +219,8 @@ module Kramdown
         # opportunity to replace it later. Mention name can have
         # spaces, so double quote it
         mention_text = ast_node.dig('attrs', 'text')&.gsub('@', '')
-        mention_text = %Q("#{mention_text}") if mention_text&.include?(' ')
-        mention_text = %Q(@adf-mention:#{mention_text})
+        mention_text = %("#{mention_text}") if mention_text&.include?(' ')
+        mention_text = %(@adf-mention:#{mention_text})
 
         add_text(mention_text, element, :text)
       end

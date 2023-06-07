@@ -49,11 +49,11 @@ RSpec.describe Packages::Helm::FileMetadatum, type: :model do
     describe '#metadata' do
       it 'validates #metadata', :aggregate_failures do
         is_expected.not_to validate_presence_of(:metadata)
-        is_expected.to allow_value({ 'name': 'foo', 'version': 'v1.0', 'apiVersion': 'v2' }).for(:metadata)
+        is_expected.to allow_value({ name: 'foo', version: 'v1.0', apiVersion: 'v2' }).for(:metadata)
         is_expected.not_to allow_value({}).for(:metadata)
-        is_expected.not_to allow_value({ 'version': 'v1.0', 'apiVersion': 'v2' }).for(:metadata)
-        is_expected.not_to allow_value({ 'name': 'foo', 'apiVersion': 'v2' }).for(:metadata)
-        is_expected.not_to allow_value({ 'name': 'foo', 'version': 'v1.0' }).for(:metadata)
+        is_expected.not_to allow_value({ version: 'v1.0', apiVersion: 'v2' }).for(:metadata)
+        is_expected.not_to allow_value({ name: 'foo', apiVersion: 'v2' }).for(:metadata)
+        is_expected.not_to allow_value({ name: 'foo', version: 'v1.0' }).for(:metadata)
       end
     end
   end

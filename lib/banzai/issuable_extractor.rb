@@ -48,7 +48,7 @@ module Banzai
     end
 
     def query
-      %Q(
+      %(
         descendant-or-self::a[contains(concat(" ", @class, " "), " gfm ")]
         [#{reference_types.join(' or ')}]
       )

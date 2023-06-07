@@ -873,9 +873,6 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
-msgid "%{linkStart}%{name}%{linkEnd} triggered pipeline for commit"
-msgstr ""
-
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -55096,6 +55093,9 @@ msgid "total must be less than or equal to %{size}"
 msgstr ""
 
 msgid "triggered"
+msgstr ""
+
+msgid "triggered pipeline for commit %{linkStart}%{shortId}%{linkEnd}"
 msgstr ""
 
 msgid "two-factor authentication settings"

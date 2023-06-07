@@ -90,9 +90,9 @@ module Packages
 
       def package
         params = {
-          'name': metadata[:fields]['Source'],
-          'version': metadata[:fields]['Version'],
-          'distribution_name': metadata[:fields]['Distribution']
+          name: metadata[:fields]['Source'],
+          version: metadata[:fields]['Version'],
+          distribution_name: metadata[:fields]['Distribution']
         }
         response = Packages::Debian::FindOrCreatePackageService.new(project, creator, params).execute
         response.payload[:package]

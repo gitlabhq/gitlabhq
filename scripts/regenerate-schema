@@ -52,7 +52,7 @@ class SchemaRegenerator
   def checkout_ref
     return unless ci?
 
-    run %Q[git checkout #{source_ref}]
+    run %[git checkout #{source_ref}]
     run %q[git clean -f -- db]
   end
 
@@ -71,8 +71,8 @@ class SchemaRegenerator
     return false unless project_url
     return false unless target_project_url
 
-    run %Q[git remote add target_project #{target_project_url}.git]
-    run %Q[git fetch target_project #{target_branch}:#{target_branch}]
+    run %[git remote add target_project #{target_project_url}.git]
+    run %[git fetch target_project #{target_branch}:#{target_branch}]
 
     local_checkout_clean_schema
   end
@@ -83,8 +83,8 @@ class SchemaRegenerator
   # Ask git to checkout the schema from the target branch and reset
   # the file to unstage the changes.
   def local_checkout_clean_schema
-    run %Q[git checkout #{merge_base} -- #{FILENAME}]
-    run %Q[git reset -- #{FILENAME}]
+    run %[git checkout #{merge_base} -- #{FILENAME}]
+    run %[git reset -- #{FILENAME}]
   end
 
   ##

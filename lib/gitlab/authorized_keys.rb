@@ -149,7 +149,7 @@ module Gitlab
         raise KeyError, "Invalid public_key: #{key.inspect}"
       end
 
-      %Q(command="#{command(id)}",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty #{strip(key)})
+      %(command="#{command(id)}",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty #{strip(key)})
     end
 
     def command(id)

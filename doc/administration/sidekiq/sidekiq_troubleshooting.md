@@ -585,3 +585,7 @@ This change might reduce the amount of work Sidekiq can do. Symptoms like delays
 indicate that additional Sidekiq processes would be beneficial.
 Consider [adding additional Sidekiq processes](extra_sidekiq_processes.md)
 to compensate for removing the `sidekiq-cluster` service.
+
+## Related topics
+
+- [Elasticsearch workers overload Sidekiq](../../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-workers-overload-sidekiq).

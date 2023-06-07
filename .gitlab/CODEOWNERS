@@ -362,7 +362,8 @@ Dangerfile
 ^[Legal] @gitlab-org/legal-reviewers
 /config/dependency_decisions.yml
 
-^[Workhorse] @nolith @patrickbajao @igor.drozdov
+# https://gitlab.com/groups/gitlab-org/maintainers/gitlab-workhorse/-/group_members?with_inherited_permissions=exclude
+^[Workhorse] @gitlab-org/maintainers/gitlab-workhorse
 /workhorse/
 
 [Application Security] @gitlab-com/gl-security/appsec

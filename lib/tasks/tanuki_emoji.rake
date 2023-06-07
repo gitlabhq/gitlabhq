@@ -157,9 +157,9 @@ namespace :tanuki_emoji do
 
       # SpriteFactory's SCSS is a bit too verbose for our purposes here, so
       # let's simplify it
-      system(%Q(sed -i '' "s/width: #{SIZE}px; height: #{SIZE}px; background: image-url('emoji.png')/background-position:/" #{style_path}))
-      system(%Q(sed -i '' "s/ no-repeat//" #{style_path}))
-      system(%Q(sed -i '' "s/ 0px/ 0/g" #{style_path}))
+      system(%(sed -i '' "s/width: #{SIZE}px; height: #{SIZE}px; background: image-url('emoji.png')/background-position:/" #{style_path}))
+      system(%(sed -i '' "s/ no-repeat//" #{style_path}))
+      system(%(sed -i '' "s/ 0px/ 0/g" #{style_path}))
 
       # Append a generic rule that applies to all Emojis
       File.open(style_path, 'a') do |f|

@@ -1451,7 +1451,7 @@ Fields that can be updated are:
 | SCIM/IdP field                   | GitLab field                                                                 |
 |:---------------------------------|:-----------------------------------------------------------------------------|
 | `id/externalId`                  | `extern_uid`                                                                 |
-| `active`                         | Identity removal if `active` = `false`                                       |
+| `active`                         | If `false`, the user is blocked, but the SCIM identity remains linked.       |
 
 ```plaintext
 PATCH /api/scim/v2/application/Users/:id

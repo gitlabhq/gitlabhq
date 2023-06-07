@@ -1,9 +1,10 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLoadingIcon, GlModal, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineDetailsHeader from '~/pipelines/components/pipeline_details_header.vue';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/pipelines/constants';
 import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
@@ -69,6 +70,7 @@ describe('Pipeline details header', () => {
   const findCancelButton = () => wrapper.findByTestId('cancel-pipeline');
   const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
 
   const defaultHandlers = [[getPipelineDetailsQuery, successHandler]];
 
@@ -123,6 +125,7 @@ describe('Pipeline details header', () => {
           },
         },
       },
+      stubs: { GlSprintf },
       apolloProvider: createMockApolloProvider(handlers),
     });
   };
@@ -176,6 +179,23 @@ describe('Pipeline details header', () => {
 
     it('displays ref text', () => {
       expect(findPipelineRefText()).toBe('Related merge request !1 to merge test');
+    });
+
+    it('displays pipeline user link with required user popover attributes', () => {
+      const {
+        data: {
+          project: {
+            pipeline: { user },
+          },
+        },
+      } = pipelineHeaderSuccess;
+
+      const userId = getIdFromGraphQLId(user.id).toString();
+
+      expect(findPipelineUserLink().classes()).toContain('js-user-link');
+      expect(findPipelineUserLink().attributes('data-user-id')).toBe(userId);
+      expect(findPipelineUserLink().attributes('data-username')).toBe(user.username);
+      expect(findPipelineUserLink().attributes('href')).toBe(user.webUrl);
     });
   });
 

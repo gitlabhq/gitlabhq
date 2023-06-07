@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def weak_etag_format(value)
-        %Q{W/"#{value}"}
+        %{W/"#{value}"}
       end
 
       def handle_cache_hit(etag, route, request)

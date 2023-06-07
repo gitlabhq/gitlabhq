@@ -29,7 +29,7 @@ class Repositories::BaseService < BaseService
   end
 
   def move_error(path)
-    error = %Q{Repository "#{path}" could not be moved}
+    error = %{Repository "#{path}" could not be moved}
 
     log_error(error)
     error(error)

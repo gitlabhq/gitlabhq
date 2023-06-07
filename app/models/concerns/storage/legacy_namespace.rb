@@ -99,7 +99,7 @@ module Storage
 
         Gitlab::GitalyClient::NamespaceService.allow do
           if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
-            Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
+            Gitlab::AppLogger.info %(Namespace directory "#{full_path}" moved to "#{new_path}")
 
             # Remove namespace directory async with delay so
             # GitLab has time to remove all projects first

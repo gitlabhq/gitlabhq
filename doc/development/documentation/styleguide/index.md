@@ -640,21 +640,43 @@ To keep tables accessible and scannable, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
 **N/A** for 'not applicable' or **None**.
 
-To help tables be easier to maintain, consider adding additional spaces to the
-column widths to make them consistent. For example:
+To help keep tables easier to maintain, you can:
 
-```markdown
-| App name | Description          | Requirements   |
-|:---------|:---------------------|:---------------|
-| App 1    | Description text 1.  | Requirements 1 |
-| App 2    | Description text 2.  | None           |
-```
+- Add additional spaces to make the column widths consistent. For example:
+
+  ```markdown
+  | App name | Description         | Requirements   |
+  |----------|---------------------|----------------|
+  | App 1    | Description text 1. | Requirements 1 |
+  | App 2    | Description text 2. | None           |
+  ```
+
+- Skip the additional spaces in the rightmost column for tables that are very wide.
+  For example:
+
+  ```markdown
+  | Setting   | Default | Description |
+  |-----------|---------|-------------|
+  | Setting 1 | `1000`  | A short description. |
+  | Setting 2 | `2000`  | A long description that would make the table too wide and add too much whitespace if every cell in this column was aligned. |
+  | Setting 3 | `0`     | Another short description. |
+  ```
 
 Consider installing a plugin or extension in your editor for formatting tables:
 
 - [Markdown Table Prettifier](https://marketplace.visualstudio.com/items?itemName=darkriszty.markdown-table-prettify) for Visual Studio Code
 - [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter) for Sublime Text
 - [Markdown Table Formatter](https://atom.io/packages/markdown-table-formatter) for Atom
+
+### Updates to existing tables
+
+When you add or edit rows in an existing table, the cells in the new rows might be wider.
+If you realign the columns to account for the width, the diff becomes difficult to read,
+because the entire table shows as modified.
+
+Markdown tables naturally fall out of alignment over time, but still render correctly
+on `docs.gitlab.com`. The technical writing team can realign cells the next time
+the page is refactored.
 
 ### Table headings
 
@@ -681,10 +703,10 @@ For the footnotes below the table, use a bold number followed by a sentence.
 For example:
 
 ```markdown
-| App name | Description                      |
-|:---------|:---------------------------------|
-| App A    | Description text. <sup>1</sup>   |
-| App B    | Description text. <sup>2</sup>   |
+| App name | Description                    |
+|:---------|:-------------------------------|
+| App A    | Description text. <sup>1</sup> |
+| App B    | Description text. <sup>2</sup> |
 
 1. This is the footnote.
 1. This is the other footnote.
@@ -692,10 +714,10 @@ For example:
 
 This text renders this output:
 
-| App name | Description                      |
-|:---------|:---------------------------------|
-| App A    | Description text. <sup>1</sup>   |
-| App B    | Description text. <sup>2</sup>   |
+| App name | Description                    |
+|:---------|:-------------------------------|
+| App A    | Description text. <sup>1</sup> |
+| App B    | Description text. <sup>2</sup> |
 
 1. This is the footnote.
 1. This is the other footnote.

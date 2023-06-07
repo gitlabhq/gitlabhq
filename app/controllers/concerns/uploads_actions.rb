@@ -129,6 +129,14 @@ module UploadsActions
     return unless uploader = build_uploader
 
     uploader.retrieve_from_store!(params[:filename])
+
+    Gitlab::AppJsonLogger.info(
+      message: 'Deprecated usage of build_uploader_from_params',
+      uploader_class: uploader.class.name,
+      path: params[:filename],
+      exists: uploader.exists?
+    )
+
     uploader
   end
 
