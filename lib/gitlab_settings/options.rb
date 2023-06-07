@@ -43,6 +43,10 @@ module GitlabSettings
     end
     alias_method :to_h, :to_hash
 
+    def dup
+      self.class.build(to_hash)
+    end
+
     def merge(other)
       self.class.build(to_hash.merge(other.deep_stringify_keys))
     end
