@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   include UsageDataHelpers
 
   let(:temp_dir) { Dir.mktmpdir }
-  let(:tmpfile) { Tempfile.new('test-metadata') }
   let(:ee_temp_dir) { Dir.mktmpdir }
+  let(:tmpfile) { Tempfile.new('test-metadata') }
   let(:existing_key_paths) { {} }
   let(:description) { "This metric counts unique users viewing analytics metrics dashboard section" }
   let(:group) { "group::analytics instrumentation" }
@@ -16,6 +16,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:mr) { "https://gitlab.com/some-group/some-project/-/merge_requests/123" }
   let(:event) { "view_analytics_dashboard" }
   let(:unique_on) { "user_id" }
+  let(:time_frames) { %w[7d] }
+  let(:include_default_identifiers) { 'yes' }
   let(:options) do
     {
       time_frames: time_frames,
@@ -34,7 +36,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:metric_definition_7d) do
     {
       "key_path" => key_path_7d,
-      "name" => key_path_7d,
       "description" => description,
       "product_section" => section,
       "product_stage" => stage,
@@ -54,10 +55,12 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   end
 
   before do
-    stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
     stub_const("#{described_class}::TOP_LEVEL_DIR_EE", ee_temp_dir)
+    stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
     stub_const("#{described_class}::KNOWN_EVENTS_PATH", tmpfile.path)
     stub_const("#{described_class}::KNOWN_EVENTS_PATH_EE", tmpfile.path)
+    # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
+    stub_const('Gitlab::VERSION', '13.9.0')
 
     allow_next_instance_of(described_class) do |instance|
       allow(instance).to receive(:ask)
@@ -65,8 +68,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
                            .and_return(description)
     end
 
-    allow(Gitlab::Usage::MetricDefinition)
-      .to receive(:definitions).and_return(existing_key_paths)
+    allow(Gitlab::TaskHelpers).to receive(:prompt).and_return(include_default_identifiers)
+    allow(Gitlab::Usage::MetricDefinition).to receive(:definitions).and_return(existing_key_paths)
   end
 
   after do
@@ -75,12 +78,85 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     FileUtils.rm_rf(tmpfile.path)
   end
 
-  describe 'Creating metric definition file' do
-    before do
-      # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
-      stub_const('Gitlab::VERSION', '13.9.0')
+  describe 'Creating event definition file' do
+    let(:event_definition_path) { Dir.glob(File.join(temp_dir, "events/#{event}.yml")).first }
+    let(:identifiers) { %w[project user namespace] }
+    let(:event_definition) do
+      {
+        "category" => "GitlabInternalEvents",
+        "action" => event,
+        "description" => description,
+        "product_section" => section,
+        "product_stage" => stage,
+        "product_group" => group,
+        "label_description" => nil,
+        "property_description" => nil,
+        "value_description" => nil,
+        "extra_properties" => nil,
+        "identifiers" => identifiers,
+        "milestone" => "13.9",
+        "introduced_by_url" => mr,
+        "distributions" => %w[ce ee],
+        "tiers" => %w[free premium ultimate]
+      }
     end
 
+    it 'creates an event definition file using the template' do
+      described_class.new([], options).invoke_all
+
+      expect(YAML.safe_load(File.read(event_definition_path))).to eq(event_definition)
+    end
+
+    context 'for ultimate only feature' do
+      let(:event_definition_path) do
+        Dir.glob(File.join(ee_temp_dir, temp_dir, "events/#{event}.yml")).first
+      end
+
+      it 'creates an event definition file using the template' do
+        described_class.new([], options.merge(tiers: %w[ultimate])).invoke_all
+
+        expect(YAML.safe_load(File.read(event_definition_path)))
+          .to eq(event_definition.merge("tiers" => ["ultimate"], "distributions" => ["ee"]))
+      end
+    end
+
+    context 'without default identifiers' do
+      let(:include_default_identifiers) { 'no' }
+
+      it 'creates an event definition file using the template' do
+        described_class.new([], options).invoke_all
+
+        expect(YAML.safe_load(File.read(event_definition_path)))
+          .to eq(event_definition.merge("identifiers" => nil))
+      end
+    end
+
+    context 'with duplicated event' do
+      context 'in known_events files' do
+        before do
+          allow(::Gitlab::UsageDataCounters::HLLRedisCounter)
+            .to receive(:known_event?).with(event).and_return(true)
+        end
+
+        it 'raises error' do
+          expect { described_class.new([], options).invoke_all }.to raise_error(RuntimeError)
+        end
+      end
+
+      context 'in event definition files' do
+        before do
+          Dir.mkdir(File.join(temp_dir, "events"))
+          File.write(File.join(temp_dir, "events", "#{event}.yml"), { action: event }.to_yaml)
+        end
+
+        it 'raises error' do
+          expect { described_class.new([], options).invoke_all }.to raise_error(RuntimeError)
+        end
+      end
+    end
+  end
+
+  describe 'Creating metric definition file' do
     context 'for single time frame' do
       let(:time_frames) { %w[7d] }
 
@@ -146,10 +222,14 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
         it 'asks again for description' do
           allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:ask)
+                                 .with(/By convention all events automatically include the following properties/)
+                                 .and_return(include_default_identifiers)
+
+            allow(instance).to receive(:ask).twice
                                  .with(/Please describe in at least 50 characters/)
                                  .and_return("I am to short")
 
-            expect(instance).to receive(:ask)
+            expect(instance).to receive(:ask).twice
                                  .with(/Please provide description that is 50 characters long/)
                                  .and_return(description)
           end
@@ -166,7 +246,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
           "key_path" => key_path_28d,
-          "name" => key_path_28d,
           "time_frame" => "28d"
         )
       end
@@ -186,7 +265,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
           "key_path" => key_path_28d,
-          "name" => key_path_28d,
           "time_frame" => "28d"
         )
       end

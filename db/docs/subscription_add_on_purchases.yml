@@ -1,0 +1,10 @@
+---
+table_name: subscription_add_on_purchases
+description: Stores add-on purchase information
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122662
+milestone: '16.1'
+feature_categories:
+- subscription_management
+classes:
+- GitlabSubscriptions::AddOnPurchase
+gitlab_schema: gitlab_main

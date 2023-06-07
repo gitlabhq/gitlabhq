@@ -557,6 +557,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/components/**/*.rb'
     - 'spec/mailers/**/*.rb'
     - 'spec/routes/directs/*.rb'
+    - 'spec/lib/sidebars/**/*.rb'
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
     - 'ee/spec/helpers/**/*.rb'
@@ -564,6 +565,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/components/**/*.rb'
     - 'ee/spec/mailers/**/*.rb'
     - 'ee/spec/routes/directs/*.rb'
+    - 'ee/spec/lib/sidebars/**/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true

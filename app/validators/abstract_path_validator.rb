@@ -26,11 +26,22 @@ class AbstractPathValidator < ActiveModel::EachValidator
       return
     end
 
-    full_path = record.build_full_path
-    return unless full_path
+    if build_full_path_to_validate_against_reserved_names?
+      path_to_validate_against_reserved_names = record.build_full_path
+      return unless path_to_validate_against_reserved_names
+    else
+      path_to_validate_against_reserved_names = value
+    end
 
-    unless self.class.valid_path?(full_path)
+    unless self.class.valid_path?(path_to_validate_against_reserved_names)
       record.errors.add(attribute, "#{value} is a reserved name")
     end
+  end
+
+  def build_full_path_to_validate_against_reserved_names?
+    # By default, entities using the `Routable` concern can build full paths.
+    # But entities like `Organization` do not have a parent, and hence cannot build full paths,
+    # and this method can be overridden to return `false` in such cases.
+    true
   end
 end

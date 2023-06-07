@@ -18,6 +18,37 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_least(2).is_at_most(255) }
+
+    describe 'path validator' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:default_path_error) do
+        "can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'."
+      end
+
+      let(:reserved_path_error) do
+        "is a reserved name"
+      end
+
+      where(:path, :valid, :error_message) do
+        'path.'           | false  | ref(:default_path_error)
+        'path.git'        | false  | ref(:default_path_error)
+        'new'             | false  | ref(:reserved_path_error)
+        '.path'           | true   | nil
+        'org__path'       | true   | nil
+        'some-name'       | true   | nil
+        'simple'          | true   | nil
+      end
+
+      with_them do
+        it 'validates organization path' do
+          organization = build(:organization, name: 'Default', path: path)
+
+          expect(organization.valid?).to be(valid)
+          expect(organization.errors.full_messages.to_sentence).to include(error_message) if error_message.present?
+        end
+      end
+    end
   end
 
   context 'when using scopes' do

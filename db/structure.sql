@@ -23031,6 +23031,45 @@ CREATE SEQUENCE status_page_settings_project_id_seq
 
 ALTER SEQUENCE status_page_settings_project_id_seq OWNED BY status_page_settings.project_id;
 
+CREATE TABLE subscription_add_on_purchases (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    subscription_add_on_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    quantity integer NOT NULL,
+    expires_on date NOT NULL,
+    purchase_xid text NOT NULL,
+    CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
+);
+
+CREATE SEQUENCE subscription_add_on_purchases_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_add_on_purchases_id_seq OWNED BY subscription_add_on_purchases.id;
+
+CREATE TABLE subscription_add_ons (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name smallint NOT NULL,
+    description text NOT NULL,
+    CONSTRAINT check_4c39d15ada CHECK ((char_length(description) <= 512))
+);
+
+CREATE SEQUENCE subscription_add_ons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_add_ons_id_seq OWNED BY subscription_add_ons.id;
+
 CREATE TABLE subscriptions (
     id integer NOT NULL,
     user_id integer,
@@ -25847,6 +25886,10 @@ ALTER TABLE ONLY status_page_published_incidents ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY status_page_settings ALTER COLUMN project_id SET DEFAULT nextval('status_page_settings_project_id_seq'::regclass);
 
+ALTER TABLE ONLY subscription_add_on_purchases ALTER COLUMN id SET DEFAULT nextval('subscription_add_on_purchases_id_seq'::regclass);
+
+ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subscription_add_ons_id_seq'::regclass);
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 ALTER TABLE ONLY suggestions ALTER COLUMN id SET DEFAULT nextval('suggestions_id_seq'::regclass);
@@ -28316,6 +28359,12 @@ ALTER TABLE ONLY status_page_published_incidents
 
 ALTER TABLE ONLY status_page_settings
     ADD CONSTRAINT status_page_settings_pkey PRIMARY KEY (project_id);
+
+ALTER TABLE ONLY subscription_add_on_purchases
+    ADD CONSTRAINT subscription_add_on_purchases_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY subscription_add_ons
+    ADD CONSTRAINT subscription_add_ons_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (id);
@@ -32871,6 +32920,12 @@ CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON status_
 
 CREATE INDEX index_status_page_settings_on_project_id ON status_page_settings USING btree (project_id);
 
+CREATE INDEX index_subscription_add_on_purchases_on_namespace_id ON subscription_add_on_purchases USING btree (namespace_id);
+
+CREATE INDEX index_subscription_add_on_purchases_on_subscription_add_on_id ON subscription_add_on_purchases USING btree (subscription_add_on_id);
+
+CREATE UNIQUE INDEX index_subscription_add_ons_on_name ON subscription_add_ons USING btree (name);
+
 CREATE INDEX index_subscriptions_on_project_id ON subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
@@ -35420,6 +35475,9 @@ ALTER TABLE ONLY abuse_reports
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY subscription_add_on_purchases
+    ADD CONSTRAINT fk_410004d68b FOREIGN KEY (subscription_add_on_id) REFERENCES subscription_add_ons(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
 
@@ -35767,6 +35825,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_a1d5f1bc45 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY subscription_add_on_purchases
+    ADD CONSTRAINT fk_a1db288990 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_a2141b1522 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;

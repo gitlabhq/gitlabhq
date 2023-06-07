@@ -14,7 +14,7 @@ information. Be sure to read and test the complete restore process at least
 once before attempting to perform it in a production environment.
 
 You can restore a backup only to _the exact same version and type (CE/EE)_ of
-GitLab that you created it on (for example CE 9.1.0).
+GitLab that you created it on (for example CE 15.1.4).
 
 If your backup is a different version than the current installation, you must
 [downgrade](../update/package/downgrade.md) or [upgrade](../update/package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) your GitLab installation

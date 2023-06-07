@@ -120,7 +120,9 @@ The following environment variables are supported.
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
-node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site:
+node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site.
+
+GitLab does **not** verify objects that are stored in Object Storage. If you are using Object Storage, you will see all of the "verified" checks showing 0 successes. This is expected and not a cause for concern.
 
 ```shell
 sudo gitlab-rake geo:status

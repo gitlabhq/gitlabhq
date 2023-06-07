@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe User, feature_category: :user_profile do
+  using RSpec::Parameterized::TableSyntax
+
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
@@ -4168,8 +4170,6 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#following_users_allowed?' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:user) { create(:user) }
     let_it_be(:followee) { create(:user) }
 
@@ -6021,26 +6021,41 @@ RSpec.describe User, feature_category: :user_profile do
     let(:user) { create(:user, note: "existing note") }
     let(:deleted_by) { create(:user) }
 
-    it 'blocks the user then schedules them for deletion if a hard delete is specified' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, { hard_delete: true })
+    shared_examples 'schedules user for deletion without delay' do
+      it 'schedules user for deletion without delay' do
+        expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, {})
+        expect(DeleteUserWorker).not_to receive(:perform_in)
 
+        user.delete_async(deleted_by: deleted_by)
+      end
+    end
+
+    shared_examples 'it does not block the user' do
+      it 'does not block the user' do
+        user.delete_async(deleted_by: deleted_by)
+
+        expect(user).not_to be_blocked
+      end
+    end
+
+    it 'blocks the user if hard delete is specified' do
       user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
 
       expect(user).to be_blocked
     end
 
-    it 'schedules user for deletion without blocking them' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, {})
+    it_behaves_like 'schedules user for deletion without delay'
 
-      user.delete_async(deleted_by: deleted_by)
-
-      expect(user).not_to be_blocked
-    end
+    it_behaves_like 'it does not block the user'
 
     context 'when target user is the same as deleted_by' do
       let(:deleted_by) { user }
 
       subject { user.delete_async(deleted_by: deleted_by) }
+
+      before do
+        allow(user).to receive(:has_possible_spam_contributions?).and_return(true)
+      end
 
       shared_examples 'schedules the record for deletion with the correct delay' do
         it 'schedules the record for deletion with the correct delay' do
@@ -6061,12 +6076,64 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user).not_to be_banned
       end
 
+      context 'with possible spam contribution' do
+        context 'with comments' do
+          it_behaves_like 'schedules the record for deletion with the correct delay' do
+            before do
+              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+
+              note = create(:note_on_issue, author: user)
+              create(:event, :commented, target: note, author: user)
+            end
+          end
+        end
+
+        context 'with other types' do
+          where(:resource, :action, :delayed) do
+            'Issue'        | :created | true
+            'MergeRequest' | :created | true
+            'Issue'        | :closed  | false
+            'MergeRequest' | :closed  | false
+            'WorkItem'     | :created | false
+          end
+
+          with_them do
+            before do
+              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+
+              case resource
+              when 'Issue'
+                create(:event, action, :for_issue, author: user)
+              when 'MergeRequest'
+                create(:event, action, :for_merge_request, author: user)
+              when 'WorkItem'
+                create(:event, action, :for_work_item, author: user)
+              end
+            end
+
+            if params[:delayed]
+              it_behaves_like 'schedules the record for deletion with the correct delay'
+            else
+              it_behaves_like 'schedules user for deletion without delay'
+            end
+          end
+        end
+      end
+
+      context 'when user has no possible spam contributions' do
+        before do
+          allow(user).to receive(:has_possible_spam_contributions?).and_return(false)
+        end
+
+        it_behaves_like 'schedules user for deletion without delay'
+      end
+
       context 'when the user is a spammer' do
         before do
           allow(user).to receive(:spammer?).and_return(true)
         end
 
-        context 'when the user acount is less than 7 days old' do
+        context 'when the user account is less than 7 days old' do
           it_behaves_like 'schedules the record for deletion with the correct delay'
 
           it 'creates an abuse report with the correct data' do
@@ -6140,13 +6207,9 @@ RSpec.describe User, feature_category: :user_profile do
           stub_feature_flags(delay_delete_own_user: false)
         end
 
-        it 'schedules user for deletion without blocking them' do
-          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
+        it_behaves_like 'schedules user for deletion without delay'
 
-          subject
-
-          expect(user).not_to be_blocked
-        end
+        it_behaves_like 'it does not block the user'
 
         it 'does not update the note' do
           expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
@@ -7303,8 +7366,6 @@ RSpec.describe User, feature_category: :user_profile do
       let(:user_id) { user.id }
 
       describe 'update user' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:attributes) do
           [
             { state: 'blocked' },

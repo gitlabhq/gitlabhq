@@ -30,11 +30,13 @@ a single-node Geo site or a multi-node Geo site.
 
 If both Geo sites are based on the [1K reference architecture](../../reference_architectures/1k_users.md):
 
-1. [Set up the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
+1. Set up the database replication based on your choice of PostgreSQL instances (`primary (read-write) <-> secondary (read-only)` topology):
+   - [Using Omnibus PostgreSQL instances](database.md) .
+   - [Using external PostgreSQL instances](external_database.md)
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
-1. Optional: [Configure Object storage](../../object_storage.md)
+1. Recommended: [Configure unified URLs](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites.
+1. Optional: [Configure Object storage replication](../../object_storage.md)
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites. See [notes on LDAP](../index.md#ldap).
-1. Optional: [Configure Geo secondary proxying](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites. This step is recommended to accelerate most read requests while transparently proxying writes to the primary Geo site.
 1. Optional: [Configure Container Registry for the secondary site](../replication/container_registry.md).
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.
 

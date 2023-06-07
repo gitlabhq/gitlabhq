@@ -122,6 +122,7 @@ module Gitlab
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES
     ILLEGAL_GROUP_PATH_WORDS = (PROJECT_WILDCARD_ROUTES | GROUP_ROUTES).freeze
+    ILLEGAL_ORGANIZATION_PATH_WORDS = (TOP_LEVEL_ROUTES | PROJECT_WILDCARD_ROUTES | GROUP_ROUTES).freeze
 
     # The namespace regex is used in JavaScript to validate usernames in the "Register" form. However, Javascript
     # does not support the negative lookbehind assertion (?<!) that disallows usernames ending in `.git` and `.atom`.
@@ -137,6 +138,17 @@ module Gitlab
     NAMESPACE_FORMAT_REGEX = /(?:#{NAMESPACE_FORMAT_REGEX_JS})#{NO_SUFFIX_REGEX}/.freeze
     PROJECT_PATH_FORMAT_REGEX = /(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX}/.freeze
     FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/){,#{Namespace::NUMBER_OF_ANCESTORS_ALLOWED}}#{NAMESPACE_FORMAT_REGEX}}.freeze
+
+    def organization_route_regex
+      @organization_route_regex ||= begin
+        illegal_words = Regexp.new(Regexp.union(ILLEGAL_ORGANIZATION_PATH_WORDS).source, Regexp::IGNORECASE)
+
+        single_line_regexp %r{
+          (?!(#{illegal_words})/)
+          #{NAMESPACE_FORMAT_REGEX}
+        }x
+      end
+    end
 
     def root_namespace_route_regex
       @root_namespace_route_regex ||= begin
@@ -193,6 +205,10 @@ module Gitlab
 
     def full_namespace_path_regex
       @full_namespace_path_regex ||= %r{\A#{full_namespace_route_regex}/\z}
+    end
+
+    def organization_path_regex
+      @organization_path_regex ||= %r{\A#{organization_route_regex}/\z}
     end
 
     def full_project_path_regex

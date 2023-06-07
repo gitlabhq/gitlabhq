@@ -161,16 +161,14 @@
   - "scripts/rspec_helpers.sh"
 
 .ci-build-images-patterns: &ci-build-images-patterns
-  - ".gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
 
 .ci-review-patterns: &ci-review-patterns
-  - ".gitlab-ci.yml"
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
   - ".gitlab/ci/cng/**/*"
-  - ".gitlab/ci/review-apps/**/*"
+  - ".gitlab/ci/review-apps/*.yml"
   - "scripts/review_apps/**/*"
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
@@ -179,13 +177,12 @@
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .ci-qa-patterns: &ci-qa-patterns
-  - ".gitlab-ci.yml"
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
   - ".gitlab/ci/package-and-test/*.yml"
-  - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
-  - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
+  - ".gitlab/ci/package-and-test-nightly/*.yml"
+  - ".gitlab/ci/qa-common/*.yml"
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"
@@ -323,8 +320,9 @@
   - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - ".gitlab/ci/database.gitlab-ci.yml"
+  - ".gitlab/ci/rails.gitlab-ci.yml"
+  - ".gitlab/ci/rails/*.yml"
   - "*_VERSION"
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
@@ -377,8 +375,7 @@
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - ".gitlab/ci/database.gitlab-ci.yml"
 
 # DB backup patterns
 .db-backup-patterns: &db-backup-patterns
@@ -402,7 +399,7 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
 
-# Code patterns + .ci-patterns
+# Code patterns
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -412,7 +409,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -420,9 +416,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
@@ -444,9 +437,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -475,9 +465,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
@@ -495,7 +482,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -503,9 +489,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -533,7 +516,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -541,9 +523,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -599,7 +578,6 @@
   - "{,ee/,jh/}config/feature_flags/{development,ops}/*.yml"
 
 .glfm-patterns: &glfm-patterns
-  - ".gitlab/ci/rules.gitlab-ci.yml"
   - "glfm_specification/**/*"
   - "scripts/glfm/**/*"
   - "scripts/lib/glfm/**/*"
@@ -1247,7 +1225,7 @@
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
-      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
@@ -1270,7 +1248,7 @@
       changes: *frontend-dependency-patterns
       when: never
     - <<: *if-merge-request
-      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns

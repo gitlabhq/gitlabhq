@@ -1673,13 +1673,14 @@ class User < ApplicationRecord
       self.note = "#{new_note}\n#{note}".strip
 
       block_or_ban
-
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
-    else
-      block if params[:hard_delete]
 
-      DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
+      return
     end
+
+    block if params[:hard_delete]
+
+    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2351,9 +2352,19 @@ class User < ApplicationRecord
     ban
   end
 
+  def has_possible_spam_contributions?
+    events
+      .for_action('commented')
+      .or(events.for_action('created').where(target_type: %w[Issue MergeRequest]))
+      .any?
+  end
+
   def should_delay_delete?(deleted_by)
     is_deleting_own_record = deleted_by.id == id
-    is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
+
+    is_deleting_own_record &&
+      ::Feature.enabled?(:delay_delete_own_user) &&
+      has_possible_spam_contributions?
   end
 
   def pbkdf2?

@@ -17,6 +17,7 @@ module Organizations
 
     validates :path,
       presence: true,
+      'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
     def default?

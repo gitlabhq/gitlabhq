@@ -29623,7 +29623,16 @@ msgstr ""
 msgid "NamespaceLimits|%{linkStart}%{username}%{linkEnd} changed the limit to %{limit} at %{date}"
 msgstr ""
 
+msgid "NamespaceLimits|Confirm deletion"
+msgstr ""
+
 msgid "NamespaceLimits|Confirm limits change"
+msgstr ""
+
+msgid "NamespaceLimits|Deletion confirmation"
+msgstr ""
+
+msgid "NamespaceLimits|Do you confirm the deletion of the selected namespace from the exclusion list?"
 msgstr ""
 
 msgid "NamespaceLimits|Enter a valid number greater or equal to zero."
@@ -29648,6 +29657,9 @@ msgid "NamespaceLimits|Reason for excluding this namespace"
 msgstr ""
 
 msgid "NamespaceLimits|Storage Phased Notification"
+msgstr ""
+
+msgid "NamespaceLimits|There was an error deleting the namespace: \"%{errorMessage}\"."
 msgstr ""
 
 msgid "NamespaceLimits|There was an error fetching the exclusion list, try refreshing the page."

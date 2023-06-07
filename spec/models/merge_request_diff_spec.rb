@@ -1178,14 +1178,14 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.latest_diff_for_merge_requests' do
-    let_it_be(:merge_request_1) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_1) { create(:merge_request, :skip_diff_creation) }
     let_it_be(:merge_request_1_diff_1) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 3.days.ago) }
     let_it_be(:merge_request_1_diff_2) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 1.day.ago) }
 
-    let_it_be(:merge_request_2) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_2) { create(:merge_request, :skip_diff_creation) }
     let_it_be(:merge_request_2_diff_1) { create(:merge_request_diff, merge_request: merge_request_2, created_at: 3.days.ago) }
 
-    let_it_be(:merge_request_3) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_3) { create(:merge_request, :skip_diff_creation) }
 
     subject { described_class.latest_diff_for_merge_requests([merge_request_1, merge_request_2]) }
 

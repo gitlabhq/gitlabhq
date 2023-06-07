@@ -313,6 +313,12 @@ FactoryBot.define do
       sequence(:source_branch) { |n| "feature#{n}" }
     end
 
+    trait :skip_diff_creation do
+      before(:create) do |merge_request, _|
+        merge_request.skip_ensure_merge_request_diff = true
+      end
+    end
+
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project
@@ -357,7 +363,5 @@ FactoryBot.define do
         merge_request.update!(labels: evaluator.labels)
       end
     end
-
-    factory :merge_request_without_merge_request_diff, class: 'MergeRequestWithoutMergeRequestDiff'
   end
 end

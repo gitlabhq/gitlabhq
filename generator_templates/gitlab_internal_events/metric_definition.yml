@@ -1,6 +1,5 @@
 ---
 key_path: <%= args.second %>
-name: <%= args.second %>
 description: <%= args.last %>
 product_section: <%= options.fetch(:section) %>
 product_stage: <%= options.fetch(:stage) %>
@@ -14,5 +13,5 @@ time_frame: <%= args.third %>
 data_source: redis_hll
 data_category: optional
 instrumentation_class: <%= class_name %>
-<%= distribution %>
-<%= tier %>
+distribution: <%= distributions %>
+tier: <%= tiers %>

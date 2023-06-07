@@ -1,0 +1,10 @@
+---
+table_name: subscription_add_ons
+description: Stores available add-ons for which purchases are stored in `subscription_add_on_purchases`.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122662
+milestone: '16.1'
+feature_categories:
+- subscription_management
+classes:
+- GitlabSubscriptions::AddOn
+gitlab_schema: gitlab_main

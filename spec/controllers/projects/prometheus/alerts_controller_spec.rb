@@ -6,7 +6,6 @@ RSpec.describe Projects::Prometheus::AlertsController, feature_category: :incide
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
-  let_it_be(:metric) { create(:prometheus_metric, project: project) }
 
   before do
     project.add_maintainer(user)
@@ -40,16 +39,6 @@ RSpec.describe Projects::Prometheus::AlertsController, feature_category: :incide
 
         expect(json_response).to be_empty
       end
-    end
-  end
-
-  shared_examples 'project non-specific metric' do |status|
-    let(:other) { create(:prometheus_alert) }
-
-    it "returns #{status}" do
-      make_request(id: other.prometheus_metric_id)
-
-      expect(response).to have_gitlab_http_status(status)
     end
   end
 
@@ -115,67 +104,7 @@ RSpec.describe Projects::Prometheus::AlertsController, feature_category: :incide
     end
   end
 
-  describe 'GET #metrics_dashboard', feature_category: :metrics do
-    let!(:alert) do
-      create(:prometheus_alert, project: project, environment: environment, prometheus_metric: metric)
-    end
-
-    before do
-      stub_feature_flags(remove_monitor_metrics: false)
-    end
-
-    it 'returns a json object with the correct keys' do
-      get :metrics_dashboard, params: request_params(id: metric.id, environment_id: alert.environment.id), format: :json
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.keys).to contain_exactly('dashboard', 'status', 'metrics_data')
-    end
-
-    it 'is the correct embed' do
-      get :metrics_dashboard, params: request_params(id: metric.id, environment_id: alert.environment.id), format: :json
-
-      title = json_response['dashboard']['panel_groups'][0]['panels'][0]['title']
-
-      expect(title).to eq(metric.title)
-    end
-
-    it 'finds the first alert embed without environment_id' do
-      get :metrics_dashboard, params: request_params(id: metric.id), format: :json
-
-      title = json_response['dashboard']['panel_groups'][0]['panels'][0]['title']
-
-      expect(title).to eq(metric.title)
-    end
-
-    it 'returns 404 for non-existant alerts' do
-      get :metrics_dashboard, params: request_params(id: 0), format: :json
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-
-    it 'returns 404 when metrics dashboard feature is unavailable' do
-      stub_feature_flags(remove_monitor_metrics: true)
-
-      get :metrics_dashboard, params: request_params(id: 0), format: :json
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
-
   def project_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace, project_id: project)
-  end
-
-  def request_params(opts = {}, defaults = {})
-    project_params(opts.reverse_merge(defaults))
-  end
-
-  def alert_path(alert)
-    project_prometheus_alert_path(
-      project,
-      alert.prometheus_metric_id,
-      environment_id: alert.environment,
-      format: :json
-    )
   end
 end
