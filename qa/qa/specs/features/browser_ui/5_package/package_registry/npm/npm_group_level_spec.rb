@@ -2,8 +2,9 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Package Registry', :skip_live_env, :orchestrated, :reliable, :packages, :object_storage, product_group: :package_registry do
-      describe 'npm instance level endpoint' do
+    describe 'Package Registry', :skip_live_env, :orchestrated, :packages, :object_storage,
+      product_group: :package_registry do
+      describe 'npm group level endpoint' do
         using RSpec::Parameterized::TableSyntax
         include Runtime::Fixtures
         include Support::Helpers::MaskToken
@@ -33,13 +34,13 @@ module QA
 
         let!(:project) do
           Resource::Project.fabricate_via_api! do |project|
-            project.name = 'npm-instace-level-publish'
+            project.name = 'npm-group-level-publish'
           end
         end
 
         let!(:another_project) do
           Resource::Project.fabricate_via_api! do |another_project|
-            another_project.name = 'npm-instance-level-install'
+            another_project.name = 'npm-group-level-install'
             another_project.group = project.group
           end
         end
@@ -68,9 +69,9 @@ module QA
         end
 
         where(:case_name, :authentication_token_type, :token_name, :testcase) do
-          'using personal access token' | :personal_access_token | 'Personal Access Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347600'
-          'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347599'
-          'using project deploy token'  | :project_deploy_token  | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347598'
+          'using personal access token' | :personal_access_token | 'Personal Access Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/413760'
+          'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/413761'
+          'using project deploy token'  | :project_deploy_token  | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/413762'
         end
 
         with_them do
@@ -89,22 +90,23 @@ module QA
 
           it 'push and pull a npm package via CI', testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-              npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
+              npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
+                'npm_upload_package_group.yaml.erb')).result(binding)
               package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
               Resource::Repository::Commit.fabricate_via_api! do |commit|
                 commit.project = project
                 commit.commit_message = 'Add files'
                 commit.add_files([
-                                   {
-                                     file_path: '.gitlab-ci.yml',
-                                     content: npm_upload_yaml
-                                   },
-                                   {
-                                     file_path: 'package.json',
-                                     content: package_json
-                                   }
-                                 ])
+                  {
+                    file_path: '.gitlab-ci.yml',
+                    content: npm_upload_yaml
+                  },
+                  {
+                    file_path: 'package.json',
+                    content: package_json
+                  }
+                ])
               end
             end
 
@@ -121,16 +123,17 @@ module QA
 
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               Resource::Repository::Commit.fabricate_via_api! do |commit|
-                npm_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_install_package_instance.yaml.erb')).result(binding)
+                npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
+                  'npm_install_package_group.yaml.erb')).result(binding)
 
                 commit.project = another_project
                 commit.commit_message = 'Add .gitlab-ci.yml'
                 commit.add_files([
-                                   {
-                                     file_path: '.gitlab-ci.yml',
-                                     content: npm_install_yaml
-                                   }
-                                 ])
+                  {
+                    file_path: '.gitlab-ci.yml',
+                    content: npm_install_yaml
+                  }
+                ])
               end
             end
 

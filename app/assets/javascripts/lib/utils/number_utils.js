@@ -106,7 +106,7 @@ export function numberToHumanSize(size, digits = 2) {
 
   switch (format) {
     case BYTES_FORMAT_BYTES:
-      return sprintf(__('%{size} bytes'), { size: humanSize });
+      return sprintf(__('%{size} B'), { size: humanSize });
     case BYTES_FORMAT_KIB:
       return sprintf(__('%{size} KiB'), { size: humanSize });
     case BYTES_FORMAT_MIB:

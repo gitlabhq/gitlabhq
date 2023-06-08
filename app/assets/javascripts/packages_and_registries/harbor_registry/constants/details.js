@@ -16,7 +16,7 @@ export const DIGEST_LABEL = s__('HarborRegistry|Digest: %{imageId}');
 export const CREATED_AT_LABEL = s__('HarborRegistry|Published %{timeInfo}');
 
 export const NOT_AVAILABLE_TEXT = __('Not applicable.');
-export const NOT_AVAILABLE_SIZE = __('0 bytes');
+export const NOT_AVAILABLE_SIZE = __('0 B');
 
 export const TOKEN_TYPE_TAG_NAME = 'tag_name';
 

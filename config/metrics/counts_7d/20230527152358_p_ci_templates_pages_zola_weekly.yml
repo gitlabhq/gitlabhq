@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_pages_zola_weekly
+description: Count of pipelines using the Zola Pages template
+product_section: ''
+product_stage: ''
+product_group: ''
+value_type: number
+status: active
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121946
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - p_ci_templates_pages_zola

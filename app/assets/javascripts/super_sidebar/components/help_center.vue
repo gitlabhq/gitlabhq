@@ -216,7 +216,11 @@ export default {
   >
     <template #toggle>
       <gl-button category="tertiary" icon="question-o" class="btn-with-notification">
-        <span v-if="showWhatsNewNotification" class="notification-dot-info"></span>
+        <span
+          v-if="showWhatsNewNotification"
+          data-testid="notification-dot"
+          class="notification-dot-info"
+        ></span>
         {{ $options.i18n.help }}
       </gl-button>
     </template>

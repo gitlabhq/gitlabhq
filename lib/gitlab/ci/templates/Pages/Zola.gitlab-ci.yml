@@ -1,0 +1,30 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Zola.gitlab-ci.yml
+
+# Prefer to copy-paste this template instead of include it to ensure forward compatibility
+
+---
+# From: https://www.getzola.org/documentation/deployment/gitlab-pages/
+# Source template is slightly modified to be self-contained
+
+pages:
+  image: alpine:latest
+  variables:
+    # This variable will ensure that the CI runner pulls in your theme from the submodule
+    GIT_SUBMODULE_STRATEGY: recursive
+  before_script:
+    # Install the zola package from the alpine community repositories
+    - apk add --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ zola
+  script:
+    # Execute zola build
+    - zola build --base-url "$CI_PAGES_URL"
+  artifacts:
+    paths:
+      # Path of our artifacts
+      - public
+  # This config will only publish changes that are pushed on the default branch
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production

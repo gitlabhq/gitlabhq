@@ -1,0 +1,21 @@
+image: node:latest
+
+stages:
+  - install
+
+install:
+  stage: install
+  script:
+    - "npm config set @<%= registry_scope %>:registry <%= gitlab_address_with_port %>/api/v4/groups/<%= another_project.group.id %>/-/packages/npm/"
+    - "npm install <%= package.name %>"
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - node_modules/
+  only:
+    - "<%= another_project.default_branch %>"
+  tags:
+    - "runner-for-<%= another_project.group.name %>"

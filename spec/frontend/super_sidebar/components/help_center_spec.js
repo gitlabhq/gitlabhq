@@ -25,6 +25,7 @@ describe('HelpCenter component', () => {
   };
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
+  const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
   // eslint-disable-next-line no-shadow
   const createWrapper = (sidebarData) => {
@@ -203,8 +204,8 @@ describe('HelpCenter component', () => {
           createWrapper({ ...sidebarData, display_whats_new: false });
         });
 
-        it('is false', () => {
-          expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+        it('does not render notification dot', () => {
+          expect(findNotificationDot().exists()).toBe(false);
         });
       });
 
@@ -215,8 +216,8 @@ describe('HelpCenter component', () => {
           createWrapper({ ...sidebarData, display_whats_new: true });
         });
 
-        it('is true', () => {
-          expect(wrapper.vm.showWhatsNewNotification).toBe(true);
+        it('renders notification dot', () => {
+          expect(findNotificationDot().exists()).toBe(true);
         });
 
         describe('when "What\'s new" drawer got opened', () => {
@@ -224,8 +225,8 @@ describe('HelpCenter component', () => {
             findButton("What's new 5").click();
           });
 
-          it('is false', () => {
-            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          it('does not render notification dot', () => {
+            expect(findNotificationDot().exists()).toBe(false);
           });
         });
 
@@ -235,8 +236,8 @@ describe('HelpCenter component', () => {
             createWrapper({ ...sidebarData, display_whats_new: true });
           });
 
-          it('is false', () => {
-            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          it('does not render notification dot', () => {
+            expect(findNotificationDot().exists()).toBe(false);
           });
         });
       });

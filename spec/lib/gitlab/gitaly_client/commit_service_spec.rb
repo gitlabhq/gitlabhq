@@ -208,6 +208,19 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       is_expected.to eq([[], nil])
     end
 
+    context 'when recursive is "true"' do
+      let(:recursive) { true }
+
+      it 'sends a get_tree_entries message without the limit' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+                .with(gitaly_request_with_params({ pagination_params: nil }), kind_of(Hash))
+                .and_return([])
+
+        is_expected.to eq([[], nil])
+      end
+    end
+
     context 'with UTF-8 params strings' do
       let(:revision) { "branch\u011F" }
       let(:path) { "foo/\u011F.txt" }

@@ -13,7 +13,7 @@ export default function initMrNotes(lazyLoadParams) {
     action: mrShowNode.dataset.mrAction,
   });
 
-  initMrStateLazyLoad(lazyLoadParams);
+  initMrStateLazyLoad(undefined, lazyLoadParams);
 
   document.addEventListener('merged:UpdateActions', () => {
     initRevertCommitModal('i_code_review_post_merge_submit_revert_modal');

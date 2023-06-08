@@ -90,22 +90,6 @@ export default {
     ALERT_COLLAPSED_FILES,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    endpointMetadata: {
-      type: String,
-      required: true,
-    },
-    endpointBatch: {
-      type: String,
-      required: true,
-    },
-    endpointDiffForPath: {
-      type: String,
-      required: true,
-    },
     endpointCoverage: {
       type: String,
       required: false,
@@ -115,15 +99,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    endpointUpdateUser: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    projectPath: {
-      type: String,
-      required: true,
     },
     shouldShow: {
       type: Boolean,
@@ -143,51 +118,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    isFluidLayout: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    dismissEndpoint: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    showSuggestPopover: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    fileByFileUserPreference: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    defaultSuggestionCommitMessage: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    rehydratedMrReviews: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    sourceProjectDefaultUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    sourceProjectFullPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    isForked: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -343,21 +273,6 @@ export default {
     renderFileTree: 'adjustView',
   },
   mounted() {
-    this.setBaseConfig({
-      endpoint: this.endpoint,
-      endpointMetadata: this.endpointMetadata,
-      endpointBatch: this.endpointBatch,
-      endpointDiffForPath: this.endpointDiffForPath,
-      endpointCoverage: this.endpointCoverage,
-      endpointUpdateUser: this.endpointUpdateUser,
-      projectPath: this.projectPath,
-      dismissEndpoint: this.dismissEndpoint,
-      showSuggestPopover: this.showSuggestPopover,
-      viewDiffsFileByFile: this.fileByFileUserPreference || false,
-      defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
-      mrReviews: this.rehydratedMrReviews,
-    });
-
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }

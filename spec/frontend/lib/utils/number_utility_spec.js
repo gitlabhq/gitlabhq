@@ -109,8 +109,8 @@ describe('Number Utils', () => {
 
   describe('numberToHumanSize', () => {
     it('should return bytes', () => {
-      expect(numberToHumanSize(654)).toEqual('654 bytes');
-      expect(numberToHumanSize(-654)).toEqual('-654 bytes');
+      expect(numberToHumanSize(654)).toEqual('654 B');
+      expect(numberToHumanSize(-654)).toEqual('-654 B');
     });
 
     it('should return KiB', () => {

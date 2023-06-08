@@ -23733,7 +23733,7 @@ Represents a state transition of a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitystatetransitiontypeauthor"></a>`author` | [`UserCore!`](#usercore) | User who changed the state of the vulnerability. |
+| <a id="vulnerabilitystatetransitiontypeauthor"></a>`author` | [`UserCore`](#usercore) | User who changed the state of the vulnerability. |
 | <a id="vulnerabilitystatetransitiontypecomment"></a>`comment` | [`String`](#string) | Comment for the state change. |
 | <a id="vulnerabilitystatetransitiontypecreatedat"></a>`createdAt` | [`Time!`](#time) | Time of the state change of the vulnerability. |
 | <a id="vulnerabilitystatetransitiontypedismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for the dismissal. |

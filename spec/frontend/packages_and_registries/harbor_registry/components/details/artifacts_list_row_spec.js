@@ -132,7 +132,7 @@ describe('Harbor artifact list row', () => {
           },
         });
 
-        expect(findByTestId('size').text()).toBe('0 bytes');
+        expect(findByTestId('size').text()).toBe('0 B');
       });
     });
   });

@@ -29,7 +29,7 @@ Here is an example on how to use database helpers to create a new table and fore
     end
 
     add_concurrent_partitioned_foreign_key(
-      :p_ci_examples, :ci_builds,
+      :p_ci_examples, :p_ci_builds,
       column: [:partition_id, :build_id],
       target_column: [:partition_id, :id],
       on_update: :cascade,
@@ -51,7 +51,7 @@ When creating the routing table:
 - The table name must start with the `p_` prefix. There are analyzers in place to ensure that all queries go
   through the routing tables and do not access the partitions directly.
 - Each new table needs a `partition_id` column and its value must equal
-  the value from the related association. In this example, that is `ci_builds`. All resources
+  the value from the related association. In this example, that is `p_ci_builds`. All resources
   belonging to a pipeline share the same `partition_id` value.
 - The primary key must have the columns ordered this way to allow efficient
   search only by `id`.
@@ -74,7 +74,7 @@ the application runs:
   def up
     with_lock_retries do
       connection.execute(<<~SQL)
-        LOCK TABLE ci_builds IN SHARE UPDATE EXCLUSIVE MODE;
+        LOCK TABLE p_ci_builds IN SHARE ROW EXCLUSIVE MODE;
         LOCK TABLE ONLY p_ci_examples IN ACCESS EXCLUSIVE MODE;
       SQL
 
@@ -92,7 +92,7 @@ Partitions are created in `gitlab_partitions_dynamic` schema.
 When creating a partition, remember:
 
 - Partition names do not use the `p_` prefix.
-- The default value for `partition_id` is `100`.
+- The starting value for `partition_id` is `100`.
 
 ## Cascade the partition value
 

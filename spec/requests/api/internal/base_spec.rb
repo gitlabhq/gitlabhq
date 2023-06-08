@@ -225,7 +225,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           params: {
             key_id: key.id,
             name: 'newtoken',
-            scopes: %w(read_api read_repository)
+            scopes: %w(read_api read_repository),
+            expires_at: 365.days.from_now
           },
           headers: gitlab_shell_internal_api_request_header
 

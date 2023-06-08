@@ -81,7 +81,7 @@ module QA
           it 'push and pull a npm package via CI', testcase: params[:testcase] do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_install_package_project.yaml.erb')).result(binding)
-              package_json = ERB.new(read_fixture('package_managers/npm', 'package_project.json.erb')).result(binding)
+              package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
               commit.project = project
               commit.commit_message = 'Add .gitlab-ci.yml'

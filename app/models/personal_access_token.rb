@@ -44,6 +44,7 @@ class PersonalAccessToken < ApplicationRecord
 
   validates :scopes, presence: true
   validate :validate_scopes
+  validates :expires_at, presence: true, on: :create
   validate :expires_at_before_instance_max_expiry_date, on: :create
 
   def revoke!
@@ -52,14 +53,6 @@ class PersonalAccessToken < ApplicationRecord
 
   def active?
     !revoked? && !expired?
-  end
-
-  # fall back to default value until background migration has updated all
-  # existing PATs and we can add a validation
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/369123
-  def expires_at=(value)
-    datetime = value.presence || MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
-    super(datetime)
   end
 
   override :simple_sorts

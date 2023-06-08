@@ -133,15 +133,15 @@ export const METRIC_TOOLTIPS = {
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
     description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),
-    groupLink: '-/security/vulnerabilities',
-    projectLink: '-/security/vulnerability_report',
-    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
+    groupLink: '-/security/vulnerabilities?severity=CRITICAL',
+    projectLink: '-/security/vulnerability_report?severity=CRITICAL',
+    docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
   },
   [VULNERABILITY_METRICS.HIGH]: {
     description: s__('ValueStreamAnalytics|High vulnerabilities over time.'),
-    groupLink: '-/security/vulnerabilities',
-    projectLink: '-/security/vulnerability_report',
-    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
+    groupLink: '-/security/vulnerabilities?severity=HIGH',
+    projectLink: '-/security/vulnerability_report?severity=HIGH',
+    docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
   },
   [MERGE_REQUEST_METRICS.THROUGHPUT]: {
     description: s__('ValueStreamAnalytics|The number of merge requests merged by month.'),

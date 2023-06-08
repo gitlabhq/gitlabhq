@@ -27,7 +27,7 @@ export const DRAWER_Z_INDEX = 252;
 
 export const MIN_USERNAME_LENGTH = 2;
 
-export const BYTES_FORMAT_BYTES = 'Bytes';
+export const BYTES_FORMAT_BYTES = 'B';
 export const BYTES_FORMAT_KIB = 'KiB';
 export const BYTES_FORMAT_MIB = 'MiB';
 export const BYTES_FORMAT_GIB = 'GiB';

@@ -259,6 +259,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     context 'validates expires_at' do
       let(:max_expiration_date) { described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now }
 
+      it "can't be blank" do
+        personal_access_token.expires_at = nil
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:expires_at].first).to eq("can't be blank")
+      end
+
       context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
         it 'is valid' do
           personal_access_token.expires_at = max_expiration_date - 1.day
@@ -285,11 +292,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       let_it_be(:not_revoked_nil_token) { create(:personal_access_token, revoked: nil) }
       let_it_be(:expired_token) { create(:personal_access_token, :expired) }
       let_it_be(:not_expired_token) { create(:personal_access_token) }
-      let_it_be(:never_expires_token) { create(:personal_access_token, expires_at: nil) }
 
-      it 'includes non-revoked and non-expired tokens' do
+      it 'includes non-revoked tokens' do
         expect(described_class.active)
-          .to match_array([not_revoked_false_token, not_revoked_nil_token, not_expired_token, never_expires_token])
+          .to match_array([not_revoked_false_token, not_revoked_nil_token, not_expired_token])
       end
     end
 
@@ -411,24 +417,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it 'does not change the existing token' do
         expect { personal_access_token.ensure_token }
           .not_to change { personal_access_token.token }.from(token)
-      end
-    end
-  end
-
-  describe '#expires_at=' do
-    let(:personal_access_token) { described_class.new }
-
-    context 'expires_at set to empty value' do
-      [nil, ""].each do |expires_in_value|
-        it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
-          personal_access_token.expires_at = expires_in_value
-
-          freeze_time do
-            expect(personal_access_token.expires_at).to eq(
-              PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date
-            )
-          end
-        end
       end
     end
   end

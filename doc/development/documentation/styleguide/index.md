@@ -856,7 +856,7 @@ Sometimes they are more precise and will be maintained more actively.
 
 For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
-### Links requiring permissions
+### Links that require permissions
 
 Don't link directly to:
 
@@ -864,23 +864,26 @@ Don't link directly to:
 - Project features that require [special permissions](../../../user/permissions.md)
   to view.
 
-These fail for:
+These links fail for:
 
 - Those without sufficient permissions.
 - Automated link checkers.
 
-Instead:
+If you must use one of these links:
 
-- To reduce confusion, mention in the text that the information is either:
-  - Contained in a confidential issue.
-  - Requires special permission to a project to view.
-- Provide a link in back ticks (`` ` ``) so that those with access to the issue
-  can navigate to it.
+- Mention that the information is confidential or requires specific permissions.
+- Put the link in backticks, so that it does not cause link checkers to fail.
 
-Example:
+Examples:
 
 ```markdown
-For more information, see the [confidential issue](../../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/<issue_number>`.
+GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
+```
+
+```markdown
+Users with the Maintainer role for the project can use the pipeline editor:
+`https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
 ```
 
 ### Link to specific lines of code

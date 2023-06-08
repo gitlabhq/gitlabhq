@@ -68,7 +68,7 @@ export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
 export const CREATED_AT = s__('ContainerRegistry|Created %{time}');
 
 export const NOT_AVAILABLE_TEXT = __('Not applicable.');
-export const NOT_AVAILABLE_SIZE = __('0 bytes');
+export const NOT_AVAILABLE_SIZE = __('0 B');
 
 export const CLEANUP_UNSCHEDULED_TEXT = s__('ContainerRegistry|Cleanup will run %{time}');
 export const CLEANUP_SCHEDULED_TEXT = s__('ContainerRegistry|Cleanup pending');

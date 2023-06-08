@@ -123,8 +123,10 @@ module Gitlab
       end
 
       def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params)
-        pagination_params ||= {}
-        pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
+        unless pagination_params.nil? && recursive
+          pagination_params ||= {}
+          pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
+        end
 
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,

@@ -97,7 +97,7 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource_type}_bot",
         impersonation: false,
         scopes: params[:scopes] || default_scopes,
-        expires_at: params[:expires_at] || nil
+        expires_at: pat_expiration
       }
     end
 
@@ -106,10 +106,10 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      resource.add_member(user, access_level, expires_at: default_pat_expiration)
+      resource.add_member(user, access_level, expires_at: pat_expiration)
     end
 
-    def default_pat_expiration
+    def pat_expiration
       params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     end
 

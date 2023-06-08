@@ -5,7 +5,7 @@ FactoryBot.define do
     user
     sequence(:name) { |n| "PAT #{n}" }
     revoked { false }
-    expires_at { 5.days.from_now }
+    expires_at { 30.days.from_now }
     scopes { ['api'] }
     impersonation { false }
 

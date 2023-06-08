@@ -74,7 +74,7 @@ To purge files from a GitLab repository:
 1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
 
    ```shell
-   git clone --bare /path/to/project.bundle
+   git clone --bare --mirror /path/to/project.bundle
    ```
 
 1. Go to the `project.git` directory:
@@ -134,6 +134,12 @@ To purge files from a GitLab repository:
    Repeat this step and all following steps (including the [repository cleanup](#repository-cleanup) step)
    every time you run any `git filter-repo` command.
 
+1. To allow you to force push the changes you need to unset the mirror flag:
+
+   ```shell
+    git config --unset remote.origin.mirror
+   ```
+
 1. Force push your changes to overwrite all branches on GitLab:
 
    ```shell
@@ -167,8 +173,6 @@ To purge files from a GitLab repository:
 
 ## Repository cleanup
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19376) in GitLab 11.6.
-
 Repository cleanup allows you to upload a text file of objects and GitLab removes internal Git
 references to these objects. You can use
 [`git filter-repo`](https://github.com/newren/git-filter-repo) to produce a list of objects (in a
@@ -179,6 +183,10 @@ safely cleaning the repository requires it to be made read-only for the duration
 of the operation. This happens automatically, but submitting the cleanup request
 fails if any writes are ongoing, so cancel any outstanding `git push`
 operations before continuing.
+
+WARNING:
+Removing internal Git references results in associated merge request commits, pipelines, and changes details
+no longer being available.
 
 To clean up a repository:
 

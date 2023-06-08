@@ -130,7 +130,7 @@ RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
   let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
   let(:user) { create(:user) }
   let(:personal_access_token) do
-    described_class.new(name: 'test-pat-01', user_id: user.id, scopes: [:api], token_digest: token_digest)
+    described_class.new(name: 'test-pat-01', user_id: user.id, scopes: [:api], token_digest: token_digest, expires_at: 30.days.from_now)
   end
 
   before do
