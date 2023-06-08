@@ -68,7 +68,6 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     describe '#convert_table_to_first_list_partition' do
       it_behaves_like 'delegates to ConvertTable' do
         let(:lock_tables) { [source_table] }
-        let(:extra_options) { { lock_tables: lock_tables } }
         let(:expected_method) { :partition }
         let(:migrate) do
           migration.convert_table_to_first_list_partition(table_name: source_table,

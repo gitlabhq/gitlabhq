@@ -11,17 +11,14 @@ module Gitlab
     end
 
     def clear_cache!(key)
+      use_pipeline = ::Feature.enabled?(:use_pipeline_over_multikey)
       with do |redis|
         keys = read(key).map { |value| "#{cache_namespace}:#{value}" }
         keys << cache_key(key)
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          if ::Feature.enabled?(:use_pipeline_over_multikey)
-            keys.each_slice(1000) do |subset|
-              redis.pipelined do |pipeline|
-                subset.each { |key| pipeline.unlink(key) }
-              end
-            end
+          if use_pipeline || Gitlab::Redis::ClusterUtil.cluster?(redis)
+            Gitlab::Redis::ClusterUtil.batch_unlink(keys, redis)
           else
             redis.pipelined do |pipeline|
               keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }

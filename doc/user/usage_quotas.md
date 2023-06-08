@@ -42,6 +42,54 @@ Container Registry usage is available only for GitLab.com. This feature requires
 of the GitLab Container Registry. To learn about the proposed release for self-managed
 installations, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
+#### How container registry usage is calculated
+
+Image layers stored in the Container Registry are deduplicated at the root namespace level.
+
+An image is only counted once if:
+
+- You tag the same image more than once in the same repository.
+- You tag the same image across distinct repositories under the same root namespace.
+
+An image layer is only counted once if:
+
+- You share the image layer across multiple images in the same container repository, project, or group.
+- You share the image layer across different repositories.
+
+Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
+referenced exclusively by them are subject to [online garbage collection](packages/container_registry/delete_container_registry_images.md#garbage-collection).
+Untagged image layers are automatically deleted after 24 hours if they remain unreferenced during that period.
+
+Image layers are stored on the storage backend in the original (usually compressed) format. This
+means that the measured size for any given image layer should match the size displayed on the
+corresponding [image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md#example-image-manifest).
+
+Namespace usage is refreshed a few minutes after a tag is pushed or deleted from any container repository under the namespace.
+
+#### Delayed refresh
+
+It is not possible to calculate [container registry usage](#container-registry-usage)
+with maximum precision in real time for extremely large namespaces (about 1% of namespaces).
+To enable maintainers of these namespaces to see their usage, there is a delayed fallback mechanism.
+See [epic 9413](https://gitlab.com/groups/gitlab-org/-/epics/9413) for more details.
+
+If the usage for a namespace cannot be calculated with precision, GitLab falls back to the delayed method.
+In the delayed method, the displayed usage size is the sum of **all** unique image layers
+in the namespace. Untagged image layers are not ignored. As a result,
+the displayed usage size might not change significantly after deleting tags. Instead,
+the size value only changes when:
+
+- An automated [garbage collection process](packages/container_registry/delete_container_registry_images.md#garbage-collection)
+  runs and deletes untagged image layers. After a user deletes a tag, a garbage collection run
+  is scheduled to start 24 hours later. During that run, images that were previously tagged
+  are analyzed and their layers deleted if not referenced by any other tagged image.
+  If any layers are deleted, the namespace usage is updated.
+- The namespace's registry usage shrinks enough that GitLab can measure it with maximum precision.
+  As usage for namespaces shrinks to be under the [limits](#namespace-storage-limit),
+  the measurement switches automatically from delayed to precise usage measurement.
+  There is no place in the UI to determine which measurement method is being used,
+  but [issue 386468](https://gitlab.com/gitlab-org/gitlab/-/issues/386468) proposes to improve this.
+
 ### Storage usage statistics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68898) project-level graph in GitLab 14.4 [with a flag](../administration/feature_flags.md) named `project_storage_ui`. Disabled by default.

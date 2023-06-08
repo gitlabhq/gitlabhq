@@ -86,9 +86,25 @@ CI related settings that apply to the entire instance.
 
 Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
+### `Query.ciCatalogResource`
+
+A single CI/CD Catalog resource visible to an authorized user.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CiCatalogResource`](#cicatalogresource).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycicatalogresourceid"></a>`id` | [`CiCatalogResourceID!`](#cicatalogresourceid) | CI/CD Catalog resource global ID. |
+
 ### `Query.ciCatalogResources`
 
-CI Catalog resources visible to the current user.
+All CI/CD Catalog resources under a common namespace, visible to an authorized user.
 
 WARNING:
 **Introduced** in 15.11.
@@ -26706,6 +26722,12 @@ A `CiBuildID` is a global ID. It is encoded as a string.
 
 An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
 
+### `CiCatalogResourceID`
+
+A `CiCatalogResourceID` is a global ID. It is encoded as a string.
+
+An example `CiCatalogResourceID` is: `"gid://gitlab/Ci::Catalog::Resource/1"`.
+
 ### `CiJobArtifactID`
 
 A `CiJobArtifactID` is a global ID. It is encoded as a string.
@@ -26929,7 +26951,11 @@ An example `GitlabErrorTrackingDetailedErrorID` is: `"gid://gitlab/Gitlab::Error
 A global identifier.
 
 A global identifier represents an object uniquely across the application.
-An example of such an identifier is `"gid://gitlab/User/1"`.
+An example of a global identifier is `"gid://gitlab/User/1"`.
+
+`gid://gitlab` stands for the root name.
+`User` is the name of the ActiveRecord class of the record.
+`1` is the record id as per the id in the db table.
 
 Global identifiers are encoded as strings.
 

@@ -1662,7 +1662,6 @@ Layout/ArgumentAlignment:
     - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/purchase/upgrade_group_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/purchase/user_registration_billing_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/saas_user_limit_experience_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/utilization/free_namespace_storage_spec.rb'
     - 'qa/qa/vendor/jira/jira_api.rb'
     - 'qa/spec/support/loglinking_spec.rb'
     - 'rubocop/cop/gitlab/finder_with_find_by.rb'

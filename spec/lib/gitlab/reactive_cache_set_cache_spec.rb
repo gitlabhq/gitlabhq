@@ -75,7 +75,7 @@ RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
 
       it 'sends multiple pipelines of 1000 unlinks' do
         Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:pipelined).twice.and_call_original
+          expect(redis).to receive(:pipelined).at_least(2).and_call_original
         end
 
         cache.clear_cache!(cache_prefix)

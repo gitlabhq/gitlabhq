@@ -21,7 +21,7 @@ namespace :cache do
             )
 
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.del(*keys) if keys.any?
+              Gitlab::Redis::ClusterUtil.batch_unlink(keys, redis) if keys.any?
             end
 
             break if cursor == REDIS_SCAN_START_STOP

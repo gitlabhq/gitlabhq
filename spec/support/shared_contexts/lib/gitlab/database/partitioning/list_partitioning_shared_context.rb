@@ -19,7 +19,6 @@ RSpec.shared_context 'with a table structure for converting a table to a list pa
   let(:other_referencing_table_name) { '_test_other_referencing_table' }
   let(:parent_table_name) { "#{table_name}_parent" }
   let(:parent_table_identifier) { "#{connection.current_schema}.#{parent_table_name}" }
-  let(:lock_tables) { [] }
 
   let(:model) { define_batchable_model(table_name, connection: connection) }
 

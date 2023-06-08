@@ -38070,6 +38070,48 @@ ALTER TABLE issue_search_data
 ALTER TABLE product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_build_pending_states
+    ADD CONSTRAINT temp_fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_build_trace_chunks
+    ADD CONSTRAINT temp_fk_89e29fa5ee_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_unit_test_failures
+    ADD CONSTRAINT temp_fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_sources_pipelines
+    ADD CONSTRAINT temp_fk_be5624bf37_p FOREIGN KEY (source_partition_id, source_job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_resources
+    ADD CONSTRAINT temp_fk_e169a8e3d5_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL NOT VALID;
+
+ALTER TABLE ONLY ci_builds_metadata
+    ADD CONSTRAINT temp_fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_build_report_results
+    ADD CONSTRAINT temp_fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_build_needs
+    ADD CONSTRAINT temp_fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_builds_runner_session
+    ADD CONSTRAINT temp_fk_rails_70707857d3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_pending_builds
+    ADD CONSTRAINT temp_fk_rails_725a2644a3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_build_trace_metadata
+    ADD CONSTRAINT temp_fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_job_artifacts
+    ADD CONSTRAINT temp_fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_running_builds
+    ADD CONSTRAINT temp_fk_rails_da45cfa165_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ci_job_variables
+    ADD CONSTRAINT temp_fk_rails_fbf3b34792_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;
 

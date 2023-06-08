@@ -211,11 +211,8 @@ RSpec.describe PlanLimits do
       ]
     end
 
-    # Remove ci_active_pipelines when db column is removed
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/408141
     let(:columns_with_zero) do
       %w[
-        ci_active_pipelines
         ci_pipeline_size
         ci_active_jobs
         storage_size_limit

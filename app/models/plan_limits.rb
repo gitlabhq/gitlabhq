@@ -4,6 +4,7 @@ class PlanLimits < ApplicationRecord
   include IgnorableColumns
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
   ignore_column :web_hook_calls_high, remove_with: '15.10', remove_after: '2022-02-22'
+  ignore_column :ci_active_pipelines, remove_with: '16.3', remove_after: '2022-07-22'
 
   LimitUndefinedError = Class.new(StandardError)
 

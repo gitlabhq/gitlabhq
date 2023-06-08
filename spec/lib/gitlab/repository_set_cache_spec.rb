@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
 
   let(:repository) { project.repository }
@@ -59,8 +59,13 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
     it 'writes the value to the cache' do
       write_cache
 
-      redis_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }.last
-      expect(redis_keys).to include("#{gitlab_cache_namespace}:branch_names:#{namespace}:set")
+      cursor, redis_keys = Gitlab::Redis::RepositoryCache.with { |redis| redis.scan(0, match: "*") }
+      while cursor != "0"
+        cursor, keys = Gitlab::Redis::RepositoryCache.with { |redis| redis.scan(cursor, match: "*") }
+        redis_keys << keys
+      end
+
+      expect(redis_keys.flatten).to include("#{gitlab_cache_namespace}:branch_names:#{namespace}:set")
       expect(cache.fetch('branch_names')).to contain_exactly('main')
     end
 
@@ -120,7 +125,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
     context 'when deleting over 1000 keys' do
       it 'deletes in batches of 1000' do
         Gitlab::Redis::RepositoryCache.with do |redis|
-          expect(redis).to receive(:pipelined).twice.and_call_original
+          expect(redis).to receive(:pipelined).at_least(2).and_call_original
         end
 
         cache.expire(*(Array.new(1001) { |i| i }))

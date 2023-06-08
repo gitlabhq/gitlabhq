@@ -441,13 +441,39 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
       end
 
-      it 'does not cache an unknown introspection query' do
-        query = File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql'))
-
-        expect(GitlabSchema).to receive(:execute).exactly(:twice)
+      it 'logs that it will try to hit the cache' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: "IntrospectionQueryCache",
+          can_use_introspection_query_cache: true,
+          query: query.to_s,
+          variables: {},
+          introspection_query_cache_key: ['introspection-query-cache', Gitlab.revision, false]
+        )
 
         post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+      end
+
+      context 'when there is an unknown introspection query' do
+        let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
+
+        it 'logs that it did not try to hit the cache' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: "IntrospectionQueryCache",
+            can_use_introspection_query_cache: false,
+            query: query.to_s,
+            variables: {},
+            introspection_query_cache_key: ['introspection-query-cache', Gitlab.revision, false]
+          )
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        end
+
+        it 'does not cache an unknown introspection query' do
+          expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        end
       end
 
       it 'hits the cache even if the whitespace in the query differs' do

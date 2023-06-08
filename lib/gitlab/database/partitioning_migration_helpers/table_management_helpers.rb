@@ -287,8 +287,7 @@ module Gitlab
                  table_name: table_name,
                  parent_table_name: parent_table_name,
                  partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value,
-                 lock_tables: lock_tables
+                 zero_partition_value: initial_partitioning_value
                 ).partition
         end
 

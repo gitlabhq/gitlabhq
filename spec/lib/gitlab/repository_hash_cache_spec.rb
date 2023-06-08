@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::RepositoryHashCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::RepositoryHashCache, :clean_gitlab_redis_repository_cache, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
 
   let(:repository) { project.repository }

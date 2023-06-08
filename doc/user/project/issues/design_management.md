@@ -119,9 +119,7 @@ To move around the image while zoomed in, drag the image.
 
 ## Add a design to an issue
 
-> - Drag and drop uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
-> - New version creation on upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
-> - Copy and paste uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634) in GitLab 12.10.
+> Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 
 Prerequisites:
 

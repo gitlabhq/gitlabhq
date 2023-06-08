@@ -3,14 +3,12 @@
 module Gitlab
   module Patch
     module RedisCacheStore
-      PATCH_INPUT_LIMIT = 100
       PIPELINE_BATCH_SIZE = 100
 
       # We will try keep patched code explicit and matching the original signature in
       # https://github.com/rails/rails/blob/v6.1.7.2/activesupport/lib/active_support/cache/redis_cache_store.rb#L361
       def read_multi_mget(*names) # rubocop:disable Style/ArgumentsForwarding
         return super unless enable_rails_cache_pipeline_patch?
-        return super if names.size > PATCH_INPUT_LIMIT # avoid excessive apdex degradation during benchmarking exercise
 
         patched_read_multi_mget(*names) # rubocop:disable Style/ArgumentsForwarding
       end
@@ -23,7 +21,7 @@ module Gitlab
         delete_count = 0
         redis.with do |conn|
           entries.each_slice(PIPELINE_BATCH_SIZE) do |subset|
-            delete_count += conn.pipelined do |pipeline|
+            delete_count += Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |pipeline|
               subset.each { |entry| pipeline.del(entry) }
             end.sum
           end
@@ -58,14 +56,19 @@ module Gitlab
       end
 
       def pipeline_mget(conn, keys)
-        conn.pipelined do |p|
-          keys.each { |key| p.get(key) }
+        keys.each_slice(PIPELINE_BATCH_SIZE).flat_map do |subset|
+          Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |p|
+            subset.each { |key| p.get(key) }
+          end
         end
       end
 
       private
 
       def enable_rails_cache_pipeline_patch?
+        # if we do not enable patch, the application will be susceptible to cross-slot errors
+        return true if redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }
+
         redis_cache? &&
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands? &&
           ::Feature.enabled?(:enable_rails_cache_pipeline_patch) # rubocop:disable Cop/FeatureFlagUsage

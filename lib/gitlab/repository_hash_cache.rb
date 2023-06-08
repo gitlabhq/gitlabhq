@@ -40,7 +40,11 @@ module Gitlab
         keys = keys.map { |key| cache_key(key) }
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          redis.unlink(*keys)
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            Gitlab::Redis::ClusterUtil.batch_unlink(keys, redis)
+          else
+            redis.unlink(*keys)
+          end
         end
       end
     end

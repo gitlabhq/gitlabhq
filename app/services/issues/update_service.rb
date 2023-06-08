@@ -116,6 +116,13 @@ module Issues
 
     attr_reader :perform_spam_check
 
+    override :after_update
+    def after_update(issue, _old_associations)
+      super
+
+      GraphqlTriggers.work_item_updated(issue)
+    end
+
     def handle_date_changes(issue)
       return unless issue.previous_changes.slice('due_date', 'start_date').any?
 

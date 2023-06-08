@@ -270,6 +270,8 @@ class GraphqlController < ApplicationController
 
   def execute_introspection_query
     if introspection_query_can_use_cache?
+      log_introspection_query_message(true)
+
       # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
       Rails.cache.fetch(
         introspection_query_cache_key,
@@ -277,6 +279,8 @@ class GraphqlController < ApplicationController
           execute_query.to_json
         end
     else
+      log_introspection_query_message(false)
+
       execute_query
     end
   end
@@ -292,5 +296,15 @@ class GraphqlController < ApplicationController
     # visibility of schema items. Visibility can be affected by the remove_deprecated param. For more context, see:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/409448#note_1377558096
     ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
+  end
+
+  def log_introspection_query_message(can_use_introspection_query_cache)
+    Gitlab::AppLogger.info(
+      message: "IntrospectionQueryCache",
+      can_use_introspection_query_cache: can_use_introspection_query_cache,
+      query: query,
+      variables: build_variables(params[:variables]),
+      introspection_query_cache_key: introspection_query_cache_key
+    )
   end
 end

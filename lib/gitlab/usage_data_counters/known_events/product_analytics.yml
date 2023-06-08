@@ -4,3 +4,5 @@
   aggregation: weekly
 - name: user_created_analytics_dashboard
   aggregation: weekly
+- name: user_visited_dashboard
+  aggregation: weekly

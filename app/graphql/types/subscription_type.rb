@@ -47,6 +47,11 @@ module Types
       description: 'Triggered when a note is updated.',
       alpha: { milestone: '15.9' }
 
+    field :work_item_updated,
+      subscription: Subscriptions::WorkItemUpdated,
+      null: true,
+      description: 'Triggered when a work item is updated.'
+
     field :merge_request_reviewers_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when the reviewers of a merge request are updated.'

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GraphqlTriggers, feature_category: :shared do
-  let_it_be(:issuable, refind: true) { create(:work_item) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:issuable, refind: true) { create(:work_item, project: project) }
 
   describe '.issuable_assignees_updated' do
     let(:assignees) { create_list(:user, 2) }
@@ -142,6 +143,33 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       ).and_call_original
 
       GraphqlTriggers.merge_request_approval_state_updated(merge_request)
+    end
+  end
+
+  describe '.work_item_updated' do
+    it 'triggers the work_item_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'workItemUpdated',
+        { work_item_id: issuable.to_gid },
+        issuable
+      ).and_call_original
+
+      GraphqlTriggers.work_item_updated(issuable)
+    end
+
+    context 'when triggered with an Issue' do
+      it 'triggers the subscription with a work item' do
+        issue = create(:issue, project: project)
+        work_item = WorkItem.find(issue.id)
+
+        expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+          'workItemUpdated',
+          { work_item_id: work_item.to_gid },
+          work_item
+        ).and_call_original
+
+        GraphqlTriggers.work_item_updated(issue)
+      end
     end
   end
 end

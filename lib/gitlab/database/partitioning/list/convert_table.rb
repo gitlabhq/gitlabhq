@@ -11,12 +11,11 @@ module Gitlab
 
           PARTITIONING_CONSTRAINT_NAME = 'partitioning_constraint'
 
-          attr_reader :partitioning_column, :table_name, :parent_table_name, :zero_partition_value,
-            :locking_configuration
+          attr_reader :partitioning_column, :table_name, :parent_table_name, :zero_partition_value
 
           def initialize(
             migration_context:, table_name:, parent_table_name:, partitioning_column:,
-            zero_partition_value:, lock_tables: [])
+            zero_partition_value:)
 
             @migration_context = migration_context
             @connection = migration_context.connection
@@ -24,7 +23,6 @@ module Gitlab
             @parent_table_name = parent_table_name
             @partitioning_column = partitioning_column
             @zero_partition_value = zero_partition_value
-            @locking_configuration = LockingConfiguration.new(migration_context, table_locking_order: lock_tables)
           end
 
           def prepare_for_partitioning(async: false)
@@ -38,22 +36,24 @@ module Gitlab
           end
 
           def partition
-            assert_existing_constraints_partitionable
-            assert_partitioning_constraint_present
+            # If already partitioned, the table is no longer partitionable. Thus we skip checks leading up
+            # to partitioning if the partitioning transaction has already succeeded.
+            unless already_partitioned?
+              assert_existing_constraints_partitionable
+              assert_partitioning_constraint_present
 
-            create_parent_table
-            attach_foreign_keys_to_parent
-            locking_sql = locking_configuration.locking_statement_for(tables_that_will_lock_during_partitioning)
+              create_parent_table
 
-            locking_configuration.with_lock_retries do
-              # Loose FKs trigger will exclusively lock the table and it might
-              # not follow the locking order needed to attach the partition.
-              migration_context.execute(locking_sql) if locking_sql.present?
-
-              redefine_loose_foreign_key_triggers do
-                migration_context.execute(sql_to_convert_table)
+              migration_context.with_lock_retries do
+                redefine_loose_foreign_key_triggers do
+                  migration_context.execute(sql_to_convert_table)
+                end
               end
             end
+
+            # Attaching foreign keys handles cases where one or more foreign keys already exists, so it doesn't
+            # need a check similar to the rest of this method
+            attach_foreign_keys_to_parent
           end
 
           def revert_partitioning
@@ -194,6 +194,8 @@ module Gitlab
               # At this point no other connection knows about the parent table.
               # Thus the only contended lock in the following transaction is on fk.to_table.
               # So a deadlock is impossible.
+              # (We also take a share update exclusive lock against the recently attached child table,
+              #   but that only blocks vacuum and other schema modifications, not reads or writes)
 
               # If we're rerunning this migration after a failure to acquire a lock, the foreign key might already exist
               # Don't try to recreate it in that case
@@ -299,16 +301,8 @@ module Gitlab
             end
           end
 
-          def tables_that_will_lock_during_partitioning
-            # Locks are taken against the table + all tables that reference it by foreign key
-            # postgres_foreign_keys.referenced_table_name gives the table name that we need here directly, but that
-            # column did not exist yet during the migration 20221021145820_create_routing_table_for_builds_metadata_v2
-            # To ensure compatibility with that migration if it is run with this code, use referenced_table_identifier
-            # here.
-            referenced_tables = Gitlab::Database::PostgresForeignKey
-                                  .by_constrained_table_identifier(table_identifier)
-                                  .map { |fk| table_name_for_identifier(fk.referenced_table_identifier) }
-            referenced_tables + [table_name]
+          def already_partitioned?
+            Gitlab::Database::PostgresPartition.for_identifier(table_identifier).exists?
           end
         end
       end

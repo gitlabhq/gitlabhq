@@ -59,6 +59,7 @@ module WorkItems
       super
     end
 
+    override :after_update
     def after_update(work_item, old_associations)
       super
 

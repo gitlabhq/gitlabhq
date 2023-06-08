@@ -36,6 +36,19 @@ RSpec.configure do |config|
     Rails.cache = original_null_store
   end
 
+  config.around(:each, :use_clean_rails_repository_cache_store_caching) do |example|
+    original_null_store = Rails.cache
+    Rails.cache = Gitlab::Redis::RepositoryCache.cache_store
+
+    redis_repository_cache_cleanup!
+
+    example.run
+
+    redis_repository_cache_cleanup!
+
+    Rails.cache = original_null_store
+  end
+
   config.around(:each, :use_sql_query_cache) do |example|
     base_models = Gitlab::Database.database_base_models_with_gitlab_shared.values
     inner_proc = proc { example.run }

@@ -16,7 +16,11 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
   describe '#read_multi_mget' do
     it 'runs multi-key command if no cross-slot command is expected' do
       Rails.cache.redis.with do |redis|
-        expect(redis).not_to receive(:pipelined)
+        if Gitlab::Redis::ClusterUtil.cluster?(redis)
+          expect(redis).to receive(:pipelined).once.and_call_original
+        else
+          expect(redis).not_to receive(:pipelined)
+        end
       end
 
       expect(
@@ -24,13 +28,15 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       ).to eq({ '{user1}:x' => 1, '{user1}:y' => 2, '{user1}:z' => 3 })
     end
 
-    it 'skips patch if input is above 100' do
-      Rails.cache.redis.with do |redis|
-        expect(redis).not_to receive(:pipelined)
-      end
+    context 'when deleting large amount of keys' do
+      it 'batches get into pipelines of 100' do
+        Rails.cache.redis.with do |redis|
+          expect(redis).to receive(:pipelined).at_least(2).and_call_original
+        end
 
-      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        Rails.cache.read_multi(*Array.new(101) { |i| i })
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Rails.cache.read_multi(*Array.new(101) { |i| i })
+        end
       end
     end
 
@@ -38,19 +44,23 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       it 'reads multiple keys' do
         if patched
           Rails.cache.redis.with do |redis|
-            expect(redis).to receive(:pipelined).once.and_call_original
+            expect(redis).to receive(:pipelined).at_least(1).and_call_original
           end
         end
 
-        expect(::Feature).to receive(:enabled?)
-          .with(:feature_flag_state_logs, { default_enabled_if_undefined: nil, type: :ops })
-          .exactly(:once)
-          .and_call_original
+        Gitlab::Redis::Cache.with do |redis|
+          unless Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(::Feature).to receive(:enabled?)
+                                   .with(:feature_flag_state_logs, { default_enabled_if_undefined: nil, type: :ops })
+                                   .exactly(:once)
+                                   .and_call_original
 
-        expect(::Feature).to receive(:enabled?)
-          .with(:enable_rails_cache_pipeline_patch)
-          .exactly(:once)
-          .and_call_original
+            expect(::Feature).to receive(:enabled?)
+                                   .with(:enable_rails_cache_pipeline_patch)
+                                   .exactly(:once)
+                                   .and_call_original
+          end
+        end
 
         expect(
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
@@ -65,7 +75,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     shared_examples 'reading using non redis cache stores' do |klass|
       it 'does not affect non Redis::Cache cache stores' do
         klass.cache_store.redis.with do |redis|
-          expect(redis).not_to receive(:pipelined)
+          expect(redis).not_to receive(:pipelined) unless Gitlab::Redis::ClusterUtil.cluster?(redis)
         end
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
@@ -75,8 +85,8 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     end
 
     context 'when reading from non redis-cache stores' do
-      it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::RepositoryCache
       it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::FeatureFlag
+      it_behaves_like 'reading using non redis cache stores', Gitlab::Redis::RepositoryCache
     end
 
     context 'when feature flag is disabled' do
@@ -95,19 +105,23 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       it 'deletes multiple keys' do
         if patched
           Rails.cache.redis.with do |redis|
-            expect(redis).to receive(:pipelined).once.and_call_original
+            expect(redis).to receive(:pipelined).at_least(1).and_call_original
           end
         end
 
-        expect(::Feature).to receive(:enabled?)
-          .with(:feature_flag_state_logs, { default_enabled_if_undefined: nil, type: :ops })
-          .exactly(:once)
-          .and_call_original
+        Gitlab::Redis::Cache.with do |redis|
+          unless Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(::Feature).to receive(:enabled?)
+                                   .with(:feature_flag_state_logs, { default_enabled_if_undefined: nil, type: :ops })
+                                   .exactly(:once)
+                                   .and_call_original
 
-        expect(::Feature).to receive(:enabled?)
-          .with(:enable_rails_cache_pipeline_patch)
-          .exactly(:once)
-          .and_call_original
+            expect(::Feature).to receive(:enabled?)
+                                   .with(:enable_rails_cache_pipeline_patch)
+                                   .exactly(:once)
+                                   .and_call_original
+          end
+        end
 
         expect(
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
@@ -120,7 +134,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     shared_examples 'deleting using non redis cache stores' do |klass|
       it 'does not affect non Redis::Cache cache stores' do
         klass.cache_store.redis.with do |redis|
-          expect(redis).not_to receive(:pipelined)
+          expect(redis).not_to receive(:pipelined) unless Gitlab::Redis::ClusterUtil.cluster?(redis)
         end
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
@@ -130,8 +144,8 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     end
 
     context 'when deleting from non redis-cache stores' do
-      it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::RepositoryCache
       it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::FeatureFlag
+      it_behaves_like 'deleting using non redis cache stores', Gitlab::Redis::RepositoryCache
     end
 
     context 'when deleting large amount of keys' do
@@ -141,7 +155,9 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
       it 'calls pipeline multiple times' do
         Rails.cache.redis.with do |redis|
-          expect(redis).to receive(:pipelined).twice.and_call_original
+          # no expectation on number of times as it could vary depending on cluster size
+          # if the Redis is a Redis Cluster
+          expect(redis).to receive(:pipelined).at_least(2).and_call_original
         end
 
         expect(
@@ -154,7 +170,11 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
     it 'runs multi-key command if no cross-slot command is expected' do
       Rails.cache.redis.with do |redis|
-        expect(redis).not_to receive(:pipelined)
+        if Gitlab::Redis::ClusterUtil.cluster?(redis)
+          expect(redis).to receive(:pipelined).once.and_call_original
+        else
+          expect(redis).not_to receive(:pipelined)
+        end
       end
 
       expect(

@@ -14,27 +14,50 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-In GitLab 16.0 we introduced a new runner creation workflow,
-the previous workflow that uses registration tokens is deprecated
-and will be removed in GitLab 17.0.
+In GitLab 16.0, we introduced a new runner creation workflow that uses authentication tokens to register
+runners. The legacy workflow that uses registration tokens is deprecated and will be removed in GitLab 17.0.
 
-For more information about the implementation for the new workflow, see the:
+For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
-- [Next GitLab Runner Token Architecture](../../architecture/blueprints/runner_tokens/index.md) for information about the technical design and reasons for the new token architecture.
-- [Development epic](https://gitlab.com/groups/gitlab-org/-/epics/7663) for the most accurate information about the current development status.
+For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](../../architecture/blueprints/runner_tokens/index.md).
 
 ## Feedback
 
-If you experience problems with the new runner registration workflow,
-and the following information is not sufficient,
-or if you have concerns about it,
-you can reach out to us in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
+If you experience problems or have concerns about the new runner registration workflow,
+or if the following information is not sufficient,
+you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
 
-## Will my runner registration workflow break?
+## The new runner registration workflow
 
-If no action is taken before your GitLab instance is upgraded to 16.6, then your runner registration
+For the new runner registration workflow, you:
+
+1. [Create a runner](register_runner.md) directly in the GitLab UI.
+1. Receive an authentication token.
+1. Use the authentication token instead of the registration token when you register
+   a runner with this configuration. Runner managers registered in multiple hosts appear
+   under the same runner in the GitLab UI, but with an identifying system ID.
+
+The new runner registration workflow has the following benefits:
+
+- Preserved ownership records for runners, and minimized impact on users.
+- The addition of a unique system ID ensures that you can reuse the same authentication token across
+multiple runners. For more information, see [Reusing a GitLab Runner configuration](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration).
+
+## Estimated time frame for planned changes
+
+- In GitLab 15.10 and later, you can use the new runner registration workflow.
+- In GitLab 16.6, we plan to disable registration tokens.
+- In GitLab 17.0, we plan to completely remove support for runner registration tokens.
+
+## Prevent your runner registration workflow from breaking
+
+Until GitLab 16.6, you can still use the legacy runner registration workflow.
+
+In GitLab 16.6, the legacy runner registration workflow will be disabled automatically. You will be able to manually re-enable the legacy runner registration workflow for a limited time. For more information, see
+[Using registration tokens after GitLab 16.6](#using-registration-tokens-after-gitlab-166).
+
+If no action is taken before your GitLab instance is upgraded to GitLab 16.6, then your runner registration
 workflow will break.
-Until then, both the new and the old workflow will coexist side-by-side.
 
 To avoid a broken workflow, you must:
 
@@ -42,39 +65,16 @@ To avoid a broken workflow, you must:
 1. Replace the registration token in your runner registration workflow with the
 authentication token.
 
-## Can I use the old runner registration process after 16.6?
+## Using registration tokens after GitLab 16.6
 
-- On GitLab.com, you'll be able to manually re-enable the previous runner registration process in the top-level group settings until GitLab 16.8.
-- On GitLab self-managed, you'll be able manually re-enable the previous runner registration process in the Admin Area settings until GitLab 17.0.
+To continue using registration tokens after GitLab 16.6:
 
-## What is the new runner registration process?
+- On GitLab.com, you can manually re-enable the legacy runner registration process in the top-level group settings until GitLab 16.8.
+- On GitLab self-managed, you can manually re-enable the legacy runner registration process in the Admin Area settings until GitLab 17.0.
 
-When the new runner registration process is introduced, you will:
+Plans to implement a UI setting to re-enable registration tokens are proposed in [issue 411923](https://gitlab.com/gitlab-org/gitlab/-/issues/411923)
 
-1. Create a runner directly in the GitLab UI.
-1. Receive an authentication token in return.
-1. Use the authentication token instead of the registration token, whenever you need to register a runner with this
-   configuration. Runner managers registered in multiple hosts will appear under the same runner in the GitLab UI,
-   but with an identifying system ID.
-
-This has added benefits such as preserved ownership records for runners, and minimizes
-impact on users.
-The addition of a unique system ID ensures that you can reuse the same authentication token across
-multiple runners.
-For example, in an auto-scaling scenario where a runner manager spawns a runner process with a
-fixed authentication token.
-This ID generates once at the runner's startup, persists in a sidecar file, and is sent to the
-GitLab instance when requesting jobs.
-This allows the GitLab instance to display which system executed a given job.
-
-## What is the estimated timeframe for the planned changes?
-
-- In GitLab 15.10, we plan to implement runner creation directly in the runners administration page,
-  and prepare the runner to follow the new workflow.
-- In GitLab 16.6, we plan to disable registration tokens.
-- In GitLab 17.0, we plan to completely remove support for runner registration tokens.
-
-## How will the `gitlab-runner register` command syntax change?
+## Changes to the `gitlab-runner register` command syntax
 
 The `gitlab-runner register` command will stop accepting registration tokens and instead accept new
 authentication tokens generated in the GitLab runners administration page.
@@ -94,10 +94,11 @@ gitlab-runner register
     --registration-token "GR1348941C6YcZVddc8kjtdU-yWYD"
 ```
 
-In GitLab 16.0, the runner will be created in the UI where some of its attributes can be
-pre-configured by the creator.
-Examples are the tag list, locked status, or access level. These are no longer accepted as arguments
-to `register`. The following example shows the new command:
+In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
+tag list, locked status, and access level.
+In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register`.
+
+The following example shows the new command:
 
 ```shell
 gitlab-runner register
@@ -107,20 +108,20 @@ gitlab-runner register
     --token "glrt-2CR8_eVxiioB1QmzPZwa"
 ```
 
-## How does this change impact auto-scaling scenarios?
+## Impact on autoscaling
 
-In auto-scaling scenarios such as GitLab Runner Operator or GitLab Runner Helm Chart, the
+In autoscaling scenarios such as GitLab Runner Operator or GitLab Runner Helm Chart, the
 registration token is replaced with the authentication token generated from the UI.
 This means that the same runner configuration is reused across jobs, instead of creating a runner
 for each job.
 The specific runner can be identified by the unique system ID that is generated when the runner
 process is started.
 
-## Will existing runners continue to work?
+## Impact on existing runners
 
-Yes, existing runners will continue to work as usual. This change only affects registration of new runners.
+Existing runners will continue to work as usual. This change only affects registration of new runners.
 
-## Can runners still be created programmatically?
+## Creating runners programmatically
 
 A new [POST /user/runners REST API](../../api/users.md#create-a-runner) was introduced in
 GitLab 15.11, which allows a runner to be created in the context of an authenticated user. This should only be used in

@@ -53,6 +53,12 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
   end
 
   def redis_keys
-    Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }.last
+    # multiple scans to look across different shards if cache is using a Redis Cluster
+    cursor, scanned_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }
+    while cursor != "0"
+      cursor, keys = Gitlab::Redis::Cache.with { |redis| redis.scan(cursor, match: "*") }
+      scanned_keys << keys
+    end
+    scanned_keys.flatten
   end
 end

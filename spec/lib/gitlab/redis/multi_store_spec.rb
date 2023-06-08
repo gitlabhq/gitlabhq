@@ -777,6 +777,25 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           end
         end
       end
+
+      context 'when either store is a an instance of ::Redis::Cluster' do
+        before do
+          client = double
+          allow(client).to receive(:instance_of?).with(::Redis::Cluster).and_return(true)
+          allow(primary_store).to receive(:_client).and_return(client)
+        end
+
+        it 'calls cross-slot pipeline within multistore' do
+          if name == :pipelined
+            # we intentionally exclude `.and_call_original` since primary_store/secondary_store
+            # may not be running on a proper Redis Cluster.
+            expect(Gitlab::Redis::CrossSlot::Pipeline).to receive(:new).with(primary_store).exactly(:once)
+            expect(Gitlab::Redis::CrossSlot::Pipeline).not_to receive(:new).with(secondary_store)
+          end
+
+          subject
+        end
+      end
     end
   end
 

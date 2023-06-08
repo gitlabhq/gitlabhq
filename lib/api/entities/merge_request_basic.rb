@@ -68,6 +68,7 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :prepared_at
 
       with_options if: -> (merge_request, _) { merge_request.for_fork? } do
         expose :allow_collaboration

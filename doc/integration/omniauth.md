@@ -35,6 +35,7 @@ GitLab supports the following OmniAuth providers.
 | [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
 | [Salesforce](salesforce.md)                                         | `salesforce`               |
 | [SAML](saml.md)                                                     | `saml`                     |
+| [Shibboleth](shibboleth.md)                                         | `shibboleth`               |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Configure common settings

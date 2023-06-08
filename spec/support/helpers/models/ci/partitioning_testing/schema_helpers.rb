@@ -67,8 +67,10 @@ module Ci
 
       def drop_test_partition(table_name, connection:)
         return unless table_available?(table_name, connection: connection)
+        return unless connection.table_exists?(full_partition_name(table_name))
 
         connection.execute(<<~SQL.squish)
+          ALTER TABLE #{table_name} DETACH PARTITION  #{full_partition_name(table_name)};
           DROP TABLE IF EXISTS #{full_partition_name(table_name)};
         SQL
       end

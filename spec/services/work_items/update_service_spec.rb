@@ -81,6 +81,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let(:user) { current_user }
         subject(:service_action) { update_work_item[:status] }
       end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
+      end
     end
 
     context 'when title is not changed' do
@@ -107,6 +111,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
         update_work_item
       end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
+      end
     end
 
     context 'when decription is changed' do
@@ -116,6 +124,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         expect(GraphqlTriggers).to receive(:issuable_description_updated).with(work_item).and_call_original
 
         update_work_item
+      end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
       end
     end
 
@@ -219,6 +231,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect(work_item.description).to eq('changed')
         end
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
+        end
+
         context 'with mentions', :mailer, :sidekiq_might_not_need_inline do
           shared_examples 'creates the todo and sends email' do |attribute|
             it 'creates a todo and sends email' do
@@ -298,6 +314,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect(work_item.work_item_children).to include(child_work_item)
         end
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
+        end
+
         context 'when child type is invalid' do
           let_it_be(:child_work_item) { create(:work_item, project: project) }
 
@@ -344,6 +364,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
             update_work_item
           end
+
+          it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+            subject(:execute_service) { update_work_item }
+          end
         end
 
         context 'when milestone remains unchanged' do
@@ -373,6 +397,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_labels_changed_action).with(author: current_user)
 
           update_work_item
+        end
+
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
         end
 
         it_behaves_like 'broadcasting issuable labels updates' do
