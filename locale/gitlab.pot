@@ -11070,6 +11070,27 @@ msgstr ""
 msgid "CodeSuggestionsAlert|Get started with Code Suggestions, available for free during the beta period."
 msgstr ""
 
+msgid "CodeSuggestionsSM|&#8226; Agree to the %{terms_link_start}GitLab Testing Agreement%{link_end}.%{br} &#8226; Acknowledge that GitLab will send data from the instance, including personal data, to Google for cloud hosting.%{br} &nbsp;&nbsp;&nbsp;We may also send data to %{ai_docs_link_start}third-party AI providers%{link_end} to provide this feature."
+msgstr ""
+
+msgid "CodeSuggestionsSM|Code Suggestions"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Enable Code Suggestion for users of this GitLab instance."
+msgstr ""
+
+msgid "CodeSuggestionsSM|Enter new personal access token"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Personal access token"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Turn on Code Suggestions for this instance. By turning on this feature, you:"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Your personal access token from GitLab.com. See the %{link_start}documentation%{link_end} for information on creating a personal access token."
+msgstr ""
+
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 
@@ -54135,6 +54156,9 @@ msgid "is one of"
 msgstr ""
 
 msgid "is read-only"
+msgstr ""
+
+msgid "is required to enable Code Suggestions"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."

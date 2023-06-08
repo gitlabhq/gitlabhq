@@ -32,6 +32,8 @@ As a user, to delete your own account:
 NOTE:
 On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../admin_area/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created.
 
+Unblocking the account does not undo the deletion because the account will still be in the deletion queue, and there is no quick method to reverse this process.
+
 ## Delete users and user contributions **(FREE SELF)**
 
 As an administrator, to delete a user account:

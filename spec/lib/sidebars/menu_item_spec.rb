@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Sidebars::MenuItem do
+RSpec.describe Sidebars::MenuItem, feature_category: :navigation do
   let(:title) { 'foo' }
   let(:html_options) { {} }
   let(:menu_item) { described_class.new(title: title, active_routes: {}, link: '', container_html_options: html_options) }

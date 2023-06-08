@@ -580,6 +580,7 @@ func TestPackageFilesUpload(t *testing.T) {
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/conan/v1/files"},
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/maven/v1/files"},
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/generic/mypackage/0.0.1/myfile.tar.gz"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/ml_models/mymodel/0.0.1/myfile.tar.gz"},
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/debian/libsample0_1.2.3~alpha2-1_amd64.deb"},
 		{"POST", "/api/v4/projects/group%2Fproject/packages/rubygems/api/v1/gems/sample.gem"},
 		{"POST", "/api/v4/projects/group%2Fproject/packages/rpm/sample-4.23.fc21.x86_64.rpm"},

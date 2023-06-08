@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::ZentaoMenu do
+RSpec.describe Sidebars::Projects::Menus::ZentaoMenu, feature_category: :navigation do
   it_behaves_like 'ZenTao menu with CE version'
 end

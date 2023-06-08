@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu do
-  let_it_be(:owner) { create(:user) }
-  let_it_be(:root_group) do
+RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :navigation do
+  let(:owner) { build_stubbed(:user) }
+  let(:root_group) do
     build(:group, :private).tap do |g|
       g.add_owner(owner)
     end

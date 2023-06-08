@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::SettingsMenu, :with_license do
+RSpec.describe Sidebars::Groups::Menus::SettingsMenu, :with_license, feature_category: :navigation do
   let_it_be(:owner) { create(:user) }
 
   let_it_be_with_refind(:group) do

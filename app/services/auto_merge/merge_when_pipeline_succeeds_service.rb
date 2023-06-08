@@ -11,8 +11,13 @@ module AutoMerge
     end
 
     def process(merge_request)
+      logger.info("Processing Automerge")
       return unless merge_request.actual_head_pipeline_success?
+
+      logger.info("Pipeline Success")
       return unless merge_request.mergeable?
+
+      logger.info("Merge request mergeable")
 
       merge_request.merge_async(merge_request.merge_user_id, merge_request.merge_params)
     end
@@ -39,6 +44,10 @@ module AutoMerge
 
     def notify(merge_request)
       notification_service.async.merge_when_pipeline_succeeds(merge_request, current_user) if merge_request.saved_change_to_auto_merge_enabled?
+    end
+
+    def logger
+      @logger ||= Gitlab::AppLogger
     end
   end
 end

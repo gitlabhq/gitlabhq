@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::UserProfile::Panel, feature_category: :navigation do
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:user) { create(:user) }
+  let(:current_user) { build_stubbed(:user) }
+  let(:user) { build_stubbed(:user) }
 
   let(:context) { Sidebars::Context.new(current_user: current_user, container: user) }
 

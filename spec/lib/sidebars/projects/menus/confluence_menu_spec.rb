@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu do
+RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :navigation do
   let_it_be_with_refind(:project) { create(:project, has_external_wiki: true) }
 
   let(:user) { project.first_owner }

@@ -623,6 +623,18 @@ module Gitlab
     def x509_subject_key_identifier_regex
       @x509_subject_key_identifier_regex ||= /\A(?:\h{2}:)*\h{2}\z/.freeze
     end
+
+    def ml_model_version_regex
+      maven_version_regex
+    end
+
+    def ml_model_name_regex
+      package_name_regex
+    end
+
+    def ml_model_file_name_regex
+      maven_file_name_regex
+    end
   end
 end
 

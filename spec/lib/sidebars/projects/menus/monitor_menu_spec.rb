@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
+RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :navigation do
   let_it_be_with_refind(:project) { create(:project) }
 
   let(:user) { project.first_owner }

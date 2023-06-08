@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigation do
-  let_it_be(:project) { create(:project, :repository) }
+  let(:project) { build_stubbed(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:context) do

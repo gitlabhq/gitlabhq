@@ -72,6 +72,7 @@ db:check-schema-single-db:
 db:check-migrations:
   extends:
     - .db-job-base
+    - .use-pg13 # Should match the db same version used by GDK
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20

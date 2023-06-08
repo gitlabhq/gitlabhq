@@ -22,8 +22,8 @@ module MergeRequests
 
         result = yield
 
+        observe_result(mergeability_name, result)
         observe("mergeability.#{mergeability_name}.duration_s", current_monotonic_time - op_started_at)
-
         observe_sql_counters(mergeability_name, op_start_db_counters, current_db_counter_payload)
 
         result
@@ -31,7 +31,13 @@ module MergeRequests
 
       private
 
-      attr_reader :destination, :merge_request
+      attr_reader :destination, :merge_request, :stored_result
+
+      def observe_result(name, result)
+        return unless result.respond_to?(:success?)
+
+        observe("mergeability.#{name}.successful", result.success?)
+      end
 
       def observe(name, value)
         observations[name.to_s].push(value)

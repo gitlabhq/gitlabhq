@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.4 (2023-06-08)
+
+### Fixed (1 change)
+
+- [Fix LDAP tls_options not working](gitlab-org/gitlab@e6038d0d4e8bb190ccfeca5fe7204d6a6af266e5) ([merge request](gitlab-org/gitlab!122797))
+
 ## 16.0.3 (2023-06-06)
 
 ### Fixed (3 changes)

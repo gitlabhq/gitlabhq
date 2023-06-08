@@ -40,6 +40,37 @@ RSpec.describe MergeRequests::Mergeability::Logger, :request_store, feature_cate
         logger.commit
       end
 
+      context 'when block value responds to #success?' do
+        let(:success?) { true }
+        let(:check_result) { instance_double(Gitlab::MergeRequests::Mergeability::CheckResult, success?: success?) }
+
+        let(:extra_data) do
+          {
+            'mergeability.expensive_operation.successful.values' => [success?]
+          }
+        end
+
+        shared_examples_for 'success state logger' do
+          it 'records operation success state' do
+            expect_next_instance_of(Gitlab::AppJsonLogger) do |app_logger|
+              expect(app_logger).to receive(:info).with(match(a_hash_including(loggable_data(**extra_data))))
+            end
+
+            expect(logger.instrument(mergeability_name: :expensive_operation) { check_result }).to eq(check_result)
+
+            logger.commit
+          end
+        end
+
+        it_behaves_like 'success state logger'
+
+        context 'when not successful' do
+          let(:success?) { false }
+
+          it_behaves_like 'success state logger'
+        end
+      end
+
       context 'with multiple observations' do
         let(:operation_count) { 2 }
 

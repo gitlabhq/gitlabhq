@@ -26,19 +26,19 @@ this provider also allows Crowd authentication for Git-over-https requests.
 
 1. On your GitLab server, open the configuration file.
 
-   **Omnibus:**
+   - Linux package installations:
 
-   ```shell
-     sudo editor /etc/gitlab/gitlab.rb
-   ```
+     ```shell
+       sudo editor /etc/gitlab/gitlab.rb
+     ```
 
-   **Source:**
+   - Self-compiled installations:
 
-   ```shell
-     cd /home/git/gitlab
+     ```shell
+       cd /home/git/gitlab
 
-     sudo -u git -H editor config/gitlab.yml
-   ```
+       sudo -u git -H editor config/gitlab.yml
+     ```
 
 1. Configure the [common settings](../../integration/omniauth.md#configure-common-settings)
    to add `crowd` as a single sign-on provider. This enables Just-In-Time
@@ -46,39 +46,39 @@ this provider also allows Crowd authentication for Git-over-https requests.
 
 1. Add the provider configuration:
 
-   **Omnibus:**
+   - Linux package installations:
 
-   ```ruby
-     gitlab_rails['omniauth_providers'] = [
-       {
-         name: "crowd",
-         # label: "Provider name", # optional label for login button, defaults to "Crowd"
-         args: {
-           crowd_server_url: "CROWD_SERVER_URL",
-           application_name: "YOUR_APP_NAME",
-           application_password: "YOUR_APP_PASSWORD"
+     ```ruby
+       gitlab_rails['omniauth_providers'] = [
+         {
+           name: "crowd",
+           # label: "Provider name", # optional label for login button, defaults to "Crowd"
+           args: {
+             crowd_server_url: "CROWD_SERVER_URL",
+             application_name: "YOUR_APP_NAME",
+             application_password: "YOUR_APP_PASSWORD"
+           }
          }
-       }
-     ]
-   ```
+       ]
+     ```
 
-   **Source:**
+   - Self-compiled installations:
 
-   ```yaml
-      - { name: 'crowd',
-          # label: 'Provider name', # optional label for login button, defaults to "Crowd"
-          args: {
-            crowd_server_url: 'CROWD_SERVER_URL',
-            application_name: 'YOUR_APP_NAME',
-            application_password: 'YOUR_APP_PASSWORD' } }
-   ```
+     ```yaml
+        - { name: 'crowd',
+            # label: 'Provider name', # optional label for login button, defaults to "Crowd"
+            args: {
+              crowd_server_url: 'CROWD_SERVER_URL',
+              application_name: 'YOUR_APP_NAME',
+              application_password: 'YOUR_APP_PASSWORD' } }
+     ```
 
 1. Change `CROWD_SERVER_URL` to the [base URL of your Crowd server](https://confluence.atlassian.com/crowdkb/how-to-change-the-crowd-base-url-245827278.html).
 1. Change `YOUR_APP_NAME` to the application name from Crowd applications page.
 1. Change `YOUR_APP_PASSWORD` to the application password you've set.
 1. Save the configuration file.
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) (Omnibus GitLab) or [restart](../restart_gitlab.md#installations-from-source) (source installations) for
-   the changes to take effect.
+1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) (Linux package installations) or
+   [restart](../restart_gitlab.md#installations-from-source) (self-compiled installations) for the changes to take effect.
 
 On the sign in page there should now be a Crowd tab in the sign in form.
 

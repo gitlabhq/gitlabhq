@@ -720,6 +720,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :ai_access_token,
+    presence: { message: N_("is required to enable Code Suggestions") },
+    if: :instance_level_code_suggestions_enabled
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
@@ -948,4 +952,5 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 end
 
+ApplicationSetting.prepend(ApplicationSettingMaskedAttrs)
 ApplicationSetting.prepend_mod_with('ApplicationSetting')

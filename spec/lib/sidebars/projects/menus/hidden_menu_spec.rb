@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::HiddenMenu do
+RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigation do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }

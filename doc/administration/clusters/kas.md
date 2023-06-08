@@ -21,12 +21,12 @@ If you use self-managed GitLab, you must install an agent server or specify an e
 
 As a GitLab administrator, you can install the agent server:
 
-- For [Omnibus installations](#for-omnibus).
-- For [GitLab Helm Chart installations](#for-gitlab-helm-chart).
+- For [Linux package installations](#for-linux-package-installations).
+- For [GitLab Helm chart installations](#for-gitlab-helm-chart).
 
-### For Omnibus
+### For Linux package installations
 
-You can enable the agent server for [Omnibus](https://docs.gitlab.com/omnibus/) package installations on a single node, or on multiple nodes at once.
+You can enable the agent server for Linux package installations on a single node, or on multiple nodes at once.
 
 #### Enable on a single node
 
@@ -167,7 +167,7 @@ service logs by running the following command:
 kubectl logs -f -l=app=kas -n <YOUR-GITLAB-NAMESPACE>
 ```
 
-In Omnibus GitLab, find the logs in `/var/log/gitlab/gitlab-kas/`.
+In Linux package installations, find the logs in `/var/log/gitlab/gitlab-kas/`.
 
 You can also [troubleshoot issues with individual agents](../../user/clusters/agent/troubleshooting.md).
 
@@ -212,7 +212,7 @@ When the agent server tries to connect to the GitLab API, the following error mi
 {"level":"error","time":"2021-08-16T14:56:47.289Z","msg":"GetAgentInfo()","correlation_id":"01FD7QE35RXXXX8R47WZFBAXTN","grpc_service":"gitlab.agent.reverse_tunnel.rpc.ReverseTunnel","grpc_method":"Connect","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": dial tcp 172.17.0.4:443: connect: connection refused"}
 ```
 
-To fix this issue for [Omnibus](https://docs.gitlab.com/omnibus/) package installations,
+To fix this issue for Linux package installations,
 set the following parameter in `/etc/gitlab/gitlab.rb`. Replace `gitlab.example.com` with your GitLab instance's hostname:
 
 ```ruby

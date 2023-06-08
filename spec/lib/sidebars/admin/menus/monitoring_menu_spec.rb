@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Admin::Menus::MonitoringMenu, feature_category: :navigation do
-  let_it_be(:user) { create(:user, :admin) }
+  let(:user) { build_stubbed(:user, :admin) }
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
   let(:menu) { described_class.new(context) }
 

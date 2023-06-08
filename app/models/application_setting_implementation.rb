@@ -37,6 +37,7 @@ module ApplicationSettingImplementation
       {
         admin_mode: false,
         after_sign_up_text: nil,
+        ai_access_token: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,
@@ -104,6 +105,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        instance_level_code_suggestions_enabled: false,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,

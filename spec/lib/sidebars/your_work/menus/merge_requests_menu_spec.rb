@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::YourWork::Menus::MergeRequestsMenu, feature_category: :navigation do
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 

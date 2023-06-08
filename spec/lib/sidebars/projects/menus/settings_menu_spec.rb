@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navigation do
+  let(:project) { build_stubbed(:project) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }

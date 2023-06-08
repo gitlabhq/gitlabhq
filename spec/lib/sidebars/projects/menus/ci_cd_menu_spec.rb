@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::CiCdMenu do
+RSpec.describe Sidebars::Projects::Menus::CiCdMenu, feature_category: :navigation do
   let(:project) { build(:project) }
   let(:user) { project.first_owner }
   let(:can_view_pipeline_editor) { true }

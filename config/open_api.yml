@@ -95,6 +95,8 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: metrics_user_starred_dashboards
     description: Operations related to User-starred metrics dashboards
+  - name: ml_model_registry
+    description: Operations related to Model registry
   - name: npm_packages
     description: Operations related to NPM packages
   - name: nuget_packages
