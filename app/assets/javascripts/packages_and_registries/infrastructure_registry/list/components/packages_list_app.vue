@@ -81,7 +81,6 @@ export default {
       const urlParams = new URLSearchParams(window.location.search);
       const showAlert = urlParams.get(SHOW_DELETE_SUCCESS_ALERT);
       if (showAlert) {
-        // to be refactored to use gl-alert
         createAlert({ message: DELETE_PACKAGE_SUCCESS_MESSAGE, variant: VARIANT_INFO });
         const cleanUrl = window.location.href.split('?')[0];
         historyReplaceState(cleanUrl);

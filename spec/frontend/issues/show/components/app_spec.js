@@ -326,12 +326,14 @@ describe('Issuable output', () => {
 
     describe('when title is in view', () => {
       it('is not shown', () => {
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
         expect(findStickyHeader().exists()).toBe(false);
       });
     });
 
     describe('when title is not in view', () => {
       beforeEach(() => {
+        global.pageYOffset = 100;
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       });
 

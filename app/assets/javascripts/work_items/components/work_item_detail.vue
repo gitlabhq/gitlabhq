@@ -663,8 +663,10 @@ export default {
         />
         <work-item-award-emoji
           v-if="workItemAwardEmoji"
-          :work-item="workItem"
+          :work-item-id="workItem.id"
+          :work-item-fullpath="workItem.project.fullPath"
           :award-emoji="workItemAwardEmoji.awardEmoji"
+          :work-item-iid="workItemIid"
           @error="updateError = $event"
         />
         <work-item-tree

@@ -232,6 +232,19 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         expect(build_statuses(pipeline)).to contain_exactly('pending')
       end
     end
+
+    context 'when enable_cancel_redundant_pipelines_service FF is enabled' do
+      before do
+        stub_feature_flags(disable_cancel_redundant_pipelines_service: true)
+      end
+
+      it 'does not cancel any build' do
+        subject
+
+        expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+        expect(build_statuses(pipeline)).to contain_exactly('pending')
+      end
+    end
   end
 
   context 'when the use_offset_pagination_for_canceling_redundant_pipelines FF is off' do

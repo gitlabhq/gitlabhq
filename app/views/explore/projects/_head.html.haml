@@ -3,7 +3,7 @@
 
 = render_dashboard_ultimate_trial(current_user)
 
-.page-title-holder.gl-display-flex.gl-align-items-center
+.page-title-holder.gl-display-flex.gl-align-items-center{ data: { testid: 'explore-projects-title' } }
   %h1.page-title.gl-font-size-h-display= page_title
   .page-title-controls
     - if current_user&.can_create_project?

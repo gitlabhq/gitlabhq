@@ -568,3 +568,12 @@ export const humanizeBranchValidationErrors = (invalidChars = []) => {
   }
   return '';
 };
+
+/**
+ * Strips enclosing quotations from a string if it has one.
+ *
+ * @param {String} value String to strip quotes from
+ *
+ * @returns {String} String without any enclosure
+ */
+export const stripQuotes = (value) => value.replace(/^('|")(.*)('|")$/, '$2');

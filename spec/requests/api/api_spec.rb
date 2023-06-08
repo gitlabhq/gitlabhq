@@ -371,10 +371,10 @@ RSpec.describe API::API, feature_category: :system_access do
       )
     end
 
-    it 'returns 429 status with exhausted' do
+    it 'returns 503 status and Retry-After header' do
       get api("/projects/#{project.id}/repository/commits", user)
 
-      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response).to have_gitlab_http_status(:service_unavailable)
       expect(response.headers['Retry-After']).to be(50)
       expect(json_response).to eql(
         'message' => 'Upstream Gitaly has been exhausted. Try again later'

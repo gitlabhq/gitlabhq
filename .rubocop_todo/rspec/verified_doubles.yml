@@ -608,7 +608,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/jira_import/metadata_collector_spec.rb'
     - 'spec/lib/gitlab/jira_import_spec.rb'
     - 'spec/lib/gitlab/job_waiter_spec.rb'
-    - 'spec/lib/gitlab/json_cache_spec.rb'
     - 'spec/lib/gitlab/kas/client_spec.rb'
     - 'spec/lib/gitlab/kubernetes/config_map_spec.rb'
     - 'spec/lib/gitlab/kubernetes/default_namespace_spec.rb'

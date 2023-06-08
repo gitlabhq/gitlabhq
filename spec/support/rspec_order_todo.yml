@@ -6665,7 +6665,6 @@
 - './spec/lib/gitlab/jira_import_spec.rb'
 - './spec/lib/gitlab/jira/middleware_spec.rb'
 - './spec/lib/gitlab/job_waiter_spec.rb'
-- './spec/lib/gitlab/json_cache_spec.rb'
 - './spec/lib/gitlab/json_logger_spec.rb'
 - './spec/lib/gitlab/json_spec.rb'
 - './spec/lib/gitlab/jwt_authenticatable_spec.rb'

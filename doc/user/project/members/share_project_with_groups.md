@@ -65,8 +65,13 @@ To invite a group to a project:
 1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
-All group members, members of subgroups, and members of other projects the group has access to
-are given access to the project. In addition:
+The following members are given access to the project:
+
+- All direct group members.
+- Inherited group members.
+- Members of other groups that have access to the group being invited (by [group share](../../group/manage.md#share-a-group-with-another-group))
+
+In addition:
 
 - On the group's page, the project is listed on the **Shared projects** tab.
 - On the project's **Members** page, the group is listed on the **Groups** tab.

@@ -334,7 +334,7 @@ By default, newly created users have a public profile. GitLab administrators can
 
 ## Prevent users from deleting their accounts **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `deleting_account_disabled_for_users`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
 
 By default, users can delete their own accounts. GitLab administrators can prevent
 users from deleting their own accounts:

@@ -9,8 +9,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md)
 
 NOTE:
-
-All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/index.md#authentication), and the authenticated user must have at least the Maintainer role for the project.
+All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/index.md#authentication).
+The authenticated user must have at least the Maintainer role for the project.
 
 ## Get a project's CI/CD job token access settings
 

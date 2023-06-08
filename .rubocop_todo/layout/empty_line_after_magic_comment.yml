@@ -584,7 +584,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/lib/gitlab/graphql/tracers/timer_tracer_spec.rb'
     - 'spec/lib/gitlab/health_checks/redis_spec.rb'
     - 'spec/lib/gitlab/import/set_async_jid_spec.rb'
-    - 'spec/lib/gitlab/json_cache_spec.rb'
     - 'spec/lib/gitlab/jwt_token_spec.rb'
     - 'spec/lib/gitlab/kroki_spec.rb'
     - 'spec/lib/gitlab/markdown_cache/active_record/extension_spec.rb'

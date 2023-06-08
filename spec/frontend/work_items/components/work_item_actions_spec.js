@@ -2,6 +2,7 @@ import { GlDropdownDivider, GlModal, GlToggle } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -31,7 +32,6 @@ describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let glModalDirective;
   let mockApollo;
 
   const findModal = () => wrapper.findComponent(GlModal);
@@ -55,6 +55,7 @@ describe('WorkItemActions component', () => {
     });
   const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
 
+  const modalShowSpy = jest.fn();
   const $toast = {
     show: jest.fn(),
     hide: jest.fn(),
@@ -79,7 +80,6 @@ describe('WorkItemActions component', () => {
     workItemType = 'Task',
   } = {}) => {
     const handlers = [notificationsMock];
-    glModalDirective = jest.fn();
     mockApollo = createMockApollo([
       ...handlers,
       [convertWorkItemMutation, convertWorkItemMutationHandler],
@@ -97,19 +97,19 @@ describe('WorkItemActions component', () => {
         isParentConfidential,
         workItemType,
       },
-      directives: {
-        glModal: {
-          bind(_, { value }) {
-            glModalDirective(value);
-          },
-        },
-      },
       provide: {
         fullPath: 'gitlab-org/gitlab',
         glFeatures: { workItemsMvc2: true },
       },
       mocks: {
         $toast,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            show: modalShowSpy,
+          },
+        }),
       },
     });
   };
@@ -189,7 +189,7 @@ describe('WorkItemActions component', () => {
 
       findDeleteButton().vm.$emit('click');
 
-      expect(glModalDirective).toHaveBeenCalled();
+      expect(modalShowSpy).toHaveBeenCalled();
     });
 
     it('emits event when clicking OK button', () => {

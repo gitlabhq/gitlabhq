@@ -44,7 +44,7 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
     it { expect(message.font).to eq('#FFFFFF') }
   end
 
-  shared_examples 'time constrainted' do |broadcast_type|
+  shared_examples 'time constrained' do |broadcast_type|
     it 'returns message if time match' do
       message = create(:broadcast_message, broadcast_type: broadcast_type)
 
@@ -232,7 +232,7 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
     # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/353076
     context 'when cache returns stale data (e.g. nil target_access_levels)' do
       let(:message) { build(:broadcast_message, :banner, target_access_levels: nil) }
-      let(:cache) { Gitlab::JsonCache.new }
+      let(:cache) { Gitlab::Cache::JsonCaches::JsonKeyed.new }
 
       before do
         cache.write(described_class::BANNER_CACHE_KEY, [message])
@@ -252,7 +252,7 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
       end
     end
 
-    it_behaves_like 'time constrainted', :banner
+    it_behaves_like 'time constrained', :banner
     it_behaves_like 'message cache', :banner
     it_behaves_like 'matches with current path', :banner
     it_behaves_like 'matches with user access level', :banner
@@ -284,7 +284,7 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
       end
     end
 
-    it_behaves_like 'time constrainted', :banner
+    it_behaves_like 'time constrained', :banner
     it_behaves_like 'message cache', :banner
     it_behaves_like 'matches with current path', :banner
     it_behaves_like 'matches with user access level', :banner
@@ -314,7 +314,7 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
       end
     end
 
-    it_behaves_like 'time constrainted', :notification
+    it_behaves_like 'time constrained', :notification
     it_behaves_like 'message cache', :notification
     it_behaves_like 'matches with current path', :notification
     it_behaves_like 'matches with user access level', :notification
@@ -415,11 +415,67 @@ RSpec.describe BroadcastMessage, feature_category: :onboarding do
     it 'flushes the Redis cache' do
       message = create(:broadcast_message)
 
-      expect(Rails.cache).to receive(:delete).with("#{described_class::CACHE_KEY}:#{Gitlab.revision}")
-      expect(Rails.cache).to receive(:delete).with("#{described_class::BANNER_CACHE_KEY}:#{Gitlab.revision}")
-      expect(Rails.cache).to receive(:delete).with("#{described_class::NOTIFICATION_CACHE_KEY}:#{Gitlab.revision}")
+      expect(Rails.cache).to receive(:delete).with(described_class::CACHE_KEY)
+      expect(Rails.cache).to receive(:delete).with(described_class::BANNER_CACHE_KEY)
+      expect(Rails.cache).to receive(:delete).with(described_class::NOTIFICATION_CACHE_KEY)
 
       message.flush_redis_cache
+    end
+
+    context 'with GitLab revision changes', :use_clean_rails_redis_caching do
+      it 'validates correct cache creating, flushing and cache recreation cycle' do
+        message = create(:broadcast_message, broadcast_type: :banner)
+        new_strategy_value = { revision: 'abc123', version: '_version_' }
+
+        expect(described_class).to receive(:current_and_future_messages).and_call_original.exactly(4).times
+
+        # 1st non-cache hit
+        described_class.current
+        # validate seed and cache used
+        described_class.current
+
+        # seed the other cache
+        original_strategy_value = Gitlab::Cache::JsonCache::STRATEGY_KEY_COMPONENTS
+        stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', new_strategy_value)
+
+        # 2nd non-cache hit
+        described_class.current
+        # validate seed and cache used
+        described_class.current
+
+        # delete on original cache
+        stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', original_strategy_value)
+        # validate seed and cache used - this adds another hit and shouldn't will be fixed with append write concept
+        described_class.current
+        message.destroy!
+
+        # 3rd non-cache hit due to flushing of cache on current Gitlab.revision
+        described_class.current
+        # validate seed and cache used
+        described_class.current
+
+        # other revision of GitLab does gets cache destroyed
+        stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', new_strategy_value)
+
+        # 4th non-cache hit on the simulated other revision
+        described_class.current
+        # validate seed and cache used
+        described_class.current
+
+        # switch back to original and validate cache still exists
+        stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', original_strategy_value)
+        # validate seed and cache used
+        described_class.current
+      end
+
+      it 'handles there being no messages with cache' do
+        expect(described_class).to receive(:current_and_future_messages).and_call_original.once
+
+        # 1st non-cache hit
+        expect(described_class.current).to eq([])
+        # validate seed and cache used
+        expect(described_class.current).to eq([])
+      end
     end
   end
 

@@ -1165,7 +1165,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/issuables_count_for_state.rb'
     - 'lib/gitlab/issues_labels.rb'
     - 'lib/gitlab/job_waiter.rb'
-    - 'lib/gitlab/json_cache.rb'
     - 'lib/gitlab/json_logger.rb'
     - 'lib/gitlab/jwt_token.rb'
     - 'lib/gitlab/language_detection.rb'

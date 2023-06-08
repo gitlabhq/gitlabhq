@@ -9,12 +9,9 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
+import { stripQuotes } from '~/lib/utils/text_utility';
 import { DEBOUNCE_DELAY, FILTERS_NONE_ANY, OPERATOR_NOT, OPERATOR_OR } from '../constants';
-import {
-  getRecentlyUsedSuggestions,
-  setTokenValueToRecentlyUsed,
-  stripQuotes,
-} from '../filtered_search_utils';
+import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
 
 export default {
   components: {

@@ -146,6 +146,9 @@ export default {
       this.track('click_toggle_work_item_confidentiality');
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
     },
+    handleDelete() {
+      this.$refs.modal.show();
+    },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
       this.$emit('deleteWorkItem');
@@ -288,13 +291,15 @@ export default {
       </template>
       <gl-dropdown-item
         v-if="canDelete"
-        v-gl-modal="'work-item-confirm-delete'"
         :data-testid="$options.deleteActionTestId"
         variant="danger"
-        >{{ i18n.deleteWorkItem }}</gl-dropdown-item
+        @click="handleDelete"
       >
+        {{ i18n.deleteWorkItem }}
+      </gl-dropdown-item>
     </gl-dropdown>
     <gl-modal
+      ref="modal"
       modal-id="work-item-confirm-delete"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"

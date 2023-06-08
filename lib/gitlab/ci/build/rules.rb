@@ -6,14 +6,15 @@ module Gitlab
       class Rules
         include ::Gitlab::Utils::StrongMemoize
 
-        Result = Struct.new(:when, :start_in, :allow_failure, :variables, :needs, :errors) do
+        Result = Struct.new(:when, :start_in, :allow_failure, :variables, :needs, :errors, keyword_init: true) do
           def build_attributes
+            needs_job = needs&.dig(:job)
             {
               when: self.when,
               options: { start_in: start_in }.compact,
               allow_failure: allow_failure,
-              scheduling_type: (:dag if needs),
-              needs_attributes: needs&.[](:job)
+              scheduling_type: (:dag if needs_job.present?),
+              needs_attributes: needs_job
             }.compact
           end
 
@@ -29,20 +30,25 @@ module Gitlab
 
         def evaluate(pipeline, context)
           if @rule_list.nil?
-            Result.new(@default_when)
+            Result.new(when: @default_when)
           elsif matched_rule = match_rule(pipeline, context)
-            Result.new(
-              matched_rule.attributes[:when] || @default_when,
-              matched_rule.attributes[:start_in],
-              matched_rule.attributes[:allow_failure],
-              matched_rule.attributes[:variables],
-              (matched_rule.attributes[:needs] if Feature.enabled?(:introduce_rules_with_needs, pipeline.project))
+            result = Result.new(
+              when: matched_rule.attributes[:when] || @default_when,
+              start_in: matched_rule.attributes[:start_in],
+              allow_failure: matched_rule.attributes[:allow_failure],
+              variables: matched_rule.attributes[:variables]
             )
+
+            if Feature.enabled?(:introduce_rules_with_needs, pipeline.project)
+              result.needs = matched_rule.attributes[:needs]
+            end
+
+            result
           else
-            Result.new('never')
+            Result.new(when: 'never')
           end
         rescue Rule::Clause::ParseError => e
-          Result.new('never', nil, nil, nil, nil, [e.message])
+          Result.new(when: 'never', errors: [e.message])
         end
 
         private

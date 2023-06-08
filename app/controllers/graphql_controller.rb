@@ -88,7 +88,7 @@ class GraphqlController < ApplicationController
     log_exception(exception)
 
     response.headers.merge!(exception.headers)
-    render_error(exception.message, status: :too_many_requests)
+    render_error(exception.message, status: :service_unavailable)
   end
 
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|

@@ -1,9 +1,8 @@
-import { GlSprintf, GlButton, GlModal, GlCard, GlAvatar, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlButton, GlModal, GlCard, GlAvatar, GlLink, GlTruncateText } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { sprintf } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
-import TruncatedText from '~/vue_shared/components/truncated_text/truncated_text.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { REPORTED_CONTENT_I18N } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
@@ -22,7 +21,7 @@ describe('ReportedContent', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findCard = () => wrapper.findComponent(GlCard);
   const findCardHeader = () => findCard().find('.js-test-card-header');
-  const findTruncatedText = () => findCardHeader().findComponent(TruncatedText);
+  const findTruncatedText = () => findCardHeader().findComponent(GlTruncateText);
   const findCardBody = () => findCard().find('.js-test-card-body');
   const findCardFooter = () => findCard().find('.js-test-card-footer');
   const findAvatar = () => findCardFooter().findComponent(GlAvatar);
@@ -40,7 +39,7 @@ describe('ReportedContent', () => {
         GlSprintf,
         GlButton,
         GlCard,
-        TruncatedText,
+        GlTruncateText,
       },
     });
   };

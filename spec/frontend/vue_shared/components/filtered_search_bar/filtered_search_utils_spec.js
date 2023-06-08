@@ -5,7 +5,6 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 import {
-  stripQuotes,
   uniqueTokens,
   prepareTokens,
   processFilters,
@@ -29,23 +28,6 @@ function setLocalStorageAvailability(isAvailable) {
 }
 
 describe('Filtered Search Utils', () => {
-  describe('stripQuotes', () => {
-    it.each`
-      inputValue     | outputValue
-      ${'"Foo Bar"'} | ${'Foo Bar'}
-      ${"'Foo Bar'"} | ${'Foo Bar'}
-      ${'FooBar'}    | ${'FooBar'}
-      ${"Foo'Bar"}   | ${"Foo'Bar"}
-      ${'Foo"Bar'}   | ${'Foo"Bar'}
-      ${'Foo Bar'}   | ${'Foo Bar'}
-    `(
-      'returns string $outputValue when called with string $inputValue',
-      ({ inputValue, outputValue }) => {
-        expect(stripQuotes(inputValue)).toBe(outputValue);
-      },
-    );
-  });
-
   describe('uniqueTokens', () => {
     it('returns tokens array with duplicates removed', () => {
       expect(

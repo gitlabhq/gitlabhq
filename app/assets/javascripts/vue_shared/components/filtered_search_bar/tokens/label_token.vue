@@ -3,10 +3,10 @@ import { GlToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { stripQuotes } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
 import { OPTIONS_NONE_ANY } from '../constants';
-import { stripQuotes } from '../filtered_search_utils';
 
 import BaseToken from './base_token.vue';
 

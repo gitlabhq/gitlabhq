@@ -135,7 +135,7 @@ module API
     end
 
     rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
-      rack_response({ 'message' => exception.message }.to_json, 429, exception.headers)
+      rack_response({ 'message' => exception.message }.to_json, 503, exception.headers)
     end
 
     rescue_from :all do |exception|

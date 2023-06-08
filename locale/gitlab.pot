@@ -11061,7 +11061,7 @@ msgstr ""
 msgid "CodeQuality|New code quality degradations on this line"
 msgstr ""
 
-msgid "CodeSuggestionsAlert|Code faster and more efficiently with AI-powered code suggestions in VS Code. 13 languages are supported, including Javascript, Python, Go, Java, and Kotlin. Enable Code Suggestions in your %{preference_link_start}user profile preferences%{link_end} or %{docs_link_start}see the documentation%{link_end} to learn more."
+msgid "CodeSuggestionsAlert|Code faster and more efficiently with AI-powered code suggestions in VS Code. 13 languages are supported, including JavaScript, Python, Go, Java, and Kotlin. Enable Code Suggestions in your %{preference_link_start}user profile preferences%{link_end} or %{docs_link_start}see the documentation%{link_end} to learn more."
 msgstr ""
 
 msgid "CodeSuggestionsAlert|Enable Code Suggestions"
@@ -14742,7 +14742,9 @@ msgid "Delete code block"
 msgstr ""
 
 msgid "Delete column"
-msgstr ""
+msgid_plural "Delete %d columns"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Delete comment"
 msgstr ""
@@ -14802,7 +14804,9 @@ msgid "Delete release %{release}?"
 msgstr ""
 
 msgid "Delete row"
-msgstr ""
+msgid_plural "Delete %d rows"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Delete selected"
 msgstr ""
@@ -28281,6 +28285,11 @@ msgstr ""
 
 msgid "Merge"
 msgstr ""
+
+msgid "Merge %d cell"
+msgid_plural "Merge %d cells"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Merge Conflicts"
 msgstr ""
@@ -43665,6 +43674,9 @@ msgid "Spent at"
 msgstr ""
 
 msgid "Spent at can't be a future date and time."
+msgstr ""
+
+msgid "Split cell"
 msgstr ""
 
 msgid "Squash commit message"

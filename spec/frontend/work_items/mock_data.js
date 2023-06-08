@@ -3172,3 +3172,14 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
     },
   },
 };
+
+export const getAwardEmojiResponse = (toggledOn) => {
+  return {
+    data: {
+      awardEmojiToggle: {
+        errors: [],
+        toggledOn,
+      },
+    },
+  };
+};

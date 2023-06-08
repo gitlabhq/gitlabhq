@@ -13,10 +13,11 @@ import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searche
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import { createAlert } from '~/alert';
+import { stripQuotes } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
 import { SORT_DIRECTION } from './constants';
-import { filterEmptySearchTerm, stripQuotes, uniqueTokens } from './filtered_search_utils';
+import { filterEmptySearchTerm, uniqueTokens } from './filtered_search_utils';
 
 export default {
   components: {

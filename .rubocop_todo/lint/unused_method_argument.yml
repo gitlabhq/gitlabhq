@@ -491,7 +491,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/issuable_sorter.rb'
     - 'lib/gitlab/json.rb'
-    - 'lib/gitlab/json_cache.rb'
     - 'lib/gitlab/lfs/client.rb'
     - 'lib/gitlab/markdown_cache/redis/extension.rb'
     - 'lib/gitlab/memory/diagnostic_reports_logger.rb'

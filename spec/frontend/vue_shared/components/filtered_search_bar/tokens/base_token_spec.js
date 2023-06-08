@@ -31,9 +31,7 @@ import { mockLabelToken } from '../mock_data';
 jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
   getRecentlyUsedSuggestions: jest.fn(),
   setTokenValueToRecentlyUsed: jest.fn(),
-  stripQuotes: jest.requireActual(
-    '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
-  ).stripQuotes,
+  stripQuotes: jest.requireActual('~/lib/utils/text_utility').stripQuotes,
 }));
 
 const mockStorageKey = 'recent-tokens-label_name';

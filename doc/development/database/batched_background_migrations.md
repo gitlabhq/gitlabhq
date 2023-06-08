@@ -280,6 +280,21 @@ class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
 end
 ```
 
+## Throttling batched migrations
+
+Because batched migrations are update heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
+
+These database indicators are checked to throttle a migration. On getting a
+stop signal, the migration is paused for a set time (10 minutes):
+
+- WAL queue pending archival crossing a threshold.
+- Active autovacuum on the tables on which the migration works on.
+- Patroni apdex SLI dropping below the SLO.
+
+It's an ongoing effort to add more indicators to further enhance the
+database health check framework. For more details, see
+[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
+
 ## Additional filters
 
 By default, when creating background jobs to perform the migration, batched background migrations

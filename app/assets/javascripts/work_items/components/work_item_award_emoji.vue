@@ -1,17 +1,15 @@
 <script>
 import * as Sentry from '@sentry/browser';
+import { produce } from 'immer';
+
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import {
-  EMOJI_ACTION_REMOVE,
-  EMOJI_ACTION_ADD,
-  WIDGET_TYPE_AWARD_EMOJI,
-  EMOJI_THUMBSDOWN,
-  EMOJI_THUMBSUP,
-} from '../constants';
+
+import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import { EMOJI_THUMBSDOWN, EMOJI_THUMBSUP, WIDGET_TYPE_AWARD_EMOJI } from '../constants';
 
 export default {
   defaultAwards: [EMOJI_THUMBSUP, EMOJI_THUMBSDOWN],
@@ -20,13 +18,22 @@ export default {
     AwardsList,
   },
   props: {
-    workItem: {
-      type: Object,
+    workItemId: {
+      type: String,
+      required: true,
+    },
+    workItemFullpath: {
+      type: String,
       required: true,
     },
     awardEmoji: {
       type: Object,
       required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -40,8 +47,7 @@ export default {
      * Parse and convert award emoji list to a format that AwardsList can understand
      */
     awards() {
-      return this.awardEmoji.nodes.map((emoji, index) => ({
-        id: index + 1,
+      return this.awardEmoji.nodes.map((emoji) => ({
         name: emoji.name,
         user: {
           id: getIdFromGraphQLId(emoji.user.id),
@@ -51,34 +57,107 @@ export default {
     },
   },
   methods: {
-    handleAward(name) {
-      // Decide action based on emoji given by current user.
-      const action =
+    getAwards() {
+      return this.awardEmoji.nodes.map((emoji) => ({
+        name: emoji.name,
+        user: {
+          id: getIdFromGraphQLId(emoji.user.id),
+          name: emoji.user.name,
+        },
+      }));
+    },
+    isEmojiPresentForCurrentUser(name) {
+      return (
         this.awards.findIndex(
           (emoji) => emoji.name === name && emoji.user.id === this.currentUserId,
         ) > -1
-          ? EMOJI_ACTION_REMOVE
-          : EMOJI_ACTION_ADD;
-      const inputVariables = {
-        id: this.workItem.id,
-        awardEmojiWidget: {
-          action,
+      );
+    },
+    /**
+     * Prepare award emoji nodes based on emoji name
+     * and whether the user has toggled the emoji off or on
+     */
+    getAwardEmojiNodes(name, toggledOn) {
+      // If the emoji toggled on, add the emoji
+      if (toggledOn) {
+        // If emoji is already present in award list, no action is needed
+        if (this.isEmojiPresentForCurrentUser(name)) {
+          return this.awardEmoji.nodes;
+        }
+
+        // else make a copy of unmutable list and return the list after adding the new emoji
+        const awardEmojiNodes = [...this.awardEmoji.nodes];
+        awardEmojiNodes.push({
           name,
-        },
+          __typename: 'AwardEmoji',
+          user: {
+            id: convertToGraphQLId(TYPENAME_USER, this.currentUserId),
+            name: this.currentUserFullName,
+            __typename: 'UserCore',
+          },
+        });
+
+        return awardEmojiNodes;
+      }
+
+      // else just filter the emoji
+      return this.awardEmoji.nodes.filter(
+        (emoji) =>
+          !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
+      );
+    },
+    updateWorkItemAwardEmojiWidgetCache({ cache, name, toggledOn }) {
+      const query = {
+        query: workItemByIidQuery,
+        variables: { fullPath: this.workItemFullpath, iid: this.workItemIid },
+      };
+
+      const sourceData = cache.readQuery(query);
+
+      const newData = produce(sourceData, (draftState) => {
+        const { widgets } = draftState.workspace.workItems.nodes[0];
+        const widgetAwardEmoji = widgets.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
+
+        widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
+      });
+
+      cache.writeQuery({ ...query, data: newData });
+    },
+    handleAward(name) {
+      // Decide action based on emoji is already present
+      const inputVariables = {
+        awardableId: this.workItemId,
+        name,
       };
 
       this.$apollo
         .mutate({
-          mutation: updateWorkItemMutation,
+          mutation: updateAwardEmojiMutation,
           variables: {
             input: inputVariables,
           },
-          optimisticResponse: this.getOptimisticResponse({ name, action }),
+          optimisticResponse: {
+            awardEmojiToggle: {
+              errors: [],
+              toggledOn: !this.isEmojiPresentForCurrentUser(name),
+            },
+          },
+          update: (
+            cache,
+            {
+              data: {
+                awardEmojiToggle: { toggledOn },
+              },
+            },
+          ) => {
+            // update the cache of award emoji widget object
+            this.updateWorkItemAwardEmojiWidgetCache({ cache, name, toggledOn });
+          },
         })
         .then(
           ({
             data: {
-              workItemUpdate: { errors },
+              awardEmojiToggle: { errors },
             },
           }) => {
             if (errors?.length) {
@@ -90,52 +169,6 @@ export default {
           this.$emit('error', error.message);
           Sentry.captureException(error);
         });
-    },
-    /**
-     * Prepare workItemUpdate for optimistic response
-     */
-    getOptimisticResponse({ name, action }) {
-      let awardEmojiNodes = [
-        ...this.awardEmoji.nodes,
-        {
-          name,
-          __typename: 'AwardEmoji',
-          user: {
-            id: convertToGraphQLId(TYPENAME_USER, this.currentUserId),
-            name: this.currentUserFullName,
-            __typename: 'UserCore',
-          },
-        },
-      ];
-      // Exclude the award emoji node in case of remove action
-      if (action === EMOJI_ACTION_REMOVE) {
-        awardEmojiNodes = [
-          ...this.awardEmoji.nodes.filter(
-            (emoji) =>
-              !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
-          ),
-        ];
-      }
-      return {
-        workItemUpdate: {
-          errors: [],
-          workItem: {
-            ...this.workItem,
-            widgets: [
-              {
-                type: WIDGET_TYPE_AWARD_EMOJI,
-                awardEmoji: {
-                  nodes: awardEmojiNodes,
-                  __typename: 'AwardEmojiConnection',
-                },
-                __typename: 'WorkItemWidgetAwardEmoji',
-              },
-            ],
-            __typename: 'WorkItem',
-          },
-          __typename: 'WorkItemUpdatePayload',
-        },
-      };
     },
   },
 };

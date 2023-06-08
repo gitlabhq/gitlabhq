@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
+  let(:path) { explore_projects_path }
 
   shared_examples 'a Broadcast Messages' do |type|
     it 'shows broadcast message' do
-      visit explore_projects_path
+      visit path
 
       expect(page).to have_content 'SampleMessage'
     end
@@ -15,7 +16,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
     it 'renders styled links' do
       create(:broadcast_message, type, message: "<a href='gitlab.com' style='color: purple'>click me</a>")
 
-      visit explore_projects_path
+      visit path
 
       expected_html = "<p><a href=\"gitlab.com\" style=\"color: purple\">click me</a></p>"
       expect(page.body).to include(expected_html)
@@ -25,7 +26,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   shared_examples 'a dismissible Broadcast Messages' do
     it 'hides broadcast message after dismiss', :js,
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390900' do
-      visit explore_projects_path
+      visit path
 
       find('.js-dismiss-current-broadcast-notification').click
 
@@ -34,13 +35,13 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
 
     it 'broadcast message is still hidden after refresh', :js,
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391406' do
-      visit explore_projects_path
+      visit path
 
       find('.js-dismiss-current-broadcast-notification').click
 
       wait_for_cookie_set("hide_broadcast_message_#{broadcast_message.id}")
 
-      visit explore_projects_path
+      visit path
 
       expect(page).not_to have_content 'SampleMessage'
     end
@@ -52,7 +53,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
     it_behaves_like 'a Broadcast Messages'
 
     it 'is not dismissible' do
-      visit explore_projects_path
+      visit path
 
       expect(page).not_to have_selector('.js-dismiss-current-broadcast-notification')
     end
@@ -62,7 +63,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
 
       sign_in(user)
 
-      visit explore_projects_path
+      visit path
 
       expect(page).to have_content 'Hi {{name}}'
     end
@@ -88,9 +89,66 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
 
       sign_in(user)
 
-      visit explore_projects_path
+      visit path
 
       expect(page).to have_content "Hi #{user.name}"
+    end
+  end
+
+  context 'with GitLab revision changes', :js, :use_clean_rails_redis_caching do
+    it 'properly shows effects of delete from any revision' do
+      text = 'my_broadcast_message'
+      message = create(:broadcast_message, broadcast_type: :banner, message: text)
+      new_strategy_value = { revision: 'abc123', version: '_version_' }
+
+      visit path
+
+      expect_broadcast_message(text)
+
+      # seed the other cache
+      original_strategy_value = Gitlab::Cache::JsonCache::STRATEGY_KEY_COMPONENTS
+      stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', new_strategy_value)
+
+      page.refresh
+
+      expect_broadcast_message(text)
+
+      # delete on original cache
+      stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', original_strategy_value)
+      admin = create(:admin)
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
+
+      visit admin_broadcast_messages_path
+
+      page.within('[data-testid="message-row"]', match: :first) do
+        find("[data-testid='delete-message-#{message.id}']").click
+      end
+
+      visit path
+
+      expect_no_broadcast_message
+
+      # other revision of GitLab does gets cache destroyed
+      stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', new_strategy_value)
+
+      page.refresh
+
+      expect_no_broadcast_message
+    end
+
+    def expect_broadcast_message(text)
+      page.within('[data-testid="banner-broadcast-message"]') do
+        expect(page).to have_content text
+      end
+    end
+
+    def expect_no_broadcast_message
+      page.within('[data-testid="explore-projects-title"]') do
+        expect(page).to have_content 'Explore projects'
+      end
+
+      expect(page).not_to have_selector('[data-testid="banner-broadcast-message"]')
     end
   end
 end

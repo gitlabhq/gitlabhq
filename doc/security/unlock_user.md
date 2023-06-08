@@ -7,10 +7,21 @@ type: howto
 
 # Locked users **(FREE SELF)**
 
+## Self-managed users
+
 Users are locked after ten failed sign-in attempts. These users remain locked:
 
 - For 10 minutes, after which time they are automatically unlocked.
 - Until an administrator unlocks them from the [Admin Area](../user/admin_area/index.md) or the command line in under 10 minutes.
+
+## GitLab.com users
+
+If 2FA is not enabled users are locked after three failed sign-in attempts within 24 hours. These users remain locked until:
+
+- Their next successful sign-in, at which point they are sent an email with a six-digit unlock code and redirected to a verification page where they can unlock their account by entering the code.
+- GitLab Support [manually unlock](https://about.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts.html#manual-unlock) the account after account ownership is verified.
+
+If 2FA is enabled, users are locked after five failed sign-in attempts within 10 minutes. Accounts are unlocked automatically after 10 minutes.
 
 ## Unlock a user from the Admin Area
 

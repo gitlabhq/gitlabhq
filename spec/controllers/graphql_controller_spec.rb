@@ -78,7 +78,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           a_hash_including('message' => 'Upstream Gitaly has been exhausted. Try again later')
         )
       )
-      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response).to have_gitlab_http_status(:service_unavailable)
       expect(response.headers['Retry-After']).to be(50)
     end
   end

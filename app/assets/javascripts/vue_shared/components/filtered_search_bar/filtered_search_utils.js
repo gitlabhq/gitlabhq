@@ -5,15 +5,6 @@ import { queryToObject } from '~/lib/utils/url_utility';
 import { MAX_RECENT_TOKENS_SIZE, FILTERED_SEARCH_TERM } from './constants';
 
 /**
- * Strips enclosing quotations from a string if it has one.
- *
- * @param {String} value String to strip quotes from
- *
- * @returns {String} String without any enclosure
- */
-export const stripQuotes = (value) => value.replace(/^('|")(.*)('|")$/, '$2');
-
-/**
  * This method removes duplicate tokens from tokens array.
  *
  * @param {Array} tokens Array of tokens as defined by `GlFilteredSearch`

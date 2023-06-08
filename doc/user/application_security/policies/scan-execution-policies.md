@@ -78,7 +78,8 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `type` | `string` | `pipeline` | The rule's type. |
-| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). Cannot be used with the `branch_type` field. |
+| `branch_type` | `string` | `default`, `protected` or `all` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
 
 ## `schedule` rule type
 
@@ -87,7 +88,8 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `schedule` | The rule's type. |
-| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. Cannot be used with the `branch_type` field. |
+| `branch_type` | `string` | `default`, `protected` or `all` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
 | `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
 

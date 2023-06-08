@@ -33,6 +33,17 @@
     outline-offset: -3px;
   }
 
+  .selectedCell::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba($blue-200, 0.25);
+    pointer-events: none;
+  }
+
   video {
     max-width: 400px;
   }
@@ -113,6 +124,15 @@
 
     &.is-open > :not(:first-child) {
       display: inherit;
+    }
+  }
+
+  .gl-new-dropdown-inner li {
+    margin-left: 0 !important;
+
+    &.gl-new-dropdown-item {
+      padding-left: $gl-spacing-scale-2;
+      padding-right: $gl-spacing-scale-2;
     }
   }
 }

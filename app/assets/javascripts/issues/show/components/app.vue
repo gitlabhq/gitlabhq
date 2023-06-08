@@ -451,7 +451,10 @@ export default {
     },
 
     showStickyHeader() {
-      this.isStickyHeaderShowing = true;
+      // only if scrolled under the issue's title
+      if (this.$refs.title.$el.offsetTop < window.pageYOffset) {
+        this.isStickyHeaderShowing = true;
+      }
     },
 
     handleSaveDescription(description) {
@@ -501,6 +504,7 @@ export default {
     </div>
     <div v-else>
       <title-component
+        ref="title"
         :issuable-ref="issuableRef"
         :can-update="canUpdate"
         :title-html="state.titleHtml"

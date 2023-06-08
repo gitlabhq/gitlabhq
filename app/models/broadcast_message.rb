@@ -81,7 +81,7 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
 
     def cache
       ::Gitlab::SafeRequestStore.fetch(:broadcast_message_json_cache) do
-        Gitlab::JsonCache.new
+        Gitlab::Cache::JsonCaches::JsonKeyed.new
       end
     end
 

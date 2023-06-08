@@ -3914,7 +3914,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/jira_import/labels_importer_spec.rb'
     - 'spec/lib/gitlab/jira_import/metadata_collector_spec.rb'
     - 'spec/lib/gitlab/jira_import_spec.rb'
-    - 'spec/lib/gitlab/json_cache_spec.rb'
     - 'spec/lib/gitlab/json_logger_spec.rb'
     - 'spec/lib/gitlab/json_spec.rb'
     - 'spec/lib/gitlab/jwt_authenticatable_spec.rb'

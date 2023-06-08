@@ -15,6 +15,7 @@ module Ci
 
       # rubocop: disable CodeReuse/ActiveRecord
       def execute
+        return if service_disabled?
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
@@ -98,6 +99,15 @@ module Ci
               cascade_to_children: false
             )
           end
+      end
+
+      # Finding the pipelines to cancel is an expensive task that is not well
+      # covered by indexes for all project use-cases and sometimes it might
+      # harm other services. See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/14758
+      # This feature flag is in place to disable this feature for rogue projects.
+      #
+      def service_disabled?
+        Feature.enabled?(:disable_cancel_redundant_pipelines_service, project, type: :ops)
       end
     end
   end

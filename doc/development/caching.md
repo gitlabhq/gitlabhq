@@ -267,7 +267,7 @@ All the time!
 
 #### Possible downsides
 
-- Adding new attributes to a cached object using `Gitlab::JsonCache`
+- Adding new attributes to a cached object using `Gitlab::Cache::JsonCache`
   and `Gitlab::SafeRequestStore`, for example, can lead to stale data issues
   where the cache data doesn't have the appropriate value for the new attribute
   (see this past [incident](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6372)).

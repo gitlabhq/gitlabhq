@@ -1,6 +1,7 @@
 import { isEqual } from 'lodash';
 import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
+import { uuids } from '~/lib/utils/uuids';
 import * as constants from '../constants';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -185,6 +186,7 @@ export default {
     }
 
     notesArr.push({
+      id: uuids()[0],
       individual_note: true,
       isPlaceholderNote: true,
       placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
