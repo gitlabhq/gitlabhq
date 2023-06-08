@@ -10,6 +10,7 @@ module Sidebars
           add_item(background_migrations_menu_item)
           add_item(background_jobs_menu_item)
           add_item(health_check_menu_item)
+          add_item(metrics_dashboard_menu_item)
           true
         end
 
@@ -63,6 +64,18 @@ module Sidebars
             link: admin_health_check_path,
             active_routes: { controller: 'health_check' },
             item_id: :health_check
+          )
+        end
+
+        def metrics_dashboard_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :metrics_dashboard) unless
+            Gitlab::CurrentSettings.current_application_settings.grafana_enabled?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Metrics Dashboard'),
+            link: Gitlab::CurrentSettings.current_application_settings.grafana_url,
+            active_routes: { path: Gitlab::CurrentSettings.current_application_settings.grafana_url },
+            item_id: :metrics_dashboard
           )
         end
       end
