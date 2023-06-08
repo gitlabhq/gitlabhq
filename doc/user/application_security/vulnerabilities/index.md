@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Vulnerability Page **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in GitLab 13.0.
-
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:
 
@@ -35,8 +33,9 @@ A vulnerability's status can be:
 - **Dismissed**: A user has seen this vulnerability and dismissed it because it is not accurate or
   otherwise not to be resolved. Dismissed vulnerabilities are ignored if detected in subsequent
   scans.
-- **Resolved**: The vulnerability has been fixed or is no longer present. Resolved vulnerabilities
-  that are reintroduced and detected by subsequent scans have a _new_ vulnerability record created.
+- **Resolved**: The vulnerability has been fixed or is no longer present. If a resolved
+  vulnerability is reintroduced and detected again, its record is reinstated and its status set to
+  detected.
 
 ## Vulnerability dismissal reasons
 
@@ -95,9 +94,6 @@ An issue is created in the project, pre-populated with information from the vuln
 The issue is then opened so you can take further action.
 
 ### Create a Jira issue for a vulnerability
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4677) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `jira_for_vulnerabilities`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/283850) in GitLab 13.12. Feature flag `jira_for_vulnerabilities` removed.
 
 Prerequisites:
 

@@ -538,6 +538,12 @@ for more details.
 
 ## Troubleshooting
 
+### The code cannot be found and the pipeline runs always with default configuration
+
+You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
+You should configure Code Quality checks to run on your worker as documented in section
+"[Improve Code Quality performance with private runners](#improve-code-quality-performance-with-private-runners)".
+
 ### Changing the default configuration has no effect
 
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`

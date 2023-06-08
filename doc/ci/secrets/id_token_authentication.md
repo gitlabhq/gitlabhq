@@ -190,3 +190,34 @@ To enable automatic ID token authentication:
 1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
 
 <!--- end_remove -->
+
+## Troubleshooting
+
+### `400: missing token` status code
+
+This error indicates that one or more basic components necessary for ID tokens are
+either missing or not configured as expect.
+
+To find the problem, an administrator can look for more details in the instance's
+`exceptions_json.log` for the specific method that failed.
+
+#### `GitLab::Ci::Jwt::NoSigningKeyError`
+
+This error in the `exceptions_json.log` file is likely because the signing key is
+missing from the database and the token could not be generated. To verify this is the issue,
+run the following query on the instance's PostgreSQL terminal:
+
+```sql
+SELECT encrypted_ci_jwt_signing_key FROM application_settings;
+```
+
+If the returned value is empty, use the Rails snippet below to generate a new key
+and replace it internally:
+
+```ruby
+  key = OpenSSL::PKey::RSA.new(2048).to_pem
+
+  ApplicationSetting.find_each do |application_setting|
+    application_setting.update(ci_jwt_signing_key: key)
+  end
+```

@@ -356,6 +356,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
+        create(:issue, alert_management_alert: create(:alert_management_alert))
+        create(:alert_management_alert)
         create(:alert_management_http_integration, :active, project: project)
       end
 
@@ -365,7 +367,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         operations_dashboard_default_dashboard: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
-        projects_with_alert_incidents: 2,
+        projects_with_alert_incidents: 4,
         projects_with_enabled_alert_integrations_histogram: { '1' => 2 }
       )
 
@@ -376,7 +378,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         operations_dashboard_default_dashboard: 1,
         projects_with_error_tracking_enabled: 1,
         projects_with_incidents: 2,
-        projects_with_alert_incidents: 1
+        projects_with_alert_incidents: 2
       )
 
       expect(data_28_days).not_to include(:projects_with_enabled_alert_integrations_histogram)

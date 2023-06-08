@@ -161,7 +161,6 @@ InitializerConnections.raise_if_new_database_connection do
         draw :remote_development
         draw :security
         draw :smartcard
-        draw :trial
         draw :trial_registration
         draw :country
         draw :country_state

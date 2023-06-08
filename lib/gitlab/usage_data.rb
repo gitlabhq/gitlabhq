@@ -98,7 +98,7 @@ module Gitlab
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             issues_created_from_alerts: total_alert_issues,
-            incident_issues: count(::Issue.incident, start: minimum_id(Issue), finish: maximum_id(Issue)),
+            incident_issues: count(::Issue.with_issue_type(:incident), start: minimum_id(Issue), finish: maximum_id(Issue)),
             alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
@@ -110,7 +110,7 @@ module Gitlab
             pages_domains: count(PagesDomain),
             pool_repositories: count(PoolRepository),
             projects: count(Project),
-            projects_creating_incidents: distinct_count(Issue.incident, :project_id),
+            projects_creating_incidents: distinct_count(Issue.with_issue_type(:incident), :project_id),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
@@ -447,8 +447,11 @@ module Gitlab
                                                         start: minimum_id(User),
                                                         finish: maximum_id(User)),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
-          projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
-          projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id),
+          projects_with_incidents: distinct_count(::Issue.with_issue_type(:incident).where(time_period), :project_id),
+          # We are making an assumption here that all alert_management_alerts are associated with an issue of type
+          # incident. In reality this is very close to the truth and allows more efficient queries.
+          # More info in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121297#note_1416999956
+          projects_with_alert_incidents: distinct_count(::AlertManagement::Alert.where(time_period).where.not(issue_id: nil), :project_id),
           projects_with_enabled_alert_integrations_histogram: integrations_histogram
         }.compact
       end

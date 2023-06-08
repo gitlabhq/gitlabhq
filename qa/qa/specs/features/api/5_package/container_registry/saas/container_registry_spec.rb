@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging staging-canary pre] },
+  RSpec.describe 'Package', only: { subdomain: %i[staging staging-canary pre] },
     product_group: :container_registry do
     include Support::API
     include Support::Helpers::MaskToken

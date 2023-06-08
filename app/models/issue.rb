@@ -220,8 +220,16 @@ class Issue < ApplicationRecord
       duplicated_to: { project: [:project_feature] })
   }
   scope :with_issue_type, ->(types) {
+    types = Array(types)
+
     if Feature.enabled?(:issue_type_uses_work_item_types_table)
-      joins(:work_item_type).where(work_item_types: { base_type: types })
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+
+      where(
+        '"issues"."work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:id).limit(1)
+      )
     else
       where(issue_type: types)
     end

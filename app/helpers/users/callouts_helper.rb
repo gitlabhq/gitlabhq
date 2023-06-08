@@ -81,7 +81,15 @@ module Users
     end
 
     def show_new_navigation_callout?
-      show_super_sidebar? && !user_dismissed?(NEW_NAVIGATION_CALLOUT)
+      show_super_sidebar? &&
+        !user_dismissed?(NEW_NAVIGATION_CALLOUT) &&
+        # GitLab.com users created after the feature flag's full rollout (June 2nd 2023) don't need to see the callout.
+        # Remove the gitlab_com_user_created_after_new_nav_rollout? method when the callout isn't needed anymore.
+        !gitlab_com_user_created_after_new_nav_rollout?
+    end
+
+    def gitlab_com_user_created_after_new_nav_rollout?
+      Gitlab.com? && current_user.created_at >= Date.new(2023, 6, 2)
     end
 
     def ultimate_feature_removal_banner_dismissed?(project)

@@ -433,15 +433,37 @@ RSpec.describe Issue, feature_category: :team_planning do
         .to contain_exactly(issue, incident)
     end
 
-    it 'uses the work_item_types table for filtering' do
-      expect do
-        described_class.with_issue_type(:issue).to_a
-      end.to make_queries_matching(
-        %r{
-          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
-          \sWHERE\s"work_item_types"\."base_type"\s=\s0
-        }x
-      )
+    context 'when multiple issue_types are provided' do
+      it 'joins the work_item_types table for filtering' do
+        expect do
+          described_class.with_issue_type([:issue, :incident]).to_a
+        end.to make_queries_matching(
+          %r{
+            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
+            \sWHERE\s"work_item_types"\."base_type"\sIN\s\(0,\s1\)
+          }x
+        )
+      end
+    end
+
+    context 'when a single issue_type is provided' do
+      it 'uses an optimized query for a single work item type' do
+        expect do
+          described_class.with_issue_type([:incident]).to_a
+        end.to make_queries_matching(
+          %r{
+            WHERE\s\("issues"\."work_item_type_id"\s=
+            \s\(SELECT\s"work_item_types"\."id"\sFROM\s"work_item_types"\sWHERE\s"work_item_types"\."base_type"\s=\s1
+            \sLIMIT\s1\)\)
+          }x
+        )
+      end
+    end
+
+    context 'when no types are provided' do
+      it 'activerecord handles the false condition' do
+        expect(described_class.with_issue_type([]).to_sql).to include('WHERE 1=0')
+      end
     end
 
     context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
