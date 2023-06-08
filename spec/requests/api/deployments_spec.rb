@@ -38,19 +38,17 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       end
 
       context 'with updated_at filters specified' do
-        it 'returns projects deployments with last update in specified datetime range' do
-          perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :updated_at })
+        context 'when using `order_by=updated_at`' do
+          it 'returns projects deployments with last update in specified datetime range' do
+            perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :updated_at })
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response.first['id']).to eq(deployment_3.id)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.first['id']).to eq(deployment_3.id)
+          end
         end
 
-        context 'when forbidden order_by is specified' do
-          before do
-            stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: false)
-          end
-
+        context 'when not using `order_by=updated_at`' do
           it 'returns an error' do
             perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :id })
 

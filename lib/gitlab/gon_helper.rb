@@ -50,6 +50,7 @@ module Gitlab
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
+      gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 

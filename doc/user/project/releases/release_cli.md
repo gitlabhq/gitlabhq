@@ -23,7 +23,7 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
   "Created using the release-cli $EXTRA_DESCRIPTION" \
   --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" \
   --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" \
-  --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}
+  --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}"
 ```
 
 ## Install the `release-cli` for the Shell executor **(FREE)**

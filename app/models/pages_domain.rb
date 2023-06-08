@@ -23,10 +23,10 @@ class PagesDomain < ApplicationRecord
   validates :domain, uniqueness: { case_sensitive: false }
   validates :certificate, :key, presence: true, if: :usage_serverless?
   validates :certificate, presence: { message: 'must be present if HTTPS-only is enabled' },
-                          if: :certificate_should_be_present?
+    if: :certificate_should_be_present?
   validates :certificate, certificate: true, if: ->(domain) { domain.certificate.present? }
   validates :key, presence: { message: 'must be present if HTTPS-only is enabled' },
-                  if: :certificate_should_be_present?
+    if: :certificate_should_be_present?
   validates :key, certificate_key: true, named_ecdsa_key: true, if: ->(domain) { domain.key.present? }
   validates :verification_code, presence: true, allow_blank: false
 

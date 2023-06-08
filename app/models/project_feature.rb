@@ -134,12 +134,14 @@ class ProjectFeature < ApplicationRecord
       min_access_level = required_minimum_access_level(feature)
       column = quoted_access_level_column(feature)
 
-      where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
-           {
-             public_visible: visible,
-             private_visible: PRIVATE,
-             authorizations: user.authorizations_for_projects(min_access_level: min_access_level, related_project_column: 'project_features.project_id')
-           })
+      where(
+        "#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
+        {
+          public_visible: visible,
+          private_visible: PRIVATE,
+          authorizations: user.authorizations_for_projects(min_access_level: min_access_level, related_project_column: 'project_features.project_id')
+        }
+      )
     else
       # This has to be added to include features whose value is nil in the db
       visible << nil

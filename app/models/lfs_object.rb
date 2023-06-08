@@ -24,8 +24,10 @@ class LfsObject < ApplicationRecord
   end
 
   def self.not_linked_to_project(project)
-    where('NOT EXISTS (?)',
-          project.lfs_objects_projects.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
+    where(
+      'NOT EXISTS (?)',
+      project.lfs_objects_projects.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id')
+    )
   end
 
   def project_allowed_access?(project)
@@ -44,8 +46,10 @@ class LfsObject < ApplicationRecord
 
   def self.unreferenced_in_batches
     each_batch(of: BATCH_SIZE, order: :desc) do |lfs_objects|
-      relation = lfs_objects.where('NOT EXISTS (?)',
-              LfsObjectsProject.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
+      relation = lfs_objects.where(
+        'NOT EXISTS (?)',
+        LfsObjectsProject.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id')
+      )
 
       yield relation if relation.any?
     end

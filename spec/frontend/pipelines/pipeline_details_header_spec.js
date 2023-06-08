@@ -213,17 +213,27 @@ describe('Pipeline details header', () => {
   });
 
   describe('finished pipeline', () => {
-    beforeEach(async () => {
+    it('displays compute credits when not zero', async () => {
       createComponent();
 
       await waitForPromises();
-    });
 
-    it('displays compute credits', () => {
       expect(findComputeCredits().text()).toBe('0.65');
     });
 
-    it('displays time ago', () => {
+    it('does not display compute credits when zero', async () => {
+      createComponent(defaultHandlers, { ...defaultProps, computeCredits: '0.0' });
+
+      await waitForPromises();
+
+      expect(findComputeCredits().exists()).toBe(false);
+    });
+
+    it('displays time ago', async () => {
+      createComponent();
+
+      await waitForPromises();
+
       expect(findTimeAgo().exists()).toBe(true);
     });
   });

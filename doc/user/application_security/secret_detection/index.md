@@ -606,7 +606,9 @@ variable, or as a CI/CD variable.
 
 ## Warnings for potential leaks in text content
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
+> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146)
+in GitLab 16.1. GitLab self-managed only.
 
 When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
 For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
@@ -619,6 +621,7 @@ The check is always on; you don't have to set it up.
 Your text is checked for the following secret types:
 
 - GitLab [personal access tokens](../../../security/token_overview.md#personal-access-tokens)
+  - If a [personal access token prefix](../../../user/admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
 - GitLab [feed tokens](../../../security/token_overview.md#feed-token)
 
 This feature is separate from Secret Detection scanning, which checks your Git repository for leaked secrets.

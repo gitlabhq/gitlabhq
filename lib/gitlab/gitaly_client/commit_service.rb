@@ -232,10 +232,7 @@ module Gitlab
       end
 
       def find_changed_paths(commits)
-        request = Gitaly::FindChangedPathsRequest.new(
-          repository: @gitaly_repo,
-          commits: commits
-        )
+        request = find_changed_paths_request(commits)
 
         response = gitaly_client_call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
@@ -596,6 +593,20 @@ module Gitlab
         response = gitaly_client_call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
 
         response.commit
+      end
+
+      def find_changed_paths_request(commits)
+        if Feature.disabled?(:find_changed_paths_new_format)
+          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits)
+        end
+
+        commit_requests = commits.map do |commit|
+          Gitaly::FindChangedPathsRequest::Request.new(
+            commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: commit)
+          )
+        end
+
+        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests)
       end
     end
   end

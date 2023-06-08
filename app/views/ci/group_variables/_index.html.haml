@@ -1,6 +1,6 @@
 - variables = @project.group.self_and_ancestors.flat_map(&:variables)
 
-- if Feature.enabled?(:ci_vueify_inherited_group_variables)
+- if Feature.enabled?(:ci_vueify_inherited_group_variables, @project)
   #js-inherited-group-ci-variables{
     data: {
       project_path: @project.full_path,

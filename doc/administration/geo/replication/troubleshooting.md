@@ -1583,7 +1583,7 @@ registry.replicator.send(:sync_repository)
 #### Find repository verification failures
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to gather the following, basic troubleshooting information.
+**on the secondary Geo site** to gather more information.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -1609,14 +1609,14 @@ Geo::ProjectRegistry.sync_failed('repository')
 #### Resync project and project wiki repositories
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps.
+**on the secondary Geo site** to perform the following changes.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ##### Queue up all repositories for resync
 
-When you run this, Sidekiq handles each sync.
+When you run this, the sync is handled in the background by Sidekiq.
 
 ```ruby
 Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
@@ -1628,6 +1628,27 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 project = Project.find_by_full_path('<group/project>')
 
 Geo::RepositorySyncService.new(project).execute
+```
+
+##### Sync all failed repositories now
+
+The following script:
+
+- Loops over all currently failed repositories.
+- Displays the project details and the reasons for the last failure.
+- Attempts to resync the repository.
+- Reports back if a failure occurs, and why.
+
+```ruby
+Geo::ProjectRegistry.sync_failed('repository').find_each do |p|
+   begin
+     project = p.project
+     puts "#{project.full_path} | id: #{p.project_id} | last error: '#{p.last_repository_sync_failure}'"
+     Geo::RepositorySyncService.new(project).execute
+   rescue => e
+     puts "ID: #{p.project_id} failed: '#{e}'", e.backtrace.join("\n")
+   end
+end ; nil
 ```
 
 #### Find repository check failures in a Geo secondary site

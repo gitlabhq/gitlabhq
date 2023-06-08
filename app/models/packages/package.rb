@@ -70,11 +70,11 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
-            uniqueness: {
-              scope: %i[project_id version package_type],
-              conditions: -> { not_pending_destruction }
-            },
-            unless: -> { pending_destruction? || conan? }
+    uniqueness: {
+      scope: %i[project_id version package_type],
+      conditions: -> { not_pending_destruction }
+    },
+    unless: -> { pending_destruction? || conan? }
 
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?

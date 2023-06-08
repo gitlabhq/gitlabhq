@@ -249,53 +249,11 @@ RSpec.describe DeploymentsFinder do
         end
       end
 
-      describe 'enforce sorting to `updated_at` sorting' do
+      context 'when `updated_at` is used for filtering without sorting by `updated_at`' do
         let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc' } }
 
-        context 'when the deployments_raise_updated_at_inefficient_error FF is disabled' do
-          before do
-            stub_feature_flags(deployments_raise_updated_at_inefficient_error: false)
-          end
-
-          it 'sorts by only one column' do
-            expect(subject.order_values.size).to eq(2)
-          end
-
-          it 'sorts by `updated_at`' do
-            expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
-            expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
-          end
-        end
-
-        context 'when the deployments_raise_updated_at_inefficient_error FF is enabled' do
-          before do
-            stub_feature_flags(deployments_raise_updated_at_inefficient_error: true)
-          end
-
-          context 'when the flag is overridden' do
-            before do
-              stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: true)
-            end
-
-            it 'sorts by only one column' do
-              expect(subject.order_values.size).to eq(2)
-            end
-
-            it 'sorts by `updated_at`' do
-              expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
-              expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
-            end
-          end
-
-          context 'when the flag is not overridden' do
-            before do
-              stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: false)
-            end
-
-            it 'raises an error' do
-              expect { subject }.to raise_error(DeploymentsFinder::InefficientQueryError)
-            end
-          end
+        it 'raises an error' do
+          expect { subject }.to raise_error(DeploymentsFinder::InefficientQueryError)
         end
       end
 

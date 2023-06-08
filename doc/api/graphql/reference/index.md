@@ -25109,7 +25109,7 @@ Report comparison status.
 | Value | Description |
 | ----- | ----------- |
 | <a id="findingreportscomparerstatuserror"></a>`ERROR` | An error happened while generating the report. |
-| <a id="findingreportscomparerstatusparsed"></a>`PARSED` | Report is generated. |
+| <a id="findingreportscomparerstatusparsed"></a>`PARSED` | Report was generated. |
 | <a id="findingreportscomparerstatusparsing"></a>`PARSING` | Report is being generated. |
 
 ### `ForecastStatus`

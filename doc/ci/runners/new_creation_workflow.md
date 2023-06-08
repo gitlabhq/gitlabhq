@@ -141,8 +141,7 @@ or [Personal Access Tokens](../../user/profile/personal_access_tokens.md):
 # The output will be parsed by `jq` to extract the token of the newly created runner
 RUNNER_TOKEN=$(curl --silent --method POST "https://gitlab.com/api/v4/user/runners" \
     --header "private-token: $GITLAB_TOKEN" \
-    --header 'content-type: application/json' \
-    --data "{\"runner_type\":\"group_type\",\"group_id\":\"$GROUP_ID\",\"description\":\"My runner\",\"tag-list\":\"java,linux\"}" \
+    --data runner_type=group_type --data group_id=$GROUP_ID --data 'description=My runner' --data 'tag_list=java,linux' \
   | jq -r '.token')
 
 gitlab-runner register

@@ -13,10 +13,10 @@ class PagesDomainAcmeOrder < ApplicationRecord
   validates :private_key, presence: true
 
   attr_encrypted :private_key,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_32,
-                 algorithm: 'aes-256-gcm',
-                 encode: true
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: true
 
   def self.find_by_domain_and_token(domain_name, challenge_token)
     joins(:pages_domain).find_by(pages_domains: { domain: domain_name }, challenge_token: challenge_token)

@@ -169,10 +169,19 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
   describe '#find_changed_paths' do
     let(:commits) { %w[1a0b36b3cdad1d2ee32457c102a8c0b7056fa863 cfe32cf61b73a0d5e9f13e774abde7ff789b1660] }
+    let(:requests) do
+      [
+        Gitaly::FindChangedPathsRequest::Request.new(
+          commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+        ),
+        Gitaly::FindChangedPathsRequest::Request.new(
+          commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
+        )
+      ]
+    end
 
     it 'sends an RPC request and returns the stats' do
-      request = Gitaly::FindChangedPathsRequest.new(repository: repository_message,
-                                                    commits: commits)
+      request = Gitaly::FindChangedPathsRequest.new(repository: repository_message, requests: requests)
 
       changed_paths_response = Gitaly::FindChangedPathsResponse.new(
         paths: [{
@@ -187,6 +196,30 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       mapped_expected_value = changed_paths_response.paths.map { |path| Gitlab::Git::ChangedPath.new(status: path.status, path: path.path) }
 
       expect(returned_value.as_json).to eq(mapped_expected_value.as_json)
+    end
+
+    context 'when feature flag "find_changed_paths_new_format" is disabled' do
+      before do
+        stub_feature_flags(find_changed_paths_new_format: false)
+      end
+
+      it 'sends an RPC request and returns the stats' do
+        request = Gitaly::FindChangedPathsRequest.new(repository: repository_message, commits: commits)
+
+        changed_paths_response = Gitaly::FindChangedPathsResponse.new(
+          paths: [{
+            path: "app/assets/javascripts/boards/components/project_select.vue",
+            status: :MODIFIED
+          }])
+
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:find_changed_paths)
+          .with(request, kind_of(Hash)).and_return([changed_paths_response])
+
+        returned_value = described_class.new(repository).find_changed_paths(commits)
+        mapped_expected_value = changed_paths_response.paths.map { |path| Gitlab::Git::ChangedPath.new(status: path.status, path: path.path) }
+
+        expect(returned_value.as_json).to eq(mapped_expected_value.as_json)
+      end
     end
   end
 

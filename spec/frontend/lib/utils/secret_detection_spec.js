@@ -34,6 +34,23 @@ describe('containsSensitiveToken', () => {
       expect(containsSensitiveToken(message)).toBe(true);
     });
   });
+
+  describe('when custom pat prefix is set', () => {
+    beforeEach(() => {
+      gon.pat_prefix = 'specpat-';
+    });
+
+    const sensitiveMessages = [
+      'token: specpat-mGYFaXBmNLvLmrEb7xdf',
+      'token: feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      'https://example.com/feed?feed_token=123456789_abcdefghij',
+      'glpat-1234567890 and feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    ];
+
+    it.each(sensitiveMessages)('returns true for message: %s', (message) => {
+      expect(containsSensitiveToken(message)).toBe(true);
+    });
+  });
 });
 
 describe('confirmSensitiveAction', () => {

@@ -1,4 +1,4 @@
 - active = params[:tab] == 'details' || !params[:tab].present?
 
-= gl_tab_link_to clusterable.cluster_path(@cluster.id, params: { tab: 'details' }), { item_active: active } do
+= gl_tab_link_to clusterable.cluster_path(@cluster.id, params: { tab: 'details' }), { item_active: active, data: { testid: 'cluster-details-tab' } } do
   = _('Details')

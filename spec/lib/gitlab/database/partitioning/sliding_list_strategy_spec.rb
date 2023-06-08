@@ -2,10 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
+RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_category: :database do
+  include Gitlab::Database::DynamicModelHelpers
+
   let(:connection) { ActiveRecord::Base.connection }
-  let(:table_name) { :_test_partitioned_test }
-  let(:model) { double('model', table_name: table_name, ignored_columns: %w[partition], connection: connection) }
+  let(:table_name) { '_test_partitioned_test' }
+  let(:model) do
+    define_batchable_model(table_name, connection: connection).tap { |m| m.ignored_columns = %w[partition] }
+  end
+
   let(:next_partition_if) { double('next_partition_if') }
   let(:detach_partition_if) { double('detach_partition_if') }
 
@@ -86,6 +91,31 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
       )
 
       strategy.validate_and_fix
+    end
+
+    context 'when the shared connection is for the wrong database' do
+      it 'does not attempt to fix connections' do
+        skip_if_shared_database(:ci)
+        expect(strategy.model.connection).not_to receive(:change_column_default)
+
+        Ci::ApplicationRecord.connection.execute(<<~SQL)
+          create table #{table_name}
+          (
+              id serial not null,
+              partition bigint not null default 1,
+              created_at timestamptz not null,
+              primary key (id, partition)
+          )
+          partition by list(partition);
+
+          create table #{table_name}_1
+          partition of #{table_name} for values in (1);
+        SQL
+
+        Gitlab::Database::SharedModel.using_connection(Ci::ApplicationRecord.connection) do
+          strategy.validate_and_fix
+        end
+      end
     end
   end
 
