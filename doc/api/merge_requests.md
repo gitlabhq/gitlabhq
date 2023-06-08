@@ -1102,7 +1102,7 @@ following response attributes:
 | `new_path` | string | New path of the file. |
 | `a_mode` | string | Old file mode of the file. |
 | `b_mode` | string | New file mode of the file. |
-| `diff` | string | Diff representation of the changes made on the file. |
+| `diff` | string | Diff representation of the changes made to the file. |
 | `new_file` | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |

@@ -70,6 +70,10 @@ module Ci
       end
     end
 
+    def local?
+      file_store == ObjectStorage::Store::LOCAL
+    end
+
     private
 
     def assign_checksum

@@ -1,12 +1,23 @@
 # frozen_string_literal: true
 
 load_license = lambda do |dir:, license_name:|
-  prefix = ENV['GITLAB_LICENSE_MODE'] == 'test' ? 'test_' : ''
-  public_key_file = File.read(Rails.root.join(dir, ".#{prefix}license_encryption_key.pub"))
-  public_key = OpenSSL::PKey::RSA.new(public_key_file)
-  Gitlab::License.encryption_key = public_key
-rescue StandardError
-  warn "WARNING: No valid #{license_name} encryption key provided."
+  begin
+    public_key_file = File.read(Rails.root.join(dir, ".license_encryption_key.pub"))
+    public_key = OpenSSL::PKey::RSA.new(public_key_file)
+    Gitlab::License.encryption_key = public_key
+  rescue StandardError
+    warn "WARNING: No valid #{license_name} encryption key provided."
+  end
+
+  begin
+    if Rails.env.development? || Rails.env.test? || ENV['GITLAB_LICENSE_MODE'] == 'test'
+      fallback_key_file = File.read(Rails.root.join(dir, ".test_license_encryption_key.pub"))
+      fallback_key = OpenSSL::PKey::RSA.new(fallback_key_file)
+      Gitlab::License.fallback_decryption_keys = [fallback_key]
+    end
+  rescue StandardError
+    warn "WARNING: No fallback #{license_name} decryption key provided."
+  end
 end
 
 Gitlab.ee do
