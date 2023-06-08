@@ -2,7 +2,7 @@
 import './gon';
 import Vue from 'vue';
 import translateMixin from '~/vue_shared/translate';
-import { withGitLabAPIAccess, initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
+import { initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
 
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
@@ -17,5 +17,3 @@ translateMixin(Vue);
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');
 stylesheetsRequireCtx('./highlight/themes/white.scss');
-
-export const decorators = [withGitLabAPIAccess];

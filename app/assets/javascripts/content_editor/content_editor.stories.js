@@ -1,9 +1,11 @@
+import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
 import Api from '~/api';
 import { ContentEditor } from './index';
 
 export default {
   component: ContentEditor,
   title: 'ce/content_editor/content_editor',
+  decorators: [withGitLabAPIAccess],
 };
 
 const Template = (_, { argTypes }) => ({

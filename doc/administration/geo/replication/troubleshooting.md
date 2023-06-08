@@ -1747,7 +1747,7 @@ If the above steps are **not successful**, proceed through the next steps:
 
 If different operating systems or different operating system versions are deployed across Geo sites, you should perform a locale data compatibility check before setting up Geo.
 
-Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
+Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, it can cause erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
 
 For example, Ubuntu 18.04 (and earlier) and RHEL/Centos7 (and earlier) are incompatible with their later releases.
 See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Locale_data_changes).

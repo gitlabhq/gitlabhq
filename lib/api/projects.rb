@@ -20,8 +20,6 @@ module API
     helpers do
       # EE::API::Projects would override this method
       def apply_filters(projects)
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = projects.with_statistics if params[:statistics]
         projects = projects.joins(:statistics) if params[:order_by].include?('project_statistics') # rubocop: disable CodeReuse/ActiveRecord
         projects = projects.created_by(current_user).imported.with_import_state if params[:imported]

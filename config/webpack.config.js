@@ -224,6 +224,7 @@ const alias = {
   test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
   test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   public: path.join(ROOT_PATH, 'public'),
+  storybook_addons: path.resolve(ROOT_PATH, 'storybook/config/addons'),
 };
 
 if (IS_EE) {

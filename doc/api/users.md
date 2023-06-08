@@ -2219,13 +2219,14 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner **(FREE SELF)**
+## Create a runner **(FREE)**
 
 Creates a runner linked to the current user.
 
 Prerequisites:
 
 - You must be an administrator or have the Owner role of the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
 
 Be sure to copy or save the `token` in the response, the value cannot be retrieved again.
 

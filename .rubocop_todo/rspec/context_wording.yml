@@ -800,7 +800,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/projects/operations/update_service_spec.rb'
     - 'ee/spec/services/projects/protect_default_branch_service_spec.rb'
     - 'ee/spec/services/projects/restore_service_spec.rb'
-    - 'ee/spec/services/projects/slack_application_install_service_spec.rb'
     - 'ee/spec/services/projects/transfer_service_spec.rb'
     - 'ee/spec/services/projects/update_mirror_service_spec.rb'
     - 'ee/spec/services/projects/update_service_spec.rb'

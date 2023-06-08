@@ -65,9 +65,9 @@ This section documents the current behavior of GitLab when Silent Mode is enable
 
 Incoming emails still raise issues, but the users who sent the emails to [Service Desk](../../user/project/service_desk.md) are not notified of issue creation or comments on their issues.
 
-### Project and group webhooks
+### Webhooks
 
-Project and group webhooks are suppressed. The relevant Sidekiq jobs fail 4 times and then disappear, while Silent Mode is enabled. [Issue 393639](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) discusses preventing the Sidekiq jobs from running in the first place.
+[Project and group webhooks](../../user/project/integrations/webhooks.md), and [system hooks](../system_hooks.md) are suppressed. The relevant Sidekiq jobs fail 4 times and then disappear, while Silent Mode is enabled. [Issue 393639](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) discusses preventing the Sidekiq jobs from running in the first place.
 
 Triggering webhook tests via the UI results in HTTP status 500 responses.
 

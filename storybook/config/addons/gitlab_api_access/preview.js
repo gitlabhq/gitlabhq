@@ -1,8 +1,9 @@
 import { addons } from '@storybook/addons';
+import { GlBadge } from '@gitlab/ui';
 import { FORCE_REMOUNT } from '@storybook/core-events';
+import VueApollo from 'vue-apollo';
 import axios from '~/lib/utils/axios_utils';
 import createDefaultClient from '~/lib/graphql';
-import VueApollo from 'vue-apollo';
 import { GITLAB_API_ACCESS_UPDATE_EVENT } from './constants';
 
 /**
@@ -66,8 +67,16 @@ export const withGitLabAPIAccess = (story, context) => {
   return {
     components: {
       story,
+      GlBadge,
     },
-    template: '<story />',
+    template: `
+    <div>
+      <div class="gl-display-flex gl-justify-content-end">
+        <gl-badge variant="info">Requires API access</gl-badge>
+      </div>
+      <story />
+    </div>
+    `,
   };
 };
 

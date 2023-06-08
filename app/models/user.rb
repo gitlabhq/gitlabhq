@@ -2279,6 +2279,14 @@ class User < ApplicationRecord
     abuse_trust_scores.telesign.order(created_at: :desc).first&.score || 0.0
   end
 
+  def arkose_global_score
+    abuse_trust_scores.arkose_global_score.order(created_at: :desc).first&.score || 0.0
+  end
+
+  def arkose_custom_score
+    abuse_trust_scores.arkose_custom_score.order(created_at: :desc).first&.score || 0.0
+  end
+
   def trust_scores_for_source(source)
     abuse_trust_scores.where(source: source)
   end

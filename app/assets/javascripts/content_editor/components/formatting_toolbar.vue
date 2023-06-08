@@ -133,8 +133,3 @@ export default {
     </div>
   </div>
 </template>
-<style>
-.gl-spinner-container {
-  text-align: left;
-}
-</style>

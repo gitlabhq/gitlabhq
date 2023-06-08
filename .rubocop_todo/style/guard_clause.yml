@@ -274,7 +274,6 @@ Style/GuardClause:
     - 'ee/app/controllers/profiles/billings_controller.rb'
     - 'ee/app/controllers/projects/path_locks_controller.rb'
     - 'ee/app/controllers/projects/security/policies_controller.rb'
-    - 'ee/app/controllers/projects/settings/slacks_controller.rb'
     - 'ee/app/controllers/smartcard_controller.rb'
     - 'ee/app/finders/ee/template_finder.rb'
     - 'ee/app/finders/iterations_finder.rb'

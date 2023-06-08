@@ -78,12 +78,29 @@ a starting point.
 
 You can also use the GitLab API Access panel in the Storybook UI to set the GitLab instance URL and access token.
 
-### Using REST API
+### Set up API access in your stories
+
+You should apply the `withGitLabAPIAccess` decorator to the stories that will consume GitLab’s APIs. This decorator
+will display a badge indicating that the story won't work without providing the API access parameters:
+
+```javascript
+import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
+import Api from '~/api';
+import { ContentEditor } from './index';
+
+export default {
+  component: ContentEditor,
+  title: 'ce/content_editor/content_editor',
+  decorators: [withGitLabAPIAccess],
+};
+```
+
+#### Using REST API
 
 The Storybook sets up `~/lib/utils/axios_utils` in `storybook/config/preview.js`. Components that use the REST API
 should work out of the box as long as you provide a valid GitLab instance URL and access token.
 
-### Using GraphQL
+#### Using GraphQL
 
 To write a story for a component that uses the GraphQL API, use the `createVueApollo` method provided in
 the Story context.
@@ -91,6 +108,7 @@ the Story context.
 ```javascript
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
 import WorkspacesList from './list.vue';
 
 Vue.use(VueApollo);
@@ -99,6 +117,9 @@ const Template = (_, { argTypes, createVueApollo }) => {
   return {
     components: { WorkspacesList },
     apolloProvider: createVueApollo(),
+    provide: {
+      emptyStateSvgPath: '',
+    },
     props: Object.keys(argTypes),
     template: '<workspaces-list />',
   };
@@ -107,10 +128,10 @@ const Template = (_, { argTypes, createVueApollo }) => {
 export default {
   component: WorkspacesList,
   title: 'ee/remote_development/workspaces_list',
+  decorators: [withGitLabAPIAccess],
 };
 
 export const Default = Template.bind({});
 
 Default.args = {};
-
 ```
