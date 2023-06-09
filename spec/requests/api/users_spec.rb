@@ -4516,7 +4516,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       post api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('name is missing, scopes is missing, scopes does not have a valid value')
+      expect(json_response['error']).to eq('name is missing, scopes is missing')
     end
 
     it 'returns a 404 error if user not found' do

@@ -68,9 +68,9 @@ export default {
     },
   },
   i18n: {
-    title: s__('JiraService|Welcome to GitLab for Jira'),
-    signInSubtitle: s__('JiraService|Sign in to GitLab to link namespaces.'),
-    changeVersionButtonText: s__('JiraService|Change GitLab version'),
+    title: s__('JiraConnect|Welcome to GitLab for Jira'),
+    signInSubtitle: s__('JiraConnect|Sign in to GitLab to link groups.'),
+    changeVersionButtonText: s__('JiraConnect|Change GitLab version'),
   },
 };
 </script>

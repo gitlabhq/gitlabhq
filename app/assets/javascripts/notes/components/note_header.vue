@@ -8,8 +8,6 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 export default {
   components: {
     TimeAgoTooltip,
-    GitlabTeamMemberBadge: () =>
-      import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,
     GlBadge,
     GlLoadingIcon,
@@ -199,7 +197,6 @@ export default {
           ><span class="note-headline-light">@{{ author.username }}</span>
         </a>
         <slot name="note-header-info"></slot>
-        <gitlab-team-member-badge v-if="author && author.is_gitlab_employee" />
       </span>
       <span v-if="emailParticipant" class="note-headline-light">{{
         __('(external participant)')

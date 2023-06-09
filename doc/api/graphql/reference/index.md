@@ -23398,6 +23398,32 @@ Represents the vulnerability details location within a file in the project.
 | <a id="vulnerabilitydetailmodulelocationname"></a>`name` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailmodulelocationoffset"></a>`offset` | [`Int!`](#int) | Offset of the module location. |
 
+### `VulnerabilityDetailNamedList`
+
+Represents the vulnerability details named list.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydetailnamedlistdescription"></a>`description` | [`String`](#string) | Description of the field. |
+| <a id="vulnerabilitydetailnamedlistfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailnamedlistitems"></a>`items` **{warning-solid}** | [`[VulnerabilityDetailNamedListItem!]!`](#vulnerabilitydetailnamedlistitem) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Named list of details. |
+| <a id="vulnerabilitydetailnamedlistname"></a>`name` | [`String`](#string) | Name of the field. |
+
+### `VulnerabilityDetailNamedListItem`
+
+Represents the vulnerability details named list item.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydetailnamedlistitemdescription"></a>`description` | [`String`](#string) | Description of the field. |
+| <a id="vulnerabilitydetailnamedlistitemfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailnamedlistitemname"></a>`name` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailnamedlistitemvalue"></a>`value` **{warning-solid}** | [`VulnerabilityDetail!`](#vulnerabilitydetail) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Value of the field. |
+
 ### `VulnerabilityDetailRow`
 
 Represents an individual row in a table.
@@ -27441,6 +27467,7 @@ One of:
 - [`VulnerabilityDetailList`](#vulnerabilitydetaillist)
 - [`VulnerabilityDetailMarkdown`](#vulnerabilitydetailmarkdown)
 - [`VulnerabilityDetailModuleLocation`](#vulnerabilitydetailmodulelocation)
+- [`VulnerabilityDetailNamedList`](#vulnerabilitydetailnamedlist)
 - [`VulnerabilityDetailTable`](#vulnerabilitydetailtable)
 - [`VulnerabilityDetailText`](#vulnerabilitydetailtext)
 - [`VulnerabilityDetailUrl`](#vulnerabilitydetailurl)

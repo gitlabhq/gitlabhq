@@ -7,9 +7,9 @@ export default {
     GlAlert,
   },
   i18n: {
-    title: s__('JiraService|Are you a GitLab administrator?'),
+    title: s__('JiraConnect|Are you a GitLab administrator?'),
     body: s__(
-      "JiraService|Setting up this integration is only possible if you're a GitLab administrator.",
+      "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator.",
     ),
   },
 };

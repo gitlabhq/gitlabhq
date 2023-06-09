@@ -151,6 +151,7 @@
     "VulnerabilityDetailList",
     "VulnerabilityDetailMarkdown",
     "VulnerabilityDetailModuleLocation",
+    "VulnerabilityDetailNamedList",
     "VulnerabilityDetailTable",
     "VulnerabilityDetailText",
     "VulnerabilityDetailUrl"

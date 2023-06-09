@@ -65,7 +65,7 @@ export default {
           this.groups = response.data;
         })
         .catch(() => {
-          this.errorMessage = s__('Integrations|Failed to load namespaces. Please try again.');
+          this.errorMessage = s__('JiraConnect|Failed to load groups. Please try again.');
         })
         .finally(() => {
           this.isLoadingMore = false;
@@ -102,20 +102,25 @@ export default {
     </gl-alert>
 
     <gl-search-box-by-type
-      class="gl-mb-5"
+      class="gl-mb-3"
       debounce="500"
-      :placeholder="__('Search by name')"
+      :placeholder="__('Search groups')"
       :is-loading="isLoadingMore"
       :value="userSearchTerm"
       @input="onGroupSearch"
     />
 
+    <p class="gl-mb-3">
+      {{
+        s__(
+          'JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here.',
+        )
+      }}
+    </p>
+
     <gl-loading-icon v-if="isLoadingInitial" size="lg" />
     <div v-else-if="groups.length === 0" class="gl-text-center">
-      <h5>{{ s__('Integrations|No available namespaces.') }}</h5>
-      <p class="gl-mt-5">
-        {{ s__('Integrations|You must have owner or maintainer permissions to link namespaces.') }}
-      </p>
+      <h5 class="gl-mt-5">{{ s__('JiraConnect|No groups found.') }}</h5>
     </div>
     <ul
       v-else

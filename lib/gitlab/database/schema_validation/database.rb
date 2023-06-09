@@ -18,6 +18,10 @@ module Gitlab
           trigger_map[trigger_name]
         end
 
+        def fetch_foreign_key_by_name(foreign_key_name)
+          foreign_key_map[foreign_key_name]
+        end
+
         def fetch_table_by_name(table_name)
           table_map[table_name]
         end
@@ -30,6 +34,10 @@ module Gitlab
           trigger_map[trigger_name].present?
         end
 
+        def foreign_key_exists?(foreign_key_name)
+          fetch_foreign_key_by_name(foreign_key_name).present?
+        end
+
         def table_exists?(table_name)
           fetch_table_by_name(table_name).present?
         end
@@ -40,6 +48,10 @@ module Gitlab
 
         def triggers
           trigger_map.values
+        end
+
+        def foreign_keys
+          foreign_key_map.values
         end
 
         def tables
@@ -66,6 +78,14 @@ module Gitlab
             fetch_triggers.transform_values! do |trigger_stmt|
               SchemaObjects::Trigger.new(PgQuery.parse(trigger_stmt).tree.stmts.first.stmt.create_trig_stmt)
             end
+        end
+
+        def foreign_key_map
+          @foreign_key_map ||= fetch_fks.each_with_object({}) do |stmt, result|
+            adapter = Adapters::ForeignKeyDatabaseAdapter.new(stmt)
+
+            result[adapter.name] = SchemaObjects::ForeignKey.new(adapter)
+          end
         end
 
         def table_map
@@ -121,6 +141,24 @@ module Gitlab
           SQL
 
           connection.exec_query(sql, nil, schemas).group_by { |row| row['table_name'] }
+        end
+
+        def fetch_fks
+          sql = <<~SQL
+            SELECT
+              pg_namespace.nspname::text AS schema,
+              pg_class.relname::text AS table_name,
+              pg_constraint.conname AS foreign_key_name,
+              pg_get_constraintdef(pg_constraint.oid) AS foreign_key_definition
+            FROM pg_constraint
+            INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
+            INNER JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid
+            WHERE contype = 'f'
+            AND pg_namespace.nspname = $1
+            AND pg_constraint.conparentid = 0
+          SQL
+
+          connection.exec_query(sql, nil, [connection.current_schema])
         end
       end
     end

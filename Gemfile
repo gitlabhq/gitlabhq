@@ -109,7 +109,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap'
 gem 'net-ldap', '~> 0.18.0'
 
 # API
-gem 'grape', '~> 1.5.2'
+gem 'grape', '~> 1.7.0'
 gem 'grape-entity', '~> 0.10.0'
 gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
 gem 'grape-swagger', '~> 1.6.1', group: [:development, :test]

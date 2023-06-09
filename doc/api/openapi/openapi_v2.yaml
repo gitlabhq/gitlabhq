@@ -376,8 +376,6 @@ definitions:
         "$ref": "#/definitions/API_Entities_CustomAttribute"
       web_url:
         type: string
-      is_gitlab_employee:
-        type: string
       email:
         type: string
       requested_at:

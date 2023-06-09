@@ -20,6 +20,8 @@ If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/i
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
+> Link groups feature [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) from Add namespace in GitLab 16.1.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab group.
@@ -35,7 +37,7 @@ To install the GitLab for Jira Cloud app:
 
 1. To go to the configurations page, select **Get started**.
    You can always access this page in **Jira Settings > Apps > Manage apps**.
-1. For a list of groups to link, select **Add namespace**.
+1. For a list of groups to link, select **Link groups**.
 1. To link to a group, select **Link**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

@@ -41,6 +41,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="gl-font-base">
     <gl-sprintf :message="signedInText">

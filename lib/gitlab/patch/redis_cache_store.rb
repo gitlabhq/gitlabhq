@@ -66,19 +66,7 @@ module Gitlab
       private
 
       def enable_rails_cache_pipeline_patch?
-        # if we do not enable patch, the application will be susceptible to cross-slot errors
-        return true if redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }
-
-        redis_cache? &&
-          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands? &&
-          ::Feature.enabled?(:enable_rails_cache_pipeline_patch) # rubocop:disable Cop/FeatureFlagUsage
-      end
-
-      def redis_cache?
-        # We do not want to risk cycles of feature code calling redis calling feature code.
-        # Also, we only want to benchmark redis-cache, hence repository-cache and rate-limiting are excluded.
-        !is_a?(Gitlab::Redis::FeatureFlag::FeatureFlagStore) &&
-          !is_a?(Gitlab::Redis::RepositoryCache::RepositoryCacheStore)
+        redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }
       end
     end
   end

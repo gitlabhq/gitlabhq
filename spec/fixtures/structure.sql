@@ -10,9 +10,6 @@ CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING bt
 
 CREATE INDEX index_users_on_public_email_excluding_null_and_empty ON users USING btree (public_email) WHERE (((public_email)::text <> ''::text) AND (public_email IS NOT NULL));
 
-ALTER TABLE ONLY bulk_import_configurations
-    ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
-
 CREATE TABLE test_table (
   id bigint NOT NULL,
   integer_column integer,
@@ -97,3 +94,15 @@ CREATE TRIGGER wrong_trigger BEFORE UPDATE ON public.t2 FOR EACH ROW EXECUTE FUN
 CREATE TRIGGER missing_trigger_1 BEFORE INSERT OR UPDATE ON public.t3 FOR EACH ROW EXECUTE FUNCTION t3();
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+ALTER TABLE web_hooks
+    ADD CONSTRAINT web_hooks_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT wrong_definition_fk FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT missing_fk FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY bulk_import_configurations
+    ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;

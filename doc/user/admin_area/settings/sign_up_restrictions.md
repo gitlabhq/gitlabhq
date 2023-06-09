@@ -50,6 +50,7 @@ This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for n
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
 [OmniAuth configuration](../../../integration/omniauth.md#configure-common-settings) or
 [LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
+A [user cap](#user-cap) can also be used to enforce approvals for new users.
 
 ## Confirm user email
 
@@ -82,6 +83,17 @@ their account.
 
 If an administrator [increases](#set-the-user-cap-number) or [removes](#remove-the-user-cap) the
 user cap, the users in pending approval state are automatically approved in a background job.
+
+NOTE:
+The amount of billable users [is updated once a day](../../../subscriptions/self_managed/index.md#billable-users).
+This means the user cap might apply only retrospectively after the cap has already been exceeded.
+To ensure the cap is enabled immediately, set it to a low value below the current number of
+billable users, for example: `1`.
+
+On instances that use LDAP or OmniAuth, enabling and disabling
+[administrator approval for new sign ups](#require-administrator-approval-for-new-sign-ups)
+involves changing the Rails configuration, and may require downtime.
+User cap can be used instead. As noted above, set the cap to value that ensures it is enforced immediately.
 
 ### Set the user cap number
 

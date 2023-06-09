@@ -16,6 +16,7 @@ add-jh-files:
     - .as-if-jh:rules:prepare-as-if-jh
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: prepare
+  needs: []
   before_script:
     - source ./scripts/utils.sh
     - source ./scripts/setup/as-if-jh.sh

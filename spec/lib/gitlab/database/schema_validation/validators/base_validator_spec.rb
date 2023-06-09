@@ -12,13 +12,16 @@ RSpec.describe Gitlab::Database::SchemaValidation::Validators::BaseValidator, fe
         Gitlab::Database::SchemaValidation::Validators::ExtraTableColumns,
         Gitlab::Database::SchemaValidation::Validators::ExtraIndexes,
         Gitlab::Database::SchemaValidation::Validators::ExtraTriggers,
+        Gitlab::Database::SchemaValidation::Validators::ExtraForeignKeys,
         Gitlab::Database::SchemaValidation::Validators::MissingTables,
         Gitlab::Database::SchemaValidation::Validators::MissingTableColumns,
         Gitlab::Database::SchemaValidation::Validators::MissingIndexes,
         Gitlab::Database::SchemaValidation::Validators::MissingTriggers,
+        Gitlab::Database::SchemaValidation::Validators::MissingForeignKeys,
         Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionTables,
         Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionIndexes,
-        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionTriggers
+        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionTriggers,
+        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionForeignKeys
       ])
     end
   end

@@ -186,6 +186,7 @@
   - ".gitlab/ci/package-and-test/*.yml"
   - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
   - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
+  - ".gitlab/ci/test-on-gdk/*.yml"
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"

@@ -17,8 +17,8 @@ export default {
     },
   },
   i18n: {
-    signInButtonTextWithSubscriptions: s__('Integrations|Sign in to add namespaces'),
-    signInText: s__('JiraService|Sign in to GitLab to get started.'),
+    signInButtonTextWithSubscriptions: s__('JiraConnect|Sign in to link groups'),
+    signInText: s__('JiraConnect|Sign in to GitLab to get started.'),
   },
   GITLAB_COM_BASE_PATH,
   methods: {
@@ -31,7 +31,7 @@ export default {
 
 <template>
   <div>
-    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
+    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraConnect|GitLab for Jira Configuration') }}</h2>
     <div v-if="hasSubscriptions">
       <div class="gl-display-flex gl-justify-content-end gl-mb-3">
         <sign-in-oauth-button

@@ -24,6 +24,10 @@ module Organizations
       id == DEFAULT_ORGANIZATION_ID
     end
 
+    def to_param
+      path
+    end
+
     private
 
     def check_if_default_organization

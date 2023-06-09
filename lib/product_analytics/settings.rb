@@ -2,13 +2,15 @@
 
 module ProductAnalytics
   class Settings
-    CONFIG_KEYS = (%w[jitsu_host jitsu_project_xid jitsu_administrator_email jitsu_administrator_password] +
-    %w[product_analytics_data_collector_host product_analytics_clickhouse_connection_string] +
-    %w[cube_api_base_url cube_api_key]).freeze
+    BASE_CONFIG_KEYS = %w[product_analytics_data_collector_host cube_api_base_url cube_api_key].freeze
 
-    SNOWPLOW_CONFIG_KEYS = %w[product_analytics_configurator_connection_string].freeze
+    JITSU_CONFIG_KEYS = (%w[jitsu_host jitsu_project_xid jitsu_administrator_email jitsu_administrator_password] +
+    %w[product_analytics_clickhouse_connection_string] + BASE_CONFIG_KEYS).freeze
 
-    ALL_CONFIG_KEYS = (ProductAnalytics::Settings::CONFIG_KEYS +
+    SNOWPLOW_CONFIG_KEYS = (%w[product_analytics_configurator_connection_string] +
+      BASE_CONFIG_KEYS).freeze
+
+    ALL_CONFIG_KEYS = (ProductAnalytics::Settings::BASE_CONFIG_KEYS + ProductAnalytics::Settings::JITSU_CONFIG_KEYS +
       ProductAnalytics::Settings::SNOWPLOW_CONFIG_KEYS).freeze
 
     def initialize(project:)
@@ -20,16 +22,14 @@ module ProductAnalytics
     end
 
     def configured?
-      return unless configured_snowplow?
+      return configured_snowplow? if Feature.enabled?(:product_analytics_snowplow_support, @project)
 
-      CONFIG_KEYS.all? do |key|
+      JITSU_CONFIG_KEYS.all? do |key|
         get_setting_value(key).present?
       end
     end
 
     def configured_snowplow?
-      return true unless Feature.enabled?(:product_analytics_snowplow_support, @project)
-
       SNOWPLOW_CONFIG_KEYS.all? do |key|
         get_setting_value(key).present?
       end

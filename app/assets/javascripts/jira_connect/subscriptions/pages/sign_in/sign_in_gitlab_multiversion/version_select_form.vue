@@ -85,14 +85,14 @@ export default {
   },
   radioOptions: RADIO_OPTIONS,
   i18n: {
-    title: s__('JiraService|What version of GitLab are you using?'),
+    title: s__('JiraConnect|What version of GitLab are you using?'),
     saasRadioLabel: __('GitLab.com (SaaS)'),
     saasRadioHelp: __('Most common'),
     selfManagedRadioLabel: __('GitLab (self-managed)'),
     buttonNext: __('Next'),
     buttonSave: __('Save'),
-    instanceURLInputLabel: s__('JiraService|GitLab instance URL'),
-    instanceURLInputDescription: s__('JiraService|For example: https://gitlab.example.com'),
+    instanceURLInputLabel: s__('JiraConnect|GitLab instance URL'),
+    instanceURLInputDescription: s__('JiraConnect|For example: https://gitlab.example.com'),
   },
 };
 </script>

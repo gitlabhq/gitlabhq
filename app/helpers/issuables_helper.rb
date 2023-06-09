@@ -159,7 +159,6 @@ module IssuablesHelper
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
-      author_output << issuable_meta_author_slot(issuable.author, css_class: 'ml-1')
       author_output << issuable_meta_author_status(issuable.author)
 
       author_output
@@ -174,11 +173,6 @@ module IssuablesHelper
     output << content_tag(:span, (sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
 
     output.join.html_safe
-  end
-
-  # This is a dummy method, and has an override defined in ee
-  def issuable_meta_author_slot(author, css_class: nil)
-    nil
   end
 
   def issuables_state_counter_text(issuable_type, state, display_count)

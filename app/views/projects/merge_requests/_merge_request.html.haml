@@ -25,7 +25,6 @@
         %span.issuable-authored.d-none.d-sm-inline-block.gl-text-gray-500!
           &middot;
           #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
-          = render_if_exists 'shared/issuable/gitlab_team_member_badge', author: merge_request.author
         - if merge_request.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block.gl-text-truncate.gl-max-w-26.gl-vertical-align-bottom
             &nbsp;

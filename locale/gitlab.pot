@@ -20452,9 +20452,6 @@ msgstr ""
 msgid "GitLab Support Bot"
 msgstr ""
 
-msgid "GitLab Team Member"
-msgstr ""
-
 msgid "GitLab Ultimate trial"
 msgstr ""
 
@@ -24323,9 +24320,6 @@ msgstr ""
 msgid "Integrations|Add an integration"
 msgstr ""
 
-msgid "Integrations|Add namespace"
-msgstr ""
-
 msgid "Integrations|All details"
 msgstr ""
 
@@ -24398,34 +24392,10 @@ msgstr ""
 msgid "Integrations|Enable slash commands and notifications for a Slack workspace."
 msgstr ""
 
-msgid "Integrations|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "Integrations|Enter your alias"
 msgstr ""
 
 msgid "Integrations|Error: You are trying to upload something other than an allowed file."
-msgstr ""
-
-msgid "Integrations|Failed to link namespace. Please try again."
-msgstr ""
-
-msgid "Integrations|Failed to load Jira Connect Application ID. Please try again."
-msgstr ""
-
-msgid "Integrations|Failed to load namespaces. Please try again."
-msgstr ""
-
-msgid "Integrations|Failed to load subscriptions."
-msgstr ""
-
-msgid "Integrations|Failed to sign in to GitLab."
-msgstr ""
-
-msgid "Integrations|Failed to unlink namespace. Please try again."
-msgstr ""
-
-msgid "Integrations|Failed to update the GitLab instance. See the %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
 msgid "Integrations|GitLab administrators can set up integrations that all groups and projects inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}instance-level integration management%{link_end}."
@@ -24461,25 +24431,7 @@ msgstr ""
 msgid "Integrations|Keep your PHP dependencies updated on Packagist."
 msgstr ""
 
-msgid "Integrations|Link namespaces"
-msgstr ""
-
-msgid "Integrations|Linked namespaces"
-msgstr ""
-
 msgid "Integrations|Mattermost slash commands"
-msgstr ""
-
-msgid "Integrations|Namespace successfully linked"
-msgstr ""
-
-msgid "Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance."
-msgstr ""
-
-msgid "Integrations|No available namespaces."
-msgstr ""
-
-msgid "Integrations|No linked namespaces"
 msgstr ""
 
 msgid "Integrations|Notification settings"
@@ -24527,15 +24479,6 @@ msgstr ""
 msgid "Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}"
 msgstr ""
 
-msgid "Integrations|Sign in to %{url}"
-msgstr ""
-
-msgid "Integrations|Sign in to GitLab"
-msgstr ""
-
-msgid "Integrations|Sign in to add namespaces"
-msgstr ""
-
 msgid "Integrations|Standard"
 msgstr ""
 
@@ -24569,19 +24512,7 @@ msgstr ""
 msgid "Integrations|You haven't activated any integrations yet."
 msgstr ""
 
-msgid "Integrations|You must have owner or maintainer permissions to link namespaces."
-msgstr ""
-
-msgid "Integrations|You must use a %{linkStart}supported browser%{linkEnd} to use the GitLab for Jira app."
-msgstr ""
-
-msgid "Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
 msgid "Integrations|You've activated every integration 🎉"
-msgstr ""
-
-msgid "Integrations|Your browser is not supported"
 msgstr ""
 
 msgid "Integrations|ZenTao issues display here when you create issues in your project in ZenTao."
@@ -25612,10 +25543,19 @@ msgstr ""
 msgid "Jira-GitLab user mapping template"
 msgstr ""
 
+msgid "JiraConnect|Are you a GitLab administrator?"
+msgstr ""
+
 msgid "JiraConnect|Cannot find namespace. Make sure you have sufficient permissions."
 msgstr ""
 
+msgid "JiraConnect|Change GitLab version"
+msgstr ""
+
 msgid "JiraConnect|Configure your Jira Connect Application ID."
+msgstr ""
+
+msgid "JiraConnect|Continue setup in GitLab"
 msgstr ""
 
 msgid "JiraConnect|Could not fetch user information from Jira. Check the permissions in Jira and try again."
@@ -25627,13 +25567,55 @@ msgstr ""
 msgid "JiraConnect|Enable public key storage"
 msgstr ""
 
+msgid "JiraConnect|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "JiraConnect|Failed to create branch."
 msgstr ""
 
 msgid "JiraConnect|Failed to create branch. Please try again."
 msgstr ""
 
+msgid "JiraConnect|Failed to link group. Please try again."
+msgstr ""
+
+msgid "JiraConnect|Failed to load Jira Connect Application ID. Please try again."
+msgstr ""
+
+msgid "JiraConnect|Failed to load groups. Please try again."
+msgstr ""
+
+msgid "JiraConnect|Failed to load subscriptions."
+msgstr ""
+
+msgid "JiraConnect|Failed to sign in to GitLab."
+msgstr ""
+
+msgid "JiraConnect|Failed to unlink group. Please try again."
+msgstr ""
+
+msgid "JiraConnect|Failed to update the GitLab instance. See the %{linkStart}troubleshooting documentation%{linkEnd}."
+msgstr ""
+
+msgid "JiraConnect|For example: https://gitlab.example.com"
+msgstr ""
+
 msgid "JiraConnect|GitLab for Jira App"
+msgstr ""
+
+msgid "JiraConnect|GitLab for Jira Configuration"
+msgstr ""
+
+msgid "JiraConnect|GitLab instance URL"
+msgstr ""
+
+msgid "JiraConnect|Group successfully linked"
+msgstr ""
+
+msgid "JiraConnect|Groups are the GitLab groups and subgroups you link to this Jira instance."
+msgstr ""
+
+msgid "JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab."
 msgstr ""
 
 msgid "JiraConnect|Jira Connect Application ID"
@@ -25642,16 +25624,61 @@ msgstr ""
 msgid "JiraConnect|Jira Connect Proxy URL"
 msgstr ""
 
+msgid "JiraConnect|Link groups"
+msgstr ""
+
+msgid "JiraConnect|Linked groups"
+msgstr ""
+
 msgid "JiraConnect|New branch was successfully created."
 msgstr ""
 
+msgid "JiraConnect|No groups found."
+msgstr ""
+
+msgid "JiraConnect|No linked groups"
+msgstr ""
+
+msgid "JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here."
+msgstr ""
+
+msgid "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator."
+msgstr ""
+
+msgid "JiraConnect|Sign in to %{url}"
+msgstr ""
+
+msgid "JiraConnect|Sign in to GitLab to get started."
+msgstr ""
+
+msgid "JiraConnect|Sign in to GitLab to link groups."
+msgstr ""
+
+msgid "JiraConnect|Sign in to link groups"
+msgstr ""
+
 msgid "JiraConnect|The Jira user is not a site administrator. Check the permissions in Jira and try again."
+msgstr ""
+
+msgid "JiraConnect|Welcome to GitLab for Jira"
+msgstr ""
+
+msgid "JiraConnect|What version of GitLab are you using?"
 msgstr ""
 
 msgid "JiraConnect|You can now close this window and return to Jira."
 msgstr ""
 
 msgid "JiraConnect|You don't have permission to create branches for this project. Select a different project or contact the project owner for access. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "JiraConnect|You must use a %{linkStart}supported browser%{linkEnd} to use the GitLab for Jira app."
+msgstr ""
+
+msgid "JiraConnect|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "JiraConnect|Your browser is not supported"
 msgstr ""
 
 msgid "JiraRequest|A connection error occurred while connecting to Jira. Try your request again."
@@ -25699,9 +25726,6 @@ msgstr ""
 msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
-msgid "JiraService|Are you a GitLab administrator?"
-msgstr ""
-
 msgid "JiraService|Authentication type"
 msgstr ""
 
@@ -25712,12 +25736,6 @@ msgid "JiraService|Base URL of the Jira instance"
 msgstr ""
 
 msgid "JiraService|Basic"
-msgstr ""
-
-msgid "JiraService|Change GitLab version"
-msgstr ""
-
-msgid "JiraService|Continue setup in GitLab"
 msgstr ""
 
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
@@ -25759,22 +25777,10 @@ msgstr ""
 msgid "JiraService|For example, AB"
 msgstr ""
 
-msgid "JiraService|For example: https://gitlab.example.com"
-msgstr ""
-
-msgid "JiraService|GitLab for Jira Configuration"
-msgstr ""
-
-msgid "JiraService|GitLab instance URL"
-msgstr ""
-
 msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
 msgstr ""
 
 msgid "JiraService|If different from the Web URL"
-msgstr ""
-
-msgid "JiraService|In order to complete the set up, you’ll need to complete a few steps in GitLab."
 msgstr ""
 
 msgid "JiraService|Issues created from vulnerabilities in this project will be Jira issues, even if GitLab issues are enabled."
@@ -25837,13 +25843,7 @@ msgstr ""
 msgid "JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}"
 msgstr ""
 
-msgid "JiraService|Setting up this integration is only possible if you're a GitLab administrator."
-msgstr ""
-
 msgid "JiraService|Sign in to GitLab to get started."
-msgstr ""
-
-msgid "JiraService|Sign in to GitLab to link namespaces."
 msgstr ""
 
 msgid "JiraService|This feature requires a Premium plan."
@@ -25871,12 +25871,6 @@ msgid "JiraService|Warning: All GitLab users with access to this GitLab project 
 msgstr ""
 
 msgid "JiraService|Web URL"
-msgstr ""
-
-msgid "JiraService|Welcome to GitLab for Jira"
-msgstr ""
-
-msgid "JiraService|What version of GitLab are you using?"
 msgstr ""
 
 msgid "JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created."
@@ -29681,16 +29675,43 @@ msgstr ""
 msgid "NamespaceLimits|%{linkStart}%{username}%{linkEnd} changed the limit to %{limit} at %{date}"
 msgstr ""
 
+msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to enforce storage usage for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgstr ""
+
+msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to set the dashboard limit for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgstr ""
+
+msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to show notifications for namespace on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgstr ""
+
 msgid "NamespaceLimits|Confirm deletion"
 msgstr ""
 
 msgid "NamespaceLimits|Confirm limits change"
 msgstr ""
 
+msgid "NamespaceLimits|Dashboard Limit"
+msgstr ""
+
+msgid "NamespaceLimits|Dashboard limit was successfully added"
+msgstr ""
+
+msgid "NamespaceLimits|Dashboard limit was successfully removed"
+msgstr ""
+
 msgid "NamespaceLimits|Deletion confirmation"
 msgstr ""
 
 msgid "NamespaceLimits|Do you confirm the deletion of the selected namespace from the exclusion list?"
+msgstr ""
+
+msgid "NamespaceLimits|Enforcement Limit"
+msgstr ""
+
+msgid "NamespaceLimits|Enforcement limit was successfully added"
+msgstr ""
+
+msgid "NamespaceLimits|Enforcement limit was successfully removed"
 msgstr ""
 
 msgid "NamespaceLimits|Enter a valid number greater or equal to zero."
@@ -29702,16 +29723,37 @@ msgstr ""
 msgid "NamespaceLimits|Exclude namespace"
 msgstr ""
 
+msgid "NamespaceLimits|Excluded Namespaces"
+msgstr ""
+
 msgid "NamespaceLimits|Exclusion added successfully"
 msgstr ""
 
 msgid "NamespaceLimits|Free Tier"
 msgstr ""
 
+msgid "NamespaceLimits|Notifications Limit"
+msgstr ""
+
+msgid "NamespaceLimits|Notifications limit was successfully added"
+msgstr ""
+
+msgid "NamespaceLimits|Notifications limit was successfully removed"
+msgstr ""
+
 msgid "NamespaceLimits|Reason"
 msgstr ""
 
 msgid "NamespaceLimits|Reason for excluding this namespace"
+msgstr ""
+
+msgid "NamespaceLimits|Set Dashboard limit"
+msgstr ""
+
+msgid "NamespaceLimits|Set Enforcement limit"
+msgstr ""
+
+msgid "NamespaceLimits|Set Notifications limit"
 msgstr ""
 
 msgid "NamespaceLimits|Storage Phased Notification"
@@ -29724,6 +29766,15 @@ msgid "NamespaceLimits|There was an error fetching the exclusion list, try refre
 msgstr ""
 
 msgid "NamespaceLimits|These namespaces won't receive any notifications nor any degraded functionality while they remain on this list"
+msgstr ""
+
+msgid "NamespaceLimits|This will change the dashboard limit for all free namespaces except the excluded namespaces, the limit can be removed later."
+msgstr ""
+
+msgid "NamespaceLimits|This will change when free namespaces get storage enforcement except the excluded namespaces, the limit can be removed later."
+msgstr ""
+
+msgid "NamespaceLimits|This will limit the amount of notifications all free namespaces receives except the excluded namespaces, the limit can be removed later."
 msgstr ""
 
 msgid "NamespaceLimits|Update limit"

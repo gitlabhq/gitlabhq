@@ -24,26 +24,28 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   end
 
   shared_examples 'a dismissible Broadcast Messages' do
-    it 'hides broadcast message after dismiss', :js,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390900' do
+    it 'hides broadcast message after dismiss', :js do
       visit path
 
-      find('.js-dismiss-current-broadcast-notification').click
+      expect_to_be_on_explore_projects_page
 
-      expect(page).not_to have_content 'SampleMessage'
+      find('body.page-initialised .js-dismiss-current-broadcast-notification').click
+
+      expect_message_dismissed
     end
 
-    it 'broadcast message is still hidden after refresh', :js,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391406' do
+    it 'broadcast message is still hidden after refresh', :js do
       visit path
 
-      find('.js-dismiss-current-broadcast-notification').click
+      expect_to_be_on_explore_projects_page
 
-      wait_for_cookie_set("hide_broadcast_message_#{broadcast_message.id}")
+      find('body.page-initialised .js-dismiss-current-broadcast-notification').click
+
+      expect_message_dismissed
 
       visit path
 
-      expect(page).not_to have_content 'SampleMessage'
+      expect_message_dismissed
     end
   end
 
@@ -61,7 +63,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
     it 'does not replace placeholders' do
       create(:broadcast_message, message: 'Hi {{name}}')
 
-      sign_in(user)
+      gitlab_sign_in(user)
 
       visit path
 
@@ -87,7 +89,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
     it 'replaces placeholders' do
       create(:broadcast_message, :notification, message: 'Hi {{name}}')
 
-      sign_in(user)
+      gitlab_sign_in(user)
 
       visit path
 
@@ -136,19 +138,27 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
 
       expect_no_broadcast_message
     end
+  end
 
-    def expect_broadcast_message(text)
-      page.within('[data-testid="banner-broadcast-message"]') do
-        expect(page).to have_content text
-      end
+  def expect_broadcast_message(text)
+    page.within('[data-testid="banner-broadcast-message"]') do
+      expect(page).to have_content text
     end
+  end
 
-    def expect_no_broadcast_message
-      page.within('[data-testid="explore-projects-title"]') do
-        expect(page).to have_content 'Explore projects'
-      end
+  def expect_no_broadcast_message
+    expect_to_be_on_explore_projects_page
 
-      expect(page).not_to have_selector('[data-testid="banner-broadcast-message"]')
+    expect(page).not_to have_selector('[data-testid="banner-broadcast-message"]')
+  end
+
+  def expect_to_be_on_explore_projects_page
+    page.within('[data-testid="explore-projects-title"]') do
+      expect(page).to have_content 'Explore projects'
     end
+  end
+
+  def expect_message_dismissed
+    expect(page).not_to have_content 'SampleMessage'
   end
 end

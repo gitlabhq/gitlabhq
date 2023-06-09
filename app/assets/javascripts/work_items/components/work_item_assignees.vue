@@ -126,8 +126,16 @@ export default {
     assigneesTitleId() {
       return uniqueId('assignees-title-');
     },
+    deduplicatedUsers() {
+      return this.users.nodes.reduce((acc, current) => {
+        if (!acc.find((node) => node.user.id === current.user.id)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+    },
     searchUsers() {
-      return this.users.nodes.map((node) => addClass({ ...node, ...node.user }));
+      return this.deduplicatedUsers.map((node) => addClass({ ...node, ...node.user }));
     },
     pageInfo() {
       return this.users.pageInfo;

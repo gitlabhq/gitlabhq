@@ -44,6 +44,8 @@ in a CI/CD job:
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>
 ```
 
+You can't use a job token to push to a repository, but [issue 389060](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) proposes to change this behavior.
+
 ## GitLab CI/CD job token security
 
 To make sure that this token doesn't leak, GitLab:

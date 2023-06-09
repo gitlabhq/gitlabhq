@@ -11,14 +11,15 @@ export default {
     GlLink,
   },
   i18n: {
-    title: s__('Integrations|Your browser is not supported'),
+    title: s__('JiraConnect|Your browser is not supported'),
     body: s__(
-      'Integrations|You must use a %{linkStart}supported browser%{linkEnd} to use the GitLab for Jira app.',
+      'JiraConnect|You must use a %{linkStart}supported browser%{linkEnd} to use the GitLab for Jira app.',
     ),
   },
   DOCS_LINK_URL: helpPagePath('install/requirements', { anchor: 'supported-web-browsers' }),
 };
 </script>
+
 <template>
   <gl-alert variant="danger" :title="$options.i18n.title" :dismissible="false">
     <gl-sprintf :message="$options.i18n.body">

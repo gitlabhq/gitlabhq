@@ -132,4 +132,12 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       end
     end
   end
+
+  describe '#to_param' do
+    let_it_be(:organization) { build(:organization, path: 'org_path') }
+
+    it 'returns the path' do
+      expect(organization.to_param).to eq('org_path')
+    end
+  end
 end

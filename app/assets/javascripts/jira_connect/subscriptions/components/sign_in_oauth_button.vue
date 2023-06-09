@@ -183,6 +183,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <gl-button
     v-bind="$attrs"

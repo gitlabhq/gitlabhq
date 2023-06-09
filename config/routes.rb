@@ -156,6 +156,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :operations
       draw :jira_connect
+      draw :organizations
 
       Gitlab.ee do
         draw :remote_development

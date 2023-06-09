@@ -1579,6 +1579,74 @@ export const projectMembersResponseWithCurrentUser = {
   },
 };
 
+export const projectMembersResponseWithDuplicates = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: {
+        nodes: [
+          {
+            id: 'user-2',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/5',
+              avatarUrl: '/avatar2',
+              name: 'rookie',
+              username: 'rookie',
+              webUrl: 'rookie',
+              status: null,
+            },
+          },
+          {
+            id: 'user-4',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/5',
+              avatarUrl: '/avatar2',
+              name: 'rookie',
+              username: 'rookie',
+              webUrl: 'rookie',
+              status: null,
+            },
+          },
+          {
+            id: 'user-1',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/1',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+              name: 'Administrator',
+              username: 'root',
+              webUrl: '/root',
+              status: null,
+            },
+          },
+          {
+            id: 'user-3',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/1',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+              name: 'Administrator',
+              username: 'root',
+              webUrl: '/root',
+              status: null,
+            },
+          },
+        ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+          startCursor: null,
+        },
+      },
+    },
+  },
+};
+
 export const projectMembersResponseWithCurrentUserWithNextPage = {
   data: {
     workspace: {

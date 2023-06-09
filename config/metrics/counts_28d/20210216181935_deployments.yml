@@ -15,5 +15,7 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- gmau
+- paid_gmau
 milestone: "<13.9"
