@@ -24579,7 +24579,6 @@ CREATE TABLE webauthn_registrations (
     credential_xid text NOT NULL,
     name text NOT NULL,
     public_key text NOT NULL,
-    u2f_registration_id integer,
     CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_f5ab2b551a CHECK ((char_length(credential_xid) <= 1364))
 );
@@ -33376,8 +33375,6 @@ CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING bt
 CREATE INDEX index_web_hooks_on_type ON web_hooks USING btree (type);
 
 CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON webauthn_registrations USING btree (credential_xid);
-
-CREATE INDEX index_webauthn_registrations_on_u2f_registration_id ON webauthn_registrations USING btree (u2f_registration_id) WHERE (u2f_registration_id IS NOT NULL);
 
 CREATE INDEX index_webauthn_registrations_on_user_id ON webauthn_registrations USING btree (user_id);
 

@@ -77,70 +77,64 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache,
   end
 
   describe '#expire' do
-    shared_examples 'expires varying amount of keys' do
-      subject { cache.expire(*keys) }
+    subject { cache.expire(*keys) }
 
-      before do
-        cache.write(:foo, ['value'])
-        cache.write(:bar, ['value2'])
+    before do
+      cache.write(:foo, ['value'])
+      cache.write(:bar, ['value2'])
+    end
+
+    it 'actually wrote the values' do
+      expect(cache.read(:foo)).to contain_exactly('value')
+      expect(cache.read(:bar)).to contain_exactly('value2')
+    end
+
+    context 'single key' do
+      let(:keys) { %w(foo) }
+
+      it { is_expected.to eq(1) }
+
+      it 'deletes the given key from the cache' do
+        subject
+
+        expect(cache.read(:foo)).to be_empty
       end
+    end
 
-      it 'actually wrote the values' do
-        expect(cache.read(:foo)).to contain_exactly('value')
-        expect(cache.read(:bar)).to contain_exactly('value2')
+    context 'multiple keys' do
+      let(:keys) { %w(foo bar) }
+
+      it { is_expected.to eq(2) }
+
+      it 'deletes the given keys from the cache' do
+        subject
+
+        expect(cache.read(:foo)).to be_empty
+        expect(cache.read(:bar)).to be_empty
       end
+    end
 
-      context 'single key' do
-        let(:keys) { %w(foo) }
+    context 'no keys' do
+      let(:keys) { [] }
 
-        it { is_expected.to eq(1) }
-
-        it 'deletes the given key from the cache' do
-          subject
-
-          expect(cache.read(:foo)).to be_empty
-        end
-      end
-
-      context 'multiple keys' do
-        let(:keys) { %w(foo bar) }
-
-        it { is_expected.to eq(2) }
-
-        it 'deletes the given keys from the cache' do
-          subject
-
-          expect(cache.read(:foo)).to be_empty
-          expect(cache.read(:bar)).to be_empty
-        end
-      end
-
-      context 'no keys' do
-        let(:keys) { [] }
-
-        it { is_expected.to eq(0) }
-      end
+      it { is_expected.to eq(0) }
     end
 
     context 'when deleting over 1000 keys' do
       it 'deletes in batches of 1000' do
         Gitlab::Redis::RepositoryCache.with do |redis|
-          expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          # In a Redis Cluster, we do not want a pipeline to have too many keys
+          # but in a standalone Redis, multi-key commands can be used.
+          if ::Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          else
+            expect(redis).to receive(:unlink).and_call_original
+          end
         end
 
         cache.expire(*(Array.new(1001) { |i| i }))
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
-
-      it_behaves_like 'expires varying amount of keys'
-    end
-
-    it_behaves_like 'expires varying amount of keys'
   end
 
   describe '#exist?' do

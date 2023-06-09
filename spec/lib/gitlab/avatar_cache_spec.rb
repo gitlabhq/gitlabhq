@@ -62,62 +62,54 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
   end
 
   describe "#delete_by_email" do
-    shared_examples 'delete emails' do
-      subject { described_class.delete_by_email(*emails) }
+    subject { described_class.delete_by_email(*emails) }
 
-      before do
-        perform_fetch
+    before do
+      perform_fetch
+    end
+
+    context "no emails, somehow" do
+      let(:emails) { [] }
+
+      it { is_expected.to eq(0) }
+    end
+
+    context "single email" do
+      let(:emails) { "foo@bar.com" }
+
+      it "removes the email" do
+        expect(read(key, "20:2:true")).to eq(avatar_path)
+
+        expect(subject).to eq(1)
+
+        expect(read(key, "20:2:true")).to eq(nil)
       end
+    end
 
-      context "no emails, somehow" do
-        let(:emails) { [] }
+    context "multiple emails" do
+      let(:emails) { ["foo@bar.com", "missing@baz.com"] }
 
-        it { is_expected.to eq(0) }
-      end
+      it "removes the emails it finds" do
+        expect(read(key, "20:2:true")).to eq(avatar_path)
 
-      context "single email" do
-        let(:emails) { "foo@bar.com" }
+        expect(subject).to eq(1)
 
-        it "removes the email" do
-          expect(read(key, "20:2:true")).to eq(avatar_path)
-
-          expect(subject).to eq(1)
-
-          expect(read(key, "20:2:true")).to eq(nil)
-        end
-      end
-
-      context "multiple emails" do
-        let(:emails) { ["foo@bar.com", "missing@baz.com"] }
-
-        it "removes the emails it finds" do
-          expect(read(key, "20:2:true")).to eq(avatar_path)
-
-          expect(subject).to eq(1)
-
-          expect(read(key, "20:2:true")).to eq(nil)
-        end
+        expect(read(key, "20:2:true")).to eq(nil)
       end
     end
 
     context 'when deleting over 1000 emails' do
       it 'deletes in batches of 1000' do
         Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          else
+            expect(redis).to receive(:unlink).and_call_original
+          end
         end
 
         described_class.delete_by_email(*(Array.new(1001) { |i| i }))
       end
     end
-
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
-
-      it_behaves_like 'delete emails'
-    end
-
-    it_behaves_like 'delete emails'
   end
 end

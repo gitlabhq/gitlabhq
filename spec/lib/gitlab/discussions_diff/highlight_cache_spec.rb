@@ -41,81 +41,57 @@ RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cach
   end
 
   describe '#read_multiple' do
-    shared_examples 'read multiple keys' do
-      it 'reads multiple keys and serializes content into Gitlab::Diff::Line objects' do
-        described_class.write_multiple(mapping)
+    it 'reads multiple keys and serializes content into Gitlab::Diff::Line objects' do
+      described_class.write_multiple(mapping)
 
-        found = described_class.read_multiple(mapping.keys)
+      found = described_class.read_multiple(mapping.keys)
 
-        expect(found.size).to eq(2)
-        expect(found.first.size).to eq(2)
-        expect(found.first).to all(be_a(Gitlab::Diff::Line))
-      end
-
-      it 'returns nil when cached key is not found' do
-        described_class.write_multiple(mapping)
-
-        found = described_class.read_multiple([2, 3])
-
-        expect(found.size).to eq(2)
-
-        expect(found.first).to eq(nil)
-        expect(found.second.size).to eq(2)
-        expect(found.second).to all(be_a(Gitlab::Diff::Line))
-      end
-
-      it 'returns lines which rich_text are HTML-safe' do
-        described_class.write_multiple(mapping)
-
-        found = described_class.read_multiple(mapping.keys)
-        rich_texts = found.flatten.map(&:rich_text)
-
-        expect(rich_texts).to all(be_html_safe)
-      end
+      expect(found.size).to eq(2)
+      expect(found.first.size).to eq(2)
+      expect(found.first).to all(be_a(Gitlab::Diff::Line))
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
+    it 'returns nil when cached key is not found' do
+      described_class.write_multiple(mapping)
 
-      it_behaves_like 'read multiple keys'
+      found = described_class.read_multiple([2, 3])
+
+      expect(found.size).to eq(2)
+
+      expect(found.first).to eq(nil)
+      expect(found.second.size).to eq(2)
+      expect(found.second).to all(be_a(Gitlab::Diff::Line))
     end
 
-    it_behaves_like 'read multiple keys'
+    it 'returns lines which rich_text are HTML-safe' do
+      described_class.write_multiple(mapping)
+
+      found = described_class.read_multiple(mapping.keys)
+      rich_texts = found.flatten.map(&:rich_text)
+
+      expect(rich_texts).to all(be_html_safe)
+    end
   end
 
   describe '#clear_multiple' do
-    shared_examples 'delete multiple keys' do
-      it 'removes all named keys' do
-        described_class.write_multiple(mapping)
+    it 'removes all named keys' do
+      described_class.write_multiple(mapping)
 
-        described_class.clear_multiple(mapping.keys)
+      described_class.clear_multiple(mapping.keys)
 
-        expect(described_class.read_multiple(mapping.keys)).to all(be_nil)
-      end
-
-      it 'only removed named keys' do
-        to_clear, to_leave = mapping.keys
-
-        described_class.write_multiple(mapping)
-        described_class.clear_multiple([to_clear])
-
-        cleared, left = described_class.read_multiple([to_clear, to_leave])
-
-        expect(cleared).to be_nil
-        expect(left).to all(be_a(Gitlab::Diff::Line))
-      end
+      expect(described_class.read_multiple(mapping.keys)).to all(be_nil)
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
+    it 'only removed named keys' do
+      to_clear, to_leave = mapping.keys
 
-      it_behaves_like 'delete multiple keys'
+      described_class.write_multiple(mapping)
+      described_class.clear_multiple([to_clear])
+
+      cleared, left = described_class.read_multiple([to_clear, to_leave])
+
+      expect(cleared).to be_nil
+      expect(left).to all(be_a(Gitlab::Diff::Line))
     end
-
-    it_behaves_like 'delete multiple keys'
   end
 end

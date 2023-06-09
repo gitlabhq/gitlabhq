@@ -224,6 +224,16 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute
       end
 
+      it 'calls the track jetbrains bundled third party api when trackable method' do
+        agent = 'IntelliJ-GitLab-Plugin PhpStorm/PS-232.6734.11 (JRE 17.0.7+7-b966.2; Linux 6.2.0-20-generic; amd64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
       context 'if using the GitLab CLI' do
         it 'call trackable for the old UserAgent' do
           agent = 'GLab - GitLab CLI'
@@ -354,6 +364,16 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         request.env['HTTP_USER_AGENT'] = agent
 
         expect(Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
+      it 'calls the track jetbrains bundled third party api when trackable method' do
+        agent = 'IntelliJ-GitLab-Plugin PhpStorm/PS-232.6734.11 (JRE 17.0.7+7-b966.2; Linux 6.2.0-20-generic; amd64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter)
           .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
 
         subject

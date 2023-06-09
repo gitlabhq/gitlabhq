@@ -65,7 +65,7 @@ module Gitlab
           keys = emails.map { |email| email_key(email) }
 
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            if ::Feature.enabled?(:use_pipeline_over_multikey) || Gitlab::Redis::ClusterUtil.cluster?(redis)
+            if Gitlab::Redis::ClusterUtil.cluster?(redis)
               Gitlab::Redis::ClusterUtil.batch_unlink(keys, redis)
             else
               redis.unlink(*keys)

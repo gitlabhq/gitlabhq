@@ -42,9 +42,7 @@ module QA
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.wait_for_ide_to_load
             ide.create_new_folder(directory_name)
-            ide.within_vscode_editor do
-              expect(page).to have_content('A file or folder first_directory already exists at this location.')
-            end
+            ide.has_message?('A file or folder first_directory already exists at this location.')
           end
         end
       end
@@ -61,10 +59,8 @@ module QA
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.wait_for_ide_to_load
             ide.create_new_folder(directory_name)
-            ide.commit_and_push(directory_name)
-            ide.within_vscode_editor do
-              expect(page).to have_content('No changes found. Not able to commit.')
-            end
+            ide.commit_toggle(directory_name)
+            ide.has_message?('No changes found. Not able to commit.')
           end
         end
       end

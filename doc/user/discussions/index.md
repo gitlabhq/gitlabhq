@@ -95,6 +95,24 @@ it's converted to a link in the context of the merge request.
 For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
 `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
 
+## Add a comment to a merge request file
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121429) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `comment_on_files`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `comment_on_files`.
+On GitLab.com, this feature is not available.
+
+You can add comments to a merge request diff file. These comments persist across
+rebases and file changes.
+
+To add a comment a merge request file:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests** and find your merge request.
+1. Select **Changes**.
+1. In the header for the file you want to comment on, select **Comment** (**{comment}**).
+
 ## Add a comment to a commit
 
 You can add comments and threads to a particular commit.
