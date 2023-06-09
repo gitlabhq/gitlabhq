@@ -44,7 +44,7 @@ const findConfirmationButton = () =>
 const findCancelButton = () => wrapper.findByTestId('delete-merged-branches-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
-const submitFormSpy = () => jest.spyOn(wrapper.vm.$refs.form, 'submit');
+const submitFormSpy = () => jest.spyOn(findForm().element, 'submit');
 
 describe('Delete merged branches component', () => {
   beforeEach(() => {

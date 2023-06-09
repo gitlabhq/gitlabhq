@@ -457,35 +457,53 @@ module SearchHelper
     result
   end
 
-  def code_tab_condition
+  def show_code_search_tab?
     return true if project_search_tabs?(:blobs)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)
   end
 
-  def wiki_tab_condition
-    return true if project_search_tabs?(:wiki)
+  def show_wiki_search_tab?
+    return true if project_search_tabs?(:wiki_blobs)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_wiki_tab)
   end
 
-  def commits_tab_condition
+  def show_commits_search_tab?
     return true if project_search_tabs?(:commits)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)
+  end
+
+  def show_issues_search_tab?
+    return true if project_search_tabs?(:issues)
+
+    @project.nil? && feature_flag_tab_enabled?(:global_search_issues_tab)
+  end
+
+  def show_merge_requests_search_tab?
+    return true if project_search_tabs?(:merge_requests)
+
+    @project.nil? && feature_flag_tab_enabled?(:global_search_merge_requests_tab)
+  end
+
+  def show_comments_search_tab?
+    return true if project_search_tabs?(:notes)
+
+    @project.nil? && search_service.show_elasticsearch_tabs?
   end
 
   # search page scope navigation
   def search_navigation
     {
       projects: {       sort: 1, label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
-      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: code_tab_condition },
+      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: show_code_search_tab? },
       #  sort: 3 is reserved for EE items
-      issues: {         sort: 4, label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
-      merge_requests: { sort: 5, label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },
-      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: wiki_tab_condition },
-      commits: {        sort: 7, label: _("Commits"),                  condition: commits_tab_condition },
-      notes: {          sort: 8, label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
+      issues: {         sort: 4, label: _("Issues"),                   condition: show_issues_search_tab? },
+      merge_requests: { sort: 5, label: _("Merge requests"),           condition: show_merge_requests_search_tab? },
+      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: show_wiki_search_tab? },
+      commits: {        sort: 7, label: _("Commits"),                  condition: show_commits_search_tab? },
+      notes: {          sort: 8, label: _("Comments"),                 condition: show_comments_search_tab? },
       milestones: {     sort: 9, label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
       users: {          sort: 10, label: _("Users"),                   condition: show_user_search_tab? },
       snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: search_service.show_snippets? && @project.nil? }
@@ -576,7 +594,7 @@ module SearchHelper
   end
 
   def show_user_search_tab?
-    return project_search_tabs?(:members) if @project
+    return project_search_tabs?(:users) if @project
     return false unless can?(current_user, :read_users_list)
     return true if @group
 

@@ -1,13 +1,13 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import ScopeNewNavigation from '~/search/sidebar/components/scope_new_navigation.vue';
+import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { MOCK_QUERY, MOCK_NAVIGATION, MOCK_NAVIGATION_ITEMS } from '../../mock_data';
 
 Vue.use(Vuex);
 
-describe('ScopeNewNavigation', () => {
+describe('ScopeSidebarNavigation', () => {
   let wrapper;
 
   const actionSpies = {
@@ -30,7 +30,7 @@ describe('ScopeNewNavigation', () => {
       getters: getterSpies,
     });
 
-    wrapper = mount(ScopeNewNavigation, {
+    wrapper = mount(ScopeSidebarNavigation, {
       store,
       stubs: {
         NavItem,

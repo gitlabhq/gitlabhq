@@ -177,7 +177,11 @@ module ProjectsHelper
 
     abilities = Array(search_tab_ability_map[tab])
 
-    abilities.any? { |ability| can?(current_user, ability, @project) }
+    if @project.respond_to?(:each) # support multi-project select
+      @project.any? { |project| abilities.any? { |ability| can?(current_user, ability, project) } }
+    else
+      abilities.any? { |ability| can?(current_user, ability, @project) }
+    end
   end
 
   def can_change_visibility_level?(project, current_user)
@@ -616,7 +620,8 @@ module ProjectsHelper
       commits: :read_code,
       merge_requests: :read_merge_request,
       notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
-      members: :read_project_member
+      users: :read_project_member,
+      wiki_blobs: :read_wiki
     )
   end
 

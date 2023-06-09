@@ -548,6 +548,9 @@ EE-specific models should `extend EE::Model`.
 For example, if EE has a specific `Tanuki` model, you would
 place it in `ee/app/models/ee/tanuki.rb`.
 
+ActiveRecord `enums` should be entirely
+[defined in FOSS](database/creating_enums.md#all-of-the-keyvalue-pairs-should-be-defined-in-foss).
+
 ### Code in `app/views/`
 
 It's a very frequent problem that EE is adding some specific view code in a CE

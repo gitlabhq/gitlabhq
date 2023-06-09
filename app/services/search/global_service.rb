@@ -5,7 +5,8 @@ module Search
     include Search::Filter
     include Gitlab::Utils::StrongMemoize
 
-    ALLOWED_SCOPES = %w(issues merge_requests milestones users).freeze
+    DEFAULT_SCOPE = 'projects'
+    ALLOWED_SCOPES = %w(projects issues merge_requests milestones users).freeze
 
     attr_accessor :current_user, :params
 
@@ -34,7 +35,7 @@ module Search
 
     def scope
       strong_memoize(:scope) do
-        allowed_scopes.include?(params[:scope]) ? params[:scope] : 'projects'
+        allowed_scopes.include?(params[:scope]) ? params[:scope] : DEFAULT_SCOPE
       end
     end
   end

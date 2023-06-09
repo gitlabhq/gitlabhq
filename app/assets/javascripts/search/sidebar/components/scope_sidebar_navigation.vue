@@ -6,7 +6,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
 
 export default {
-  name: 'ScopeNewNavigation',
+  name: 'ScopeSidebarNavigation',
   i18n: {
     countOverLimitLabel: s__('GlobalSearch|Result count is over limit.'),
   },
