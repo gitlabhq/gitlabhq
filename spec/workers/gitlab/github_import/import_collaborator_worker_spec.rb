@@ -15,6 +15,8 @@ RSpec.describe Gitlab::GithubImport::ImportCollaboratorWorker, feature_category:
     let(:importer) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
 
     it 'imports a collaborator' do
+      allow(import_state).to receive(:in_progress?).and_return(true)
+
       expect(Gitlab::GithubImport::Importer::CollaboratorImporter)
         .to receive(:new)
         .with(

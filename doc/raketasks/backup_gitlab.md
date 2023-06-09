@@ -398,23 +398,25 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=stora
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
-You can back up a specific repositories using the `REPOSITORIES_PATHS` option.
-The option accepts a comma-separated list of project and group paths. If you
+You can back up specific repositories using the `REPOSITORIES_PATHS` option.
+Similarly, you can use `SKIP_REPOSITORIES_PATHS` to skip certain repositories.
+Both options accept a comma-separated list of project or group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included.
+descendent groups are included or skipped, depending on which option you used.
 
-For example, to back up all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
+For example, to back up all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
+and skip the **Project D** in **Group A** (`group-a/project-d`):
 
 - Omnibus GitLab installations:
 
   ```shell
-  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 - Installations from source:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 ### Upload backups to a remote (cloud) storage

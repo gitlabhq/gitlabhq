@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
-  let_it_be(:project2) { create(:project, :import_canceled) }
 
   let(:worker) do
     Class.new do
@@ -23,11 +22,13 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
       worker.perform(-1)
     end
 
-    it 'returns if the import state is canceled' do
+    it 'returns if the import state is no longer in progress' do
+      allow(project.import_state).to receive(:status).and_return('failed')
+
       allow(worker)
         .to receive(:find_project)
-        .with(project2.id)
-        .and_return(project2)
+        .with(project.id)
+        .and_return(project)
 
       expect(worker).not_to receive(:try_import)
 
@@ -36,7 +37,7 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
           .with(
             {
               message: 'starting stage',
-              project_id: project2.id,
+              project_id: project.id,
               import_stage: 'DummyStage'
             }
           )
@@ -45,13 +46,14 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
         .to receive(:info)
         .with(
           {
-            message: 'project import canceled',
-            project_id: project2.id,
-            import_stage: 'DummyStage'
+            message: 'Project import is no longer running. Stopping worker.',
+            project_id: project.id,
+            import_stage: 'DummyStage',
+            import_status: 'failed'
           }
         )
 
-      worker.perform(project2.id)
+      worker.perform(project.id)
     end
 
     it 'imports the data when the project exists' do

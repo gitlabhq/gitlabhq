@@ -400,7 +400,7 @@ The following table lists group permissions available for each role:
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
-| Manage [subscriptions, and purchase CI/CD minutes and storage](../subscriptions/gitlab_com/index.md)         |       |          |           |            | ✓     |
+| Manage [subscriptions, and purchase storage and units of compute](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 
@@ -470,12 +470,20 @@ To work around the issue, give these users the Guest role or higher to any proje
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
+> - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
+
+The following custom roles are available:
+
+- The Guest+1 role, which allows users with the Guest role to view code.
+- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports.
+
+You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
 ### Create a custom role
 

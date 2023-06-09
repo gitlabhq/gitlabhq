@@ -43,13 +43,13 @@
         :preserve
           git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
           cd #{h @project.path}
-          git switch -c #{h escaped_default_branch_name}
+          git switch --create #{h escaped_default_branch_name}
           touch README.md
           git add README.md
           git commit -m "add README"
         - if @project.can_current_user_push_to_default_branch?
           %span><
-            git push -u origin #{h escaped_default_branch_name }
+            git push --set-upstream origin #{h escaped_default_branch_name }
 
       %h5= _('Push an existing folder')
       %pre.bg-light
@@ -61,7 +61,7 @@
           git commit -m "Initial commit"
         - if @project.can_current_user_push_to_default_branch?
           %span><
-            git push -u origin #{h escaped_default_branch_name }
+            git push --set-upstream origin #{h escaped_default_branch_name }
 
       %h5= _('Push an existing Git repository')
       %pre.bg-light
@@ -71,5 +71,5 @@
           git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
         - if @project.can_current_user_push_to_default_branch?
           %span><
-            git push -u origin --all
-            git push -u origin --tags
+            git push --set-upstream origin --all
+            git push --set-upstream origin --tags

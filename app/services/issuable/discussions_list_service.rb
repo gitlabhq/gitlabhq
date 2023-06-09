@@ -4,7 +4,6 @@
 # System notes also have a discussion ID assigned including Synthetic system notes.
 module Issuable
   class DiscussionsListService
-    include RendersNotes
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :current_user, :issuable, :params
@@ -37,7 +36,9 @@ module Issuable
         ).execute(notes)
       end
 
-      notes = prepare_notes_for_rendering(notes)
+      # Here we assume all notes belong to the same project as the work item
+      project = notes.first&.project
+      notes = ::Preloaders::Projects::NotesPreloader.new(project, current_user).call(notes)
 
       # we need to check the permission on every note, because some system notes for instance can have references to
       # resources that some user do not have read access, so those notes are filtered out from the list of notes.

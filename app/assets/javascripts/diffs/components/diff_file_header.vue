@@ -462,7 +462,7 @@ export default {
               v-if="showGenerateTestFileButton"
               @click="setGenerateTestFilePath(diffFile.new_path)"
             >
-              {{ __('Generate test with AI') }}
+              {{ __('Suggest test cases') }}
             </gl-dropdown-item>
             <gl-dropdown-item
               v-if="diffFile.replaced_view_path"

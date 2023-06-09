@@ -26,7 +26,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
         expect(page).to have_content('Command line instructions')
       end
 
-      expect(page).to have_content("git push -u origin master")
+      expect(page).to have_content("git push --set-upstream origin master")
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
       it "recommends default_branch_name instead of master" do
         click_link 'Create empty repository'
 
-        expect(page).to have_content("git push -u origin example_branch")
+        expect(page).to have_content("git push --set-upstream origin example_branch")
       end
     end
 

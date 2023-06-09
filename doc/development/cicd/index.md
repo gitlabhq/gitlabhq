@@ -185,12 +185,14 @@ We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
-## CI/CD Minutes
+## Compute quota
 
-This diagram shows how the [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "units of compute" in GitLab 16.1.
+
+This diagram shows how the [Compute quota](../../ci/pipelines/cicd_minutes.md)
 feature and its components work.
 
-![CI/CD minutes architecture](img/ci_minutes.png)
+![compute quota architecture](img/ci_minutes.png)
 <!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
 
 Watch a walkthrough of this feature in details in the video below.

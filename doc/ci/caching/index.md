@@ -402,7 +402,7 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
-# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+# https://pip.pypa.io/en/stable/topics/caching/
 cache:
   paths:
     - .cache/pip

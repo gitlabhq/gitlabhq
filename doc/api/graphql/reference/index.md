@@ -18911,6 +18911,7 @@ Represents the network policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="noteauthor"></a>`author` | [`UserCore!`](#usercore) | User who wrote this note. |
+| <a id="noteauthoriscontributor"></a>`authorIsContributor` | [`Boolean`](#boolean) | Indicates whether the note author is a contributor. |
 | <a id="noteawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of award emojis associated with the note. (see [Connections](#connections)) |
 | <a id="notebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `note`. |
@@ -18921,6 +18922,7 @@ Represents the network policy.
 | <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if this note is internal. |
 | <a id="notelasteditedat"></a>`lastEditedAt` | [`Time`](#time) | Timestamp when note was last edited. |
 | <a id="notelasteditedby"></a>`lastEditedBy` | [`UserCore`](#usercore) | User who last edited the note. |
+| <a id="notemaxaccesslevelofauthor"></a>`maxAccessLevelOfAuthor` | [`String`](#string) | Max access level of the note author in the project. |
 | <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of this note on a diff. |
 | <a id="noteproject"></a>`project` | [`Project`](#project) | Project associated with the note. |
 | <a id="noteresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |

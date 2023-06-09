@@ -7,6 +7,8 @@ type: reference
 
 # Compute quota **(PREMIUM)**
 
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "units of compute" in GitLab 16.1.
+
 NOTE:
 The term `CI/CD minutes` is being renamed to `units of compute`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `units of compute`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
@@ -298,7 +300,7 @@ Additional units of compute are a one-time purchase and do not renew or refresh 
 
 ## What happens when you exceed the quota
 
-When the quota of CI/CD minutes is used for the current month, GitLab stops
+When the compute quota is used for the current month, GitLab stops
 processing new jobs.
 
 - Any non-running job that should be picked by shared runners is automatically dropped.
@@ -306,29 +308,29 @@ processing new jobs.
 - Any running job can be dropped at any point if the overall namespace usage goes over-quota
   by a grace period.
 
-The grace period for running jobs is `1,000` CI/CD minutes.
+The grace period for running jobs is `1,000` units of compute.
 
-Jobs on project runners are not affected by the quota of CI/CD minutes.
+Jobs on project runners are not affected by the compute quota.
 
 ### GitLab SaaS usage notifications
 
 On GitLab SaaS an email notification is sent to the namespace owners when:
 
-- The available CI/CD minutes are below 30% of the quota.
-- The available CI/CD minutes are below 5% of the quota.
-- All CI/CD minutes have been used.
+- The remaining units of compute is below 30% of the quota.
+- The remaining units of compute is below 5% of the quota.
+- All the compute quota has been used.
 
 ### Special quota limits
 
 In some cases, the quota limit is replaced by one of the following labels:
 
-- **Unlimited minutes**: For namespaces with unlimited CI/CD minutes
-- **Not supported minutes**: For namespaces where active shared runners are not enabled
+- **Unlimited**: For namespaces with unlimited compute quota.
+- **Not supported**: For namespaces where active shared runners are not enabled.
 
-## Reduce consumption of CI/CD minutes
+## Reduce compute quota usage
 
-If your project consumes too many CI/CD minutes, there are some strategies you can
-use to reduce your CI/CD minutes usage:
+If your project consumes too much compute quota, there are some strategies you can
+use to reduce your usage:
 
 - If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
   is disabled.
@@ -342,14 +344,14 @@ use to reduce your CI/CD minutes usage:
 - If you are working from a fork and you submit a merge request to the parent project,
   you can ask a maintainer to run a pipeline [in the parent project](merge_request_pipelines.md#run-pipelines-in-the-parent-project).
 
-If you manage an open source project, these improvements can also reduce CI/CD minutes
+If you manage an open source project, these improvements can also reduce compute quota
 consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
 ## Reset compute usage **(PREMIUM SELF)**
 
-An administrator can reset the number of minutes used by a namespace for the current month.
+An administrator can reset the compute usage for a namespace for the current month.
 
 ### Reset usage for a personal namespace
 

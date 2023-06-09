@@ -1,5 +1,5 @@
 =begin
-#Error Trackig REST API
+#Error Tracking REST API
 
 #This schema describes the API endpoints for the error tracking feature
 

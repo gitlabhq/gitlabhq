@@ -40,7 +40,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column time-ago" :class="fontSize">
+  <div
+    class="gl-display-flex gl-flex-direction-column gl-align-items-flex-end gl-lg-align-items-flex-start"
+    :class="fontSize"
+  >
     <p v-if="duration" class="duration gl-display-inline-flex gl-align-items-center">
       <gl-icon name="timer" class="gl-mr-2" :size="12" />
       {{ durationFormatted }}

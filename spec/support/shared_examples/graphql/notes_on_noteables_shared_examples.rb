@@ -51,6 +51,8 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
 
     it 'avoids N+1 queries' do
       create(:award_emoji, awardable: note, name: 'star', user: user)
+      another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+      create(:note, project: note.project, noteable: noteable, author: another_user)
 
       post_graphql(query, current_user: user)
 
@@ -60,6 +62,9 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
 
       another_note = create(:note, project: note.project, noteable: noteable, author: user)
       create(:award_emoji, awardable: another_note, name: 'star', user: user)
+      another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+      note_with_different_user = create(:note, project: note.project, noteable: noteable, author: another_user)
+      create(:award_emoji, awardable: note_with_different_user, name: 'star', user: user)
 
       expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(control)
       expect_graphql_errors_to_be_empty

@@ -135,7 +135,7 @@ If so, please have a look at [the Engineering Productivity RUNBOOK on predictive
 ### Fork pipelines
 
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
-label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
+label is set on the MR. The goal is to reduce the compute quota consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1170).
 

@@ -910,10 +910,12 @@ Example response:
 
 - GitLab.com Admin Area
 
-## CI/CD minutes provisioning
+## Compute quota provisioning
 
-The CI/CD Minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-to apply additional packs of CI/CD minutes, for personal namespaces or top-level groups within GitLab.com.
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "units of compute" in GitLab 16.1.
+
+The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to apply additional packs of units of compute, for personal namespaces or top-level groups in GitLab.com.
 
 ### Creating an additional pack
 
@@ -925,9 +927,9 @@ POST /namespaces/:id/minutes
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `packs`     | array   | yes      | An array of purchased minutes packs |
+| `packs`     | array   | yes      | An array of purchased compute packs |
 | `packs[expires_at]` | date   | yes      | Expiry date of the purchased pack|
-| `packs[number_of_minutes]`  | integer    | yes       | Number of additional minutes |
+| `packs[number_of_minutes]`  | integer    | yes       | Number of additional units of compute |
 | `packs[purchase_xid]` | string  | yes       | The unique ID of the purchase |
 
 Example request:

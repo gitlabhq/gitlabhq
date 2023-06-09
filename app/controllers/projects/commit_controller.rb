@@ -222,7 +222,7 @@ class Projects::CommitController < Projects::ApplicationController
     end
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
-    @notes = prepare_notes_for_rendering(@notes, @commit)
+    @notes = prepare_notes_for_rendering(@notes)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

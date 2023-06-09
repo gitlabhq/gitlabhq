@@ -98,6 +98,36 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :groups
     end
   end
 
+  describe 'With the fast_forward_merge_trains_support feature flag turned off' do
+    before do
+      sign_in(user)
+      stub_feature_flags(fast_forward_merge_trains_support: false)
+
+      visit(project_settings_merge_requests_path(project))
+    end
+
+    it 'does not display the fast forward merge train message' do
+      page.within '.merge-request-settings-form' do
+        expect(page).not_to have_content 'merging is only possible if the branch can be rebased without conflicts.'
+      end
+    end
+  end
+
+  describe 'With the fast_forward_merge_trains_support feature flag turned on' do
+    before do
+      sign_in(user)
+      stub_feature_flags(fast_forward_merge_trains_support: true)
+
+      visit(project_settings_merge_requests_path(project))
+    end
+
+    it 'displays the fast forward merge train message' do
+      page.within '.merge-request-settings-form' do
+        expect(page).to have_content 'merging is only possible if the branch can be rebased without conflicts.'
+      end
+    end
+  end
+
   context 'when Merge Request are initially disabled', :js do
     before do
       project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::DISABLED)

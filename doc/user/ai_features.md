@@ -186,7 +186,7 @@ To generate a test suggestion:
 
 1. In a merge request, select the **Changes** tab.
 1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
-1. Select **Generate test with AI**.
+1. Select **Suggest test cases**.
 
 The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
 

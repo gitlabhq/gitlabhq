@@ -21399,19 +21399,6 @@ CREATE SEQUENCE project_wiki_repositories_id_seq
 
 ALTER SEQUENCE project_wiki_repositories_id_seq OWNED BY project_wiki_repositories.id;
 
-CREATE TABLE project_wiki_repository_states (
-    verification_started_at timestamp with time zone,
-    verification_retry_at timestamp with time zone,
-    verified_at timestamp with time zone,
-    project_id bigint NOT NULL,
-    verification_state smallint DEFAULT 0 NOT NULL,
-    verification_retry_count smallint,
-    verification_checksum bytea,
-    verification_failure text,
-    project_wiki_repository_id bigint,
-    CONSTRAINT check_119f134b68 CHECK ((char_length(verification_failure) <= 255))
-);
-
 CREATE TABLE projects (
     id integer NOT NULL,
     name character varying,
@@ -28126,9 +28113,6 @@ ALTER TABLE ONLY project_topics
 ALTER TABLE ONLY project_wiki_repositories
     ADD CONSTRAINT project_wiki_repositories_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_wiki_repository_states
-    ADD CONSTRAINT project_wiki_repository_states_pkey PRIMARY KEY (project_id);
-
 ALTER TABLE ONLY projects
     ADD CONSTRAINT projects_pkey PRIMARY KEY (id);
 
@@ -29926,8 +29910,6 @@ CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON p
 CREATE UNIQUE INDEX idx_project_id_payload_key_self_managed_prometheus_alert_events ON self_managed_prometheus_alert_events USING btree (project_id, payload_key);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
-
-CREATE INDEX idx_project_wiki_repository_states_project_wiki_repository_id ON project_wiki_repository_states USING btree (project_wiki_repository_id);
 
 CREATE INDEX idx_projects_api_created_at_id_for_archived ON projects USING btree (created_at, id) WHERE ((archived = true) AND (pending_delete = false) AND (hidden = false));
 
@@ -32428,14 +32410,6 @@ CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (top
 CREATE UNIQUE INDEX index_project_user_callouts_feature ON user_project_callouts USING btree (user_id, feature_name, project_id);
 
 CREATE UNIQUE INDEX index_project_wiki_repositories_on_project_id ON project_wiki_repositories USING btree (project_id);
-
-CREATE INDEX index_project_wiki_repository_states_failed_verification ON project_wiki_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
-
-CREATE INDEX index_project_wiki_repository_states_needs_verification ON project_wiki_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
-
-CREATE INDEX index_project_wiki_repository_states_on_verification_state ON project_wiki_repository_states USING btree (verification_state);
-
-CREATE INDEX index_project_wiki_repository_states_pending_verification ON project_wiki_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_projects_aimed_for_deletion ON projects USING btree (marked_for_deletion_at) WHERE ((marked_for_deletion_at IS NOT NULL) AND (pending_delete = false));
 
@@ -35619,9 +35593,6 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY project_wiki_repository_states
-    ADD CONSTRAINT fk_6951681c70 FOREIGN KEY (project_wiki_repository_id) REFERENCES project_wiki_repositories(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -37307,9 +37278,6 @@ ALTER TABLE ONLY packages_debian_project_distributions
 
 ALTER TABLE ONLY packages_rubygems_metadata
     ADD CONSTRAINT fk_rails_95a3f5ce78 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_wiki_repository_states
-    ADD CONSTRAINT fk_rails_9647227ce1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

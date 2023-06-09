@@ -108,7 +108,12 @@ export default {
       const { state } = this.editor;
       const { $cursor } = state.selection;
 
-      this.selectedRect = getSelectedRect(state);
+      try {
+        this.selectedRect = getSelectedRect(state);
+      } catch (e) {
+        // ignore error if the selection is not in a table
+        return;
+      }
 
       if (!$cursor) return;
 

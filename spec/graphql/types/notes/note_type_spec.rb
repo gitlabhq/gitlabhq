@@ -28,6 +28,8 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       last_edited_at
       last_edited_by
       system_note_metadata
+      max_access_level_of_author
+      author_is_contributor
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

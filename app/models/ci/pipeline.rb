@@ -678,32 +678,6 @@ module Ci
       canceled? && auto_canceled_by_id?
     end
 
-    # Cancel a pipelines cancelable jobs and optionally it's child pipelines cancelable jobs
-    # retries - # of times to retry if errors
-    # cascade_to_children - if true cancels all related child pipelines for parent child pipelines
-    # auto_canceled_by_pipeline_id - store the pipeline_id of the pipeline that triggered cancellation
-    # execute_async - if true cancel the children asyncronously
-    def cancel_running(retries: 1, cascade_to_children: true, auto_canceled_by_pipeline_id: nil, execute_async: true)
-      Gitlab::AppJsonLogger.info(
-        event: 'pipeline_cancel_running',
-        pipeline_id: id,
-        auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id,
-        cascade_to_children: cascade_to_children,
-        execute_async: execute_async,
-        **Gitlab::ApplicationContext.current
-      )
-
-      update(auto_canceled_by_id: auto_canceled_by_pipeline_id) if auto_canceled_by_pipeline_id
-
-      cancel_jobs(cancelable_statuses, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
-
-      if cascade_to_children
-        # cancel any bridges that could spin up new child pipelines
-        cancel_jobs(bridges_in_self_and_project_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
-        cancel_children(auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id, execute_async: execute_async)
-      end
-    end
-
     # rubocop: disable CodeReuse/ServiceClass
     def retry_failed(current_user)
       Ci::RetryPipelineService.new(project, current_user)
@@ -1377,42 +1351,6 @@ module Ci
     end
 
     private
-
-    def cancel_jobs(jobs, retries: 1, auto_canceled_by_pipeline_id: nil)
-      retry_lock(jobs, retries, name: 'ci_pipeline_cancel_running') do |statuses|
-        preloaded_relations = [:project, :pipeline, :deployment, :taggings]
-
-        statuses.find_in_batches do |status_batch|
-          relation = CommitStatus.where(id: status_batch)
-          Preloaders::CommitStatusPreloader.new(relation).execute(preloaded_relations)
-
-          relation.each do |job|
-            job.auto_canceled_by_id = auto_canceled_by_pipeline_id if auto_canceled_by_pipeline_id
-            job.cancel
-          end
-        end
-      end
-    end
-
-    # For parent child-pipelines only (not multi-project)
-    def cancel_children(auto_canceled_by_pipeline_id: nil, execute_async: true)
-      all_child_pipelines.each do |child_pipeline|
-        if execute_async
-          ::Ci::CancelPipelineWorker.perform_async(
-            child_pipeline.id,
-            auto_canceled_by_pipeline_id
-          )
-        else
-          child_pipeline.cancel_running(
-            # cascade_to_children is false because we iterate through children
-            # we also cancel bridges prior to prevent more children
-            cascade_to_children: false,
-            execute_async: execute_async,
-            auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id
-          )
-        end
-      end
-    end
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content)

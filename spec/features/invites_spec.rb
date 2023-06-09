@@ -195,7 +195,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
-          it 'signs up and redirects to the activity page' do
+          it 'signs up and redirects to the activity page',
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414971' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 

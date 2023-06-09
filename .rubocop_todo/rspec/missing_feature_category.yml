@@ -695,7 +695,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/ee/gitlab/scim/value_parser_spec.rb'
     - 'ee/spec/lib/ee/gitlab/search_results_spec.rb'
     - 'ee/spec/lib/ee/gitlab/security/scan_configuration_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/slash_commands/incident_management/incident_new_spec.rb'
     - 'ee/spec/lib/ee/gitlab/snippet_search_results_spec.rb'
     - 'ee/spec/lib/ee/gitlab/template/gitlab_ci_yml_template_spec.rb'
     - 'ee/spec/lib/ee/gitlab/tracking_spec.rb'

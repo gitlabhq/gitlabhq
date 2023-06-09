@@ -13,18 +13,33 @@ RSpec.describe Admin::InstanceReviewController, feature_category: :service_ping 
   end
 
   context 'GET #index' do
-    let!(:group) { create(:group) }
-    let!(:projects) { create_list(:project, 2, group: group) }
-
     subject { post :index }
 
     context 'with usage ping enabled', :with_license do
+      let(:service_ping_data) do
+        {
+          version: ::Gitlab::VERSION,
+          active_user_count: 5,
+          counts: {
+            projects: 2,
+            groups: 1,
+            issues: 0,
+            merge_requests: 0,
+            ci_internal_pipelines: 0,
+            ci_external_pipelines: 0,
+            labels: 0,
+            milestones: 0,
+            snippets: 0,
+            notes: 0
+          },
+          licensee: { Name: admin.name, Email: admin.email }
+        }
+      end
+
       before do
         stub_application_setting(usage_ping_enabled: true)
         stub_usage_data_connections
         stub_database_flavor_check
-        ::Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
-        subject
       end
 
       it 'redirects to the customers app with correct params' do
@@ -44,6 +59,11 @@ RSpec.describe Admin::InstanceReviewController, feature_category: :service_ping 
           snippets_count: 0,
           notes_count: 0
         } }.to_query
+
+        expect(::Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values,
+          cached: true).and_return(service_ping_data)
+
+        subject
 
         expect(response).to redirect_to("#{subscriptions_instance_review_url}?#{params}")
       end

@@ -18,5 +18,5 @@ Choose and manage the subscription that's right for you and your organization.
 - [Customers Portal](customers_portal.md)
 - [Quarterly reconciliation](quarterly_reconciliation.md)
 - [Storage usage quota](../user/usage_quotas.md)
-- [CI/CD minutes quota](../ci/pipelines/cicd_minutes.md)
+- [Compute quota](../ci/pipelines/cicd_minutes.md)
 - [Features available to Starter and Bronze subscribers](../subscriptions/bronze_starter.md)

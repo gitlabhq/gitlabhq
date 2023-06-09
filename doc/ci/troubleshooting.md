@@ -399,9 +399,9 @@ on shared runners, which reduces system resource usage on the `jobs/request` end
 When enabled, jobs are processed in the order they were put in the system, instead of
 balanced across many projects.
 
-### Disable CI/CD minutes quota enforcement
+### Disable compute quota enforcement
 
-To disable the enforcement of CI/CD minutes quotas on shared runners, you can temporarily
+To disable the enforcement of [compute quotas](pipelines/cicd_minutes.md) on shared runners, you can temporarily
 enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../administration/feature_flags.md).
 This flag reduces system resource usage on the `jobs/request` endpoint.
 

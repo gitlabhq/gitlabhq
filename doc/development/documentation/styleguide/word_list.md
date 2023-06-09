@@ -1468,10 +1468,7 @@ Use **units of compute** instead of these (or similar) terms:
 - **CI minutes**
 - **pipeline minutes**
 - **CI pipeline minutes**
-- **pipeline minutes quota**
-
-This language is still being standardized in the documentation and UI beginning in March, 2023.
-For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
+- **pipeline minutes**
 
 ## units of measurement
 

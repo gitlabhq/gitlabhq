@@ -107,7 +107,9 @@ opts = {
   status: 'unresolved', # String | 
   query: 'query_example', # String | 
   cursor: 'cursor_example', # String | Base64 encoded information for pagination
-  limit: 56 # Integer | Number of entries to return
+  limit: 56, # Integer | Number of entries to return
+  stats_period: '15m', # String | 
+  query_period: '15m' # String | 
 }
 
 begin
@@ -147,6 +149,8 @@ end
 | **query** | **String** |  | [optional] |
 | **cursor** | **String** | Base64 encoded information for pagination | [optional] |
 | **limit** | **Integer** | Number of entries to return | [optional][default to 20] |
+| **stats_period** | **String** |  | [optional][default to &#39;24h&#39;] |
+| **query_period** | **String** |  | [optional][default to &#39;30d&#39;] |
 
 ### Return type
 

@@ -94,10 +94,12 @@ module Ci
             )
 
             # cascade_to_children not needed because we iterate through descendants here
-            cancelable_pipeline.cancel_running(
+            ::Ci::CancelPipelineService.new(
+              pipeline: cancelable_pipeline,
+              current_user: nil,
               auto_canceled_by_pipeline_id: pipeline.id,
               cascade_to_children: false
-            )
+            ).force_execute
           end
       end
 

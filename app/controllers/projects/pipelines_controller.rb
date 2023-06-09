@@ -191,7 +191,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def cancel
-    pipeline.cancel_running
+    ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: @current_user).execute
 
     respond_to do |format|
       format.html do

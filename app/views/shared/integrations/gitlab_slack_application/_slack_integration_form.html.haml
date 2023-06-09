@@ -1,0 +1,32 @@
+- slack_integration = integration.slack_integration
+- if slack_integration
+  %table.gl-table.gl-w-full
+    %colgroup
+      %col{ width: "25%" }
+      %col{ width: "35%" }
+      %col{ width: "20%" }
+      %col
+    %thead
+      %tr
+        %th= s_('SlackIntegration|Team name')
+        %th= s_('SlackIntegration|Project alias')
+        %th= _('Created')
+        %th
+    %tr
+      %td{ class: 'gl-py-3!' }
+        = slack_integration.team_name
+      %td{ class: 'gl-py-3!' }
+        = slack_integration.alias
+      %td{ class: 'gl-py-3!' }
+        = time_ago_with_tooltip(slack_integration.created_at)
+      %td{ class: 'gl-py-3!' }
+        .controls
+          - project = integration.project
+          = link_to _('Edit'), edit_project_settings_slack_path(project), class: 'btn gl-button btn-default'
+          = link_to sprite_icon('remove', css_class: 'gl-icon'), project_settings_slack_path(project), method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary', aria: { label: s_('SlackIntegration|Remove project') }, data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?') }
+  .gl-my-5
+    = render 'shared/integrations/gitlab_slack_application/slack_button', project: @project, label: s_('SlackIntegration|Reinstall GitLab for Slack app')
+  %p
+    = html_escape(s_('SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}.')) % { linkStart: %(<a href="#{help_page_path('user/project/integrations/gitlab_slack_application.md', anchor: 'update-the-gitlab-for-slack-app')}">).html_safe, linkEnd: '</a>'.html_safe}
+- else
+  = render 'shared/integrations/gitlab_slack_application/slack_button', project: @project, label: s_('SlackIntegration|Install GitLab for Slack app')

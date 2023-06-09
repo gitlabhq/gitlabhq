@@ -57,6 +57,8 @@ export const integrationTriggerEvents = {
   PIPELINE: 'pipeline_events',
   WIKI_PAGE: 'wiki_page_events',
   DEPLOYMENT: 'deployment_events',
+  ALERT: 'alert_events',
+  INCIDENT: 'incident_events',
 };
 
 export const integrationTriggerEventTitles = {
@@ -81,6 +83,10 @@ export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.WIKI_PAGE]: s__('IntegrationEvents|A wiki page is created or updated'),
   [integrationTriggerEvents.DEPLOYMENT]: s__(
     'IntegrationEvents|A deployment is started or finished',
+  ),
+  [integrationTriggerEvents.ALERT]: s__('IntegrationEvents|A new, unique alert is recorded'),
+  [integrationTriggerEvents.INCIDENT]: s__(
+    'IntegrationEvents|An incident is created, closed, or reopened',
   ),
 };
 

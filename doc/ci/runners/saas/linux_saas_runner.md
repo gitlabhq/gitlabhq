@@ -15,7 +15,7 @@ Each VM uses the Google Container-Optimized OS (COS) and the latest version of D
 ## Machine types available for Linux (x86-64)
 
 For the SaaS runners on Linux, GitLab offers a range of machine types for use.
-For Free, Premium, and Ultimate plan customers, jobs on these instances consume the CI/CD minutes allocated to your namespace.
+For Free, Premium, and Ultimate plan customers, jobs on these instances consume the compute quota allocated to your namespace.
 
 | Runner Tag                                    | vCPUs | Memory | Storage |
 |-----------------------------------------------|-------|--------|---------|

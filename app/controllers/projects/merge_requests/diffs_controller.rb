@@ -196,7 +196,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@compare.diff_refs)
-    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes), @merge_request)
+    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes))
   end
 
   def render_merge_ref_head_diff?

@@ -17,8 +17,8 @@ Your jobs can run on:
 - [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 - [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
-Refer to the CI/CD minutes [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
-The number of minutes you can use on these runners depends on the [maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)
+Refer to the Compute [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
+The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
 
 [Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers

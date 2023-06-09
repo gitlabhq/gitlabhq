@@ -31,11 +31,33 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
   end
 
   describe 'GET index' do
+    let(:active_services) { assigns(:integrations).map(&:model_name) }
+
     it 'renders index with 200 status code' do
       get :index, params: { namespace_id: project.namespace, project_id: project }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
+    end
+
+    it 'shows Slack Slash Commands and not the GitLab for Slack app' do
+      get :index, params: { namespace_id: project.namespace, project_id: project }
+
+      expect(active_services).to include('Integrations::SlackSlashCommands')
+      expect(active_services).not_to include('Integrations::GitlabSlackApplication')
+    end
+
+    context 'when the `slack_app_enabled` application setting is enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it 'shows the GitLab for Slack app and not Slack Slash Commands' do
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(active_services).to include('Integrations::GitlabSlackApplication')
+        expect(active_services).not_to include('Integrations::SlackSlashCommands')
+      end
     end
   end
 
