@@ -9719,6 +9719,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CiVariables|Attributes"
+msgstr ""
+
 msgid "CiVariables|Cancel"
 msgstr ""
 
@@ -9729,6 +9732,9 @@ msgid "CiVariables|Environments"
 msgstr ""
 
 msgid "CiVariables|Expanded"
+msgstr ""
+
+msgid "CiVariables|File"
 msgstr ""
 
 msgid "CiVariables|Group"
@@ -9750,9 +9756,6 @@ msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
 msgstr ""
 
 msgid "CiVariables|Maximum number of variables reached."
-msgstr ""
-
-msgid "CiVariables|Options"
 msgstr ""
 
 msgid "CiVariables|Protected"
@@ -9866,6 +9869,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Clear All"
+msgstr ""
+
+msgid "Clear all"
 msgstr ""
 
 msgid "Clear all repository checks"

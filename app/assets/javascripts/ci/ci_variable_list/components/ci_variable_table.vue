@@ -1,6 +1,7 @@
 <script>
 import {
   GlAlert,
+  GlBadge,
   GlButton,
   GlLoadingIcon,
   GlModalDirective,
@@ -16,18 +17,13 @@ import {
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
   EXCEEDS_VARIABLE_LIMIT_TEXT,
   MAXIMUM_VARIABLE_LIMIT_REACHED,
-  variableText,
+  variableTypes,
 } from '../constants';
 import { convertEnvironmentScope } from '../utils';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
   defaultFields: [
-    {
-      key: 'variableType',
-      label: s__('CiVariables|Type'),
-      thClass: 'gl-w-10p',
-    },
     {
       key: 'key',
       label: s__('CiVariables|Key'),
@@ -37,12 +33,11 @@ export default {
     {
       key: 'value',
       label: s__('CiVariables|Value'),
-      thClass: 'gl-w-15p',
     },
     {
-      key: 'options',
-      label: s__('CiVariables|Options'),
-      thClass: 'gl-w-10p',
+      key: 'Attributes',
+      label: s__('CiVariables|Attributes'),
+      thClass: 'gl-w-40p',
     },
     {
       key: 'environmentScope',
@@ -57,17 +52,13 @@ export default {
   ],
   inheritedVarsFields: [
     {
-      key: 'variableType',
-      label: s__('CiVariables|Type'),
-    },
-    {
       key: 'key',
       label: s__('CiVariables|Key'),
       tdClass: 'text-plain',
     },
     {
-      key: 'options',
-      label: s__('CiVariables|Options'),
+      key: 'Attributes',
+      label: s__('CiVariables|Attributes'),
     },
     {
       key: 'environmentScope',
@@ -80,6 +71,7 @@ export default {
   ],
   components: {
     GlAlert,
+    GlBadge,
     GlButton,
     GlKeysetPagination,
     GlLink,
@@ -155,10 +147,10 @@ export default {
     tableDataTestId() {
       return this.isInheritedGroupVars ? 'inherited-ci-variable-table' : 'ci-variable-table';
     },
-    variablesWithOptions() {
+    variablesWithAttributes() {
       return this.variables?.map((item, index) => ({
         ...item,
-        options: this.getOptions(item),
+        attributes: this.getAttributes(item),
         index,
       }));
     },
@@ -167,27 +159,27 @@ export default {
     convertEnvironmentScopeValue(env) {
       return convertEnvironmentScope(env);
     },
-    generateTypeText(item) {
-      return variableText[item.variableType];
-    },
     toggleHiddenState() {
       this.areValuesHidden = !this.areValuesHidden;
     },
     setSelectedVariable(index = -1) {
       this.$emit('set-selected-variable', this.variables[index] ?? null);
     },
-    getOptions(item) {
-      const options = [];
+    getAttributes(item) {
+      const attributes = [];
+      if (item.variableType === variableTypes.fileType) {
+        attributes.push(s__('CiVariables|File'));
+      }
       if (item.protected) {
-        options.push(s__('CiVariables|Protected'));
+        attributes.push(s__('CiVariables|Protected'));
       }
       if (item.masked) {
-        options.push(s__('CiVariables|Masked'));
+        attributes.push(s__('CiVariables|Masked'));
       }
       if (!item.raw) {
-        options.push(s__('CiVariables|Expanded'));
+        attributes.push(s__('CiVariables|Expanded'));
       }
-      return options.join(', ');
+      return attributes;
     },
   },
   maximumVariableLimitReached: MAXIMUM_VARIABLE_LIMIT_REACHED,
@@ -225,13 +217,12 @@ export default {
     <gl-table
       v-if="!isLoading"
       :fields="fields"
-      :items="variablesWithOptions"
+      :items="variablesWithAttributes"
       tbody-tr-class="js-ci-variable-row"
       data-qa-selector="ci_variable_table_content"
       sort-by="key"
       sort-direction="asc"
       stacked="lg"
-      table-class="gl-border-t"
       fixed
       show-empty
       sort-icon-left
@@ -241,9 +232,6 @@ export default {
     >
       <template #table-colgroup="scope">
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
-      </template>
-      <template #cell(variableType)="{ item }">
-        {{ generateTypeText(item) }}
       </template>
       <template #cell(key)="{ item }">
         <div
@@ -288,8 +276,18 @@ export default {
           />
         </div>
       </template>
-      <template #cell(options)="{ item }">
-        <span data-testid="ci-variable-table-row-options">{{ item.options }}</span>
+      <template #cell(attributes)="{ item }">
+        <span data-testid="ci-variable-table-row-attributes">
+          <gl-badge
+            v-for="attribute in item.attributes"
+            :key="`${item.key}-${attribute}`"
+            class="gl-mr-2"
+            variant="info"
+            size="sm"
+          >
+            {{ attribute }}
+          </gl-badge>
+        </span>
       </template>
       <template #cell(environmentScope)="{ item }">
         <div

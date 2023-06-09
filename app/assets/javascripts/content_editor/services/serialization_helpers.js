@@ -53,6 +53,16 @@ function getRowsAndCells(table) {
   return { rows, cells };
 }
 
+// Buffers the output of the given action (fn) and returns the output that was written
+// to the prosemirror-markdown serializer state output.
+function buffer(state, action = () => {}) {
+  const buf = state.out;
+  action();
+  const retval = state.out.substring(buf.length);
+  state.out = buf;
+  return retval;
+}
+
 function getChildren(node) {
   const children = [];
   for (let i = 0; i < node.childCount; i += 1) {
@@ -194,7 +204,8 @@ function renderTableRowAsMarkdown(state, node, isHeaderRow = false) {
     if (i) state.write(' | ');
 
     const { length } = state.out;
-    state.render(cell, node, i);
+    const cellContent = buffer(state, () => state.render(cell, node, i));
+    state.write(cellContent.replace(/\|/g, '\\|'));
     cellWidths.push(state.out.length - length);
   });
   state.write(' |');

@@ -113,7 +113,9 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def load_topic
-    @topic = Projects::Topic.find_by_name_case_insensitive(params[:topic_name])
+    topic_name = Feature.enabled?(:explore_topics_cleaned_path) ? URI.decode_www_form_component(params[:topic_name]) : params[:topic_name]
+
+    @topic = Projects::Topic.find_by_name_case_insensitive(topic_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

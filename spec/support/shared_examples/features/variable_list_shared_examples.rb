@@ -32,7 +32,7 @@ RSpec.shared_examples 'variable list' do
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.shared_examples 'variable list' do
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -116,8 +116,8 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'variable list' do
     end
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Masked'))
     end
   end
 

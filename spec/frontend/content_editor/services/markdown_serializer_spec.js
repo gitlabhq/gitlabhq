@@ -912,6 +912,31 @@ _An elephant at sunset_
     );
   });
 
+  it('correctly serializes a table with a pipe in a cell', () => {
+    expect(
+      serialize(
+        table(
+          tableRow(
+            tableHeader(paragraph('header')),
+            tableHeader(paragraph('header')),
+            tableHeader(paragraph('header')),
+          ),
+          tableRow(
+            tableCell(paragraph('cell')),
+            tableCell(paragraph('cell | cell')),
+            tableCell(paragraph(bold('a|b|c'))),
+          ),
+        ),
+      ).trim(),
+    ).toBe(
+      `
+| header | header | header |
+|--------|--------|--------|
+| cell | cell \\| cell | **a\\|b\\|c** |
+      `.trim(),
+    );
+  });
+
   it('correctly renders a table with checkboxes', () => {
     expect(
       serialize(

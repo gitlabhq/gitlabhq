@@ -1,4 +1,4 @@
-import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
@@ -42,8 +42,10 @@ describe('Ci variable table', () => {
   const findHiddenValues = () => wrapper.findAllByTestId('hiddenValue');
   const findLimitReachedAlerts = () => wrapper.findAllComponents(GlAlert);
   const findRevealedValues = () => wrapper.findAllByTestId('revealedValue');
-  const findOptionsValues = (rowIndex) =>
-    wrapper.findAllByTestId('ci-variable-table-row-options').at(rowIndex).text();
+  const findAttributesRow = (rowIndex) =>
+    wrapper.findAllByTestId('ci-variable-table-row-attributes').at(rowIndex);
+  const findAttributeByIndex = (rowIndex, attributeIndex) =>
+    findAttributesRow(rowIndex).findAllComponents(GlBadge).at(attributeIndex).text();
   const findTableColumnText = (index) => wrapper.findAll('th').at(index).text();
   const findGroupCiCdSettingsLink = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
@@ -82,12 +84,11 @@ describe('Ci variable table', () => {
       // last column is for the edit button, which has no text
       it.each`
         index | text
-        ${0}  | ${'Type'}
-        ${1}  | ${'Key (Click to sort descending)'}
-        ${2}  | ${'Value'}
-        ${3}  | ${'Options'}
-        ${4}  | ${'Environments'}
-        ${5}  | ${''}
+        ${0}  | ${'Key (Click to sort descending)'}
+        ${1}  | ${'Value'}
+        ${2}  | ${'Attributes'}
+        ${3}  | ${'Environments'}
+        ${4}  | ${''}
       `('renders the $text column', ({ index, text }) => {
         expect(findTableColumnText(index)).toEqual(text);
       });
@@ -100,10 +101,18 @@ describe('Ci variable table', () => {
         expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(defaultProps.variables.length);
       });
 
-      it('displays the correct variable options', () => {
-        expect(findOptionsValues(0)).toBe('Protected, Expanded');
-        expect(findOptionsValues(1)).toBe('Masked');
-      });
+      it.each`
+        rowIndex | attributeIndex | text
+        ${0}     | ${0}           | ${'Protected'}
+        ${0}     | ${1}           | ${'Expanded'}
+        ${1}     | ${0}           | ${'File'}
+        ${1}     | ${1}           | ${'Masked'}
+      `(
+        'displays variable attribute $text for row $rowIndex',
+        ({ rowIndex, attributeIndex, text }) => {
+          expect(findAttributeByIndex(rowIndex, attributeIndex)).toBe(text);
+        },
+      );
 
       it('renders action buttons', () => {
         expect(findRevealButton().exists()).toBe(true);
@@ -126,11 +135,10 @@ describe('Ci variable table', () => {
 
       it.each`
         index | text
-        ${0}  | ${'Type'}
-        ${1}  | ${'Key'}
-        ${2}  | ${'Options'}
-        ${3}  | ${'Environments'}
-        ${4}  | ${'Group'}
+        ${0}  | ${'Key'}
+        ${1}  | ${'Attributes'}
+        ${2}  | ${'Environments'}
+        ${3}  | ${'Group'}
       `('renders the $text column', ({ index, text }) => {
         expect(findTableColumnText(index)).toEqual(text);
       });
@@ -146,11 +154,19 @@ describe('Ci variable table', () => {
         expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(mockInheritedVariables.length);
       });
 
-      it('displays the correct variable options', () => {
-        expect(findOptionsValues(0)).toBe('Protected, Masked, Expanded');
-        expect(findOptionsValues(1)).toBe('');
-        expect(findOptionsValues(2)).toBe('Protected');
-      });
+      it.each`
+        rowIndex | attributeIndex | text
+        ${0}     | ${0}           | ${'Protected'}
+        ${0}     | ${1}           | ${'Masked'}
+        ${0}     | ${2}           | ${'Expanded'}
+        ${2}     | ${0}           | ${'File'}
+        ${2}     | ${1}           | ${'Protected'}
+      `(
+        'displays variable attribute $text for row $rowIndex',
+        ({ rowIndex, attributeIndex, text }) => {
+          expect(findAttributeByIndex(rowIndex, attributeIndex)).toBe(text);
+        },
+      );
 
       it('displays link to the group settings', () => {
         expect(findGroupCiCdSettingsLink(0)).toBe(mockInheritedVariables[0].groupCiCdSettingsPath);

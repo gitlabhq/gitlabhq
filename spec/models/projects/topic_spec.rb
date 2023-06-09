@@ -21,12 +21,17 @@ RSpec.describe Projects::Topic do
   end
 
   describe 'validations' do
+    let(:name_format_message) { 'has characters that are not allowed' }
+
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { expect(Projects::Topic.new).to validate_presence_of(:title) }
     it { expect(Projects::Topic.new).to validate_length_of(:title).is_at_most(255) }
+    it { is_expected.not_to allow_value("new\nline").for(:name).with_message(name_format_message) }
+    it { is_expected.not_to allow_value("new\rline").for(:name).with_message(name_format_message) }
+    it { is_expected.not_to allow_value("new\vline").for(:name).with_message(name_format_message) }
   end
 
   describe 'scopes' do
