@@ -231,7 +231,7 @@ to be able to divide big Cells into many smaller ones.
 
 ## Availability of the feature
 
-We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/alpha-beta-support.md).
+We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
 ### 1. Experiment
 

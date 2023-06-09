@@ -3,7 +3,7 @@
 class SentNotification < ApplicationRecord
   include IgnorableColumns
 
-  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+  ignore_column %i[line_code note_type position], remove_with: '16.3', remove_after: '2023-07-22'
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
@@ -78,25 +78,6 @@ class SentNotification < ApplicationRecord
     else
       super
     end
-  end
-
-  def position=(new_position)
-    if new_position.is_a?(String)
-      new_position = begin
-        Gitlab::Json.parse(new_position)
-      rescue StandardError
-        nil
-      end
-    end
-
-    if new_position.is_a?(Hash)
-      new_position = new_position.with_indifferent_access
-      new_position = Gitlab::Diff::Position.new(new_position)
-    else
-      new_position = nil
-    end
-
-    super(new_position)
   end
 
   def to_param

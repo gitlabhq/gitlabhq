@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Incident management for Slack (Beta) **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/378072) in GitLab 15.10 in [Beta](../../policy/alpha-beta-support.md#beta).
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/378072) in GitLab 15.10 in [Beta](../../policy/experiment-beta-support.md#beta).
 
 FLAG:
 On self-managed GitLab, this feature is not available.

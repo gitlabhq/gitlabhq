@@ -108,6 +108,9 @@ export default {
     listType() {
       return this.list.listType;
     },
+    isLabelList() {
+      return this.listType === ListType.label;
+    },
     itemsCount() {
       return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
@@ -373,7 +376,8 @@ export default {
   <header
     :class="{
       'gl-h-full': list.collapsed,
-      'board-inner gl-rounded-top-left-base gl-rounded-top-right-base gl-bg-gray-50': isSwimlanesHeader,
+      'board-inner gl-bg-gray-50': isSwimlanesHeader,
+      'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base': isLabelList,
     }"
     :style="headerStyle"
     class="board-header gl-relative"

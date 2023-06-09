@@ -291,8 +291,8 @@ Self-managed runners:
 GitLab.com shared runners:
 
 - Linux
-- [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
-- [macOS](../runners/saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
+- [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta)).
+- [macOS](../runners/saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta)).
 
 ### Machine and specific build environments
 

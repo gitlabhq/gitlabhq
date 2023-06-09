@@ -179,7 +179,7 @@ used the `v0.17.0` chart, add `AUTO_DEVOPS_FORCE_DEPLOY_V2`.
 
 ## Early adopters
 
-If you want to use the latest [Beta](../../policy/alpha-beta-support.md#beta) or unstable version of `auto-deploy-image`, include
+If you want to use the latest [Beta](../../policy/experiment-beta-support.md#beta) or unstable version of `auto-deploy-image`, include
 the latest Auto Deploy template into your `.gitlab-ci.yml`:
 
 ```yaml
@@ -189,7 +189,7 @@ include:
 ```
 
 WARNING:
-Using a [Beta](../../policy/alpha-beta-support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
+Using a [Beta](../../policy/experiment-beta-support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
 your environments. Do not test it with important projects or environments.
 
 The next stable template update is [planned for GitLab v14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/232788).

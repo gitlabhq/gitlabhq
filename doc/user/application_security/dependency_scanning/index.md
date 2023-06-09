@@ -864,7 +864,7 @@ Here's an example dependency scanning report:
 
 ### CycloneDX Software Bill of Materials
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Generally available in GitLab 15.7.
 
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)

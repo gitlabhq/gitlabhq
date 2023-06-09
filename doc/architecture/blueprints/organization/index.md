@@ -125,7 +125,7 @@ Today only users, projects, namespaces and container images are considered routa
 
 ## Iteration Plan
 
-The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/alpha-beta-support.md).
+The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
 ### Iteration 1: Organization Prototype (FY24Q2)
 

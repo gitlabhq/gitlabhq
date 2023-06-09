@@ -212,7 +212,7 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta)
+You might also want to link to [this section](../../../policy/experiment-beta-support.md#beta)
 in the handbook when writing about Beta features.
 
 ## blacklist
@@ -488,7 +488,7 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
 
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#experiment)
+You might also want to link to [this section](../../../policy/experiment-beta-support.md#experiment)
 in the handbook when writing about Experiment features.
 
 ## FAQ

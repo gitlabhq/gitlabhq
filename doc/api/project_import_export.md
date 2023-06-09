@@ -207,7 +207,7 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 ## Import a file from a remote object storage (Beta)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/alpha-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.

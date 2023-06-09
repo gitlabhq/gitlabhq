@@ -170,7 +170,13 @@ module Types
     field :dependency_proxy_total_size_in_bytes,
           GraphQL::Types::Int,
           null: false,
+          deprecated: { reason: 'Use `dependencyProxyTotalSizeBytes`', milestone: '16.1' },
           description: 'Total size of the dependency proxy cached images in bytes.'
+
+    field :dependency_proxy_total_size_bytes,
+          GraphQL::Types::BigInt,
+          null: false,
+          description: 'Total size of the dependency proxy cached images in bytes, encoded as a string.'
 
     field :dependency_proxy_image_prefix,
           GraphQL::Types::String,
@@ -289,6 +295,10 @@ module Types
     end
 
     def dependency_proxy_total_size_in_bytes
+      dependency_proxy_total_size_bytes
+    end
+
+    def dependency_proxy_total_size_bytes
       group.dependency_proxy_manifests.sum(:size) + group.dependency_proxy_blobs.sum(:size)
     end
 

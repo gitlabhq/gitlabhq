@@ -508,7 +508,7 @@ When the pipeline runs, GitLab:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 
 FLAG:
-`spec` and `with` are experimental [Open Beta features](../../policy/alpha-beta-support.md#beta)
+`spec` and `with` are experimental [Open Beta features](../../policy/experiment-beta-support.md#beta)
 and subject to change without notice.
 
 ### Define input parameters with `spec:inputs`

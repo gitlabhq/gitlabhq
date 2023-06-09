@@ -7,14 +7,14 @@ type: index, reference
 
 # Code Suggestions (Beta) **(FREE SAAS)**
 
-> - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](/ee/policy/alpha-beta-support.md#beta) for early access Ultimate customers.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](/ee/policy/alpha-beta-support.md#beta).
+> - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](/ee/policy/experiment-beta-support.md#beta) for early access Ultimate customers.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](/ee/policy/experiment-beta-support.md#beta).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1.
 
 WARNING:
-This feature is in [Beta](/ee/policy/alpha-beta-support.md#beta).
+This feature is in [Beta](/ee/policy/experiment-beta-support.md#beta).
 Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
@@ -58,7 +58,7 @@ Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://
 
 ## Enable Code Suggestions for an individual user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](/ee/policy/alpha-beta-support.md#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](/ee/policy/experiment-beta-support.md#beta).
 
 Each user can enable Code Suggestions for themselves:
 
@@ -136,7 +136,7 @@ To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-
 
 ## Stability and performance
 
-This feature is currently in [Beta](/ee/policy/alpha-beta-support.md#beta).
+This feature is currently in [Beta](/ee/policy/experiment-beta-support.md#beta).
 While the Code Suggestions inference API operates completely within the GitLab.com enterprise infrastructure,
 we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime
 of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to

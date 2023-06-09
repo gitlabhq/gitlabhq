@@ -105,6 +105,18 @@ describe('Board List Header Component', () => {
   const findCaret = () => wrapper.findByTestId('board-title-caret');
   const findNewIssueButton = () => wrapper.findByTestId('newIssueBtn');
   const findSettingsButton = () => wrapper.findByTestId('settingsBtn');
+  const findBoardListHeader = () => wrapper.findByTestId('board-list-header');
+
+  it('renders border when label color is present', () => {
+    createComponent({ listType: ListType.label });
+
+    expect(findBoardListHeader().classes()).toContain(
+      'gl-border-t-solid',
+      'gl-border-4',
+      'gl-rounded-top-left-base',
+      'gl-rounded-top-right-base',
+    );
+  });
 
   describe('Add issue button', () => {
     const hasNoAddButton = [ListType.closed];

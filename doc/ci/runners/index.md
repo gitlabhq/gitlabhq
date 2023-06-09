@@ -11,8 +11,8 @@ If you use GitLab SaaS (GitLab.com), your [untagged](../../ci/runners/configure_
 As long as shared runners are enabled for your project, no configuration is required. Your jobs can run on:
 
 - [Linux runners](saas/linux_saas_runner.md).
-- [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
-- [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
+- [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta)).
+- [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta)).
 
 The number of minutes you can use on these runners depends on the
 [maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)

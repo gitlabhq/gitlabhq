@@ -12,7 +12,7 @@ To enable the feature, ask an administrator to [enable the feature flag](../../.
 On GitLab.com, this feature is in private testing only.
 
 NOTE:
-Model experiment tracking is an [experimental feature](../../../../policy/alpha-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
+Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
 When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
 engineering to improve the performance of the model. Keeping track of all this metadata and the associated

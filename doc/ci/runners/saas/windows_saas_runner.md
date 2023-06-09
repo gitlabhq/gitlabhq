@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SaaS runners on Windows (Beta) **(FREE SAAS)**
 
-SaaS runners on Windows are in [Beta](../../../policy/alpha-beta-support.md#beta)
+SaaS runners on Windows are in [Beta](../../../policy/experiment-beta-support.md#beta)
 and shouldn't be used for production workloads.
 
 During this beta period, the [shared runner quota for CI/CD minutes](../../pipelines/cicd_minutes.md)
@@ -22,7 +22,7 @@ Windows runners execute your CI/CD jobs on `n1-standard-2` instances with
 the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
 
 We want to keep iterating to get Windows runners in a stable state and
-[generally available](../../../policy/alpha-beta-support.md#generally-available-ga).
+[generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
@@ -126,7 +126,7 @@ test:
 
 ## Limitations and known issues
 
-- All the limitations mentioned in our [Beta definition](../../../policy/alpha-beta-support.md#beta).
+- All the limitations mentioned in our [Beta definition](../../../policy/experiment-beta-support.md#beta).
 - The average provisioning time for a new Windows VM is 5 minutes.
   This means that you may notice slower build start times
   on the Windows runner fleet during the beta. In a future

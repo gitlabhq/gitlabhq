@@ -13,7 +13,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
 A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 

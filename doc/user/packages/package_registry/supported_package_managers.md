@@ -25,6 +25,6 @@ The Package Registry supports the following package manager types:
 | [Go](../go_proxy/index.md)                       | 13.1+          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
 | [Ruby gems](../rubygems_registry/index.md)       | 13.10+         | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
-[View what each status means](../../../policy/alpha-beta-support.md).
+[View what each status means](../../../policy/experiment-beta-support.md).
 
 You can also use the [API](../../../api/packages.md) to administer the Package Registry.

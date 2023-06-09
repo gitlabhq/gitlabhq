@@ -7,7 +7,7 @@ type: reference
 
 # CI/CD Components (Experimental)
 
-> Introduced in GitLab 16.0 as an [experimental feature](../../policy/alpha-beta-support.md).
+> Introduced in GitLab 16.0 as an [experimental feature](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.

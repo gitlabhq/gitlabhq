@@ -19,7 +19,7 @@ You can use the agent for Kubernetes with Flux to:
 
 To get started, see the [Flux installation documentation](https://fluxcd.io/flux/installation).
 
-Support for Flux is in [Beta](../../../../policy/alpha-beta-support.md#beta).
+Support for Flux is in [Beta](../../../../policy/experiment-beta-support.md#beta).
 
 ## Bootstrap installation
 

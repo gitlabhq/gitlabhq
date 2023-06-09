@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Silent Mode (Experiment) **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
 
 Silent Mode allows you to suppress outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 

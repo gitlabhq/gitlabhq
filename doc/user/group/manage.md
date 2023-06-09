@@ -417,7 +417,7 @@ for the ability to set merge request approval rules for groups is tracked in
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 
 WARNING:
-This feature is in [Beta](../../policy/alpha-beta-support.md#beta).
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
 Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce
 [low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
@@ -444,7 +444,7 @@ To enable Code Suggestions for a group:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
 
 WARNING:
-[Experiment features](../../policy/alpha-beta-support.md#experiment) may produce unexpected results
+[Experiment features](../../policy/experiment-beta-support.md#experiment) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
@@ -482,7 +482,7 @@ To enable third-party AI features for a group:
 
 ## Group activity analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 

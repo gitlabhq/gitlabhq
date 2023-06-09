@@ -212,7 +212,7 @@ To protect your privacy and data:
 ## Interactive web terminals for the Web IDE (Beta)
 
 WARNING:
-This feature is in [Beta](../../../policy/alpha-beta-support.md#beta) and subject to change without notice.
+This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 
 When you set up a remote development server in the Web IDE, you can use interactive web terminals to:
 
