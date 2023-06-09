@@ -24,6 +24,7 @@ class Note < ApplicationRecord
   include Sortable
   include EachBatch
   include IgnorableColumns
+  include Spammable
 
   ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
@@ -67,6 +68,8 @@ class Note < ApplicationRecord
   attr_accessor :skip_keep_around_commits
 
   attribute :system, default: false
+
+  attr_spammable :note, spam_description: true
 
   attr_mentionable :note, pipeline: :note
   participant :author
@@ -773,6 +776,16 @@ class Note < ApplicationRecord
     return true unless system?
 
     readable_by?(user)
+  end
+
+  # Override method defined in Spammable
+  # Wildcard argument because user: argument is not used
+  def check_for_spam?(*)
+    return false if system? || !note_changed? || confidential?
+    return false if noteable.try(:confidential?) == true || noteable.try(:public?) == false
+    return false if noteable.try(:group)&.public? == false || project&.public? == false
+
+    true
   end
 
   private

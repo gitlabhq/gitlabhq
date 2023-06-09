@@ -21,6 +21,8 @@ module Notes
       # only, there is no need be create a note!
 
       execute_quick_actions(note) do |only_commands|
+        note.check_for_spam(action: :create, user: current_user) unless only_commands
+
         note.run_after_commit do
           # Finish the harder work in the background
           NewNoteWorker.perform_async(note.id)

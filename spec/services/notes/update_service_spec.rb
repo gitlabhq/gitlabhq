@@ -90,6 +90,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         end
       end
 
+      it 'checks for spam' do
+        expect(note).to receive(:check_for_spam).with(action: :update, user: user)
+        edit_note_text
+      end
+
       context 'when quick action only update' do
         it "delete note and return commands_only error" do
           updated_note = described_class.new(project, user, { note: "/close\n" }).execute(note)
@@ -117,6 +122,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         travel_to(1.day.from_now) do
           expect { does_not_edit_note_text }.not_to change { note.reload.updated_by }
         end
+      end
+
+      it 'does not check for spam' do
+        expect(note).not_to receive(:check_for_spam)
+        does_not_edit_note_text
       end
     end
 

@@ -2,6 +2,7 @@
 
 module Spammable
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   class_methods do
     def attr_spammable(attr, options = {})
@@ -46,14 +47,23 @@ module Spammable
   end
 
   def needs_recaptcha!
-    self.needs_recaptcha = true
+    if self.supports_recaptcha?
+      self.needs_recaptcha = true
+    else
+      self.spam!
+    end
+  end
+
+  # Override in Spammable if recaptcha is supported
+  def supports_recaptcha?
+    false
   end
 
   ##
   # Indicates if a recaptcha should be rendered before allowing this model to be saved.
   #
   def render_recaptcha?
-    return false unless Gitlab::Recaptcha.enabled?
+    return false unless Gitlab::Recaptcha.enabled? && supports_recaptcha?
 
     return false if self.errors.count > 1 # captcha should not be rendered if are still other errors
 
@@ -70,7 +80,7 @@ module Spammable
   end
 
   def invalidate_if_spam
-    if needs_recaptcha? && Gitlab::Recaptcha.enabled?
+    if needs_recaptcha? && Gitlab::Recaptcha.enabled? && supports_recaptcha?
       recaptcha_error!
     elsif needs_recaptcha? || spam?
       unrecoverable_spam_error!
@@ -119,6 +129,12 @@ module Spammable
   # Override in Spammable if further checks are necessary
   def check_for_spam?(user:)
     true
+  end
+
+  def check_for_spam(action:, user:)
+    strong_memoize_with(:check_for_spam, action, user) do
+      Spam::SpamActionService.new(spammable: self, user: user, action: action).execute
+    end
   end
 
   # Override in Spammable if differs

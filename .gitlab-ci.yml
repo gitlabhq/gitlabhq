@@ -23,7 +23,7 @@ default:
     - gitlab-org
   # All jobs are interruptible by default
   interruptible: true
-  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  # Default job timeout doesn't work: https://gitlab.com/gitlab-org/gitlab/-/issues/387528
   timeout: 90m
 
 .default-ruby-variables: &default-ruby-variables

@@ -266,6 +266,10 @@ class Snippet < ApplicationRecord
       (public? && (title_changed? || description_changed?))
   end
 
+  def supports_recaptcha?
+    true
+  end
+
   def spammable_entity_type
     'snippet'
   end

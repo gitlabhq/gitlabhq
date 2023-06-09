@@ -46,7 +46,11 @@ class SentNotification < ApplicationRecord
         commit_id: commit_id
       )
 
-      create(attrs)
+      # Non-sticky write is used as `.record` is only used in ActionMailer
+      # where there are no queries to SentNotification.
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+        create(attrs)
+      end
     end
 
     def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})

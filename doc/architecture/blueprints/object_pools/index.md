@@ -603,6 +603,137 @@ a lot of small steps:
 
 This plan is of course subject to change.
 
+### Gitaly Cluster concerns
+
+#### Repository creation
+
+When a repository is forked for the first time, Rails creates an object pool via
+the `CreateObjectPool()` RPC. This means object pool creation is handled outside
+of Gitaly. Subsequently, the object pool is linked to upstream and fork
+repositories. When a repository has its Git `alternates` file configured to link
+to another repository, these two repositories must exist on the same physical
+storage.
+
+The repository and its object pool existing on the same physical storage is
+particularly important for Praefect because it is dependent of the repository's
+replication factor. A replication factor is a configuration that controls how
+many storages the repository is replicated to in the Praefect virtual storage.
+By default, the replication factor is equal to the number of storages in
+Praefect. This means that when using the default replication factor, a
+repository is available on all storages in the cluster. When a custom
+replication factor is used, the number of replicas can be reduced so that a
+repository only exists on a subset of storages in Praefect.
+
+Gitaly Cluster persists repositories and their assigned storages in the Praefect
+PostgreSQL database. The database is updated when new repositories are created
+on the virtual storage. When a new repository is created, the replication factor
+specifies how many storages are randomly assigned to the repository. The
+following scenario outlines how a custom replication factor can be problematic
+for object pools:
+
+1. A new repository is created in a Gitaly Cluster that has five storage nodes.
+   The replication factor is set to three. Therefore, three storages are
+   randomly selected and assigned for this new repository in Praefect. For
+   example, the assignments are storages 1, 2, and 3. Storages 4 and 5 do not
+   have a copy of this repository.
+1. The repository gets forked for the first time thus requiring an object pool
+   repository be created with the `CreateObjectPool()` RPC. Because the
+   replication factor is set to three, another randomly selected set of three
+   storages are assigned in Praefect for the new object pool repository. For
+   example, the object pool repository is assigned to storages 3, 4, and 5. Note
+   that these assignments do not entirely match the upstream repository's.
+1. The forked copy of the repository gets created with the `CreateFork()` RPC
+   and is also assigned to three randomly-selected storages. For example, the
+   fork repository gets assigned storages 1, 3, and 5. These assignments also do
+   not entirely match the upstream and object pool repository's storage
+   assignments.
+1. Both the upstream and fork repositories are linked to the object pool via
+   separate invocations of `LinkRepositoryToObjectPool()`. For this RPC to
+   succeed the object pool must exist on the same storage as the repository
+   that is linking to it. The upstream repository fails to link on storages 1
+   and 2. The fork repository fails to link on storage 2. The
+   `LinkRepositoryToObjectPool()` RPC is not transactional so a single failure
+   of the RPC on any of the storages results in an error being proxied back to
+   the client. Therefore, in this scenario `LinkRepositoryToObjectPool()` on
+   both the upstream and fork repository always result in an error response.
+
+To fix this problem, we must ensure Praefect always routes `CreateObjectPool()`
+and `CreateFork()` RPC requests to the same set of storages as the upstream
+repository. This ensures that these repositories always have the required object
+pool repository available so that linking to them can succeed.
+
+The main downside of this is that repositories in an object deduplication
+network are pinned to the same set of storages. This could unevenly stress
+individual storages as an object deduplication network grows larger. In the
+future this can be avoided altogether when Praefect has the ability to create
+object pools on a storage where it is required but not already present.
+
+#### Repository replication
+
+The `ReplicateRepository()` RPC is not aware of object pools and only replicates
+from the source repository. This means that replication of a source repository
+linked to an object pool repository results in a target repository with no Git
+`alternates` file and consequently no deduplication of objects.
+
+The `ReplicateRepository()` RPC has two main uses:
+
+- Storage moves performed in the GitLab API rely on the `ReplicateRepository()`
+  RPC to replicate repositories from one storage to another. Since this RPC is
+  currently not object pool aware, the resulting replica on the target storage
+  does not replicate the Git `alternates` file from the source repository or
+  recreate any object pools. Instead, the replica is always a complete
+  self-contained copy of the source repository. Consequently, the object pool
+  relationship for the repository project in Rails is also removed. When moving
+  repositories in an object deduplication network from one storage to another,
+  the replicated repositories can result in increased storage usage because
+  there is no longer any deduplication of objects on the target storage.
+- When a repository replica becomes outdated in Praefect, the
+  `ReplicateRepository()` RPC is internally used by Praefect replication jobs to
+  replicate over the out-of-date replica from an up-to-date replica. Replication
+  jobs are queued by the Praefect replication manager when replicas become
+  outdated. Though the `ReplicateRepository()` RPC is not aware of object pools,
+  the replication job checks if the source repository is linked to an object
+  pool. If the source repository is linked, the job recreates the corresponding
+  Git `alternates` file on the target repository. However, it is currently
+  possible for an object pool to not exist on the same storage as the replica.
+  When this happens, replication always fails because the replica is unable to
+  link to the non-existent object pool. This means it is possible for replicas
+  to remain outdated permanently.
+
+Object pools required by the source repository should be replicated to the
+target storage along with the repository during the `ReplicateRepository()` RPC.
+This preserves object deduplication for repositories in an object deduplication
+network. Because storage moves performed in the GitLab API remove any object
+pool relationships, recreating object pools on the target storage results in
+orphaned object pools. This new object pool replication behavior of the
+`ReplicateRepository()` RPC should be controlled by the client to prevent
+breaking changes. Object pool replication for storage moves can be enabled once
+either:
+
+- The Rails side is updated to preserve the object pool relationship.
+- The object pool lifecycle is managed within Gitaly.
+
+When it comes to replication of object pools, there are scenarios Praefect needs
+to be capable of handling. Special consideration must be made in these cases so
+Praefect can keep track of all the repositories it manages in its PostgreSQL
+database to ensure they stay up to date.
+
+- Replication of an external source repository that is linked to an object pool
+  to Gitaly Cluster can result in the target virtual storage's Praefect needing
+  to create a new object pool repository. To handle this, it needs to be known
+  if the source repository is using an object pool. From there it can be checked
+  if Praefect has an entry for the object pool repository in its `repositories`
+  database table, and if not, create one. Next, Praefect storage assignments for
+  the object pool need to be generated and persisted in the
+  `repository_assignments` database table.
+- It can not be guaranteed that the target repository storage in Praefect
+  already contains the required object pool. Thus an individual storage may need
+  to have an object pool assigned to it. This new assignment must also be
+  tracked by the object pool repository in Praefect. To handle this, Praefect
+  has to detect when a target storage does not contain the required object pool
+  and persist the new storage assignment in the `repository_assignments`
+  database table.
+
 ## Problems with the design
 
 As mentioned before, object pools are not a perfect solution. This section goes

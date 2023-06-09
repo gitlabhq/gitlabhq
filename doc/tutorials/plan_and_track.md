@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Plan and track your work
+# Tutorials: Plan and track your work
 
 Create a project to host your code, and plan your work using
 issues, epics, and more.

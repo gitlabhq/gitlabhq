@@ -25,6 +25,7 @@ module Notes
 
       if note.note_changed?
         note.assign_attributes(last_edited_at: Time.current, updated_by: current_user)
+        note.check_for_spam(action: :update, user: current_user) unless only_commands
       end
 
       note.save

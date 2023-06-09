@@ -621,6 +621,10 @@ class Issue < ApplicationRecord
     spammable_attribute_changed?
   end
 
+  def supports_recaptcha?
+    true
+  end
+
   def as_json(options = {})
     super(options).tap do |json|
       if options.key?(:labels)

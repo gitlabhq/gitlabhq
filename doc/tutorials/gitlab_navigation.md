@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Find your way around GitLab
+# Tutorials: Find your way around GitLab
 
 Get to know the features of GitLab and where to find them so you can get up
 and running quickly.

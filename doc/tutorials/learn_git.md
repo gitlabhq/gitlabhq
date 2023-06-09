@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Learn Git
+# Tutorials: Learn Git
 
 GitLab is a Git-based platform, so understanding Git is important to get
 the most out of GitLab.

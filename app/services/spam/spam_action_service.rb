@@ -11,26 +11,16 @@ module Spam
       @extra_features = extra_features
     end
 
-    # rubocop:disable Metrics/AbcSize
     def execute
       return ServiceResponse.success(message: 'Skipped spam check because spam_params was not present') unless spam_params
+      return ServiceResponse.success(message: 'Skipped spam check because user was not present') unless user
 
-      recaptcha_verified = Captcha::CaptchaVerificationService.new(spam_params: spam_params).execute
-
-      if recaptcha_verified
-        # If it's a request which is already verified through CAPTCHA,
-        # update the spam log accordingly.
-        SpamLog.verify_recaptcha!(user_id: user.id, id: spam_params.spam_log_id)
-        ServiceResponse.success(message: "CAPTCHA successfully verified")
+      if target.supports_recaptcha?
+        execute_with_captcha_support
       else
-        return ServiceResponse.success(message: 'Skipped spam check because user was allowlisted') if allowlisted?(user)
-        return ServiceResponse.success(message: 'Skipped spam check because it was not required') unless check_for_spam?(user: user)
-
-        perform_spam_service_check
-        ServiceResponse.success(message: "Spam check performed. Check #{target.class.name} spammable model for any errors or CAPTCHA requirement")
+        execute_spam_check
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     delegate :check_for_spam?, to: :target
 
@@ -40,6 +30,27 @@ module Spam
 
     def spam_params
       Gitlab::RequestContext.instance.spam_params
+    end
+
+    def execute_with_captcha_support
+      recaptcha_verified = Captcha::CaptchaVerificationService.new(spam_params: spam_params).execute
+
+      if recaptcha_verified
+        # If it's a request which is already verified through CAPTCHA,
+        # update the spam log accordingly.
+        SpamLog.verify_recaptcha!(user_id: user.id, id: spam_params.spam_log_id)
+        ServiceResponse.success(message: "CAPTCHA successfully verified")
+      else
+        execute_spam_check
+      end
+    end
+
+    def execute_spam_check
+      return ServiceResponse.success(message: 'Skipped spam check because user was allowlisted') if allowlisted?(user)
+      return ServiceResponse.success(message: 'Skipped spam check because it was not required') unless check_for_spam?(user: user)
+
+      perform_spam_service_check
+      ServiceResponse.success(message: "Spam check performed. Check #{target.class.name} spammable model for any errors or CAPTCHA requirement")
     end
 
     ##

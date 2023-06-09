@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Build your application
+# Tutorials: Build your application
 
 ## Learn about CI/CD pipelines
 

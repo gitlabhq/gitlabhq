@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Manage your infrastructure
+# Tutorials: Manage your infrastructure
 
 Use GitLab configuration features to reduce the effort needed to
 configure the infrastructure for your application.

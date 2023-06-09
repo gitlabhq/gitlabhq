@@ -298,6 +298,10 @@ This version is different than the larger, more monolithic **Linux package** tha
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
+## Code Suggestions
+
+Use title case for **Code Suggestions**.
+
 ## collapse
 
 Use **collapse** instead of **close** when you are talking about expanding or collapsing a section in the UI.

@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Secure your application and check compliance
+# Tutorials: Secure your application and check compliance
 
 GitLab can check your application for security vulnerabilities and that it meets compliance requirements.
 

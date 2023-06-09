@@ -94,6 +94,7 @@ notes:
 - diff_note_positions
 - review
 - note_metadata
+- user_agent_detail
 note_metadata:
   - note
   - email_participant
@@ -112,6 +113,7 @@ commit_notes:
 - diff_note_positions
 - review
 - note_metadata
+- user_agent_detail
 label_links:
 - target
 - label

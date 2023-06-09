@@ -134,7 +134,12 @@ export default {
           :title="pipelineName"
           class="gl-flex-grow-1 gl-text-truncate gl-text-gray-900"
         >
-          {{ pipelineName }}
+          <gl-link
+            :href="pipeline.path"
+            class="gl-text-blue-600!"
+            data-testid="pipeline-url-link"
+            >{{ pipelineName }}</gl-link
+          >
         </tooltip-on-truncate>
       </span>
     </div>
@@ -144,7 +149,7 @@ export default {
         <tooltip-on-truncate :title="commitTitle" class="gl-flex-grow-1 gl-text-truncate">
           <gl-link
             :href="commitUrl"
-            class="commit-row-message gl-font-weight-bold gl-text-gray-900"
+            class="commit-row-message gl-text-blue-600!"
             data-testid="commit-title"
             @click="trackClick('click_commit_title')"
             >{{ commitTitle }}</gl-link
@@ -158,53 +163,59 @@ export default {
     <div class="gl-mb-2">
       <gl-link
         :href="pipeline.path"
-        class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
+        class="gl-mr-1 gl-text-blue-500!"
         data-testid="pipeline-url-link"
         data-qa-selector="pipeline_url_link"
         @click="trackClick('click_pipeline_id')"
         >#{{ pipeline[pipelineKey] }}</gl-link
       >
       <!--Commit row-->
-      <div class="icon-container gl-display-inline-block gl-mr-1">
+      <div class="gl-display-inline-flex gl-rounded-base gl-px-2 gl-bg-gray-50 gl-text-gray-700">
+        <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
+          <gl-icon
+            v-gl-tooltip
+            :name="commitIcon"
+            :title="commitIconTooltipTitle"
+            :size="12"
+            data-testid="commit-icon-type"
+          />
+          <gl-link
+            v-if="mergeRequestRef"
+            :href="mergeRequestRef.path"
+            class="gl-font-sm gl-font-monospace gl-text-gray-700! gl-hover-text-gray-900!"
+            data-testid="merge-request-ref"
+            @click="trackClick('click_mr_ref')"
+            >{{ mergeRequestRef.iid }}</gl-link
+          >
+          <gl-link
+            v-else
+            :href="refUrl"
+            class="gl-font-sm gl-font-monospace gl-text-gray-700! gl-hover-text-gray-900!"
+            data-testid="commit-ref-name"
+            @click="trackClick('click_commit_name')"
+            >{{ commitRef.name }}</gl-link
+          >
+        </tooltip-on-truncate>
+      </div>
+      <div
+        class="gl-display-inline-block gl-rounded-base gl-font-sm gl-px-2 gl-bg-gray-50 gl-text-black-normal"
+      >
         <gl-icon
           v-gl-tooltip
-          :name="commitIcon"
-          :title="commitIconTooltipTitle"
-          data-testid="commit-icon-type"
+          name="commit"
+          class="commit-icon gl-mr-1"
+          :title="__('Commit')"
+          :size="12"
+          data-testid="commit-icon"
         />
+        <gl-link
+          :href="commitUrl"
+          class="gl-font-sm gl-font-monospace gl-mr-0 gl-text-gray-700!"
+          data-testid="commit-short-sha"
+          @click="trackClick('click_commit_sha')"
+          >{{ commitShortSha }}</gl-link
+        >
       </div>
-      <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
-        <gl-link
-          v-if="mergeRequestRef"
-          :href="mergeRequestRef.path"
-          class="ref-name gl-mr-3"
-          data-testid="merge-request-ref"
-          @click="trackClick('click_mr_ref')"
-          >{{ mergeRequestRef.iid }}</gl-link
-        >
-        <gl-link
-          v-else
-          :href="refUrl"
-          class="ref-name gl-mr-3"
-          data-testid="commit-ref-name"
-          @click="trackClick('click_commit_name')"
-          >{{ commitRef.name }}</gl-link
-        >
-      </tooltip-on-truncate>
-      <gl-icon
-        v-gl-tooltip
-        name="commit"
-        class="commit-icon gl-mr-1"
-        :title="__('Commit')"
-        data-testid="commit-icon"
-      />
-      <gl-link
-        :href="commitUrl"
-        class="commit-sha mr-0"
-        data-testid="commit-short-sha"
-        @click="trackClick('click_commit_sha')"
-        >{{ commitShortSha }}</gl-link
-      >
       <user-avatar-link
         v-if="commitAuthor"
         :link-href="commitAuthor.path"

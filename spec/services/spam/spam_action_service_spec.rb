@@ -55,6 +55,21 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
         expect(issue).not_to be_spam
       end
     end
+
+    context 'when user is nil' do
+      let(:spam_params) { true }
+      let(:user) { nil }
+      let(:expected_service_user_not_present_message) do
+        /Skipped spam check because user was not present/
+      end
+
+      it "returns success with a messaage" do
+        response = subject
+
+        expect(response.message).to match(expected_service_user_not_present_message)
+        expect(issue).not_to be_spam
+      end
+    end
   end
 
   shared_examples 'allows user' do
@@ -120,6 +135,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
     before do
       allow(Captcha::CaptchaVerificationService).to receive(:new).with(spam_params: spam_params) { fake_captcha_verification_service }
       allow(Spam::SpamVerdictService).to receive(:new).with(verdict_service_args).and_return(fake_verdict_service)
+      allow(fake_verdict_service).to receive(:execute).and_return({})
     end
 
     context 'when captcha response verification returns true' do
@@ -168,6 +184,24 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
 
         before do
           target.description = 'Lovely Spam! Wonderful Spam!'
+        end
+
+        context 'when captcha is not supported' do
+          before do
+            allow(target).to receive(:supports_recaptcha?).and_return(false)
+          end
+
+          it "does not execute with captcha support" do
+            expect(Captcha::CaptchaVerificationService).not_to receive(:new)
+
+            subject
+          end
+
+          it "executes a spam check" do
+            expect(fake_verdict_service).to receive(:execute)
+
+            subject
+          end
         end
 
         context 'when user is a gitlab bot' do

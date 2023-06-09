@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spammable do
+RSpec.describe Spammable, feature_category: :instance_resiliency do
   let(:issue) { create(:issue, description: 'Test Desc.') }
 
   describe 'Associations' do
@@ -59,6 +59,18 @@ RSpec.describe Spammable do
         end
       end
 
+      context 'when the model needs recaptcha but does not support it' do
+        subject { invalidate_if_spam(needs_recaptcha: true) }
+
+        before do
+          allow(issue).to receive(:supports_recaptcha?).and_return(false)
+        end
+
+        it 'has an error that discards the spammable' do
+          expect(subject.errors.messages[:base]).to match_array /has been discarded/
+        end
+      end
+
       context 'if the model is spam and also needs recaptcha' do
         subject { invalidate_if_spam(is_spam: true, needs_recaptcha: true) }
 
@@ -112,11 +124,26 @@ RSpec.describe Spammable do
       end
 
       describe '#needs_recaptcha!' do
-        it 'adds `needs_recaptcha` flag' do
-          issue.needs_recaptcha!
+        context 'when recaptcha is supported' do
+          it 'adds `needs_recaptcha` flag' do
+            issue.needs_recaptcha!
 
-          expect(issue.spam).to be_falsey
-          expect(issue.needs_recaptcha).to be_truthy
+            expect(issue.spam).to be_falsey
+            expect(issue.needs_recaptcha).to be_truthy
+          end
+        end
+
+        context 'when recaptcha is not supported' do
+          before do
+            allow(issue).to receive(:supports_recaptcha?).and_return(false)
+          end
+
+          it 'marks the object as spam' do
+            issue.needs_recaptcha!
+
+            expect(issue.spam).to be_truthy
+            expect(issue.needs_recaptcha).to be_falsey
+          end
         end
       end
 
