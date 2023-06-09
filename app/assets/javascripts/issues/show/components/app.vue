@@ -531,7 +531,13 @@ export default {
                   statusText
                 }}</span></gl-badge
               >
-              <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
+              <span
+                v-if="isLocked"
+                v-gl-tooltip.bottom
+                data-testid="locked"
+                class="issuable-warning-icon"
+                :title="__('This issue is locked. Only project members can comment.')"
+              >
                 <gl-icon name="lock" :aria-label="__('Locked')" />
               </span>
               <confidentiality-badge
@@ -542,7 +548,7 @@ export default {
               />
               <span
                 v-if="isHidden"
-                v-gl-tooltip
+                v-gl-tooltip.bottom
                 :title="__('This issue is hidden because its author has been banned')"
                 data-testid="hidden"
                 class="issuable-warning-icon"

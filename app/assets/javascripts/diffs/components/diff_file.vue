@@ -199,6 +199,9 @@ export default {
         (this.fileDiscussions.length || this.file.drafts.length || this.file.hasCommentForm)
       );
     },
+    diffFileHash() {
+      return this.file.file_hash;
+    },
   },
   watch: {
     'file.id': {

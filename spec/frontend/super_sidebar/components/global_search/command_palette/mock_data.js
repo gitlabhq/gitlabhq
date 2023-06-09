@@ -1,18 +1,63 @@
 export const COMMANDS = [
   {
-    text: 'New project/repository',
-    href: '/projects/new',
-    keywords: ['new', 'project', 'repository'],
+    name: 'Global',
+    items: [
+      {
+        text: 'New project/repository',
+        href: '/projects/new',
+        keywords: ['new', 'project', 'repository'],
+      },
+      {
+        text: 'New group',
+        href: '/groups/new',
+        keywords: ['new', 'group'],
+      },
+      {
+        text: 'New snippet',
+        href: '/-/snippets/new',
+        keywords: ['new', 'snippet'],
+      },
+    ],
   },
+];
+
+export const LINKS = [
   {
-    text: 'New group',
-    href: '/groups/new',
-    keywords: ['new', 'group'],
-  },
-  {
-    text: 'New snippet',
-    href: '/-/snippets/new',
-    keywords: ['new', 'snippet'],
+    title: 'Manage',
+    icon: 'users',
+    link: '/flightjs/Flight/activity',
+    is_active: false,
+    pill_count: null,
+    items: [
+      {
+        id: 'activity',
+        title: 'Activity',
+        icon: null,
+        link: '/flightjs/Flight/activity',
+        pill_count: null,
+        link_classes: 'shortcuts-project-activity',
+        is_active: false,
+      },
+      {
+        id: 'members',
+        title: 'Members',
+        icon: null,
+        link: '/flightjs/Flight/-/project_members',
+        pill_count: null,
+        link_classes: null,
+        is_active: false,
+      },
+      {
+        id: 'labels',
+        title: 'Labels',
+        icon: null,
+        link: '/flightjs/Flight/-/labels',
+        pill_count: null,
+        link_classes: null,
+        is_active: false,
+      },
+    ],
+    separated: false,
   },
 ];
 

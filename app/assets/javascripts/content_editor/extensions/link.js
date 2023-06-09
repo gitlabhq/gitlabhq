@@ -40,7 +40,6 @@ export default Link.extend({
   },
   addAttributes() {
     return {
-      ...this.parent?.(),
       uploading: {
         default: false,
         renderHTML: ({ uploading }) => (uploading ? { class: 'with-attachment-icon' } : {}),

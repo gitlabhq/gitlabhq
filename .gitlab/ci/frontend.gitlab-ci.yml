@@ -12,6 +12,7 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
+  needs: []
   script:
     - yarn_install_script
     - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
@@ -109,6 +110,7 @@ retrieve-frontend-fixtures:
     - .default-retry
     - .frontend:rules:default-frontend-jobs
   stage: prepare
+  needs: []
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh

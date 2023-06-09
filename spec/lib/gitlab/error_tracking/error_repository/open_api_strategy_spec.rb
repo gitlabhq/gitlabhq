@@ -12,7 +12,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
 
   before do
     # Disabled in spec_helper by default thus we need to enable it here.
-    stub_feature_flags(use_click_house_database_for_error_tracking: true)
+    stub_feature_flags(gitlab_error_tracking: true)
   end
 
   shared_examples 'exception logging' do

@@ -16,7 +16,7 @@ module Gitlab
       # @return [self]
       def self.build(project)
         strategy =
-          if Feature.enabled?(:use_click_house_database_for_error_tracking, project)
+          if Feature.enabled?(:gitlab_error_tracking, project)
             OpenApiStrategy.new(project)
           else
             ActiveRecordStrategy.new(project)

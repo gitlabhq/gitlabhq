@@ -89,9 +89,7 @@ module SidebarsHelper
       update_pins_url: pins_url,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
-      shortcut_links: shortcut_links(user, project: project),
-      # command palette
-      command_palette_commands: create_command_palette_menu
+      shortcut_links: shortcut_links(user, project: project)
     }
   end
 
@@ -171,34 +169,6 @@ module SidebarsHelper
                end
       }
     end
-  end
-
-  def create_command_palette_menu
-    menu_items = []
-
-    if current_user.can_create_project?
-      menu_items.push({
-        text: _('New project/repository'),
-        href: new_project_path,
-        keywords: [_('Create a new project/repository')]
-      })
-    end
-
-    if current_user.can_create_group?
-      menu_items.push({
-        text: _('New group'),
-        href: new_group_path,
-        keywords: ['Create a new group']
-      })
-    end
-
-    return unless current_user.can?(:create_snippet)
-
-    menu_items.push({
-      text: _('New snippet'),
-      href: new_snippet_path,
-      keywords: ['Create a new snippet']
-    })
   end
 
   def create_merge_request_menu(user)

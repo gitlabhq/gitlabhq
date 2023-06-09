@@ -63,7 +63,16 @@ describe('IssuableHeaderWarnings', () => {
         });
 
         it(`${renderTestMessage(lockStatus)} the locked icon`, () => {
-          expect(findLockedIcon().exists()).toBe(lockStatus);
+          const lockedIcon = findLockedIcon();
+
+          expect(lockedIcon.exists()).toBe(lockStatus);
+
+          if (lockStatus) {
+            expect(lockedIcon.attributes('title')).toBe(
+              `This ${issuableType.replace('_', ' ')} is locked. Only project members can comment.`,
+            );
+            expect(getBinding(lockedIcon.element, 'gl-tooltip')).not.toBeUndefined();
+          }
         });
 
         it(`${renderTestMessage(confidentialStatus)} the confidential icon`, () => {

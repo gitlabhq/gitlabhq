@@ -3,7 +3,6 @@ import { GlAvatar } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
-import { AUTOCOMPLETE_ERROR_MESSAGE } from '~/vue_shared/global_search/constants';
 
 export default {
   name: 'CommandPaletteUserAutocompleteItem',
@@ -23,12 +22,9 @@ export default {
       required: true,
     },
   },
-  i18n: {
-    AUTOCOMPLETE_ERROR_MESSAGE,
-  },
-  methods: {
-    highlightedName(val) {
-      return highlight(val, this.searchQuery);
+  computed: {
+    highlightedName() {
+      return highlight(this.user.text, this.searchQuery);
     },
   },
   AVATAR_SHAPE_OPTION_RECT,
@@ -48,7 +44,7 @@ export default {
       aria-hidden="true"
     />
     <span class="gl-display-flex gl-flex-direction-column">
-      <span v-safe-html="highlightedName(user.text)" class="gl-text-gray-900"></span>
+      <span v-safe-html="highlightedName" class="gl-text-gray-900"></span>
       <span v-safe-html="user.username" class="gl-font-sm gl-text-gray-500"></span>
     </span>
   </div>

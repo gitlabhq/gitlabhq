@@ -4,24 +4,28 @@ import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Heading from '~/content_editor/extensions/heading';
 import Bold from '~/content_editor/extensions/bold';
+import Italic from '~/content_editor/extensions/italic';
 import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
 
 const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var a = 2;</pre>';
 const DIAGRAM_HTML =
   '<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">';
 const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: value</pre>';
-const PARAGRAPH_HTML = '<p>Just a regular paragraph</p>';
+const PARAGRAPH_HTML = '<p>Some text with <strong>bold</strong> and <em>italic</em> text.</p>';
 
 describe('content_editor/extensions/paste_markdown', () => {
   let tiptapEditor;
   let doc;
   let p;
   let bold;
+  let italic;
   let heading;
+  let codeBlock;
   let renderMarkdown;
   let eventHub;
   const defaultData = { 'text/plain': '**bold text**' };
@@ -35,28 +39,36 @@ describe('content_editor/extensions/paste_markdown', () => {
     tiptapEditor = createTestEditor({
       extensions: [
         Bold,
+        Italic,
         CodeBlockHighlight,
         Diagram,
         Frontmatter,
         Heading,
-        PasteMarkdown.configure({ renderMarkdown, eventHub }),
+        PasteMarkdown.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
 
     ({
-      builders: { doc, p, bold, heading },
+      builders: { doc, p, bold, italic, heading, codeBlock },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         bold: { markType: Bold.name },
+        italic: { markType: Italic.name },
         heading: { nodeType: Heading.name },
+        codeBlock: { nodeType: CodeBlockHighlight.name },
       },
     }));
   });
 
-  const buildClipboardEvent = ({ data = {}, types = ['text/plain'] } = {}) => {
-    return Object.assign(new Event('paste'), {
-      clipboardData: { types, getData: jest.fn((type) => data[type] || defaultData[type]) },
+  const buildClipboardEvent = ({ eventName = 'paste', data = {}, types = ['text/plain'] } = {}) => {
+    return Object.assign(new Event(eventName), {
+      clipboardData: {
+        types,
+        getData: jest.fn((type) => data[type] || defaultData[type]),
+        setData: jest.fn(),
+        clearData: jest.fn(),
+      },
     });
   };
 
@@ -80,13 +92,13 @@ describe('content_editor/extensions/paste_markdown', () => {
   };
 
   it.each`
-    types                                                | data                                                  | handled  | desc
-    ${['text/plain']}                                    | ${{}}                                                 | ${true}  | ${'handles plain text'}
-    ${['text/plain', 'text/html']}                       | ${{}}                                                 | ${false} | ${'doesn’t handle html format'}
-    ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "markdown" }' }} | ${true}  | ${'handles vscode markdown'}
-    ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "ruby" }' }}     | ${false} | ${'doesn’t vscode code snippet'}
-  `('$desc', async ({ types, handled, data }) => {
-    expect(await triggerPasteEventHandler(buildClipboardEvent({ types, data }))).toBe(handled);
+    types                                                | data                                                  | formatDesc
+    ${['text/plain']}                                    | ${{}}                                                 | ${'plain text'}
+    ${['text/plain', 'text/html']}                       | ${{}}                                                 | ${'html format'}
+    ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "markdown" }' }} | ${'vscode markdown'}
+    ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "ruby" }' }}     | ${'vscode snippet'}
+  `('handles $formatDesc', async ({ types, data }) => {
+    expect(await triggerPasteEventHandler(buildClipboardEvent({ types, data }))).toBe(true);
   });
 
   it.each`
@@ -99,6 +111,45 @@ describe('content_editor/extensions/paste_markdown', () => {
     tiptapEditor.commands.insertContent(html);
 
     expect(await triggerPasteEventHandler(buildClipboardEvent())).toBe(handled);
+  });
+
+  describe.each`
+    eventName | expectedDoc
+    ${'cut'}  | ${() => doc(p())}
+    ${'copy'} | ${() => doc(p('Some text with ', bold('bold'), ' and ', italic('italic'), ' text.'))}
+  `('when $eventName event is triggered', ({ eventName, expectedDoc }) => {
+    let event;
+    beforeEach(() => {
+      event = buildClipboardEvent({ eventName });
+
+      jest.spyOn(event, 'preventDefault');
+      jest.spyOn(event, 'stopPropagation');
+
+      tiptapEditor.commands.insertContent(PARAGRAPH_HTML);
+      tiptapEditor.commands.selectAll();
+      tiptapEditor.view.dispatchEvent(event);
+    });
+
+    it('prevents default', () => {
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(event.stopPropagation).toHaveBeenCalled();
+    });
+
+    it('sets the clipboard data', () => {
+      expect(event.clipboardData.setData).toHaveBeenCalledWith(
+        'text/plain',
+        'Some text with bold and italic text.',
+      );
+      expect(event.clipboardData.setData).toHaveBeenCalledWith('text/html', PARAGRAPH_HTML);
+      expect(event.clipboardData.setData).toHaveBeenCalledWith(
+        'text/x-gfm',
+        'Some text with **bold** and _italic_ text.',
+      );
+    });
+
+    it('modifies the document', () => {
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+    });
   });
 
   describe('when pasting raw markdown source', () => {
@@ -159,6 +210,97 @@ describe('content_editor/extensions/paste_markdown', () => {
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
         });
+      });
+    });
+
+    describe('when pasting html content', () => {
+      it('strips out any stray div, pre, span tags', async () => {
+        renderMarkdown.mockResolvedValueOnce(
+          '<div><span dir="auto"><strong>bold text</strong></span></div><pre><code>some code</code></pre>',
+        );
+
+        const expectedDoc = doc(p(bold('bold text')), p('some code'));
+
+        await triggerPasteEventHandlerAndWaitForTransaction(
+          buildClipboardEvent({
+            types: ['text/html'],
+            data: {
+              'text/html':
+                '<div><span dir="auto"><strong>bold text</strong></span></div><pre><code>some code</code></pre>',
+            },
+          }),
+        );
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+    });
+
+    describe('when pasting text/x-gfm', () => {
+      it('processes the content as markdown, even if html content exists', async () => {
+        renderMarkdown.mockResolvedValueOnce('<strong>bold text</strong>');
+
+        const expectedDoc = doc(p(bold('bold text')));
+
+        await triggerPasteEventHandlerAndWaitForTransaction(
+          buildClipboardEvent({
+            types: ['text/x-gfm'],
+            data: {
+              'text/x-gfm': '**bold text**',
+              'text/plain': 'irrelevant text',
+              'text/html': '<div>some random irrelevant html</div>',
+            },
+          }),
+        );
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+    });
+
+    describe('when pasting vscode-editor-data', () => {
+      it('pastes the content as a code block', async () => {
+        renderMarkdown.mockResolvedValueOnce(
+          '<div class="gl-relative markdown-code-block js-markdown-code">&#x000A;<pre data-sourcepos="1:1-3:3" data-canonical-lang="ruby" class="code highlight js-syntax-highlight language-ruby" lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="nb">puts</span> <span class="s2">"Hello World"</span></span></code></pre>&#x000A;<copy-code></copy-code>&#x000A;</div>',
+        );
+
+        const expectedDoc = doc(
+          codeBlock(
+            { language: 'ruby', class: 'code highlight js-syntax-highlight language-ruby' },
+            'puts "Hello World"',
+          ),
+        );
+
+        await triggerPasteEventHandlerAndWaitForTransaction(
+          buildClipboardEvent({
+            types: ['vscode-editor-data', 'text/plain', 'text/html'],
+            data: {
+              'vscode-editor-data': '{ "version": 1, "mode": "ruby" }',
+              'text/plain': 'puts "Hello World"',
+              'text/html':
+                '<meta charset=\'utf-8\'><div style="color: #d4d4d4;background-color: #1e1e1e;font-family: \'Fira Code\', Menlo, Monaco, \'Courier New\', monospace, Menlo, Monaco, \'Courier New\', monospace;font-weight: normal;font-size: 14px;line-height: 21px;white-space: pre;"><div><span style="color: #dcdcaa;">puts</span><span style="color: #d4d4d4;"> </span><span style="color: #ce9178;">"Hello world"</span></div></div>',
+            },
+          }),
+        );
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+
+      it('pastes as regular markdown if language is markdown', async () => {
+        renderMarkdown.mockResolvedValueOnce('<p><strong>bold text</strong></p>');
+
+        const expectedDoc = doc(p(bold('bold text')));
+
+        await triggerPasteEventHandlerAndWaitForTransaction(
+          buildClipboardEvent({
+            types: ['vscode-editor-data', 'text/plain', 'text/html'],
+            data: {
+              'vscode-editor-data': '{ "version": 1, "mode": "markdown" }',
+              'text/plain': '**bold text**',
+              'text/html': '<p><strong>bold text</strong></p>',
+            },
+          }),
+        );
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
     });
 

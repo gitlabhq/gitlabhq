@@ -4,6 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import { contentTop } from '~/lib/utils/common_utils';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getRenderedMarkdown } from './utils/fetch';
 
 export const cache = {};
@@ -95,10 +96,17 @@ export default {
   safeHtmlConfig: {
     ADD_TAGS: ['copy-code'],
   },
+  DRAWER_Z_INDEX,
 };
 </script>
 <template>
-  <gl-drawer :header-height="drawerTop" :open="open" header-sticky @close="closeDrawer">
+  <gl-drawer
+    :header-height="drawerTop"
+    :open="open"
+    header-sticky
+    :z-index="$options.DRAWER_Z_INDEX"
+    @close="closeDrawer"
+  >
     <template #title>
       <h4 data-testid="title-element" class="gl-m-0">{{ title }}</h4>
     </template>

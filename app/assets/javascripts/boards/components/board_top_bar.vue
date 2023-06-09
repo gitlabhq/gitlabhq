@@ -95,7 +95,7 @@ export default {
       class="issues-details-filters filtered-search-block gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row row-content-block second-block"
     >
       <div
-        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-flex-grow-1 gl-lg-mb-0 gl-mb-3 gl-w-full"
+        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-flex-grow-1 gl-lg-mb-0 gl-mb-3 gl-w-full gl-min-w-0"
       >
         <boards-selector :board-apollo="board" @switchBoard="$emit('switchBoard', $event)" />
         <new-board-button />

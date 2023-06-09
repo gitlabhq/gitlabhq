@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MarkdownDrawer, { cache } from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import { getRenderedMarkdown } from '~/vue_shared/components/markdown_drawer/utils/fetch';
 import { contentTop } from '~/lib/utils/common_utils';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
 jest.mock('~/vue_shared/components/markdown_drawer/utils/fetch', () => ({
   getRenderedMarkdown: jest.fn().mockReturnValue({
@@ -54,6 +55,10 @@ describe('MarkdownDrawer', () => {
       expect(findDrawer().exists()).toBe(true);
       expect(findDrawerTitle().text()).toBe('test title test');
       expect(findDrawerBody().text()).toBe('test body');
+    });
+
+    it(`has proper z-index set for the drawer component`, () => {
+      expect(findDrawer().attributes('zindex')).toBe(DRAWER_Z_INDEX.toString());
     });
   });
 

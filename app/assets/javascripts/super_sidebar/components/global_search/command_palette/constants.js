@@ -21,5 +21,6 @@ export const SEARCH_SCOPE = {
   [USER_HANDLE]: s__('CommandPalette|user (enter at least 3 chars)'),
 };
 
-export const COMMANDS_GROUP_TITLE = s__('CommandPalette|Commands');
+export const GLOBAL_COMMANDS_GROUP_TITLE = s__('CommandPalette|Global Commands');
 export const USERS_GROUP_TITLE = s__('CommandPalette|Users');
+export const PAGES_GROUP_TITLE = s__('CommandPalette|Pages');

@@ -26,6 +26,8 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import Reference from '~/content_editor/extensions/reference';
+import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
@@ -35,7 +37,7 @@ import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
-import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTiptapEditor, createDocBuilder } from '../test_utils';
 
@@ -76,6 +78,8 @@ const {
     orderedList,
     paragraph,
     referenceDefinition,
+    reference,
+    referenceLabel,
     strike,
     table,
     tableCell,
@@ -116,6 +120,8 @@ const {
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
     referenceDefinition: { nodeType: ReferenceDefinition.name },
+    reference: { nodeType: Reference.name },
+    referenceLabel: { nodeType: ReferenceLabel.name },
     strike: { markType: Strike.name },
     table: { nodeType: Table.name },
     tableCell: { nodeType: TableCell.name },
@@ -134,7 +140,7 @@ const {
 });
 
 const serialize = (...content) =>
-  markdownSerializer({}).serialize({
+  new MarkdownSerializer().serialize({
     doc: doc(...content),
   });
 
@@ -279,6 +285,77 @@ hi
         ),
       ),
     ).toBe('![GitLab][gitlab-url]');
+  });
+
+  it('correctly serializes references', () => {
+    expect(
+      serialize(
+        paragraph(
+          reference({
+            referenceType: 'issue',
+            originalText: '#123',
+            href: '/gitlab-org/gitlab-test/-/issues/123',
+            text: '#123',
+          }),
+        ),
+      ),
+    ).toBe('#123');
+  });
+
+  it('correctly renders a reference label', () => {
+    expect(
+      serialize(
+        paragraph(
+          referenceLabel({
+            referenceType: 'label',
+            originalText: '~foo',
+            href: '/gitlab-org/gitlab-test/-/labels/foo',
+            text: '~foo',
+          }),
+        ),
+      ),
+    ).toBe('~foo');
+  });
+
+  it('correctly renders a reference label without originalText', () => {
+    expect(
+      serialize(
+        paragraph(
+          referenceLabel({
+            referenceType: 'label',
+            href: '/gitlab-org/gitlab-test/-/labels/foo',
+            text: 'Foo Bar',
+          }),
+        ),
+      ),
+    ).toBe('~"Foo Bar"');
+  });
+
+  it('ensures spaces between multiple references', () => {
+    expect(
+      serialize(
+        paragraph(
+          reference({
+            referenceType: 'issue',
+            originalText: '#123',
+            href: '/gitlab-org/gitlab-test/-/issues/123',
+            text: '#123',
+          }),
+          referenceLabel({
+            referenceType: 'label',
+            originalText: '~foo',
+            href: '/gitlab-org/gitlab-test/-/labels/foo',
+            text: '~foo',
+          }),
+          reference({
+            referenceType: 'issue',
+            originalText: '#456',
+            href: '/gitlab-org/gitlab-test/-/issues/456',
+            text: '#456',
+          }),
+        ),
+      ),
+    ).toBe('#123 ~foo #456');
   });
 
   it.each`
@@ -1485,7 +1562,7 @@ paragraph
 
       editAction(document);
 
-      const serialized = markdownSerializer({}).serialize({
+      const serialized = new MarkdownSerializer().serialize({
         pristineDoc: document,
         doc: tiptapEditor.state.doc,
       });

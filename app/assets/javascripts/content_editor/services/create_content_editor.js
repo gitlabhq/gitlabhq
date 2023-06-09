@@ -64,7 +64,7 @@ import Text from '../extensions/text';
 import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import { ContentEditor } from './content_editor';
-import createMarkdownSerializer from './markdown_serializer';
+import MarkdownSerializer from './markdown_serializer';
 import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
 import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
 import AssetResolver from './asset_resolver';
@@ -97,6 +97,12 @@ export const createContentEditor = ({
 
   const eventHub = eventHubFactory();
   const assetResolver = new AssetResolver({ renderMarkdown });
+  const serializer = new MarkdownSerializer({ serializerConfig });
+  const deserializer = window.gon?.features?.preserveUnchangedMarkdown
+    ? createRemarkMarkdownDeserializer()
+    : createGlApiMarkdownDeserializer({
+        render: renderMarkdown,
+      });
 
   const builtInContentEditorExtensions = [
     Attachment.configure({ uploadsPath, renderMarkdown, eventHub }),
@@ -139,7 +145,7 @@ export const createContentEditor = ({
     MathInline,
     OrderedList,
     Paragraph,
-    PasteMarkdown.configure({ eventHub, renderMarkdown }),
+    PasteMarkdown.configure({ eventHub, renderMarkdown, serializer }),
     Reference.configure({ assetResolver }),
     ReferenceLabel,
     ReferenceDefinition,
@@ -167,12 +173,6 @@ export const createContentEditor = ({
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
-  const serializer = createMarkdownSerializer({ serializerConfig });
-  const deserializer = window.gon?.features?.preserveUnchangedMarkdown
-    ? createRemarkMarkdownDeserializer()
-    : createGlApiMarkdownDeserializer({
-        render: renderMarkdown,
-      });
 
   return new ContentEditor({
     tiptapEditor,

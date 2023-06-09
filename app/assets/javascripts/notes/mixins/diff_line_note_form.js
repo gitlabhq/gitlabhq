@@ -58,7 +58,7 @@ export default {
       const position =
         positionType ||
         (this.diffFileCommentForm ? IMAGE_DIFF_POSITION_TYPE : TEXT_DIFF_POSITION_TYPE);
-      const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
+      const diffFile = this.diffFile || this.file;
       const postData = getDraftFormData({
         note,
         notesData: this.notesData,
@@ -66,7 +66,7 @@ export default {
         noteableType: this.noteableType,
         noteTargetLine: this.noteTargetLine,
         diffViewType: this.diffViewType,
-        diffFile: selectedDiffFile,
+        diffFile,
         linePosition: this.position,
         positionType: position,
         ...this.diffFileCommentForm,
@@ -74,7 +74,7 @@ export default {
         showWhitespace: this.showWhitespace,
       });
 
-      const diffFileHeadSha = this.commit && this?.diffFile?.diff_refs?.head_sha;
+      const diffFileHeadSha = this.commit && diffFile?.diff_refs?.head_sha;
 
       postData.data.note.commit_id = diffFileHeadSha || null;
 
@@ -85,7 +85,7 @@ export default {
           } else if (this.line?.line_code) {
             this.handleClearForm(this.line.line_code);
           } else if (position === FILE_DIFF_POSITION_TYPE) {
-            this.toggleFileCommentForm(this.diffFile.file_path);
+            this.toggleFileCommentForm(diffFile.file_path);
           }
         })
         .catch(() => {

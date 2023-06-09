@@ -10,11 +10,13 @@ import {
   COMMON_HANDLES,
   COMMAND_HANDLE,
   USER_HANDLE,
-  COMMANDS_GROUP_TITLE,
+  GLOBAL_COMMANDS_GROUP_TITLE,
   USERS_GROUP_TITLE,
+  PAGES_GROUP_TITLE,
 } from './constants';
-import { userMapper, commandMapper } from './utils';
+import { userMapper, commandMapper, linksReducer } from './utils';
 import UserAutocompleteItem from './user_autocomplete_item.vue';
+import CommandAutocompleteItem from './command_autocomplete_item.vue';
 
 export default {
   name: 'CommandPaletteItems',
@@ -22,8 +24,9 @@ export default {
     GlDisclosureDropdownGroup,
     GlLoadingIcon,
     UserAutocompleteItem,
+    CommandAutocompleteItem,
   },
-  inject: ['commandPaletteData'],
+  inject: ['commandPaletteCommands', 'commandPaletteLinks'],
   props: {
     searchQuery: {
       type: String,
@@ -38,7 +41,7 @@ export default {
     },
   },
   data: () => ({
-    group: null,
+    groups: [],
     error: null,
     loading: false,
   }),
@@ -50,21 +53,25 @@ export default {
       return this.handle === USER_HANDLE;
     },
     commands() {
-      return this.commandPaletteData.map(commandMapper);
+      return this.commandPaletteCommands.map(commandMapper);
+    },
+    links() {
+      return this.commandPaletteLinks.reduce(linksReducer, []);
     },
     filteredCommands() {
       return this.searchQuery
-        ? fuzzaldrinPlus.filter(this.commands, this.searchQuery, { key: 'keywords' })
+        ? this.commands
+            .map(({ name, items }) => {
+              return {
+                name: name || GLOBAL_COMMANDS_GROUP_TITLE,
+                items: this.filterBySearchQuery(items, 'text'),
+              };
+            })
+            .filter(({ items }) => items.length)
         : this.commands;
     },
-    commandsGroup() {
-      return {
-        name: COMMANDS_GROUP_TITLE,
-        items: this.filteredCommands,
-      };
-    },
     hasResults() {
-      return this.group?.items?.length;
+      return this.groups?.length && this.groups.some((group) => group.items?.length);
     },
     hasSearchQuery() {
       return this.searchQuery?.length;
@@ -75,7 +82,7 @@ export default {
       handler() {
         switch (this.handle) {
           case COMMAND_HANDLE:
-            this.group = this.commandsGroup;
+            this.getCommandsAndPages();
             break;
           case USER_HANDLE:
             this.getUsers();
@@ -88,6 +95,32 @@ export default {
     },
   },
   methods: {
+    filterBySearchQuery(items, key = 'keywords') {
+      return fuzzaldrinPlus.filter(items, this.searchQuery, { key });
+    },
+    getCommandsAndPages() {
+      if (!this.searchQuery) {
+        this.groups = [...this.commands];
+        return;
+      }
+
+      const matchedLinks = this.filterBySearchQuery(this.links);
+
+      if (this.filteredCommands.length || matchedLinks.length) {
+        this.groups = [];
+      }
+
+      if (this.filteredCommands.length) {
+        this.groups = [...this.filteredCommands];
+      }
+
+      if (matchedLinks.length) {
+        this.groups.push({
+          name: PAGES_GROUP_TITLE,
+          items: matchedLinks,
+        });
+      }
+    },
     getUsers: debounce(function debouncedUserSearch() {
       if (this.searchQuery && this.searchQuery.length < 3) return null;
 
@@ -100,10 +133,12 @@ export default {
           },
         })
         .then(({ data }) => {
-          this.group = {
-            name: USERS_GROUP_TITLE,
-            items: data.map(userMapper),
-          };
+          this.groups = [
+            {
+              name: USERS_GROUP_TITLE,
+              items: data.map(userMapper),
+            },
+          ];
         })
         .catch((error) => {
           this.error = error;
@@ -120,11 +155,25 @@ export default {
   <ul class="gl-p-0 gl-m-0 gl-list-style-none">
     <gl-loading-icon v-if="loading" size="lg" class="gl-my-5" />
 
-    <gl-disclosure-dropdown-group v-else-if="hasResults" :group="group" bordered class="gl-mt-0!">
-      <template v-if="isUserMode" #list-item="{ item }">
-        <user-autocomplete-item :user="item" :search-query="searchQuery" />
-      </template>
-    </gl-disclosure-dropdown-group>
+    <template v-else-if="hasResults">
+      <gl-disclosure-dropdown-group
+        v-for="(group, index) in groups"
+        :key="index"
+        :group="group"
+        bordered
+        class="{'gl-mt-0!': index===0}"
+      >
+        <template #list-item="{ item }">
+          <user-autocomplete-item v-if="isUserMode" :user="item" :search-query="searchQuery" />
+          <command-autocomplete-item
+            v-if="isCommandMode"
+            :command="item"
+            :search-query="searchQuery"
+          />
+        </template>
+      </gl-disclosure-dropdown-group>
+    </template>
+
     <div v-else-if="hasSearchQuery && !hasResults" class="gl-text-gray-700 gl-pl-5 gl-py-3">
       {{ __('No results found') }}
     </div>

@@ -29,7 +29,11 @@ FactoryBot.define do
     end
 
     trait :on_cluster do
-      cluster factory: %i(cluster provided_by_gcp)
+      deployment_cluster factory: %i(deployment_cluster provided_by_gcp)
+    end
+
+    trait :on_cluster_not_managed do
+      deployment_cluster factory: %i(deployment_cluster not_managed)
     end
 
     trait :running do

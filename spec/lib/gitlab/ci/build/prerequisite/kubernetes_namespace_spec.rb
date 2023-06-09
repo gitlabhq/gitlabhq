@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
+RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace, feature_category: :continuous_delivery do
   describe '#unmet?' do
     let(:build) { create(:ci_build) }
 
@@ -17,15 +17,13 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
     end
 
     context 'build has a deployment' do
-      let!(:deployment) { create(:deployment, deployable: build, cluster: cluster) }
-
       context 'and a cluster to deploy to' do
-        let(:cluster) { create(:cluster, :group) }
+        let!(:deployment) { create(:deployment, :on_cluster, deployable: build) }
 
         it { is_expected.to be_truthy }
 
         context 'and the cluster is not managed' do
-          let(:cluster) { create(:cluster, :not_managed, projects: [build.project]) }
+          let!(:deployment) { create(:deployment, :on_cluster_not_managed, deployable: build) }
 
           it { is_expected.to be_falsey }
         end
@@ -63,8 +61,8 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
     subject { prerequisite.complete! }
 
     context 'completion is required' do
-      let(:cluster) { create(:cluster, :group) }
-      let(:deployment) { create(:deployment, cluster: cluster) }
+      let(:cluster) { deployment.cluster }
+      let(:deployment) { create(:deployment, :on_cluster) }
       let(:service) { double(execute: true) }
       let(:kubernetes_namespace) { double }
 
@@ -84,12 +82,12 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         it 'creates a namespace using a new record' do
           expect(Clusters::BuildKubernetesNamespaceService)
             .to receive(:new)
-            .with(cluster, environment: deployment.environment)
+            .with(deployment.cluster, environment: deployment.environment)
             .and_return(namespace_builder)
 
           expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
             .to receive(:new)
-            .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+            .with(cluster: deployment.cluster, kubernetes_namespace: kubernetes_namespace)
             .and_return(service)
 
           expect(service).to receive(:execute).once
@@ -112,12 +110,12 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
             it 'creates a namespace' do
               expect(Clusters::BuildKubernetesNamespaceService)
                 .to receive(:new)
-                .with(cluster, environment: deployment.environment)
+                .with(deployment.cluster, environment: deployment.environment)
                 .and_return(namespace_builder)
 
               expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
                 .to receive(:new)
-                .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+                .with(cluster: deployment.cluster, kubernetes_namespace: kubernetes_namespace)
                 .and_return(service)
 
               expect(service).to receive(:execute).once
@@ -150,7 +148,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
           expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
             .to receive(:new)
-            .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+            .with(cluster: deployment.cluster, kubernetes_namespace: kubernetes_namespace)
             .and_return(service)
 
           subject

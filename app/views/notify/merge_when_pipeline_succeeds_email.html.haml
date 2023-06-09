@@ -78,7 +78,7 @@
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;" }
                                     %img{ alt: "✓", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-check-green-inverted.gif'), style: "display:block;", width: "13" }
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
-                                    %span= _('Merge request was scheduled to merge after pipeline succeeds')
+                                    %span= _('Merge request was set to auto-merge')
                       %tr.spacer
                         %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                           &nbsp;
@@ -91,7 +91,7 @@
                                   %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
                                   %span{ style: "font-weight: 600;color:#333333;" }= _('Merge request')
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: 600;color:#3777b0;text-decoration:none" }= @merge_request.to_reference
-                                  %span= _('was scheduled to merge after pipeline succeeds by')
+                                  %span= _('was set to auto-merge by')
                                   %img.avatar{ height: "24", src: avatar_icon_for_user(@mwps_set_by, 24, only_path: false), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }
                                   %a.muted{ href: user_url(@mwps_set_by), style: "color:#333333;text-decoration:none;" }
                                     = @mwps_set_by.name

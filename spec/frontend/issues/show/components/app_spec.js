@@ -397,7 +397,16 @@ describe('Issuable output', () => {
       `('$title', async ({ isLocked }) => {
         await wrapper.setProps({ isLocked });
 
-        expect(findLockedBadge().exists()).toBe(isLocked);
+        const lockedBadge = findLockedBadge();
+
+        expect(lockedBadge.exists()).toBe(isLocked);
+
+        if (isLocked) {
+          expect(lockedBadge.attributes('title')).toBe(
+            'This issue is locked. Only project members can comment.',
+          );
+          expect(getBinding(lockedBadge.element, 'gl-tooltip')).not.toBeUndefined();
+        }
       });
 
       it.each`

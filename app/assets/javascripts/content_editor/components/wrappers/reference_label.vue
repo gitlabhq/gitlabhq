@@ -22,9 +22,10 @@ export default {
   },
   computed: {
     isScopedLabel() {
-      return isScopedLabel({ title: this.node.attrs.originalText });
+      return isScopedLabel({ title: this.node.attrs.originalText || this.node.attrs.text });
     },
   },
+  fallbackLabelBackgroundColor: '#ccc',
 };
 </script>
 <template>
@@ -32,7 +33,7 @@ export default {
     <gl-label
       size="sm"
       :scoped="isScopedLabel"
-      :background-color="node.attrs.color"
+      :background-color="node.attrs.color || $options.fallbackLabelBackgroundColor"
       :title="node.attrs.text"
       class="gl-pointer-events-none"
     />

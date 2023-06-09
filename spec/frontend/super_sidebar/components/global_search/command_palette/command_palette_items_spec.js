@@ -5,21 +5,19 @@ import MockAdapter from 'axios-mock-adapter';
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
 import {
   COMMAND_HANDLE,
-  COMMANDS_GROUP_TITLE,
   USERS_GROUP_TITLE,
   USER_HANDLE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
-import { userMapper } from '~/super_sidebar/components/global_search/command_palette/utils';
+import {
+  userMapper,
+  linksReducer,
+} from '~/super_sidebar/components/global_search/command_palette/utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
-import { COMMANDS, USERS } from './mock_data';
+import { COMMANDS, LINKS, USERS } from './mock_data';
 
-const commands = COMMANDS.map(({ text, href, keywords }) => ({
-  text,
-  href,
-  keywords: keywords.join(''),
-}));
+const links = LINKS.reduce(linksReducer, []);
 
 describe('CommandPaletteItems', () => {
   let wrapper;
@@ -36,7 +34,8 @@ describe('CommandPaletteItems', () => {
         GlDisclosureDropdownItem,
       },
       provide: {
-        commandPaletteData: COMMANDS,
+        commandPaletteCommands: COMMANDS,
+        commandPaletteLinks: LINKS,
       },
     });
   };
@@ -45,24 +44,31 @@ describe('CommandPaletteItems', () => {
   const findGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
 
-  describe('COMMANDS', () => {
+  describe('COMMANDS & LINKS', () => {
     it('renders all commands initially', () => {
       createComponent();
-      expect(findItems()).toHaveLength(COMMANDS.length);
+      const commandGroup = COMMANDS[0];
+      expect(findItems()).toHaveLength(commandGroup.items.length);
       expect(findGroup().props('group')).toEqual({
-        name: COMMANDS_GROUP_TITLE,
-        items: commands,
+        name: commandGroup.name,
+        items: commandGroup.items,
       });
     });
 
     describe('with search query', () => {
-      it('should filter by the search query', async () => {
+      it('should filter comamnds and links by the search query', async () => {
         jest.spyOn(fuzzaldrinPlus, 'filter');
         createComponent({ searchQuery: 'mr' });
         const searchQuery = 'todo';
         await wrapper.setProps({ searchQuery });
+        const commandGroup = COMMANDS[0];
         expect(fuzzaldrinPlus.filter).toHaveBeenCalledWith(
-          commands,
+          commandGroup.items,
+          searchQuery,
+          expect.objectContaining({ key: 'text' }),
+        );
+        expect(fuzzaldrinPlus.filter).toHaveBeenCalledWith(
+          links,
           searchQuery,
           expect.objectContaining({ key: 'keywords' }),
         );

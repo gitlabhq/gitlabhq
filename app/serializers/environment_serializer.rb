@@ -83,7 +83,7 @@ class EnvironmentSerializer < BaseSerializer
   def deployment_associations
     {
       user: [],
-      cluster: [],
+      deployment_cluster: { cluster: [] },
       project: {
         route: [],
         namespace: :route

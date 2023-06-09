@@ -1660,20 +1660,18 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'environment has a deployment' do
-      let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
-
       context 'with no cluster associated' do
-        let(:cluster) { nil }
+        let!(:deployment) { create(:deployment, :success, environment: environment) }
 
         it { is_expected.to be_nil }
       end
 
       context 'with a cluster associated' do
-        let(:cluster) { create(:cluster) }
+        let!(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
 
         it 'calls the service finder' do
           expect(Clusters::KnativeServicesFinder).to receive(:new)
-            .with(cluster, environment).and_return(:finder)
+            .with(deployment.cluster, environment).and_return(:finder)
 
           is_expected.to eq :finder
         end

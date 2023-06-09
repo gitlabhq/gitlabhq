@@ -12,7 +12,7 @@ RSpec.describe DeploymentClusterEntity do
     let(:request) { double(:request, current_user: current_user) }
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, name: 'the-cluster', projects: [project]) }
-    let(:deployment) { create(:deployment, cluster: cluster) }
+    let(:deployment) { create(:deployment) }
     let!(:deployment_cluster) { create(:deployment_cluster, cluster: cluster, deployment: deployment) }
 
     before do

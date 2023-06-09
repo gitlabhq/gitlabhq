@@ -207,6 +207,8 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
     describe '#unlock_job_artifacts_query' do
       subject { described_class.new(pipeline.project, pipeline.user).unlock_job_artifacts_query(pipeline_ids) }
 
+      let(:builds_table) { Ci::Build.quoted_table_name }
+
       context 'when given a single pipeline ID' do
         let(:pipeline_ids) { [older_pipeline.id] }
 
@@ -219,12 +221,12 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
             WHERE
                 "ci_job_artifacts"."job_id" IN
                     (SELECT
-                        "ci_builds"."id"
+                        #{builds_table}."id"
                     FROM
-                        "ci_builds"
+                        #{builds_table}
                     WHERE
-                        "ci_builds"."type" = 'Ci::Build'
-                        AND "ci_builds"."commit_id" = #{older_pipeline.id})
+                        #{builds_table}."type" = 'Ci::Build'
+                        AND #{builds_table}."commit_id" = #{older_pipeline.id})
             RETURNING
                 ("ci_job_artifacts"."id")
           SQL
@@ -243,12 +245,12 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
             WHERE
                 "ci_job_artifacts"."job_id" IN
                     (SELECT
-                        "ci_builds"."id"
+                        #{builds_table}."id"
                     FROM
-                        "ci_builds"
+                        #{builds_table}
                     WHERE
-                        "ci_builds"."type" = 'Ci::Build'
-                        AND "ci_builds"."commit_id" IN (#{pipeline_ids.join(', ')}))
+                        #{builds_table}."type" = 'Ci::Build'
+                        AND #{builds_table}."commit_id" IN (#{pipeline_ids.join(', ')}))
             RETURNING
                 ("ci_job_artifacts"."id")
           SQL

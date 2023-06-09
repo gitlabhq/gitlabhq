@@ -188,8 +188,15 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'cluster has multiple successful deployment with environment' do
       let!(:environment) { create(:environment) }
-      let!(:deployment) { create(:deployment, :success, cluster: cluster, environment: environment) }
-      let!(:deployment_2) { create(:deployment, :success, cluster: cluster, environment: environment) }
+      let!(:deployment) { create(:deployment, :on_cluster, :success, environment: environment) }
+      let!(:deployment_2) { create(:deployment, :on_cluster, :success, environment: environment) }
+
+      before do
+        deployment.deployment_cluster.update!(cluster: cluster)
+        deployment_2.deployment_cluster.update!(cluster: cluster)
+        deployment.reload
+        deployment_2.reload
+      end
 
       it { is_expected.to include(cluster) }
 
@@ -200,9 +207,9 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'cluster has only failed deployment with environment' do
       let!(:environment) { create(:environment) }
-      let!(:deployment) { create(:deployment, :failed, cluster: cluster, environment: environment) }
+      let!(:deployment) { create(:deployment, :failed, :on_cluster, environment: environment) }
 
-      it { is_expected.not_to include(cluster) }
+      it { is_expected.not_to include(deployment.cluster) }
     end
 
     context 'cluster does not have any deployment' do

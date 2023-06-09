@@ -11202,7 +11202,10 @@ msgstr ""
 msgid "Command line instructions"
 msgstr ""
 
-msgid "CommandPalette|Commands"
+msgid "CommandPalette|Global Commands"
+msgstr ""
+
+msgid "CommandPalette|Pages"
 msgstr ""
 
 msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user or perform generic search..."
@@ -12933,9 +12936,6 @@ msgid "Create a new issue"
 msgstr ""
 
 msgid "Create a new project"
-msgstr ""
-
-msgid "Create a new project/repository"
 msgstr ""
 
 msgid "Create a new repository"
@@ -28384,7 +28384,7 @@ msgstr ""
 msgid "Merge request title"
 msgstr ""
 
-msgid "Merge request was scheduled to merge after pipeline succeeds"
+msgid "Merge request was set to auto-merge"
 msgstr ""
 
 msgid "Merge requests"
@@ -46391,6 +46391,9 @@ msgstr ""
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
+msgid "This %{issuable} is locked. Only project members can comment."
+msgstr ""
+
 msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}."
 msgstr ""
 
@@ -46719,6 +46722,9 @@ msgid "This issue is hidden because its author has been banned"
 msgstr ""
 
 msgid "This issue is in a child epic of the filtered epic"
+msgstr ""
+
+msgid "This issue is locked. Only project members can comment."
 msgstr ""
 
 msgid "This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}"
@@ -55274,7 +55280,7 @@ msgstr ""
 msgid "vulnerability|dismissed"
 msgstr ""
 
-msgid "was scheduled to merge after pipeline succeeds by"
+msgid "was set to auto-merge by"
 msgstr ""
 
 msgid "weekly"

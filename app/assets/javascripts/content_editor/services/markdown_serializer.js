@@ -67,6 +67,7 @@ import {
   renderContent,
   renderBulletList,
   renderReference,
+  renderReferenceLabel,
   preserveUnchanged,
   bold,
   italic,
@@ -197,7 +198,7 @@ const defaultSerializerConfig = {
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
     [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
     [Reference.name]: renderReference,
-    [ReferenceLabel.name]: renderReference,
+    [ReferenceLabel.name]: renderReferenceLabel,
     [ReferenceDefinition.name]: preserveUnchanged({
       render: (state, node, parent, index, same, sourceMarkdown) => {
         const nextSibling = parent.maybeChild(index + 1);
@@ -273,19 +274,22 @@ const createChangeTracker = (doc, pristineDoc) => {
   return changeTracker;
 };
 
-/**
- * Converts a ProseMirror document to Markdown. See the
- * following documentation to learn how to implement
- * custom node and mark serializer functions.
- *
- * https://github.com/prosemirror/prosemirror-markdown
- *
- * @param {Object} params.nodes ProseMirror node serializer functions
- * @param {Object} params.marks ProseMirror marks serializer config
- *
- * @returns a markdown serializer
- */
-export default ({ serializerConfig = {} } = {}) => ({
+export default class MarkdownSerializer {
+  /**
+   * Converts a ProseMirror document to Markdown. See the
+   * following documentation to learn how to implement
+   * custom node and mark serializer functions.
+   *
+   * https://github.com/prosemirror/prosemirror-markdown
+   *
+   * @param {Object} params.nodes ProseMirror node serializer functions
+   * @param {Object} params.marks ProseMirror marks serializer config
+   *
+   * @returns a markdown serializer
+   */
+  constructor({ serializerConfig = {} } = {}) {
+    this.serializerConfig = serializerConfig;
+  }
   /**
    * Serializes a ProseMirror document as Markdown. If a node contains
    * sourcemap metadata, the serializer is capable of restoring the
@@ -301,16 +305,16 @@ export default ({ serializerConfig = {} } = {}) => ({
    * changed.
    * @returns A String that represents the serialized document as Markdown
    */
-  serialize: ({ doc, pristineDoc }) => {
+  serialize({ doc, pristineDoc }) {
     const changeTracker = createChangeTracker(doc, pristineDoc);
     const serializer = new ProseMirrorMarkdownSerializer(
       {
         ...defaultSerializerConfig.nodes,
-        ...serializerConfig.nodes,
+        ...this.serializerConfig.nodes,
       },
       {
         ...defaultSerializerConfig.marks,
-        ...serializerConfig.marks,
+        ...this.serializerConfig.marks,
       },
     );
 
@@ -318,5 +322,5 @@ export default ({ serializerConfig = {} } = {}) => ({
       tightLists: true,
       changeTracker,
     });
-  },
-});
+  }
+}

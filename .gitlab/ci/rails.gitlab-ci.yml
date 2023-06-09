@@ -9,6 +9,7 @@ setup-test-env:
     - .setup-test-env-cache
     - .rails:rules:setup-test-env
   stage: prepare
+  needs: []
   variables:
     SETUP_DB: "false"
   script:

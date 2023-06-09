@@ -157,6 +157,10 @@ function setIsInBlockTable(table, value) {
   });
 }
 
+function ensureSpace(state) {
+  if (!state.atBlank() && !state.out.endsWith(' ')) state.write(' ');
+}
+
 function unsetIsInBlockTable(table) {
   tableMap.delete(table);
 
@@ -457,7 +461,13 @@ export function renderOrderedList(state, node) {
 }
 
 export function renderReference(state, node) {
+  ensureSpace(state);
   state.write(node.attrs.originalText || node.attrs.text);
+}
+
+export function renderReferenceLabel(state, node) {
+  ensureSpace(state);
+  state.write(node.attrs.originalText || `~${state.quote(node.attrs.text)}`);
 }
 
 const generateBoldTags = (wrapTagName = openTag) => {

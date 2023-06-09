@@ -934,7 +934,7 @@ The Live Preview feature of the Web IDE was intended to provide a client-side pr
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388959).
 </div>
 
-`omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now.
+`omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now. In GitLab 16.1 or later, use the `omniauth-shibboleth-redux` gem instead.
 
 ## Removed in 15.8
 
