@@ -209,7 +209,7 @@ the merge train drops your merge request automatically. For example, this could 
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.
-- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/discussions/index.md#prevent-merge-unless-all-threads-are-resolved)
+- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)
   is enabled.
 
 You can find reason the merge request was dropped from the merge train in the system

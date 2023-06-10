@@ -352,6 +352,78 @@ only the items that are relevant to you.
 Your selection persists across all merge requests. You can also change the
 sort order by clicking the sort button on the right.
 
+## Resolve a thread
+
+> Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
+
+In a merge request, you can resolve a thread when you want to finish a conversation.
+
+Prerequisites:
+
+- You must have at least the Developer role
+  or be the author of the change being reviewed.
+- Resolvable threads can be added only to merge requests. It doesn't work
+  for comments in issues, commits, or snippets.
+
+To resolve a thread:
+
+1. Go to the thread.
+1. Do one of the following:
+   - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
+   - Below the last reply, in the **Reply** field, select **Resolve thread**.
+   - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
+
+At the top of the page, the number of unresolved threads is updated:
+
+![Count of unresolved threads](img/unresolved_threads_v15_4.png)
+
+### Move all unresolved threads in a merge request to an issue
+
+If you have multiple unresolved threads in a merge request, you can
+create an issue to resolve them separately. In the merge request, at the top of the page,
+select the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Resolve all with new issue**:
+
+![Open new issue for all unresolved threads](img/create_new_issue_v15_4.png)
+
+All threads are marked as resolved, and a link is added from the merge request to
+the newly created issue.
+
+### Move one unresolved thread in a merge request to an issue
+
+If you have one specific unresolved thread in a merge request, you can
+create an issue to resolve it separately. In the merge request, under the last reply
+to the thread, next to **Resolve thread**, select **Create issue to resolve thread** (**{issue-new}**):
+
+![Create issue for thread](img/new-issue-one-thread_v14_3.png)
+
+The thread is marked as resolved, and a link is added from the merge request to
+the newly created issue.
+
+### Prevent merge unless all threads are resolved
+
+You can prevent merge requests from being merged until all threads are
+resolved. When this setting is enabled, the **Unresolved threads** counter in a merge request
+is shown in orange when at least one thread remains unresolved.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
+1. Select **Save changes**.
+
+### Automatically resolve threads in a merge request when they become outdated
+
+You can set merge requests to automatically resolve threads when lines are modified
+with a new push.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. In the **Merge options** section, select
+   **Automatically resolve merge request diff threads when they become outdated**.
+1. Select **Save changes**.
+
+Threads are now resolved if a push makes a diff section outdated.
+Threads on lines that don't change and top-level resolvable threads are not resolved.
+
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)

@@ -8,6 +8,7 @@ RSpec.describe 'Upload a user avatar', :js, feature_category: :user_profile do
   let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }
 
   before do
+    stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
     visit(profile_path)
     attach_file('user_avatar-trigger', file.path, make_visible: true)

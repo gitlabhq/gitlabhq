@@ -149,3 +149,31 @@ When there are conflicts between the source and target branch, we show an alert
 per conflicted file on the merge request diff:
 
 ![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
+
+## Add a comment to a merge request file
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121429) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `comment_on_files`.
+On GitLab.com, this feature is not available.
+
+You can add comments to a merge request diff file. These comments persist across
+rebases and file changes.
+
+To add a comment a merge request file:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests** and find your merge request.
+1. Select **Changes**.
+1. In the header for the file you want to comment on, select **Comment** (**{comment}**).
+
+## Add a comment to an image
+
+In merge requests and commit detail views, you can add a comment to an image.
+This comment can also be a thread.
+
+1. Hover your mouse over the image.
+1. Select the location where you want to comment.
+
+An icon is displayed on the image and a comment field is displayed.

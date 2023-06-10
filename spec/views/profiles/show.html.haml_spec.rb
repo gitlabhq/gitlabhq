@@ -10,6 +10,7 @@ RSpec.describe 'profiles/show' do
     assign(:user, user)
     allow(controller).to receive(:current_user).and_return(user)
     allow(view).to receive(:experiment_enabled?)
+    stub_feature_flags(edit_user_profile_vue: false)
   end
 
   context 'when the profile page is opened' do

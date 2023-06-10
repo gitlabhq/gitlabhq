@@ -281,7 +281,7 @@
     "vue-loader-vue3": "npm:vue-loader@17",
     "vue-test-utils-compat": "0.0.13",
     "vuex-mock-store": "^0.1.0",
-    "webpack-dev-server": "4.15.0",
+    "webpack-dev-server": "4.15.1",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^6.0.2"

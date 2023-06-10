@@ -29,6 +29,19 @@ To navigate commits in a merge request:
 
 ![Merge requests commit navigation](img/commit_nav_v16_0.png)
 
+## Add a comment to a commit
+
+You can add comments and threads to a particular commit.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Commits**.
+1. Below the commits, in the **Comment** field, enter a comment.
+1. Select **Comment** or select the down arrow (**{chevron-down}**) to select **Start thread**.
+
+WARNING:
+Threads created this way are lost if the commit ID changes after a
+force push.
+
 ## View merge request commits in context
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29274) in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `context_commits`. Enabled by default.

@@ -22,6 +22,7 @@ const configuration = {
   basePath: provide.kasTunnelUrl.replace(/\/$/, ''),
   baseOptions: {
     headers: { 'GitLab-Agent-Id': '1' },
+    withCredentials: true,
   },
 };
 

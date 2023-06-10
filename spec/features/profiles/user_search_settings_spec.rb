@@ -7,6 +7,7 @@ RSpec.describe 'User searches their settings', :js, feature_category: :user_prof
 
   before do
     sign_in(user)
+    stub_feature_flags(edit_user_profile_vue: false)
   end
 
   context 'in profile page' do

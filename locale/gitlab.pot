@@ -30091,9 +30091,6 @@ msgstr ""
 msgid "New Group"
 msgstr ""
 
-msgid "New Group Name"
-msgstr ""
-
 msgid "New Identity"
 msgstr ""
 
@@ -30178,6 +30175,9 @@ msgid "New file"
 msgstr ""
 
 msgid "New group"
+msgstr ""
+
+msgid "New group name"
 msgstr ""
 
 msgid "New health check access token has been generated!"

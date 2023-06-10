@@ -147,7 +147,7 @@ When you submit your review, GitLab:
 
 ### Resolve or unresolve thread with a comment
 
-Review comments can also resolve or unresolve [resolvable threads](../../../discussions/index.md#resolve-a-thread).
+Review comments can also resolve or unresolve [resolvable threads](../index.md#resolve-a-thread).
 To resolve or unresolve a thread when replying to a comment:
 
 1. In the comment text area, write your comment.

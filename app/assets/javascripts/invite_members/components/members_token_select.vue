@@ -114,11 +114,11 @@ export default {
     },
   },
   methods: {
-    handleTextInput(query) {
+    handleTextInput(inputQuery) {
       this.hideDropdownWithNoItems = false;
-      this.query = query;
+      this.query = inputQuery.trim();
       this.loading = true;
-      this.retrieveUsers(query);
+      this.retrieveUsers();
     },
     updateTokenClasses() {
       this.selectedTokens = this.selectedTokens.map((token) => ({

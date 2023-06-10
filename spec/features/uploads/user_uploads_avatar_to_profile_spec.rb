@@ -7,6 +7,7 @@ RSpec.describe 'User uploads avatar to profile', feature_category: :user_profile
   let(:avatar_file_path) { Rails.root.join('spec', 'fixtures', 'dk.png') }
 
   before do
+    stub_feature_flags(edit_user_profile_vue: false)
     sign_in user
     visit profile_path
   end

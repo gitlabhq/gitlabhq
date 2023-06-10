@@ -130,6 +130,18 @@ describe('MembersTokenSelect', () => {
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 
+      it('calls the API with search parameter with whitespaces and is trimmed', async () => {
+        tokenSelector.vm.$emit('text-input', ' foo@bar.com ');
+
+        await waitForPromises();
+
+        expect(UserApi.getUsers).toHaveBeenCalledWith('foo@bar.com', {
+          active: true,
+          without_project_bots: true,
+        });
+        expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
+      });
+
       describe('when input text is an email', () => {
         it('allows user defined tokens', async () => {
           tokenSelector.vm.$emit('text-input', 'foo@bar.com');

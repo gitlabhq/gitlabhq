@@ -31,7 +31,7 @@ Prerequisites:
 
 - You must have at least the Developer role in the project.
 - If the project is configured to require it, all threads in the
-  merge request [must be resolved](../../discussions/index.md#resolve-a-thread).
+  merge request [must be resolved](index.md#resolve-a-thread).
 - The merge request must have received all required approvals.
 
 To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`

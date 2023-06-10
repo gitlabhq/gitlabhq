@@ -8,6 +8,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
     visit(profile_path)
   end

@@ -54,6 +54,7 @@ export default {
         basePath: this.kasTunnelUrl,
         baseOptions: {
           headers: { 'GitLab-Agent-Id': this.gitlabAgentId, ...csrf.headers },
+          withCredentials: true,
         },
       };
     },
