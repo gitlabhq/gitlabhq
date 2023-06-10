@@ -312,6 +312,16 @@ Use **From the command line** to introduce commands.
 
 Hyphenate when using as an adjective. For example, **a command-line tool**.
 
+## compute
+
+Use **compute** for the resources used by runners to run CI/CD jobs.
+
+Related terms:
+
+- [**units of compute**](#units-of-compute): How compute usage is calculated. For example, `400 units of compute`.
+- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of units of compute that a namespace can use each month.
+- **compute usage**: The number of units of compute that the namespace has used from the monthly quota.
+
 ## confirmation dialog
 
 Use **confirmation dialog** to describe the dialog box that asks you to confirm your action. For example:
@@ -1469,6 +1479,8 @@ Use **units of compute** instead of these (or similar) terms:
 - **pipeline minutes**
 - **CI pipeline minutes**
 - **pipeline minutes**
+
+For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## units of measurement
 
