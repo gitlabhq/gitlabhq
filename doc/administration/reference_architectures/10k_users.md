@@ -381,9 +381,9 @@ backend pgbouncer
     mode tcp
     option tcp-check
 
-    server pgbouncer1 10.6.0.21:6432 check
-    server pgbouncer2 10.6.0.22:6432 check
-    server pgbouncer3 10.6.0.23:6432 check
+    server pgbouncer1 10.6.0.31:6432 check
+    server pgbouncer2 10.6.0.32:6432 check
+    server pgbouncer3 10.6.0.33:6432 check
 
 backend praefect
     mode tcp

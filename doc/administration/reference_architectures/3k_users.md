@@ -180,19 +180,19 @@ connect to each other freely on these addresses.
 The following list includes descriptions of each server and its assigned IP:
 
 - `10.6.0.10`: External Load Balancer
-- `10.6.0.61`: Redis Primary
-- `10.6.0.62`: Redis Replica 1
-- `10.6.0.63`: Redis Replica 2
 - `10.6.0.11`: Consul/Sentinel 1
 - `10.6.0.12`: Consul/Sentinel 2
 - `10.6.0.13`: Consul/Sentinel 3
-- `10.6.0.31`: PostgreSQL primary
-- `10.6.0.32`: PostgreSQL secondary 1
-- `10.6.0.33`: PostgreSQL secondary 2
-- `10.6.0.21`: PgBouncer 1
-- `10.6.0.22`: PgBouncer 2
-- `10.6.0.23`: PgBouncer 3
+- `10.6.0.21`: PostgreSQL primary
+- `10.6.0.22`: PostgreSQL secondary 1
+- `10.6.0.23`: PostgreSQL secondary 2
+- `10.6.0.31`: PgBouncer 1
+- `10.6.0.32`: PgBouncer 2
+- `10.6.0.33`: PgBouncer 3
 - `10.6.0.20`: Internal Load Balancer
+- `10.6.0.61`: Redis Primary
+- `10.6.0.62`: Redis Replica 1
+- `10.6.0.63`: Redis Replica 2
 - `10.6.0.51`: Gitaly 1
 - `10.6.0.52`: Gitaly 2
 - `10.6.0.93`: Gitaly 3
@@ -392,9 +392,9 @@ backend pgbouncer
     mode tcp
     option tcp-check
 
-    server pgbouncer1 10.6.0.21:6432 check
-    server pgbouncer2 10.6.0.22:6432 check
-    server pgbouncer3 10.6.0.23:6432 check
+    server pgbouncer1 10.6.0.31:6432 check
+    server pgbouncer2 10.6.0.32:6432 check
+    server pgbouncer3 10.6.0.33:6432 check
 
 backend praefect
     mode tcp
@@ -816,9 +816,9 @@ replication and failover requires:
 
 The following IPs will be used as an example:
 
-- `10.6.0.31`: PostgreSQL primary
-- `10.6.0.32`: PostgreSQL secondary 1
-- `10.6.0.33`: PostgreSQL secondary 2
+- `10.6.0.21`: PostgreSQL primary
+- `10.6.0.22`: PostgreSQL secondary 1
+- `10.6.0.23`: PostgreSQL secondary 2
 
 First, make sure to [install](https://about.gitlab.com/install/)
 the Linux GitLab package **on each node**. Following the steps,
@@ -969,9 +969,9 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```plaintext
    | Cluster       | Member                            |  Host     | Role   | State   | TL  | Lag in MB | Pending restart |
    |---------------|-----------------------------------|-----------|--------|---------|-----|-----------|-----------------|
-   | postgresql-ha | <PostgreSQL primary hostname>     | 10.6.0.31 | Leader | running | 175 |           | *               |
-   | postgresql-ha | <PostgreSQL secondary 1 hostname> | 10.6.0.32 |        | running | 175 | 0         | *               |
-   | postgresql-ha | <PostgreSQL secondary 2 hostname> | 10.6.0.33 |        | running | 175 | 0         | *               |
+   | postgresql-ha | <PostgreSQL primary hostname>     | 10.6.0.21 | Leader | running | 175 |           | *               |
+   | postgresql-ha | <PostgreSQL secondary 1 hostname> | 10.6.0.22 |        | running | 175 | 0         | *               |
+   | postgresql-ha | <PostgreSQL secondary 2 hostname> | 10.6.0.23 |        | running | 175 | 0         | *               |
    ```
 
 If the 'State' column for any node doesn't say "running", check the
@@ -991,9 +991,9 @@ for tracking and handling reads/writes to the primary database.
 
 The following IPs will be used as an example:
 
-- `10.6.0.21`: PgBouncer 1
-- `10.6.0.22`: PgBouncer 2
-- `10.6.0.23`: PgBouncer 3
+- `10.6.0.31`: PgBouncer 1
+- `10.6.0.32`: PgBouncer 2
+- `10.6.0.33`: PgBouncer 3
 
 1. On each PgBouncer node, edit `/etc/gitlab/gitlab.rb`, and replace
    `<consul_password_hash>` and `<pgbouncer_password_hash>` with the
@@ -1769,7 +1769,7 @@ Updates to example must be made at:
    gitlab_rails['db_host'] = '10.6.0.40' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
-   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.31', '10.6.0.32', '10.6.0.33'] } # PostgreSQL IPs
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.21', '10.6.0.22', '10.6.0.23'] } # PostgreSQL IPs
 
    ## Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1912,7 +1912,7 @@ On each node perform the following:
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
-   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.31', '10.6.0.32', '10.6.0.33'] } # PostgreSQL IPs
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.21', '10.6.0.22', '10.6.0.23'] } # PostgreSQL IPs
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -2115,9 +2115,9 @@ running [Prometheus](../monitoring/prometheus/index.md) and
          'job_name': 'pgbouncer',
          'static_configs' => [
             'targets' => [
-            "10.6.0.21:9188",
-            "10.6.0.22:9188",
-            "10.6.0.23:9188",
+            "10.6.0.31:9188",
+            "10.6.0.32:9188",
+            "10.6.0.33:9188",
             ],
          ],
       },
