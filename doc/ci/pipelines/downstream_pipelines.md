@@ -389,7 +389,7 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline
+## Fetch artifacts from an upstream pipeline **(PREMIUM)**
 
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:

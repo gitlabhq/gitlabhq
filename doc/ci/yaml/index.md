@@ -4269,7 +4269,7 @@ The keywords available for use in trigger jobs are:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
   in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
-  Alternatively, use [`trigger:project](#triggerproject).
+  Alternatively, use [`trigger:project`](#triggerproject).
 - For child pipelines, use [`trigger:include`](#triggerinclude).
 
 **Example of `trigger`**:
