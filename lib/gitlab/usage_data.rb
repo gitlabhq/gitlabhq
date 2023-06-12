@@ -369,7 +369,6 @@ module Gitlab
             package: usage_activity_by_stage_package(time_period),
             plan: usage_activity_by_stage_plan(time_period),
             release: usage_activity_by_stage_release(time_period),
-            secure: usage_activity_by_stage_secure(time_period),
             verify: usage_activity_by_stage_verify(time_period)
           }
         }
@@ -513,13 +512,6 @@ module Gitlab
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      # Currently too complicated and to get reliable counts for these stats:
-      # container_scanning_jobs, dast_jobs, dependency_scanning_jobs, license_management_jobs, sast_jobs, secret_detection_jobs
-      # Once https://gitlab.com/gitlab-org/gitlab/merge_requests/17568 is merged, this might be doable
-      def usage_activity_by_stage_secure(time_period)
-        {}
-      end
 
       def with_metadata
         result = nil

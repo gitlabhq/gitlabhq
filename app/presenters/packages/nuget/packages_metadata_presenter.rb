@@ -59,8 +59,8 @@ module Packages
       end
 
       def sorted_versions
-        versions = @packages.map(&:version).compact
-        VersionSorter.sort(versions)
+        versions = @packages.filter_map(&:version)
+        sort_versions(versions)
       end
       strong_memoize_attr :sorted_versions
     end

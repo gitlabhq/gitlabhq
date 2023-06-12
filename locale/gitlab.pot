@@ -30465,6 +30465,9 @@ msgstr ""
 msgid "No labels with such name or description"
 msgstr ""
 
+msgid "No linked issue matches the provided parameter."
+msgstr ""
+
 msgid "No matches found"
 msgstr ""
 
@@ -38112,6 +38115,9 @@ msgstr ""
 msgid "Remove link"
 msgstr ""
 
+msgid "Remove link with another issue"
+msgstr ""
+
 msgid "Remove list"
 msgstr ""
 
@@ -38202,6 +38208,9 @@ msgstr ""
 msgid "Removed group can not be restored!"
 msgstr ""
 
+msgid "Removed link with %{issue_ref}."
+msgstr ""
+
 msgid "Removed parent epic %{epic_ref}."
 msgstr ""
 
@@ -38245,6 +38254,9 @@ msgid "Removes all labels."
 msgstr ""
 
 msgid "Removes an issue from an epic."
+msgstr ""
+
+msgid "Removes link with %{issue_ref}."
 msgstr ""
 
 msgid "Removes parent epic %{epic_ref}."

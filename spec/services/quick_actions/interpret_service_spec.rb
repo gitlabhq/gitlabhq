@@ -2131,6 +2131,46 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:user) { developer }
     end
 
+    context 'unlink command' do
+      let_it_be(:private_issue) { create(:issue, project: create(:project, :private)) }
+      let_it_be(:other_issue) { create(:issue, project: project) }
+      let(:content) { "/unlink #{other_issue.to_reference(issue)}" }
+
+      subject(:unlink_issues) { service.execute(content, issue) }
+
+      shared_examples 'command with failure' do
+        it 'does not destroy issues relation' do
+          expect { unlink_issues }.not_to change { IssueLink.count }
+        end
+
+        it 'return correct execution message' do
+          expect(unlink_issues[2]).to eq('No linked issue matches the provided parameter.')
+        end
+      end
+
+      context 'when command includes linked issue' do
+        let_it_be(:link1) { create(:issue_link, source: issue, target: other_issue) }
+        let_it_be(:link2) { create(:issue_link, source: issue, target: private_issue) }
+
+        it 'executes command successfully' do
+          expect { unlink_issues }.to change { IssueLink.count }.by(-1)
+          expect(unlink_issues[2]).to eq("Removed link with #{other_issue.to_reference(issue)}.")
+          expect(issue.notes.last.note).to eq("removed the relation with #{other_issue.to_reference}")
+          expect(other_issue.notes.last.note).to eq("removed the relation with #{issue.to_reference}")
+        end
+
+        context 'when user has no access' do
+          let(:content) { "/unlink #{private_issue.to_reference(issue)}" }
+
+          it_behaves_like 'command with failure'
+        end
+      end
+
+      context 'when provided issue is not linked' do
+        it_behaves_like 'command with failure'
+      end
+    end
+
     context 'invite_email command' do
       let_it_be(:issuable) { issue }
 
@@ -2877,14 +2917,42 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    describe 'relate command' do
-      let_it_be(:other_issue) { create(:issue, project: project) }
-      let(:content) { "/relate #{other_issue.to_reference}" }
+    describe 'relate and unlink commands' do
+      let_it_be(:other_issue) { create(:issue, project: project).to_reference(issue) }
+      let(:relate_content) { "/relate #{other_issue}" }
+      let(:unlink_content) { "/unlink #{other_issue}" }
 
-      it 'includes explain message' do
-        _, explanations = service.explain(content, issue)
+      context 'when user has permissions' do
+        it '/relate command is available' do
+          _, explanations = service.explain(relate_content, issue)
 
-        expect(explanations).to eq(["Marks this issue as related to #{other_issue.to_reference}."])
+          expect(explanations).to eq(["Marks this issue as related to #{other_issue}."])
+        end
+
+        it '/unlink command is available' do
+          _, explanations = service.explain(unlink_content, issue)
+
+          expect(explanations).to eq(["Removes link with #{other_issue}."])
+        end
+      end
+
+      context 'when user has insufficient permissions' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :admin_issue_link, issue).and_return(false)
+        end
+
+        it '/relate command is not available' do
+          _, explanations = service.explain(relate_content, issue)
+
+          expect(explanations).to be_empty
+        end
+
+        it '/unlink command is not available' do
+          _, explanations = service.explain(unlink_content, issue)
+
+          expect(explanations).to be_empty
+        end
       end
     end
   end

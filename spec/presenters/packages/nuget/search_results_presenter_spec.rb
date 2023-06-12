@@ -30,12 +30,12 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :packa
       expect_package_result(pkg_c, packages_c.first.name, packages_c.map(&:version))
     end
 
-    def expect_package_result(package_json, name, versions, tags = [], with_metadatum: false)
+    def expect_package_result(package_json, name, versions, tags = [], with_metadatum: false) # rubocop:disable Metrics/AbcSize
       expect(package_json[:type]).to eq 'Package'
       expect(package_json[:name]).to eq(name)
       expect(package_json[:total_downloads]).to eq 0
       expect(package_json[:verified]).to be_truthy
-      expect(package_json[:version]).to eq VersionSorter.sort(versions).last
+      expect(package_json[:version]).to eq presenter.send(:sort_versions, versions).last
       versions.zip(package_json[:versions]).each do |version, version_json|
         expect(version_json[:json_url]).to end_with("#{version}.json")
         expect(version_json[:downloads]).to eq 0

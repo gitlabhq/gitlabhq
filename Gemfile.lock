@@ -367,7 +367,7 @@ GEM
       thor (>= 0.19, < 2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    devfile (0.0.18.pre.alpha1)
+    devfile (0.0.19.pre.alpha1)
     device_detector (1.0.0)
     devise (4.8.1)
       bcrypt (~> 3.0)
@@ -1712,7 +1712,7 @@ DEPENDENCIES
   declarative_policy (~> 1.1.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks
-  devfile (~> 0.0.18.pre.alpha1)
+  devfile (~> 0.0.19.pre.alpha1)
   device_detector
   devise (~> 4.8.1)
   devise-pbkdf2-encryptable (~> 0.0.0)!

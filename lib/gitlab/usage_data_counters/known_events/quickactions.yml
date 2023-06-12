@@ -133,3 +133,5 @@
   aggregation: weekly
 - name: i_quickactions_blocks
   aggregation: weekly
+- name: i_quickactions_unlink
+  aggregation: weekly

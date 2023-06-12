@@ -4,6 +4,7 @@ module Packages
   module Nuget
     module PresenterHelpers
       include ::API::Helpers::RelatedResourcesHelpers
+      include Packages::Nuget::VersionHelpers
 
       PACKAGE_DEPENDENCY_GROUP = 'PackageDependencyGroup'
       PACKAGE_DEPENDENCY = 'PackageDependency'

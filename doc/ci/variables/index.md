@@ -353,9 +353,9 @@ kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KU
 ```
 
 WARNING:
-Be careful when assigning the value of a file variable to another variable. The other
-variable takes the content of the file as its value, **not** the path to the file.
-[Issue 29407](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) proposes to change this behavior.
+Be careful when assigning the value of a file variable to another variable in GitLab 15.6 or older.
+The other variable takes the content of the file as its value, **not** the path to the file.
+In GitLab 15.7 and newer, this behavior [was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) and the other variable now takes the path to the file as the value.
 
 #### Use a `.gitlab-ci.yml` variable as a file type variable
 

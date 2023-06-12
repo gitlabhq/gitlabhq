@@ -45,8 +45,8 @@ module Packages
       end
 
       def latest_version(packages)
-        versions = packages.map(&:version).compact
-        VersionSorter.sort(versions).last
+        versions = packages.filter_map(&:version)
+        sort_versions(versions).last
       end
     end
   end

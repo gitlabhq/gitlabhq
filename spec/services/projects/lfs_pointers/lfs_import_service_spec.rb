@@ -59,6 +59,20 @@ RSpec.describe Projects::LfsPointers::LfsImportService, feature_category: :sourc
         expect(result[:message]).to eq error_message
       end
     end
+
+    context 'when an GRPC::Core::CallError exception raised' do
+      it 'returns error' do
+        error_message = "error message"
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
+          expect(instance).to receive(:each_list_item).and_raise(GRPC::Core::CallError, error_message)
+        end
+
+        result = subject.execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to eq error_message
+      end
+    end
   end
 
   context 'when lfs is not enabled for the project' do

@@ -14,7 +14,7 @@ Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment. Our [Mobile DevOps solution](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
-We want to keep iterating to get SaaS runners on macOS 
+We want to keep iterating to get SaaS runners on macOS
 [generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/8267).

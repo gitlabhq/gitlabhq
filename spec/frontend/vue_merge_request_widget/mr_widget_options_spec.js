@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
+import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
@@ -31,6 +32,7 @@ import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
+import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -63,6 +65,7 @@ jest.mock('@sentry/browser', () => ({
 Vue.use(VueApollo);
 
 describe('MrWidgetOptions', () => {
+  let mockedApprovalsSubscription;
   let stateQueryHandler;
   let queryResponse;
   let wrapper;
@@ -94,8 +97,7 @@ describe('MrWidgetOptions', () => {
   });
 
   const createComponent = (mrData = mockData, options = {}, data = {}, fullMount = true) => {
-    const mounting = fullMount ? mount : shallowMount;
-
+    mockedApprovalsSubscription = createMockApolloSubscription();
     queryResponse = {
       data: {
         project: {
@@ -108,6 +110,31 @@ describe('MrWidgetOptions', () => {
       },
     };
     stateQueryHandler = jest.fn().mockResolvedValue(queryResponse);
+
+    const mounting = fullMount ? mount : shallowMount;
+    const queryHandlers = [
+      [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
+      [getStateQuery, stateQueryHandler],
+      [readyToMergeQuery, jest.fn().mockResolvedValue(readyToMergeResponse)],
+      [
+        userPermissionsQuery,
+        jest.fn().mockResolvedValue({
+          data: { project: { mergeRequest: { userPermissions: {} } } },
+        }),
+      ],
+      [
+        conflictsStateQuery,
+        jest.fn().mockResolvedValue({ data: { project: { mergeRequest: {} } } }),
+      ],
+      ...(options.apolloMock || []),
+    ];
+    const subscriptionHandlers = [[approvedBySubscription, () => mockedApprovalsSubscription]];
+    const apolloProvider = createMockApollo(queryHandlers);
+
+    subscriptionHandlers.forEach(([query, stream]) => {
+      apolloProvider.defaultClient.setRequestHandler(query, stream);
+    });
+
     wrapper = mounting(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
@@ -120,22 +147,7 @@ describe('MrWidgetOptions', () => {
       },
 
       ...options,
-      apolloProvider: createMockApollo([
-        [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
-        [getStateQuery, stateQueryHandler],
-        [readyToMergeQuery, jest.fn().mockResolvedValue(readyToMergeResponse)],
-        [
-          userPermissionsQuery,
-          jest.fn().mockResolvedValue({
-            data: { project: { mergeRequest: { userPermissions: {} } } },
-          }),
-        ],
-        [
-          conflictsStateQuery,
-          jest.fn().mockResolvedValue({ data: { project: { mergeRequest: {} } } }),
-        ],
-        ...(options.apolloMock || []),
-      ]),
+      apolloProvider,
     });
 
     return axios.waitForAll();

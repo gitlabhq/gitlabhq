@@ -71,5 +71,13 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :pa
         end
       end
     end
+
+    it 'returns sorted versions' do
+      item = subject.first
+      sorted_versions = presenter.send(:sort_versions, packages.map(&:version))
+
+      expect(item[:lower_version]).to eq sorted_versions.first
+      expect(item[:upper_version]).to eq sorted_versions.last
+    end
   end
 end

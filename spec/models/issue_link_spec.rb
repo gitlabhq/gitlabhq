@@ -41,5 +41,19 @@ RSpec.describe IssueLink do
         expect(result).to contain_exactly(issue_link_1, issue_link_2)
       end
     end
+
+    describe '.for_issues' do
+      let_it_be(:issue) { create(:issue) }
+      let_it_be(:source_link) { create(:issue_link, source: issue, target: issue1) }
+      let_it_be(:target_link) { create(:issue_link, source: issue2, target: issue) }
+
+      it 'includes links when issue is source' do
+        expect(described_class.for_issues(issue, issue1)).to contain_exactly(source_link)
+      end
+
+      it 'includes links when issue is target' do
+        expect(described_class.for_issues(issue, issue2)).to contain_exactly(target_link)
+      end
+    end
   end
 end

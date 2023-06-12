@@ -79,16 +79,11 @@ input {
 button {
   text-transform: none;
 }
-[role="button"] {
-  cursor: pointer;
-}
 button:not(:disabled),
-[type="button"]:not(:disabled),
 [type="submit"]:not(:disabled) {
   cursor: pointer;
 }
 button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
   padding: 0;
   border-style: none;
@@ -216,6 +211,10 @@ hr {
 .form-group {
   margin-bottom: 1rem;
 }
+.form-text {
+  display: block;
+  margin-top: 0.25rem;
+}
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -248,8 +247,7 @@ fieldset:disabled a.btn {
 .btn-block + .btn-block {
   margin-top: 0.5rem;
 }
-input.btn-block[type="submit"],
-input.btn-block[type="button"] {
+input.btn-block[type="submit"] {
   width: 100%;
 }
 .custom-control {
@@ -584,9 +582,7 @@ body {
   font-size: 0.875rem;
 }
 button,
-html [type="button"],
-[type="submit"],
-[role="button"] {
+[type="submit"] {
   cursor: pointer;
 }
 h1,
@@ -727,9 +723,6 @@ label {
 label.custom-control-label {
   font-weight: 400;
 }
-label.label-bold {
-  font-weight: 600;
-}
 .form-control {
   border-radius: 4px;
   padding: 6px 10px;
@@ -780,17 +773,11 @@ svg {
 .gl-display-flex {
   display: flex;
 }
-.gl-display-inline-block {
-  display: inline-block;
-}
 .gl-align-items-center {
   align-items: center;
 }
 .gl-justify-content-space-between {
   justify-content: space-between;
-}
-.gl-float-right {
-  float: right;
 }
 .gl-w-10 {
   width: 3.5rem;
@@ -806,15 +793,12 @@ svg {
     width: 100%;
   }
 }
+.gl-p-5 {
+  padding: 1rem;
+}
 .gl-px-5 {
   padding-left: 1rem;
   padding-right: 1rem;
-}
-.gl-pt-5 {
-  padding-top: 1rem;
-}
-.gl-pb-5 {
-  padding-bottom: 1rem;
 }
 .gl-py-5 {
   padding-top: 1rem;
@@ -828,9 +812,6 @@ svg {
 }
 .gl-mr-auto {
   margin-right: auto;
-}
-.gl-mb-1 {
-  margin-bottom: 0.125rem;
 }
 .gl-mb-2 {
   margin-bottom: 0.25rem;
@@ -848,6 +829,9 @@ svg {
 }
 .gl-text-center {
   text-align: center;
+}
+.gl-text-right {
+  text-align: right;
 }
 .gl-font-size-h2 {
   font-size: 1.1875rem;

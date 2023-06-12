@@ -57,13 +57,10 @@ describe('MRWidget approvals', () => {
     const apolloProvider = createMockApollo(requestHandlers);
     const provide = {
       ...options.provide,
-      glFeatures: {
-        realtimeApprovals: options.provide?.glFeatures?.realtimeApprovals || false,
-      },
     };
 
-    subscriptionHandlers.forEach(([document, stream]) => {
-      apolloProvider.defaultClient.setRequestHandler(document, stream);
+    subscriptionHandlers.forEach(([query, stream]) => {
+      apolloProvider.defaultClient.setRequestHandler(query, stream);
     });
 
     wrapper = shallowMount(Approvals, {
@@ -386,42 +383,21 @@ describe('MRWidget approvals', () => {
   });
 
   describe('realtime approvals update', () => {
-    describe('realtime_approvals feature disabled', () => {
-      beforeEach(() => {
-        jest.spyOn(console, 'warn').mockImplementation();
-        createComponent();
-      });
+    const subscriptionApproval = { approved: true };
+    const subscriptionResponse = {
+      data: { mergeRequestApprovalStateUpdated: subscriptionApproval },
+    };
 
-      it('does not subscribe to the approvals update socket', () => {
-        expect(mr.setApprovals).not.toHaveBeenCalled();
-        mockedSubscription.next({});
-        // eslint-disable-next-line no-console
-        expect(console.warn).toHaveBeenCalledWith(
-          expect.stringMatching('Mock subscription has no observer, this will have no effect'),
-        );
-        expect(mr.setApprovals).not.toHaveBeenCalled();
-      });
+    beforeEach(() => {
+      createComponent();
     });
 
-    describe('realtime_approvals feature enabled', () => {
-      const subscriptionApproval = { approved: true };
-      const subscriptionResponse = {
-        data: { mergeRequestApprovalStateUpdated: subscriptionApproval },
-      };
+    it('updates approvals when the subscription data is streamed to the Apollo client', () => {
+      expect(mr.setApprovals).not.toHaveBeenCalled();
 
-      beforeEach(() => {
-        createComponent({
-          provide: { glFeatures: { realtimeApprovals: true } },
-        });
-      });
+      mockedSubscription.next(subscriptionResponse);
 
-      it('updates approvals when the subscription data is streamed to the Apollo client', () => {
-        expect(mr.setApprovals).not.toHaveBeenCalled();
-
-        mockedSubscription.next(subscriptionResponse);
-
-        expect(mr.setApprovals).toHaveBeenCalledWith(subscriptionApproval);
-      });
+      expect(mr.setApprovals).toHaveBeenCalledWith(subscriptionApproval);
     });
   });
 });

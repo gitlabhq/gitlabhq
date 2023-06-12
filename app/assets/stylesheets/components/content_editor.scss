@@ -56,17 +56,15 @@
     list-style: none;
     padding: 0;
 
-    li {
-      margin: 0 !important;
-    }
-  }
-
-  [data-type='taskList'] {
+    ul,
     p {
       margin-bottom: 0;
     }
 
-    li {
+    > li {
+      display: flex;
+      margin: 0;
+
       > label,
       > div {
         display: inline-block;
