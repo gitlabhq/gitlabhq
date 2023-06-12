@@ -12,6 +12,8 @@ import {
   ROUGE_TO_HLJS_LANGUAGE_MAP,
   LINES_PER_CHUNK,
   LEGACY_FALLBACKS,
+  CODEOWNERS_FILE_NAME,
+  CODEOWNERS_LANGUAGE,
 } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -130,6 +132,18 @@ describe('Source Viewer component', () => {
       const languageDefinition = await import(`highlight.js/lib/languages/ruby`);
 
       expect(hljs.registerLanguage).toHaveBeenCalledWith('ruby', languageDefinition.default);
+    });
+
+    it('registers codeowners language definition if file name is CODEOWNERS', async () => {
+      await createComponent({ name: CODEOWNERS_FILE_NAME });
+      const languageDefinition = await import(
+        '~/vue_shared/components/source_viewer/languages/codeowners'
+      );
+
+      expect(hljs.registerLanguage).toHaveBeenCalledWith(
+        CODEOWNERS_LANGUAGE,
+        languageDefinition.default,
+      );
     });
 
     it('highlights the first chunk', () => {

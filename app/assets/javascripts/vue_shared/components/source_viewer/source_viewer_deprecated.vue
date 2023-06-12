@@ -12,6 +12,8 @@ import {
   ROUGE_TO_HLJS_LANGUAGE_MAP,
   LINES_PER_CHUNK,
   LEGACY_FALLBACKS,
+  CODEOWNERS_FILE_NAME,
+  CODEOWNERS_LANGUAGE,
 } from './constants';
 import Chunk from './components/chunk_deprecated.vue';
 import { registerPlugins } from './plugins/index';
@@ -25,6 +27,7 @@ import { registerPlugins } from './plugins/index';
  * it does not trigger a repaint on a parent element that wraps all 1000 lines.
  */
 export default {
+  name: 'SourceViewerDeprecated',
   components: {
     GlLoadingIcon,
     Chunk,
@@ -40,7 +43,6 @@ export default {
     return {
       languageDefinition: null,
       content: this.blob.rawTextBlob,
-      language: ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()],
       hljs: null,
       firstChunk: null,
       chunks: {},
@@ -52,6 +54,11 @@ export default {
   computed: {
     splitContent() {
       return this.content.split(/\r?\n/);
+    },
+    language() {
+      return this.blob.name === this.$options.codeownersFileName
+        ? this.$options.codeownersLanguage
+        : ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()];
     },
     lineNumbers() {
       return this.splitContent.length;
@@ -185,6 +192,8 @@ export default {
   },
   userColorScheme: window.gon.user_color_scheme,
   currentlySelectedLine: null,
+  codeownersFileName: CODEOWNERS_FILE_NAME,
+  codeownersLanguage: CODEOWNERS_LANGUAGE,
 };
 </script>
 <template>

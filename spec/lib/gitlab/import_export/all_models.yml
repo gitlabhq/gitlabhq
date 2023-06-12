@@ -803,6 +803,7 @@ project:
 - analytics_dashboards_pointer
 - design_management_repository
 - design_management_repository_state
+- compliance_standards_adherence
 award_emoji:
 - awardable
 - user

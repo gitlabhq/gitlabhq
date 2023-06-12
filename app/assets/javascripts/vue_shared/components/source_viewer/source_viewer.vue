@@ -6,6 +6,7 @@ import { EVENT_ACTION, EVENT_LABEL_VIEWER } from './constants';
 import Chunk from './components/chunk.vue';
 
 export default {
+  name: 'SourceViewer',
   components: {
     Chunk,
   },

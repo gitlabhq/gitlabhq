@@ -147,3 +147,7 @@ export const BIDI_CHAR_TOOLTIP = 'Potentially unwanted character detected: Unico
  * HAML: https://github.com/highlightjs/highlight.js/issues/3783
  * */
 export const LEGACY_FALLBACKS = ['python', 'haml'];
+
+export const CODEOWNERS_FILE_NAME = 'CODEOWNERS';
+
+export const CODEOWNERS_LANGUAGE = 'codeowners';
