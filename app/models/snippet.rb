@@ -261,17 +261,12 @@ class Snippet < ApplicationRecord
     notes.includes(:author)
   end
 
-  def check_for_spam?(user:)
-    visibility_level_changed?(to: Snippet::PUBLIC) ||
-      (public? && (title_changed? || description_changed?))
+  def check_for_spam?(*)
+    visibility_level_changed?(to: Snippet::PUBLIC) || (public? && spammable_attribute_changed?)
   end
 
   def supports_recaptcha?
     true
-  end
-
-  def spammable_entity_type
-    'snippet'
   end
 
   def to_ability_name

@@ -241,6 +241,7 @@ merge_requests:
 - compliance_violations
 - created_environments
 - predictions
+- user_agent_detail
 external_pull_requests:
 - project
 merge_request_diff:

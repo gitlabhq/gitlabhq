@@ -35,11 +35,12 @@ module Packages
       end
 
       def resources
-        available_services.map { |service| build_service(service) }
-                          .flatten
+        available_services.flat_map { |service| build_service(service) }
       end
 
       private
+
+      attr_reader :project_or_group
 
       def available_services
         case scope
@@ -77,13 +78,13 @@ module Packages
       end
 
       def scope
-        return :project if @project_or_group.is_a?(::Project)
-        return :group if @project_or_group.is_a?(::Group)
+        return :project if project_or_group.is_a?(::Project)
+        return :group if project_or_group.is_a?(::Group)
       end
 
       def download_service_url
         params = {
-          id: @project_or_group.id,
+          id: project_or_group.id,
           package_name: nil,
           package_version: nil,
           package_filename: nil
@@ -97,7 +98,7 @@ module Packages
 
       def metadata_service_url
         params = {
-          id: @project_or_group.id,
+          id: project_or_group.id,
           package_name: nil,
           package_version: nil
         }
@@ -119,18 +120,18 @@ module Packages
       def search_service_url
         case scope
         when :group
-          api_v4_groups___packages_nuget_query_path(id: @project_or_group.id)
+          api_v4_groups___packages_nuget_query_path(id: project_or_group.id)
         when :project
-          api_v4_projects_packages_nuget_query_path(id: @project_or_group.id)
+          api_v4_projects_packages_nuget_query_path(id: project_or_group.id)
         end
       end
 
       def publish_service_url
-        api_v4_projects_packages_nuget_path(id: @project_or_group.id)
+        api_v4_projects_packages_nuget_path(id: project_or_group.id)
       end
 
       def symbol_service_url
-        api_v4_projects_packages_nuget_symbolpackage_path(id: @project_or_group.id)
+        api_v4_projects_packages_nuget_symbolpackage_path(id: project_or_group.id)
       end
     end
   end

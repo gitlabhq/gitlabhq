@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { LEAVE_MODAL_ID } from '../../constants';
 import LeaveModal from '../modals/leave_modal.vue';
 
@@ -7,7 +7,7 @@ export default {
   name: 'LeaveGroupDropdownItem',
   modalId: LEAVE_MODAL_ID,
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
     LeaveModal,
   },
   directives: {
@@ -27,10 +27,12 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item v-gl-modal="$options.modalId">
-    <span class="gl-text-red-500">
-      <slot></slot>
-    </span>
-    <leave-modal :member="member" :permissions="permissions" />
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item v-gl-modal="$options.modalId">
+    <template #list-item>
+      <span class="gl-text-red-500">
+        <slot></slot>
+      </span>
+      <leave-modal :member="member" :permissions="permissions" />
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

@@ -66,6 +66,24 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.reload).to be_preparing
       end
 
+      describe 'checking for spam' do
+        it 'checks for spam' do
+          expect_next_instance_of(Spam::SpamActionService, spammable: instance_of(MergeRequest), user: user, action: :create) do |instance|
+            expect(instance).to receive(:execute)
+          end
+
+          service.execute
+        end
+
+        it 'does not persist when spam' do
+          allow_next_instance_of(MergeRequest) do |instance|
+            allow(instance).to receive(:spam?).and_return(true)
+          end
+
+          expect(merge_request).not_to be_persisted
+        end
+      end
+
       describe 'when marked with /draft' do
         context 'in title and in description' do
           let(:opts) do

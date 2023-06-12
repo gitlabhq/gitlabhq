@@ -856,11 +856,9 @@ class Issue < ApplicationRecord
   end
 
   def spammable_attribute_changed?
-    title_changed? ||
-      description_changed? ||
-      # NOTE: We need to check them for spam when issues are made non-confidential, because spam
-      # may have been added while they were confidential and thus not being checked for spam.
-      confidential_changed?(from: true, to: false)
+    # NOTE: We need to check them for spam when issues are made non-confidential, because spam
+    # may have been added while they were confidential and thus not being checked for spam.
+    super || confidential_changed?(from: true, to: false)
   end
 
   def ensure_metrics!

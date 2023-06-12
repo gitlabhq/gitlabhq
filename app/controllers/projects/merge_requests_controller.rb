@@ -53,6 +53,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_activity_filters, current_user)
     push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)
     push_frontend_feature_flag(:comment_on_files, current_user)
+    push_frontend_feature_flag(:ci_job_failures_in_mr, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]

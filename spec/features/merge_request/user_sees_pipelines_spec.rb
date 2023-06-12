@@ -41,7 +41,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
         wait_for_requests
 
-        page.within('[data-testid="pipeline-table-row"]') do
+        page.within(find('[data-testid="pipeline-table-row"]', match: :first)) do
           expect(page).to have_selector('[data-testid="ci-badge-passed"]')
           expect(page).to have_content(pipeline.id)
           expect(page).to have_content('API')
@@ -161,7 +161,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         create_merge_request_pipeline
         act_on_security_warning(action: 'Cancel')
 
-        check_no_pipelines
+        check_no_new_pipeline_created
       end
     end
 
@@ -198,9 +198,9 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
     def check_pipeline(expected_project:)
       page.within('.ci-table') do
-        expect(page).to have_selector('.commit', count: 2)
+        expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 4)
 
-        page.within(first('.commit')) do
+        page.within(first('[data-testid="pipeline-table-row"]')) do
           page.within('.pipeline-tags') do
             expect(page.find('[data-testid="pipeline-url-link"]')[:href]).to include(expected_project.full_path)
             expect(page).to have_content('merge request')
@@ -227,9 +227,9 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       end
     end
 
-    def check_no_pipelines
+    def check_no_new_pipeline_created
       page.within('.ci-table') do
-        expect(page).to have_selector('.commit', count: 1)
+        expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
       end
     end
   end

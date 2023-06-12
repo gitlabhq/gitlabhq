@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import {
@@ -14,7 +14,7 @@ export default {
   name: 'UserActionDropdown',
   i18n: I18N,
   components: {
-    GlDropdown,
+    GlDisclosureDropdown,
     DisableTwoFactorDropdownItem: () =>
       import(
         'ee_component/members/components/action_dropdowns/disable_two_factor_dropdown_item.vue'
@@ -99,15 +99,15 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     v-if="showDropdown"
     v-gl-tooltip="$options.i18n.actions"
-    :text="$options.i18n.actions"
+    :toggle-text="$options.i18n.actions"
     text-sr-only
     icon="ellipsis_v"
     category="tertiary"
     no-caret
-    right
+    placement="right"
     data-testid="user-action-dropdown"
     data-qa-selector="user_action_dropdown"
   >
@@ -131,15 +131,16 @@ export default {
         :user-deletion-obstacles="userDeletionObstaclesUserData"
         :modal-message="modalRemoveUser"
         :prevent-removal="permissions.canRemoveBlockedByLastOwner"
-        >{{ $options.i18n.removeMember }}</remove-member-dropdown-item
       >
+        {{ $options.i18n.removeMember }}
+      </remove-member-dropdown-item>
     </template>
 
-    <ldap-override-dropdown-item v-else-if="showLdapOverride" :member="member">{{
-      $options.i18n.editPermissions
-    }}</ldap-override-dropdown-item>
-    <ban-member-dropdown-item v-if="showBan" :member="member">{{
-      $options.i18n.banMember
-    }}</ban-member-dropdown-item>
-  </gl-dropdown>
+    <ldap-override-dropdown-item v-else-if="showLdapOverride" :member="member">
+      {{ $options.i18n.editPermissions }}
+    </ldap-override-dropdown-item>
+    <ban-member-dropdown-item v-if="showBan" :member="member">
+      {{ $options.i18n.banMember }}
+    </ban-member-dropdown-item>
+  </gl-disclosure-dropdown>
 </template>

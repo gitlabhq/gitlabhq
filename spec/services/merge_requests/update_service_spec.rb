@@ -425,6 +425,24 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(update_merge_request(opts).reviewers).to eq []
         end
       end
+
+      describe 'checking for spam' do
+        it 'checks for spam' do
+          expect_next_instance_of(Spam::SpamActionService, spammable: merge_request, user: user, action: :update) do |instance|
+            expect(instance).to receive(:execute)
+          end
+
+          update_merge_request(opts)
+        end
+
+        it 'marks the merge request invalid' do
+          merge_request.spam!
+
+          update_merge_request(title: 'New title')
+
+          expect(merge_request).to be_invalid
+        end
+      end
     end
 
     context 'after_save callback to store_mentions' do

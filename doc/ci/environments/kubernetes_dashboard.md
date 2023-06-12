@@ -5,23 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Kubernetes Dashboard **(FREE)**
+# Dashboard for Kubernetes **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`.
 
-Use the Kubernetes Dashboard to understand the status of your clusters with an intuitive visual interface.
-The Kubernetes Dashboard works with every connected Kubernetes cluster, whether you deployed them
+Use the Dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
+The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
 For Flux users, the synchronization status of a given environment is not displayed in the dashboard.
 [Issue 391581](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) proposes to add this functionality.
 
-## Configure the Kubernetes Dashboard
+## Configure a dashboard
 
-Configure a Kubernetes Dashboard to use it for a given environment.
+Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
 add one when you create an environment.
 
@@ -49,7 +49,7 @@ Prerequisite:
 
 ## View a dashboard
 
-To view a configured Kubernetes Dashboard:
+To view a configured dashboard:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
@@ -58,7 +58,7 @@ To view a configured Kubernetes Dashboard:
 
 ## Troubleshooting
 
-When working with the Kubernetes Dashboard, you might encounter the following issues.
+When working with the Dashboard for Kubernetes, you might encounter the following issues.
 
 ### User cannot list resource in API group
 

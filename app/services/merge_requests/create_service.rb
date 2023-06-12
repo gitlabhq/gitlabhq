@@ -41,6 +41,7 @@ module MergeRequests
       # timeout, we do this before we attempt to save the merge request.
 
       merge_request.skip_ensure_merge_request_diff = true
+      Spam::SpamActionService.new(spammable: merge_request, user: current_user, action: :create).execute
     end
 
     def set_projects!

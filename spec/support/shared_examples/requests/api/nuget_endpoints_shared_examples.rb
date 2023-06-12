@@ -1,100 +1,40 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'handling nuget service requests' do |example_names_with_status: {}|
-  anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget service index request')
-  anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
-  guest_requests_example_name = example_names_with_status.fetch(:guest_requests_example_name, 'rejects nuget packages access')
-  guest_requests_status = example_names_with_status.fetch(:guest_requests_status, :forbidden)
-
+RSpec.shared_examples 'handling nuget service requests' do
   subject { get api(url) }
 
   context 'with valid target' do
     using RSpec::Parameterized::TableSyntax
 
-    context 'personal token' do
-      where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :guest      | false | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name       | anonymous_requests_status
-        'PRIVATE' | :developer  | true  | true  | 'process nuget service index request' | :success
-        'PRIVATE' | :guest      | true  | true  | guest_requests_example_name           | guest_requests_status
-        'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'       | :not_found
-        'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'       | :not_found
-        'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'       | :unauthorized
-      end
-
-      with_them do
-        let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
-
-        subject { get api(url), headers: headers }
-
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
-        end
-
-        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-      end
+    where(:visibility_level, :user_role, :member, :shared_examples_name, :expected_status) do
+      'PUBLIC'  | :developer  | true  | 'process nuget service index request' | :success
+      'PUBLIC'  | :guest      | true  | 'process nuget service index request' | :success
+      'PUBLIC'  | :developer  | false | 'process nuget service index request' | :success
+      'PUBLIC'  | :guest      | false | 'process nuget service index request' | :success
+      'PUBLIC'  | :anonymous  | false | 'process nuget service index request' | :success
+      'PRIVATE' | :developer  | true  | 'process nuget service index request' | :success
+      'PRIVATE' | :guest      | true  | 'process nuget service index request' | :success
+      'PRIVATE' | :developer  | false | 'process nuget service index request' | :success
+      'PRIVATE' | :guest      | false | 'process nuget service index request' | :success
+      'PRIVATE' | :anonymous  | false | 'process nuget service index request' | :success
     end
 
-    context 'with job token' do
-      where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :guest      | false | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name       | anonymous_requests_status
-        'PRIVATE' | :developer  | true  | true  | 'process nuget service index request' | :success
-        'PRIVATE' | :guest      | true  | true  | guest_requests_example_name           | guest_requests_status
-        'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'       | :not_found
-        'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'       | :not_found
-        'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'       | :unauthorized
+    with_them do
+      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: :anonymous) }
+
+      subject { get api(url) }
+
+      before do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
       end
 
-      with_them do
-        let(:job) { user_token ? create(:ci_build, project: project, user: user, status: :running) : double(token: 'wrong') }
-        let(:headers) { user_role == :anonymous ? {} : job_basic_auth_header(job) }
-        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
-
-        subject { get api(url), headers: headers }
-
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
-        end
-
-        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-      end
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
     end
   end
 
-  it_behaves_like 'deploy token for package GET requests' do
-    before do
-      update_visibility_to(Gitlab::VisibilityLevel::PRIVATE)
-    end
-  end
+  it_behaves_like 'rejects nuget access with unknown target id', not_found_response: :not_found
 
-  it_behaves_like 'rejects nuget access with unknown target id'
-
-  it_behaves_like 'rejects nuget access with invalid target id'
+  it_behaves_like 'rejects nuget access with invalid target id', not_found_response: :not_found
 end
 
 RSpec.shared_examples 'handling nuget metadata requests with package name' do |example_names_with_status: {}|

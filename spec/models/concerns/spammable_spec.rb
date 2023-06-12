@@ -25,6 +25,32 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
     end
 
     describe '#check_for_spam?' do
+      context 'when not overriden' do
+        let(:merge_request) { create(:merge_request) }
+
+        subject { merge_request.check_for_spam? }
+
+        context 'when spammable attributes have changed' do
+          where(attr: [:title, :description])
+
+          with_them do
+            before do
+              merge_request.assign_attributes(attr => 'x')
+            end
+
+            it { is_expected.to eq(true) }
+          end
+        end
+
+        context 'when other attributes have changed' do
+          before do
+            merge_request.draft = true
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
 
@@ -37,17 +63,34 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
     end
 
     describe '#invalidate_if_spam' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         stub_application_setting(recaptcha_enabled: true)
       end
 
       context 'when the model is spam' do
-        subject { invalidate_if_spam(is_spam: true) }
+        before do
+          stub_const('SpammableModel', Class.new(ApplicationRecord))
 
-        it 'has an error related to spam on the model' do
-          expect(subject.errors.messages[:base]).to match_array /has been discarded/
+          SpammableModel.class_eval do
+            include Spammable
+            self.table_name = 'issues'
+          end
+        end
+
+        where(model: [:issue, :merge_request, :snippet, :spammable_model])
+
+        with_them do
+          subject do
+            model.to_s.classify.constantize.new.tap do |m|
+              m.spam!
+              m.invalidate_if_spam
+            end
+          end
+
+          it 'has an error related to spam on the model' do
+            expect(subject.errors.messages[:base])
+              .to match_array /Your #{subject.class.model_name.human.downcase} has been recognized as spam./
+          end
         end
       end
 
@@ -67,7 +110,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         end
 
         it 'has an error that discards the spammable' do
-          expect(subject.errors.messages[:base]).to match_array /has been discarded/
+          expect(subject.errors.messages[:base]).to match_array /has been recognized as spam/
         end
       end
 
@@ -95,7 +138,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         subject { invalidate_if_spam(needs_recaptcha: true) }
 
         it 'has no errors' do
-          expect(subject.errors.messages[:base]).to match_array /has been discarded/
+          expect(subject.errors.messages[:base]).to match_array /has been recognized as spam/
         end
       end
 

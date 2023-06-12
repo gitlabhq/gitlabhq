@@ -27122,6 +27122,9 @@ msgstr ""
 msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
+msgid "Limitation on this view"
+msgstr ""
+
 msgid "Limiting mode"
 msgstr ""
 
@@ -33793,6 +33796,9 @@ msgstr ""
 msgid "Pipelines|You should review the code thoroughly before running this pipeline with the parent project's CI/CD resources."
 msgstr ""
 
+msgid "Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline."
+msgstr ""
+
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
 msgstr ""
 
@@ -34429,6 +34435,9 @@ msgstr ""
 msgid "Preferences|Enable Gitpod integration"
 msgstr ""
 
+msgid "Preferences|Enable Zoekt code search"
+msgstr ""
+
 msgid "Preferences|Enable follow users"
 msgstr ""
 
@@ -34502,6 +34511,9 @@ msgid "Preferences|Time preferences"
 msgstr ""
 
 msgid "Preferences|Turns on or off the ability to follow or be followed by other users."
+msgstr ""
+
+msgid "Preferences|Turns on or off the preference to search with Zoekt instead of Elasticsearch."
 msgstr ""
 
 msgid "Preferences|Use relative times"
@@ -42607,6 +42619,9 @@ msgid "Show complete raw log"
 msgstr ""
 
 msgid "Show details"
+msgstr ""
+
+msgid "Show failed jobs"
 msgstr ""
 
 msgid "Show file browser"
@@ -52750,10 +52765,10 @@ msgstr ""
 msgid "Your %{plan} plan will be applied to your group."
 msgstr ""
 
-msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."
+msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
 msgstr ""
 
-msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
+msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content to proceed."
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
@@ -55139,6 +55154,9 @@ msgid "sign in"
 msgstr ""
 
 msgid "smartcn custom analyzer"
+msgstr ""
+
+msgid "snippet"
 msgstr ""
 
 msgid "source"

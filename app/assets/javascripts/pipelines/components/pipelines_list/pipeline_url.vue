@@ -32,6 +32,11 @@ export default {
       type: String,
       required: true,
     },
+    refClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     mergeRequestRef() {
@@ -183,6 +188,7 @@ export default {
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path"
             class="gl-font-sm gl-font-monospace gl-text-gray-700! gl-hover-text-gray-900!"
+            :class="refClass"
             data-testid="merge-request-ref"
             @click="trackClick('click_mr_ref')"
             >{{ mergeRequestRef.iid }}</gl-link
@@ -191,6 +197,7 @@ export default {
             v-else
             :href="refUrl"
             class="gl-font-sm gl-font-monospace gl-text-gray-700! gl-hover-text-gray-900!"
+            :class="refClass"
             data-testid="commit-ref-name"
             @click="trackClick('click_commit_name')"
             >{{ commitRef.name }}</gl-link

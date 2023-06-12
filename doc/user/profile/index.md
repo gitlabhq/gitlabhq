@@ -324,6 +324,20 @@ You can disable following and being followed by other users.
 NOTE:
 When this feature is being disabled, all current followed/following connections are deleted.
 
+## Advanced code search with zoekt
+
+### Disable searching code with zoekt
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
+
+You can disable searching with Zoekt and use Elasticsearch instead.
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select **Preferences**.
+1. Clear the **Enable advanced code search** checkbox.
+1. Select **Save changes**.
+
 ## View your activity
 
 GitLab tracks [user contribution activity](contributions_calendar.md).

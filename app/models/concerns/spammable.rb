@@ -94,12 +94,22 @@ module Spammable
   end
 
   def unrecoverable_spam_error!
-    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam and has been discarded.") \
+    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam. "\
+                    "Please, change the content to proceed.") \
                     % { spammable_entity_type: spammable_entity_type })
   end
 
   def spammable_entity_type
-    self.class.name.underscore
+    case self
+    when Issue
+      _('issue')
+    when MergeRequest
+      _('merge request')
+    when Snippet
+      _('snippet')
+    else
+      self.class.model_name.human.downcase
+    end
   end
 
   def spam_title
@@ -127,8 +137,12 @@ module Spammable
   end
 
   # Override in Spammable if further checks are necessary
-  def check_for_spam?(user:)
-    true
+  def check_for_spam?(*)
+    spammable_attribute_changed?
+  end
+
+  def spammable_attribute_changed?
+    (changed & self.class.spammable_attrs.to_h.keys).any?
   end
 
   def check_for_spam(action:, user:)

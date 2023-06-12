@@ -923,7 +923,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
 ## Related topics
 
-- [Kubernetes dashboard](kubernetes_dashboard.md)
+- [Dashboard for Kubernetes](kubernetes_dashboard.md)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 - [Review Apps](../review_apps/index.md)
 - [Protected environments](protected_environments.md)

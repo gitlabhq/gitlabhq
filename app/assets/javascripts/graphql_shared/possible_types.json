@@ -3,6 +3,10 @@
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
   ],
+  "BaseHeaderInterface": [
+    "AuditEventStreamingHeader",
+    "AuditEventsStreamingInstanceHeader"
+  ],
   "CiVariable": [
     "CiGroupVariable",
     "CiInstanceVariable",

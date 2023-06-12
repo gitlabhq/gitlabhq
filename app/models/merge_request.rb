@@ -23,6 +23,7 @@ class MergeRequest < ApplicationRecord
   include Approvable
   include IdInOrdered
   include Todoable
+  include Spammable
 
   extend ::Gitlab::Utils::Override
 
@@ -153,6 +154,9 @@ class MergeRequest < ApplicationRecord
 
   # Flag to skip triggering mergeRequestMergeStatusUpdated GraphQL subscription.
   attr_accessor :skip_merge_status_trigger
+
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
 
   participant :reviewers
 

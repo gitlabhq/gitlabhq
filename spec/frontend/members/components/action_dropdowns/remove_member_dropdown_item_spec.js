@@ -1,4 +1,4 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -52,7 +52,7 @@ describe('RemoveMemberDropdownItem', () => {
     });
   };
 
-  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   beforeEach(() => {
     createComponent();
@@ -63,7 +63,7 @@ describe('RemoveMemberDropdownItem', () => {
   });
 
   it('calls Vuex action to show `remove member` modal when clicked', () => {
-    findDropdownItem().vm.$emit('click');
+    findDropdownItem().vm.$emit('action');
 
     expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), {
       ...modalData,

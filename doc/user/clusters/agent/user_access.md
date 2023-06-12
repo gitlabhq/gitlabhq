@@ -14,7 +14,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 As an administrator of Kubernetes clusters in an organization, you can grant Kubernetes access to members
 of a specific project or group.
 
-Granting access also activates the Kubernetes Dashboard for a project or group.
+Granting access also activates the Dashboard for Kubernetes for a project or group.
 
 ## Configure Kubernetes access
 
@@ -140,7 +140,7 @@ subjects:
 ## Related topics
 
 - [Architectural blueprint](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md)
-- [Kubernetes Dashboard](https://gitlab.com/groups/gitlab-org/-/epics/2493)
+- [Dashboard for Kubernetes](https://gitlab.com/groups/gitlab-org/-/epics/2493)
 
 <!-- ## Troubleshooting
 

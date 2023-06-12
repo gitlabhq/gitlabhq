@@ -1272,6 +1272,27 @@ Input type: `AuditEventsStreamingHeadersUpdateInput`
 | <a id="mutationauditeventsstreamingheadersupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsstreamingheadersupdateheader"></a>`header` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | Updates header. |
 
+### `Mutation.auditEventsStreamingInstanceHeadersCreate`
+
+Input type: `AuditEventsStreamingInstanceHeadersCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminginstanceheaderscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheaderscreatedestinationid"></a>`destinationId` | [`AuditEventsInstanceExternalAuditEventDestinationID!`](#auditeventsinstanceexternalauditeventdestinationid) | Instance level external destination to associate header with. |
+| <a id="mutationauditeventsstreaminginstanceheaderscreatekey"></a>`key` | [`String!`](#string) | Header key. |
+| <a id="mutationauditeventsstreaminginstanceheaderscreatevalue"></a>`value` | [`String!`](#string) | Header value. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminginstanceheaderscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheaderscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheaderscreateheader"></a>`header` | [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader) | Created header. |
+
 ### `Mutation.awardEmojiAdd`
 
 Input type: `AwardEmojiAddInput`
@@ -12150,6 +12171,18 @@ Represents a HTTP header key/value that belongs to an audit streaming destinatio
 | <a id="auditeventstreamingheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
 | <a id="auditeventstreamingheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="auditeventstreamingheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
+
+### `AuditEventsStreamingInstanceHeader`
+
+Represents a HTTP header key/value that belongs to an instance level audit streaming destination.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventsstreaminginstanceheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
+| <a id="auditeventsstreaminginstanceheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
+| <a id="auditeventsstreaminginstanceheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
 
 ### `AwardEmoji`
 
@@ -27509,6 +27542,21 @@ Implementations:
 | <a id="alertmanagementintegrationtoken"></a>`token` | [`String`](#string) | Token used to authenticate alert notification requests. |
 | <a id="alertmanagementintegrationtype"></a>`type` | [`AlertManagementIntegrationType!`](#alertmanagementintegrationtype) | Type of integration. |
 | <a id="alertmanagementintegrationurl"></a>`url` | [`String`](#string) | Endpoint which accepts alert notifications. |
+
+#### `BaseHeaderInterface`
+
+Implementations:
+
+- [`AuditEventStreamingHeader`](#auditeventstreamingheader)
+- [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="baseheaderinterfaceid"></a>`id` | [`ID!`](#id) | ID of the header. |
+| <a id="baseheaderinterfacekey"></a>`key` | [`String!`](#string) | Key of the header. |
+| <a id="baseheaderinterfacevalue"></a>`value` | [`String!`](#string) | Value of the header. |
 
 #### `CiVariable`
 
