@@ -23874,7 +23874,7 @@ CREATE TABLE users (
     require_two_factor_authentication_from_group boolean DEFAULT false NOT NULL,
     two_factor_grace_period integer DEFAULT 48 NOT NULL,
     last_activity_on date,
-    notified_of_own_activity boolean,
+    notified_of_own_activity boolean DEFAULT false,
     preferred_language character varying,
     email_opted_in boolean,
     email_opted_in_ip character varying,

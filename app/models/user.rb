@@ -31,6 +31,7 @@ class User < ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
+  include SafelyChangeColumnDefault
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -55,6 +56,8 @@ class User < ApplicationRecord
   ].freeze
 
   FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
+
+  columns_changing_default :notified_of_own_activity
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token

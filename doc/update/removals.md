@@ -1647,7 +1647,7 @@ After 15.0, you should use the [agent for Kubernetes](https://docs.gitlab.com/ee
 
 If you need more time to migrate, you can enable the `certificate_based_clusters` [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html), which re-enables the certificate-based integration.
 
-In GitLab 16.0, we will [remove the feature, its related code, and the feature flag](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). GitLab will continue to fix any security or critical issues until 16.0.
+In GitLab 17.0, we will [remove the feature, its related code, and the feature flag](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). GitLab will continue to fix any security or critical issues until 17.0.
 
 For updates and details, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
