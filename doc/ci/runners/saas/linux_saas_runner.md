@@ -20,8 +20,8 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 | Runner Tag                                    | vCPUs | Memory | Storage |
 |-----------------------------------------------|-------|--------|---------|
 | `saas-linux-small-amd64`                      | 2     | 8 GB   | 25 GB   |
-| `saas-linux-medium-amd64` **(PREMIUM SAAS)**  | 4     | 16 GB  | 25 GB   |
-| `saas-linux-large-amd64`  **(PREMIUM SAAS)**  | 8     | 32 GB  | 25 GB   |
+| `saas-linux-medium-amd64` **(PREMIUM SAAS)**  | 4     | 16 GB  | 50 GB   |
+| `saas-linux-large-amd64`  **(PREMIUM SAAS)**  | 8     | 32 GB  | 100 GB  |
 
 The `small` machine type is set as default. If no [tag](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file is specified,
 the jobs will run on this default runner.

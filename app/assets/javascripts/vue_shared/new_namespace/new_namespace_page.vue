@@ -43,6 +43,11 @@ export default {
       type: String,
       required: true,
     },
+    isSaas: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -81,11 +86,7 @@ export default {
     },
 
     showNewTopLevelGroupAlert() {
-      if (this.activePanel.detailProps === undefined) {
-        return false;
-      }
-
-      return this.activePanel.detailProps.parentGroupName === '';
+      return this.isSaas && this.activePanel.detailProps?.parentGroupName === '';
     },
 
     showSuperSidebarToggle() {

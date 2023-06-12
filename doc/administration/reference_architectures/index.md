@@ -167,7 +167,7 @@ These reference architectures were built and tested on Google Cloud Platform (GC
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform as a lowest common denominator baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
 
-Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Omnibus GitLab environments,
+Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Linux package environments,
 ARM-based equivalents are also supported.
 
 NOTE:
@@ -240,7 +240,7 @@ for more information and guidance.
 that to achieve full High Availability, a third-party PostgreSQL database solution is required.
 
 We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
-can be set up using Omnibus GitLab as the specifications reflect. Refer to the following issues for more information:
+can be set up using the Linux package as the specifications reflect. Refer to the following issues for more information:
 
 - [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
@@ -325,8 +325,8 @@ Additionally, the following cloud provider services are validated and supported 
 
 If you choose to use a third party external service:
 
-1. Note that the HA Omnibus PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
-1. The number of nodes required to achieve HA may differ depending on the service compared to Omnibus and doesn't need to match accordingly.
+1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
 1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
 1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication
 
@@ -357,8 +357,8 @@ the harder it is to get support for it. With any deviation, you're introducing
 a layer of complexity that adds challenges to finding out where potential
 issues might lie.
 
-The reference architectures use the official GitLab Linux packages (Omnibus
-GitLab) or [Helm Charts](https://docs.gitlab.com/charts/) to install and configure the various components. The components are
+The reference architectures use the official Linux packages or [Helm Charts](https://docs.gitlab.com/charts/) to
+install and configure the various components. The components are
 installed on separate machines (virtualized or bare metal), with machine hardware
 requirements listed in the "Configuration" column and equivalent VM standard sizes listed
 in GCP/AWS/Azure columns of each [available reference architecture](#available-reference-architectures).
@@ -418,9 +418,10 @@ Testing occurs against all reference architectures and cloud providers in an aut
 
 Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. This is shared as an observation and not as an implicit recommendation.
 
-We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
+We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on a 10k Linux package
+installation on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
 
-The Standard Reference Architectures are designed to be platform-agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on hardware with equivalent specs on other Cloud Providers or if run on premises (bare-metal).
+The Standard Reference Architectures are designed to be platform-agnostic, with everything being run on VMs through [the Linux package](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on hardware with equivalent specs on other Cloud Providers or if run on premises (bare-metal).
 
 Testing on these reference architectures is performed with the
 [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
@@ -472,11 +473,11 @@ table.test-coverage th {
     <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
   </tr>
   <tr>
-    <th scope="col">Omnibus</th>
+    <th scope="col">Linux package</th>
     <th scope="col">Cloud Native Hybrid</th>
-    <th scope="col">Omnibus</th>
+    <th scope="col">Linux package</th>
     <th scope="col">Cloud Native Hybrid</th>
-    <th scope="col">Omnibus</th>
+    <th scope="col">Linux package</th>
   </tr>
     <tr>
     <th scope="row">1k</th>
@@ -538,7 +539,7 @@ table.test-coverage th {
 
 ## Cost to run
 
-As a starting point, the following table details initial costs for the different reference architectures across GCP, AWS, and Azure via Omnibus.
+As a starting point, the following table details initial costs for the different reference architectures across GCP, AWS, and Azure through the Linux package.
 
 NOTE:
 Due to the nature of Cloud Native Hybrid, it's not possible to give a static cost calculation.
@@ -555,9 +556,9 @@ Bare-metal costs are also not included here as it varies widely depending on eac
     <th style="text-align: center" scope="colgroup">Azure</th>
   </tr>
   <tr>
-    <th scope="col">Omnibus</th>
-    <th scope="col">Omnibus</th>
-    <th scope="col">Omnibus</th>
+    <th scope="col">Linux package</th>
+    <th scope="col">Linux package</th>
+    <th scope="col">Linux package</th>
   </tr>
     <tr>
     <th scope="row">1k</th>

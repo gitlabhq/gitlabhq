@@ -783,7 +783,7 @@ can't create Thread: Operation not permitted
 
 This error occurs when running a container built with newer `glibc` versions on a
 [host that doesn't have support for the new clone3 function](https://github.com/moby/moby/issues/42680). In GitLab 16.0 and later, the container image includes
-the Ubuntu 22.04 GitLab Linux package which is built with this newer `glibc`.
+the Ubuntu 22.04 Linux package which is built with this newer `glibc`.
 
 This problem is fixed with newer container runtime tools like [Docker 20.10.10](https://github.com/moby/moby/pull/42836).
 

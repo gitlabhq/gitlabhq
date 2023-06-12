@@ -462,12 +462,13 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       end
 
       it 'logs that it will try to hit the cache' do
+        expect(Gitlab::AppLogger).to receive(:info).with(message: "IntrospectionQueryCache hit")
         expect(Gitlab::AppLogger).to receive(:info).with(
           message: "IntrospectionQueryCache",
-          can_use_introspection_query_cache: true,
+          can_use_introspection_query_cache: "true",
           query: query.to_s,
-          variables: {},
-          introspection_query_cache_key: ['introspection-query-cache', Gitlab.revision, false]
+          variables: "{}",
+          introspection_query_cache_key: "[\"introspection-query-cache\", \"#{Gitlab.revision}\", false]"
         )
 
         post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
@@ -477,12 +478,13 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
 
         it 'logs that it did not try to hit the cache' do
+          expect(Gitlab::AppLogger).to receive(:info).with(message: "IntrospectionQueryCache miss")
           expect(Gitlab::AppLogger).to receive(:info).with(
             message: "IntrospectionQueryCache",
-            can_use_introspection_query_cache: false,
+            can_use_introspection_query_cache: "false",
             query: query.to_s,
-            variables: {},
-            introspection_query_cache_key: ['introspection-query-cache', Gitlab.revision, false]
+            variables: "{}",
+            introspection_query_cache_key: "[\"introspection-query-cache\", \"#{Gitlab.revision}\", false]"
           )
 
           post :execute, params: { query: query, operationName: 'IntrospectionQuery' }

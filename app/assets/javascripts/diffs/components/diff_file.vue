@@ -465,17 +465,17 @@ export default {
         </gl-alert>
         <div v-if="showFileDiscussions" class="gl-border-b" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
-            <diff-file-drafts
-              :file-hash="file.file_hash"
-              :show-pin="false"
-              :position-type="$options.FILE_DIFF_POSITION_TYPE"
-              class="diff-file-discussions"
-            />
             <diff-discussions
               v-if="fileDiscussions.length"
               class="diff-file-discussions"
               data-testid="diff-file-discussions"
               :discussions="fileDiscussions"
+            />
+            <diff-file-drafts
+              :file-hash="file.file_hash"
+              :show-pin="false"
+              :position-type="$options.FILE_DIFF_POSITION_TYPE"
+              class="diff-file-discussions"
             />
             <note-form
               v-if="file.hasCommentForm"

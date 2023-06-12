@@ -71,7 +71,7 @@ export const draftsForLine = (state, getters) => (diffFileSha, line, side = null
   const showDraftsForThisSide = showDraftOnSide(line, side);
 
   if (showDraftsForThisSide && draftsForFile?.[key]) {
-    return draftsForFile[key];
+    return draftsForFile[key].filter((d) => d.position.position_type === 'text');
   }
   return [];
 };

@@ -21,9 +21,9 @@ type: howto
 - Confirm the **primary** and **secondary** site storage configurations match. If the primary Geo site uses object storage, the secondary Geo site must use it too. For more information, see [Geo with Object storage](../replication/object_storage.md).
 - Ensure clocks are synchronized between the **primary** site and the **secondary** site. Synchronized clocks are required for Geo to function correctly. For example, if the clock drift between the **primary** and **secondary** sites exceeds 1 minute, replication fails.
 
-## Using Omnibus GitLab
+## Using Linux package installations
 
-If you installed GitLab using the Omnibus packages (highly recommended), the process for setting up Geo depends on whether you need to set up
+If you installed GitLab using the Linux package (highly recommended), the process for setting up Geo depends on whether you need to set up
 a single-node Geo site or a multi-node Geo site.
 
 ### Single-node Geo sites

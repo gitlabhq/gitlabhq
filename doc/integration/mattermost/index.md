@@ -10,7 +10,7 @@ NOTE:
 This document applies to GitLab 11.0 and later.
 
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
-service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Omnibus installer allows you to easily install it. But it is a separate application from a separate company.
+service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to easily install it. But it is a separate application from a separate company.
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ GitLab Mattermost is disabled by default. To enable it:
 
 1. Confirm that GitLab Mattermost is reachable at `https://mattermost.example.com` and authorized to connect to GitLab. Authorizing Mattermost with GitLab allows users to use GitLab as an SSO provider.
 
-The Omnibus GitLab package attempts to automatically authorize GitLab Mattermost with GitLab if the applications are running on the same server.
+The Linux package attempts to automatically authorize GitLab Mattermost with GitLab if the applications are running on the same server.
 
 Automatic authorization requires access to the GitLab database. If the GitLab database is not available
 you need to manually authorize GitLab Mattermost for access to GitLab using the process described in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost).
@@ -86,7 +86,7 @@ Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the ch
 ## Running GitLab Mattermost on its own server
 
 If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services are still set up on your GitLab Mattermost server, but they do not accept user requests or
-consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab service bundled into the Omnibus package.
+consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab service bundled into the Linux package.
 
 ```ruby
 mattermost_external_url 'http://mattermost.example.com'
@@ -142,7 +142,7 @@ Save the changes and then run `sudo gitlab-ctl reconfigure`. If there are no err
 
 ## Specify numeric user and group identifiers
 
-Omnibus GitLab creates a user and group `mattermost`. You can specify the
+The Linux pacakage creates a user and group `mattermost`. You can specify the
 numeric identifiers for these users in `/etc/gitlab/gitlab.rb` as follows:
 
 ```ruby
@@ -167,7 +167,7 @@ Run `sudo gitlab-ctl reconfigure` to apply the changes.
 
 ## Connecting to the bundled PostgreSQL database
 
-If you need to connect to the bundled PostgreSQL database and are using the default Omnibus GitLab database configuration, you can connect as
+If you need to connect to the bundled PostgreSQL database and are using the default Linux package database configuration, you can connect as
 the PostgreSQL superuser:
 
 ```shell
@@ -176,14 +176,14 @@ sudo gitlab-psql -d mattermost_production
 
 ## Back up GitLab Mattermost
 
-GitLab Mattermost is not included in the regular [Omnibus GitLab backup](../../raketasks/backup_restore.md) Rake task.
+GitLab Mattermost is not included in the regular [Linux package backup](../../raketasks/backup_restore.md) Rake task.
 
 The general Mattermost [backup and disaster recovery](https://docs.mattermost.com/deploy/backup-disaster-recovery.html) documentation can be used as a guide
 on what needs to be backed up.
 
 ### Back up the bundled PostgreSQL database
 
-If you need to back up the bundled PostgreSQL database and are using the default Omnibus GitLab database configuration, you can back up using this command:
+If you need to back up the bundled PostgreSQL database and are using the default Linux package database configuration, you can back up using this command:
 
 ```shell
 sudo -i -u gitlab-psql -- /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/postgresql mattermost_production | gzip > mattermost_dbdump_$(date --rfc-3339=date).sql.gz
@@ -286,8 +286,6 @@ Password:
 
 ## Configuring GitLab and Mattermost integrations
 
-As of 12.3, the Mattermost GitLab plugin is shipped with Omnibus GitLab: [Mattermost Plugin for GitLab documentation](https://github.com/mattermost/mattermost-plugin-gitlab).
-
 You can use the plugin to subscribe Mattermost to receive notifications about issues, merge requests, and pull requests as well as personal notifications regarding merge request reviews, unread messages, and task assignments. If you want to use slash commands to perform actions
 such as creating and viewing issues, or to trigger deployments use GitLab [Mattermost slash commands](../../user/project/integrations/mattermost_slash_commands.md).
 
@@ -359,22 +357,22 @@ When upgrading the Mattermost version, it is essential to check the
 [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
 for Mattermost to address any changes or migrations that need to be performed.
 
-Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Omnibus GitLab update process. When upgrading previous versions of
+Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
 GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`
 file have been made - either directly or via the Mattermost **System Console**, which saves changes to `config.json`.
 
-If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using Omnibus and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
+If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using the Linux package and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
 
 If this is not the case, there are two options:
 
 1. Update [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template#L706)
    with the changes done to `config.json`. This might require adding some parameters as not all
-   settings in `config.json` are available in `gitlab.rb`. Once complete, Omnibus GitLab should be
+   settings in `config.json` are available in `gitlab.rb`. Once complete, the Linux package should be
    able to upgrade GitLab Mattermost from one version to the next.
-1. Migrate Mattermost outside of the directory controlled by Omnibus GitLab so it can be administered
+1. Migrate Mattermost outside of the directory controlled by the Linux package so it can be administered
    and upgraded independently. Follow the [Mattermost Migration Guide](https://docs.mattermost.com/administration/migrating.html)
    to move your Mattermost configuration settings and data to another directory or server independent
-   from Omnibus GitLab.
+   from the Linux package.
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
@@ -387,7 +385,7 @@ GitLab 15.10 ships with Mattermost 7.8. Before upgrading, [connect to the bundle
 GitLab 14.6 ships with Mattermost 6.1 including potentially long running database migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime caused by those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions. If you need to perform any manual migrations, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database).
 
 NOTE:
-The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the GitLab Linux packages uses a PostgreSQL database.
+The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
 
 ## Upgrading GitLab Mattermost from versions prior to 11.0
 
@@ -492,7 +490,7 @@ If you encounter any issues [visit the GitLab Mattermost troubleshooting forum](
 
 ### Upgrading GitLab Mattermost outside of GitLab
 
-If you choose to upgrade Mattermost outside of the Omnibus GitLab automation, [follow this guide](https://docs.mattermost.com/administration/upgrade.html).
+If you choose to upgrade Mattermost outside of the Linux package automation, [follow this guide](https://docs.mattermost.com/administration/upgrade.html).
 
 ## OAuth 2.0 sequence diagram
 

@@ -172,7 +172,7 @@ If your GitLab server contains a lot of Git repository data, you may find the Gi
 Slowness typically starts at a Git repository data size of around 200 GB. In this case, you might consider using file system snapshots as part of your backup strategy.
 For example, consider a GitLab server with the following components:
 
-- Using the GitLab Linux package.
+- Using the Linux package.
 - Hosted on AWS with an EBS drive containing an ext4 file system mounted at `/var/opt/gitlab`.
 
 The EC2 instance meets the requirements for an application data backup by taking an EBS snapshot. The backup includes all repositories, uploads, and PostgreSQL data.

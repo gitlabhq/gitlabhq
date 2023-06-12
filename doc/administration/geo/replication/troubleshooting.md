@@ -210,8 +210,8 @@ Geo finds the current Puma or Sidekiq node's Geo [site](../glossary.md) name in
 
 1. Get the "Geo node name" (there is
    [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
-   - Omnibus GitLab: Get the `gitlab_rails['geo_node_name']` setting.
-   - GitLab Helm Charts: Get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
+   - Linux package: get the `gitlab_rails['geo_node_name']` setting.
+   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
 1. If that is not defined, then get the `external_url` setting.
 
 This name is used to look up the Geo site with the same **Name** in the **Geo Sites**
@@ -600,7 +600,7 @@ To help us resolve this problem, consider commenting on
 
 ### Message: `FATAL:  could not connect to the primary server: server certificate for "PostgreSQL" does not match host name`
 
-This happens because the PostgreSQL certificate that the Omnibus GitLab package automatically creates contains
+This happens because the PostgreSQL certificate that the Linux package automatically creates contains
 the Common Name `PostgreSQL`, but the replication is connecting to a different host and GitLab attempts to use
 the `verify-full` SSL mode by default.
 
@@ -1158,7 +1158,7 @@ get_ctl_options': invalid option: --force (OptionParser::InvalidOption)
 ```
 
 This can happen with XFS or file systems that list files in lexical order, because the
-load order of the Omnibus GitLab command files can be different than expected, and a global function would get redefined.
+load order of the Linux package command files can be different than expected, and a global function would get redefined.
 More details can be found in [the related issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076).
 
 The workaround is to manually run the preflight checks and promote the database, by running
@@ -1208,7 +1208,7 @@ This section documents common error messages reported in the Admin Area on the w
 
 GitLab cannot find or doesn't have permission to access the `database_geo.yml` configuration file.
 
-In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
+In a Linux package installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
 If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
 
 If this path is mounted on a remote volume, ensure your volume configuration
@@ -1241,7 +1241,7 @@ This error message indicates that the replica database in the **secondary** site
 To restore the database and resume replication, you can do one of the following:
 
 - [Reset the Geo secondary site replication](#resetting-geo-secondary-site-replication).
-- [Set up a new secondary Geo Omnibus instance](../setup/index.md#using-omnibus-gitlab).
+- [Set up a new Geo secondary using the Linux package](../setup/index.md#using-linux-package-installations).
 
 If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](remove_geo_site.md#removing-secondary-geo-sites).
 
@@ -1260,7 +1260,7 @@ Make sure you follow the [Geo database replication](../setup/database.md) instru
 
 ### Geo database version (...) does not match latest migration (...)
 
-If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
+If you are using the Linux package installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** site.
@@ -1361,7 +1361,9 @@ If you have installed GitLab using the Linux package (Omnibus) and have configur
 - `15.6.0`-`15.6.3`
 - `15.7.0`-`15.7.1`
 
-This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with Omnibus GitLab 15.4.6 and later. You are encouraged to upgrade to a later version where this has been [fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
+This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with
+the Linux package 15.4.6 and later. You should upgrade to a later version where this has been
+[fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 
 The bug causes all wildcard domains (`.example.com`) to be ignored except for the last on in the `no_proxy` environment variable list. Therefore, if for any reason you cannot upgrade to a newer version, you can work around the issue by moving your wildcard domain to the end of the list:
 

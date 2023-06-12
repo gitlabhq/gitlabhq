@@ -37,7 +37,7 @@ default:
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_ISSUES_FOR_FAILING_TESTS: "true"
+  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
 
 workflow:
   name: '$PIPELINE_NAME'

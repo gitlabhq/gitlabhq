@@ -92,8 +92,10 @@ To generate an authentication token for a project runner:
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. Authentication tokens
-should be used instead to register runners. Registration tokens, and support for certain configuration arguments
-will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for `glrt-` tokens are `--locked`, `--access-level`, `--run-untagged`, `--maximum-timeout`, `--paused`, `--tag-list`, and `--maintenance-note`. This change is a breaking
+should be used instead to register runners. Registration tokens, and support for certain configuration
+arguments, will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
+The configuration arguments disabled for `glrt-` tokens will be `--locked`, `--access-level`,
+`--run-untagged`, `--maximum-timeout`, `--paused`, `--tag-list`, and `--maintenance-note`. This change is a breaking
 change.
 
 ### For a shared runner

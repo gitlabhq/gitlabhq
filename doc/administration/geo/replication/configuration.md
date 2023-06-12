@@ -12,7 +12,7 @@ type: howto
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
+If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
 
 Make sure you [set up the database replication](../setup/database.md), and [configured fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md) in **both primary and secondary sites**.
 

@@ -30,6 +30,10 @@ To connect to an external repository:
 1. Select **GitHub** or **Repository by URL**.
 1. Complete the fields.
 
+If the **Run CI/CD for external repository** option is not available, the GitLab instance
+might not have any import sources configured. Ask an administrator for your instance to check
+the [import sources configuration](../../user/admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+
 ## Pipelines for external pull requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.

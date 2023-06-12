@@ -55,6 +55,7 @@ module Gitlab
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
       if current_user
+        gon.version = Gitlab::VERSION # publish version only for logged in users
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name

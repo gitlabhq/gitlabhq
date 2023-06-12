@@ -71,7 +71,7 @@ checking the configuration file of your GitLab instance:
   settings. The configuration file in which Service Ping can be disabled depends
   on your installation and deployment method, but is typically one of the following:
 
-  - `/etc/gitlab/gitlab.rb` for Omnibus GitLab Linux Package and Docker.
+  - `/etc/gitlab/gitlab.rb` for Linux package installations and Docker.
   - `charts.yaml` for GitLab Helm and cloud-native Kubernetes deployments.
   - `gitlab.yml` for GitLab installations from source.
 

@@ -127,9 +127,9 @@ from [owasp.org](https://owasp.org/).
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 
-- The supported installation method (Omnibus) packages most components itself.
+- The supported Linux package installation method packages most components itself.
 - There are significant dependencies on the system-installed OpenSSH daemon (Geo
-  requires users to set up custom authentication methods) and the omnibus or
+  requires users to set up custom authentication methods) and the Linux package-provided or
   system-provided PostgreSQL daemon (it must be configured to listen on TCP,
   additional users and replication slots must be added, etc).
 - The process for dealing with security updates (for example, if there is a
@@ -237,7 +237,7 @@ from [owasp.org](https://owasp.org/).
 - In transit, data should be encrypted, although the application does permit
   communication to proceed unencrypted. The two main transits are the **secondary** site's
   replication process for PostgreSQL, and for Git repositories/files. Both should
-  be protected using TLS, with the keys for that managed via Omnibus per existing
+  be protected using TLS, with the keys for that managed by the Linux package per existing
   configuration for end-user access to GitLab.
 
 ### What capabilities exist to detect the leakage of sensitive data?

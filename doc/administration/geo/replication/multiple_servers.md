@@ -35,7 +35,7 @@ The **primary** and **secondary** Geo sites must be able to communicate to each 
 Because of the additional complexity involved in setting up this configuration
 for PostgreSQL and Redis, it is not covered by this Geo multi-node documentation.
 
-For more information on setting up a multi-node PostgreSQL cluster and Redis cluster using the Omnibus GitLab package, see:
+For more information on setting up a multi-node PostgreSQL cluster and Redis cluster using the Linux package, see:
 
 - [Geo multi-node database replication](../setup/database.md#multi-node-database-replication)
 - [Redis multi-node documentation](../../redis/replication_and_failover.md)
@@ -260,7 +260,7 @@ then make the following modifications:
    ```
 
 NOTE:
-If you had set up PostgreSQL cluster using the omnibus package and had set
+If you had set up PostgreSQL cluster using the Linux package and had set
 `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
 contains the plaintext passwords. This is used to let the Rails

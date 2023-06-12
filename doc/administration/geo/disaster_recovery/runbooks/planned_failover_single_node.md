@@ -13,11 +13,11 @@ This runbook is an [Experiment](../../../../policy/experiment-beta-support.md#ex
 
 ## Geo planned failover for a single-node configuration
 
-| Component   | Configuration   |
-|-------------|-----------------|
-| PostgreSQL  | Omnibus-managed |
-| Geo site    | Single-node     |
-| Secondaries | One             |
+| Component   | Configuration                |
+|:------------|:-----------------------------|
+| PostgreSQL  | Managed by the Linux package |
+| Geo site    | Single-node                  |
+| Secondaries | One                          |
 
 This runbook guides you through a planned failover of a single-node Geo site
 with one secondary. The following general architecture is assumed:
@@ -190,7 +190,7 @@ follow these steps to avoid unnecessary data loss:
 
      NOTE:
      (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
-     started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
+     started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
      It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
 
      NOTE:

@@ -143,7 +143,7 @@ The following are PostgreSQL upgrade validation tests we performed.
   we tested fresh installations of GitLab 13.3 with PostgreSQL 12 enabled and Geo installed.
 - Outcome: Setting up a Geo secondary required manual intervention because the `recovery.conf` file
   is no longer supported in PostgreSQL 12. We do not recommend deploying Geo with PostgreSQL 12 until
-  the appropriate changes have been made to Omnibus and verified.
+  the appropriate changes have been made to the Linux package and verified.
 - Follow up issues:
   - [Update `replicate-geo-database` to support PostgreSQL 12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5575)
   - [Remove PostgreSQL 12 check in `replicate-geo-database` for 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5576)

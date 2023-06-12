@@ -7,7 +7,7 @@ type: howto
 
 # Disabling Geo **(PREMIUM SELF)**
 
-If you want to revert to a regular Omnibus setup after a test, or you have encountered a Disaster Recovery
+If you want to revert to a regular Linux package installation setup after a test, or you have encountered a Disaster Recovery
 situation and you want to disable Geo momentarily, you can use these instructions to disable your
 Geo setup.
 

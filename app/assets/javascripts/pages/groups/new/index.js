@@ -27,6 +27,7 @@ function initNewGroupCreation(el) {
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
+    isSaas,
   } = el.dataset;
 
   const props = {
@@ -36,6 +37,7 @@ function initNewGroupCreation(el) {
     parentGroupName,
     importExistingGroupPath,
     hasErrors: parseBoolean(hasErrors),
+    isSaas: parseBoolean(isSaas),
   };
 
   const apolloProvider = new VueApollo({

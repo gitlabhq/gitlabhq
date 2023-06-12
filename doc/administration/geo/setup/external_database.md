@@ -6,17 +6,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Geo with external PostgreSQL instances **(PREMIUM SELF)**
 
-This document is relevant if you are using a PostgreSQL instance that is *not
-managed by Omnibus*. This includes cloud-managed instances like Amazon RDS, or
+This document is relevant if you are using a PostgreSQL instance that is not
+managed by the Linux package. This includes cloud-managed instances like Amazon RDS, or
 manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
-[Omnibus ships with](../../package_information/postgresql_versions.md)
+the [Linux package ships with](../../package_information/postgresql_versions.md)
 to [avoid version mismatches](../index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
 NOTE:
-We strongly recommend running Omnibus-managed instances as they are actively
+We strongly recommend running instances installed using the Linux package as they are actively
 developed and tested. We aim to be compatible with most external
 (not managed by Omnibus) databases but we do not guarantee compatibility.
 
@@ -62,8 +62,8 @@ developed and tested. We aim to be compatible with most external
 
 To set up an external database, you can either:
 
-- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, or bare metal not managed by Omnibus).
-- Perform the Omnibus configuration manually as follows.
+- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, or bare metal not managed by the Linux package).
+- Manually perform the configuration of your Linux package installations as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database
 
@@ -142,7 +142,7 @@ hot_standby = on
 
 ### Configure **secondary** site to use the external read-replica
 
-With Omnibus, the
+With Linux package installations, the
 [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
 has three main functions:
 
@@ -185,9 +185,9 @@ To configure the connection to the external read-replica database and enable Log
 
 **Secondary** sites use a separate PostgreSQL installation as a tracking
 database to keep track of replication status and automatically recover from
-potential replication issues. Omnibus automatically configures a tracking database
+potential replication issues. The Linux package automatically configures a tracking database
 when `roles ['geo_secondary_role']` is set.
-If you want to run this database external to Omnibus GitLab, use the following instructions.
+If you want to run this database external to your Linux package installation, use the following instructions.
 
 If you are using a cloud-managed service for the tracking database, you may need
 to grant additional roles to your tracking database user (by default, this is

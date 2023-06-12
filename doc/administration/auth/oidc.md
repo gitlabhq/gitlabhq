@@ -197,7 +197,7 @@ by the client. You are redirected to GitLab and signed in.
 ## Example configurations
 
 The following configurations illustrate how to set up OpenID with
-different providers when using the GitLab Linux package installation.
+different providers when using the Linux package installation.
 
 ### Configure Google
 

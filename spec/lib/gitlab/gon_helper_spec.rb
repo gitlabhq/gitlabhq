@@ -6,10 +6,6 @@ RSpec.describe Gitlab::GonHelper do
   let(:helper) do
     Class.new do
       include Gitlab::GonHelper
-
-      def current_user
-        nil
-      end
     end.new
   end
 
@@ -18,6 +14,7 @@ RSpec.describe Gitlab::GonHelper do
     let(:https) { true }
 
     before do
+      allow(helper).to receive(:current_user).and_return(nil)
       allow(helper).to receive(:gon).and_return(gon)
       stub_config_setting(https: https)
     end
@@ -35,6 +32,24 @@ RSpec.describe Gitlab::GonHelper do
 
       it 'sets the secure flag to false' do
         expect(gon).to receive(:secure=).with(false)
+
+        helper.add_gon_variables
+      end
+    end
+
+    it 'sets no GitLab version' do
+      expect(gon).not_to receive(:version=)
+
+      helper.add_gon_variables
+    end
+
+    context 'when user is logged in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
+      end
+
+      it 'sets GitLab version' do
+        expect(gon).to receive(:version=).with(Gitlab::VERSION)
 
         helper.add_gon_variables
       end

@@ -681,7 +681,8 @@ Data that was created on the primary while the secondary was paused is lost.
 
 If you are running GitLab 14.5 and later:
 
-1. For each node outside of the **secondary** Kubernetes cluster using Omnibus such as PostgreSQL or Gitaly, SSH into the node and run one of the following commands:
+1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
+   package, SSH into the node and run one of the following commands:
 
    - To promote the **secondary** site node external to the Kubernetes cluster to primary:
 

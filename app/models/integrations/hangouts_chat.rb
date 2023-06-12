@@ -58,9 +58,9 @@ module Integrations
       when Integrations::ChatMessage::NoteMessage
         message.target
       when Integrations::ChatMessage::IssueMessage
-        "issue #{Issue.reference_prefix}#{message.issue_iid}"
+        "issue #{message.project_name}#{Issue.reference_prefix}#{message.issue_iid}"
       when Integrations::ChatMessage::MergeMessage
-        "merge request #{MergeRequest.reference_prefix}#{message.merge_request_iid}"
+        "merge request #{message.project_name}#{MergeRequest.reference_prefix}#{message.merge_request_iid}"
       when Integrations::ChatMessage::PushMessage
         "push #{message.project_name}_#{message.ref}"
       when Integrations::ChatMessage::PipelineMessage

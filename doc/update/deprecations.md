@@ -259,7 +259,8 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 </div>
 
 The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
+will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
 - `--access-level`
@@ -419,7 +420,9 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
 This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
 with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
-will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
+will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+
+The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
 - `--access-level`
@@ -446,7 +449,8 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
 Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
+will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
 - `--access-level`

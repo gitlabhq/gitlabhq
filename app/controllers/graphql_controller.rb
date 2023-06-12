@@ -276,7 +276,8 @@ class GraphqlController < ApplicationController
 
   def execute_introspection_query
     if introspection_query_can_use_cache?
-      log_introspection_query_message(true)
+      Gitlab::AppLogger.info(message: "IntrospectionQueryCache hit")
+      log_introspection_query_cache_details(true)
 
       # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
       Rails.cache.fetch(
@@ -285,7 +286,8 @@ class GraphqlController < ApplicationController
           execute_query.to_json
         end
     else
-      log_introspection_query_message(false)
+      Gitlab::AppLogger.info(message: "IntrospectionQueryCache miss")
+      log_introspection_query_cache_details(false)
 
       execute_query
     end
@@ -304,13 +306,13 @@ class GraphqlController < ApplicationController
     ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
   end
 
-  def log_introspection_query_message(can_use_introspection_query_cache)
+  def log_introspection_query_cache_details(can_use_introspection_query_cache)
     Gitlab::AppLogger.info(
       message: "IntrospectionQueryCache",
-      can_use_introspection_query_cache: can_use_introspection_query_cache,
+      can_use_introspection_query_cache: can_use_introspection_query_cache.to_s,
       query: query,
-      variables: build_variables(params[:variables]),
-      introspection_query_cache_key: introspection_query_cache_key
+      variables: build_variables(params[:variables]).to_s,
+      introspection_query_cache_key: introspection_query_cache_key.to_s
     )
   end
 end

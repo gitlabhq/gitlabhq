@@ -76,7 +76,7 @@ To upgrade your Consul nodes, upgrade the GitLab package.
 
 Nodes should be:
 
-- Members of a healthy cluster prior to upgrading the GitLab Linux package.
+- Members of a healthy cluster prior to upgrading the Linux package.
 - Upgraded one node at a time.
 
 Identify any existing health issues in the cluster by running the following command

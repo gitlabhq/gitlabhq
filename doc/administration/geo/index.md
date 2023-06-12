@@ -246,10 +246,11 @@ secondary. If the site is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
 WARNING:
-Pausing and resuming of replication is only supported for Geo installations using an
-Omnibus GitLab-managed database. External databases are not supported.
+Pausing and resuming of replication is only supported for Geo installations using a
+Linux package-managed database. External databases are not supported.
 
-In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
+[planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
 
@@ -331,7 +332,7 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Log files
 
-Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+Geo stores structured log messages in a `geo.log` file. For Linux package
 installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
 This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.

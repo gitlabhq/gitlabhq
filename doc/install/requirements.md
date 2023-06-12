@@ -155,10 +155,10 @@ of GitLab Support or other GitLab engineers.
 ## Puma settings
 
 The recommended settings for Puma are determined by the infrastructure on which it's running.
-The GitLab Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
+The Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
 tune the Puma settings:
 
-- If you're using the GitLab Linux package, see [Puma settings](../administration/operations/puma.md)
+- If you're using the Linux package, see [Puma settings](../administration/operations/puma.md)
   for instructions on changing the Puma settings.
 - If you're using the GitLab Helm chart, see the
   [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).

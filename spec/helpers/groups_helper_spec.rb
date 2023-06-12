@@ -437,7 +437,8 @@ RSpec.describe GroupsHelper do
         expect(subgroup_creation_data(subgroup)).to eq({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: name,
-          parent_group_url: group_url(group)
+          parent_group_url: group_url(group),
+          is_saas: 'false'
         })
       end
     end
@@ -447,7 +448,8 @@ RSpec.describe GroupsHelper do
         expect(subgroup_creation_data(group)).to eq({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: nil,
-          parent_group_url: nil
+          parent_group_url: nil,
+          is_saas: 'false'
         })
       end
     end

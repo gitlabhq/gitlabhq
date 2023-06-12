@@ -182,7 +182,8 @@ Secondary proxying is enabled by default in GitLab 15.1 on a secondary site even
 
 Additionally, the `gitlab-workhorse` service polls `/api/v4/geo/proxy` every 10 seconds. In GitLab 15.2 and later, it is only polled once, if Geo is not enabled. Prior to GitLab 15.2, you can stop this polling by disabling secondary proxying.
 
-You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
+You can disable the secondary proxying on each Geo site separately by following these steps on a Linux package
+installation:
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
