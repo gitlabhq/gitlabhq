@@ -19,11 +19,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
 > - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
 > - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+> - APIs for instance level streaming destinations [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - UI for instance level streaming destinations [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
 
-Users can set a streaming destination for a top-level group to receive all audit events about the group, its subgroups, and
+Users can set a streaming destination for a top-level group or instance to receive all audit events about the group, subgroups, and
 projects as structured JSON.
 
-Top-level group owners can manage their audit logs in third-party systems. Any service that can receive
+Top-level group owners and instance administrators can manage their audit logs in third-party systems. Any service that can receive
 structured JSON data can be used as the streaming destination.
 
 Each streaming destination can have up to 20 custom HTTP headers included with each streamed event.
@@ -37,6 +39,8 @@ WARNING:
 Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust the streaming destination.
 
 ### Use the GitLab UI
+
+#### Top-level group streaming destinations
 
 Users with the Owner role for a group can add streaming destinations for it:
 
@@ -52,7 +56,30 @@ Users with the Owner role for a group can add streaming destinations for it:
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To add a streaming destination for an instance:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **Add streaming destination** to show the section for adding destinations.
+1. Enter the destination URL to add.
+1. Select **Add** to add the new streaming destination.
+
 ### Use the API
+
+#### Top-level group streaming destinations
 
 To enable streaming and add a destination, users with the Owner role for a group must use the
 `externalAuditEventDestinationCreate` mutation in the GraphQL API.
@@ -110,20 +137,75 @@ mutation {
 
 The header is created if the returned `errors` object is empty.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To enable streaming and add a destination, use the
+`instanceExternalAuditEventDestinationCreate` mutation in the GraphQL API.
+
+```graphql
+mutation {
+  instanceExternalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest"}) {
+    errors
+    instanceExternalAuditEventDestination {
+      destinationUrl
+      id
+      verificationToken
+    }
+  }
+}
+```
+
+Event streaming is enabled if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## List streaming destinations
 
 Users with the Owner role for a group can list streaming destinations.
 
 ### Use the GitLab UI
 
-To list the streaming destinations:
+#### For top-level group streaming destinations
+
+To list the streaming destinations for a top-level group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**) to see all the custom HTTP headers.
 
+#### For instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To list the streaming destinations for an instance:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit events**.
+1. On the main area, select **Streams** tab.
+
 ### Use the API
+
+#### Top-level group streaming destinations
 
 Users with the Owner role for a group can view a list of streaming destinations at any time using the
 `externalAuditEventDestinations` query type.
@@ -153,13 +235,44 @@ query {
 
 If the resulting list is empty, then audit streaming is not enabled for that group.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To view a list of streaming destinations for an instance, use the
+`instanceExternalAuditEventDestinations` query type.
+
+```graphql
+query {
+  instanceExternalAuditEventDestinations {
+    nodes {
+      id
+      destinationUrl
+      verificationToken
+    }
+  }
+}
+```
+
+If the resulting list is empty, then audit streaming is not enabled for the instance.
+
 You need the ID values returned by this query for the update and delete mutations.
 
 ## Update streaming destinations
 
-Users with the Owner role for a group can update streaming destinations.
+Users with the Owner role for a group and instance administrators can update streaming destinations for the group and the instance respectively.
 
 ### Use the GitLab UI
+
+#### Top-level group streaming destinations
 
 To update a streaming destinations custom HTTP headers:
 
@@ -176,6 +289,8 @@ To update a streaming destinations custom HTTP headers:
 1. Select **Save** to update the streaming destination.
 
 ### Use the API
+
+#### Top-level group streaming destinations
 
 Users with the Owner role for a group can update streaming destinations custom HTTP headers using the
 `auditEventsStreamingHeadersUpdate` mutation type. You can retrieve the custom HTTP headers ID
@@ -207,13 +322,49 @@ mutation {
 
 The header is deleted if the returned `errors` object is empty.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To update streaming destinations for an instance, use the
+`instanceExternalAuditEventDestinationUpdate` mutation type. You can retrieve the destination ID
+by [listing all the external destinations](#use-the-api-1) for the instance.
+
+```graphql
+mutation {
+  instanceExternalAuditEventDestinationUpdate(input: { id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1", destinationUrl: "https://www.new-domain.com/webhook"}) {
+    errors
+    instanceExternalAuditEventDestination {
+      destinationUrl
+      id
+      verificationToken
+    }
+  }
+}
+```
+
+Streaming destination is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## Delete streaming destinations
 
-Users with the Owner role for a group can delete streaming destinations.
+Users with the Owner role for a group and instance administrators can delete streaming destinations.
 
-When the last destination is successfully deleted, streaming is disabled for the group.
+When the last destination is successfully deleted, streaming is disabled for the group or the instance.
 
 ### Use the GitLab UI
+
+#### Top-level group streaming destinations
 
 To delete a streaming destination:
 
@@ -233,7 +384,28 @@ To delete only the custom HTTP headers for a streaming destination:
 1. To the right of the header, select **Delete** (**{remove}**).
 1. Select **Save** to update the streaming destination.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To delete the streaming destinations for an instance:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. To the right of the item, select **Delete** (**{remove}**).
+
 ### Use the API
+
+#### Top-level group streaming destinations
 
 Users with the Owner role for a group can delete streaming destinations using the
 `externalAuditEventDestinationDestroy` mutation type. You can retrieve the destinations ID
@@ -265,6 +437,35 @@ mutation {
 
 The header is deleted if the returned `errors` object is empty.
 
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To deleted streaming destinations, use the
+`instanceExternalAuditEventDestinationDestroy` mutation type. You can retrieve the destinations ID
+by [listing all the streaming destinations](#use-the-api-1) for the instance.
+
+```graphql
+mutation {
+  instanceExternalAuditEventDestinationDestroy(input: { id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1" }) {
+    errors
+  }
+}
+```
+
+Streaming destination is deleted if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## Verify event authenticity
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345424) in GitLab 14.8.
@@ -277,12 +478,33 @@ the destination's value when [listing streaming destinations](#list-streaming-de
 
 ### Use the GitLab UI
 
+#### Top-level group streaming destinations
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
 
 Users with the Owner role for a group can list streaming destinations and see the verification tokens:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the main area, select the **Streams**.
+1. View the verification token on the right side of each item.
+
+#### Instance streaming destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named
+`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To list streaming destinations for an instance and see the verification tokens:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit events**.
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
 
