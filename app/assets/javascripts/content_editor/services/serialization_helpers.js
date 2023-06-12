@@ -227,13 +227,20 @@ function renderTableRowAsHTML(state, node) {
 
     renderTagOpen(state, tag, omit(cell.attrs, 'sourceMapKey', 'sourceMarkdown'));
 
-    if (!containsParagraphWithOnlyText(cell)) {
-      state.closeBlock(node);
-      state.flushClose();
-    }
+    const buffered = buffer(state, () => {
+      if (!containsParagraphWithOnlyText(cell)) {
+        state.closeBlock(node);
+        state.flushClose();
+      }
 
-    state.render(cell, node, i);
-    state.flushClose(1);
+      state.render(cell, node, i);
+      state.flushClose(1);
+    });
+    if (buffered.includes('\\') && !buffered.includes('\n')) {
+      state.out += `\n\n${buffered}\n`;
+    } else {
+      state.out += buffered;
+    }
 
     renderTagClose(state, tag);
   });
@@ -268,7 +275,14 @@ export function renderContent(state, node, forceRenderInline) {
 export function renderHTMLNode(tagName, forceRenderContentInline = false) {
   return (state, node) => {
     renderTagOpen(state, tagName, node.attrs);
-    renderContent(state, node, forceRenderContentInline);
+
+    const buffered = buffer(state, () => renderContent(state, node, forceRenderContentInline));
+    if (buffered.includes('\\') && !buffered.includes('\n')) {
+      state.out += `\n\n${buffered}\n`;
+    } else {
+      state.out += buffered;
+    }
+
     renderTagClose(state, tagName, false);
 
     if (forceRenderContentInline) {

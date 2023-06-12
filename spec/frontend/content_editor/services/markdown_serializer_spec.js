@@ -45,6 +45,8 @@ jest.mock('~/emoji');
 
 const tiptapEditor = createTiptapEditor([Sourcemap]);
 
+const text = (val) => tiptapEditor.state.schema.text(val);
+
 const {
   builders: {
     audio,
@@ -154,14 +156,18 @@ describe('markdownSerializer', () => {
   });
 
   it('correctly serializes code blocks wrapped by italics and bold marks', () => {
-    const text = 'code block';
+    const codeBlockContent = 'code block';
 
-    expect(serialize(paragraph(italic(code(text))))).toBe(`_\`${text}\`_`);
-    expect(serialize(paragraph(code(italic(text))))).toBe(`_\`${text}\`_`);
-    expect(serialize(paragraph(bold(code(text))))).toBe(`**\`${text}\`**`);
-    expect(serialize(paragraph(code(bold(text))))).toBe(`**\`${text}\`**`);
-    expect(serialize(paragraph(strike(code(text))))).toBe(`~~\`${text}\`~~`);
-    expect(serialize(paragraph(code(strike(text))))).toBe(`~~\`${text}\`~~`);
+    expect(serialize(paragraph(italic(code(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
+    expect(serialize(paragraph(code(italic(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
+    expect(serialize(paragraph(bold(code(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
+    expect(serialize(paragraph(code(bold(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
+    expect(serialize(paragraph(strike(code(codeBlockContent))))).toBe(
+      `~~\`${codeBlockContent}\`~~`,
+    );
+    expect(serialize(paragraph(code(strike(codeBlockContent))))).toBe(
+      `~~\`${codeBlockContent}\`~~`,
+    );
   });
 
   it('correctly serializes inline diff', () => {
@@ -172,7 +178,7 @@ describe('markdownSerializer', () => {
           inlineDiff({ type: 'deletion' }, '-10 lines'),
         ),
       ),
-    ).toBe('{++30 lines+}{--10 lines-}');
+    ).toBe('{+\\+30 lines+}{-\\-10 lines-}');
   });
 
   it('correctly serializes highlight', () => {
@@ -203,6 +209,12 @@ hi
 - c-->
       `.trim(),
     );
+  });
+
+  it('escapes < and > in a paragraph', () => {
+    expect(
+      serialize(paragraph(text("some prose: <this> and </this> looks like code, but isn't"))),
+    ).toBe("some prose: \\<this\\> and \\</this\\> looks like code, but isn't");
   });
 
   it('correctly serializes a line break', () => {
@@ -866,7 +878,8 @@ content 2
     expect(
       serialize(
         details(
-          detailsContent(paragraph('dream level 1')),
+          // if paragraph contains special characters, it should be escaped and rendered as block
+          detailsContent(paragraph('dream level 1*')),
           detailsContent(
             details(
               detailsContent(paragraph('dream level 2')),
@@ -883,7 +896,10 @@ content 2
     ).toBe(
       `
 <details>
-<summary>dream level 1</summary>
+<summary>
+
+dream level 1\\*
+</summary>
 
 <details>
 <summary>dream level 2</summary>
@@ -1124,7 +1140,8 @@ _An elephant at sunset_
         table(
           tableRow(
             tableHeader(paragraph('examples of')),
-            tableHeader(paragraph('block content')),
+            // if a node contains special characters, it should be escaped and rendered as block
+            tableHeader(paragraph('block content*')),
             tableHeader(paragraph('in tables')),
             tableHeader(paragraph('in content editor')),
           ),
@@ -1181,7 +1198,10 @@ _An elephant at sunset_
 <table>
 <tr>
 <th>examples of</th>
-<th>block content</th>
+<th>
+
+block content\\*
+</th>
 <th>in tables</th>
 <th>in content editor</th>
 </tr>
@@ -1527,9 +1547,6 @@ paragraph
     ${'link'}              | ${'link(https://www.gitlab.com)'}               | ${'modified link(https://www.gitlab.com)'}               | ${prependContentEditAction}
     ${'link'}              | ${'link(engineering@gitlab.com)'}               | ${'modified link(engineering@gitlab.com)'}               | ${prependContentEditAction}
     ${'link'}              | ${'link <https://www.gitlab.com>'}              | ${'modified link <https://www.gitlab.com>'}              | ${prependContentEditAction}
-    ${'link'}              | ${'link [https://www.gitlab.com>'}              | ${'modified link \\[https://www.gitlab.com>'}            | ${prependContentEditAction}
-    ${'link'}              | ${'link <https://www.gitlab.com'}               | ${'modified link <https://www.gitlab.com'}               | ${prependContentEditAction}
-    ${'link'}              | ${'link https://www.gitlab.com>'}               | ${'modified link https://www.gitlab.com>'}               | ${prependContentEditAction}
     ${'link'}              | ${'link https://www.gitlab.com/path'}           | ${'modified link https://www.gitlab.com/path'}           | ${prependContentEditAction}
     ${'link'}              | ${'link https://www.gitlab.com?query=search'}   | ${'modified link https://www.gitlab.com?query=search'}   | ${prependContentEditAction}
     ${'link'}              | ${'link https://www.gitlab.com/#fragment'}      | ${'modified link https://www.gitlab.com/#fragment'}      | ${prependContentEditAction}

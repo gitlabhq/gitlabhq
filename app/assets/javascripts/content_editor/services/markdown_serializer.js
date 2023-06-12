@@ -321,6 +321,7 @@ export default class MarkdownSerializer {
     return serializer.serialize(doc, {
       tightLists: true,
       changeTracker,
+      escapeExtraCharacters: /<|>/g,
     });
   }
 }

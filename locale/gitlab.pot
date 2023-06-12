@@ -6483,12 +6483,6 @@ msgstr ""
 msgid "AuditStreams|Active"
 msgstr ""
 
-msgid "AuditStreams|Add a custom header"
-msgstr ""
-
-msgid "AuditStreams|Add a custom value"
-msgstr ""
-
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
 msgstr ""
 
@@ -6589,6 +6583,12 @@ msgid "AuditStreams|Verification token for the %{link} stream"
 msgstr ""
 
 msgid "AuditStreams|View verification token"
+msgstr ""
+
+msgid "AuditStreams|ex: 1000"
+msgstr ""
+
+msgid "AuditStreams|ex: limitation"
 msgstr ""
 
 msgid "AuditStreams|filtered"
@@ -40315,6 +40315,9 @@ msgstr ""
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
+msgid "ScanResultPolicy|Clear all"
+msgstr ""
+
 msgid "ScanResultPolicy|Except"
 msgstr ""
 
@@ -40348,7 +40351,13 @@ msgstr ""
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr ""
 
+msgid "ScanResultPolicy|Select all"
+msgstr ""
+
 msgid "ScanResultPolicy|Select license types"
+msgstr ""
+
+msgid "ScanResultPolicy|Select licenses"
 msgstr ""
 
 msgid "ScanResultPolicy|Severity is:"
