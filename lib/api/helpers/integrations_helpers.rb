@@ -918,6 +918,21 @@ module API
               desc: 'The password of the user'
             }
           ],
+          'telegram' => [
+            {
+              required: true,
+              name: :token,
+              type: String,
+              desc: 'The Telegram chat token. For example, 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+            },
+            {
+              required: true,
+              name: :room,
+              type: String,
+              desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
+            },
+            chat_notification_events
+          ].flatten,
           'unify-circuit' => [
             {
               required: true,

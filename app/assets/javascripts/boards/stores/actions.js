@@ -602,8 +602,8 @@ export default {
           cache,
           {
             data: {
-              issueMoveList: {
-                issue: { weight },
+              issuableMoveList: {
+                issuable: { weight },
               },
             },
           },
@@ -661,11 +661,11 @@ export default {
         },
       });
 
-      if (data?.issueMoveList?.errors.length || !data.issueMoveList) {
+      if (data?.issuableMoveList?.errors.length || !data.issuableMoveList) {
         throw new Error('issueMoveList empty');
       }
 
-      commit(types.MUTATE_ISSUE_SUCCESS, { issue: data.issueMoveList.issue });
+      commit(types.MUTATE_ISSUE_SUCCESS, { issue: data.issuableMoveList.issuable });
       commit(types.MUTATE_ISSUE_IN_PROGRESS, false);
     } catch {
       commit(types.MUTATE_ISSUE_IN_PROGRESS, false);

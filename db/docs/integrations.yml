@@ -50,6 +50,7 @@ classes:
 - Integrations::SlackSlashCommands
 - Integrations::SquashTm
 - Integrations::Teamcity
+- Integrations::Telegram
 - Integrations::UnifyCircuit
 - Integrations::WebexTeams
 - Integrations::Youtrack

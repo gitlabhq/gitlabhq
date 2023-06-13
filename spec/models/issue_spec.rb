@@ -2111,15 +2111,48 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe 'issue_type enum generated methods' do
-    using RSpec::Parameterized::TableSyntax
+    describe '#<issue_type>?' do
+      let_it_be(:issue) { create(:issue, project: reusable_project) }
 
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+      where(issue_type: WorkItems::Type.base_types.keys)
 
-    where(issue_type: WorkItems::Type.base_types.keys)
+      with_them do
+        it 'raises an error if called' do
+          expect { issue.public_send("#{issue_type}?".to_sym) }.to raise_error(
+            Issue::ForbiddenColumnUsed,
+            a_string_matching(/`issue\.#{issue_type}\?` uses the `issue_type` column underneath/)
+          )
+        end
+      end
+    end
 
-    with_them do
-      it 'raises an error if called' do
-        expect { issue.public_send("#{issue_type}?".to_sym) }.to raise_error(Issue::ForbiddenColumnUsed)
+    describe '.<issue_type> scopes' do
+      where(issue_type: WorkItems::Type.base_types.keys)
+
+      with_them do
+        it 'raises an error if called' do
+          expect { Issue.public_send(issue_type.to_sym) }.to raise_error(
+            Issue::ForbiddenColumnUsed,
+            a_string_matching(/`Issue\.#{issue_type}` uses the `issue_type` column underneath/)
+          )
+        end
+
+        context 'when called in a production environment' do
+          before do
+            stub_rails_env('production')
+          end
+
+          it 'returns issues scoped by type instead of raising an error' do
+            issue = create(
+              :issue,
+              issue_type: issue_type,
+              work_item_type: WorkItems::Type.default_by_type(issue_type),
+              project: reusable_project
+            )
+
+            expect(Issue.public_send(issue_type.to_sym)).to contain_exactly(issue)
+          end
+        end
       end
     end
   end

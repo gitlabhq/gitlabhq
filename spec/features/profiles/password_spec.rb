@@ -86,10 +86,11 @@ RSpec.describe 'Profile > Password', feature_category: :user_profile do
         Rails.application.reload_routes!
       end
 
-      it 'renders 404' do
+      it 'renders 404', :js do
         visit edit_profile_password_path
 
-        expect(page).to have_gitlab_http_status(:not_found)
+        expect(page).to have_title('Not Found')
+        expect(page).to have_content('Page Not Found')
       end
     end
   end

@@ -219,6 +219,7 @@ class Project < ApplicationRecord
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
   has_one :squash_tm_integration, class_name: 'Integrations::SquashTm'
   has_one :teamcity_integration, class_name: 'Integrations::Teamcity'
+  has_one :telegram_integration, class_name: 'Integrations::Telegram'
   has_one :unify_circuit_integration, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_integration, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_integration, class_name: 'Integrations::Youtrack'

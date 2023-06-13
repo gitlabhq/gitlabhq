@@ -17,7 +17,7 @@ describe('Terminal Component', () => {
   });
 
   it('should render a link to open a web terminal with the provided path', () => {
-    const link = wrapper.findByRole('menuitem', { name: __('Terminal') });
+    const link = wrapper.findByRole('link', { name: __('Terminal') });
     expect(link.attributes('href')).toBe(terminalPath);
   });
 

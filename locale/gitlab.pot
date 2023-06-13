@@ -9551,6 +9551,9 @@ msgstr ""
 msgid "Choose file…"
 msgstr ""
 
+msgid "Choose protected branch"
+msgstr ""
+
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
@@ -11089,6 +11092,12 @@ msgid "CodeSuggestionsSM|Turn on Code Suggestions for this instance. By turning 
 msgstr ""
 
 msgid "CodeSuggestionsSM|Your personal access token from GitLab.com. See the %{link_start}documentation%{link_end} for information on creating a personal access token."
+msgstr ""
+
+msgid "CodeSuggestionsThirdPartyAlert|%{code_suggestions_link_start}Code Suggestions%{link_end} now uses third-party AI services to provide higher quality suggestions. You can %{third_party_link_start}disable third-party services%{link_end} for your group, or disable Code Suggestions entirely in %{profile_settings_link_start}your user profile%{link_end}."
+msgstr ""
+
+msgid "CodeSuggestionsThirdPartyAlert|We use third-party AI services to improve Code Suggestions."
 msgstr ""
 
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
@@ -42007,6 +42016,12 @@ msgstr ""
 msgid "Select projects"
 msgstr ""
 
+msgid "Select protected branch"
+msgstr ""
+
+msgid "Select protected branches"
+msgstr ""
+
 msgid "Select report"
 msgstr ""
 
@@ -43739,6 +43754,9 @@ msgstr ""
 msgid "Specific branches"
 msgstr ""
 
+msgid "Specific protected branches"
+msgstr ""
+
 msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr ""
 
@@ -45145,6 +45163,21 @@ msgid "TeamcityIntegration|Trigger TeamCity CI after a merge request has been cr
 msgstr ""
 
 msgid "TeamcityIntegration|Trigger TeamCity CI after every push to the repository, except branch delete"
+msgstr ""
+
+msgid "TelegramIntegration|Leave blank to use your current token."
+msgstr ""
+
+msgid "TelegramIntegration|New token"
+msgstr ""
+
+msgid "TelegramIntegration|Send notifications about project events to Telegram."
+msgstr ""
+
+msgid "TelegramIntegration|Send notifications about project events to Telegram. %{docs_link}"
+msgstr ""
+
+msgid "TelegramIntegration|Unique authentication token."
 msgstr ""
 
 msgid "Telephone number"

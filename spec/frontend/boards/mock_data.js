@@ -964,11 +964,14 @@ export const issueBoardListsQueryResponse = {
   },
 };
 
-export const boardListQueryResponse = (issuesCount = 20) => ({
+export const boardListQueryResponse = ({
+  listId = 'gid://gitlab/List/5',
+  issuesCount = 20,
+} = {}) => ({
   data: {
     boardList: {
       __typename: 'BoardList',
-      id: 'gid://gitlab/BoardList/5',
+      id: listId,
       totalWeight: 5,
       issuesCount,
     },

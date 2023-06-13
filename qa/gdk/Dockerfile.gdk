@@ -30,8 +30,12 @@ RUN set -eux; \
     apt-get autoclean -y
 
 # Clone GDK and install system dependencies, purge system git
+ARG GDK_SHA
+ENV GDK_SHA=${GDK_SHA:-main}
 RUN set -eux; \
-    git -c advice.detachedHead=false clone --depth 1 --branch ${GDK_BRANCH_OR_TAG:-main} https://gitlab.com/gitlab-org/gitlab-development-kit.git; \
+    git -c advice.detachedHead=false clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git; \
+    git -C gitlab-development-kit fetch --depth 1 origin ${GDK_SHA}; \
+    git -C gitlab-development-kit -c advice.detachedHead=false checkout ${GDK_SHA}; \
     mkdir -p gitlab-development-kit/gitlab && chown -R gdk:gdk gitlab-development-kit; \
     apt-get update && apt-get install -y --no-install-recommends $(grep -o '^[^#]*' gitlab-development-kit/packages_debian.txt); \
     apt-get remove -y git git-lfs; \

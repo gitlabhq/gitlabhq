@@ -1,9 +1,9 @@
 <script>
 import {
-  GlCollapse,
-  GlDropdown,
   GlBadge,
   GlButton,
+  GlCollapse,
+  GlDisclosureDropdown,
   GlLink,
   GlSprintf,
   GlTooltipDirective as GlTooltip,
@@ -27,8 +27,8 @@ import KubernetesOverview from './kubernetes_overview.vue';
 
 export default {
   components: {
+    GlDisclosureDropdown,
     GlCollapse,
-    GlDropdown,
     GlBadge,
     GlButton,
     GlLink,
@@ -284,14 +284,14 @@ export default {
             graphql
           />
 
-          <gl-dropdown
+          <gl-disclosure-dropdown
             v-if="hasExtraActions"
-            icon="ellipsis_v"
             text-sr-only
-            :text="__('More actions')"
-            category="secondary"
             no-caret
-            right
+            icon="ellipsis_v"
+            category="secondary"
+            placement="right"
+            :toggle-text="__('More actions')"
           >
             <rollback
               v-if="retryPath"
@@ -325,7 +325,7 @@ export default {
               data-track-label="environment_delete"
               graphql
             />
-          </gl-dropdown>
+          </gl-disclosure-dropdown>
         </div>
       </div>
     </div>

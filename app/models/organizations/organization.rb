@@ -8,9 +8,6 @@ module Organizations
 
     before_destroy :check_if_default_organization
 
-    has_many :namespaces
-    has_many :groups
-
     validates :name,
       presence: true,
       length: { maximum: 255 }

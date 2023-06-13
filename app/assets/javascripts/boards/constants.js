@@ -10,9 +10,11 @@ import updateBoardListMutation from './graphql/board_list_update.mutation.graphq
 import toggleListCollapsedMutation from './graphql/client/board_toggle_collapsed.mutation.graphql';
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
+import issueMoveListMutation from './graphql/issue_move_list.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
+import listDeferredQuery from './graphql/board_lists_deferred.query.graphql';
 
 export const BoardType = {
   project: 'project',
@@ -72,6 +74,12 @@ export const listsQuery = {
   },
 };
 
+export const listsDeferredQuery = {
+  [TYPE_ISSUE]: {
+    query: listDeferredQuery,
+  },
+};
+
 export const createListMutations = {
   [TYPE_ISSUE]: {
     mutation: createBoardListMutation,
@@ -117,6 +125,7 @@ export const subscriptionQueries = {
 export const listIssuablesQueries = {
   [TYPE_ISSUE]: {
     query: listIssuesQuery,
+    moveMutation: issueMoveListMutation,
   },
 };
 

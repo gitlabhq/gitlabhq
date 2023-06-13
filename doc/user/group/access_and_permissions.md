@@ -282,8 +282,8 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**. If LDAP synchronization
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
      [direct membership](../project/members/index.md#display-direct-members) of the group.

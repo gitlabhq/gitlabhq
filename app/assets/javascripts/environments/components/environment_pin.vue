@@ -3,14 +3,14 @@
  * Renders a prevent auto-stop button.
  * Used in environments table.
  */
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
 import cancelAutoStopMutation from '../graphql/mutations/cancel_auto_stop.mutation.graphql';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   props: {
     autoStopUrl: {
@@ -22,6 +22,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      item: { text: __('Prevent auto-stopping') },
+    };
   },
   methods: {
     onPinClick() {
@@ -35,11 +40,8 @@ export default {
       }
     },
   },
-  title: __('Prevent auto-stopping'),
 };
 </script>
 <template>
-  <gl-dropdown-item @click="onPinClick">
-    {{ $options.title }}
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item :item="item" @action="onPinClick" />
 </template>

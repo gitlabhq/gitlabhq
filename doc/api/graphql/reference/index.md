@@ -26176,6 +26176,7 @@ State of a Sentry error.
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
 | <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |
 | <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | TeamcityService type. |
+| <a id="servicetypetelegram_service"></a>`TELEGRAM_SERVICE` | TelegramService type. |
 | <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
 | <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
 | <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | YoutrackService type. |
@@ -26359,6 +26360,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
+| <a id="usercalloutfeaturenameenumcode_suggestions_third_party_callout"></a>`CODE_SUGGESTIONS_THIRD_PARTY_CALLOUT` | Callout feature name for code_suggestions_third_party_callout. |
 | <a id="usercalloutfeaturenameenumcreate_runner_workflow_banner"></a>`CREATE_RUNNER_WORKFLOW_BANNER` | Callout feature name for create_runner_workflow_banner. |
 | <a id="usercalloutfeaturenameenumeoa_bronze_plan_banner"></a>`EOA_BRONZE_PLAN_BANNER` | Callout feature name for eoa_bronze_plan_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |

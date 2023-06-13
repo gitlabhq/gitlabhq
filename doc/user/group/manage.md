@@ -41,13 +41,13 @@ You can change the owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Group information > Members**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Manage > Members**.
   1. Give a different member the **Owner** role.
   1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Group information > Members**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Manage > Members**.
   1. Give a different member the **Owner** role.
   1. Have the new owner sign in and remove the **Owner** role from you.
 
@@ -120,7 +120,7 @@ To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
 1. Go to the `Frontend` group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, select **Manage > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select `Engineering`.
 1. Select a [role](../permissions.md) as maximum access level.
@@ -206,8 +206,8 @@ To disable group mentions:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the top bar, select **Main menu > Groups** and find your group or subgroup.
-1. On the left sidebar, select either **Group information > Members** or **Subgroup information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group or subgroup.
+1. On the left sidebar,  **Manage > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -496,8 +496,8 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Group information > Activity**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** (**{rss}**) icon.

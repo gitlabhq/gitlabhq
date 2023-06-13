@@ -9,7 +9,7 @@ mutation issueMoveList(
   $moveBeforeId: ID
   $moveAfterId: ID
 ) {
-  issueMoveList(
+  issuableMoveList: issueMoveList(
     input: {
       projectPath: $projectPath
       iid: $iid
@@ -20,7 +20,7 @@ mutation issueMoveList(
       moveAfterId: $moveAfterId
     }
   ) {
-    issue {
+    issuable: issue {
       ...Issue
     }
     errors

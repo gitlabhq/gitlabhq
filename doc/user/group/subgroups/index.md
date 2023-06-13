@@ -160,8 +160,8 @@ Group permissions for a member can be changed only by:
 
 To see if a member has inherited the permissions from a parent group:
 
-1. On the top bar, select **Main menu > Groups** and find the group.
-1. Select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
 
 Members list for an example subgroup _Four_:
 

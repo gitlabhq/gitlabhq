@@ -1,4 +1,4 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -21,7 +21,7 @@ describe('External URL Component', () => {
     });
   };
 
-  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   describe('event hub', () => {
     beforeEach(() => {
@@ -30,13 +30,13 @@ describe('External URL Component', () => {
 
     it('should render a dropdown item to delete the environment', () => {
       expect(findDropdownItem().exists()).toBe(true);
-      expect(wrapper.text()).toEqual('Delete environment');
-      expect(findDropdownItem().attributes('variant')).toBe('danger');
+      expect(findDropdownItem().props('item').text).toBe('Delete environment');
+      expect(findDropdownItem().props('item').extraAttrs.variant).toBe('danger');
     });
 
     it('emits requestDeleteEnvironment in the event hub when button is clicked', () => {
       jest.spyOn(eventHub, '$emit');
-      findDropdownItem().vm.$emit('click');
+      findDropdownItem().vm.$emit('action');
       expect(eventHub.$emit).toHaveBeenCalledWith('requestDeleteEnvironment', resolvedEnvironment);
     });
   });
@@ -55,13 +55,13 @@ describe('External URL Component', () => {
 
     it('should render a dropdown item to delete the environment', () => {
       expect(findDropdownItem().exists()).toBe(true);
-      expect(wrapper.text()).toEqual('Delete environment');
-      expect(findDropdownItem().attributes('variant')).toBe('danger');
+      expect(findDropdownItem().props('item').text).toBe('Delete environment');
+      expect(findDropdownItem().props('item').extraAttrs.variant).toBe('danger');
     });
 
     it('emits requestDeleteEnvironment in the event hub when button is clicked', () => {
       jest.spyOn(mockApollo.defaultClient, 'mutate');
-      findDropdownItem().vm.$emit('click');
+      findDropdownItem().vm.$emit('action');
       expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: setEnvironmentToDelete,
         variables: { environment: resolvedEnvironment },

@@ -319,6 +319,15 @@ FactoryBot.define do
     token { 'squash_tm_token' }
   end
 
+  factory :telegram_integration, class: 'Integrations::Telegram' do
+    project
+    type { 'Integrations::Telegram' }
+    active { true }
+
+    token { '123456:ABC-DEF1234' }
+    room { '@channel' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

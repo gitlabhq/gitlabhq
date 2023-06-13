@@ -81,6 +81,7 @@ You can configure the following integrations.
 | [Slack notifications](slack.md)                                             | Send notifications about project events to Slack.                     | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)                             | Enable slash commands in a workspace.                                 | **{dotted-circle}** No |
 | [Squash TM](squash_tm.md)                                                   | Update Squash TM requirements when GitLab issues are modified.        | **{check-circle}** Yes |
+| [Telegram](telegram.md)                                                     | Send notifications about project events to Telegram.                  | **{dotted-circle}** No |
 | [Unify Circuit](unify_circuit.md)                                           | Send notifications about project events to Unify Circuit.             | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                                               | Receive events notifications.                                         | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                                     | Use YouTrack as the issue tracker.                                    | **{dotted-circle}** No |

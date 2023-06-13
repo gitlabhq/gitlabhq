@@ -49,6 +49,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
+    it { is_expected.to have_one(:telegram_integration) }
     it { is_expected.to have_one(:unify_circuit_integration) }
     it { is_expected.to have_one(:pumble_integration) }
     it { is_expected.to have_one(:webex_teams_integration) }

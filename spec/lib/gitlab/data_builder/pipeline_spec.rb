@@ -33,6 +33,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
       expect(attributes[:iid]).to eq(pipeline.iid)
       expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
+      expect(attributes[:url]).to eq(Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline))
       expect(attributes[:detailed_status]).to eq('passed')
       expect(build_data).to be_a(Hash)
       expect(build_data[:id]).to eq(build.id)

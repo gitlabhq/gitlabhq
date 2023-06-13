@@ -5,7 +5,7 @@ import {
   TYPENAME_MILESTONE,
   TYPENAME_USER,
 } from '~/graphql_shared/constants';
-import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
+import { isGid, convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   ListType,
   MilestoneIDs,
@@ -200,6 +200,38 @@ export function moveItemListHelper(item, fromList, toList) {
   }
 
   return updatedItem;
+}
+
+export function moveItemVariables({
+  iid,
+  epicId,
+  fromListId,
+  toListId,
+  moveBeforeId,
+  moveAfterId,
+  isIssue,
+  boardId,
+  itemToMove,
+}) {
+  if (isIssue) {
+    return {
+      iid,
+      boardId,
+      projectPath: itemToMove.referencePath.split(/[#]/)[0],
+      moveBeforeId: moveBeforeId ? getIdFromGraphQLId(moveBeforeId) : undefined,
+      moveAfterId: moveAfterId ? getIdFromGraphQLId(moveAfterId) : undefined,
+      fromListId: getIdFromGraphQLId(fromListId),
+      toListId: getIdFromGraphQLId(toListId),
+    };
+  }
+  return {
+    epicId,
+    boardId,
+    moveBeforeId,
+    moveAfterId,
+    fromListId,
+    toListId,
+  };
 }
 
 export function isListDraggable(list) {

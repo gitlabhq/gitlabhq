@@ -522,6 +522,11 @@ When using code block style:
   [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
   for available syntax highlighters. Use `plaintext` if no better hint is available.
 
+#### cURL commands in code blocks
+
+See [cURL commands](../restful_api_styleguide.md#curl-commands) for information
+about styling cURL commands.
+
 ## Lists
 
 - Do not use a period if the phrase is not a full sentence.

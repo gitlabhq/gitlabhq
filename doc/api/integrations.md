@@ -412,6 +412,50 @@ Get Datadog integration settings for a project.
 GET /projects/:id/integrations/datadog
 ```
 
+## Telegram
+
+Telegram chat tool.
+
+### Create/Edit Telegram integration
+
+Set the Telegram integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/telegram
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
+| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
+| `push_events` | boolean | true | Enable notifications for push events |
+| `issues_events` | boolean | true | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | true | Enable notifications for merge request events |
+| `tag_push_events` | boolean | true | Enable notifications for tag push events |
+| `note_events` | boolean | true | Enable notifications for note events |
+| `confidential_note_events` | boolean | true | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | true | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | true | Enable notifications for wiki page events |
+
+### Disable Telegram integration
+
+Disable the Telegram integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/telegram
+```
+
+### Get Telegram integration settings
+
+Get Telegram integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/telegram
+```
+
 ## Unify Circuit
 
 Unify Circuit RTC and collaboration tool.

@@ -10,7 +10,8 @@ All methods require administrator authorization.
 
 You can configure the URL endpoint of the system hooks from the GitLab user interface:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. Select **System Hooks** (`/admin/hooks`).
 
 Read more about [system hooks](../administration/system_hooks.md).

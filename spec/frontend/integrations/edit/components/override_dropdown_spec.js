@@ -1,4 +1,4 @@
-import { GlDropdown, GlLink } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
@@ -27,14 +27,14 @@ describe('OverrideDropdown', () => {
   };
 
   const findGlLink = () => wrapper.findComponent(GlLink);
-  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   describe('template', () => {
     describe('override prop is true', () => {
       it('renders GlToggle as disabled', () => {
         createComponent();
 
-        expect(findGlDropdown().props('text')).toBe('Use custom settings');
+        expect(findGlCollapsibleListbox().props('toggleText')).toBe('Use custom settings');
       });
     });
 
@@ -42,7 +42,7 @@ describe('OverrideDropdown', () => {
       it('renders GlToggle as disabled', () => {
         createComponent({ override: false });
 
-        expect(findGlDropdown().props('text')).toBe('Use default settings');
+        expect(findGlCollapsibleListbox().props('toggleText')).toBe('Use default settings');
       });
     });
 

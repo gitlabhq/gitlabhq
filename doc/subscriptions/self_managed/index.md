@@ -36,8 +36,9 @@ Prorated charges are not possible without a quarterly usage report.
 
 You can view users for your license and determine if you've gone over your subscription.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left menu, select **Users**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Users**.
 
 The lists of users are displayed.
 
@@ -216,8 +217,9 @@ Example of a license sync request:
 
 You can manually synchronize your subscription details at any time.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Subscription**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
 A job is queued. When the job finishes, the subscription details are updated.
@@ -226,8 +228,9 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Subscription**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Subscription**.
 
 The **Subscription** page includes the following details:
 
@@ -250,8 +253,9 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Subscription**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
 This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.

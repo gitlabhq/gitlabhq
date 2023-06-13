@@ -4,14 +4,14 @@
  * Used in the environments table.
  */
 
-import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import setEnvironmentToDelete from '../graphql/mutations/set_environment_to_delete.mutation.graphql';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlModalDirective,
@@ -30,10 +30,14 @@ export default {
   data() {
     return {
       isLoading: false,
+      item: {
+        text: s__('Environments|Delete environment'),
+        extraAttrs: {
+          variant: 'danger',
+          class: 'gl-text-red-500!',
+        },
+      },
     };
-  },
-  i18n: {
-    title: s__('Environments|Delete environment'),
   },
   mounted() {
     if (!this.graphql) {
@@ -65,12 +69,10 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown-item
+  <gl-disclosure-dropdown-item
     v-gl-modal-directive.delete-environment-modal
+    :item="item"
     :loading="isLoading"
-    variant="danger"
-    @click="onClick"
-  >
-    {{ $options.i18n.title }}
-  </gl-dropdown-item>
+    @action="onClick"
+  />
 </template>

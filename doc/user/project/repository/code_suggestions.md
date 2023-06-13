@@ -183,8 +183,10 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 ### Internet connectivity
 
-Code Suggestions only work when you have internet connectivity and can access GitLab.com.
-Code Suggestions are not available for self-managed customers, nor customers operating within an offline environment.
+To use Code Suggestions:
+
+- On GitLab.com, you must have an internet connection and be able to access GitLab.
+- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection. Code Suggestions does not work with offline environments.
 
 ### Model accuracy and quality
 

@@ -6,10 +6,10 @@
 = gitlab_ui_form_for(provider, url: omniauth_callback_path(:user, provider), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_ldap_user' }}) do |f|
   .form-group
     = f.label :username, _('Username')
-    = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input top', title: _('This field is required.'), autofocus: 'autofocus', data: { qa_selector: 'username_field' }, required: true
+    = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input', title: _('This field is required.'), autofocus: 'autofocus', data: { qa_selector: 'username_field' }, required: true
   .form-group
     = f.label :password, _('Password')
-    = f.password_field :password, name: :password, autocomplete: :current_password, class: 'form-control gl-form-input js-password', data: { id: "#{provider}-password", name: 'password', qa_selector: 'password_field' }
+    = f.text_field :vue_password_placeholder, class: 'form-control gl-form-input js-password', data: { id: "#{provider}_password", name: 'password', qa_selector: 'password_field' }
 
   - if render_remember_me
     = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }

@@ -9,9 +9,21 @@ SHA_TAG="${CI_COMMIT_SHA}"
 BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
 BASE_TAG=$([ "${BUILD_GDK_BASE}" == "true" ] && echo "${SHA_TAG}" || echo "master")
 
+if [[ -z "${GDK_SHA}" ]]; then
+  GDK_SHA=$(git ls-remote https://gitlab.com/gitlab-org/gitlab-development-kit.git main | cut -f 1)
+fi
+
+if [[ -n "${CI}" ]]; then
+  OUTPUT_OPTION="--push"
+else
+  OUTPUT_OPTION="--load"
+fi
+
 function build_image() {
   local image=$1
   local target=$2
+
+  echoinfo "Using GDK at SHA ${GDK_SHA}"
 
   docker buildx build \
     --cache-to="type=inline" \
@@ -23,7 +35,8 @@ function build_image() {
     --tag="${image}:${SHA_TAG}" \
     --tag="${image}:${BRANCH_TAG}" \
     --build-arg="BASE_TAG=${BASE_TAG}" \
-    --push \
+    --build-arg="GDK_SHA=${GDK_SHA:-main}" \
+    ${OUTPUT_OPTION} \
     .
 }
 

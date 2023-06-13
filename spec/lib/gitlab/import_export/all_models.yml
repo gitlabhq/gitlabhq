@@ -765,6 +765,7 @@ project:
 - freeze_periods
 - pumble_integration
 - webex_teams_integration
+- telegram_integration
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics

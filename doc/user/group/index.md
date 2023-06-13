@@ -181,8 +181,8 @@ In lists of group members, entries can display the following badges:
 
 You can search for members by name, username, or email.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
 
@@ -190,8 +190,8 @@ You can search for members by name, username, or email.
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Members**.
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -205,8 +205,8 @@ Prerequisite:
 
 - You must have the Owner role.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Members**.
 1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
@@ -231,8 +231,8 @@ Prerequisites:
 
 To remove a member from a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Manage > Members**.
 1. Next to the member you want to remove, select **Remove member**.
 1. Optional. On the **Remove member** confirmation box:
    - To remove direct user membership from subgroups and projects, select the **Also remove direct user membership from subgroups and projects** checkbox.

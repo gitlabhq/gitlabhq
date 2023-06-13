@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User uses inherited settings', :js, feature_category: :integrations do
   include JiraIntegrationHelpers
+  include ListboxHelpers
 
   include_context 'project integration activation'
 
@@ -24,8 +25,7 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
         expect(page).to have_field('Web URL', with: parent_settings[:url], readonly: true)
         expect(page).to have_field('New API token or password', with: '', readonly: true)
 
-        click_on 'Use default settings'
-        click_on 'Use custom settings'
+        select_from_listbox('Use custom settings', from: 'Use default settings')
 
         expect(page).not_to have_button('Use default settings')
         expect(page).to have_field('Web URL', with: project_settings[:url], readonly: false)
@@ -55,8 +55,7 @@ RSpec.describe 'User uses inherited settings', :js, feature_category: :integrati
         expect(page).to have_field('URL', with: project_settings[:url], readonly: false)
         expect(page).to have_field('New API token or password', with: '', readonly: false)
 
-        click_on 'Use custom settings'
-        click_on 'Use default settings'
+        select_from_listbox('Use default settings', from: 'Use custom settings')
 
         expect(page).not_to have_button('Use custom settings')
         expect(page).to have_field('URL', with: parent_settings[:url], readonly: true)

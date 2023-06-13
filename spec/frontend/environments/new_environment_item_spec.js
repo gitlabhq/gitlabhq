@@ -201,7 +201,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('shows the option to rollback/re-deploy if available', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const rollback = wrapper.findByRole('menuitem', {
+      const rollback = wrapper.findByRole('button', {
         name: s__('Environments|Re-deploy to environment'),
       });
 
@@ -214,7 +214,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const rollback = wrapper.findByRole('menuitem', {
+      const rollback = wrapper.findByRole('button', {
         name: s__('Environments|Re-deploy to environment'),
       });
 
@@ -240,7 +240,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       it('shows the option to pin the environment if there is an autostop date', () => {
-        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
 
         expect(pin.exists()).toBe(true);
       });
@@ -260,7 +260,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
 
         expect(pin.exists()).toBe(false);
       });
@@ -295,7 +295,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
 
         expect(pin.exists()).toBe(false);
       });
@@ -319,17 +319,17 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Terminal') });
+      const terminal = wrapper.findByRole('link', { name: __('Terminal') });
 
-      expect(rollback.exists()).toBe(true);
+      expect(terminal.exists()).toBe(true);
     });
 
     it('does not show the link to the terminal if not set up', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Terminal') });
+      const terminal = wrapper.findByRole('link', { name: __('Terminal') });
 
-      expect(rollback.exists()).toBe(false);
+      expect(terminal.exists()).toBe(false);
     });
   });
 
@@ -342,21 +342,21 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const rollback = wrapper.findByRole('menuitem', {
+      const deleteTrigger = wrapper.findByRole('button', {
         name: s__('Environments|Delete environment'),
       });
 
-      expect(rollback.exists()).toBe(true);
+      expect(deleteTrigger.exists()).toBe(true);
     });
 
     it('does not show the button to delete the environment if not possible', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const rollback = wrapper.findByRole('menuitem', {
+      const deleteTrigger = wrapper.findByRole('button', {
         name: s__('Environments|Delete environment'),
       });
 
-      expect(rollback.exists()).toBe(false);
+      expect(deleteTrigger.exists()).toBe(false);
     });
   });
 

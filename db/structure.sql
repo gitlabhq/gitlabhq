@@ -18878,8 +18878,7 @@ CREATE TABLE namespaces (
     push_rule_id bigint,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
-    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
-    organization_id bigint DEFAULT 1
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 CREATE SEQUENCE namespaces_id_seq
@@ -35139,8 +35138,6 @@ CREATE TRIGGER merge_requests_loose_fk_trigger AFTER DELETE ON merge_requests RE
 CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION nullify_merge_request_metrics_build_data();
-
-CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
