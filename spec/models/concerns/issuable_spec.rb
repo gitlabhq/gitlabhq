@@ -896,7 +896,7 @@ RSpec.describe Issuable do
       let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
 
       it "is false even without merged MR" do
-        expect(merged_mr).to be
+        expect(merged_mr).to be_present
         expect(first_time_contributor_issue).not_to be_first_contribution
         expect(contributor_issue).not_to be_first_contribution
       end

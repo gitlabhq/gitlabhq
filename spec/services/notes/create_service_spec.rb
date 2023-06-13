@@ -567,6 +567,19 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           note_text = %(/close)
           described_class.new(project, user, opts.merge(note: note_text)).execute
         end
+
+        it 'generates failed update error messages' do
+          note_text = %(/confidential)
+          service = double(:service)
+          issue.errors.add(:confidential, 'an error occurred')
+          allow(Issues::UpdateService).to receive(:new).and_return(service)
+          allow_next_instance_of(Issues::UpdateService) do |service_instance|
+            allow(service_instance).to receive(:execute).and_return(issue)
+          end
+
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+          expect(note.errors[:commands_only]).to contain_exactly('Confidential an error occurred')
+        end
       end
     end
 

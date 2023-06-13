@@ -33,7 +33,7 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client do
 
       saved_private_key = Gitlab::CurrentSettings.lets_encrypt_private_key
 
-      expect(saved_private_key).to be
+      expect(saved_private_key).to be_present
       expect(Acme::Client).to have_received(:new).with(
         hash_including(private_key: eq_pem(saved_private_key))
       )

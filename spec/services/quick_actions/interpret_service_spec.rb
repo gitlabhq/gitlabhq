@@ -2417,54 +2417,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    describe 'type command' do
-      let_it_be(:project) { create(:project, :private) }
-      let_it_be(:work_item) { create(:work_item, project: project) }
-
-      let(:command) { '/type Task' }
-
-      context 'when user has sufficient permissions to create new type' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(true)
-        end
-
-        it 'populates :issue_type: and :work_item_type' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_('Type changed successfully.'))
-          expect(updates).to eq({ issue_type: 'task', work_item_type: WorkItems::Type.default_by_type(:task) })
-        end
-
-        it 'returns error with an invalid type' do
-          _, updates, message = service.execute('/type foo', work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: Provided type is not supported."))
-          expect(updates).to eq({})
-        end
-
-        it 'returns error with same type' do
-          _, updates, message = service.execute('/type Issue', work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: Types are the same."))
-          expect(updates).to eq({})
-        end
-      end
-
-      context 'when user has insufficient permissions to create new type' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(false)
-        end
-
-        it 'returns error' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: You have insufficient permissions."))
-          expect(updates).to eq({})
-        end
-      end
-    end
+    it_behaves_like 'quick actions that change work item type'
   end
 
   describe '#explain' do
@@ -2951,6 +2904,28 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it '/unlink command is not available' do
           _, explanations = service.explain(unlink_content, issue)
 
+          expect(explanations).to be_empty
+        end
+      end
+    end
+
+    describe 'promote_to command' do
+      let(:content) { '/promote_to issue' }
+
+      context 'when work item supports promotion' do
+        let_it_be(:task) { build(:work_item, :task, project: project) }
+
+        it 'includes the value' do
+          _, explanations = service.explain(content, task)
+          expect(explanations).to eq(['Promotes work item to issue.'])
+        end
+      end
+
+      context 'when work item does not support promotion' do
+        let_it_be(:incident) { build(:work_item, :incident, project: project) }
+
+        it 'does not include the value' do
+          _, explanations = service.explain(content, incident)
           expect(explanations).to be_empty
         end
       end

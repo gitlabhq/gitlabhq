@@ -178,7 +178,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         it 'returns an error' do
           subject
 
-          expect(json_response['errors']).to be
+          expect(json_response['errors']).to be_present
         end
       end
     end

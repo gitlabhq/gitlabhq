@@ -223,6 +223,7 @@ class User < ApplicationRecord
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
   has_many :assigned_abuse_reports,   foreign_key: :assignee_id, class_name: "AbuseReport", inverse_of: :assignee
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
+  has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'

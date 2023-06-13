@@ -75,7 +75,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
 
         it 'delegates to `#with_group`' do
           expect(builder).to receive(:with_group).with(project.group)
-          expect(context).to be
+          expect(context).to be_present
         end
 
         it { is_expected.to be_search_context(project: project, group: project.group) }

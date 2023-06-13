@@ -164,6 +164,7 @@ The following quick actions can be applied through the description field when ed
 | `/weight <value>`                                                                                | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`.
 | `/clear_weight`                                                                                  | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Clear weight.
 | `/type`                                                                                          | **{check-circle}** Yes | **{dotted-circle}** Yes | **{dotted-circle}** Yes | Converts work item to specified type. Available options for `<type>` include `Issue`, `Task`, `Objective` and `Key Result`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385227) in GitLab 16.0.
+| `/promote_to <type>`                                                                                          | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Promotes work item to specified type. Available options for `<type>`: `issue` (promote a task) and `objective` (promote a key result). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
 
 ## Commit messages
 

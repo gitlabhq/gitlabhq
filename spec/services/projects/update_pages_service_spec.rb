@@ -95,7 +95,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         deployment = project.pages_deployments.last
 
         expect(deployment.size).to eq(file.size)
-        expect(deployment.file).to be
+        expect(deployment.file).to be_present
         expect(deployment.file_count).to eq(3)
         expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)

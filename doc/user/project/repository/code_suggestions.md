@@ -134,6 +134,14 @@ In VS Code:
 
 To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
 
+### Authentication troubleshooting
+
+If the above steps do not solve your issue, the problem may be related to the recent changes in authentication, specifically the token system. To resolve the issue, please follow these troubleshooting steps:
+
+- Remove the existing PAT from your GitLab account settings.
+- Reauthorize your GitLab account in VSCode using OAuth.
+- Test the code suggestions feature with different file extensions to verify if the issue is resolved.
+
 ## Stability and performance
 
 This feature is currently in [Beta](/ee/policy/experiment-beta-support.md#beta).

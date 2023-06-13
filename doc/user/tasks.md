@@ -130,6 +130,16 @@ To edit the description of a task:
 1. Above the text box, select **Rich text**.
 1. Make your changes, and select **Save**.
 
+## Promote a task to an issue
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To promote a task to an issue, use the `/promote_to issue` [quick action](../user/project/quick_actions.md).
+
 ## Remove a task from an issue
 
 Prerequisites:

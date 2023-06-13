@@ -161,6 +161,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
     it { is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport').inverse_of(:assignee) }
     it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
+    it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }

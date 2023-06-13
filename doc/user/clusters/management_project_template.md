@@ -45,8 +45,7 @@ If you have already configured the agent and connected a cluster with GitLab:
 
 To create a project from the cluster management project template:
 
-1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. From the list of templates, next to **GitLab Cluster Management**, select **Use template**.
 1. Enter the project details.

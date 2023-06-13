@@ -50,7 +50,21 @@ module Notes
         update_params[:spend_time][:note_id] = note.id
       end
 
-      noteable_update_service(note, update_params).execute(note.noteable)
+      execute_update_service(note, update_params)
+    end
+
+    private
+
+    def execute_update_service(note, params)
+      service_response = noteable_update_service(note, params).execute(note.noteable)
+
+      service_errors = if service_response.respond_to?(:errors)
+                         service_response.errors.full_messages
+                       elsif service_response.respond_to?(:[]) && service_response[:status] == :error
+                         service_response[:message]
+                       end
+
+      service_errors.blank? ? ServiceResponse.success : ServiceResponse.error(message: service_errors)
     end
 
     def noteable_update_service(note, update_params)

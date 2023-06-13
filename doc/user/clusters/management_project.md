@@ -61,7 +61,10 @@ To associate a cluster management project with your cluster:
      **Infrastructure > Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/index.md), go to your group's **Kubernetes**
      page.
-   - [Instance-level cluster](../instance/clusters/index.md), on the top bar, select **Main menu > Admin > Kubernetes**.
+   - [Instance-level cluster](../instance/clusters/index.md):
+     1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+     1. Select **Admin Area**.
+     1. Select **Kubernetes**.
 1. Expand **Advanced settings**.
 1. From the **Cluster management project** dropdown list, select the cluster management project
 you created in the previous step.

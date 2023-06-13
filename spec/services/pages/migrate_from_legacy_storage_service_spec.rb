@@ -58,7 +58,7 @@ RSpec.describe Pages::MigrateFromLegacyStorageService, feature_category: :pages 
 
           expect(project.pages_metadatum.reload.pages_deployment).to eq(nil)
           expect(subject).to eq(migrated: 1, errored: 0)
-          expect(project.pages_metadatum.reload.pages_deployment).to be
+          expect(project.pages_metadatum.reload.pages_deployment).to be_present
         end
 
         context 'when deployed already exists for the project' do

@@ -222,7 +222,8 @@ To set health status of an OKR:
 
 ## Promote a key result to an objective
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386877) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386877) in GitLab 16.0.
+> - Quick action `/promote_to` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
 
 Prerequisites:
 
@@ -233,6 +234,8 @@ To promote a key result:
 1. [Open the key result](#view-a-key-result).
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**)..
 1. Select **Promote to objective**.
+
+Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
 
 ## Close an OKR
 

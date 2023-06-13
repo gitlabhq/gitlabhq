@@ -9635,6 +9635,9 @@ msgstr ""
 msgid "CiCatalog|This project will be marked as a CI/CD Catalog resource and will be visible in the CI/CD Catalog. This action is not reversible."
 msgstr ""
 
+msgid "CiCatalog|Unreleased"
+msgstr ""
+
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
 msgstr ""
 
@@ -18579,6 +18582,9 @@ msgstr[1] ""
 msgid "Failed on"
 msgstr ""
 
+msgid "Failed to %{action} this work item: %{reason}."
+msgstr ""
+
 msgid "Failed to add a Zoom meeting"
 msgstr ""
 
@@ -18621,9 +18627,6 @@ msgid "Failed to clone this issue because target project doesn't exist."
 msgstr ""
 
 msgid "Failed to clone this issue: wrong parameters."
-msgstr ""
-
-msgid "Failed to convert this work item: %{reason}."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
@@ -36748,6 +36751,9 @@ msgstr ""
 msgid "Promote to objective"
 msgstr ""
 
+msgid "Promote work item"
+msgstr ""
+
 msgid "PromoteMilestone|Only project milestones can be promoted."
 msgstr ""
 
@@ -36761,6 +36767,9 @@ msgid "Promoted issue to an epic."
 msgstr ""
 
 msgid "Promotes issue to incident"
+msgstr ""
+
+msgid "Promotes work item to %{type}."
 msgstr ""
 
 msgid "Promotion is not supported."
@@ -51611,6 +51620,9 @@ msgstr ""
 msgid "Won't fix / Accept risk"
 msgstr ""
 
+msgid "Work Item promoted successfully."
+msgstr ""
+
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
@@ -53429,7 +53441,7 @@ msgstr ""
 msgid "cannot be changed since member is associated with a custom role"
 msgstr ""
 
-msgid "cannot be changed to %{new_type} with %{parent_type} as parent type."
+msgid "cannot be changed to %{new_type} when linked to a parent %{parent_type}."
 msgstr ""
 
 msgid "cannot be changed to %{new_type} with these child item types."

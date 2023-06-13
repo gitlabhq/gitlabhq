@@ -119,7 +119,7 @@ RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: fa
           pkg = ::Packages::Package.order_created
                                    .last
 
-          expect(pkg.build_infos).to be
+          expect(pkg.build_infos).to be_present
         end
       end
     end

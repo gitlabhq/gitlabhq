@@ -172,6 +172,25 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
     expect(response).to have_gitlab_http_status(:success)
   end
 
+  context 'when update service returns errors' do
+    let_it_be(:issue) { create(:work_item, :issue, project: project) }
+
+    before do
+      create(:parent_link, work_item: noteable, work_item_parent: issue)
+    end
+
+    it 'mutation response include the errors' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+        noteable.reload
+      end.not_to change { noteable.work_item_type.base_type }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors'])
+        .to include('Validation Work item type cannot be changed to issue when linked to a parent issue.')
+    end
+  end
+
   context 'when quick command for unsupported widget is present' do
     let(:body) { "\n/type Issue\n/assign @#{assignee.username}" }
 

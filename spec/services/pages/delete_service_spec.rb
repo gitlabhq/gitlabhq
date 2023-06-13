@@ -25,7 +25,7 @@ RSpec.describe Pages::DeleteService, feature_category: :pages do
     service.execute
 
     expect(PagesDomain.find_by_id(domain.id)).to eq(nil)
-    expect(PagesDomain.find_by_id(unrelated_domain.id)).to be
+    expect(PagesDomain.find_by_id(unrelated_domain.id)).to be_present
   end
 
   it 'schedules a destruction of pages deployments' do

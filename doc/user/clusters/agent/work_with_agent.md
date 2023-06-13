@@ -18,9 +18,9 @@ Prerequisite:
 
 To view the list of agents:
 
-1. On the top bar, select **Main menu > Projects** and find the project that contains your agent configuration file.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project that contains your agent configuration file.
    You cannot view registered agents from a project that does not contain the agent configuration file.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select **Operate > Kubernetes clusters**.
 1. Select **Agent** tab to view clusters connected to GitLab through the agent.
 
 On this page, you can view:
@@ -40,8 +40,8 @@ is shared with a project, it automatically appears in the project agent tab.
 
 To view the list of shared agents:
 
-1. On the top bar, select **Main menu > Projects** and find the project.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Kubernetes clusters**.
 1. Select the **Agent** tab.
 
 The list of shared agents and their clusters are displayed.
@@ -54,8 +54,8 @@ The activity logs help you to identify problems and get the information
 you need for troubleshooting. You can see events from a week before the
 current date. To view an agent's activity:
 
-1. On the top bar, select **Main menu > Projects** and find the project that contains your agent configuration file.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project that contains your agent configuration file.
+1. Select **Operate > Kubernetes clusters**.
 1. Select the agent you want to see activity for.
 
 The activity list includes:
@@ -114,8 +114,8 @@ An agent can have only two active tokens at one time.
 To reset the agent token without downtime:
 
 1. Create a new token:
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Operate > Kubernetes clusters**.
    1. Select the agent you want to create a token for.
    1. On the **Access tokens** tab, select **Create token**.
    1. Enter token's name and description (optional) and select **Create token**.
@@ -136,8 +136,8 @@ clean up those resources manually.
 
 To remove an agent from the UI:
 
-1. On the top bar, select **Main menu > Projects** and find the project that contains the agent configuration file.
-1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project that contains the agent configuration file.
+1. Select **Operate > Kubernetes clusters**.
 1. In the table, in the row for your agent, in the **Options** column, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Delete agent**.
 

@@ -88,7 +88,7 @@ RSpec.describe Identity do
       it 'finds any extern uids associated with a provider' do
         identity = described_class.with_any_extern_uid('test_provider').first
 
-        expect(identity).to be
+        expect(identity).to be_present
       end
     end
 

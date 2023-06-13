@@ -255,74 +255,11 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_0e214b8a14f2() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_17c3a95ee58a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_1a857e8db6cd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."uuid_convert_string_to_uuid" := NEW."uuid";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_3dc62927cae8() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_428d92773fe7() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_482bac5ec48a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_775287b6d67a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."diff_note_id_convert_to_bigint" := NEW."diff_note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_909cf0a06094() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."awardable_id_convert_to_bigint" := NEW."awardable_id";
   RETURN NEW;
 END;
 $$;
@@ -336,65 +273,11 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_bfc6e47be8cc() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_bfcbace4260d() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_c2051020aa8b() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_c5a5f48f12b0() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_cd1aeb22b34a() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."target_id_convert_to_bigint" := NEW."target_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_dca935e3a712() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_ee7956d805e6() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."note_id_convert_to_bigint" := NEW."note_id";
   RETURN NEW;
 END;
 $$;
@@ -10758,6 +10641,26 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_63 (
 );
 ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63 FOR VALUES WITH (modulus 64, remainder 63);
 
+CREATE TABLE abuse_events (
+    id bigint NOT NULL,
+    user_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    abuse_report_id bigint,
+    source smallint NOT NULL,
+    category smallint,
+    metadata jsonb
+);
+
+CREATE SEQUENCE abuse_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE abuse_events_id_seq OWNED BY abuse_events.id;
+
 CREATE TABLE abuse_report_events (
     id bigint NOT NULL,
     abuse_report_id bigint NOT NULL,
@@ -12356,7 +12259,6 @@ CREATE TABLE award_emoji (
     id integer NOT NULL,
     name character varying,
     user_id integer,
-    awardable_id_convert_to_bigint integer,
     awardable_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -14501,7 +14403,6 @@ ALTER SEQUENCE clusters_kubernetes_namespaces_id_seq OWNED BY clusters_kubernete
 
 CREATE TABLE commit_user_mentions (
     id bigint NOT NULL,
-    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -15446,7 +15347,6 @@ ALTER SEQUENCE design_management_versions_id_seq OWNED BY design_management_vers
 CREATE TABLE design_user_mentions (
     id bigint NOT NULL,
     design_id integer NOT NULL,
-    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -15797,7 +15697,6 @@ ALTER SEQUENCE epic_metrics_id_seq OWNED BY epic_metrics.id;
 CREATE TABLE epic_user_mentions (
     id bigint NOT NULL,
     epic_id integer NOT NULL,
-    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -17462,7 +17361,6 @@ ALTER SEQUENCE issue_tracker_data_id_seq OWNED BY issue_tracker_data.id;
 CREATE TABLE issue_user_mentions (
     id bigint NOT NULL,
     issue_id integer NOT NULL,
-    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -18302,7 +18200,6 @@ ALTER SEQUENCE merge_request_reviewers_id_seq OWNED BY merge_request_reviewers.i
 CREATE TABLE merge_request_user_mentions (
     id bigint NOT NULL,
     merge_request_id integer NOT NULL,
-    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -18924,7 +18821,6 @@ ALTER SEQUENCE namespaces_sync_events_id_seq OWNED BY namespaces_sync_events.id;
 
 CREATE TABLE note_diff_files (
     id integer NOT NULL,
-    diff_note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     diff text NOT NULL,
     new_file boolean NOT NULL,
     renamed_file boolean NOT NULL,
@@ -22840,7 +22736,6 @@ CREATE TABLE snippet_statistics (
 CREATE TABLE snippet_user_mentions (
     id bigint NOT NULL,
     snippet_id integer NOT NULL,
-    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -23113,7 +23008,6 @@ ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
 
 CREATE TABLE suggestions (
     id bigint NOT NULL,
-    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     relative_order smallint NOT NULL,
     applied boolean DEFAULT false NOT NULL,
     commit_id character varying,
@@ -23136,7 +23030,6 @@ ALTER SEQUENCE suggestions_id_seq OWNED BY suggestions.id;
 
 CREATE TABLE system_note_metadata (
     id integer NOT NULL,
-    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     commit_count integer,
     action character varying,
     created_at timestamp without time zone NOT NULL,
@@ -23296,7 +23189,6 @@ CREATE TABLE timelogs (
     issue_id integer,
     merge_request_id integer,
     spent_at timestamp without time zone DEFAULT now(),
-    note_id_convert_to_bigint integer,
     project_id integer,
     summary text,
     note_id bigint,
@@ -23323,7 +23215,6 @@ CREATE TABLE todos (
     state character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    note_id_convert_to_bigint integer,
     commit_id character varying,
     group_id integer,
     resolved_by_action smallint,
@@ -24523,7 +24414,6 @@ ALTER SEQUENCE vulnerability_statistics_id_seq OWNED BY vulnerability_statistics
 CREATE TABLE vulnerability_user_mentions (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
-    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
@@ -24940,6 +24830,8 @@ CREATE SEQUENCE zoom_meetings_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoom_meetings_id_seq OWNED BY zoom_meetings.id;
+
+ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 
 ALTER TABLE ONLY abuse_report_events ALTER COLUMN id SET DEFAULT nextval('abuse_report_events_id_seq'::regclass);
 
@@ -26656,6 +26548,9 @@ ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_
 
 ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_63
     ADD CONSTRAINT product_analytics_events_experimental_63_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY abuse_events
+    ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT abuse_report_events_pkey PRIMARY KEY (id);
@@ -29999,6 +29894,12 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_t
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
+
+CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
+
+CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
+
+CREATE INDEX index_abuse_events_on_user_id ON abuse_events USING btree (user_id);
 
 CREATE INDEX index_abuse_report_events_on_abuse_report_id ON abuse_report_events USING btree (abuse_report_id);
 
@@ -35156,39 +35057,13 @@ CREATE TRIGGER trigger_023e82d8e257 BEFORE INSERT OR UPDATE ON ci_pipeline_varia
 
 CREATE TRIGGER trigger_080e73845bfd BEFORE INSERT OR UPDATE ON notes FOR EACH ROW EXECUTE FUNCTION trigger_080e73845bfd();
 
-CREATE TRIGGER trigger_0e214b8a14f2 BEFORE INSERT OR UPDATE ON vulnerability_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_0e214b8a14f2();
-
-CREATE TRIGGER trigger_17c3a95ee58a BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_17c3a95ee58a();
-
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
-
-CREATE TRIGGER trigger_3dc62927cae8 BEFORE INSERT OR UPDATE ON design_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_3dc62927cae8();
-
-CREATE TRIGGER trigger_428d92773fe7 BEFORE INSERT OR UPDATE ON timelogs FOR EACH ROW EXECUTE FUNCTION trigger_428d92773fe7();
-
-CREATE TRIGGER trigger_482bac5ec48a BEFORE INSERT OR UPDATE ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION trigger_482bac5ec48a();
-
-CREATE TRIGGER trigger_775287b6d67a BEFORE INSERT OR UPDATE ON note_diff_files FOR EACH ROW EXECUTE FUNCTION trigger_775287b6d67a();
-
-CREATE TRIGGER trigger_909cf0a06094 BEFORE INSERT OR UPDATE ON award_emoji FOR EACH ROW EXECUTE FUNCTION trigger_909cf0a06094();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
-CREATE TRIGGER trigger_bfc6e47be8cc BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_bfc6e47be8cc();
-
-CREATE TRIGGER trigger_bfcbace4260d BEFORE INSERT OR UPDATE ON merge_request_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_bfcbace4260d();
-
-CREATE TRIGGER trigger_c2051020aa8b BEFORE INSERT OR UPDATE ON issue_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c2051020aa8b();
-
-CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c5a5f48f12b0();
-
 CREATE TRIGGER trigger_cd1aeb22b34a BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_cd1aeb22b34a();
 
-CREATE TRIGGER trigger_dca935e3a712 BEFORE INSERT OR UPDATE ON todos FOR EACH ROW EXECUTE FUNCTION trigger_dca935e3a712();
-
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
-
-CREATE TRIGGER trigger_ee7956d805e6 BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION trigger_ee7956d805e6();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 
@@ -36171,6 +36046,9 @@ ALTER TABLE p_ci_builds_metadata
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_e2595d00a1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY abuse_events
+    ADD CONSTRAINT fk_e5ce49c215 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_e719a85f8a FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -36887,6 +36765,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams
 
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT fk_rails_546bf08d3e FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_events
+    ADD CONSTRAINT fk_rails_55101e588c FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id);
 
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT fk_rails_56417a5a7f FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -38080,37 +37961,37 @@ ALTER TABLE product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_pending_states
-    ADD CONSTRAINT temp_fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_trace_chunks
-    ADD CONSTRAINT temp_fk_89e29fa5ee_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_89e29fa5ee_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_unit_test_failures
-    ADD CONSTRAINT temp_fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
-    ADD CONSTRAINT temp_fk_be5624bf37_p FOREIGN KEY (source_partition_id, source_job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_be5624bf37_p FOREIGN KEY (source_partition_id, source_job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_resources
-    ADD CONSTRAINT temp_fk_e169a8e3d5_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL NOT VALID;
+    ADD CONSTRAINT temp_fk_e169a8e3d5_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_builds_metadata
     ADD CONSTRAINT temp_fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ci_build_report_results
-    ADD CONSTRAINT temp_fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_needs
-    ADD CONSTRAINT temp_fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_builds_runner_session
-    ADD CONSTRAINT temp_fk_rails_70707857d3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_70707857d3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pending_builds
-    ADD CONSTRAINT temp_fk_rails_725a2644a3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_725a2644a3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_trace_metadata
-    ADD CONSTRAINT temp_fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT temp_fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;

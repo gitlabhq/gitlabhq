@@ -869,7 +869,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             let_it_be(:issue) { create(:work_item, project: project) }
             let_it_be(:link) { create(:parent_link, work_item_parent: issue, work_item: work_item) }
 
-            let(:error_msg) { 'Work item type cannot be changed to Issue with Issue as parent type.' }
+            let(:error_msg) { 'Work item type cannot be changed to issue when linked to a parent issue.' }
 
             it 'does not update the work item type' do
               expect do
