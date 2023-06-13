@@ -18,7 +18,7 @@ describe('Container Expiration Policy Settings Form', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
-    projectSettingsPath: 'settings-path',
+    projectSettingsPath: '/settings-path',
   };
 
   const {
@@ -287,7 +287,7 @@ describe('Container Expiration Policy Settings Form', () => {
         await submitForm();
 
         expect(window.location.assign).toHaveBeenCalledWith(
-          'settings-path?showSetupSuccessAlert=true',
+          '/settings-path?showSetupSuccessAlert=true',
         );
       });
 

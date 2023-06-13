@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'helpers/test_constants';
+
 /**
  * Manage the instance of a custom `window.location`
  *
@@ -42,6 +44,8 @@ export const createWindowLocationSpy = () => {
     replace: jest.fn(),
     toString: jest.fn(),
     origin,
+    protocol: 'http:',
+    host: TEST_HOST,
     // TODO: Do we need to update `origin` if `href` is changed?
     href,
   };
