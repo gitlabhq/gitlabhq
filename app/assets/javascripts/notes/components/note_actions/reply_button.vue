@@ -22,7 +22,7 @@ export default {
     data-track-action="click_button"
     data-track-label="reply_comment_button"
     category="tertiary"
-    icon="comment"
+    icon="reply"
     :title="$options.i18n.buttonText"
     :aria-label="$options.i18n.buttonText"
     @click="$emit('startReplying')"

@@ -1618,27 +1618,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
-  context "unconfirmed user deletion" do
-    it { is_expected.to allow_value(true, false).for(:delete_unconfirmed_users) }
-
-    context "delete unconfirmed users is false" do
-      it "does not validate unconfirmed_users_delete_after_days" do
-        setting.delete_unconfirmed_users = false
-        setting.unconfirmed_users_delete_after_days = 0
-
-        expect(setting).to be_valid
-      end
-    end
-
-    context "delete unconfirmed users is true" do
-      before do
-        setting.delete_unconfirmed_users = true
-      end
-
-      it { is_expected.to validate_numericality_of(:unconfirmed_users_delete_after_days).is_greater_than(0) }
-    end
-  end
-
   context 'personal accesss token prefix' do
     it 'sets the correct default value' do
       expect(setting.personal_access_token_prefix).to eql('glpat-')

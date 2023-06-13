@@ -67,6 +67,11 @@ module Ci
           all_jobs.lazy.reject { |job| job[:processed] }
         end
 
+        # This method returns the names of jobs that have a stopped status
+        def stopped_job_names
+          all_jobs.select { |job| job[:status].in?(Ci::HasStatus::STOPPED_STATUSES) }.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
+        end
+
         private
 
         # We use these columns to perform an efficient calculation of a status

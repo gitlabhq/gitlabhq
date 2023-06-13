@@ -1,4 +1,4 @@
-import { GlButton, GlDropdown } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -15,10 +15,10 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
-  getIssuesCountsQueryResponse,
-  getIssuesQueryResponse,
-  getIssuesQueryEmptyResponse,
   filteredTokens,
+  getIssuesCountsQueryResponse,
+  getIssuesQueryEmptyResponse,
+  getIssuesQueryResponse,
   locationSearch,
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
@@ -129,10 +129,8 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
-  const findCalendarButton = () =>
-    wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.calendarLabel });
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
@@ -141,7 +139,8 @@ describe('CE IssuesListApp component', () => {
   const findGridtViewTypeBtn = () => wrapper.findByTestId('grid-view-type');
   const findViewTypeLocalStorageSync = () => wrapper.findAllComponents(LocalStorageSync).at(0);
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
-  const findRssButton = () => wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.rssLabel });
+  const findCalendarButton = () => wrapper.findByTestId('subscribe-calendar');
+  const findRssButton = () => wrapper.findByTestId('subscribe-rss');
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -250,7 +249,7 @@ describe('CE IssuesListApp component', () => {
         expect(findDropdown().props()).toMatchObject({
           category: 'tertiary',
           icon: 'ellipsis_v',
-          text: 'Actions',
+          toggleText: 'Actions',
           textSrOnly: true,
         });
       });

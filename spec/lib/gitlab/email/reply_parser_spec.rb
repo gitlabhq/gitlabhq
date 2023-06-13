@@ -380,5 +380,39 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
         end
       end
     end
+
+    context 'iso-8859-2 content' do
+      let(:raw_content) do
+        <<-BODY.strip_heredoc.chomp
+          From: Jake the Dog <jake@adventuretime.ooo>
+          To: <incoming+email-test-project_id-issue-@appmail.adventuretime.ooo>
+          Subject: =?iso-8859-2?B?VGVzdGluZyBlbmNvZGluZyBpc28tODg1OS0yILu+uei1vru76A==?=
+          Date: Wed, 31 May 2023 18:43:32 +0200
+          Message-ID: <CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com>
+          MIME-Version: 1.0
+          Content-Type: multipart/alternative;
+                  boundary="----=_NextPart_000_0001_01D993EF.CDD81EA0"
+          X-Mailer: Microsoft Outlook 16.0
+          Thread-Index: AdmT3ur1lfLfsfGgRM699GyWkjowfg==
+          Content-Language: en-us
+
+          This is a multipart message in MIME format.
+
+          ------=_NextPart_000_0001_01D993EF.CDD81EA0
+          Content-Type: text/plain;
+                  charset="iso-8859-2"
+          Content-Transfer-Encoding: base64
+
+          Qm9keSBvZiBlbmNvZGluZyBpc28tODg1OS0yIHRlc3Q6ILu+uei1vru76A0KDQo=
+        BODY
+      end
+
+      it "parses body under UTF-8 encoding" do
+        expect(test_parse_body(raw_content, { trim_reply: false }))
+          .to eq(<<-BODY.strip_heredoc.chomp)
+            Body of encoding iso-8859-2 test: ťžščľžťťč\r\n\r\n
+          BODY
+      end
+    end
   end
 end

@@ -105,7 +105,7 @@ export default {
           icon="dash"
           :aria-label="$options.i18n.removeItem"
           :title="$options.i18n.removeItem"
-          class="gl-align-self-center gl-p-1! gl-absolute gl-right-4"
+          class="gl-align-self-center gl-mr-2"
           data-testid="item-remove"
           @click.stop.prevent="handleItemRemove(item)"
         />

@@ -1,18 +1,13 @@
 <script>
-import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import CsvExportModal from './csv_export_modal.vue';
 import CsvImportModal from './csv_import_modal.vue';
 
 export default {
-  i18n: {
-    exportAsCsvButtonText: __('Export as CSV'),
-    importCsvText: __('Import CSV'),
-    importFromJiraText: __('Import from Jira'),
-  },
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
     CsvExportModal,
     CsvImportModal,
   },
@@ -48,6 +43,22 @@ export default {
       default: undefined,
     },
   },
+  data() {
+    return {
+      dropdownItems: {
+        exportAsCSV: {
+          text: __('Export as CSV'),
+        },
+        importCSV: {
+          text: __('Import CSV'),
+        },
+        importFromJIRA: {
+          text: __('Import from Jira'),
+          href: this.projectImportJiraPath,
+        },
+      },
+    };
+  },
   computed: {
     exportModalId() {
       return `${this.issuableType}-export-modal`;
@@ -61,23 +72,25 @@ export default {
 
 <template>
   <ul class="gl-display-contents">
-    <gl-dropdown-item
+    <gl-disclosure-dropdown-item
       v-if="showExportButton"
       v-gl-modal="exportModalId"
+      data-testid="export-as-csv-button"
       data-qa-selector="export_as_csv_button"
-    >
-      {{ $options.i18n.exportAsCsvButtonText }}
-    </gl-dropdown-item>
-    <gl-dropdown-item v-if="showImportButton" v-gl-modal="importModalId">
-      {{ $options.i18n.importCsvText }}
-    </gl-dropdown-item>
-    <gl-dropdown-item
+      :item="dropdownItems.exportAsCSV"
+    />
+    <gl-disclosure-dropdown-item
+      v-if="showImportButton"
+      v-gl-modal="importModalId"
+      data-testid="import-from-csv-button"
+      :item="dropdownItems.importCSV"
+    />
+    <gl-disclosure-dropdown-item
       v-if="showImportButton && canEdit"
-      :href="projectImportJiraPath"
+      data-testid="import-from-jira-link"
       data-qa-selector="import_from_jira_link"
-    >
-      {{ $options.i18n.importFromJiraText }}
-    </gl-dropdown-item>
+      :item="dropdownItems.importFromJIRA"
+    />
 
     <csv-export-modal
       v-if="showExportButton"

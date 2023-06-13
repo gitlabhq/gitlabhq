@@ -147,14 +147,14 @@ export default {
           />
         </slot>
       </div>
-      <div class="gl-pr-8 gl-text-gray-900 gl-truncate-end">
+      <div class="gl-flex-grow-1 gl-text-gray-900 gl-truncate-end">
         {{ item.title }}
         <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-truncate-end">
           {{ item.subtitle }}
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-flex-grow-1 gl-text-right gl-mr-3 gl-relative">
+      <span v-if="hasPill || isPinnable" class="gl-text-right gl-mr-3 gl-relative">
         <gl-badge
           v-if="hasPill"
           size="sm"

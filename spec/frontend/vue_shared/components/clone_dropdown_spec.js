@@ -1,4 +1,4 @@
-import { GlFormInputGroup, GlDropdownSectionHeader } from '@gitlab/ui';
+import { GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CloneDropdown from '~/vue_shared/components/clone_dropdown.vue';
 
@@ -46,7 +46,6 @@ describe('Clone Dropdown Button', () => {
       createComponent({ [name]: value });
 
       expect(wrapper.findComponent(GlFormInputGroup).props('value')).toBe(value);
-      expect(wrapper.findAllComponents(GlDropdownSectionHeader).length).toBe(1);
     });
   });
 
@@ -58,12 +57,12 @@ describe('Clone Dropdown Button', () => {
     `('allows null values for the props', ({ name, value }) => {
       createComponent({ ...defaultPropsData, [name]: value });
 
-      expect(wrapper.findAllComponents(GlDropdownSectionHeader).length).toBe(1);
+      expect(wrapper.findAllComponents(GlFormGroup).length).toBe(1);
     });
 
     it('correctly calculates httpLabel for HTTPS protocol', () => {
       createComponent({ httpLink: httpsLink });
-      expect(wrapper.findComponent(GlDropdownSectionHeader).text()).toContain('HTTPS');
+      expect(wrapper.findComponent(GlFormGroup).attributes('label')).toContain('HTTPS');
     });
   });
 });

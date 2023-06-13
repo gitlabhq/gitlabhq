@@ -920,10 +920,10 @@ When documenting how to navigate through the GitLab UI:
 Use these terms when referring to the main GitLab user interface
 elements:
 
-- **Top bar**: This is the top bar that spans the width of the user interface.
-  It includes the menu, the GitLab logo, search field, counters, and the user's avatar.
 - **Left sidebar**: This is the navigation sidebar on the left of the user
-  interface, specific to the project or group.
+  interface.
+  - Do not use the phrase `context switcher` or `switch contexts`. Instead, try to direct the user to the exact location with a set of repeatable steps.
+  - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
 
@@ -939,25 +939,23 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To open group settings:
 
 ```markdown
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To open either project or group settings:
 
 ```markdown
-1. On the top bar, select **Main menu**, and:
-   - For a project, select **Projects** and find your project.
-   - For a group, select **Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -965,25 +963,26 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the top bar, select **Create new... > New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the top bar, select **Create new... > New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 ```
 
 To open the Admin Area:
 
 ```markdown
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 ```
 
 To select your avatar:
 
 ```markdown
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 ```
 
 To save the selection in some dropdown lists:
@@ -1024,7 +1023,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.

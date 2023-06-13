@@ -42,7 +42,7 @@ describe('ScopeSidebarNavigation', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItemActive = () => wrapper.find('[aria-current=page]');
   const findNavItemActiveLabel = () =>
-    findNavItemActive().find('[class="gl-pr-8 gl-text-gray-900 gl-truncate-end"]');
+    findNavItemActive().find('[class="gl-flex-grow-1 gl-text-gray-900 gl-truncate-end"]');
 
   describe('scope navigation', () => {
     beforeEach(() => {

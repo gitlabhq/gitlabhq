@@ -1,0 +1,8 @@
+---
+name: ci_reset_skipped_jobs_in_atomic_processing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118269
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410203
+milestone: '16.1'
+type: development
+group: group::pipeline authoring
+default_enabled: false

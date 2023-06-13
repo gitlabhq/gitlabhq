@@ -927,6 +927,203 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
     end
 
+    context 'when jobs change from stopped to alive status during pipeline processing' do
+      around do |example|
+        Sidekiq::Testing.fake! { example.run }
+      end
+
+      let(:config) do
+        <<-YAML
+        stages: [test, deploy]
+
+        manual1:
+          stage: test
+          when: manual
+          script: exit 0
+
+        manual2:
+          stage: test
+          when: manual
+          script: exit 0
+
+        test1:
+          stage: test
+          needs: [manual1]
+          script: exit 0
+
+        test2:
+          stage: test
+          needs: [manual2]
+          script: exit 0
+
+        deploy1:
+          stage: deploy
+          needs: [manual1, manual2]
+          script: exit 0
+
+        deploy2:
+          stage: deploy
+          needs: [test2]
+          script: exit 0
+        YAML
+      end
+
+      let(:pipeline) do
+        Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+      end
+
+      let(:manual1) { all_builds.find_by(name: 'manual1') }
+      let(:manual2) { all_builds.find_by(name: 'manual2') }
+
+      let(:statuses_0) do
+        { 'manual1': 'created', 'manual2': 'created', 'test1': 'created', 'test2': 'created', 'deploy1': 'created', 'deploy2': 'created' }
+      end
+
+      let(:statuses_1) do
+        { 'manual1': 'manual', 'manual2': 'manual', 'test1': 'skipped', 'test2': 'skipped', 'deploy1': 'skipped', 'deploy2': 'skipped' }
+      end
+
+      let(:statuses_2) do
+        { 'manual1': 'pending', 'manual2': 'pending', 'test1': 'skipped', 'test2': 'skipped', 'deploy1': 'skipped', 'deploy2': 'skipped' }
+      end
+
+      let(:statuses_3) do
+        { 'manual1': 'pending', 'manual2': 'pending', 'test1': 'created', 'test2': 'created', 'deploy1': 'created', 'deploy2': 'created' }
+      end
+
+      let(:log_info) do
+        {
+          class: described_class.name.to_s,
+          message: 'Running ResetSkippedJobsService on new alive jobs',
+          project_id: project.id,
+          pipeline_id: pipeline.id,
+          user_id: user.id,
+          jobs_count: 2
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+        pipeline # Create the pipeline
+      end
+
+      # Since this is a test for a race condition, we are calling internal method `enqueue!`
+      # instead of `play` and stubbing `new_alive_jobs` of the service class.
+      it 'runs ResetSkippedJobsService on the new alive jobs and logs event' do
+        # Initial control without any pipeline processing
+        expect(all_builds_names_and_statuses).to eq(statuses_0)
+
+        process_pipeline
+
+        # Initial control after the first pipeline processing
+        expect(all_builds_names_and_statuses).to eq(statuses_1)
+
+        # Change the manual jobs from stopped to alive status.
+        # We don't use `play` to avoid running `ResetSkippedJobsService`.
+        manual1.enqueue!
+        manual2.enqueue!
+
+        # Statuses after playing the manual jobs
+        expect(all_builds_names_and_statuses).to eq(statuses_2)
+
+        mock_play_jobs_during_processing([manual1, manual2])
+
+        expect(Ci::ResetSkippedJobsService).to receive(:new).once.and_call_original
+
+        process_pipeline
+
+        expect(all_builds_names_and_statuses).to eq(statuses_3)
+      end
+
+      it 'logs event' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).once.with(log_info)
+
+        mock_play_jobs_during_processing([manual1, manual2])
+        process_pipeline
+      end
+
+      context 'when the new alive jobs belong to different users' do
+        let_it_be(:user2) { create(:user) }
+
+        before do
+          process_pipeline # First pipeline processing
+
+          # Change the manual jobs from stopped to alive status
+          manual1.enqueue!
+          manual2.enqueue!
+
+          manual2.update!(user: user2)
+
+          mock_play_jobs_during_processing([manual1, manual2])
+        end
+
+        it 'runs ResetSkippedJobsService on the new alive jobs' do
+          # Statuses after playing the manual jobs
+          expect(all_builds_names_and_statuses).to eq(statuses_2)
+
+          # Since there are two different users, we expect this service to be called twice.
+          expect(Ci::ResetSkippedJobsService).to receive(:new).twice.and_call_original
+
+          process_pipeline
+
+          expect(all_builds_names_and_statuses).to eq(statuses_3)
+        end
+
+        # In this scenario, the new alive jobs (manual1 and manual2) have different users.
+        # We can only know for certain the assigned user of dependent jobs that are exclusive
+        # to either manual1 or manual2. Otherwise, the assigned user will depend on which of
+        # the new alive jobs get processed first by ResetSkippedJobsService.
+        it 'assigns the correct user to the dependent jobs' do
+          test1 = all_builds.find_by(name: 'test1')
+          test2 = all_builds.find_by(name: 'test2')
+
+          expect(test1.user).to eq(user)
+          expect(test2.user).to eq(user)
+
+          process_pipeline
+
+          expect(test1.reset.user).to eq(user)
+          expect(test2.reset.user).to eq(user2)
+        end
+
+        it 'logs event' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).once.with(log_info.merge(jobs_count: 1))
+          expect(Gitlab::AppJsonLogger).to receive(:info).once.with(log_info.merge(user_id: user2.id, jobs_count: 1))
+
+          mock_play_jobs_during_processing([manual1, manual2])
+          process_pipeline
+        end
+      end
+
+      context 'when FF `ci_reset_skipped_jobs_in_atomic_processing` is disabled' do
+        before do
+          stub_feature_flags(ci_reset_skipped_jobs_in_atomic_processing: false)
+
+          process_pipeline # First pipeline processing
+
+          # Change the manual jobs from stopped to alive status
+          manual1.enqueue!
+          manual2.enqueue!
+
+          mock_play_jobs_during_processing([manual1, manual2])
+        end
+
+        it 'does not run ResetSkippedJobsService' do
+          expect(Ci::ResetSkippedJobsService).not_to receive(:new)
+
+          process_pipeline
+
+          expect(all_builds_names_and_statuses).to eq(statuses_2)
+        end
+
+        it 'does not log event' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          process_pipeline
+        end
+      end
+    end
+
     context 'when a bridge job has parallel:matrix config', :sidekiq_inline do
       let(:parent_config) do
         <<-EOY
@@ -1085,7 +1282,12 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     def builds_names_and_statuses
       builds.each_with_object({}) do |b, h|
         h[b.name.to_sym] = b.status
-        h
+      end
+    end
+
+    def all_builds_names_and_statuses
+      all_builds.each_with_object({}) do |b, h|
+        h[b.name.to_sym] = b.status
       end
     end
 
@@ -1166,5 +1368,19 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
   def process_pipeline
     described_class.new(pipeline).execute
+  end
+
+  # A status collection is initialized at the start of pipeline processing and then again at the
+  # end of processing.  Here we simulate "playing" the given jobs during pipeline processing by
+  # stubbing stopped_job_names so that they appear to have been stopped at the beginning of
+  # processing and then later changed to alive status at the end.
+  def mock_play_jobs_during_processing(jobs)
+    collection = Ci::PipelineProcessing::AtomicProcessingService::StatusCollection.new(pipeline)
+
+    allow(collection).to receive(:stopped_job_names).and_return(jobs.map(&:name), [])
+
+    # Return the same collection object for every instance of StatusCollection
+    allow(Ci::PipelineProcessing::AtomicProcessingService::StatusCollection).to receive(:new)
+      .and_return(collection)
   end
 end

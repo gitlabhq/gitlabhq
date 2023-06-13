@@ -1,28 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
-<gl-dropdown-stub
+<gl-disclosure-dropdown-stub
+  autoclose="true"
   category="primary"
-  clearalltext="Clear all"
-  clearalltextclass="gl-px-5"
-  headertext=""
-  hideheaderborder="true"
-  highlighteditemstitle="Selected"
-  highlighteditemstitleclass="gl-px-5"
-  right="true"
+  icon=""
+  items=""
+  placement="right"
+  positioningstrategy="absolute"
   size="medium"
-  text="Clone"
+  toggleid="dropdown-toggle-btn-2"
+  toggletext="Clone"
   variant="confirm"
 >
-  <div
-    class="pb-2 mx-1"
-  >
-    <gl-dropdown-section-header-stub>
-      Clone with SSH
-    </gl-dropdown-section-header-stub>
-     
-    <div
-      class="mx-3"
+  <gl-disclosure-dropdown-item-stub>
+    <gl-form-group-stub
+      class="gl-px-3 gl-my-3"
+      label="Clone with SSH"
+      labeldescription=""
+      optionaltext="(optional)"
     >
       <b-input-group-stub
         readonly=""
@@ -46,7 +42,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
             aria-label="Copy URL"
             buttontextclasses=""
             category="primary"
-            class="d-inline-flex"
+            class="gl-display-inline-flex"
             data-clipboard-text="ssh://foo.bar"
             data-qa-selector="copy_ssh_url_button"
             icon="copy-to-clipboard"
@@ -56,14 +52,15 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           />
         </b-input-group-append-stub>
       </b-input-group-stub>
-    </div>
-     
-    <gl-dropdown-section-header-stub>
-      Clone with HTTP
-    </gl-dropdown-section-header-stub>
-     
-    <div
-      class="mx-3"
+    </gl-form-group-stub>
+  </gl-disclosure-dropdown-item-stub>
+   
+  <gl-disclosure-dropdown-item-stub>
+    <gl-form-group-stub
+      class="gl-px-3 gl-mb-3"
+      label="Clone with HTTP"
+      labeldescription=""
+      optionaltext="(optional)"
     >
       <b-input-group-stub
         readonly=""
@@ -87,7 +84,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
             aria-label="Copy URL"
             buttontextclasses=""
             category="primary"
-            class="d-inline-flex"
+            class="gl-display-inline-flex"
             data-clipboard-text="http://foo.bar"
             data-qa-selector="copy_http_url_button"
             icon="copy-to-clipboard"
@@ -97,7 +94,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           />
         </b-input-group-append-stub>
       </b-input-group-stub>
-    </div>
-  </div>
-</gl-dropdown-stub>
+    </gl-form-group-stub>
+  </gl-disclosure-dropdown-item-stub>
+</gl-disclosure-dropdown-stub>
 `;

@@ -2,11 +2,10 @@
 import {
   GlButton,
   GlButtonGroup,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlFilteredSearchToken,
   GlTooltipDirective,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -70,6 +69,9 @@ import {
   defaultWorkItemTypes,
   i18n,
   ISSUE_REFERENCE,
+  ISSUES_GRID_VIEW_KEY,
+  ISSUES_LIST_VIEW_KEY,
+  ISSUES_VIEW_TYPE_KEY,
   MAX_LIST_SIZE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
@@ -80,9 +82,6 @@ import {
   RELATIVE_POSITION_ASC,
   UPDATED_DESC,
   urlSortParams,
-  ISSUES_VIEW_TYPE_KEY,
-  ISSUES_LIST_VIEW_KEY,
-  ISSUES_GRID_VIEW_KEY,
 } from '../constants';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
@@ -126,13 +125,12 @@ export default {
   ISSUES_LIST_VIEW_KEY,
   components: {
     CsvImportExportButtons,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     GlButton,
     GlButtonGroup,
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownItem,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
@@ -205,6 +203,20 @@ export default {
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
       viewType: ISSUES_LIST_VIEW_KEY,
+      subscribeDropdownOptions: {
+        items: [
+          {
+            text: i18n.rssLabel,
+            href: this.rssPath,
+            extraAttrs: { 'data-testid': 'subscribe-rss' },
+          },
+          {
+            text: i18n.calendarLabel,
+            href: this.calendarPath,
+            extraAttrs: { 'data-testid': 'subscribe-calendar' },
+          },
+        ],
+      },
     };
   },
   apollo: {
@@ -882,12 +894,12 @@ export default {
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
         />
-        <gl-dropdown
+        <gl-disclosure-dropdown
           v-gl-tooltip.hover="$options.i18n.actionsLabel"
           category="tertiary"
           icon="ellipsis_v"
           no-caret
-          :text="$options.i18n.actionsLabel"
+          :toggle-text="$options.i18n.actionsLabel"
           text-sr-only
           data-qa-selector="issues_list_more_actions_dropdown"
         >
@@ -896,16 +908,8 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-
-          <gl-dropdown-divider v-if="showCsvButtons" />
-
-          <gl-dropdown-item :href="rssPath">
-            {{ $options.i18n.rssLabel }}
-          </gl-dropdown-item>
-          <gl-dropdown-item :href="calendarPath">
-            {{ $options.i18n.calendarLabel }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          <gl-disclosure-dropdown-group :bordered="true" :group="subscribeDropdownOptions" />
+        </gl-disclosure-dropdown>
       </template>
 
       <template #timeframe="{ issuable = {} }">

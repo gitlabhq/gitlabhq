@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
+RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :service_desk do
   include ServiceDeskHelper
   include_context 'email shared context'
 
@@ -64,6 +64,22 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
 
         receiver.execute
+      end
+    end
+
+    context 'when encoding of an email is iso-8859-2' do
+      let(:email_raw) { email_fixture('emails/service_desk_encoding.eml') }
+      let(:expected_description) do
+        "Body of encoding iso-8859-2 test: ťžščľžťťč"
+      end
+
+      it 'creates a new issue with readable subject and body' do
+        expect { receiver.execute }.to change { Issue.count }.by(1)
+
+        new_issue = Issue.last
+
+        expect(new_issue.title).to eq("Testing encoding iso-8859-2 ťžščľžťťč")
+        expect(new_issue.description).to eq(expected_description.strip)
       end
     end
 

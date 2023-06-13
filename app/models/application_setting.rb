@@ -695,13 +695,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     if: :update_runner_versions_enabled?
 
-  validates :unconfirmed_users_delete_after_days,
-    numericality: { only_integer: true, greater_than: 0 },
-    if: :delete_unconfirmed_users
-
-  validates :delete_unconfirmed_users,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
-
   validates :inactive_projects_min_size_mb,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 

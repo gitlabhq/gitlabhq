@@ -12533,6 +12533,9 @@ msgstr ""
 msgid "ContributionAnalytics|Total Contributions"
 msgstr ""
 
+msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
 msgid "Contributions for %{calendar_date}"
 msgstr ""
 
@@ -49554,6 +49557,9 @@ msgid "UserProfile|%{id} · created %{created} by %{author}"
 msgstr ""
 
 msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|An error occurred loading the activity. Please refresh the page to try again."
 msgstr ""
 
 msgid "UserProfile|An error occurred loading the followers. Please refresh the page to try again."

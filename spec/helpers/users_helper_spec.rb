@@ -497,6 +497,7 @@ RSpec.describe UsersHelper do
   describe '#user_profile_tabs_app_data' do
     before do
       allow(helper).to receive(:user_calendar_path).with(user, :json).and_return('/users/root/calendar.json')
+      allow(helper).to receive(:user_activity_path).with(user, :json).and_return('/users/root/activity.json')
       allow(user).to receive_message_chain(:followers, :count).and_return(2)
       allow(user).to receive_message_chain(:followees, :count).and_return(3)
     end
@@ -506,6 +507,7 @@ RSpec.describe UsersHelper do
         followees_count: 3,
         followers_count: 2,
         user_calendar_path: '/users/root/calendar.json',
+        user_activity_path: '/users/root/activity.json',
         utc_offset: 0,
         user_id: user.id,
         snippets_empty_state: match_asset_path('illustrations/empty-state/empty-snippets-md.svg')

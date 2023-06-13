@@ -2,25 +2,47 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Graphql::GenericTracing do
+RSpec.describe Gitlab::Graphql::GenericTracing, feature_category: :application_performance do
   let(:graphql_duration_seconds_histogram) { double('Gitlab::Metrics::NullMetric') }
 
-  it 'updates graphql histogram with expected labels' do
-    query = 'query { users { id } }'
-    tracer = described_class.new
+  context 'when graphql_generic_tracing_metrics_deactivate is disabled' do
+    before do
+      stub_feature_flags(graphql_generic_tracing_metrics_deactivate: false)
+    end
 
-    allow(tracer)
-      .to receive(:graphql_duration_seconds)
-      .and_return(graphql_duration_seconds_histogram)
+    it 'updates graphql histogram with expected labels' do
+      query = 'query { users { id } }'
+      tracer = described_class.new
 
-    expect_metric('graphql.lex', 'lex')
-    expect_metric('graphql.parse', 'parse')
-    expect_metric('graphql.validate', 'validate')
-    expect_metric('graphql.analyze', 'analyze_multiplex')
-    expect_metric('graphql.execute', 'execute_query_lazy')
-    expect_metric('graphql.execute', 'execute_multiplex')
+      allow(tracer)
+        .to receive(:graphql_duration_seconds)
+              .and_return(graphql_duration_seconds_histogram)
 
-    GitlabSchema.execute(query, context: { tracers: [tracer] })
+      expect_metric('graphql.lex', 'lex')
+      expect_metric('graphql.parse', 'parse')
+      expect_metric('graphql.validate', 'validate')
+      expect_metric('graphql.analyze', 'analyze_multiplex')
+      expect_metric('graphql.execute', 'execute_query_lazy')
+      expect_metric('graphql.execute', 'execute_multiplex')
+
+      GitlabSchema.execute(query, context: { tracers: [tracer] })
+    end
+  end
+
+  context 'when graphql_generic_tracing_metrics_deactivate is enabled' do
+    it 'does not updates graphql histogram with expected labels' do
+      query = 'query { users { id } }'
+      tracer = described_class.new
+
+      allow(tracer)
+        .to receive(:graphql_duration_seconds)
+              .and_return(graphql_duration_seconds_histogram)
+
+      GitlabSchema.execute(query, context: { tracers: [tracer] })
+
+      expect(graphql_duration_seconds_histogram)
+        .not_to receive(:observe)
+    end
   end
 
   context "when labkit tracing is enabled" do
