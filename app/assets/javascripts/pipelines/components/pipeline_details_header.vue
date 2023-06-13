@@ -11,8 +11,9 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import { __, s__, sprintf } from '~/locale';
+import { __, s__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
@@ -276,9 +277,24 @@ export default {
     inProgress() {
       return this.status === 'RUNNING';
     },
+    duration() {
+      return this.pipeline?.duration || 0;
+    },
+    durationFormatted() {
+      return timeIntervalInWords(this.duration);
+    },
+    queuedDuration() {
+      return this.pipeline?.queuedDuration || 0;
+    },
     inProgressText() {
       return sprintf(__('In progress, queued for %{queuedDuration} seconds'), {
-        queuedDuration: this.pipeline?.queuedDuration || 0,
+        queuedDuration: formatNumber(this.queuedDuration),
+      });
+    },
+    durationText() {
+      return sprintf(__('%{duration}, queued for %{queuedDuration} seconds'), {
+        duration: this.durationFormatted,
+        queuedDuration: formatNumber(this.queuedDuration),
       });
     },
     canRetryPipeline() {
@@ -369,7 +385,13 @@ export default {
 
 <template>
   <div class="gl-my-4">
-    <gl-alert v-if="hasError" :title="failure.text" :variant="failure.variant" :dismissible="false">
+    <gl-alert
+      v-if="hasError"
+      class="gl-mb-4"
+      :title="failure.text"
+      :variant="failure.variant"
+      :dismissible="false"
+    >
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
       </div>
@@ -537,6 +559,10 @@ export default {
           <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
             <gl-icon name="timer" />
             {{ inProgressText }}
+          </span>
+          <span v-if="duration" class="gl-ml-2" data-testid="pipeline-duration-text">
+            <gl-icon name="timer" />
+            {{ durationText }}
           </span>
         </div>
       </div>

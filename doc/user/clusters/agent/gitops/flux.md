@@ -67,7 +67,7 @@ to an acceptable duration.
 
 When the agent for Kubernetes calls the `Receiver` webhook,
 the agent defaults to `http://webhook-receiver.flux-system.svc.cluster.local`,
-which is also the default set by a Flux bootstrap installation. To configure a custom
+which is also the default URL set by a Flux bootstrap installation. To configure a custom
 endpoint, set `flux.webhook_receiver_url` to a URL that the agent can resolve. For example:
 
 ```yaml
@@ -76,7 +76,7 @@ flux:
 ```
 
 There is special handing for
-[service proxy URIs](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster-services/) configured
+[service proxy URLs](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster-services/) configured
 in this format: `/api/v1/namespaces/[^/]+/services/[^/]+/proxy`. For example:
 
 ```yaml
@@ -91,7 +91,7 @@ and you haven't [configured an `Ingress`](https://fluxcd.io/flux/guides/webhook-
 for the Flux notification controller.
 
 WARNING:
-You should configure only trusted service proxy URIs.
-When the agent for Kubernetes provides a service proxy URI,
-it sends typical Kubernetes API requests which include
+You should configure only trusted service proxy URLs.
+When you provide a service proxy URL,
+the agent for Kubernetes sends typical Kubernetes API requests which include
 the credentials necessary to authenticate with the API service.

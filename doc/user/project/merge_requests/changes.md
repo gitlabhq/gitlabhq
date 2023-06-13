@@ -27,22 +27,16 @@ To view the diff of changes included in a merge request:
    1. Select the file you want to view.
    1. To hide the file browser, select **Show file browser** again.
 
-In [GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/232820) and later, files
-with many changes are collapsed to improve performance. GitLab displays the message:
+Files with many changes are collapsed to improve performance. GitLab displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
 ## Show one file at a time
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229848) in GitLab 13.7.
 
 For larger merge requests, you can review one file at a time. You can change this setting
 [temporarily in a merge request](#in-a-merge-request-show-only-one-file-at-a-time), or
 so it [applies to all merge requests](#in-all-merge-requests-show-only-one-file-at-a-time).
 
 ### In a merge request, show only one file at a time
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) in GitLab 13.7.
 
 To temporarily change your viewing preferences for a specific merge request:
 
@@ -161,7 +155,7 @@ On GitLab.com, this feature is not available.
 You can add comments to a merge request diff file. These comments persist across
 rebases and file changes.
 
-To add a comment a merge request file:
+To add a comment to a merge request file:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests** and find your merge request.

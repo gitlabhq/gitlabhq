@@ -1293,6 +1293,27 @@ Input type: `AuditEventsStreamingInstanceHeadersCreateInput`
 | <a id="mutationauditeventsstreaminginstanceheaderscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsstreaminginstanceheaderscreateheader"></a>`header` | [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader) | Created header. |
 
+### `Mutation.auditEventsStreamingInstanceHeadersUpdate`
+
+Input type: `AuditEventsStreamingInstanceHeadersUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateheaderid"></a>`headerId` | [`AuditEventsStreamingInstanceHeaderID!`](#auditeventsstreaminginstanceheaderid) | Header to update. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdatekey"></a>`key` | [`String!`](#string) | Header key. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdatevalue"></a>`value` | [`String!`](#string) | Header value. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateheader"></a>`header` | [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader) | Updates header. |
+
 ### `Mutation.awardEmojiAdd`
 
 Input type: `AwardEmojiAddInput`
@@ -26747,6 +26768,12 @@ An example `AuditEventsInstanceExternalAuditEventDestinationID` is: `"gid://gitl
 A `AuditEventsStreamingHeaderID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsStreamingHeaderID` is: `"gid://gitlab/AuditEvents::Streaming::Header/1"`.
+
+### `AuditEventsStreamingInstanceHeaderID`
+
+A `AuditEventsStreamingInstanceHeaderID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsStreamingInstanceHeaderID` is: `"gid://gitlab/AuditEvents::Streaming::InstanceHeader/1"`.
 
 ### `AwardableID`
 

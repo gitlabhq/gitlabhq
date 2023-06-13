@@ -2,9 +2,18 @@
 
 module Commits
   class CherryPickService < ChangeService
+    def initialize(*args)
+      super
+
+      @start_project = params[:target_project] || @project
+      @source_project = params[:source_project] || @project
+    end
+
     def create_commit!
-      commit_change(:cherry_pick).tap do |sha|
-        track_mr_picking(sha)
+      Gitlab::Git::CrossRepo.new(@project.repository, @source_project.repository).execute(@commit.id) do
+        commit_change(:cherry_pick).tap do |sha|
+          track_mr_picking(sha)
+        end
       end
     end
 

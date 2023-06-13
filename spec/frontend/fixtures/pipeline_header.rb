@@ -23,6 +23,8 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
         ref: 'master',
         user: user,
         status: :success,
+        duration: 7210,
+        created_at: 2.hours.ago,
         started_at: 1.hour.ago,
         finished_at: Time.current
       )
@@ -71,6 +73,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
         ref: 'master',
         user: user,
         status: :failed,
+        duration: 7210,
         started_at: 1.hour.ago,
         finished_at: Time.current
       )

@@ -27,7 +27,7 @@ RSpec.describe 'Multi-file editor upload file', :js, feature_category: :web_ide 
     set_cookie('new_repo', 'false')
   end
 
-  it 'uploads text file' do
+  it 'uploads text file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/415220' do
     wait_for_all_requests
     # make the field visible so capybara can use it
     execute_script('document.querySelector("#file-upload").classList.remove("hidden")')

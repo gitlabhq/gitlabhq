@@ -207,7 +207,7 @@ GPT-3. It requires the [group-level third-party AI features setting](group/manag
 You can generate a summary of discussions on an issue:
 
 1. In an issue, scroll to the **Activity** section.
-1. Select **View summary** (**{comment}**).
+1. Select **View summary**.
 
 The comments in the issue are summarized in as many as 10 list items.
 The summary is displayed only for you.

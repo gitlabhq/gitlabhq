@@ -132,24 +132,18 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   describe 'Merge request discussions' do
+    let_it_be(:first_discussion) do
+      create(:discussion_note_on_merge_request, noteable: merge_request, project: project).to_discussion
+    end
+
+    let_it_be(:second_discussion) do
+      create(:discussion_note_on_merge_request, noteable: merge_request, project: project).to_discussion
+    end
+
+    let(:first_discussion_selector) { ".discussion[data-discussion-id='#{first_discussion.id}']" }
+    let(:second_discussion_selector) { ".discussion[data-discussion-id='#{second_discussion.id}']" }
+
     shared_examples 'a page with no code discussions' do
-      let!(:first_discussion) do
-        create(:discussion_note_on_merge_request,
-               noteable: merge_request,
-               project: project
-              ).to_discussion
-      end
-
-      let!(:second_discussion) do
-        create(:discussion_note_on_merge_request,
-               noteable: merge_request,
-               project: project
-              ).to_discussion
-      end
-
-      let(:first_discussion_selector) { ".discussion[data-discussion-id='#{first_discussion.id}']" }
-      let(:second_discussion_selector) { ".discussion[data-discussion-id='#{second_discussion.id}']" }
-
       describe "Changes page discussions navigation" do
         it 'navigates to the first discussion on the Overview page' do
           goto_next_thread

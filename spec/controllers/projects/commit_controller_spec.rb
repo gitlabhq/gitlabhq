@@ -366,13 +366,21 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       let(:target_project) { project }
       let(:create_merge_request) { nil }
 
+      let(:commit_id) do
+        forked_project.repository.commit_files(
+          user,
+          branch_name: 'feature', message: 'Commit to feature',
+          actions: [{ action: :create, file_path: 'encoding/CHANGELOG', content: 'New content' }]
+        )
+      end
+
       def send_request
         post :cherry_pick, params: {
           namespace_id: forked_project.namespace,
           project_id: forked_project,
           target_project_id: target_project.id,
           start_branch: 'feature',
-          id: forked_project.commit.id,
+          id: commit_id,
           create_merge_request: create_merge_request
         }
       end
@@ -397,19 +405,19 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
         expect(response).to redirect_to project_commits_path(project, 'feature')
         expect(flash[:notice]).to eq('The commit has been successfully cherry-picked into feature.')
-        expect(project.commit('feature').message).to include(forked_project.commit.id)
+        expect(project.commit('feature').message).to include(commit_id)
       end
 
       context 'when the cherry pick is performed via merge request' do
         let(:create_merge_request) { true }
 
         it 'successfully cherry picks a commit from fork to a cherry pick branch' do
-          branch = forked_project.commit.cherry_pick_branch_name
+          branch = forked_project.commit(commit_id).cherry_pick_branch_name
           send_request
 
           expect(response).to redirect_to merge_request_url(project, branch)
           expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
-          expect(project.commit(branch).message).to include(forked_project.commit.id)
+          expect(project.commit(branch).message).to include(commit_id)
         end
       end
 
@@ -421,13 +429,13 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         end
 
         it 'cherry picks a commit to the fork' do
-          branch = forked_project.commit.cherry_pick_branch_name
+          branch = forked_project.commit(commit_id).cherry_pick_branch_name
           send_request
 
           expect(response).to redirect_to merge_request_url(forked_project, branch)
           expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
-          expect(project.commit('feature').message).not_to include(forked_project.commit.id)
-          expect(forked_project.commit(branch).message).to include(forked_project.commit.id)
+          expect(project.commit('feature').message).not_to include(commit_id)
+          expect(forked_project.commit(branch).message).to include(commit_id)
         end
       end
 

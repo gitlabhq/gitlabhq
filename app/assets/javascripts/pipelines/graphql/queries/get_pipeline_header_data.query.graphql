@@ -40,6 +40,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       }
       finishedAt
       queuedDuration
+      duration
     }
   }
 }

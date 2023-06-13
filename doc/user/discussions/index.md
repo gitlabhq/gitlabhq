@@ -213,8 +213,6 @@ To compare the changes, select **Compare with previous version**.
 
 ## Assign an issue to the commenting user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
-
 You can assign an issue to a user who made a comment.
 
 1. In the comment, select the **More Actions** (**{ellipsis_v}**) menu.
@@ -233,9 +231,7 @@ Prerequisites:
 
 To create a thread by replying to a comment:
 
-1. In the upper-right corner of the comment, select **Reply to comment** (**{comment}**).
-
-   ![Reply to comment button](img/reply_to_comment_button.png)
+1. In the upper-right corner of the comment, select **Reply to comment** (**{reply}**).
 
    The reply section is displayed.
 

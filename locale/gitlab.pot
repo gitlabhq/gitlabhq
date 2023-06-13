@@ -703,6 +703,9 @@ msgstr ""
 msgid "%{docs_link_start}What is two-factor authentication?%{docs_link_end}"
 msgstr ""
 
+msgid "%{duration}, queued for %{queuedDuration} seconds"
+msgstr ""
+
 msgid "%{duration}ms"
 msgstr ""
 

@@ -71,6 +71,7 @@ describe('Pipeline details header', () => {
   const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
+  const findPipelineDuration = () => wrapper.findByTestId('pipeline-duration-text');
 
   const defaultHandlers = [[getPipelineDetailsQuery, successHandler]];
 
@@ -236,6 +237,16 @@ describe('Pipeline details header', () => {
 
       expect(findTimeAgo().exists()).toBe(true);
     });
+
+    it('displays pipeline duartion text', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findPipelineDuration().text()).toBe(
+        '120 minutes 10 seconds, queued for 3,600 seconds',
+      );
+    });
   });
 
   describe('running pipeline', () => {
@@ -253,8 +264,12 @@ describe('Pipeline details header', () => {
       expect(findTimeAgo().exists()).toBe(false);
     });
 
+    it('does not display pipeline duration text', () => {
+      expect(findPipelineDuration().exists()).toBe(false);
+    });
+
     it('displays pipeline running text', () => {
-      expect(findPipelineRunningText()).toBe('In progress, queued for 3600 seconds');
+      expect(findPipelineRunningText()).toBe('In progress, queued for 3,600 seconds');
     });
   });
 
