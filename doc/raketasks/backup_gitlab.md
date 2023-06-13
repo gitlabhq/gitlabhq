@@ -453,7 +453,7 @@ For Omnibus GitLab packages:
    # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 #### S3 Encrypted Buckets
@@ -537,7 +537,7 @@ This example can be used for a bucket in Amsterdam (AMS3):
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 If you see a `400 Bad Request` error message when using Digital Ocean Spaces,
@@ -678,7 +678,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 For installations from source:
@@ -716,7 +716,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = '<AZURE BLOB CONTAINER>'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 For installations from source:
@@ -817,7 +817,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:
@@ -855,7 +855,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:
@@ -939,7 +939,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_keep_time'] = 604800
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:

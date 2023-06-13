@@ -12,7 +12,7 @@ To enable the GitLab Prometheus metrics:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
-1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
+1. [Restart GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 For installations from source you must configure it yourself.
 

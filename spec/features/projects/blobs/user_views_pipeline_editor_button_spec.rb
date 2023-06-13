@@ -19,12 +19,16 @@ RSpec.describe 'User views pipeline editor button on root ci config file', :js, 
       project.repository.create_file(user, project.ci_config_path_or_default, 'test', message: 'testing', branch_name: 'master')
       visit project_blob_path(project, File.join('master', '.my-config.yml'))
 
+      click_button 'Edit'
+
       expect(page).to have_content('Edit in pipeline editor')
     end
 
     it 'does not shows the Pipeline Editor button' do
       project.repository.create_file(user, '.my-sub-config.yml', 'test', message: 'testing', branch_name: 'master')
       visit project_blob_path(project, File.join('master', '.my-sub-config.yml'))
+
+      click_button 'Edit'
 
       expect(page).not_to have_content('Edit in pipeline editor')
     end
@@ -36,6 +40,9 @@ RSpec.describe 'User views pipeline editor button on root ci config file', :js, 
     end
     it 'does not shows the Pipeline Editor button' do
       visit project_blob_path(project, File.join('master', '.my-config.yml'))
+
+      click_button 'Edit'
+
       expect(page).not_to have_content('Edit in pipeline editor')
     end
   end

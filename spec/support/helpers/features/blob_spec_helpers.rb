@@ -5,12 +5,14 @@ module Features
   module BlobSpecHelpers
     include ActionView::Helpers::JavaScriptHelper
 
-    def set_default_button(type)
-      evaluate_script("localStorage.setItem('gl-web-ide-button-selected', '#{type}')")
+    def edit_in_single_file_editor
+      click_button 'Edit'
+      click_link_or_button 'Edit single file'
     end
 
-    def unset_default_button
-      set_default_button('')
+    def edit_in_web_ide
+      click_button 'Edit'
+      click_link_or_button 'Web IDE'
     end
   end
 end

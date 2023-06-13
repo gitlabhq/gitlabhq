@@ -24,12 +24,17 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
       });
     });
 
-export const createNewDraft = ({ commit }, { endpoint, data }) =>
+export const createNewDraft = ({ commit, dispatch }, { endpoint, data }) =>
   service
     .createNewDraft(endpoint, data)
     .then((res) => res.data)
     .then((res) => {
       commit(types.ADD_NEW_DRAFT, res);
+
+      if (res.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+        dispatch('diffs/addDraftToFile', { filePath: res.file_path, draft: res }, { root: true });
+      }
+
       return res;
     })
     .catch(() => {

@@ -36,13 +36,7 @@ You can also open the Web IDE from:
 
 To open the Web IDE from a file or the repository file list:
 
-- In the upper-right corner of the page, select **Open in Web IDE**.
-
-If **Open in Web IDE** is not visible:
-
-1. Next to **Edit** or **Gitpod**, select the down arrow (**{chevron-lg-down}**).
-1. From the dropdown list, select **Open in Web IDE**.
-1. Select **Open in Web IDE**.
+- In the upper right, select **Edit > Open in Web IDE**.
 
 ### From a merge request
 

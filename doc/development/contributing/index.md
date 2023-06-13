@@ -60,8 +60,9 @@ To write and test your code, you will use the GitLab Development Kit.
      consider doing so with an empty rails app and port it to GDK after.
 
    - To run a pre-configured GDK instance in the cloud, use [GDK with Gitpod](../../integration/gitpod.md).
-     From a project's repository, select the caret (angle-down) next to **Web IDE**,
-     and select **Gitpod** from the list.
+     From a project repository:
+       1. On the top bar, select **Main menu > Projects** and find your project.
+       1. In the upper right, select **Edit > Gitpod**.
 1. If you want to contribute to the [website](https://about.gitlab.com/) or the [handbook](https://about.gitlab.com/handbook/),
    go to the footer of any page and select **Edit in Web IDE** to open the [Web IDE](../../user/project/web_ide/index.md).
 

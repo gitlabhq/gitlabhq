@@ -93,7 +93,7 @@ nodes for each environment you want to balance:
 
    These hosts must be reachable on the same port configured with `gitlab_rails['db_port']`.
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 NOTE:
 Adding the primary to the hosts list is optional, but recommended.
@@ -130,7 +130,7 @@ record. For example:
   }
   ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 | Option               | Description                                                                                       | Default   |
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|

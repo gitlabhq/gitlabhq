@@ -88,7 +88,7 @@ is listed in the [GitLab.com settings](../user/gitlab_com/index.md#gitlab-cicd).
 To change the frequency of the pipeline schedule worker:
 
 1. Edit the `gitlab_rails['pipeline_schedule_worker_cron']` value in your instance's `gitlab.rb` file.
-1. [Reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 For example, to set the maximum frequency of pipelines to twice a day, set `pipeline_schedule_worker_cron`
 to a cron value of `0 */12 * * *` (`00:00` and `12:00` every day).

@@ -1389,6 +1389,8 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `deployment_channel` | string | false | The name of the channel to receive deployment events notifications |
 | `deployment_events` | boolean | false | Enable notifications for deployment events |
+| `incident_channel` | string | false | The name of the channel to receive incidents events notifications |
+| `incidents_events` | boolean | false | Enable notifications for incident events |
 | `issue_channel` | string | false | The name of the channel to receive issues events notifications |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `job_events` | boolean | false | Enable notifications for job events |

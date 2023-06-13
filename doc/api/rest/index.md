@@ -208,7 +208,7 @@ By default, impersonation is enabled. To disable impersonation:
    gitlab_rails['impersonation_enabled'] = false
    ```
 
-1. Save the file, and then [reconfigure](../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file, and then [reconfigure](../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 To re-enable impersonation, remove this configuration, and then reconfigure

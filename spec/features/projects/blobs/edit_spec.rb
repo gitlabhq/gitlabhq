@@ -23,15 +23,11 @@ RSpec.describe 'Editing file blob', :js, feature_category: :groups_and_projects 
     end
 
     def edit_and_commit(commit_changes: true, is_diff: false)
-      set_default_button('edit')
-      refresh
-      wait_for_requests
-
       if is_diff
         first('.js-diff-more-actions').click
         click_link('Edit in single-file editor')
       else
-        click_link('Edit')
+        edit_in_single_file_editor
       end
 
       fill_editor(content: 'class NextFeature\\nend\\n')

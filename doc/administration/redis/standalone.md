@@ -42,7 +42,7 @@ Omnibus GitLab:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These are necessary when [configuring the GitLab application servers](#set-up-the-gitlab-rails-application-instance).
 
@@ -68,7 +68,7 @@ On the instance where GitLab is installed:
 
 1. Save your changes to `/etc/gitlab/gitlab.rb`.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Troubleshooting
 

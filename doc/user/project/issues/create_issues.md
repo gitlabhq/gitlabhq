@@ -197,7 +197,7 @@ To offer email support, enable [Service Desk](../service_desk.md) for your proje
 Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.
 
-### Fields in the new issue form
+## Fields in the new issue form
 
 > - Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
 > - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.

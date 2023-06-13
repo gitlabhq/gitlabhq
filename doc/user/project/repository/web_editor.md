@@ -58,13 +58,7 @@ To edit a text file in the Web Editor:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. Go to your file.
-1. In the upper-right corner of the file, select **Edit**.
-
-   If **Edit** is not visible:
-
-   1. Next to **Open in Web IDE** or **Open in Gitpod**, select the down arrow (**{chevron-lg-down}**).
-   1. From the dropdown list, select **Edit** as your default setting.
-   1. Select **Edit**.
+1. In the upper right, select **Edit > Edit single file**.
 
 ### Keyboard shortcuts
 

@@ -20462,14 +20462,19 @@ CREATE VIEW postgres_autovacuum_activity AS
  WITH processes AS (
          SELECT postgres_pg_stat_activity_autovacuum.query,
             postgres_pg_stat_activity_autovacuum.query_start,
-            regexp_matches(postgres_pg_stat_activity_autovacuum.query, '^autovacuum: VACUUM (w+).(w+)'::text) AS matches
+            regexp_matches(postgres_pg_stat_activity_autovacuum.query, '^autovacuum: VACUUM (\w+)\.(\w+)'::text) AS matches,
+                CASE
+                    WHEN (postgres_pg_stat_activity_autovacuum.query ~~* '%wraparound)'::text) THEN true
+                    ELSE false
+                END AS wraparound_prevention
            FROM postgres_pg_stat_activity_autovacuum() postgres_pg_stat_activity_autovacuum(query, query_start)
-          WHERE (postgres_pg_stat_activity_autovacuum.query ~* '^autovacuum: VACUUM w+.w+'::text)
+          WHERE (postgres_pg_stat_activity_autovacuum.query ~* '^autovacuum: VACUUM \w+\.\w+'::text)
         )
  SELECT ((processes.matches[1] || '.'::text) || processes.matches[2]) AS table_identifier,
     processes.matches[1] AS schema,
     processes.matches[2] AS "table",
-    processes.query_start AS vacuum_start
+    processes.query_start AS vacuum_start,
+    processes.wraparound_prevention
    FROM processes;
 
 COMMENT ON VIEW postgres_autovacuum_activity IS 'Contains information about PostgreSQL backends currently performing autovacuum operations on the tables indicated here.';

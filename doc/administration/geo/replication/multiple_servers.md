@@ -77,7 +77,7 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
    gitlab_rails['auto_migrate'] = false
    ```
 
-After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
 ### Step 2: Define the site as the **primary** site
 
@@ -179,7 +179,7 @@ the instructions below.
    gitlab_rails['auto_migrate'] = false
    ```
 
-After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](../setup/external_database.md).
@@ -271,7 +271,7 @@ Make sure that current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
 
-After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
 In the [architecture overview](#architecture-overview) topology, the following GitLab
 services are enabled on the "frontend" nodes:

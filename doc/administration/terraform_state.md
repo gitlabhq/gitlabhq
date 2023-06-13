@@ -48,7 +48,7 @@ Prerequisite:
    gitlab_rails['terraform_state_enabled'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **In installations from source:**
 
@@ -75,7 +75,7 @@ Terraform state files are stored locally, follow the steps below.
    gitlab_rails['terraform_state_storage_path'] = "/mnt/storage/terraform_state"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **In installations from source:**
 
@@ -207,7 +207,7 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
 **In installations from source:**

@@ -111,10 +111,9 @@ GitLab.com generates an application ID and secret key for you to use.
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.
 1. Change `'YOUR_APP_SECRET'` to the secret from the GitLab.com application page.
 1. Save the configuration file.
-1. Based on how GitLab was installed, implement these changes by using
-   the appropriate method:
-   - Omnibus GitLab: [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - Source: [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+1. Implement these changes by using the appropriate method:
+   - For Linux package installations, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
+   - For self-compiled installations, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 On the sign-in page, there should now be a GitLab.com icon following the
 regular sign-in form. Select the icon to begin the authentication process.

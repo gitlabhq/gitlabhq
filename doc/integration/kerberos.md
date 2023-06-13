@@ -82,7 +82,7 @@ For source installations, make sure the `kerberos` gem group
    To avoid GitLab creating users automatically on their first sign in through Kerberos,
    don't set `kerberos` for `gitlab_rails['omniauth_allow_single_sign_on']`.
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 GitLab now offers the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
@@ -193,7 +193,7 @@ ignored and an LDAP identity is not linked.
    gitlab_rails['kerberos_simple_ldap_linking_allowed_realms'] = ['example.com','kerberos.example.com']
    ```
 
-1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 ---
@@ -284,7 +284,7 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
    gitlab_rails['kerberos_https'] = true
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` to use
@@ -332,7 +332,7 @@ To disable password-based Kerberos sign-ins, remove the OmniAuth provider
    ]
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 Removing the `kerberos` OmniAuth provider can also resolve a rare

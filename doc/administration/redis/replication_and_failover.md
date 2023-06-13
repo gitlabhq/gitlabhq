@@ -275,7 +275,7 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 You can specify multiple roles like sentinel and Redis as:
@@ -332,7 +332,7 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 
 NOTE:
@@ -458,7 +458,7 @@ multiple machines with the Sentinel daemon.
 
    Only the primary GitLab application server should handle migrations.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other Sentinel nodes.
 
 ### Step 4. Configuring the GitLab application
@@ -495,7 +495,7 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
    ]
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Step 5. Enable Monitoring
 
@@ -576,7 +576,7 @@ sentinel['quorum'] = 2
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for Redis replica 1 and Sentinel 2
 
@@ -598,7 +598,7 @@ sentinel['quorum'] = 2
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for Redis replica 2 and Sentinel 3
 
@@ -620,7 +620,7 @@ sentinel['quorum'] = 2
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for the GitLab application
 
@@ -636,7 +636,7 @@ gitlab_rails['redis_sentinels'] = [
 ]
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Advanced configuration
 

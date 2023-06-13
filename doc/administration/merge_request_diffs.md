@@ -38,7 +38,7 @@ For Linux package installations:
    gitlab_rails['external_diffs_storage_path'] = "/mnt/storage/external-diffs"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
 For self-compiled installations:
@@ -83,7 +83,7 @@ For Linux package installations:
    ```
 
 1. Set [object storage settings](#object-storage-settings).
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
 For self-compiled installations:
@@ -151,7 +151,7 @@ For Linux package installations:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 For self-compiled installations:
 
@@ -190,7 +190,7 @@ For Linux package installations:
    gitlab_rails['external_diffs_when'] = 'outdated'
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 For self-compiled installations:
 

@@ -10,7 +10,7 @@ When you run jobs on SaaS runners on Linux, the runners are on auto-scaled ephem
 The default region for the VMs is `us-east1`.
 
 Each VM uses the Google Container-Optimized OS (COS) and the latest version of Docker Engine running the `docker+machine`
-[executor](https://docs.gitlab.com/runner/executors#docker-machine-executor).
+[executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor).
 
 ## Machine types available for Linux (x86-64)
 
@@ -32,7 +32,7 @@ The machine type and underlying processor type can change. Jobs optimized for a 
 
 ## Container images
 
-As runners on Linux are using the `docker+machine` [executor](https://docs.gitlab.com/runner/executors#docker-machine-executor),
+As runners on Linux are using the `docker+machine` [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor),
 you can choose any container image by defining the [`image`](../../../ci/yaml/index.md#image) in your `.gitlab-ci.yml` file.
 
 If no image is set, the default is `ruby:3.1`.

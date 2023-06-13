@@ -62,10 +62,6 @@ module QA
           element :new_file_menu_item
         end
 
-        view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
-          element :web_ide_button
-        end
-
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
           element :spinner_placeholder
         end
@@ -154,7 +150,8 @@ module QA
         end
 
         def open_web_ide!
-          click_element(:web_ide_button)
+          click_element(:action_dropdown)
+          click_element(:webide_menu_item)
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
@@ -164,7 +161,8 @@ module QA
         end
 
         def has_edit_fork_button?
-          has_element?(:web_ide_button, text: 'Edit fork in Web IDE')
+          click_element(:action_dropdown)
+          has_element?(:webide_menu_item, text: 'Edit fork in Web IDE')
         end
 
         def project_name

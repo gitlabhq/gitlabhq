@@ -17,7 +17,7 @@ If the Sidekiq routing rules are changed, administrators need to take care with 
 
 1. Listen to both the old and new queues.
 1. Update the routing rules.
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Run the [Rake tasks for migrating queued and future jobs](#migrate-queued-and-future-jobs).
 1. Stop listening to the old queues.
 

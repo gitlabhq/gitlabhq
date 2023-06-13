@@ -16676,6 +16676,9 @@ msgstr ""
 msgid "Edit sidebar"
 msgstr ""
 
+msgid "Edit single file"
+msgstr ""
+
 msgid "Edit table"
 msgstr ""
 
@@ -27790,7 +27793,7 @@ msgstr ""
 msgid "Max authenticated Git LFS requests per period per user"
 msgstr ""
 
-msgid "Max file size is 200 KB."
+msgid "Max file size is 200 KiB."
 msgstr ""
 
 msgid "Max role"
@@ -27841,7 +27844,7 @@ msgstr ""
 msgid "Maximum attachment size"
 msgstr ""
 
-msgid "Maximum attachment size (MB)"
+msgid "Maximum attachment size (MiB)"
 msgstr ""
 
 msgid "Maximum authenticated API requests per rate limit period per user"
@@ -27868,7 +27871,7 @@ msgstr ""
 msgid "Maximum diff patch size"
 msgstr ""
 
-msgid "Maximum diff patch size (Bytes)"
+msgid "Maximum diff patch size (bytes)"
 msgstr ""
 
 msgid "Maximum duration of a session."
@@ -27877,7 +27880,7 @@ msgstr ""
 msgid "Maximum export size"
 msgstr ""
 
-msgid "Maximum export size (MB)"
+msgid "Maximum export size (MiB)"
 msgstr ""
 
 msgid "Maximum field length"
@@ -27913,7 +27916,7 @@ msgstr ""
 msgid "Maximum import size"
 msgstr ""
 
-msgid "Maximum import size (MB)"
+msgid "Maximum import size (MiB)"
 msgstr ""
 
 msgid "Maximum job artifact size"
@@ -27985,7 +27988,7 @@ msgstr ""
 msgid "Maximum push size"
 msgstr ""
 
-msgid "Maximum push size (MB)"
+msgid "Maximum push size (MiB)"
 msgstr ""
 
 msgid "Maximum requests per 10 minutes per IP address"
@@ -28018,7 +28021,7 @@ msgstr ""
 msgid "Maximum size of individual attachments in comments."
 msgstr ""
 
-msgid "Maximum size of pages (MB)"
+msgid "Maximum size of pages (MiB)"
 msgstr ""
 
 msgid "Maximum snippet size"
@@ -38760,7 +38763,7 @@ msgstr ""
 msgid "Repository size is above the limit."
 msgstr ""
 
-msgid "Repository size limit (MB)"
+msgid "Repository size limit (MiB)"
 msgstr ""
 
 msgid "Repository storage"
@@ -42959,7 +42962,7 @@ msgstr ""
 msgid "Size Limits"
 msgstr ""
 
-msgid "Size limit per repository (MB)"
+msgid "Size limit per repository (MiB)"
 msgstr ""
 
 msgid "Skip to main content"
@@ -49026,6 +49029,9 @@ msgstr ""
 msgid "UsageQuota|Group settings &gt; Usage quotas"
 msgstr ""
 
+msgid "UsageQuota|Included in %{planName} subscription"
+msgstr ""
+
 msgid "UsageQuota|Includes artifacts, repositories, wiki, and other items."
 msgstr ""
 
@@ -49069,12 +49075,6 @@ msgid "UsageQuota|Pipeline artifacts created by CI/CD."
 msgstr ""
 
 msgid "UsageQuota|Pipelines"
-msgstr ""
-
-msgid "UsageQuota|Purchased storage"
-msgstr ""
-
-msgid "UsageQuota|Purchased storage used"
 msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"
@@ -49135,6 +49135,12 @@ msgid "UsageQuota|This namespace has no projects which used shared runners in th
 msgstr ""
 
 msgid "UsageQuota|This table omits projects that used 0 units of compute or 0 shared runners duration"
+msgstr ""
+
+msgid "UsageQuota|Total purchased storage"
+msgstr ""
+
+msgid "UsageQuota|Total storage"
 msgstr ""
 
 msgid "UsageQuota|Transfer"

@@ -716,7 +716,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 Service Desk issues are [confidential](issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
-[make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
+[make an issue public](issues/confidential_issues.md#in-an-existing-issue).
 When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
 visible to signed-in users with at least the Reporter role for the project.
 

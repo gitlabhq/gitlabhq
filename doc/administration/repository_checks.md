@@ -41,7 +41,7 @@ When enabled, GitLab periodically runs a repository check on all project reposit
 repositories to detect possible data corruption. A project is checked no more than once per month.
 Administrators can configure the frequency of repository checks. To edit the frequency:
 
-- For Omnibus GitLab installations, edit `gitlab_rails['repository_check_worker_cron']` in
+- For Linux package installations, edit `gitlab_rails['repository_check_worker_cron']` in
   `/etc/gitlab/gitlab.rb`.
 - For source-based installations, edit `[gitlab.cron_jobs.repository_check_worker]` in
   `/home/git/gitlab/config/gitlab.yml`.
@@ -59,7 +59,7 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
 [Gitaly servers](gitaly/index.md). To locate the repositories:
 
 1. Go to the storage location for repositories:
-   - For Omnibus GitLab installations, repositories are stored in the `/var/opt/gitlab/git-data/repositories` directory
+   - For Linux package installations, repositories are stored in the `/var/opt/gitlab/git-data/repositories` directory
      by default.
    - For GitLab Helm chart installations, repositories are stored in the `/home/git/repositories` directory inside the
      Gitaly pod by default.
@@ -79,8 +79,8 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
 
 If a repository check fails, locate the error in the [`repocheck.log` file](logs/index.md#repochecklog) on disk at:
 
-- `/var/log/gitlab/gitlab-rails` for Omnibus GitLab installations.
-- `/home/git/gitlab/log` for installations from source.
+- `/var/log/gitlab/gitlab-rails` for Linux package installations.
+- `/home/git/gitlab/log` for self-compiled installations.
 - `/var/log/gitlab` in the Sidekiq pod for GitLab Helm chart installations.
 
 If periodic repository checks cause false alarms, you can clear all repository check states:

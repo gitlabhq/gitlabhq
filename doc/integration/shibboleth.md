@@ -85,7 +85,7 @@ To enable Shibboleth:
 
    If some of your users appear to be authenticated by Shibboleth and Apache, but GitLab rejects their account with a URI that contains "e-mail is invalid" then your Shibboleth Identity Provider or Attribute Authority may be asserting multiple email addresses. In this instance, consider setting the `multi_values` argument to `first`.
 1. For the changes to take effect:
-   - For Omnibus GitLab, [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
-   - For installations from source, [restart](../administration/restart_gitlab.md#installations-from-source) GitLab.
+   - For Linux package installations, [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab.
+   - For self-compiled installations, [restart](../administration/restart_gitlab.md#installations-from-source) GitLab.
 
 On the sign in page, there should now be a **Sign in with: Shibboleth** icon below the regular sign-in form. Select the icon to begin the authentication process. You are redirected to the appropriate IdP server for your Shibboleth module configuration. If everything goes well, you are returned to GitLab and signed in.

@@ -9,21 +9,21 @@
       = f.label :default_projects_limit, _('Default projects limit'), class: 'label-bold'
       = f.number_field :default_projects_limit, class: 'form-control gl-form-input', title: _('Maximum number of projects.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
-      = f.label :max_attachment_size, _('Maximum attachment size (MB)'), class: 'label-bold'
+      = f.label :max_attachment_size, _('Maximum attachment size (MiB)'), class: 'label-bold'
       = f.number_field :max_attachment_size, class: 'form-control gl-form-input', title: _('Maximum size of individual attachments in comments.'), data: { toggle: 'tooltip', container: 'body' }
 
     = render 'admin/application_settings/repository_size_limit_setting_registration_features_cta', form: f
     = render_if_exists 'admin/application_settings/repository_size_limit_setting', form: f
 
     .form-group
-      = f.label :receive_max_input_size, _('Maximum push size (MB)'), class: 'label-light'
+      = f.label :receive_max_input_size, _('Maximum push size (MiB)'), class: 'label-light'
       = f.number_field :receive_max_input_size, class: 'form-control gl-form-input', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body', qa_selector: 'receive_max_input_size_field' }
     .form-group
-      = f.label :max_export_size, _('Maximum export size (MB)'), class: 'label-light'
+      = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Set to 0 for no size limit.')
     .form-group
-      = f.label :max_import_size, _('Maximum import size (MB)'), class: 'label-light'
+      = f.label :max_import_size, _('Maximum import size (MiB)'), class: 'label-light'
       = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
     .form-group

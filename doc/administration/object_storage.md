@@ -315,8 +315,7 @@ Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.go
 
 #### GCS example
 
-For Omnibus installations, this is an example of the `connection` setting
-in the consolidated form:
+For Linux Package installations, this is an example of the `connection` setting in the consolidated form:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
@@ -376,8 +375,7 @@ The following are the valid connection parameters for Azure. For more informatio
 | `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
 | `azure_storage_domain`       | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
-- For Omnibus installations, this is an example of the `connection` setting
-  in the consolidated form:
+- For Linux package installations, this is an example of the `connection` setting in the consolidated form:
 
   ```ruby
   gitlab_rails['object_store']['connection'] = {
@@ -388,8 +386,8 @@ The following are the valid connection parameters for Azure. For more informatio
   }
   ```
 
-- For source installations, Workhorse also needs to be configured with Azure
-  credentials. This isn't needed in Omnibus installs, because the Workhorse
+- For self-compiled installations, Workhorse also needs to be configured with Azure
+  credentials. This isn't needed in Linux package installations because the Workhorse
   settings are populated from the previous settings.
 
   1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
@@ -738,7 +736,7 @@ Prior to GitLab 13.2:
 - Object store connection parameters such as passwords and endpoint URLs had to be
   duplicated for each type.
 
-For example, an Omnibus GitLab install might have the following configuration:
+For example, a Linux package installation might have the following configuration:
 
 ```ruby
 # Original object storage configuration
@@ -833,10 +831,9 @@ your object storage provider instead.
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
-There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
-in the future.
+[Issue 292958](https://gitlab.com/gitlab-org/gitlab/-/issues/292958) proposes to enable the use of a single bucket.
 
-With Omnibus and source installations it is possible to split a single
+With Linux package and self-compiled installations, it is possible to split a single
 real bucket into multiple virtual buckets. If your object storage
 bucket is called `my-gitlab-objects` you can configure uploads to go
 into `my-gitlab-objects/uploads`, artifacts into
@@ -941,7 +938,7 @@ mismatch` error during an upload.
 
 When the consolidated form is:
 
-- Used with an S3-compatible object storage or an istance profile, Workhorse
+- Used with an S3-compatible object storage or an instance profile, Workhorse
   uses its internal S3 client which has S3 credentials so that it can compute
   the `Content-MD5` header. This eliminates the need to compare ETag headers
   returned from the S3 server.

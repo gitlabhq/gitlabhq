@@ -18,7 +18,7 @@ storage is either:
 GitLab allows you to define multiple repository storages to distribute the storage load between
 several mount points. For example:
 
-- When using Gitaly (Omnibus GitLab-style configuration):
+- When using Gitaly (Linux package installation-style configuration):
 
   ```ruby
    git_data_dirs({
@@ -27,7 +27,7 @@ several mount points. For example:
    })
    ```
 
-- When using direct repository storage (source install-style configuration):
+- When using direct repository storage (self-compiled installation-style configuration):
 
   ```plaintext
   default:
@@ -51,8 +51,8 @@ configuration option is deprecated in favor of using [Gitaly](gitaly/index.md). 
 To configure repository storage paths:
 
 1. Edit the necessary configuration files:
-   - `/etc/gitlab/gitlab.rb`, for Omnibus GitLab installations.
-   - `gitlab.yml`, for installations from source.
+   - `/etc/gitlab/gitlab.rb`, for Linux package installations.
+   - `gitlab.yml`, for self-compiled installations.
 1. Add the required repository storage paths.
 
 For repository storage paths:
@@ -78,15 +78,15 @@ For [backups](../raketasks/backup_restore.md) to work correctly:
 - The repository storage path cannot be a mount point.
 - The GitLab user must have correct permissions for the parent directory of the path.
 
-Omnibus GitLab takes care of these issues for you, but for source installations you should be extra
+The Linux package takes care of these issues for you but for self-compiled installations, you should be extra
 careful.
 
 While restoring a backup, the current contents of `/home/git/repositories` are moved to
 `/home/git/repositories.old`. If `/home/git/repositories` is a mount point, then `mv` would be
 moving things between mount points, and problems can occur.
 
-Ideally, `/home/git` is the mount point, so things remain inside the same mount point. Omnibus
-GitLab installations guarantee this because they don't specify the full repository path but instead
+Ideally, `/home/git` is the mount point, so things remain inside the same mount point. Linux package
+installations guarantee this because they don't specify the full repository path but instead
 the parent path, but source installations do not.
 
 ### Example configuration
@@ -94,14 +94,14 @@ the parent path, but source installations do not.
 In the examples below, we add two additional repository storage paths configured to two additional
 mount points.
 
-For compatibility reasons `gitlab.yml` has a different structure than Omnibus GitLab configuration:
+For compatibility reasons `gitlab.yml` has a different structure than Linux package installation configuration:
 
-- In `gitlab.yml`, you indicate the path for the repositories, for example `/home/git/repositories`
-- In Omnibus GitLab configuration you indicate `git_data_dirs`, which could be `/home/git` for
-  example. Then Omnibus GitLab creates a `repositories` directory under that path to use with
+- In `gitlab.yml`, you indicate the path for the repositories. For example, `/home/git/repositories`.
+- In Linux package installation configuration, you indicate `git_data_dirs`, which could be `/home/git` for
+  example. The Linux package installation then creates a `repositories` directory under that path to use with
   `gitlab.yml`.
 
-**For installations from source**
+For self-compiled installations:
 
 1. Edit `gitlab.yml` and add the storage paths:
 
@@ -122,7 +122,7 @@ For compatibility reasons `gitlab.yml` has a different structure than Omnibus Gi
 
 1. [Configure where new repositories are stored](#configure-where-new-repositories-are-stored).
 
-**For Omnibus installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the default one:
 
@@ -134,12 +134,12 @@ For compatibility reasons `gitlab.yml` has a different structure than Omnibus Gi
    })
    ```
 
-1. [Restart GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. [Configure where new repositories are stored](#configure-where-new-repositories-are-stored).
 
 NOTE:
-Omnibus stores the repositories in a `repositories` subdirectory of the `git-data` directory.
+Linux package installations store the repositories in a `repositories` subdirectory of the `git-data` directory.
 
 ## Configure where new repositories are stored
 

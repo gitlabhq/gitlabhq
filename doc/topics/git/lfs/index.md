@@ -32,8 +32,8 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Turn on the **Git Large File Storage (LFS)** toggle.
 1. Select **Save changes**.

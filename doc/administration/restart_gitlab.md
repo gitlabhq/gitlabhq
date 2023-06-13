@@ -12,12 +12,12 @@ its services.
 NOTE:
 A short downtime is expected for all methods.
 
-## Omnibus installations
+## Linux package installations
 
-If you have used the [Omnibus packages](https://about.gitlab.com/install/) to install GitLab,
+If you have used the [Linux package](https://about.gitlab.com/install/) to install GitLab,
 you should already have `gitlab-ctl` in your `PATH`.
 
-`gitlab-ctl` interacts with the Omnibus packages and can be used to restart the
+`gitlab-ctl` interacts with the Linux package installation and can be used to restart the
 GitLab Rails application (Puma) as well as the other components, like:
 
 - GitLab Workhorse
@@ -28,10 +28,10 @@ GitLab Rails application (Puma) as well as the other components, like:
 - [Mailroom](reply_by_email.md)
 - Logrotate
 
-### Omnibus GitLab restart
+### Restart a Linux package installation
 
 There may be times in the documentation where you are asked to _restart_
-GitLab. To restart, run the following command:
+GitLab. To restart a Linux package installation, run:
 
 ```shell
 sudo gitlab-ctl restart
@@ -71,15 +71,14 @@ In that case, you can use `gitlab-ctl kill <service>` to send the `SIGKILL`
 signal to the service, for example `sidekiq`. After that, a restart should
 perform fine.
 
-As a last resort, you can try to
-[reconfigure GitLab](#omnibus-gitlab-reconfigure) instead.
+As a last resort, you can try to reconfigure GitLab instead.
 
-### Omnibus GitLab reconfigure
+### Reconfigure a Linux package installation
 
 There may be times in the documentation where you are asked to _reconfigure_
-GitLab. Remember that this method applies only for the Omnibus packages.
+GitLab. Remember that this method applies only for Linux package installations.
 
-Reconfigure Omnibus GitLab with:
+To reconfigure a Linux package installation, run:
 
 ```shell
 sudo gitlab-ctl reconfigure
@@ -89,10 +88,10 @@ Reconfiguring GitLab should occur in the event that something in its
 configuration (`/etc/gitlab/gitlab.rb`) has changed.
 
 When you run `gitlab-ctl reconfigure`, [Chef](https://www.chef.io/products/chef-infra),
-the underlying configuration management application that powers Omnibus GitLab, runs some checks.
+the underlying configuration management application that powers Linux package installations, runs some checks.
 Chef ensures directories, permissions, and services are in place and working.
 
-Chef also [restarts GitLab components](#how-to-restart-gitlab) if any of their configuration files have changed.
+Chef also restarts GitLab components if any of their configuration files have changed.
 
 If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
 running `reconfigure` reverts the changes and restarts the services that

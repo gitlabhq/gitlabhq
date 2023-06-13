@@ -147,7 +147,7 @@ under the `registry_external_url` line, rather than the port listed under
    registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 1. Validate using:
@@ -226,7 +226,7 @@ Let's assume that you want the container Registry to be accessible at
 
    The `registry_external_url` is listening on HTTPS.
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 If you have a [wildcard certificate](https://en.wikipedia.org/wiki/Wildcard_certificate), you must specify the path to the
 certificate in addition to the URL, in this case `/etc/gitlab/gitlab.rb`
@@ -272,7 +272,7 @@ Registry application itself.
    registry['enable'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -300,7 +300,7 @@ the Container Registry by themselves, follow the steps below.
    gitlab_rails['gitlab_default_projects_features_container_registry'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -391,7 +391,7 @@ The default location where images are stored in Omnibus, is
    gitlab_rails['registry_path'] = "/path/to/registry/storage"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -490,7 +490,7 @@ To configure the `s3` storage driver in Omnibus:
     }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -556,7 +556,7 @@ you can pull from the Container Registry, but you cannot push.
 
 1. To perform the final data sync,
    [put the Container Registry in `read-only` mode](#performing-garbage-collection-without-downtime) and
-   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+   [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Sync any changes dating from after the initial data load to your S3 bucket, and delete files that exist in the destination bucket but not in the source:
 
    ```shell
@@ -586,7 +586,7 @@ you can pull from the Container Registry, but you cannot push.
    The output of these commands should match, except for the content in the
    `_uploads` directories and sub-directories.
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
-1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Moving to Azure Object Storage
 
@@ -654,7 +654,7 @@ However, this behavior is undesirable for registries used by internal hosts that
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -705,7 +705,7 @@ For Omnibus GitLab installations:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:
@@ -746,7 +746,7 @@ In the examples below we set the Registry's port to `5010`.
    registry['registry_http_addr'] = "localhost:5010"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -850,7 +850,7 @@ You can use GitLab as an auth endpoint with an external container registry.
    gitlab_rails['registry_port'] = "5005"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 **Installations from source**
@@ -905,7 +905,7 @@ To configure a notification endpoint in Omnibus:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -1449,7 +1449,7 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **For installations from source**
 
@@ -1483,7 +1483,7 @@ You can add a configuration option for backwards compatibility.
    registry['compatibility_schema1_enabled'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **For installations from source**
 
@@ -1531,7 +1531,7 @@ and a simple solution would be to enable relative URLs in the Registry.
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **For installations from source**
 
@@ -1559,7 +1559,7 @@ in your `gitlab.rb` configuration.
 registry['debug_addr'] = "localhost:5001"
 ```
 
-After adding the setting, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) to apply the change.
+After adding the setting, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) to apply the change.
 
 Use curl to request debug output from the debug server:
 
@@ -1851,7 +1851,7 @@ In this case, follow these steps:
    gitlab_rails['registry_enabled'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 1. Try the removal again.
 

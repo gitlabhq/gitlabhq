@@ -71,7 +71,9 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :g
         expect(page).not_to have_content('Annotate')
         expect(page).not_to have_content('Blame')
 
-        expect(page).not_to have_selector(:link_or_button, text: /^Edit$/)
+        click_button 'Edit'
+
+        expect(page).not_to have_selector(:link_or_button, text: /^Edit single file$/)
         expect(page).to have_selector(:link_or_button, 'Open in Web IDE')
       end
     end

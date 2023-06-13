@@ -69,7 +69,7 @@ works, and review the information on
 ## Environment Variables
 
 You can customize multiple
-[environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.md)
+[environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
 on self-managed systems. The main environment variable to
 take advantage of from a security perspective is `GITLAB_ROOT_PASSWORD` during the
 installation process. If you are installing the self-managed system with a

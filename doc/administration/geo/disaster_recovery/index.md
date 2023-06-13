@@ -236,7 +236,7 @@ do this manually.
    roles ['geo_secondary_role']
    ```
 
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    on each machine so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single application
@@ -444,7 +444,7 @@ required:
    roles ['geo_secondary_role']
    ```
 
-   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    on each node so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single secondary application
@@ -554,7 +554,7 @@ sudo rm -rf /var/opt/gitlab/geo-postgresql
 ```
 
 If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
-file, these can be safely commented out or removed, and then [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+file, these can be safely commented out or removed, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 for the changes to take effect.
 
 ## Promoting secondary Geo replica in multi-secondary configurations
@@ -732,7 +732,7 @@ If you are running GitLab 14.4 and earlier:
    roles ['geo_secondary_role']
    ```
 
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) on the database node.
+   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on the database node.
 
 1. Find the task runner pod:
 

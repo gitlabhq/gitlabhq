@@ -38,7 +38,7 @@ To enable the agent server on a single node:
    gitlab_kas['enable'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 For additional configuration options, see the **Enable GitLab KAS** section of the
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-config-template/gitlab.rb.template).
@@ -68,7 +68,7 @@ To configure KAS to listen on a UNIX socket:
    }
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable on multiple nodes
 
@@ -94,7 +94,7 @@ To enable the agent server on multiple nodes:
    gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ##### Agent server node settings
 

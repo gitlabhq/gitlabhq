@@ -12,21 +12,15 @@ module QA
           element :lock_button
         end
 
-        view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
-          element :edit_button
-        end
-
         view 'app/assets/javascripts/vue_shared/components/actions_button.vue' do
           element :action_dropdown
           element :edit_menu_item, ':data-qa-selector="`${action.key}_menu_item`"' # rubocop:disable QA/ElementWithPattern
+          element :webide_menu_item, ':data-qa-selector="`${action.key}_menu_item`"' # rubocop:disable QA/ElementWithPattern
         end
 
         def click_edit
-          within_element(:action_dropdown) do
-            click_button(class: 'dropdown-toggle-split')
-            click_element(:edit_menu_item)
-            click_element(:edit_button)
-          end
+          click_element(:action_dropdown)
+          click_element(:edit_menu_item)
         end
 
         def click_delete

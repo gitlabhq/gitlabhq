@@ -234,7 +234,7 @@ To enable disk access:
    gitlab_pages['enable_disk'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## `httprange: new resource 403`
 
@@ -275,7 +275,7 @@ To do that:
    gitlab_pages['use_legacy_storage'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## GitLab Pages deploy job fails with error "is not a recognized provider"
 
@@ -292,7 +292,7 @@ To fix that:
    - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](index.md#s3-compatible-connection-settings) guide.
    - Store your deployments locally, by commenting out that line.
 
-1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## 404 error `The page you're looking for could not be found`
 

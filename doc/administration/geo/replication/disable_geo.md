@@ -80,7 +80,7 @@ Geo node in a PostgreSQL console (`sudo gitlab-psql`):
    roles ['geo_primary_role']
    ```
 
-1. After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 ## (Optional) Revert PostgreSQL settings to use a password and listen on an IP

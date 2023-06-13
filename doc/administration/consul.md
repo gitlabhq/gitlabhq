@@ -49,7 +49,7 @@ On _each_ Consul server node:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes
+1. [Reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes
    to take effect.
 1. Run the following command to ensure Consul is both configured correctly and
    to verify that all server nodes are communicating:

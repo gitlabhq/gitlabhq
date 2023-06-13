@@ -19,9 +19,8 @@ GitLab can be configured to use one or multiple repository storages. These stora
 In GitLab:
 
 - Repository storages are configured in:
-  - `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})` configuration hash for Omnibus GitLab
-    installations.
-  - `gitlab.yml` by the `repositories.storages` key for installations from source.
+  - `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})` configuration hash for Linux package installations.
+  - `gitlab.yml` by the `repositories.storages` key for self-compiled installations.
 - The `default` repository storage is available in any installations that haven't customized it. By
   default, it points to a Gitaly node.
 
@@ -115,7 +114,7 @@ To look up a project's name using the Rails console:
    ```
 
 The quoted string in that command is the directory tree you can find on your GitLab server. For
-example, on a default Omnibus installation this would be `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
+example, on a default Linux package installation this would be `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
 with `.git` from the end of the directory name removed.
 
 The output includes the project ID and the project name. For example:
@@ -126,8 +125,8 @@ The output includes the project ID and the project name. For example:
 
 To look up a project's name using the `config` file in the `*.git` directory:
 
-1. Navigate to the to the `*.git` directory. This directory is located in `/var/opt/gitlab/git-data/repositories/@hashed/`, where the first four
-   characters of the hash are the first two directories in the path under `@hashed/`. For example, on a default Omnibus GitLab installation the
+1. Locate the `*.git` directory. This directory is located in `/var/opt/gitlab/git-data/repositories/@hashed/`, where the first four
+   characters of the hash are the first two directories in the path under `@hashed/`. For example, on a default Linux package installation the
    `*.git` directory of the hash `b17eb17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9` would be
    `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`.
 1. Open the `config` file and locate the `fullpath=` key under `[gitlab]`.

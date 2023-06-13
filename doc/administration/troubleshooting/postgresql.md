@@ -135,7 +135,7 @@ postgresql['statement_timeout'] = '15s'
 postgresql['idle_in_transaction_session_timeout'] = '60s'
 ```
 
-Once saved, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 These are Omnibus GitLab settings. If an external database, such as a customer's PostgreSQL installation or Amazon RDS is being used, these values don't get set, and would have to be set externally.
@@ -148,7 +148,7 @@ The following advice does not apply in case
 because the changed timeout might affect more transactions than intended.
 
 In some situations, it may be desirable to set a different statement timeout
-without having to [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure),
+without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation),
 which in this case would restart Puma and Sidekiq.
 
 For example, a backup may fail with the following errors in the output of the

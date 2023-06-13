@@ -39,7 +39,7 @@ correspond to your GitLab installation:
    gitlab_rails['dependency_proxy_enabled'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 ### Helm chart installations
@@ -104,7 +104,7 @@ To change the local storage path:
    gitlab_rails['dependency_proxy_storage_path'] = "/mnt/dependency_proxy"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -156,7 +156,7 @@ This section describes the earlier configuration format. [Migration steps still 
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **Installations from source**
 
@@ -266,4 +266,4 @@ The default expiration and the expiration on GitLab.com is 15 minutes.
     "https_proxy" => "http://USERNAME:PASSWORD@example.com:8080"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.

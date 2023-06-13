@@ -48,7 +48,7 @@ application.
 
 1. Add the provider configuration:
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -65,7 +65,7 @@ application.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'auth0',
@@ -82,9 +82,9 @@ application.
 1. Replace `<your_auth0_client_secret>` with the client secret from the Auth0 Console page.
 1. Replace `<your_auth0_client_secret>` with the domain from the Auth0 Console page.
 1. Reconfigure or restart GitLab, depending on your installation method:
-   - *If you installed from Omnibus GitLab,*
-     [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
-   - *If you installed from source,*
+   - If you installed using the Linux package,
+     [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
+   - If you self-compiled your installation,
      [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 On the sign-in page there should now be an Auth0 icon below the regular sign-in

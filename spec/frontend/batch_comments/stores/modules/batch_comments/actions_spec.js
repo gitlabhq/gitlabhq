@@ -70,6 +70,19 @@ describe('Batch comments store actions', () => {
       );
     });
 
+    it('dispatchs addDraftToFile if draft is on file', () => {
+      res = { id: 1, position: { position_type: 'file' }, file_path: 'index.js' };
+      mock.onAny().reply(HTTP_STATUS_OK, res);
+
+      return testAction(
+        actions.createNewDraft,
+        { endpoint: TEST_HOST, data: 'test' },
+        null,
+        [{ type: 'ADD_NEW_DRAFT', payload: res }],
+        [{ type: 'diffs/addDraftToFile', payload: { draft: res, filePath: 'index.js' } }],
+      );
+    });
+
     it('does not commit ADD_NEW_DRAFT if errors returned', () => {
       mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 

@@ -670,7 +670,7 @@ Updates to example must be made at:
 1. Enable [distribution of reads](index.md#distributed-reads).
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -694,7 +694,7 @@ Updates to example must be made at:
      additional configuration changes can be done and then reconfigure can be run manually.
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -702,7 +702,7 @@ Updates to example must be made at:
 
 1. To ensure that Praefect
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
+   [restart Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart praefect
@@ -788,7 +788,7 @@ To configure Praefect with TLS:
    }
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
@@ -809,7 +809,7 @@ To configure Praefect with TLS:
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **For installations from source**
 
@@ -950,7 +950,7 @@ You can also appoint an authoritative name server by setting it in this format:
    praefect['consul_service_name'] = 'praefect'
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
 `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
 with Praefect service discovery address, such as `praefect.service.consul`.
@@ -964,7 +964,7 @@ with Praefect service discovery address, such as `praefect.service.consul`.
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 
@@ -1091,7 +1091,7 @@ For more information on Gitaly server configuration, see our
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1146,7 +1146,7 @@ For more information on Gitaly server configuration, see our
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1154,7 +1154,7 @@ For more information on Gitaly server configuration, see our
 
 1. To ensure that Gitaly
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+   [restart Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart gitaly
@@ -1273,7 +1273,7 @@ Particular attention should be shown to:
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1317,7 +1317,7 @@ Particular attention should be shown to:
    ]
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1388,7 +1388,7 @@ To get started quickly:
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure

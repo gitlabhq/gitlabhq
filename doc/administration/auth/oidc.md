@@ -186,7 +186,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 1. Save the configuration file.
 1. For changes to take effect, if you:
 
-   - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
    - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
 
 On the sign in page, you have an OpenID Connect option below the regular sign in form.
@@ -805,7 +805,7 @@ For Linux package installations:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For self-compiled installations:
@@ -884,7 +884,7 @@ For Linux package installations:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For self-compiled installations:
@@ -961,7 +961,7 @@ For Linux package installations:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For self-compiled installations:

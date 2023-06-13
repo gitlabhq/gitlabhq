@@ -28,7 +28,7 @@ To disable new users' ability to create top-level groups using the configuration
    gitlab_rails['gitlab_default_can_create_group'] = false
    ```
 
-1. [Reconfigure and restart GitLab](restart_gitlab.md#omnibus-installations).
+1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **Source installations**
 
@@ -60,7 +60,7 @@ ability to change their usernames:
    gitlab_rails['gitlab_username_changing_enabled'] = false
    ```
 
-1. [Reconfigure and restart GitLab](restart_gitlab.md#omnibus-installations).
+1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **Source installations**
 

@@ -312,7 +312,7 @@ Data that was created on the primary while the secondary was paused is lost.
    roles ['geo_secondary_role']
    ```
 
-   After making these changes [Reconfigure GitLab](../../../restart_gitlab.md#omnibus-gitlab-reconfigure) each
+   After making these changes, [reconfigure GitLab](../../../restart_gitlab.md#reconfigure-a-linux-package-installation) each
    machine so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single Rails node

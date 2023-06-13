@@ -31,7 +31,7 @@ a single-node Geo site or a multi-node Geo site.
 If both Geo sites are based on the [1K reference architecture](../../reference_architectures/1k_users.md):
 
 1. Set up the database replication based on your choice of PostgreSQL instances (`primary (read-write) <-> secondary (read-only)` topology):
-   - [Using Omnibus PostgreSQL instances](database.md) .
+   - [Using Linux package PostgreSQL instances](database.md) .
    - [Using external PostgreSQL instances](external_database.md)
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
 1. Recommended: [Configure unified URLs](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites.

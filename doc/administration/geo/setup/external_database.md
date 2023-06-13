@@ -179,7 +179,7 @@ To configure the connection to the external read-replica database and enable Log
    postgresql['enable'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 
 ### Configure the tracking database
 
@@ -244,7 +244,7 @@ the tracking database on port 5432.
    geo_postgresql['enable'] = false     # don't use internal managed instance
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 
 1. The reconfigure should automatically create the database. If needed, you can perform this task manually. This task (whether run by itself or during reconfigure) requires the database user to be a superuser.
 

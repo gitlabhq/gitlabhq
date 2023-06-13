@@ -567,7 +567,6 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
 
 #### Step 2. Implement metrics gathering
 

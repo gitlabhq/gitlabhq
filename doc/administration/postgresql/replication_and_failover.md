@@ -328,10 +328,10 @@ consul['configuration'] = {
 All database nodes use the same configuration. The leader node is not determined in configuration,
 and there is no additional or different configuration for either leader or replica nodes.
 
-After the configuration of a node is complete, you must [reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+After the configuration of a node is complete, you must [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
 on each node for the changes to take effect.
 
-Generally, when Consul cluster is ready, the first node that [reconfigures](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+Generally, when Consul cluster is ready, the first node that [reconfigures](../restart_gitlab.md#reconfigure-a-linux-package-installation)
 becomes the leader. You do not need to sequence the nodes reconfiguration. You can run them in parallel or in any order.
 If you choose an arbitrary order, you do not have any predetermined leader.
 
@@ -552,7 +552,7 @@ attributes set, but the following need to be set.
    gitlab_rails['db_load_balancing'] = { 'hosts' => ['POSTGRESQL_NODE_1', 'POSTGRESQL_NODE_2', 'POSTGRESQL_NODE_3'] }
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Application node post-configuration
 
@@ -625,7 +625,7 @@ consul['configuration'] = {
 consul['monitoring_service_discovery'] =  true
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Example recommended setup for PgBouncer servers
 
@@ -654,7 +654,7 @@ consul['configuration'] = {
 consul['monitoring_service_discovery'] =  true
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Internal load balancer setup
 
@@ -703,7 +703,7 @@ consul['configuration'] = {
 consul['monitoring_service_discovery'] =  true
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Example recommended setup manual steps
 
@@ -979,7 +979,7 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
 1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
    repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on the primary node.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on the primary node.
    It makes it the leader. You can check this with:
 
    ```shell
@@ -1305,7 +1305,7 @@ To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`.
 postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 ```
 
-[Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Reinitialize a replica
 
@@ -1426,7 +1426,7 @@ To fix the problem, ensure the loopback interface is included in the CIDR addres
    postgresql['trust_auth_cidr_addresses'] = %w(<other_cidrs> 127.0.0.1/32)
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Check that [all the replicas are synchronized](#check-replication-status)
 
 ### Errors in Patroni logs: the requested start point is ahead of the Write Ahead Log (WAL) flush position

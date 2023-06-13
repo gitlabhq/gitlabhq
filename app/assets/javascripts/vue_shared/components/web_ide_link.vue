@@ -3,9 +3,7 @@ import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -21,22 +19,18 @@ export const i18n = {
   webIdeTooltip: s__(
     'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
   ),
+  toggleText: __('Edit'),
 };
-
-export const PREFERRED_EDITOR_KEY = 'gl-web-ide-button-selected';
-export const PREFERRED_EDITOR_RESET_KEY = 'gl-web-ide-button-selected-reset';
 
 export default {
   components: {
     ActionsButton,
-    LocalStorageSync,
     GlModal,
     GlSprintf,
     GlLink,
     ConfirmForkModal,
   },
   i18n,
-  mixins: [glFeatureFlagsMixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -141,7 +135,6 @@ export default {
   },
   data() {
     return {
-      selection: this.showPipelineEditorButton ? KEY_PIPELINE_EDITOR : KEY_WEB_IDE,
       showEnableGitpodModal: false,
       showForkModal: false,
     };
@@ -154,6 +147,9 @@ export default {
         this.editAction,
         this.gitpodAction,
       ].filter((action) => action);
+    },
+    hasActions() {
+      return this.actions.length > 0;
     },
     editAction() {
       if (!this.showEditButton) {
@@ -176,9 +172,8 @@ export default {
 
       return {
         key: KEY_EDIT,
-        text: __('Edit'),
+        text: __('Edit single file'),
         secondaryText: __('Edit this file only.'),
-        tooltip: '',
         attrs: {
           'data-qa-selector': 'edit_button',
           'data-track-action': 'click_consolidated_edit',
@@ -205,7 +200,6 @@ export default {
 
       const handleOptions = this.needsToFork
         ? {
-            href: '#modal-confirm-fork-webide',
             handle: () => {
               if (this.disableForkModal) {
                 this.$emit('edit', 'ide');
@@ -216,9 +210,7 @@ export default {
             },
           }
         : {
-            href: this.webIdeUrl,
-            handle: (evt) => {
-              evt.preventDefault();
+            handle: () => {
               visitUrl(this.webIdeUrl, true);
             },
           };
@@ -227,7 +219,6 @@ export default {
         key: KEY_WEB_IDE,
         text: this.webIdeActionText,
         secondaryText: this.$options.i18n.webIdeText,
-        tooltip: this.$options.i18n.webIdeTooltip,
         attrs: {
           'data-qa-selector': 'web_ide_button',
           'data-track-action': 'click_consolidated_edit_ide',
@@ -258,7 +249,6 @@ export default {
         key: KEY_PIPELINE_EDITOR,
         text: __('Edit in pipeline editor'),
         secondaryText,
-        tooltip: secondaryText,
         attrs: {
           'data-qa-selector': 'pipeline_editor_button',
         },
@@ -283,7 +273,6 @@ export default {
         key: KEY_GITPOD,
         text: this.gitpodActionText,
         secondaryText,
-        tooltip: secondaryText,
         attrs: {
           'data-qa-selector': 'gitpod_button',
         },
@@ -310,52 +299,24 @@ export default {
       };
     },
   },
-  mounted() {
-    this.resetPreferredEditor();
-  },
   methods: {
-    select(key) {
-      this.selection = key;
-    },
     showModal(dataKey) {
       this[dataKey] = true;
     },
-    resetPreferredEditor() {
-      if (!this.glFeatures.vscodeWebIde || this.showEditButton) {
-        return;
-      }
-
-      if (localStorage.getItem(PREFERRED_EDITOR_RESET_KEY) === 'true') {
-        return;
-      }
-
-      localStorage.setItem(PREFERRED_EDITOR_KEY, KEY_WEB_IDE);
-      localStorage.setItem(PREFERRED_EDITOR_RESET_KEY, true);
-
-      this.select(KEY_WEB_IDE);
-    },
   },
   webIdeButtonId: 'web-ide-link',
-  PREFERRED_EDITOR_KEY,
 };
 </script>
 
 <template>
   <div class="gl-sm-ml-3">
     <actions-button
+      v-if="hasActions"
       :id="$options.webIdeButtonId"
       :actions="actions"
-      :selected-key="selection"
+      :toggle-text="$options.i18n.toggleText"
       :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
-      show-action-tooltip
-      @select="select"
-    />
-    <local-storage-sync
-      :storage-key="$options.PREFERRED_EDITOR_KEY"
-      :value="selection"
-      as-string
-      @input="select"
     />
     <gl-modal
       v-if="computedShowGitpodButton && !gitpodEnabled"

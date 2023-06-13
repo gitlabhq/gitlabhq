@@ -137,7 +137,7 @@ For Linux package installations:
    `gitlab_rails['smartcard_client_certificate_required_host']` or
    `gitlab_rails['smartcard_client_certificate_required_port']`.
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 For self-compiled installations:
@@ -243,7 +243,7 @@ For Linux package installations:
    gitlab_rails['smartcard_san_extensions'] = true
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 For self-compiled installations:
@@ -279,7 +279,7 @@ For Linux package installations:
    EOS
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 For self-compiled installations:
@@ -310,7 +310,7 @@ For Linux package installations:
    gitlab_rails['smartcard_required_for_git_access'] = true
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 For self-compiled installations:

@@ -138,8 +138,8 @@ need to upgrade the `fastify` package.
 
 To fix the vulnerability:
 
-1. Go to **Repository > Files**.
-1. From the **WebIDE** dropdown list select **GitPod**, then right-click on **GitPod** to open
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. In the upper right, select **Edit > GitPod** and open
    GitPod in a new tab.
 1. If you are prompted to, select **Continue with GitLab**, then select **Authorize**.
 1. On the **New Workspace** page, select **Continue**.

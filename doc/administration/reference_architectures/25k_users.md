@@ -473,7 +473,7 @@ To configure Consul:
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. Go through the steps again for all the other Consul nodes, and
    make sure you set up the correct IPs.
@@ -673,7 +673,7 @@ For more information, see the various [Patroni replication methods](../postgresq
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
 are supported and can be added if needed.
@@ -762,7 +762,7 @@ The following IPs will be used as an example:
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
    If an error `execute[generate databases.ini]` occurs, this is due to an existing
    [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4713).
@@ -775,7 +775,7 @@ The following IPs will be used as an example:
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) once again
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) once again
    to resolve any potential errors from the previous steps.
 1. Ensure each node is talking to the current primary:
 
@@ -935,7 +935,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Cache nodes
 
@@ -1007,7 +1007,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
@@ -1089,7 +1089,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Persistent nodes
 
@@ -1155,7 +1155,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
@@ -1275,7 +1275,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. Follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -1505,10 +1505,10 @@ the file of the same name on this server. If this is the first Omnibus node you 
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-   1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect and
+   1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect and
       to run the Praefect database migrations.
 
-1. On all other Praefect nodes, [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. On all other Praefect nodes, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Configure Gitaly
 
@@ -1676,7 +1676,7 @@ Updates to example must be made at:
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
-1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Gitaly Cluster TLS support
 
@@ -1732,7 +1732,7 @@ To configure Praefect with TLS:
    }
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
@@ -1753,7 +1753,7 @@ To configure Praefect with TLS:
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -1910,7 +1910,7 @@ Updates to example must be made at:
    Only a single designated node should handle migrations as detailed in the
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues,
@@ -2076,7 +2076,7 @@ On each node perform the following:
    Only a single designated node should handle migrations as detailed in the
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. [Enable incremental logging](#enable-incremental-logging).
 1. Confirm the node can connect to Gitaly:
 
@@ -2187,7 +2187,7 @@ To configure the Monitoring node:
    nginx['enable'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. In the GitLab UI, set `admin/application_settings/metrics_and_profiling` > Metrics - Grafana to `/-/grafana` to
 `http[s]://<MONITOR NODE>/-/grafana`
 

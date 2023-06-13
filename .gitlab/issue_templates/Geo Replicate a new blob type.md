@@ -534,7 +534,7 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add `[:cool_widget, :remote_store]` and `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
+- [ ] Add `[:cool_widget, :remote_store]` to `skipped` in `spec/models/factories_spec.rb`
 
 #### Step 2. Implement metrics gathering
 

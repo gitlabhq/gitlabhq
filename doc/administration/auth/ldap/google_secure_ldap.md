@@ -140,7 +140,7 @@ For Linux package installations:
    EOS
    ```
 
-1. Save the file and [reconfigure](../../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
 For self-compiled installations:
 

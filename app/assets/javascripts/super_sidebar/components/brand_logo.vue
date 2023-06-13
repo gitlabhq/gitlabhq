@@ -34,7 +34,12 @@ export default {
     data-track-label="gitlab_logo_link"
     data-track-property="nav_core_menu"
   >
-    <img v-if="logoUrl" data-testid="brand-header-custom-logo" :src="logoUrl" class="gl-h-6" />
+    <img
+      v-if="logoUrl"
+      data-testid="brand-header-custom-logo"
+      :src="logoUrl"
+      class="gl-h-6 gl-max-w-full"
+    />
     <span v-else v-safe-html="$options.logo" data-testid="brand-header-default-logo"></span>
   </a>
 </template>

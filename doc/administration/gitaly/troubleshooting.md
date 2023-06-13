@@ -103,7 +103,7 @@ environment variable. To set this in an Omnibus GitLab install:
    }
    ```
 
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
+1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab.
 
 ### Correlating Git processes with RPCs
 
@@ -216,7 +216,7 @@ Confirm the following are all true:
 To fix this problem, confirm that your [`gitlab-secrets.json` file](configure_gitaly.md#configure-gitaly-servers)
 on the Gitaly server matches the one on Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
-[reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+[reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 If you've confirmed that your `gitlab-secrets.json` file is the same on all Gitaly servers and clients,
 the application might be fetching this secret from a different file. Your Gitaly server's

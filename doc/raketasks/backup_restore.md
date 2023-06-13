@@ -55,7 +55,7 @@ If you have a specific reason to change the path, it can be configured in Omnibu
    gitlab_rails['backup_gitaly_backup_path'] = '/path/to/gitaly-backup'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 ## Backup timestamp

@@ -116,7 +116,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Maximum export size' do
         page.within(find('[data-testid="account-limit"]')) do
-          fill_in 'Maximum export size (MB)', with: 25
+          fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
         end
 
@@ -126,7 +126,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Maximum import size' do
         page.within(find('[data-testid="account-limit"]')) do
-          fill_in 'Maximum import size (MB)', with: 15
+          fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
         end
 
@@ -905,7 +905,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Pages settings' do
         page.within('.as-pages') do
-          fill_in 'Maximum size of pages (MB)', with: 15
+          fill_in 'Maximum size of pages (MiB)', with: 15
           check 'Require users to prove ownership of custom domains'
           click_button 'Save changes'
         end

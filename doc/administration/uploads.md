@@ -36,7 +36,7 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 
    This setting only applies if you haven't changed the `gitlab_rails['uploads_storage_path']` directory.
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 **In installations from source:**
 
@@ -110,7 +110,7 @@ _The uploads are stored by default in
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
 
 **In installations from source:**

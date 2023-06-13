@@ -47,7 +47,7 @@ To enable the dedicated server:
    to `localhost:8083/metrics`. Refer to the [Adding custom scrape configurations](index.md#adding-custom-scrape-configurations) page
    for how to configure scraper targets. For external Prometheus setup, refer to
    [Using an external Prometheus server](index.md#using-an-external-prometheus-server) instead.
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 Metrics can now be served and scraped from `localhost:8083/metrics`.
@@ -66,7 +66,7 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
    puma['exporter_tls_key_path'] = "/path/to/private-key.pem"
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 When TLS is enabled, the same `port` and `address` is used as described above.
