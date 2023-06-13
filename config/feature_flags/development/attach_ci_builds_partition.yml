@@ -1,8 +1,0 @@
----
-name: attach_ci_builds_partition
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121554
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382033
-milestone: '16.1'
-type: development
-group: group::pipeline execution
-default_enabled: false

@@ -241,7 +241,6 @@ namespace :gitlab do
         exit
       end
 
-      Gitlab::Database::CiBuildsPartitioning.new.execute
       Gitlab::Database::Reindexing.invoke
     end
 

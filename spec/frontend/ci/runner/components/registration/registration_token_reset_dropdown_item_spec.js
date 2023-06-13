@@ -33,6 +33,8 @@ describe('RegistrationTokenResetDropdownItem', () => {
   const clickSubmit = () => findModal().vm.$emit('primary', mockEvent);
 
   const createComponent = ({ props, provide = {} } = {}) => {
+    showToast = jest.fn();
+
     wrapper = shallowMount(RegistrationTokenResetDropdownItem, {
       provide,
       propsData: {
@@ -45,9 +47,12 @@ describe('RegistrationTokenResetDropdownItem', () => {
       directives: {
         GlModal: createMockDirective('gl-modal'),
       },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
+      },
     });
-
-    showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
   };
 
   beforeEach(() => {
