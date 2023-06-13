@@ -70,7 +70,7 @@ export default {
         helpLinks: {
           items: [
             this.sidebarData.show_tanuki_bot && {
-              icon: 'tanuki',
+              icon: 'tanuki-ai',
               text: this.$options.i18n.chat,
               action: this.showTanukiBotChat,
               extraAttrs: {
@@ -250,7 +250,7 @@ export default {
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
           {{ item.text }}
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-orange-500" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-purple-600" />
         </span>
       </template>
     </gl-disclosure-dropdown-group>

@@ -71,6 +71,12 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   context 'for work item note actions signed in user with developer role' do
+    let_it_be(:owner) { create(:user) }
+
+    before do
+      project.add_owner(owner)
+    end
+
     it 'shows work item note actions' do
       set_comment
 
@@ -78,13 +84,15 @@ RSpec.shared_examples 'work items comments' do |type|
 
       wait_for_requests
 
-      page.within(".main-notes-list") do
+      page.within('.timeline-entry.note.note-wrapper.note-comment:last-child') do
         expect(page).to have_selector('[data-testid="work-item-note-actions"]')
 
-        find('[data-testid="work-item-note-actions"]', match: :first).click
+        find('[data-testid="work-item-note-actions"]').click
 
         expect(page).to have_selector('[data-testid="copy-link-action"]')
         expect(page).to have_selector('[data-testid="assign-note-action"]')
+        expect(page).to have_selector('[data-testid="delete-note-action"]')
+        expect(page).to have_selector('[data-testid="edit-work-item-note"]')
       end
     end
   end
@@ -295,7 +303,6 @@ RSpec.shared_examples 'work items comment actions for guest users' do
         expect(page).to have_selector('[data-testid="work-item-note-actions"]')
 
         find('[data-testid="work-item-note-actions"]', match: :first).click
-
         expect(page).to have_selector('[data-testid="copy-link-action"]')
         expect(page).not_to have_selector('[data-testid="assign-note-action"]')
       end

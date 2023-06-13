@@ -65,7 +65,9 @@ FactoryBot.define do
     end
 
     trait :service_account do
+      name { 'Service account user' }
       user_type { :service_account }
+      skip_confirmation { true }
     end
 
     trait :migration_bot do

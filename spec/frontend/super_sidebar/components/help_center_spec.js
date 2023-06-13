@@ -107,7 +107,7 @@ describe('HelpCenter component', () => {
       it('shows Ask GitLab Chat with the help items', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
-            icon: 'tanuki',
+            icon: 'tanuki-ai',
             text: HelpCenter.i18n.chat,
             extraAttrs: trackingAttrs('tanuki_bot_help_dropdown'),
           }),

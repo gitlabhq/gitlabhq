@@ -445,6 +445,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         end
       end
 
+      let(:table_without_model) do
+        Class.new(Gitlab::Database::Partitioning::TableWithoutModel) do
+          self.table_name = 'table1'
+        end
+      end
+
       table_metadata = {
         'table_name' => 'table1',
         'classes' => ['TableClass'],
@@ -470,7 +476,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         File.write(table_file_path, table_metadata.to_yaml)
         File.write(view_file_path, view_metadata.to_yaml)
 
-        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class])
+        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class, table_without_model])
       end
 
       it 'appends new classes to the dictionary' do
