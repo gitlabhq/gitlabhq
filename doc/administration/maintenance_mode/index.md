@@ -21,7 +21,8 @@ Maintenance Mode allows most external actions that do not change internal state.
 Enable Maintenance Mode as an administrator in one of these ways:
 
 - **Web UI**:
-  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -45,7 +46,8 @@ Enable Maintenance Mode as an administrator in one of these ways:
 Disable Maintenance Mode in one of three ways:
 
 - **Web UI**:
-  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -173,7 +175,8 @@ you should disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 
 ### Incident management

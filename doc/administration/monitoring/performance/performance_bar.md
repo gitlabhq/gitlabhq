@@ -108,7 +108,8 @@ The performance bar is disabled by default for non-administrators. To enable it
 for a given group:
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand
    **Profiling - Performance bar**.

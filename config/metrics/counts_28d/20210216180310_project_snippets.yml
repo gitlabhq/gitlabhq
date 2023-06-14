@@ -8,6 +8,7 @@ product_group: source_code
 value_type: number
 status: active
 time_frame: 28d
+instrumentation_class: CountProjectSnippetsMetric
 data_source: database
 distribution:
 - ce

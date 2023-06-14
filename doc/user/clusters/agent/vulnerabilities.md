@@ -15,11 +15,11 @@ You can also configure your agent so the vulnerabilities are displayed with othe
 ## Enable operational container scanning
 
 You can use operational container scanning to scan container images in your cluster for security vulnerabilities. You
-can enable the scanner to run on a cadence as configured via the agent, or setup scan execution policies within a
+can enable the scanner to run on a cadence as configured via the `agent config`, or setup `scan execution policies` within a
 project that houses the agent.
 
 NOTE:
-In GitLab 15.0 and later, you do not need to install Starboard operator in the Kubernetes cluster.
+If both `agent config` and `scan execution policies` are configured, the configuration from `scan execution policy` takes precedence.
 
 ### Enable via agent configuration
 
@@ -56,7 +56,7 @@ container_scanning:
       - kube-system
 ```
 
-## Enable via scan execution policies
+### Enable via scan execution policies
 
 To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the
 [scan execution policy editor](../../application_security/policies/scan-execution-policies.md#scan-execution-policy-editor)
@@ -95,6 +95,35 @@ NOTE:
 The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan-execution-policies.md#scan-execution-policies-schema).
+
+## Configure scanner resource requirements
+
+By default the scanner pod's default resource requirements are:
+
+```yaml
+requests:
+  cpu: 100m
+  memory: 100Mi
+limits:
+  cpu: 500m
+  memory: 500Mi
+```
+
+You can customize it with a `resource_requirements` field.
+
+```yaml
+container_scanning:
+  resource_requirements:
+    requests:
+      cpu: 200m
+      memory: 200Mi
+    limits:
+      cpu: 700m
+      memory: 700Mi
+```
+
+NOTE:
+Resource requirements can only be set up using the agent configuration. If you enabled `Operational Container Scanning` through `scan execution policies`, you would need to define the resource requirements within the agent configuration file.
 
 ## View cluster vulnerabilities
 

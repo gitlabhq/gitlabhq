@@ -27,7 +27,8 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -854,8 +855,11 @@ to start again from scratch, there are a few steps that can help you:
 
 ### Design repository failures on mirrored projects and project imports
 
-On the top bar, under **Main menu > Admin > Geo > Sites**,
-if the Design repositories progress bar shows
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Geo > Sites**.
+
+If the Design repositories progress bar shows
 `Synced` and `Failed` greater than 100%, and negative `Queued`, the instance
 is likely affected by
 [a bug in GitLab 13.2 and 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/241668).
@@ -1190,7 +1194,8 @@ site's URL matches its external URL.
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
@@ -1396,8 +1401,9 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 
 In this case, make sure to update the changed URL on all your sites:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Admin > Geo > Sites**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Geo > Sites**.
 1. Change the URL and save the change.
 
 ## Fixing non-PostgreSQL replication failures

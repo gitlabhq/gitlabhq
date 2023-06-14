@@ -145,12 +145,6 @@ MergeRequest.decreaseCounter = function (by = 1) {
   $el.text(addDelimiter(count));
 };
 
-MergeRequest.hideCloseButton = function () {
-  const el = document.querySelector('.merge-request .js-issuable-actions');
-  // Dropdown for mobile screen
-  el.querySelector('li.js-close-item').classList.add('hidden');
-};
-
 MergeRequest.toggleDraftStatus = function (title, isReady) {
   if (!window.gon?.features?.realtimeMrStatusChange) {
     eventHub.$emit('MRWidgetUpdateRequested');

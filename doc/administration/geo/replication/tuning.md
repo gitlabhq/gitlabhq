@@ -14,7 +14,8 @@ in the background.
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Select **Edit** of the secondary site you want to tune.
 1. Under **Tuning settings**, there are several variables that can be tuned to

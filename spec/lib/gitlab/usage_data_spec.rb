@@ -574,9 +574,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:successful_deployments]).to eq(2)
       expect(count_data[:failed_deployments]).to eq(2)
       expect(count_data[:feature_flags]).to eq(1)
-      expect(count_data[:snippets]).to eq(6)
-      expect(count_data[:personal_snippets]).to eq(2)
-      expect(count_data[:project_snippets]).to eq(4)
 
       expect(count_data[:projects_creating_incidents]).to eq(2)
       expect(count_data[:projects_with_packages]).to eq(2)
@@ -636,8 +633,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
         create(:deployment, :failed, deployment_options)
         create(:deployment, :success, deployment_options)
-        create(:project_snippet, project: project, created_at: n.days.ago)
-        create(:personal_snippet, created_at: n.days.ago)
         create(:alert_management_alert, project: project, created_at: n.days.ago)
       end
 
@@ -654,9 +649,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(counts_monthly[:deployments]).to eq(2)
       expect(counts_monthly[:successful_deployments]).to eq(1)
       expect(counts_monthly[:failed_deployments]).to eq(1)
-      expect(counts_monthly[:snippets]).to eq(2)
-      expect(counts_monthly[:personal_snippets]).to eq(1)
-      expect(counts_monthly[:project_snippets]).to eq(1)
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)

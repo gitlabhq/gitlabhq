@@ -1,0 +1,57 @@
+import Vue from 'vue';
+import MrMoreDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
+
+export const initMrMoreDropdown = () => {
+  const el = document.querySelector('.js-mr-more-dropdown');
+
+  if (!el) {
+    return false;
+  }
+
+  const {
+    mergeRequest,
+    projectPath,
+    editUrl,
+    isCurrentUser,
+    isLoggedIn,
+    canUpdateMergeRequest,
+    open,
+    merged,
+    sourceProjectMissing,
+    clipboardText,
+    reportedUserId,
+    reportedFromUrl,
+  } = el.dataset;
+
+  let mr;
+
+  try {
+    mr = JSON.parse(mergeRequest);
+  } catch {
+    mr = {};
+  }
+
+  return new Vue({
+    el,
+    provide: {
+      reportAbusePath: el.dataset.reportAbusePath,
+    },
+    render: (createElement) =>
+      createElement(MrMoreDropdown, {
+        props: {
+          mr,
+          projectPath,
+          editUrl,
+          isCurrentUser,
+          isLoggedIn: Boolean(isLoggedIn),
+          canUpdateMergeRequest,
+          open,
+          isMerged: merged,
+          sourceProjectMissing,
+          clipboardText,
+          reportedUserId: Number(reportedUserId),
+          reportedFromUrl,
+        },
+      }),
+  });
+};

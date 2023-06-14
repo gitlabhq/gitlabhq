@@ -1,53 +1,15 @@
-- display_issuable_type = issuable_display_type(@merge_request)
-
-.btn-group.gl-md-ml-3.gl-display-flex.dropdown.gl-dropdown.gl-md-w-auto.gl-w-full
-  %span.js-sidebar-header-popover
-  = button_tag type: 'button', id: "new-actions-header-dropdown", class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret gl-display-none! gl-md-display-inline-flex!", title: _('Merge request actions'), 'aria-label': _('Merge request actions'), data: { toggle: 'dropdown', testid: 'merge-request-actions' } do
-    = sprite_icon "ellipsis_v", size: 16, css_class: "dropdown-icon gl-icon"
-  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md btn-block gl-button gl-dropdown-toggle gl-md-display-none!", data: { 'toggle' => 'dropdown' } do
-    %span.gl-dropdown-button-text= _('Merge request actions')
-    = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon"
-  .dropdown-menu.dropdown-menu-right
-    .gl-dropdown-inner
-      .gl-dropdown-contents
-        %ul
-          - if current_user && moved_mr_sidebar_enabled?
-            %li.gl-dropdown-item.js-sidebar-subscriptions-widget-root
-            %li.gl-dropdown-divider
-              %hr.dropdown-divider
-          - if can?(current_user, :update_merge_request, @merge_request)
-            %li.gl-dropdown-item{ class: "gl-md-display-none!" }
-              = link_to edit_project_merge_request_path(@project, @merge_request), class: 'dropdown-item' do
-                .gl-dropdown-item-text-wrapper
-                  = _('Edit')
-          - if @merge_request.open?
-            %li.gl-dropdown-item
-              = link_to toggle_draft_merge_request_path(@merge_request), method: :put, class: 'dropdown-item js-draft-toggle-button' do
-                .gl-dropdown-item-text-wrapper
-                  = @merge_request.draft? ? _('Mark as ready') : _('Mark as draft')
-            %li.gl-dropdown-item.js-close-item
-              = link_to close_issuable_path(@merge_request), method: :put, class: 'dropdown-item' do
-                .gl-dropdown-item-text-wrapper
-                  = _('Close')
-                  = display_issuable_type
-          - elsif !@merge_request.source_project_missing? && @merge_request.closed?
-            %li.gl-dropdown-item
-              = link_to reopen_issuable_path(@merge_request), method: :put, class: 'dropdown-item' do
-                .gl-dropdown-item-text-wrapper
-                  = _('Reopen')
-                  = display_issuable_type
-          - if moved_mr_sidebar_enabled?
-            %li.gl-dropdown-item.js-sidebar-lock-root
-            %li.gl-dropdown-item
-              %button.dropdown-item.js-copy-reference{ type: "button", data: { 'clipboard-text': @merge_request.to_reference(full: true) } }
-                .gl-dropdown-item-text-wrapper
-                  = _('Copy reference')
-
-          - unless current_controller?('conflicts')
-            - unless issuable_author_is_current_user(@merge_request)
-              - if moved_mr_sidebar_enabled?
-                %li.gl-dropdown-divider
-                  %hr.dropdown-divider
-              .js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @merge_request.author.id, reported_from_url: merge_request_url(@merge_request) } }
-
-#js-report-abuse-drawer
+.js-mr-more-dropdown{ data: {
+  merge_request: @merge_request.to_json,
+  project_path: @project.full_path,
+  edit_url: edit_project_merge_request_path(@project, @merge_request),
+  is_current_user: issuable_author_is_current_user(@merge_request),
+  is_logged_in: current_user,
+  can_update_merge_request: can?(current_user, :update_merge_request, @merge_request),
+  open: @merge_request.open?,
+  merged: @merge_request.merged?,
+  source_project_missing: @merge_request.source_project_missing?,
+  clipboard_text: @merge_request.to_reference(full: true),
+  report_abuse_path: add_category_abuse_reports_path,
+  reported_user_id: @merge_request.author.id,
+  reported_from_url: merge_request_url(@merge_request),
+} }

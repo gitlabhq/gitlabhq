@@ -7,6 +7,7 @@ import createStore from '~/notes/stores';
 import EditForm from '~/sidebar/components/lock/edit_form.vue';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import toast from '~/vue_shared/plugins/global_toast';
+import waitForPromises from 'helpers/wait_for_promises';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -27,6 +28,7 @@ describe('IssuableLockForm', () => {
   const findLockStatus = () => wrapper.find('[data-testid="lock-status"]');
   const findEditLink = () => wrapper.find('[data-testid="edit-link"]');
   const findEditForm = () => wrapper.findComponent(EditForm);
+  const findLockButton = () => wrapper.find('[data-testid="issuable-lock"]');
   const findSidebarLockStatusTooltip = () =>
     getBinding(findSidebarCollapseIcon().element, 'gl-tooltip');
   const findIssuableLockClickable = () => wrapper.find('[data-testid="issuable-lock"]');
@@ -172,7 +174,9 @@ describe('IssuableLockForm', () => {
 
       createComponent({ movedMrSidebar: true });
 
-      await wrapper.find('.dropdown-item').trigger('click');
+      await findLockButton().trigger('click');
+
+      await waitForPromises();
 
       expect(toast).toHaveBeenCalledWith(message);
     });
@@ -187,7 +191,7 @@ describe('IssuableLockForm', () => {
     });
 
     describe('when the flag is on', () => {
-      it('does not show the non editable lock status', () => {
+      it('shows the non editable lock status', () => {
         createComponent({ movedMrSidebar: true });
         expect(findIssuableLockClickable().exists()).toBe(true);
       });

@@ -122,8 +122,6 @@ module Gitlab
             protected_branches_except_default: count(ProtectedBranch.where.not(name: ['main', 'master', Gitlab::CurrentSettings.default_branch_name])),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
-            personal_snippets: count(PersonalSnippet),
-            project_snippets: count(ProjectSnippet),
             suggestions: count(Suggestion),
             terraform_reports: count(::Ci::JobArtifact.of_report_type(:terraform)),
             terraform_states: count(::Terraform::State),
@@ -137,9 +135,7 @@ module Gitlab
             integrations_usage,
             user_preferences_usage,
             service_desk_counts
-          ).tap do |data|
-            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
-          end
+          )
         }
       end
       # rubocop: enable Metrics/AbcSize
@@ -154,12 +150,8 @@ module Gitlab
             # rubocop: enable UsageData/LargeTable:
             projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
             packages: count(::Packages::Package.where(monthly_time_range_db_params)),
-            personal_snippets: count(PersonalSnippet.where(monthly_time_range_db_params)),
-            project_snippets: count(ProjectSnippet.where(monthly_time_range_db_params)),
             projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
-          }.tap do |data|
-            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
-          end
+          }
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

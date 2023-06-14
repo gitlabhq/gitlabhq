@@ -31,6 +31,8 @@ To configure the bot in Telegram:
 1. Add the bot as an administrator to a new or existing channel.
 1. Assign the bot `Post Messages` rights to receive events.
 1. Create an identifier for the channel.
+   - For public channels, enter a public link and copy the channel identifier (for example, `https:/t.me/MY_IDENTIFIER`).
+   - For private channels, use the [`getUpdates`](https://telegram-bot-sdk.readme.io/reference/getupdates) method with your API token and copy the channel identifier.
 
 ## Set up the Telegram integration in GitLab
 
@@ -47,8 +49,7 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
 1. In **Enable integration**, select the **Active** checkbox.
 1. In **New token**, [paste the token value from the Telegram bot](#create-a-telegram-bot).
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Telegram.
-1. In **Channel identifier**, [paste the channel identifier from the Telegram channel](#configure-the-telegram-bot).
-     - To get a private channel ID, use the [`getUpdates`](https://core.telegram.org/bots/api#getupdates) method.
+1. In **Channel identifier**, [paste the Telegram channel identifier](#configure-the-telegram-bot).
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 

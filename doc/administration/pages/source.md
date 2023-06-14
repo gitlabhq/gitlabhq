@@ -483,7 +483,8 @@ The default for the maximum size of unpacked archives per project is 100 MB.
 
 To change this value:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Update the value for **Maximum size of pages (MB)**.

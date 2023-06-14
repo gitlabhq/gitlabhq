@@ -9923,7 +9923,6 @@
 - './spec/views/projects/merge_requests/_commits.html.haml_spec.rb'
 - './spec/views/projects/merge_requests/creations/_new_submit.html.haml_spec.rb'
 - './spec/views/projects/merge_requests/edit.html.haml_spec.rb'
-- './spec/views/projects/merge_requests/show.html.haml_spec.rb'
 - './spec/views/projects/milestones/index.html.haml_spec.rb'
 - './spec/views/projects/notes/_more_actions_dropdown.html.haml_spec.rb'
 - './spec/views/projects/pages_domains/show.html.haml_spec.rb'

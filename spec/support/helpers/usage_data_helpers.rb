@@ -70,9 +70,6 @@ module UsageDataHelpers
     protected_branches_except_default
     releases
     remote_mirrors
-    snippets
-    personal_snippets
-    project_snippets
     suggestions
     terraform_reports
     terraform_states

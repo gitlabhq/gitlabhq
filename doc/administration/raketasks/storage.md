@@ -109,7 +109,8 @@ sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 
 To monitor the progress in GitLab:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 1. Watch how long the `hashed_storage:hashed_storage_project_migrate` queue
    takes to finish. After it reaches zero, you can confirm every project
