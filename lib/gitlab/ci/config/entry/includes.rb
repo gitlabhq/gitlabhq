@@ -7,7 +7,7 @@ module Gitlab
         ##
         # Entry that represents a list of include.
         #
-        class Includes < ::Gitlab::Config::Entry::Node
+        class Includes < ::Gitlab::Config::Entry::ComposableArray
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
@@ -23,16 +23,8 @@ module Gitlab
             end
           end
 
-          def self.aspects
-            super.append -> do
-              @config = Array.wrap(@config)
-
-              @config.each_with_index do |config, i|
-                @entries[i] = ::Gitlab::Config::Entry::Factory.new(Entry::Include)
-                                .value(config || {})
-                                .create!
-              end
-            end
+          def composable_class
+            Entry::Include
           end
         end
       end
