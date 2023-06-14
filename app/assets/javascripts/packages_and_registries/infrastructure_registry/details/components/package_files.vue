@@ -1,5 +1,11 @@
 <script>
-import { GlLink, GlTable, GlDropdownItem, GlDropdown, GlIcon, GlButton } from '@gitlab/ui';
+import {
+  GlLink,
+  GlTable,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdown,
+  GlButton,
+} from '@gitlab/ui';
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -13,9 +19,8 @@ export default {
   components: {
     GlLink,
     GlTable,
-    GlIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlButton,
     FileIcon,
     TimeAgoTooltip,
@@ -136,14 +141,16 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-dropdown category="tertiary" right>
-          <template #button-content>
-            <gl-icon name="ellipsis_v" />
-          </template>
-          <gl-dropdown-item data-testid="delete-file" @click="$emit('delete-file', item)">
-            {{ $options.i18n.deleteFile }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+        <gl-disclosure-dropdown category="tertiary" right no-caret icon="ellipsis_v">
+          <gl-disclosure-dropdown-item
+            data-testid="delete-file"
+            @action="$emit('delete-file', item)"
+          >
+            <template #list-item>
+              {{ $options.i18n.deleteFile }}
+            </template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown>
       </template>
 
       <template #row-details="{ item }">

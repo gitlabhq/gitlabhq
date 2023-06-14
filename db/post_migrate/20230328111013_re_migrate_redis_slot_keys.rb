@@ -3,6 +3,8 @@
 class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
+  KEY_EXPIRY_LENGTH = 6.weeks
+
   DAILY_EVENTS =
     %w[g_edit_by_web_ide
       g_edit_by_sfe
@@ -117,7 +119,7 @@ class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
   end
 
   def migrate_weekly_aggregated(event)
-    weeks_back = Gitlab::UsageDataCounters::HLLRedisCounter::DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH
+    weeks_back = KEY_EXPIRY_LENGTH
     start_date = (Date.today - weeks_back).beginning_of_week - 1.day
     end_date = Date.today.end_of_week + 1.day
 
@@ -136,7 +138,7 @@ class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
 
       temp_key = new_key + "_#{Time.current.to_i}"
       ttl = redis.ttl(old_key)
-      ttl = ttl > 0 ? ttl : Gitlab::UsageDataCounters::HLLRedisCounter.send(:expiry, event)
+      ttl = ttl > 0 ? ttl : KEY_EXPIRY_LENGTH
 
       redis.multi do |multi|
         multi.set(temp_key, hll_blob, ex: 1.day.to_i)

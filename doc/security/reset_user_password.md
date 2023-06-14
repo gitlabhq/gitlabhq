@@ -20,9 +20,10 @@ The user's new password must meet all [password requirements](../user/profile/us
 
 To reset a user's password in the UI:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Users**.
-1. For the user whose password you want to update, select **Edit** (**{pencil-square}**).
+1. For the user whose password you want to update, select **Edit**.
 1. In the **Password** area, type a password and password confirmation.
 1. Select **Save changes**.
 

@@ -83,6 +83,22 @@ Prerequisite:
 1. Select **Enable product analytics** and enter the configuration values.
 1. Select **Save changes**.
 
+### Project-level settings
+
+You can override the instance-level settings defined by the administrator on a per-project basis. This allows you to
+have a different configured product analytics instance for your project.
+
+Prerequisites:
+
+- Product analytics must be enabled at the instance-level.
+- You must have at least the Maintainer role for the project or group the project belongs to.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Product Analytics**.
+1. In the **Connect to your instance** section, enter the configuration values.
+1. Select **Save changes**.
+
 ## Product analytics dashboards
 
 > - Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
@@ -93,129 +109,12 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-Each project can have an unlimited number of dashboards.
-These dashboards are defined using the GitLab YAML schema, and stored in the `.gitlab/analytics/dashboards/` directory of a project repository.
-The name of the file is the name of the dashboard.
-Each dashboard can contain one or more visualizations (charts), which are shared across dashboards.
+Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../analytics/analytics_dashboards.md).
 
-Project maintainers can enforce approval rules on dashboard changes using features such as code owners and approval rules.
-Dashboards are versioned in source control with the rest of a project's code.
-
-### View project dashboards
-
-> Introduced in GitLab 15.9 behind the [feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-To view a list of product analytics dashboards for a project:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
-1. From the list of available dashboards, select the dashboard you want to view.
-
-### Define a dashboard
-
-To define a dashboard:
-
-1. In `.gitlab/analytics/dashboards/`, create a directory named like the dashboard.
-
-    Each dashboard should have its own directory.
-1. In the new directory, create a `.yaml` file with the same name as the directory.
-
-    This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/product_analytics_dashboard.json`.
-1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
-
-    This file defines the visualization type for the dashboard. It must conform to the schema in
- `ee/app/validators/json_schemas/product_analytics_visualization.json`.
-
-For example, if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
-and one visualization (line chart) that applies to all dashboards, the file structure would be:
-
-```plaintext
-.gitlab/analytics/dashboards
-├── conversion_funnels
-│  └── conversion_funnels.yaml
-├── demographic_breakdown
-│  └── demographic_breakdown.yaml
-├── north_star_metrics
-|  └── north_star_metrics.yaml
-├── visualizations
-│  └── example_line_chart.yaml
-```
-
-### Define a chart visualization
-
-You can define different charts, and add visualization options to some of them:
-
-- Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Data table, with the only option to render `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
-- Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
-
-To define a chart for your dashboards:
-
-1. In the `.gitlab/product_analytics/dashboards/visualizations/` directory, create a `.yaml` file.
-The filename should be descriptive of the visualization it defines.
-1. In the `.yaml` file, define the visualization options, according to the schema in
-`ee/app/validators/json_schemas/analytics_visualization.json`.
-
-For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/gl_dashboards/product_analytics/visualizations/events_over_time.json), to create a line chart that illustrates event count over time, in the `visualizations` folder
-create a `line_chart.yaml` file with the following required fields:
-
-- version
-- title
-- type
-- data
-- options
-
-## Dashboards editor
-
-> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-NOTE:
-This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
-
-You can use the dashboards editor to:
-
-- Create dashboards
-- Rename dashboards
-- Add visualizations to new and existing dashboards
-- Resize or move panels within dashboards
-
-### Create a dashboard
-
-To create a dashboard:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
-1. Select **New dashboard**.
-1. In the **New dashboard** input, enter the name of the dashboard.
-1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
-1. Optional. Drag or resize the selected visualizations how you prefer.
-1. Select **Save**.
-
-### Edit a dashboard
-
-You can rename your created dashboards and add or resize visualizations within them.
-
-To edit an existing dashboard:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
-1. From the list of available dashboards, select the dashboard you want to edit.
-1. Select **Edit**.
-1. Optional. Change the name of the dashboard.
-1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
-1. Optional. In the dashboard, select a visualization and drag or resize it how you prefer.
-1. Select **Save**.
+Specifically product analytics dashboards and visualizations make use of the `cube_analytics` data type.
+The `cube_analytics` data type connects to the Cube instance defined when [product analytics was enabled](#enable-product-analytics).
+All filters and queries are sent to the Cube instance and the returned data is processed by the
+product analytics data source to be rendered by the appropriate visualizations.
 
 ## Funnel analysis
 

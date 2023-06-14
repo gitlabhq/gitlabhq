@@ -1,20 +1,17 @@
 import { GlTableLite } from '@gitlab/ui';
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { s__ } from '~/locale';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import RunnerManagersTable from '~/ci/runner/components/runner_managers_table.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
 
 import { runnerManagersData } from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
-const [runnerManager1, runnerManager2] = runnerManagersData.data.runner.managers.nodes;
-
-Vue.use(VueApollo);
+const mockItems = runnerManagersData.data.runner.managers.nodes;
 
 describe('RunnerJobs', () => {
   let wrapper;
@@ -25,9 +22,11 @@ describe('RunnerJobs', () => {
   const findCellText = (opts) => findCell(opts).text().replace(/\s+/g, ' ');
 
   const createComponent = ({ item } = {}) => {
+    const [mockItem, ...otherItems] = mockItems;
+
     wrapper = mountExtended(RunnerManagersTable, {
       propsData: {
-        items: [{ ...runnerManager1, ...item }, runnerManager2],
+        items: [{ ...mockItem, ...item }, ...otherItems],
       },
       stubs: {
         GlTableLite,
@@ -54,8 +53,8 @@ describe('RunnerJobs', () => {
 
   it('shows system id', () => {
     createComponent();
-    expect(findCellText({ field: 'systemId', i: 0 })).toBe(runnerManager1.systemId);
-    expect(findCellText({ field: 'systemId', i: 1 })).toBe(runnerManager2.systemId);
+    expect(findCellText({ field: 'systemId', i: 0 })).toBe(mockItems[0].systemId);
+    expect(findCellText({ field: 'systemId', i: 1 })).toBe(mockItems[1].systemId);
   });
 
   it('shows version', () => {
@@ -72,6 +71,14 @@ describe('RunnerJobs', () => {
     });
 
     expect(findCellText({ field: 'version', i: 0 })).toBe('1.0 (123456)');
+  });
+
+  it('shows revision without version', () => {
+    createComponent({
+      item: { version: null, revision: '123456' },
+    });
+
+    expect(findCellText({ field: 'version', i: 0 })).toBe('(123456)');
   });
 
   it('shows ip address', () => {
@@ -117,7 +124,14 @@ describe('RunnerJobs', () => {
   it('shows contacted at', () => {
     createComponent();
     expect(findCell({ field: 'contactedAt', i: 0 }).findComponent(TimeAgo).props('time')).toBe(
-      runnerManager1.contactedAt,
+      mockItems[0].contactedAt,
     );
+  });
+
+  it('shows missing contacted at', () => {
+    createComponent({
+      item: { contactedAt: null },
+    });
+    expect(findCellText({ field: 'contactedAt', i: 0 })).toBe(I18N_STATUS_NEVER_CONTACTED);
   });
 });

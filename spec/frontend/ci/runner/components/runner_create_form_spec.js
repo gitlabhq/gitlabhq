@@ -11,6 +11,7 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  I18N_CREATE_ERROR,
 } from '~/ci/runner/constants';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
@@ -186,6 +187,38 @@ describe('RunnerCreateForm', () => {
 
       it('does not report error', () => {
         expect(captureException).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when no runner information is returned', () => {
+      beforeEach(async () => {
+        runnerCreateHandler.mockResolvedValue({
+          data: {
+            runnerCreate: {
+              errors: [],
+              runner: null,
+            },
+          },
+        });
+
+        findForm().vm.$emit('submit', { preventDefault });
+        await waitForPromises();
+      });
+
+      it('emits "error" result', () => {
+        expect(wrapper.emitted('error')[0]).toEqual([new TypeError(I18N_CREATE_ERROR)]);
+      });
+
+      it('does not show a saving state', () => {
+        expect(findSubmitBtn().props('loading')).toBe(false);
+      });
+
+      it('reports error', () => {
+        expect(captureException).toHaveBeenCalledTimes(1);
+        expect(captureException).toHaveBeenCalledWith({
+          component: 'RunnerCreateForm',
+          error: new Error(I18N_CREATE_ERROR),
+        });
       });
     });
   });

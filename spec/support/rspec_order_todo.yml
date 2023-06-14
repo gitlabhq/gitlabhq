@@ -8228,7 +8228,6 @@
 - './spec/requests/api/doorkeeper_access_spec.rb'
 - './spec/requests/api/environments_spec.rb'
 - './spec/requests/api/error_tracking/client_keys_spec.rb'
-- './spec/requests/api/error_tracking/collector_spec.rb'
 - './spec/requests/api/events_spec.rb'
 - './spec/requests/api/feature_flags_spec.rb'
 - './spec/requests/api/feature_flags_user_lists_spec.rb'

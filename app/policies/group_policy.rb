@@ -163,6 +163,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_achievement
   end
 
+  rule { can?(:owner_access) & achievements_enabled }.policy do
+    enable :destroy_user_achievement
+  end
+
   rule { ~public_group & ~has_access }.prevent :read_counts
 
   rule { ~can_read_group_member }.policy do

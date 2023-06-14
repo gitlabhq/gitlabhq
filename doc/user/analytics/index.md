@@ -33,6 +33,8 @@ GitLab provides several analytics features at the group level. Some of these fea
 
 You can use GitLab to review analytics at the project level. Some of these features require you to use a higher tier than GitLab Free.
 
+- [Analytics dashboards](analytics_dashboards.md), enabled with the `combined_analytics_dashboards_editor`
+  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Application Security](../application_security/security_dashboard/index.md)
 - [CI/CD & DORA](ci_cd_analytics.md)
 - [Code Review](code_review_analytics.md)

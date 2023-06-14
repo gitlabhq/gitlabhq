@@ -420,7 +420,7 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
 This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
 with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
-will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 The configuration arguments disabled for authentication tokens are:
 
@@ -576,7 +576,7 @@ we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org
 </div>
 
 The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-be removed in GitLab 17.0.
+return the HTTP `410 Gone` status code in GitLab 17.0.
 The deprecated endpoints are:
 
 - `POST /runners/reset_registration_token`

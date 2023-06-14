@@ -54,7 +54,7 @@ The following migration helpers are available in `ee/app/workers/concerns/elasti
 
 Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
 
-Requires the `index_name` and `field_name` methods.
+Requires the `index_name` and `field_name` methods to backfill a single field.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -68,6 +68,24 @@ class MigrationName < Elastic::Migration
 
   def field_name
     :schema_version
+  end
+end
+```
+
+Requires the `index_name` and `field_names` methods to backfill multiple fields if any field is null.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationBackfillHelper
+
+  private
+
+  def index_name
+    Issue.__elasticsearch__.index_name
+  end
+
+  def field_names
+    %w[schema_version visibility_level]
   end
 end
 ```

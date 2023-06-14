@@ -10,6 +10,7 @@ import {
   GROUP_TYPE,
   PROJECT_TYPE,
   RUNNER_MANAGERS_HELP_URL,
+  I18N_STATUS_NEVER_CONTACTED,
 } from '../constants';
 import RunnerDetail from './runner_detail.vue';
 import RunnerGroups from './runner_groups.vue';
@@ -85,6 +86,7 @@ export default {
   },
   ACCESS_LEVEL_REF_PROTECTED,
   RUNNER_MANAGERS_HELP_URL,
+  I18N_STATUS_NEVER_CONTACTED,
 };
 </script>
 
@@ -99,7 +101,7 @@ export default {
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"
-          :empty-value="s__('Runners|Never contacted')"
+          :empty-value="$options.I18N_STATUS_NEVER_CONTACTED"
         >
           <template v-if="runner.contactedAt" #value>
             <time-ago :time="runner.contactedAt" />

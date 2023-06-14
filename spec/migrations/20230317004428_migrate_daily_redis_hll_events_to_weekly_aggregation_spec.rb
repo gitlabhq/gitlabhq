@@ -15,29 +15,29 @@ RSpec.describe MigrateDailyRedisHllEventsToWeeklyAggregation, :migration, :clean
 
     context 'with daily aggregation' do
       let(:date_formatted) { date.strftime('%G-%j') }
-      let(:event) { { aggregation: 'daily', name: 'wiki_action' } }
+      let(:event) { { name: 'g_edit_by_web_ide' } }
 
       it 'returns correct key' do
-        existing_key = "#{date_formatted}-{hll_counters}_wiki_action"
+        existing_key = "#{date_formatted}-{hll_counters}_g_edit_by_web_ide"
 
-        expect(described_class.new.redis_key(event, date, event[:aggregation])).to eq(existing_key)
+        expect(described_class.new.redis_key(event, date, :daily)).to eq(existing_key)
       end
     end
 
     context 'with weekly aggregation' do
       let(:date_formatted) { date.strftime('%G-%V') }
-      let(:event) { { aggregation: 'weekly', name: 'weekly_action' } }
+      let(:event) { { name: 'weekly_action' } }
 
       it 'returns correct key' do
         existing_key = "{hll_counters}_weekly_action-#{date_formatted}"
 
-        expect(described_class.new.redis_key(event, date, event[:aggregation])).to eq(existing_key)
+        expect(described_class.new.redis_key(event, date, :weekly)).to eq(existing_key)
       end
     end
   end
 
   context 'with weekly events' do
-    let(:events) { [{ aggregation: 'weekly', name: 'weekly_action' }] }
+    let(:events) { [{ name: 'weekly_action' }] }
 
     before do
       allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_events).and_return(events)
@@ -55,13 +55,12 @@ RSpec.describe MigrateDailyRedisHllEventsToWeeklyAggregation, :migration, :clean
 
   context 'with daily events' do
     let(:daily_expiry) { 29.days }
-    let(:weekly_expiry) { Gitlab::UsageDataCounters::HLLRedisCounter::DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH }
+    let(:weekly_expiry) { Gitlab::UsageDataCounters::HLLRedisCounter::KEY_EXPIRY_LENGTH }
 
     it 'migrates with correct parameters', :aggregate_failures do
-      events = [{ aggregation: 'daily', name: 'g_project_management_epic_blocked_removed' }]
-      allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_events).and_return(events)
+      event = { name: 'g_project_management_epic_blocked_removed' }
+      allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_events).and_return([event])
 
-      event = events.first.dup.tap { |e| e[:aggregation] = 'weekly' }
       # For every day in the last 30 days, add a value to the daily key with daily expiry (including today)
       31.times do |i|
         key = described_class.new.send(:redis_key, event, Date.today - i.days, :weekly)

@@ -6,6 +6,12 @@ query getRunnerManagers($runnerId: CiRunnerID!) {
       nodes {
         id
         systemId
+        version
+        revision
+        executorName
+        architectureName
+        platformName
+        ipAddress
         contactedAt
       }
     }

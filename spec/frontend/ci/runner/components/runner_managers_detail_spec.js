@@ -2,16 +2,12 @@ import { GlCollapse, GlSkeletonLoader, GlTableLite } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { __ } from '~/locale';
-import {
-  shallowMountExtended,
-  mountExtended,
-  extendedWrapper,
-} from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import RunnerManagersDetail from '~/ci/runner/components/runner_managers_detail.vue';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import RunnerManagersTable from '~/ci/runner/components/runner_managers_table.vue';
 
 import runnerManagersQuery from '~/ci/runner/graphql/show/runner_managers.query.graphql';
 import { runnerData, runnerManagersData } from '../mock_data';
@@ -33,8 +29,7 @@ describe('RunnerJobs', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findCollapse = () => wrapper.findComponent(GlCollapse);
-  const findRows = () => wrapper.findAll('tbody tr');
-  const findCell = ({ field, i }) => extendedWrapper(findRows().at(i)).findByTestId(`td-${field}`);
+  const findRunnerManagersTable = () => wrapper.findComponent(RunnerManagersTable);
 
   const createComponent = ({ props, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerManagersDetail, {
@@ -162,21 +157,7 @@ describe('RunnerJobs', () => {
 
     it('shows rows', () => {
       expect(findCollapse().attributes('visible')).toBe('true');
-      expect(findRows()).toHaveLength(mockRunnerManagers.length);
-    });
-
-    it('shows system id', () => {
-      expect(findCell({ field: 'systemId', i: 0 }).text()).toBe(mockRunnerManagers[0].systemId);
-      expect(findCell({ field: 'systemId', i: 1 }).text()).toBe(mockRunnerManagers[1].systemId);
-    });
-
-    it('shows contacted at', () => {
-      expect(findCell({ field: 'contactedAt', i: 0 }).findComponent(TimeAgo).props('time')).toBe(
-        mockRunnerManagers[0].contactedAt,
-      );
-      expect(findCell({ field: 'contactedAt', i: 1 }).findComponent(TimeAgo).props('time')).toBe(
-        mockRunnerManagers[1].contactedAt,
-      );
+      expect(findRunnerManagersTable().props('items')).toEqual(mockRunnerManagers);
     });
 
     it('collapses when clicked', async () => {

@@ -4043,7 +4043,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/metrics/web_transaction_spec.rb'
     - 'spec/lib/gitlab/metrics_spec.rb'
     - 'spec/lib/gitlab/middleware/basic_health_check_spec.rb'
-    - 'spec/lib/gitlab/middleware/compressed_json_spec.rb'
     - 'spec/lib/gitlab/middleware/handle_ip_spoof_attack_error_spec.rb'
     - 'spec/lib/gitlab/middleware/handle_malformed_strings_spec.rb'
     - 'spec/lib/gitlab/middleware/memory_report_spec.rb'

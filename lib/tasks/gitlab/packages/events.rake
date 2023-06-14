@@ -45,10 +45,7 @@ namespace :gitlab do
         events = event_pairs.each_with_object([]) do |(event_type, event_scope), events|
           Packages::Event::ORIGINATOR_TYPES.excluding(:guest).each do |originator_type|
             events_definition = Packages::Event.unique_counters_for(event_scope, event_type, originator_type).map do |event_name|
-              {
-                "name" => event_name,
-                "aggregation" => "weekly"
-              }
+              { "name" => event_name }
             end
 
             events.concat(events_definition)

@@ -6755,6 +6755,29 @@ Input type: `UploadDeleteInput`
 | <a id="mutationuploaddeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuploaddeleteupload"></a>`upload` | [`FileUpload`](#fileupload) | Deleted upload. |
 
+### `Mutation.userAchievementsDelete`
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UserAchievementsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuserachievementsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuserachievementsdeleteuserachievementid"></a>`userAchievementId` | [`AchievementsUserAchievementID!`](#achievementsuserachievementid) | Global ID of the user achievement being deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuserachievementsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuserachievementsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationuserachievementsdeleteuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Deleted user achievement. |
+
 ### `Mutation.userCalloutCreate`
 
 Input type: `UserCalloutCreateInput`

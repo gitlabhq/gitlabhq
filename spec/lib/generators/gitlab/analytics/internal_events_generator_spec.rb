@@ -280,7 +280,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
   describe 'Creating known event entry' do
     let(:time_frames) { %w[7d 28d] }
-    let(:expected_known_events) { [{ "name" => event, "aggregation" => "weekly" }] }
+    let(:expected_known_events) { [{ "name" => event }] }
 
     it 'creates a metric definition file using the template' do
       described_class.new([], options).invoke_all

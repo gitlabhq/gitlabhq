@@ -428,7 +428,6 @@ Style/GuardClause:
     - 'ee/spec/support/ci/minutes_helpers.rb'
     - 'haml_lint/linter/documentation_links.rb'
     - 'lib/api/commits.rb'
-    - 'lib/api/error_tracking/collector.rb'
     - 'lib/api/feature_flags.rb'
     - 'lib/api/helpers.rb'
     - 'lib/api/helpers/packages/conan/api_helpers.rb'

@@ -1,13 +1,12 @@
 <script>
-import { GlCollapse, GlButton, GlIcon, GlSkeletonLoader, GlTableLite } from '@gitlab/ui';
-import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { GlCollapse, GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { __, s__, formatNumber } from '~/locale';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { createAlert } from '~/alert';
 import runnerManagersQuery from '../graphql/show/runner_managers.query.graphql';
 import { I18N_FETCH_ERROR } from '../constants';
 import { captureException } from '../sentry_utils';
 import { tableField } from '../utils';
+import RunnerManagersTable from './runner_managers_table.vue';
 
 export default {
   name: 'RunnerManagersDetail',
@@ -16,9 +15,7 @@ export default {
     GlButton,
     GlIcon,
     GlSkeletonLoader,
-    GlTableLite,
-    TimeAgo,
-    HelpPopover,
+    RunnerManagersTable,
   },
   props: {
     runner: {
@@ -108,20 +105,7 @@ export default {
 
     <gl-collapse :visible="expanded" class="gl-mt-5">
       <gl-skeleton-loader v-if="loading" />
-      <gl-table-lite v-else-if="managers.length" :fields="$options.fields" :items="managers">
-        <template #head(systemId)="{ label }">
-          {{ label }}
-          <help-popover>
-            {{ s__('Runners|The unique ID for each runner that uses this configuration.') }}
-          </help-popover>
-        </template>
-        <template #cell(contactedAt)="{ item = {} }">
-          <template v-if="item.contactedAt">
-            <time-ago :time="item.contactedAt" />
-          </template>
-          <template v-else>{{ s__('Runners|Never contacted') }}</template>
-        </template>
-      </gl-table-lite>
+      <runner-managers-table v-else-if="managers.length" :items="managers" />
     </gl-collapse>
   </div>
 </template>

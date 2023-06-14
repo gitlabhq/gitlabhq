@@ -114,7 +114,6 @@ module Gitlab
       def known_event_entry
         <<~YML
         - name: #{event}
-          aggregation: weekly
         YML
       end
 

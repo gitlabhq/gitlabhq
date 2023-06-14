@@ -100,7 +100,7 @@ A major goal is that each member of a development team should have the same deve
 
 A workspace should allow access to an existing development environment from multiple machines and locations across a single or multiple teams. It should also allow a user to make use of tools or runtimes not available on their local OS or manage multiple versions of them.
 
-Additionally, remote development workspaces could provide a way to implement disaster recovery if we are able to leverage the capabilities of [Cells](../../../architecture/blueprints/pods/index.md).
+Additionally, remote development workspaces could provide a way to implement disaster recovery if we are able to leverage the capabilities of [Cells](../../../architecture/blueprints/cells/index.md).
 
 ### Scalability
 

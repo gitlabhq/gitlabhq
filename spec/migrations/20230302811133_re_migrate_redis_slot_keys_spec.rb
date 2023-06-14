@@ -10,17 +10,13 @@ RSpec.describe ReMigrateRedisSlotKeys, :migration, feature_category: :service_pi
     [
       {
         redis_slot: 'management',
-        aggregation: 'daily',
         name: 'g_project_management_epic_closed'
       }, {
-        aggregation: 'weekly',
-        name: 'incident_management_incident_assigned'
+        name: 'incident_management_incident_assigned' # weekly event
       },
       {
-        aggregation: 'weekly',
         name: 'non_existing_event'
       }, {
-        aggregation: 'weekly',
         name: 'event_without_expiry'
       }
     ]
@@ -32,7 +28,7 @@ RSpec.describe ReMigrateRedisSlotKeys, :migration, feature_category: :service_pi
                                                              .and_return(known_events)
 
       expiry_daily = 29.days
-      expiry_weekly = Gitlab::UsageDataCounters::HLLRedisCounter::DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH
+      expiry_weekly = described_class::KEY_EXPIRY_LENGTH
 
       default_slot = Gitlab::UsageDataCounters::HLLRedisCounter::REDIS_SLOT
 

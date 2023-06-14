@@ -25,7 +25,7 @@ If you are unfamiliar with the command line, use the
 <!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **Upload file**.
 1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.

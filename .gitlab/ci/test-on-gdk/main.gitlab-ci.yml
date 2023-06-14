@@ -51,9 +51,9 @@ variables:
     - echo "$(docker exec gdk bash -c "getent hosts \$HOSTNAME" | awk '{print $1}') gdk.test" >> /etc/hosts
     - source scripts/utils.sh
     - cd qa && bundle install
+  script:
     - retry_exponential test_url ${GDK_URL}/users/sign_in
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
-  script:
     - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
     - QA_COMMAND="bundle exec bin/qa Test::Instance::All ${GDK_URL} -- ${RSPEC_TAGS} ${RSPEC_REPORT_OPTS}"
     - echo "Running - '${QA_COMMAND}'"
@@ -87,6 +87,21 @@ cache-gems:
   script:
     - cd qa && bundle install
 
+# Take the existing GDK docker image and reconfigure it with Postgres load
+# balancing. Adding 5s lag to 1 of the replicas to validate robustness of
+# the load balancer.
+.gdk-with-load-balancer-setup:
+  before_script:
+    - !reference [".gdk-qa-base", "before_script"]
+    - |
+      docker exec gdk bash -c "
+        gdk config set postgresql.replica.enabled true &&\
+        gdk config set postgresql.replica_2.enabled true &&\
+        gdk config set load_balancing.enabled true &&\
+        gdk reconfigure &&\
+        echo 'recovery_min_apply_delay = 5s' >> postgresql-replica-2/data/postgresql.conf &&\
+        gdk restart"
+
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
@@ -96,6 +111,19 @@ gdk-qa-smoke:
     RSPEC_TAGS: --tag smoke
   rules:
     - when: always
+
+gdk-qa-smoke-with-load-balancer:
+  extends:
+    - .gdk-qa-base
+    - .gdk-with-load-balancer-setup
+  variables:
+    TEST_GDK_TAGS: "--tag smoke"
+    QA_RUN_TYPE: gdk-qa-smoke
+    RSPEC_TAGS: --tag smoke
+  rules:
+    - changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
 
 # TODO: set non manual once smoke tests prove to be stable
 gdk-qa-reliable:
@@ -109,6 +137,21 @@ gdk-qa-reliable:
   allow_failure: true
   rules:
     - when: manual
+
+gdk-qa-reliable-with-load-balancer:
+  extends:
+    - .gdk-qa-base
+    - .gdk-with-load-balancer-setup
+  parallel: 5
+  variables:
+    QA_RUN_TYPE: gdk-qa-blocking
+    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    RSPEC_TAGS: --tag smoke --tag reliable
+  allow_failure: true
+  rules:
+    - changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
 
 gdk-qa-non-blocking:
   extends:

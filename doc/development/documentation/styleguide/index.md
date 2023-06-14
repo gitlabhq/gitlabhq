@@ -961,20 +961,20 @@ To open either project or group settings:
 
 ```markdown
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 ```
 
 To open the Admin Area:
@@ -997,6 +997,20 @@ To save the selection in some dropdown lists:
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
 1. Select any area outside the dropdown list.
+```
+
+To view all your projects:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
+```
+
+To view all your groups:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
 ```
 
 ### Optional steps
@@ -1029,7 +1043,7 @@ Use the phrase **Complete the fields**.
 For example:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
 

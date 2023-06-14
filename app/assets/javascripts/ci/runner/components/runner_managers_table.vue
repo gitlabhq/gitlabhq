@@ -4,6 +4,7 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { tableField } from '../utils';
+import { I18N_STATUS_NEVER_CONTACTED } from '../constants';
 
 export default {
   name: 'RunnerManagersTable',
@@ -20,13 +21,6 @@ export default {
       default: () => [],
     },
   },
-  data() {
-    return {
-      skip: true,
-      expanded: false,
-      managers: [],
-    };
-  },
   fields: [
     tableField({ key: 'systemId', label: s__('Runners|System ID') }),
     tableField({ key: 'version', label: s__('Runners|Version') }),
@@ -40,6 +34,7 @@ export default {
       thClasses: ['gl-text-right'],
     }),
   ],
+  I18N_STATUS_NEVER_CONTACTED,
 };
 </script>
 
@@ -65,7 +60,7 @@ export default {
       <template v-if="item.contactedAt">
         <time-ago :time="item.contactedAt" />
       </template>
-      <template v-else>{{ s__('Runners|Never contacted') }}</template>
+      <template v-else>{{ $options.I18N_STATUS_NEVER_CONTACTED }}</template>
     </template>
   </gl-table-lite>
 </template>

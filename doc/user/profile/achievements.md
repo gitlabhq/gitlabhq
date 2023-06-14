@@ -202,6 +202,36 @@ mutation {
 }
 ```
 
+## Delete an awarded achievement
+
+If you awarded an achievement to a user by mistake, you can delete it.
+
+Prerequisites:
+
+- You must have the Owner role for the namespace.
+
+To delete an awarded achievement, call the [`userAchievementsDelete` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsdelete).
+
+```graphql
+mutation {
+  userAchievementsDelete(input: {
+    userAchievementId: "gid://gitlab/Achievements::UserAchievement/<user achievement id>" }) {
+    userAchievement {
+      id
+      achievement {
+        id
+        name
+      }
+      user {
+        id
+        username
+      }
+    }
+    errors
+  }
+}
+```
+
 ## Delete an achievement
 
 If you consider you no longer need an achievement, you can delete it.

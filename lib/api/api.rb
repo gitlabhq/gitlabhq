@@ -182,6 +182,7 @@ module API
         mount ::API::Admin::BatchedBackgroundMigrations
         mount ::API::Admin::Ci::Variables
         mount ::API::Admin::InstanceClusters
+        mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
@@ -327,7 +328,6 @@ module API
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::SecureFiles
       mount ::API::Discussions
-      mount ::API::ErrorTracking::Collector
       mount ::API::GroupBoards
       mount ::API::GroupLabels
       mount ::API::GroupMilestones

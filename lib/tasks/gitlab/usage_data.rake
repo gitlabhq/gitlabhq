@@ -85,12 +85,13 @@ namespace :gitlab do
       end
     end
 
+    # rubocop:disable Gitlab/NoCodeCoverageComment
+    # :nocov: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/299453
     def ci_template_event(event_name)
-      {
-        'name' => event_name,
-        'aggregation' => 'weekly'
-      }
+      { 'name' => event_name }
     end
+    # :nocov:
+    # rubocop:enable Gitlab/NoCodeCoverageComment
 
     def implicit_auto_devops_event(expanded_template_name)
       event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :auto_devops_source)

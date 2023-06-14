@@ -29,8 +29,9 @@ cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section, where you can configure both.
 
 If you want 2FA enforcement to take effect during the next sign-in attempt,
@@ -55,8 +56,8 @@ Prerequisites:
 
 To enforce 2FA only for certain groups:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Select **All users in this group must set up two-factor authentication**.
 1. Select **Save changes**.

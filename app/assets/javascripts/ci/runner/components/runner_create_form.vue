@@ -4,7 +4,13 @@ import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { captureException } from '../sentry_utils';
-import { RUNNER_TYPES, DEFAULT_ACCESS_LEVEL, PROJECT_TYPE, GROUP_TYPE } from '../constants';
+import {
+  RUNNER_TYPES,
+  DEFAULT_ACCESS_LEVEL,
+  PROJECT_TYPE,
+  GROUP_TYPE,
+  I18N_CREATE_ERROR,
+} from '../constants';
 
 export default {
   name: 'RunnerCreateForm',
@@ -82,16 +88,29 @@ export default {
         });
 
         if (errors?.length) {
-          this.$emit('error', new Error(errors.join(' ')));
-          this.saving = false;
-        } else {
-          this.onSuccess(runner);
+          this.onError(new Error(errors.join(' ')), true);
+          return;
         }
+
+        if (!runner?.ephemeralRegisterUrl) {
+          // runner is missing information, report issue and
+          // fail naviation to register page.
+          this.onError(new Error(I18N_CREATE_ERROR));
+          return;
+        }
+
+        this.onSuccess(runner);
       } catch (error) {
-        captureException({ error, component: this.$options.name });
-        this.$emit('error', error);
-        this.saving = false;
+        this.onError(error);
       }
+    },
+    onError(error, isValidationError = false) {
+      if (!isValidationError) {
+        captureException({ error, component: this.$options.name });
+      }
+
+      this.$emit('error', error);
+      this.saving = false;
     },
     onSuccess(runner) {
       this.$emit('saved', runner);

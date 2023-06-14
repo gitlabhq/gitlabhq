@@ -1762,6 +1762,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify { is_expected.to be_allowed(:read_achievement) }
     specify { is_expected.to be_allowed(:admin_achievement) }
     specify { is_expected.to be_allowed(:award_achievement) }
+    specify { is_expected.to be_allowed(:destroy_user_achievement) }
 
     context 'with feature flag disabled' do
       before do
@@ -1771,12 +1772,19 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify { is_expected.to be_disallowed(:read_achievement) }
       specify { is_expected.to be_disallowed(:admin_achievement) }
       specify { is_expected.to be_disallowed(:award_achievement) }
+      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
 
     context 'when current user can not see the group' do
       let(:current_user) { non_group_member }
 
       specify { is_expected.to be_allowed(:read_achievement) }
+    end
+
+    context 'when current user is not an owner' do
+      let(:current_user) { maintainer }
+
+      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
   end
 

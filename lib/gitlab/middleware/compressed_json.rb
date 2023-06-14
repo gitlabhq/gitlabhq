@@ -3,7 +3,6 @@
 module Gitlab
   module Middleware
     class CompressedJson
-      COLLECTOR_PATH = '/api/v4/error_tracking/collector'
       INSTANCE_PACKAGES_PATH = %r{
         \A/api/v4/packages/npm/-/npm/v1/security/
         (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
@@ -79,8 +78,7 @@ module Gitlab
       end
 
       def match_path?(env)
-        env['PATH_INFO'].start_with?((File.join(relative_url, COLLECTOR_PATH))) ||
-          match_packages_path?(env)
+        match_packages_path?(env)
       end
 
       def match_packages_path?(env)
