@@ -314,8 +314,6 @@ Dangerfile
 /ee/spec/lib/ee/api/entities/experiment_spec.rb
 
 ^[Growth] @gitlab-org/growth/engineers
-/ee/app/workers/onboarding/
-/ee/spec/workers/onboarding/
 /app/models/onboarding/
 /spec/models/onboarding/
 /app/services/onboarding/

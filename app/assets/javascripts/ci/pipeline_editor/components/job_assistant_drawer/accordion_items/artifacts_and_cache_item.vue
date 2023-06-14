@@ -96,6 +96,7 @@ export default {
           category="tertiary"
           icon="remove"
           :data-testid="entry.generateDeleteButtonDataTestId(index)"
+          :aria-label="entry.generateDeleteButtonDataTestId(index)"
           @click="deleteStringArrayItem(`${entry.key}[${index}]`)"
         />
       </div>

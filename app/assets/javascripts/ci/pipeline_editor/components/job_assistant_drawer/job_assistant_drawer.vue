@@ -5,6 +5,7 @@ import { get, omit, toPath } from 'lodash';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
+import { EDITOR_APP_DRAWER_NONE } from '~/ci/pipeline_editor/constants';
 import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
 import { JOB_TEMPLATE, JOB_RULES_WHEN, i18n } from './constants';
 import { removeEmptyObj, trimFields, validateEmptyValue, validateStartIn } from './utils';
@@ -101,7 +102,7 @@ export default {
   methods: {
     closeDrawer() {
       this.clearJob();
-      this.$emit('close-job-assistant-drawer');
+      this.$emit('switch-drawer', EDITOR_APP_DRAWER_NONE);
     },
     addCiConfig() {
       this.validateJob();

@@ -20,6 +20,7 @@ const createState = ({ query, navigation, useSidebarNavigation }) => ({
     fetching: false,
     data: [],
   },
+  searchLabelString: '',
 });
 
 export default createState;

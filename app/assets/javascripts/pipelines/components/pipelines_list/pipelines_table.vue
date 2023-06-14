@@ -219,7 +219,11 @@ export default {
       </template>
 
       <template #row-details="{ item }">
-        <pipeline-failed-jobs-widget v-if="showFailedJobsWidget(item)" :pipeline-path="item.path" />
+        <pipeline-failed-jobs-widget
+          v-if="showFailedJobsWidget(item)"
+          :pipeline-iid="item.iid"
+          :pipeline-path="item.path"
+        />
       </template>
     </gl-table-lite>
 

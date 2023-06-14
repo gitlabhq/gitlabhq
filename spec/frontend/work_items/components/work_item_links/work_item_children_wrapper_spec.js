@@ -39,17 +39,26 @@ describe('WorkItemChildrenWrapper', () => {
     children = childrenWorkItems,
     mutationHandler = updateWorkItemMutationHandler,
   } = {}) => {
+    const mockApollo = createMockApollo([
+      [workItemByIidQuery, getWorkItemQueryHandler],
+      [updateWorkItemMutation, mutationHandler],
+    ]);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: workItemByIidQuery,
+      variables: { fullPath: 'test/project', iid: '1' },
+      data: workItemByIidResponseFactory().data,
+    });
+
     wrapper = shallowMountExtended(WorkItemChildrenWrapper, {
-      apolloProvider: createMockApollo([
-        [workItemByIidQuery, getWorkItemQueryHandler],
-        [updateWorkItemMutation, mutationHandler],
-      ]),
+      apolloProvider: mockApollo,
       provide: {
         fullPath: 'test/project',
       },
       propsData: {
         workItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
+        workItemIid: '1',
         confidential,
         children,
       },

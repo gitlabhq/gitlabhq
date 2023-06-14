@@ -5,6 +5,7 @@ import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
+import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
 import {
@@ -108,8 +109,22 @@ export const applyQuery = ({ state }) => {
 
 export const resetQuery = ({ state }) => {
   visitUrl(
-    setUrlParams({ ...state.query, page: null, state: null, confidential: null }, undefined, true),
+    setUrlParams(
+      { ...state.query, page: null, state: null, confidential: null, labels: null },
+      undefined,
+      true,
+    ),
   );
+};
+
+export const closeLabel = ({ state, commit }, { key }) => {
+  const labels = state?.query?.labels.filter((labelKey) => labelKey !== key);
+
+  setQuery({ state, commit }, { key: labelFilterData.filterParam, value: labels });
+};
+
+export const setLabelFilterSearch = ({ commit }, { value }) => {
+  commit(types.SET_LABEL_SEARCH_STRING, value);
 };
 
 export const resetLanguageQueryWithRedirect = ({ state }) => {

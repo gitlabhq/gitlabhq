@@ -103,18 +103,6 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
 
         expect(node[:href]).to be_nil
       end
-
-      context 'when feature flag "normalize_links_for_sanitizing" is disabled' do
-        before do
-          stub_feature_flags(normalize_links_for_sanitizing: false)
-        end
-
-        it 'does not remove it' do
-          subject
-
-          expect(node[:href]).to eq('http://example%EF%BC%9A%E7%BD%91')
-        end
-      end
     end
   end
 

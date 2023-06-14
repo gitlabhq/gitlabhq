@@ -1295,6 +1295,64 @@ Example response:
 }
 ```
 
+### Create Personal Access Token for Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+```plaintext
+POST /groups/:id/service_accounts/:user_id/personal_access_tokens
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
+```
+
+Example response:
+
+```json
+{
+  "id":6,
+  "name":"service_accounts_token",
+  "revoked":false,
+  "created_at":"2023-06-13T07:47:13.900Z",
+  "scopes":["api"],
+  "user_id":71,
+  "last_used_at":null,
+  "active":true,
+  "expires_at":"2024-06-12",
+  "token":"<token_value>"
+}
+```
+
+### Rotate a Personal Access Token for Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+```plaintext
+POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
+```
+
+Example response:
+
+```json
+{
+  "id":7,
+  "name":"service_accounts_token",
+  "revoked":false,
+  "created_at":"2023-06-13T07:54:49.962Z",
+  "scopes":["api"],
+  "user_id":71,
+  "last_used_at":null,
+  "active":true,
+  "expires_at":"2023-06-20",
+  "token":"<token_value>"
+}
+```
+
 ## Hooks **(PREMIUM)**
 
 Also called Group Hooks and Webhooks.

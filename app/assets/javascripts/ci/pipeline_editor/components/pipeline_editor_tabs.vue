@@ -87,11 +87,7 @@ export default {
       type: String,
       required: true,
     },
-    isNewCiConfigFile: {
-      type: Boolean,
-      required: true,
-    },
-    showDrawer: {
+    showHelpDrawer: {
       type: Boolean,
       required: true,
     },
@@ -100,6 +96,10 @@ export default {
       required: true,
     },
     showAiAssistantDrawer: {
+      type: Boolean,
+      required: true,
+    },
+    isNewCiConfigFile: {
       type: Boolean,
       required: true,
     },
@@ -196,7 +196,7 @@ export default {
     >
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
-        :show-drawer="showDrawer"
+        :show-help-drawer="showHelpDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
         :show-ai-assistant-drawer="showAiAssistantDrawer"
         v-on="$listeners"

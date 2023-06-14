@@ -3,7 +3,14 @@ import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { pipelineEditorTrackingOptions, TEMPLATE_REPOSITORY_URL } from '../../constants';
+import {
+  EDITOR_APP_DRAWER_AI_ASSISTANT,
+  EDITOR_APP_DRAWER_HELP,
+  EDITOR_APP_DRAWER_JOB_ASSISTANT,
+  EDITOR_APP_DRAWER_NONE,
+  pipelineEditorTrackingOptions,
+  TEMPLATE_REPOSITORY_URL,
+} from '../../constants';
 
 export default {
   i18n: {
@@ -19,7 +26,7 @@ export default {
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   inject: ['aiChatAvailable'],
   props: {
-    showDrawer: {
+    showHelpDrawer: {
       type: Boolean,
       required: true,
     },
@@ -38,22 +45,24 @@ export default {
     },
   },
   methods: {
-    toggleDrawer() {
-      if (this.showDrawer) {
-        this.$emit('close-drawer');
+    toggleHelpDrawer() {
+      if (this.showHelpDrawer) {
+        this.$emit('switch-drawer', EDITOR_APP_DRAWER_NONE);
       } else {
-        this.$emit('open-drawer');
+        this.$emit('switch-drawer', EDITOR_APP_DRAWER_HELP);
         this.trackHelpDrawerClick();
       }
     },
     toggleJobAssistantDrawer() {
       this.$emit(
-        this.showJobAssistantDrawer ? 'close-job-assistant-drawer' : 'open-job-assistant-drawer',
+        'switch-drawer',
+        this.showJobAssistantDrawer ? EDITOR_APP_DRAWER_NONE : EDITOR_APP_DRAWER_JOB_ASSISTANT,
       );
     },
     toggleAiAssistantDrawer() {
       this.$emit(
-        this.showAiAssistantDrawer ? 'close-ai-assistant-drawer' : 'open-ai-assistant-drawer',
+        'switch-drawer',
+        this.showAiAssistantDrawer ? EDITOR_APP_DRAWER_NONE : EDITOR_APP_DRAWER_AI_ASSISTANT,
       );
     },
     trackHelpDrawerClick() {
@@ -90,7 +99,7 @@ export default {
       size="small"
       data-testid="drawer-toggle"
       data-qa-selector="drawer_toggle"
-      @click="toggleDrawer"
+      @click="toggleHelpDrawer"
     >
       {{ $options.i18n.help }}
     </gl-button>

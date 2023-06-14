@@ -31,6 +31,7 @@ import {
   MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION,
   MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION,
   MOCK_AGGREGATIONS,
+  MOCK_LABEL_AGGREGATIONS,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -345,6 +346,51 @@ describe('Global Search Store Actions', () => {
         [{ type: types.SET_QUERY, payload: { key: 'language', value: [] } }],
         [],
       );
+    });
+  });
+
+  describe('closeLabel', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        aggregations: MOCK_LABEL_AGGREGATIONS,
+      });
+    });
+
+    it('removes correct labels from query and sets sidebar dirty', () => {
+      const expectedResult = [
+        {
+          payload: {
+            key: 'labels',
+            value: ['37'],
+          },
+          type: 'SET_QUERY',
+        },
+        {
+          payload: true,
+          type: 'SET_SIDEBAR_DIRTY',
+        },
+      ];
+      return testAction(actions.closeLabel, { key: '60' }, state, expectedResult, []);
+    });
+  });
+
+  describe('setLabelFilterSearch', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        aggregations: MOCK_LABEL_AGGREGATIONS,
+      });
+    });
+
+    it('sets search string', () => {
+      const expectedResult = [
+        {
+          payload: 'test',
+          type: 'SET_LABEL_SEARCH_STRING',
+        },
+      ];
+      return testAction(actions.setLabelFilterSearch, { value: 'test' }, state, expectedResult, []);
     });
   });
 });

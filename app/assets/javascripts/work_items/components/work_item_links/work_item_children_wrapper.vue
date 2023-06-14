@@ -10,8 +10,7 @@ import { defaultSortableOptions } from '~/sortable/constants';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
-import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
-import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
+import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
@@ -84,16 +83,12 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: null } } },
+          update: (cache) => removeHierarchyChild(cache, this.fullPath, this.workItemIid, child),
         });
 
         if (data.workItemUpdate.errors.length) {
           throw new Error(data.workItemUpdate.errors);
         }
-
-        await this.$apollo.mutate({
-          mutation: removeHierarchyChildMutation,
-          variables: { fullPath: this.fullPath, iid: this.workItemIid, workItem: child },
-        });
 
         this.$toast.show(s__('WorkItem|Child removed'), {
           action: {
@@ -114,16 +109,12 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
+          update: (cache) => addHierarchyChild(cache, this.fullPath, this.workItemIid, child),
         });
 
         if (data.workItemUpdate.errors.length) {
           throw new Error(data.workItemUpdate.errors);
         }
-
-        await this.$apollo.mutate({
-          mutation: addHierarchyChildMutation,
-          variables: { fullPath: this.fullPath, iid: this.workItemIid, workItem: child },
-        });
 
         this.$toast.show(s__('WorkItem|Child removal reverted'));
       } catch (error) {

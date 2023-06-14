@@ -14,7 +14,30 @@ Usage:
 }
 
 /* -------------------------------------------------------
+Monospaced font: GitLab Mono.
+
+Usage:
+  html { font-family: 'GitLab Mono', sans-serif; }
+*/
+@font-face {
+  font-family: 'GitLab Mono';
+  font-display: optional;
+  font-style: normal;
+  src: font-url('gitlab-mono/GitLabMono.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'GitLab Mono';
+  font-display: optional;
+  font-style: italic;
+  src: font-url('gitlab-mono/GitLabMono-Italic.woff2') format('woff2');
+}
+
+/* -------------------------------------------------------
 Monospaced font: JetBrains Mono.
+
+All of the definitions below can be removed once
+`GitLab Mono` is properly rolled out.
 
 Usage:
   html { font-family: 'JetBrains Mono', sans-serif; }
@@ -47,11 +70,6 @@ Usage:
   font-weight: bold;
   font-style: italic;
   src: font-url('jetbrains-mono/JetBrainsMono-BoldItalic.woff2') format('woff2');
-}
-
-:root {
-  --default-mono-font: 'JetBrains Mono', 'Menlo';
-  --default-regular-font: 'GitLab Sans', -apple-system;
 }
 
 // This isn't the best solution, but we needed a quick fix

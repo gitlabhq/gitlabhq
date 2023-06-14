@@ -175,7 +175,7 @@ gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentati
 gem 'elasticsearch-api',   '7.13.3'
 gem 'aws-sdk-core', '~> 3.174.0'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.123.2'
+gem 'aws-sdk-s3', '~> 1.124.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
@@ -516,7 +516,7 @@ gem 'kas-grpc', '~> 0.1.0'
 
 gem 'grpc', '~> 1.42.0'
 
-gem 'google-protobuf', '~> 3.23', '>= 3.23.2'
+gem 'google-protobuf', '~> 3.23', '>= 3.23.3'
 
 gem 'toml-rb', '~> 2.2.0'
 

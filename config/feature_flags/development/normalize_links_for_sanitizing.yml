@@ -1,8 +1,0 @@
----
-name: normalize_links_for_sanitizing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119040
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413779
-milestone: '16.1'
-type: development
-group: group::source code
-default_enabled: false

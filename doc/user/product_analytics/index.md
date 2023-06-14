@@ -99,6 +99,13 @@ Prerequisites:
 1. In the **Connect to your instance** section, enter the configuration values.
 1. Select **Save changes**.
 
+## Instrument a GitLab project
+
+To instrument code to collect data, use one or more of the existing SDKs:
+
+- [Browser SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-browser)
+- [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
+
 ## Product analytics dashboards
 
 > - Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.

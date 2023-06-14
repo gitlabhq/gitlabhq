@@ -53,7 +53,7 @@ module Gitlab
             node[attr] = node[attr].strip
 
             uri = Addressable::URI.parse(node[attr])
-            uri = uri.normalize if ::Feature.enabled?(:normalize_links_for_sanitizing)
+            uri = uri.normalize
 
             next unless uri.scheme
             next if safe_protocol?(uri.scheme)

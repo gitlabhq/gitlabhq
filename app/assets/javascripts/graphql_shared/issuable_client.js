@@ -6,8 +6,6 @@ import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.grap
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { findHierarchyWidgetChildren } from '~/work_items/utils';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export const config = {
@@ -183,30 +181,6 @@ export const config = {
 
 export const resolvers = {
   Mutation: {
-    addHierarchyChild: (_, { fullPath, iid, workItem }, { cache }) => {
-      const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
-      const sourceData = cache.readQuery(queryArgs);
-
-      const data = produce(sourceData, (draftState) => {
-        findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]).push(workItem);
-      });
-
-      cache.writeQuery({ ...queryArgs, data });
-    },
-    removeHierarchyChild: (_, { fullPath, iid, workItem }, { cache }) => {
-      const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
-      const sourceData = cache.readQuery(queryArgs);
-
-      const data = produce(sourceData, (draftState) => {
-        const hierarchyChildren = findHierarchyWidgetChildren(
-          draftState.workspace.workItems.nodes[0],
-        );
-        const index = hierarchyChildren.findIndex((child) => child.id === workItem.id);
-        hierarchyChildren.splice(index, 1);
-      });
-
-      cache.writeQuery({ ...queryArgs, data });
-    },
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
       const data = produce(sourceData, (draftData) => {

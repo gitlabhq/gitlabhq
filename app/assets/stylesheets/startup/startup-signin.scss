@@ -16,10 +16,9 @@ header {
 }
 body {
   margin: 0;
-  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -380,10 +379,9 @@ input.btn-block[type="submit"] {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #fff;
-  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;

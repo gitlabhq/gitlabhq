@@ -11,8 +11,7 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import { __, s__, sprintf } from '~/locale';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import TaskList from '~/task_list';
-import addHierarchyChildMutation from '~/work_items/graphql/add_hierarchy_child.mutation.graphql';
-import removeHierarchyChildMutation from '~/work_items/graphql/remove_hierarchy_child.mutation.graphql';
+import { addHierarchyChild, removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -360,6 +359,8 @@ export default {
               workItemTypeId: this.taskWorkItemTypeId,
             },
           },
+          update: (cache, { data: { workItemCreate } }) =>
+            addHierarchyChild(cache, this.fullPath, String(this.issueIid), workItemCreate.workItem),
         });
 
         const { workItem, errors } = data.workItemCreate;
@@ -367,11 +368,6 @@ export default {
         if (errors?.length) {
           throw new Error(errors);
         }
-
-        await this.$apollo.mutate({
-          mutation: addHierarchyChildMutation,
-          variables: { fullPath: this.fullPath, iid: String(this.issueIid), workItem },
-        });
 
         this.$toast.show(s__('WorkItem|Converted to task'), {
           action: {
@@ -393,18 +389,13 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: deleteWorkItemMutation,
           variables: { input: { id } },
+          update: (cache) =>
+            removeHierarchyChild(cache, this.fullPath, String(this.issueIid), { id }),
         });
 
-        const { errors } = data.workItemDelete;
-
-        if (errors?.length) {
-          throw new Error(errors);
+        if (data.workItemDelete.errors?.length) {
+          throw new Error(data.workItemDelete.errors);
         }
-
-        await this.$apollo.mutate({
-          mutation: removeHierarchyChildMutation,
-          variables: { fullPath: this.fullPath, iid: String(this.issueIid), workItem: { id } },
-        });
 
         this.$toast.show(s__('WorkItem|Task reverted'));
       } catch (error) {

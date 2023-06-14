@@ -74,6 +74,7 @@ export default {
         category="tertiary"
         icon="remove"
         :data-testid="`delete-job-service-button-${index}`"
+        :aria-label="`delete-job-service-button-${index}`"
         @click="deleteService(index)"
       />
       <gl-form-group :label="$options.i18n.SERVICE_NAME">

@@ -43,7 +43,7 @@ module QA
             element :snippet_embed_dropdown
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown/clone_dropdown.vue' do
             element :copy_http_url_button
             element :copy_ssh_url_button
           end

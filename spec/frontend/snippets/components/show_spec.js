@@ -11,7 +11,7 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 
 describe('Snippet view app', () => {

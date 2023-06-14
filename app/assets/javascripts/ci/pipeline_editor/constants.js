@@ -1,5 +1,10 @@
 import { s__ } from '~/locale';
 
+export const EDITOR_APP_DRAWER_HELP = 'HELP';
+export const EDITOR_APP_DRAWER_JOB_ASSISTANT = 'JOB_ASSISTANT';
+export const EDITOR_APP_DRAWER_AI_ASSISTANT = 'AI_ASSISTANT';
+export const EDITOR_APP_DRAWER_NONE = '';
+
 // Values for CI_CONFIG_STATUS_* comes from lint graphQL
 export const CI_CONFIG_STATUS_INVALID = 'INVALID';
 export const CI_CONFIG_STATUS_VALID = 'VALID';

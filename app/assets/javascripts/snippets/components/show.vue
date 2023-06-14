@@ -7,7 +7,7 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
 
 import { getSnippetMixin } from '../mixins/snippets';
 import { markBlobPerformance } from '../utils/blob';

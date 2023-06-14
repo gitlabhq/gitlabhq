@@ -20,7 +20,6 @@ import {
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemByIidResponseFactory,
-  workItemQueryResponse,
   mockWorkItemCommentNote,
 } from '../../mock_data';
 
@@ -135,24 +134,6 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(false);
-    });
-
-    it('adds work item child from the form', async () => {
-      const workItem = {
-        ...workItemQueryResponse.data.workItem,
-        id: 'gid://gitlab/WorkItem/11',
-      };
-      await createComponent();
-      findToggleFormDropdown().vm.$emit('click');
-      findToggleCreateFormButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
-
-      findAddLinksForm().vm.$emit('addWorkItemChild', workItem);
-      await waitForPromises();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(5);
     });
   });
 

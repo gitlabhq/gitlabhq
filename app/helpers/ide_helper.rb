@@ -8,8 +8,8 @@ module IdeHelper
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
       'user-preferences-path' => profile_preferences_path,
-      'editor-font-src-url' => font_url('jetbrains-mono/JetBrainsMono.woff2'),
-      'editor-font-family' => 'JetBrains Mono',
+      'editor-font-src-url' => font_url('gitlab-mono/GitLabMono.woff2'),
+      'editor-font-family' => 'GitLab Mono',
       'editor-font-format' => 'woff2'
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
 

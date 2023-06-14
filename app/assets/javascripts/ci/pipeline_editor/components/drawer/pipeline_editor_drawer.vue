@@ -3,6 +3,7 @@ import { GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
+import { EDITOR_APP_DRAWER_NONE } from '~/ci/pipeline_editor/constants';
 import FirstPipelineCard from './cards/first_pipeline_card.vue';
 import GettingStartedCard from './cards/getting_started_card.vue';
 import PipelineConfigReferenceCard from './cards/pipeline_config_reference_card.vue';
@@ -41,7 +42,7 @@ export default {
   },
   methods: {
     closeDrawer() {
-      this.$emit('close-drawer');
+      this.$emit('switch-drawer', EDITOR_APP_DRAWER_NONE);
     },
   },
 };

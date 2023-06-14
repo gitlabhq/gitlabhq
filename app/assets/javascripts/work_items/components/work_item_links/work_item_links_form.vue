@@ -13,7 +13,8 @@ import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import { addHierarchyChild } from '../../graphql/cache_utils';
+import projectWorkItemTypesQuery from '../../graphql/project_work_item_types.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -44,6 +45,11 @@ export default {
   inject: ['fullPath', 'hasIterationsFeature'],
   props: {
     issuableGid: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemIid: {
       type: String,
       required: false,
       default: null,
@@ -292,13 +298,14 @@ export default {
           variables: {
             input: this.workItemInput,
           },
+          update: (cache, { data }) =>
+            addHierarchyChild(cache, this.fullPath, this.workItemIid, data.workItemCreate.workItem),
         })
         .then(({ data }) => {
           if (data.workItemCreate?.errors?.length) {
             [this.error] = data.workItemCreate.errors;
           } else {
             this.unsetError();
-            this.$emit('addWorkItemChild', data.workItemCreate.workItem);
           }
         })
         .catch(() => {

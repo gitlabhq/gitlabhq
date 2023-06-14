@@ -136,12 +136,12 @@ export default {
         ref="wiLinksForm"
         data-testid="add-tree-form"
         :issuable-gid="workItemId"
+        :work-item-iid="workItemIid"
         :form-type="formType"
         :parent-work-item-type="parentWorkItemType"
         :children-type="childType"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
-        @addWorkItemChild="$emit('addWorkItemChild', $event)"
         @cancel="hideAddForm"
       />
       <work-item-children-wrapper

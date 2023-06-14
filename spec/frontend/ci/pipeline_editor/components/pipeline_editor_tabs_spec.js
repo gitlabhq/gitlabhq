@@ -53,7 +53,7 @@ describe('Pipeline editor tabs component', () => {
         ciFileContent: mockCiYml,
         currentTab: CREATE_TAB,
         isNewCiConfigFile: true,
-        showDrawer: false,
+        showHelpDrawer: false,
         showJobAssistantDrawer: false,
         showAiAssistantDrawer: false,
         ...props,

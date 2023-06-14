@@ -1,6 +1,7 @@
-import { GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import { GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CloneDropdown from '~/vue_shared/components/clone_dropdown.vue';
+import CloneDropdown from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
+import CloneDropdownItem from '~/vue_shared/components/clone_dropdown/clone_dropdown_item.vue';
 
 describe('Clone Dropdown Button', () => {
   let wrapper;
@@ -12,30 +13,28 @@ describe('Clone Dropdown Button', () => {
     httpLink,
   };
 
+  const findCloneDropdownItems = () => wrapper.findAllComponents(CloneDropdownItem);
+  const findCloneDropdownItemAtIndex = (index) => findCloneDropdownItems().at(index);
+
   const createComponent = (propsData = defaultPropsData) => {
     wrapper = shallowMount(CloneDropdown, {
       propsData,
       stubs: {
-        'gl-form-input-group': GlFormInputGroup,
+        GlFormInputGroup,
       },
     });
   };
 
   describe('rendering', () => {
-    it('matches the snapshot', () => {
-      createComponent();
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it.each`
-      name      | index | value
+      name      | index | link
       ${'SSH'}  | ${0}  | ${sshLink}
       ${'HTTP'} | ${1}  | ${httpLink}
-    `('renders correct link and a copy-button for $name', ({ index, value }) => {
+    `('renders correct link and a copy-button for $name', ({ index, link }) => {
       createComponent();
-      const group = wrapper.findAllComponents(GlFormInputGroup).at(index);
-      expect(group.props('value')).toBe(value);
-      expect(group.findComponent(GlFormInputGroup).exists()).toBe(true);
+
+      const group = findCloneDropdownItemAtIndex(index);
+      expect(group.props('link')).toBe(link);
     });
 
     it.each`
@@ -45,7 +44,7 @@ describe('Clone Dropdown Button', () => {
     `('does not fail if only $name is set', ({ name, value }) => {
       createComponent({ [name]: value });
 
-      expect(wrapper.findComponent(GlFormInputGroup).props('value')).toBe(value);
+      expect(findCloneDropdownItemAtIndex(0).props('link')).toBe(value);
     });
   });
 
@@ -57,12 +56,13 @@ describe('Clone Dropdown Button', () => {
     `('allows null values for the props', ({ name, value }) => {
       createComponent({ ...defaultPropsData, [name]: value });
 
-      expect(wrapper.findAllComponents(GlFormGroup).length).toBe(1);
+      expect(findCloneDropdownItems().length).toBe(1);
     });
 
     it('correctly calculates httpLabel for HTTPS protocol', () => {
       createComponent({ httpLink: httpsLink });
-      expect(wrapper.findComponent(GlFormGroup).attributes('label')).toContain('HTTPS');
+
+      expect(findCloneDropdownItemAtIndex(0).attributes('label')).toContain('HTTPS');
     });
   });
 });

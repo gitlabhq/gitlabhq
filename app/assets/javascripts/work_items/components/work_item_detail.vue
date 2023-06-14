@@ -1,6 +1,5 @@
 <script>
 import { isEmpty } from 'lodash';
-import { produce } from 'immer';
 import {
   GlAlert,
   GlSkeletonLoader,
@@ -398,33 +397,6 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    addChild(child) {
-      const { defaultClient: client } = this.$apollo.provider.clients;
-      this.toggleChildFromCache(child, child.id, client);
-    },
-    toggleChildFromCache(workItem, childId, store) {
-      const query = {
-        query: workItemByIidQuery,
-        variables: { fullPath: this.fullPath, iid: this.workItemIid },
-      };
-
-      const sourceData = store.readQuery(query);
-
-      const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItems.nodes[0];
-        const widgetHierarchy = widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
-
-        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
-
-        if (index >= 0) {
-          widgetHierarchy.children.nodes.splice(index, 1);
-        } else {
-          widgetHierarchy.children.nodes.push(workItem);
-        }
-      });
-
-      store.writeQuery({ ...query, data: newData });
-    },
     updateHasNotes() {
       this.$emit('has-notes');
     },
@@ -678,7 +650,6 @@ export default {
           :children="children"
           :can-update="canUpdate"
           :confidential="workItem.confidential"
-          @addWorkItemChild="addChild"
           @show-modal="openInModal"
         />
         <work-item-notes

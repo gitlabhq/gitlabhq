@@ -21649,6 +21649,9 @@ msgstr ""
 msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr ""
 
+msgid "GroupSAML|Some branches are inaccessible because your SAML session has expired. To access the branches, select the group’s path to reauthenticate."
+msgstr ""
+
 msgid "GroupSAML|Some to-do items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view the hidden to-do items."
 msgstr ""
 
@@ -25936,6 +25939,9 @@ msgstr ""
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
+msgid "Job ID"
+msgstr ""
+
 msgid "Job artifacts"
 msgstr ""
 
@@ -25952,6 +25958,9 @@ msgid "Job is stuck. Check runners."
 msgstr ""
 
 msgid "Job logs and artifacts"
+msgstr ""
+
+msgid "Job name"
 msgstr ""
 
 msgid "Job was retried"
@@ -41132,6 +41141,9 @@ msgstr ""
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
+msgid "SecurityOrchestration|Branch types don't match any existing branches."
+msgstr ""
+
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
@@ -46323,6 +46335,9 @@ msgid "There was a problem fetching emojis."
 msgstr ""
 
 msgid "There was a problem fetching epics."
+msgstr ""
+
+msgid "There was a problem fetching failed jobs"
 msgstr ""
 
 msgid "There was a problem fetching groups."

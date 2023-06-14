@@ -11,8 +11,7 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 
 import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
 import { findHierarchyWidgetChildren } from '../../utils';
-import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
-import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
+import { removeHierarchyChild } from '../../graphql/cache_utils';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
@@ -165,23 +164,12 @@ export default {
       this.updateWorkItemIdUrlQuery();
     },
     handleWorkItemDeleted(child) {
-      this.removeHierarchyChild(child);
+      const { defaultClient: cache } = this.$apollo.provider.clients;
+      removeHierarchyChild(cache, this.fullPath, this.iid, child);
       this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery({ iid } = {}) {
       updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
-    },
-    async addHierarchyChild(workItem) {
-      return this.$apollo.mutate({
-        mutation: addHierarchyChildMutation,
-        variables: { fullPath: this.fullPath, iid: this.iid, workItem },
-      });
-    },
-    async removeHierarchyChild(workItem) {
-      return this.$apollo.mutate({
-        mutation: removeHierarchyChildMutation,
-        variables: { fullPath: this.fullPath, iid: this.iid, workItem },
-      });
     },
     toggleReportAbuseDrawer(isOpen, reply = {}) {
       this.isReportDrawerOpen = isOpen;
@@ -261,6 +249,7 @@ export default {
           ref="wiLinksForm"
           data-testid="add-links-form"
           :issuable-gid="issuableGid"
+          :work-item-iid="iid"
           :children-ids="childrenIds"
           :parent-confidential="confidential"
           :parent-iteration="issuableIteration"
@@ -268,7 +257,6 @@ export default {
           :form-type="formType"
           :parent-work-item-type="workItem.workItemType.name"
           @cancel="hideAddForm"
-          @addWorkItemChild="addHierarchyChild"
         />
         <work-item-children-wrapper
           :children="children"
