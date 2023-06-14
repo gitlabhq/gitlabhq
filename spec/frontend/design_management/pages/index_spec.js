@@ -227,7 +227,6 @@ describe('Design management index page', () => {
     it('has correct classes applied to design dropzone', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
       expect(dropzoneClasses()).toContain('design-list-item');
-      expect(dropzoneClasses()).toContain('design-list-item-new');
     });
 
     it('has correct classes applied to dropzone wrapper', () => {
@@ -253,7 +252,6 @@ describe('Design management index page', () => {
 
     it('has correct classes applied to design dropzone', () => {
       expect(dropzoneClasses()).not.toContain('design-list-item');
-      expect(dropzoneClasses()).not.toContain('design-list-item-new');
     });
 
     it('has correct classes applied to dropzone wrapper', () => {
@@ -355,7 +353,6 @@ describe('Design management index page', () => {
       expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
       expect(wrapper.vm.isSaving).toBe(true);
       expect(dropzoneClasses()).toContain('design-list-item');
-      expect(dropzoneClasses()).toContain('design-list-item-new');
     });
 
     it('sets isSaving', async () => {

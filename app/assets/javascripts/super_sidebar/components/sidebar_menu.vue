@@ -143,7 +143,7 @@ export default {
 
 <template>
   <nav :aria-label="$options.i18n.mainNavigation" class="gl-p-2 gl-relative">
-    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0">
+    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0" data-testid="static-items-section">
       <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
     </ul>
     <pinned-section
@@ -159,7 +159,7 @@ export default {
       class="gl-my-2 gl-mx-4"
       data-testid="main-menu-separator"
     />
-    <ul class="gl-p-0 gl-list-style-none">
+    <ul class="gl-p-0 gl-list-style-none" data-testid="non-static-items-section">
       <template v-for="item in nonStaticItems">
         <menu-section
           v-if="isSection(item)"

@@ -212,6 +212,7 @@ export default class MergeRequestStore {
 
   setGraphqlSubscriptionData(data) {
     this.detailedMergeStatus = data.detailedMergeStatus;
+    this.commitsCount = data.commitCount;
 
     this.setState();
   }

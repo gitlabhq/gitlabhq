@@ -168,7 +168,7 @@ These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added
 to groups instead of projects. Bot users for groups:
 
-- Do not count as licensed seats.
+- Is not a billable user, so it does not count toward the license limit.
 - Can have a maximum role of Owner for a group. For more information, see
   [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
 - Have a username set to `group_{group_id}_bot_{random_string}`. For example, `group_123_bot_4ffca233d8298ea1`.

@@ -3,8 +3,8 @@ import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import * as Sentry from '@sentry/browser';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
+import * as Sentry from '@sentry/browser';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
@@ -26,10 +26,13 @@ import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
+import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
+import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
+import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
@@ -65,13 +68,14 @@ jest.mock('@sentry/browser', () => ({
 Vue.use(VueApollo);
 
 describe('MrWidgetOptions', () => {
-  let mockedApprovalsSubscription;
   let stateQueryHandler;
   let queryResponse;
   let wrapper;
   let mock;
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
+  const findApprovalsWidget = () => wrapper.findComponent(Approvals);
+  const findPreparingWidget = () => wrapper.findComponent(Preparing);
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
   const findExtensionToggleButton = () =>
     wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
@@ -97,7 +101,7 @@ describe('MrWidgetOptions', () => {
   });
 
   const createComponent = (mrData = mockData, options = {}, data = {}, fullMount = true) => {
-    mockedApprovalsSubscription = createMockApolloSubscription();
+    const mockedApprovalsSubscription = createMockApolloSubscription();
     queryResponse = {
       data: {
         project: {
@@ -105,6 +109,9 @@ describe('MrWidgetOptions', () => {
           mergeRequest: {
             ...getStateQueryResponse.data.project.mergeRequest,
             mergeError: mrData.mergeError || null,
+            detailedMergeStatus:
+              mrData.detailedMergeStatus ||
+              getStateQueryResponse.data.project.mergeRequest.detailedMergeStatus,
           },
         },
       },
@@ -128,7 +135,10 @@ describe('MrWidgetOptions', () => {
       ],
       ...(options.apolloMock || []),
     ];
-    const subscriptionHandlers = [[approvedBySubscription, () => mockedApprovalsSubscription]];
+    const subscriptionHandlers = [
+      [approvedBySubscription, () => mockedApprovalsSubscription],
+      ...(options.apolloSubscriptions || []),
+    ];
     const apolloProvider = createMockApollo(queryHandlers);
 
     subscriptionHandlers.forEach(([query, stream]) => {
@@ -1272,6 +1282,88 @@ describe('MrWidgetOptions', () => {
         window.gon.features.refactorSecurityExtension = true;
         createComponent();
         expect(findWidgetContainer().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('async preparation for a newly opened MR', () => {
+    beforeEach(() => {
+      mock
+        .onGet(mockData.merge_request_widget_path)
+        .reply(() => [HTTP_STATUS_OK, { ...mockData, state: 'opened' }]);
+    });
+
+    it('does not render the Preparing state component by default', async () => {
+      await createComponent();
+
+      expect(findApprovalsWidget().exists()).toBe(true);
+      expect(findPreparingWidget().exists()).toBe(false);
+    });
+
+    it('renders the Preparing state component when the MR state is initially "preparing"', async () => {
+      await createComponent({
+        ...mockData,
+        state: 'opened',
+        detailedMergeStatus: 'PREPARING',
+      });
+
+      expect(findApprovalsWidget().exists()).toBe(false);
+      expect(findPreparingWidget().exists()).toBe(true);
+    });
+
+    describe('when the MR is updated by observing its status', () => {
+      let stateSubscription;
+
+      beforeEach(() => {
+        window.gon.features.realtimeMrStatusChange = true;
+        stateSubscription = createMockApolloSubscription();
+      });
+
+      it("shows the Preparing widget when the MR reports it's not ready yet", async () => {
+        await createComponent(
+          {
+            ...mockData,
+            state: 'opened',
+            detailedMergeStatus: 'PREPARING',
+          },
+          {
+            apolloSubscriptions: [[getStateSubscription, () => stateSubscription]],
+          },
+          {},
+          false,
+        );
+
+        expect(wrapper.html()).toContain('mr-widget-preparing-stub');
+      });
+
+      it('removes the Preparing widget when the MR indicates it has been prepared', async () => {
+        await createComponent(
+          {
+            ...mockData,
+            state: 'opened',
+            detailedMergeStatus: 'PREPARING',
+          },
+          {
+            apolloSubscriptions: [[getStateSubscription, () => stateSubscription]],
+          },
+          {},
+          false,
+        );
+
+        expect(wrapper.html()).toContain('mr-widget-preparing-stub');
+
+        stateSubscription.next({
+          data: {
+            mergeRequestMergeStatusUpdated: {
+              preparedAt: 'non-null value',
+            },
+          },
+        });
+
+        // Wait for batched DOM updates
+        await nextTick();
+
+        expect(wrapper.html()).not.toContain('mr-widget-preparing-stub');
       });
     });
   });

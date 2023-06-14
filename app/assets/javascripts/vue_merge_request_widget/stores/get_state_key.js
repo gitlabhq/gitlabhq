@@ -2,7 +2,9 @@ import { DETAILED_MERGE_STATUS } from '../constants';
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
-  if (!this.commitsCount) {
+  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.PREPARING) {
+    return stateKey.preparing;
+  } else if (!this.commitsCount) {
     return stateKey.nothingToMerge;
   } else if (this.projectArchived) {
     return stateKey.archived;

@@ -43,6 +43,15 @@ export default {
     diffViewerMode() {
       return this.discussion.diff_file.viewer.name;
     },
+    fileDiffRefs() {
+      return this.discussion.diff_file.diff_refs;
+    },
+    headSha() {
+      return (this.fileDiffRefs ? this.fileDiffRefs.head_sha : this.discussion.commit_id) || '';
+    },
+    baseSha() {
+      return (this.fileDiffRefs ? this.fileDiffRefs.base_sha : this.discussion.commit_id) || '';
+    },
     isTextFile() {
       return this.diffViewerMode === diffViewerModes.text;
     },
@@ -144,9 +153,9 @@ export default {
         :diff-mode="diffMode"
         :diff-viewer-mode="diffViewerMode"
         :new-path="discussion.diff_file.new_path"
-        :new-sha="discussion.diff_file.diff_refs.head_sha"
+        :new-sha="headSha"
         :old-path="discussion.diff_file.old_path"
-        :old-sha="discussion.diff_file.diff_refs.base_sha"
+        :old-sha="baseSha"
         :file-hash="discussion.diff_file.file_hash"
         :project-path="projectPath"
       >

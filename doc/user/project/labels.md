@@ -69,8 +69,8 @@ You can also assign and unassign labels with [quick actions](quick_actions.md):
 
 To view the **project's labels**:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 
 Or:
 
@@ -86,8 +86,8 @@ project or group path where it was created.
 
 To view the **group's labels**:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Labels**.
 
 Or:
 
@@ -108,8 +108,8 @@ Prerequisites:
 
 To create a project label:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter a short, descriptive name for the label. You
    can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
@@ -142,8 +142,8 @@ To do so:
 
 To create a group label:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter a short, descriptive name for the label. You
    can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
@@ -182,16 +182,16 @@ Prerequisites:
 
 To edit a **project** label:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Next to the label you want to edit, select **Edit** (**{pencil}**).
 
 ### Edit a group label
 
 To edit a **group** label:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Labels**.
 1. Next to the label you want to edit, select **Edit** (**{pencil}**).
 
 ## Delete a label
@@ -208,8 +208,8 @@ Prerequisites:
 
 To delete a **project** label:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Either:
 
    - Next to the **Subscribe** button, select (**{ellipsis_v}**).
@@ -221,8 +221,8 @@ To delete a **project** label:
 
 To delete a **group** label:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Labels**.
 1. Either:
 
    - Next to the **Subscribe** button, select (**{ellipsis_v}**).
@@ -251,8 +251,8 @@ Prerequisites:
 
 To promote a project label to a group label:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Next to the **Subscribe** button, select the three dots (**{ellipsis_v}**) and
    select **Promote to group label**.
 
@@ -302,8 +302,8 @@ Prerequisites:
 
 To add the default labels to the project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Select **Generate a default set of labels**.
 
 The following labels are created:
@@ -441,8 +441,8 @@ Prerequisites:
 
 To prioritize a label:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Labels**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Labels**.
 1. Next to a label you want to prioritize, select the star (**{star-o}**).
 
 ![Labels prioritized](img/labels_prioritized_v13_5.png)

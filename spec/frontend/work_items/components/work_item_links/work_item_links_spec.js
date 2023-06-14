@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { stubComponent } from 'helpers/stub_component';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
@@ -68,10 +68,11 @@ describe('WorkItemLinks', () => {
             show: showModal,
           },
         }),
+        WidgetWrapper: stubComponent(WidgetWrapper, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
       },
     });
-
-    wrapper.vm.$refs.wrapper.show = jest.fn();
 
     await waitForPromises();
   };

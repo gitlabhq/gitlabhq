@@ -29,7 +29,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 }
 
 .design-list-item {
-  height: 280px;
+  height: 160px;
   text-decoration: none;
 
   .icon-version-status {
@@ -37,15 +37,6 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     right: 10px;
     top: 10px;
   }
-
-  .card-body {
-    height: 230px;
-  }
-}
-
-// This is temporary class to be removed after feature flag removal: https://gitlab.com/gitlab-org/gitlab/-/issues/223197
-.design-list-item-new {
-  height: 210px;
 }
 
 .design-note-pin {

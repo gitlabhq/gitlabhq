@@ -506,7 +506,7 @@ export default {
           >
             <design-dropzone
               :enable-drag-behavior="isDraggingDesign"
-              :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
+              :class="{ 'design-list-item': !isDesignListEmpty }"
               :display-as-card="hasDesigns"
               v-bind="$options.dropzoneProps"
               data-qa-selector="design_dropzone_content"

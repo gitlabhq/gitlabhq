@@ -481,7 +481,7 @@ For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code
 The following custom roles are available:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
-- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports.
+- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and update (change status) of the vulnerabilities.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
@@ -492,7 +492,21 @@ To enable custom roles for your group, a group member with the Owner role:
 1. Makes sure that there is at least one private project in this group or one of
    its subgroups, so that you can see the effect of giving a Guest a custom role.
 1. Creates a personal access token with the API scope.
-1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create the Guest+1 role for the root group.
+1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create a custom role for the root group.
+
+#### Custom role requirements
+
+For every ability, a minimal access level is defined. To be able to create a custom role which enables a certain ability, the `member_roles` table record has to have the associated minimal access level. For all abilities, the minimal access level is Guest. Only users who have at least the Guest role can be assigned to a custom role.
+
+Some roles and abilities require having other abilities enabled. For example, a custom role can only have administration of vulnerabilities (`admin_vulnerability`) enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
+
+You can see the required minimal access levels and abilities requirements in the following table.
+
+| Ability | Minimal access level | Required ability |
+| -- | -- | -- |
+| `read_code` | Guest    | - |
+| `read_vulnerability` | Guest | - |
+| `admin_vulnerability` | Guest | `read_vulnerability` |
 
 ### Associate a custom role with an existing group member
 

@@ -46,6 +46,11 @@ export default {
       model: null,
     };
   },
+  computed: {
+    runnerType() {
+      return this.runner?.runnerType;
+    },
+  },
   watch: {
     runner(val) {
       this.model = runnerToModel(val);
@@ -92,7 +97,7 @@ export default {
 <template>
   <gl-form @submit.prevent="onSubmit">
     <runner-form-fields v-model="model" :loading="loading" />
-    <runner-update-cost-factor-fields v-model="model" />
+    <runner-update-cost-factor-fields v-model="model" :runner-type="runnerType" />
 
     <div class="gl-mt-6">
       <gl-button

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Contribute to the GitLab documentation
 
-Everyone is welcome to update the GitLab documentation!
+Everyone is welcome to update the GitLab documentation.
 
 ## Work without an issue
 

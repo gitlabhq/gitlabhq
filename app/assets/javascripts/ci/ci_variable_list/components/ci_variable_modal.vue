@@ -125,7 +125,7 @@ export default {
       return regex.test(this.variable.value);
     },
     canSubmit() {
-      return this.variableValidationState && this.variable.key !== '' && this.variable.value !== '';
+      return this.variableValidationState && this.variable.key !== '';
     },
     containsVariableReference() {
       const regex = /\$/;

@@ -22,7 +22,7 @@ module QA
             element :copy_contents_button
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/source_viewer/source_viewer_deprecated.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/source_viewer/source_viewer.vue' do
             element :blob_viewer_file_content
           end
         end

@@ -170,15 +170,13 @@ RSpec.shared_examples 'variable list' do
     expect(find('[data-testid="alert-danger"]').text).to have_content('(key) has already been taken')
   end
 
-  it 'prevents a variable to be added if no values are provided when a variable is set to masked' do
+  it 'allows variable to be added even if no value is provided' do
     click_button('Add variable')
 
     page.within('#add-ci-variable') do
       find('[data-testid="pipeline-form-ci-variable-key"] input').set('empty_mask_key')
-      find('[data-testid="ci-variable-protected-checkbox"]').click
-      find('[data-testid="ci-variable-masked-checkbox"]').click
 
-      expect(find_button('Add variable', disabled: true)).to be_present
+      expect(find_button('Add variable', disabled: false)).to be_present
     end
   end
 

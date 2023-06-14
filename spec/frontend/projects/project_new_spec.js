@@ -13,6 +13,8 @@ describe('New Project', () => {
 
   const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
   const mockChange = (el) => el.dispatchEvent(new Event('change'));
+  const mockSubmit = () =>
+    document.getElementById('new_project').dispatchEvent(new Event('submit'));
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -309,6 +311,37 @@ describe('New Project', () => {
       );
 
       expect($projectName.value).toEqual(dummyProjectName);
+    });
+  });
+
+  describe('project path trimming', () => {
+    beforeEach(() => {
+      projectNew.bindEvents();
+    });
+
+    describe('when the project path field is filled in', () => {
+      const dirtyProjectPath = ' my-awesome-project   ';
+      const cleanProjectPath = dirtyProjectPath.trim();
+
+      beforeEach(() => {
+        $projectPath.value = dirtyProjectPath;
+        mockSubmit();
+      });
+
+      it('trims the project path on submit', () => {
+        expect($projectPath.value).not.toBe(dirtyProjectPath);
+        expect($projectPath.value).toBe(cleanProjectPath);
+      });
+    });
+
+    describe('when the project path field is left empty', () => {
+      beforeEach(() => {
+        mockSubmit();
+      });
+
+      it('leaves the field empty', () => {
+        expect($projectPath.value).toBe('');
+      });
     });
   });
 });

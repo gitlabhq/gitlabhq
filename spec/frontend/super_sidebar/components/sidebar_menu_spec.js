@@ -1,7 +1,8 @@
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { s__ } from '~/locale';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
+import NavItem from '~/super_sidebar/components/nav_item.vue';
+import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import { PANELS_WITH_PINS } from '~/super_sidebar/constants';
 import { sidebarData } from '../mock_data';
 
@@ -12,181 +13,142 @@ const menuItems = [
   { id: 4, title: 'Also with subitems', items: [{ id: 41, title: 'Subitem' }] },
 ];
 
-describe('SidebarMenu component', () => {
+describe('Sidebar Menu', () => {
   let wrapper;
 
-  const createWrapper = (mockData) => {
-    wrapper = mountExtended(SidebarMenu, {
+  const createWrapper = (extraProps = {}) => {
+    wrapper = shallowMountExtended(SidebarMenu, {
       propsData: {
-        items: mockData.current_menu_items,
-        pinnedItemIds: mockData.pinned_items,
-        panelType: mockData.panel_type,
-        updatePinsUrl: mockData.update_pins_url,
+        items: sidebarData.current_menu_items,
+        pinnedItemIds: sidebarData.pinned_items,
+        panelType: sidebarData.panel_type,
+        updatePinsUrl: sidebarData.update_pins_url,
+        ...extraProps,
       },
     });
   };
 
+  const findStaticItemsSection = () => wrapper.findByTestId('static-items-section');
+  const findStaticItems = () => findStaticItemsSection().findAllComponents(NavItem);
   const findPinnedSection = () => wrapper.findComponent(PinnedSection);
   const findMainMenuSeparator = () => wrapper.findByTestId('main-menu-separator');
+  const findNonStaticItemsSection = () => wrapper.findByTestId('non-static-items-section');
+  const findNonStaticItems = () => findNonStaticItemsSection().findAllComponents(NavItem);
+  const findNonStaticSectionItems = () =>
+    findNonStaticItemsSection().findAllComponents(MenuSection);
 
-  describe('computed', () => {
-    describe('supportsPins', () => {
-      it('is true for the project sidebar', () => {
-        createWrapper({ ...sidebarData, panel_type: 'project' });
-        expect(wrapper.vm.supportsPins).toBe(true);
+  describe('Static section', () => {
+    describe('when the sidebar supports pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType: PANELS_WITH_PINS[0],
+        });
       });
 
-      it('is true for the group sidebar', () => {
-        createWrapper({ ...sidebarData, panel_type: 'group' });
-        expect(wrapper.vm.supportsPins).toBe(true);
-      });
-
-      it('is false for any other sidebar', () => {
-        createWrapper({ ...sidebarData, panel_type: 'your_work' });
-        expect(wrapper.vm.supportsPins).toEqual(false);
-      });
-    });
-
-    describe('flatPinnableItems', () => {
-      it('returns all subitems in a flat array', () => {
-        createWrapper({ ...sidebarData, current_menu_items: menuItems });
-        expect(wrapper.vm.flatPinnableItems).toEqual([
-          { id: 21, title: 'Pinned subitem' },
-          { id: 41, title: 'Subitem' },
+      it('renders static items section', () => {
+        expect(findStaticItemsSection().exists()).toBe(true);
+        expect(findStaticItems().wrappers.map((w) => w.props('item').title)).toEqual([
+          'No subitems',
+          'Empty subitems array',
         ]);
       });
     });
 
-    describe('staticItems', () => {
-      describe('when the sidebar supports pins', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            panel_type: PANELS_WITH_PINS[0],
-          });
-        });
-
-        it('makes everything that has no subitems a static item', () => {
-          expect(wrapper.vm.staticItems.map((i) => i.title)).toEqual([
-            'No subitems',
-            'Empty subitems array',
-          ]);
+    describe('when the sidebar does not support pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType: 'explore',
         });
       });
 
-      describe('when the sidebar does not support pins', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            panel_type: 'explore',
-          });
-        });
-
-        it('returns an empty array', () => {
-          expect(wrapper.vm.staticItems.map((i) => i.title)).toEqual([]);
-        });
-      });
-    });
-
-    describe('nonStaticItems', () => {
-      describe('when the sidebar supports pins', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            panel_type: PANELS_WITH_PINS[0],
-          });
-        });
-
-        it('keeps items that have subitems (aka "sections") as non-static', () => {
-          expect(wrapper.vm.nonStaticItems.map((i) => i.title)).toEqual([
-            'With subitems',
-            'Also with subitems',
-          ]);
-        });
-      });
-
-      describe('when the sidebar does not support pins', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            panel_type: 'explore',
-          });
-        });
-
-        it('keeps all items as non-static', () => {
-          expect(wrapper.vm.nonStaticItems).toEqual(menuItems);
-        });
-      });
-    });
-
-    describe('pinnedItems', () => {
-      describe('when user has no pinned item ids stored', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            pinned_items: [],
-          });
-        });
-
-        it('returns an empty array', () => {
-          expect(wrapper.vm.pinnedItems).toEqual([]);
-        });
-      });
-
-      describe('when user has some pinned item ids stored', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            current_menu_items: menuItems,
-            pinned_items: [21],
-          });
-        });
-
-        it('returns the items matching the pinned ids', () => {
-          expect(wrapper.vm.pinnedItems).toEqual([{ id: 21, title: 'Pinned subitem' }]);
-        });
+      it('does not render static items section', () => {
+        expect(findStaticItemsSection().exists()).toBe(false);
       });
     });
   });
 
-  describe('Menu separators', () => {
+  describe('Pinned section', () => {
+    it('is rendered in a project sidebar', () => {
+      createWrapper({ panelType: 'project' });
+      expect(findPinnedSection().exists()).toBe(true);
+    });
+
+    it('is rendered in a group sidebar', () => {
+      createWrapper({ panelType: 'group' });
+      expect(findPinnedSection().exists()).toBe(true);
+    });
+
+    it('is not rendered in other sidebars', () => {
+      createWrapper({ panelType: 'your_work' });
+      expect(findPinnedSection().exists()).toBe(false);
+    });
+  });
+
+  describe('Non static items section', () => {
+    describe('when the sidebar supports pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType: PANELS_WITH_PINS[0],
+        });
+      });
+
+      it('keeps items that have subitems (aka "sections") as non-static', () => {
+        expect(findNonStaticSectionItems().wrappers.map((w) => w.props('item').title)).toEqual([
+          'With subitems',
+          'Also with subitems',
+        ]);
+      });
+    });
+
+    describe('when the sidebar does not support pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType: 'explore',
+        });
+      });
+
+      it('keeps all items as non-static', () => {
+        expect(findNonStaticSectionItems().length + findNonStaticItems().length).toBe(
+          menuItems.length,
+        );
+      });
+    });
+  });
+
+  describe('Separators', () => {
     it('should add the separator above pinned section', () => {
       createWrapper({
-        ...sidebarData,
-        current_menu_items: menuItems,
-        panel_type: 'project',
+        items: menuItems,
+        panelType: 'project',
       });
       expect(findPinnedSection().props('separated')).toBe(true);
     });
 
     it('should add the separator above main menu items when there is a pinned section', () => {
       createWrapper({
-        ...sidebarData,
-        current_menu_items: menuItems,
-        panel_type: PANELS_WITH_PINS[0],
+        items: menuItems,
+        panelType: PANELS_WITH_PINS[0],
       });
       expect(findMainMenuSeparator().exists()).toBe(true);
     });
 
     it('should NOT add the separator above main menu items when there is no pinned section', () => {
       createWrapper({
-        ...sidebarData,
-        current_menu_items: menuItems,
-        panel_type: 'explore',
+        items: menuItems,
+        panelType: 'explore',
       });
       expect(findMainMenuSeparator().exists()).toBe(false);
     });
   });
 
-  describe('template', () => {
+  describe('ARIA attributes', () => {
     it('adds aria-label attribute to nav element', () => {
-      createWrapper({ ...sidebarData });
-      expect(wrapper.find('nav').attributes('aria-label')).toBe(s__('Navigation|Main navigation'));
+      createWrapper();
+      expect(wrapper.find('nav').attributes('aria-label')).toBe('Main navigation');
     });
   });
 });

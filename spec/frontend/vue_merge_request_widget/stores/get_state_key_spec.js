@@ -16,9 +16,13 @@ describe('getStateKey', () => {
       commitsCount: 2,
       hasConflicts: false,
       draft: false,
-      detailedMergeStatus: null,
+      detailedMergeStatus: 'PREPARING',
     };
     const bound = getStateKey.bind(context);
+
+    expect(bound()).toEqual('preparing');
+
+    context.detailedMergeStatus = null;
 
     expect(bound()).toEqual('checking');
 

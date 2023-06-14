@@ -150,9 +150,9 @@ If the above steps do not solve your issue, the problem may be related to the re
 
 ## Third-party AI services controls
 
-Organizations can opt to use Code Suggestions entirely within GitLab cloud infrastructure. This option can be controlled with the top-level group [Third-party AI setting](../../group/manage.md#enable-third-party-ai-features). 
+Organizations can opt to use Code Suggestions entirely within GitLab cloud infrastructure. This option can be controlled with the top-level group [Third-party AI setting](../../group/manage.md#enable-third-party-ai-features).
 
-Having the third-party AI setting enabled will allow Code Suggestions to use third-party AI services, which is likely to produce higher quality results. Please note that language support varies between the two options and will change over time. 
+Having the third-party AI setting enabled will allow Code Suggestions to use third-party AI services, which is likely to produce higher quality results. Please note that language support varies between the two options and will change over time.
 
 To use Code Suggestions entirely within GitLab’s cloud infrastructure, disable third-party AI services. You can disable Code Suggestions entirely in [your user profile settings](#enable-code-suggestions-for-an-individual-user).
 
@@ -172,7 +172,7 @@ Your personal access token enables a secure API connection to GitLab.com.
 This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference,
 and the generated suggestion is transmitted back to VS Code.
 
-Depending on your settings, different ML models will be used to provide Code Suggestions. GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) for third-party AI powered Code Suggestions. The sections below refer only to GitLab first-party AI Model. 
+Depending on your settings, different ML models will be used to provide Code Suggestions. GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) for third-party AI powered Code Suggestions. The sections below refer only to GitLab first-party AI Model.
 
 ### Data privacy
 
@@ -211,12 +211,12 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 ### Internet connectivity
 
-Code Suggestions does not work with offline environments. 
+Code Suggestions does not work with offline environments.
 
 To use Code Suggestions:
 
 - On GitLab.com, you must have an internet connection and be able to access GitLab.
-- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection. 
+- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection.
 
 [Self-managed support via a proxy to GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/10528) has been proposed.
 

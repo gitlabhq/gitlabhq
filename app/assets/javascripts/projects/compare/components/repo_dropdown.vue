@@ -1,11 +1,9 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   props: {
     paramsName: {
@@ -25,6 +23,7 @@ export default {
   data() {
     return {
       searchTerm: '',
+      selectedProjectId: this.selectedProject.id,
     };
   },
   computed: {
@@ -32,20 +31,25 @@ export default {
       return this.projects === null;
     },
     filteredRepos() {
-      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
+      if (this.disableRepoDropdown) return [];
 
-      return this?.projects.filter(({ name }) => name.toLowerCase().includes(lowerCaseSearchTerm));
+      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
+      return this.projects
+        .filter(({ name }) => name.toLowerCase().includes(lowerCaseSearchTerm))
+        .map((project) => ({ text: project.name, value: project.id }));
     },
     inputName() {
       return `${this.paramsName}_project_id`;
     },
   },
   methods: {
-    onClick(project) {
-      this.emitTargetProject(project);
-    },
-    emitTargetProject(project) {
+    emitTargetProject(projectId) {
+      if (this.disableRepoDropdown) return;
+      const project = this.projects.find(({ id }) => id === projectId);
       this.$emit('selectProject', { direction: this.paramsName, project });
+    },
+    onSearch(searchTerm) {
+      this.searchTerm = searchTerm;
     },
   },
 };
@@ -53,28 +57,19 @@ export default {
 
 <template>
   <div>
-    <input type="hidden" :name="inputName" :value="selectedProject.id" />
-    <gl-dropdown
-      :text="selectedProject.name"
+    <input type="hidden" :name="inputName" :value="selectedProjectId" />
+    <gl-collapsible-listbox
+      v-model="selectedProjectId"
+      :toggle-text="selectedProject.name"
       :header-text="s__(`CompareRevisions|Select target project`)"
-      class="gl-w-full gl-font-monospace"
+      class="gl-font-monospace"
       toggle-class="gl-min-w-0"
       :disabled="disableRepoDropdown"
-    >
-      <template #header>
-        <gl-search-box-by-type v-if="!disableRepoDropdown" v-model.trim="searchTerm" />
-      </template>
-      <template v-if="!disableRepoDropdown">
-        <gl-dropdown-item
-          v-for="repo in filteredRepos"
-          :key="repo.id"
-          is-check-item
-          :is-checked="selectedProject.id === repo.id"
-          @click="onClick(repo)"
-        >
-          {{ repo.name }}
-        </gl-dropdown-item>
-      </template>
-    </gl-dropdown>
+      :items="filteredRepos"
+      block
+      searchable
+      @select="emitTargetProject"
+      @search="onSearch"
+    />
   </div>
 </template>

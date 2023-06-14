@@ -26,6 +26,7 @@ import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
+import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import ConflictsState from './components/states/mr_widget_conflicts.vue';
 import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
@@ -88,6 +89,7 @@ export default {
     MrWidgetReadyToMerge,
     ShaMismatch,
     MrWidgetChecking: CheckingState,
+    MrWidgetPreparing: PreparingState,
     MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
     MrWidgetPipelineBlocked: PipelineBlockedState,
     MrWidgetPipelineFailed: PipelineFailedState,
@@ -199,7 +201,7 @@ export default {
       );
     },
     shouldRenderApprovals() {
-      return this.mr.state !== 'nothingToMerge';
+      return !['preparing', 'nothingToMerge'].includes(this.mr.state);
     },
     componentName() {
       return stateToComponentMap[this.machineState] || classState[this.mr.state];

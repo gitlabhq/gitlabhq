@@ -491,6 +491,53 @@ export default {
         });
       }
     },
+    moveToPosition(positionInList, oldIndex, item) {
+      this.$apollo.mutate({
+        mutation: listIssuablesQueries[this.issuableType].moveMutation,
+        variables: {
+          ...moveItemVariables({
+            iid: item.iid,
+            epicId: item.id,
+            fromListId: this.currentList.id,
+            toListId: this.currentList.id,
+            isIssue: !this.isEpicBoard,
+            boardId: this.boardId,
+            itemToMove: item,
+          }),
+          positionInList,
+          withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
+        },
+        optimisticResponse: {
+          issuableMoveList: {
+            issuable: item,
+            errors: [],
+          },
+        },
+        update: (cache, { data: { issuableMoveList } }) => {
+          const { issuable } = issuableMoveList;
+          removeItemFromList({
+            query: listIssuablesQueries[this.issuableType].query,
+            variables: { ...this.listQueryVariables, id: this.currentList.id },
+            boardType: this.boardType,
+            id: issuable.id,
+            issuableType: this.issuableType,
+            cache,
+          });
+          if (positionInList === 0 || this.listItemsCount <= this.boardListItems.length) {
+            const newIndex = positionInList === 0 ? 0 : this.boardListItems.length - 1;
+            addItemToList({
+              query: listIssuablesQueries[this.issuableType].query,
+              variables: { ...this.listQueryVariables, id: this.currentList.id },
+              issuable,
+              newIndex,
+              boardType: this.boardType,
+              issuableType: this.issuableType,
+              cache,
+            });
+          }
+        },
+      });
+    },
   },
 };
 </script>
@@ -545,6 +592,7 @@ export default {
           :index="index"
           :list="list"
           :list-items-length="boardListItems.length"
+          @moveToPosition="moveToPosition($event, index, item)"
         />
         <gl-intersection-observer
           v-if="isObservableItem(index)"

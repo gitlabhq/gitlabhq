@@ -715,6 +715,14 @@ describe('DiffsStoreUtils', () => {
       ).toBe('mode_changed');
     });
 
+    it('returns no_preview if key has no match', () => {
+      expect(
+        utils.getDiffMode({
+          viewer: { name: 'no_preview' },
+        }),
+      ).toBe('no_preview');
+    });
+
     it('defaults to replaced', () => {
       expect(utils.getDiffMode({})).toBe('replaced');
     });

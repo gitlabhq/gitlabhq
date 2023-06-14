@@ -495,6 +495,21 @@ describe('Ci variable modal', () => {
       });
     });
 
+    describe('when the value is empty', () => {
+      beforeEach(() => {
+        const [variable] = mockVariables;
+        const emptyValueVariable = { ...variable, value: '' };
+        createComponent({
+          mountFn: mountExtended,
+          props: { selectedVariable: emptyValueVariable },
+        });
+      });
+
+      it('allows user to submit', () => {
+        expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
+      });
+    });
+
     describe('when the mask state is invalid', () => {
       beforeEach(async () => {
         const [variable] = mockVariables;
