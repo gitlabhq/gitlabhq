@@ -22,7 +22,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer | Yes      | Group ID for the group to return SAML identities. |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
@@ -49,6 +49,36 @@ Example response:
 ]
 ```
 
+## Get a single SAML identity
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+
+```plaintext
+GET /groups/:id/saml/:uid
+```
+
+Supported attributes:
+
+| Attribute | Type           | Required | Description               |
+| --------- | -------------- | -------- | ------------------------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `uid`     | string         | yes      | External UID of the user. |
+
+Example request:
+
+```shell
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" --header "<PRIVATE TOKEN>"
+```
+
+Example response:
+
+```json
+{
+    "extern_uid": "4",
+    "user_id": 48
+}
+```
+
 ## Update `extern_uid` field for a SAML identity
 
 Update `extern_uid` field for a SAML identity:
@@ -58,13 +88,14 @@ Update `extern_uid` field for a SAML identity:
 | `id/externalId`    | `extern_uid` |
 
 ```plaintext
-PATCH groups/:groups_id/saml/:uid
+PATCH /groups/:id/saml/:uid
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:

@@ -3,17 +3,18 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Jekyll.gitlab-ci.yml
 
-# Template project: https://gitlab.com/pages/jekyll
-# Docs: https://docs.gitlab.com/ee/pages/
-image: ruby:2.6
+default:
+  # Template project: https://gitlab.com/pages/jekyll
+  # Docs: https://docs.gitlab.com/ee/pages/
+  image: ruby:2.6
+
+  before_script:
+    - gem install bundler
+    - bundle install
 
 variables:
   JEKYLL_ENV: production
   LC_ALL: C.UTF-8
-
-before_script:
-  - gem install bundler
-  - bundle install
 
 test:
   stage: test

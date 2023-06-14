@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
+import KeepLatestArtifactToggle from '~/artifacts_settings/keep_latest_artifact_toggle.vue';
 import createDefaultClient from '~/lib/graphql';
 
 Vue.use(VueApollo);
@@ -26,7 +26,7 @@ export default (containerId = 'js-artifacts-settings-app') => {
       helpPagePath,
     },
     render(createElement) {
-      return createElement(KeepLatestArtifactCheckbox);
+      return createElement(KeepLatestArtifactToggle);
     },
   });
 };

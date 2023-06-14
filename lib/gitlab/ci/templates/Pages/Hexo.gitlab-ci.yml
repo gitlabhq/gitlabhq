@@ -3,8 +3,9 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Hexo.gitlab-ci.yml
 
-# Full project: https://gitlab.com/pages/hexo
-image: node:10.15.3
+default:
+  # Full project: https://gitlab.com/pages/hexo
+  image: node:10.15.3
 
 pages:
   script:

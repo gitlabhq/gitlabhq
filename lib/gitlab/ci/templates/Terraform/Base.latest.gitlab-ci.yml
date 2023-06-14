@@ -9,17 +9,18 @@
 # There is a more opinionated template which we suggest the users to abide,
 # which is the lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
 
-image:
-  name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/stable:latest"
+default:
+  image:
+    name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/stable:latest"
+
+  cache:
+    key: "${TF_ROOT}"
+    paths:
+      - ${TF_ROOT}/.terraform/
 
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
   TF_STATE_NAME: default      # The name of the state file used by the GitLab Managed Terraform state backend
-
-cache:
-  key: "${TF_ROOT}"
-  paths:
-    - ${TF_ROOT}/.terraform/
 
 .terraform:fmt: &terraform_fmt
   stage: validate

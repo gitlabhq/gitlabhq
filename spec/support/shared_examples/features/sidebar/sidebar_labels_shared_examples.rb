@@ -47,7 +47,8 @@ RSpec.shared_examples 'labels sidebar widget' do
       end
     end
 
-    it 'adds first label by pressing enter when search' do
+    it 'adds first label by pressing enter when search',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414877' do
       within(labels_widget) do
         page.within('[data-testid="value-wrapper"]') do
           expect(page).not_to have_content(development.name)

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { GlAlert, GlToggle, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import UpdateKeepLatestArtifactProjectSetting from './graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
 import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
@@ -13,12 +13,12 @@ export default {
     enabledHelpText: __(
       'The latest artifacts created by jobs in the most recent successful pipeline will be stored.',
     ),
-    helpLinkText: __('More information'),
-    checkboxText: __('Keep artifacts from most recent successful jobs'),
+    helpLinkText: __('Learn more.'),
+    labelText: __('Keep artifacts from most recent successful jobs'),
   },
   components: {
     GlAlert,
-    GlFormCheckbox,
+    GlToggle,
     GlLink,
   },
   inject: {
@@ -95,10 +95,16 @@ export default {
       @dismiss="isAlertDismissed = true"
       >{{ errorMessage }}</gl-alert
     >
-    <gl-form-checkbox v-model="keepLatestArtifact" @change="updateSetting"
-      ><strong class="gl-mr-3">{{ $options.i18n.checkboxText }}</strong>
-      <gl-link :href="helpPagePath">{{ $options.i18n.helpLinkText }}</gl-link>
-      <template v-if="!$apollo.loading" #help>{{ helpText }}</template>
-    </gl-form-checkbox>
+    <gl-toggle
+      v-model="keepLatestArtifact"
+      :is-loading="$apollo.loading"
+      :label="$options.i18n.labelText"
+      @change="updateSetting"
+    >
+      <template #help>
+        {{ helpText }}
+        <gl-link :href="helpPagePath">{{ $options.i18n.helpLinkText }}</gl-link>
+      </template>
+    </gl-toggle>
   </div>
 </template>

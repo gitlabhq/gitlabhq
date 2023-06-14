@@ -1,4 +1,4 @@
-import { GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { GlToggle, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import UpdateKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
 import GetKeepLatestArtifactApplicationSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
 import GetKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
-import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
+import KeepLatestArtifactToggle from '~/artifacts_settings/keep_latest_artifact_toggle.vue';
 
 Vue.use(VueApollo);
 
@@ -34,7 +34,7 @@ const keepLatestArtifactMockResponse = {
   },
 };
 
-describe('Keep latest artifact checkbox', () => {
+describe('Keep latest artifact toggle', () => {
   let wrapper;
   let apolloProvider;
   let requestHandlers;
@@ -42,7 +42,7 @@ describe('Keep latest artifact checkbox', () => {
   const fullPath = 'gitlab-org/gitlab';
   const helpPagePath = '/help/ci/pipelines/job_artifacts';
 
-  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findToggle = () => wrapper.findComponent(GlToggle);
   const findHelpLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = (handlers) => {
@@ -68,13 +68,13 @@ describe('Keep latest artifact checkbox', () => {
       [UpdateKeepLatestArtifactProjectSetting, requestHandlers.keepLatestArtifactMutationHandler],
     ]);
 
-    wrapper = shallowMount(KeepLatestArtifactCheckbox, {
+    wrapper = shallowMount(KeepLatestArtifactToggle, {
       provide: {
         fullPath,
         helpPagePath,
       },
       stubs: {
-        GlFormCheckbox,
+        GlToggle,
       },
       apolloProvider,
     });
@@ -89,13 +89,13 @@ describe('Keep latest artifact checkbox', () => {
       createComponent();
     });
 
-    it('displays the checkbox and the help link', () => {
-      expect(findCheckbox().exists()).toBe(true);
+    it('displays the toggle and the help link', () => {
+      expect(findToggle().exists()).toBe(true);
       expect(findHelpLink().exists()).toBe(true);
     });
 
     it('calls mutation on artifact setting change with correct payload', () => {
-      findCheckbox().vm.$emit('change', false);
+      findToggle().vm.$emit('change', false);
 
       expect(requestHandlers.keepLatestArtifactMutationHandler).toHaveBeenCalledWith({
         fullPath,
@@ -110,12 +110,12 @@ describe('Keep latest artifact checkbox', () => {
       await waitForPromises();
     });
 
-    it('sets correct setting value in checkbox with query result', () => {
+    it('sets correct setting value in toggle with query result', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('checkbox is enabled when application setting is enabled', () => {
-      expect(findCheckbox().attributes('disabled')).toBeUndefined();
+    it('toggle is enabled when application setting is enabled', () => {
+      expect(findToggle().attributes('disabled')).toBeUndefined();
     });
   });
 });
