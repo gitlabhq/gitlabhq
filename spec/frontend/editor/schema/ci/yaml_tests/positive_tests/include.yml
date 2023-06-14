@@ -5,8 +5,8 @@ stages:
 include:
   - local: builds.yml
     rules:
-      - if: '$INCLUDE_BUILDS == "true"'
-        when: always
+      - if: '$INCLUDE_BUILDS == "false"'
+        when: never
 
 # valid trigger:include
 trigger:include accepts project and file properties:

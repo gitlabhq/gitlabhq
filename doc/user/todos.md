@@ -20,7 +20,7 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the top bar, in the upper-right corner, select the To-Do List (**{task-done}**).
+On the left sidebar, at the top, select To-Do list (**{task-done}**).
 
 ## Search the To-Do List
 

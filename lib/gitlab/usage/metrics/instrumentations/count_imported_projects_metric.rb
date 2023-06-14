@@ -23,7 +23,7 @@ module Gitlab
                 ::Project
                   .select(:id)
                   .where(Project.arel_table[:created_at].gteq(start)) # rubocop:disable UsageData/LargeTable
-                  .order(created_at: :asc).limit(1).first&.id
+                  .order(created_at: :asc).order(id: :asc).limit(1).first&.id
               end
             end
           end
@@ -36,7 +36,7 @@ module Gitlab
                 ::Project
                   .select(:id)
                   .where(Project.arel_table[:created_at].lteq(finish)) # rubocop:disable UsageData/LargeTable
-                  .order(created_at: :desc).limit(1).first&.id
+                  .order(created_at: :desc).order(id: :desc).limit(1).first&.id
               end
             end
           end

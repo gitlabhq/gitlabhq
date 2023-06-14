@@ -1,0 +1,8 @@
+---
+name: ci_support_include_rules_when_never
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122810
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414517
+milestone: '16.1'
+type: development
+group: group::pipeline authoring
+default_enabled: false

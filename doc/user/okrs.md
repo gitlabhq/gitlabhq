@@ -60,8 +60,8 @@ Prerequisites:
 
 To create an objective:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Plan > Issues**.
 1. In the upper-right corner, next to **New issue**, select the down arrow **{chevron-lg-down}** and then select **New objective**.
 1. Select **New objective** again.
 1. Enter the objective title.
@@ -77,8 +77,8 @@ Prerequisites:
 
 To view an objective:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = objective`.
 1. Select the title of an objective from the list.
@@ -91,8 +91,8 @@ Prerequisites:
 
 To view a key result:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = key_result`.
 1. Select the title of a key result from the list.

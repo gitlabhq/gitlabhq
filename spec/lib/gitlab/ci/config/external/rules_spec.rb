@@ -3,43 +3,42 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_composition do
-  let(:rule_hashes) {}
+  # Remove `project` property when FF `ci_support_include_rules_when_never` is removed
+  let(:context) { double(variables_hash: {}, project: nil) }
+  let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
 
   subject(:rules) { described_class.new(rule_hashes) }
 
   describe '#evaluate' do
-    let(:context) { double(variables_hash: {}) }
-
     subject(:result) { rules.evaluate(context).pass? }
 
     context 'when there is no rule' do
+      let(:rule_hashes) {}
+
       it { is_expected.to eq(true) }
     end
 
-    context 'when there is a rule with if' do
-      let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
+    shared_examples 'when there is a rule with if' do |rule_matched_result = true, rule_not_matched_result = false|
+      # Remove this `before` block when FF `ci_support_include_rules_when_never` is removed
+      before do
+        allow(context).to receive(:project).and_return(nil)
+      end
 
       context 'when the rule matches' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to eq(rule_matched_result) }
       end
 
       context 'when the rule does not match' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to eq(rule_not_matched_result) }
       end
     end
 
-    context 'when there is a rule with exists' do
+    shared_examples 'when there is a rule with exists' do |file_exists_result = true, file_not_exists_result = false|
       let(:project) { create(:project, :repository) }
-      let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['test.md']) }
-      let(:rule_hashes) { [{ exists: 'Dockerfile' }] }
-
-      context 'when the file does not exist' do
-        it { is_expected.to eq(false) }
-      end
 
       context 'when the file exists' do
         let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['Dockerfile']) }
@@ -48,16 +47,83 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           project.repository.create_file(project.first_owner, 'Dockerfile', "commit", message: 'test', branch_name: "master")
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to eq(file_exists_result) }
+      end
+
+      context 'when the file does not exist' do
+        let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['test.md']) }
+
+        it { is_expected.to eq(file_not_exists_result) }
       end
     end
 
-    context 'when there is a rule with if and when' do
-      let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
+    it_behaves_like 'when there is a rule with if'
 
-      it 'raises an error' do
-        expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
-                                         'invalid include rule: {:if=>"$MY_VAR == \"hello\"", :when=>"on_success"}')
+    context 'when there is a rule with exists' do
+      let(:rule_hashes) { [{ exists: 'Dockerfile' }] }
+
+      it_behaves_like 'when there is a rule with exists'
+    end
+
+    context 'when there is a rule with if and when' do
+      context 'with when: never' do
+        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'never' }] }
+
+        it_behaves_like 'when there is a rule with if', false, false
+
+        context 'when FF `ci_support_include_rules_when_never` is disabled' do
+          before do
+            stub_feature_flags(ci_support_include_rules_when_never: false)
+          end
+
+          it_behaves_like 'when there is a rule with if'
+        end
+      end
+
+      context 'with when: <invalid string>' do
+        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
+
+        it 'raises an error' do
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
+                                           'invalid include rule: {:if=>"$MY_VAR == \"hello\"", :when=>"on_success"}')
+        end
+      end
+
+      context 'with when: null' do
+        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: nil }] }
+
+        it_behaves_like 'when there is a rule with if'
+      end
+    end
+
+    context 'when there is a rule with exists and when' do
+      context 'with when: never' do
+        let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'never' }] }
+
+        it_behaves_like 'when there is a rule with exists', false, false
+
+        context 'when FF `ci_support_include_rules_when_never` is disabled' do
+          before do
+            stub_feature_flags(ci_support_include_rules_when_never: false)
+          end
+
+          it_behaves_like 'when there is a rule with exists'
+        end
+      end
+
+      context 'with when: <invalid string>' do
+        let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'on_success' }] }
+
+        it 'raises an error' do
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
+                                           'invalid include rule: {:exists=>"Dockerfile", :when=>"on_success"}')
+        end
+      end
+
+      context 'with when: null' do
+        let(:rule_hashes) { [{ exists: 'Dockerfile', when: nil }] }
+
+        it_behaves_like 'when there is a rule with exists'
       end
     end
 

@@ -18,6 +18,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
   describe '#process' do
     let(:locations) do
       [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] },
+       { remote: 'https://testing.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1', when: 'never' }] },
        { remote: 'https://example.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE2' }] }]
     end
 
@@ -27,6 +28,19 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
       is_expected.to eq(
         [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] }]
       )
+    end
+
+    context 'when FF `ci_support_include_rules_when_never` is disabled' do
+      before do
+        stub_feature_flags(ci_support_include_rules_when_never: false)
+      end
+
+      it 'filters locations according to rules ignoring when:' do
+        is_expected.to eq(
+          [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] },
+           { remote: 'https://testing.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1', when: 'never' }] }]
+        )
+      end
     end
   end
 end

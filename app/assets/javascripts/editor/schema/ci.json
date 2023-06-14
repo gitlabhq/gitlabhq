@@ -359,7 +359,7 @@
               "pattern": "\\.ya?ml$"
             },
             "rules": {
-              "$ref": "#/definitions/rules"
+              "$ref": "#/definitions/includeRules"
             },
             "inputs": {
               "$ref": "#/definitions/inputs"
@@ -399,6 +399,9 @@
                 }
               ]
             },
+            "rules": {
+              "$ref": "#/definitions/includeRules"
+            },
             "inputs": {
               "$ref": "#/definitions/inputs"
             }
@@ -418,6 +421,9 @@
               "format": "uri-reference",
               "pattern": "\\.ya?ml$"
             },
+            "rules": {
+              "$ref": "#/definitions/includeRules"
+            },
             "inputs": {
               "$ref": "#/definitions/inputs"
             }
@@ -434,6 +440,9 @@
               "description": "Local path to component directory or full path to external component directory.",
               "type": "string",
               "format": "uri-reference"
+            },
+            "rules": {
+              "$ref": "#/definitions/includeRules"
             },
             "inputs": {
               "$ref": "#/definitions/inputs"
@@ -452,6 +461,9 @@
               "type": "string",
               "format": "uri-reference",
               "pattern": "^https?://.+\\.ya?ml$"
+            },
+            "rules": {
+              "$ref": "#/definitions/includeRules"
             },
             "inputs": {
               "$ref": "#/definitions/inputs"
@@ -777,6 +789,54 @@
               },
               "needs": {
                 "$ref": "#/definitions/rulesNeeds"
+              }
+            }
+          },
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "array",
+            "minLength": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "includeRules": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "markdownDescription": "You can use rules to conditionally include other configuration files. [Learn More](https://docs.gitlab.com/ee/ci/yaml/includes.html#use-rules-with-include).",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "if": {
+                "$ref": "#/definitions/if"
+              },
+              "exists": {
+                "$ref": "#/definitions/exists"
+              },
+              "when": {
+                "markdownDescription": "Use `when: never` to exclude the configuration file if the condition matches. [Learn More](https://docs.gitlab.com/ee/ci/yaml/includes.html#include-with-rulesif).",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "never"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             }
           },

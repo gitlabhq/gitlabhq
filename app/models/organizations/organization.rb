@@ -17,6 +17,10 @@ module Organizations
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
+    def self.default_organization
+      find_by(id: DEFAULT_ORGANIZATION_ID)
+    end
+
     def default?
       id == DEFAULT_ORGANIZATION_ID
     end

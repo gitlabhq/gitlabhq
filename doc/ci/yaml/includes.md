@@ -418,11 +418,17 @@ these keywords:
 
 ### `include` with `rules:if`
 
+> Support for `when: never` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1.
+
 Use [`rules:if`](index.md#rulesif) to conditionally include other configuration files
 based on the status of CI/CD variables. For example:
 
 ```yaml
 include:
+  - local: builds.yml
+    rules:
+      - if: $DONT_INCLUDE_BUILDS == "true"
+        when: never
   - local: builds.yml
     rules:
       - if: $INCLUDE_BUILDS == "true"
@@ -437,11 +443,18 @@ test:
 
 ### `include` with `rules:exists`
 
+> Support for `when: never` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1.
+
 Use [`rules:exists`](index.md#rulesexists) to conditionally include other configuration files
 based on the existence of files. For example:
 
 ```yaml
 include:
+  - local: builds.yml
+    rules:
+      - exists:
+          - exception-file.md
+        when: never
   - local: builds.yml
     rules:
       - exists:

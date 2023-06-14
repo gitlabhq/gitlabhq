@@ -76,8 +76,8 @@ Prerequisites:
 
 To explain your code:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. Go to the file, and select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
@@ -108,8 +108,8 @@ Prerequisites:
 
 To explain your vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Secure > Vulnerability report**.
 1. Find a SAST vulnerability.
 1. Open the vulnerability.
 1. Select **Try it out**.

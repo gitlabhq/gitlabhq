@@ -69,7 +69,8 @@ You can view audit events from user actions across an entire GitLab instance.
 
 To view instance audit events:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
 ### Export to CSV
@@ -80,7 +81,8 @@ To view instance audit events:
 You can export the current view (including filters) of your instance audit events as a CSV file. To export the instance
 audit events to CSV:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#filter-audit-events).
 1. Select **Export as CSV**.

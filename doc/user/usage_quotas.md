@@ -23,10 +23,8 @@ Prerequisites:
 - To view storage usage for a project, you must have at least the Maintainer role for the project or Owner role for the namespace.
 - To view storage usage for a namespace, you must have the Owner role for the namespace.
 
-1. Go to your project or namespace:
-   - For a project, on the top bar, select **Main menu > Projects** and find your project.
-   - For a namespace, enter the URL in your browser's toolbar.
-1. From the left sidebar, select **Settings > Usage Quotas**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab.
 
 Select any title to view details. The information on this page

@@ -324,7 +324,7 @@ press <kbd>?</kbd> to display the list of shortcuts.
 
 To enable keyboard shortcuts:
 
-1. On the top bar, select the Help menu (**{question}**), then **Keyboard shortcuts**.
+1. On the left sidebar, at the bottom, select **Help** (**{question}**), then **Keyboard shortcuts**.
 1. Select **Toggle shortcuts**.
 
 ## Troubleshooting

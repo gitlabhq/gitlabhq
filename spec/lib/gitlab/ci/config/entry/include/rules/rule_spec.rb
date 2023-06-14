@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require_dependency 'active_model'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
+RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category: :pipeline_composition do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
                                   .value(config)
@@ -24,6 +24,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
       let(:config) { { if: '$THIS || $THAT' } }
 
       it { is_expected.to be_valid }
+
+      context 'with when:' do
+        let(:config) { { if: '$THIS || $THAT', when: 'never' } }
+
+        it { is_expected.to be_valid }
+      end
     end
 
     context 'when specifying an exists: clause' do
@@ -89,6 +95,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
 
       it 'returns the config' do
         expect(subject).to eq(if: '$THIS || $THAT')
+      end
+
+      context 'with when:' do
+        let(:config) { { if: '$THIS || $THAT', when: 'never' } }
+
+        it 'returns the config' do
+          expect(subject).to eq(if: '$THIS || $THAT', when: 'never')
+        end
       end
     end
 

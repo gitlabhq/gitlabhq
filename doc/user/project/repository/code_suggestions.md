@@ -12,6 +12,7 @@ type: index, reference
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1.
+> - [Default to third-party AI services](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 
 WARNING:
 This feature is in [Beta](/ee/policy/experiment-beta-support.md#beta).
@@ -34,19 +35,12 @@ Code Suggestions are available in Visual Studio Code when you have the GitLab Wo
 
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 
+Language support varies depending on which AI model serves Code Suggestions. To use Code Suggestions entirely within GitLab cloud infrastructure, disable third-party AI services. To receive higher quality suggestions, [enable third-party AI services](#third-party-ai-services-controls).
+
 The best results from Code Suggestions are expected for these languages:
 
-- C/C++
-- C#
-- Go
-- Java
-- JavaScript
-- Python
-- PHP
-- Ruby
-- Rust
-- Scala
-- TypeScript
+- **Third-party AI services (Google Codey)**: Go, Google Cloud CLI, Google SQL, Java, JavaScript, Kubernetes Resource Model (KRM), Python, Terraform, TypeScript.
+- **GitLab first-party AI model**: C/C++, C#, Go, Java, JavaScript, Python, PHP, Ruby, Rust, Scala, TypeScript.
 
 Suggestions may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
 
@@ -69,6 +63,18 @@ Each user can enable Code Suggestions for themselves:
 
 NOTE:
 If Code Suggestions is [enabled for the group](../../group/manage.md#enable-code-suggestions), the group setting overrides the user setting.
+
+## Enable Code Suggestions in WebIDE
+
+Prerequisites:
+
+- Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
+- Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
+
+Code Suggestions work automatically in the [GitLab WebIDE](../../project/web_ide/index.md) if the above prerequisites are met. To disable Code Suggestions in the WebIDE, disable the user account setting.
+
+NOTE:
+Disabling in the WebIDE will also disable in any other IDEs you use locally like VS Code. Support for [more granular control per IDE](https://gitlab.com/groups/gitlab-org/-/epics/10624) is proposed.
 
 ## Enable Code Suggestions in VS Code
 
@@ -142,6 +148,14 @@ If the above steps do not solve your issue, the problem may be related to the re
 - Reauthorize your GitLab account in VSCode using OAuth.
 - Test the code suggestions feature with different file extensions to verify if the issue is resolved.
 
+## Third-party AI services controls
+
+Organizations can opt to use Code Suggestions entirely within GitLab cloud infrastructure. This option can be controlled with the top-level group [Third-party AI setting](../../group/manage.md#enable-third-party-ai-features). 
+
+Having the third-party AI setting enabled will allow Code Suggestions to use third-party AI services, which is likely to produce higher quality results. Please note that language support varies between the two options and will change over time. 
+
+To use Code Suggestions entirely within GitLab’s cloud infrastructure, disable third-party AI services. You can disable Code Suggestions entirely in [your user profile settings](#enable-code-suggestions-for-an-individual-user).
+
 ## Stability and performance
 
 This feature is currently in [Beta](/ee/policy/experiment-beta-support.md#beta).
@@ -158,7 +172,11 @@ Your personal access token enables a secure API connection to GitLab.com.
 This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference,
 and the generated suggestion is transmitted back to VS Code.
 
+Depending on your settings, different ML models will be used to provide Code Suggestions. GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) for third-party AI powered Code Suggestions. The sections below refer only to GitLab first-party AI Model. 
+
 ### Data privacy
+
+This section applies only to customers who have third-party AI services disabled.
 
 Code Suggestions operate completely in the GitLab.com infrastructure, providing the same level of
 [security](https://about.gitlab.com/security/) as any other feature of GitLab.com, and processing any personal
@@ -171,6 +189,8 @@ Your data also never leaves GitLab.com. All training and inference is done in Gi
 [Read more about the security of GitLab.com](https://about.gitlab.com/security/faq/).
 
 ### Training data
+
+This section applies only to customers who have third-party AI services disabled.
 
 Code Suggestions uses open source pre-trained base models from the
 [CodeGen family](https://openreview.net/forum?id=iaYcJKpY2B_) including CodeGen-MULTI and CodeGen-NL.
@@ -191,14 +211,18 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 ### Internet connectivity
 
+Code Suggestions does not work with offline environments. 
+
 To use Code Suggestions:
 
 - On GitLab.com, you must have an internet connection and be able to access GitLab.
-- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection. Code Suggestions does not work with offline environments.
+- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection. 
+
+[Self-managed support via a proxy to GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/10528) has been proposed.
 
 ### Model accuracy and quality
 
-While in Beta, Code Suggestions can generate low-quality, incomplete, and possibly insecure code.
+Regardless of whether third-party AI services are enabled, while in Beta, Code Suggestions can generate low-quality, incomplete, and possibly insecure code.
 We strongly encourage all beta users to leverage GitLab native
 [Code Quality Scanning](../../../ci/testing/code_quality.md) and
 [Security Scanning](../../application_security/index.md) capabilities.

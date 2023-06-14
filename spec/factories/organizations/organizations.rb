@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# When adding or changing attributes, consider changing the database importer as well
+# lib/gitlab/database_importers/default_organization_importer.rb
 FactoryBot.define do
   factory :organization, class: 'Organizations::Organization' do
     sequence(:name) { |n| "Organization ##{n}" }

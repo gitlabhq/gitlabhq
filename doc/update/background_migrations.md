@@ -96,8 +96,9 @@ Batched background migrations are handled by Sidekiq and [run in isolation](../d
 
 To check the status of batched background migrations:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Monitoring > Background Migrations**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
 
