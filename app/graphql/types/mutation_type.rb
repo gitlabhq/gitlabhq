@@ -182,6 +182,7 @@ module Types
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::SavedReplies::Destroy
     mount_mutation Mutations::Uploads::Delete
+    mount_mutation Mutations::Users::SetNamespaceCommitEmail
   end
 end
 

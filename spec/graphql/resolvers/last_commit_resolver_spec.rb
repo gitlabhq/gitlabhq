@@ -61,5 +61,29 @@ RSpec.describe Resolvers::LastCommitResolver do
         expect(commit).to be_nil
       end
     end
+
+    context 'when the ref is ambiguous' do
+      let(:ambiguous_ref) { 'v1.0.0' }
+
+      before do
+        project.repository.create_branch(ambiguous_ref)
+      end
+
+      context 'when tree is for a tag' do
+        let(:tree) { repository.tree(ambiguous_ref, ref_type: 'tags') }
+
+        it 'resolves commit' do
+          expect(commit.id).to eq(repository.find_tag(ambiguous_ref).dereferenced_target.id)
+        end
+      end
+
+      context 'when tree is for a branch' do
+        let(:tree) { repository.tree(ambiguous_ref, ref_type: 'heads') }
+
+        it 'resolves commit' do
+          expect(commit.id).to eq(repository.find_branch(ambiguous_ref).target)
+        end
+      end
+    end
   end
 end

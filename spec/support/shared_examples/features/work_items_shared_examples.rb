@@ -80,9 +80,12 @@ RSpec.shared_examples 'work items comments' do |type|
     it 'shows work item note actions' do
       set_comment
 
-      click_button "Comment"
-
+      send_keys([modifier_key, :enter])
       wait_for_requests
+
+      page.within(".main-notes-list") do
+        expect(page).to have_content comment
+      end
 
       page.within('.timeline-entry.note.note-wrapper.note-comment:last-child') do
         expect(page).to have_selector('[data-testid="work-item-note-actions"]')

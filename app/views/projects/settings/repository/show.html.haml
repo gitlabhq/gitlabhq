@@ -4,8 +4,7 @@
 - @force_desktop_expanded_sidebar = true
 
 = render "projects/branch_defaults/show"
-- if Feature.enabled?(:branch_rules, @project)
-  = render "projects/branch_rules/show"
+= render "projects/branch_rules/show"
 = render_if_exists "projects/push_rules/index"
 = render "projects/mirrors/mirror_repos"
 

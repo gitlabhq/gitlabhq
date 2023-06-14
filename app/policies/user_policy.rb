@@ -31,6 +31,7 @@ class UserPolicy < BasePolicy
     enable :read_user_groups
     enable :read_saved_replies
     enable :read_user_email_address
+    enable :admin_user_email_address
   end
 
   rule { default }.enable :read_user_profile

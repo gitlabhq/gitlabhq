@@ -17,6 +17,10 @@ module Resolvers
              required: false,
              default_value: nil,
              description: 'Commit ref to get the blobs from. Default value is HEAD.'
+    argument :ref_type, Types::RefTypeEnum,
+             required: false,
+             default_value: nil,
+             description: 'Type of ref.'
 
     # We fetch blobs from Gitaly efficiently but it still scales O(N) with the
     # number of paths being fetched, so apply a scaling limit to that.
@@ -24,7 +28,7 @@ module Resolvers
       super + (args[:paths] || []).size
     end
 
-    def resolve(paths:, ref:)
+    def resolve(paths:, ref:, ref_type:)
       authorize!(repository.container)
 
       return [] if repository.empty?
@@ -32,7 +36,13 @@ module Resolvers
       ref ||= repository.root_ref
       validate_ref(ref)
 
-      repository.blobs_at(paths.map { |path| [ref, path] })
+      ref = ExtractsRef.qualify_ref(ref, ref_type)
+
+      repository.blobs_at(paths.map { |path| [ref, path] }).tap do |blobs|
+        blobs.each do |blob|
+          blob.ref_type = ref_type
+        end
+      end
     end
 
     private

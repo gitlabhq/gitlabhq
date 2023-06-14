@@ -491,6 +491,7 @@ options:
 | [Group audit events](../audit_events.md#retrieve-all-group-audit-events)       | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Groups](../groups.md#list-groups)                                             | `order_by=name`, `sort=asc` only | Unauthenticated users only.              |
 | [Instance audit events](../audit_events.md#retrieve-all-instance-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
+| [Package pipelines](../packages.md#list-package-pipelines)                     | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |

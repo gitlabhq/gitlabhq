@@ -3534,7 +3534,6 @@ Layout/LineLength:
     - 'spec/features/user_sorts_things_spec.rb'
     - 'spec/features/users/login_spec.rb'
     - 'spec/features/users/overview_spec.rb'
-    - 'spec/features/users/signup_spec.rb'
     - 'spec/features/users/user_browses_projects_on_user_page_spec.rb'
     - 'spec/features/webauthn_spec.rb'
     - 'spec/finders/access_requests_finder_spec.rb'

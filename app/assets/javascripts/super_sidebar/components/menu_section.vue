@@ -71,7 +71,7 @@ export default {
   <component :is="tag">
     <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />
     <button
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-2 gl-py-2 gl-px-0 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-line-height-normal gl-mb-2 gl-py-3 gl-px-0 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="menu_section_button"
       :data-qa-section-name="item.title"

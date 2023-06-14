@@ -6817,6 +6817,26 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuserpreferencesupdateuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | User preferences after mutation. |
 
+### `Mutation.userSetNamespaceCommitEmail`
+
+Input type: `UserSetNamespaceCommitEmailInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusersetnamespacecommitemailclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusersetnamespacecommitemailemailid"></a>`emailId` | [`EmailID`](#emailid) | ID of the email to set. |
+| <a id="mutationusersetnamespacecommitemailnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | ID of the namespace to set the namespace commit email for. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusersetnamespacecommitemailclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusersetnamespacecommitemailerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationusersetnamespacecommitemailnamespacecommitemail"></a>`namespaceCommitEmail` | [`NamespaceCommitEmail`](#namespacecommitemail) | User namespace commit email after mutation. |
+
 ### `Mutation.vulnerabilityConfirm`
 
 Input type: `VulnerabilityConfirmInput`
@@ -7547,6 +7567,29 @@ The edge type for [`AuditEventStreamingHeader`](#auditeventstreamingheader).
 | ---- | ---- | ----------- |
 | <a id="auditeventstreamingheaderedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="auditeventstreamingheaderedgenode"></a>`node` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | The item at the end of the edge. |
+
+#### `AuditEventsStreamingInstanceHeaderConnection`
+
+The connection type for [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventsstreaminginstanceheaderconnectionedges"></a>`edges` | [`[AuditEventsStreamingInstanceHeaderEdge]`](#auditeventsstreaminginstanceheaderedge) | A list of edges. |
+| <a id="auditeventsstreaminginstanceheaderconnectionnodes"></a>`nodes` | [`[AuditEventsStreamingInstanceHeader]`](#auditeventsstreaminginstanceheader) | A list of nodes. |
+| <a id="auditeventsstreaminginstanceheaderconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AuditEventsStreamingInstanceHeaderEdge`
+
+The edge type for [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventsstreaminginstanceheaderedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="auditeventsstreaminginstanceheaderedgenode"></a>`node` | [`AuditEventsStreamingInstanceHeader`](#auditeventsstreaminginstanceheader) | The item at the end of the edge. |
 
 #### `AwardEmojiConnection`
 
@@ -16838,6 +16881,7 @@ Represents an external resource to send instance audit events to.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="instanceexternalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
+| <a id="instanceexternalauditeventdestinationheaders"></a>`headers` | [`AuditEventsStreamingInstanceHeaderConnection!`](#auditeventsstreaminginstanceheaderconnection) | List of additional HTTP headers sent with each event. (see [Connections](#connections)) |
 | <a id="instanceexternalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="instanceexternalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 
@@ -21712,6 +21756,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="repositoryblobspaths"></a>`paths` | [`[String!]!`](#string) | Array of desired blob paths. |
 | <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | Commit ref to get the blobs from. Default value is HEAD. |
+| <a id="repositoryblobsreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 
 ##### `Repository.branchNames`
 
@@ -21756,6 +21801,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="repositorypaginatedtreepath"></a>`path` | [`String`](#string) | Path to get the tree for. Default value is the root of the repository. |
 | <a id="repositorypaginatedtreerecursive"></a>`recursive` | [`Boolean`](#boolean) | Used to get a recursive tree. Default is false. |
 | <a id="repositorypaginatedtreeref"></a>`ref` | [`String`](#string) | Commit ref to get the tree for. Default value is HEAD. |
+| <a id="repositorypaginatedtreereftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 
 ##### `Repository.tree`
 
@@ -21770,6 +21816,7 @@ Returns [`Tree`](#tree).
 | <a id="repositorytreepath"></a>`path` | [`String`](#string) | Path to get the tree for. Default value is the root of the repository. |
 | <a id="repositorytreerecursive"></a>`recursive` | [`Boolean`](#boolean) | Used to get a recursive tree. Default is false. |
 | <a id="repositorytreeref"></a>`ref` | [`String`](#string) | Commit ref to get the tree for. Default value is HEAD. |
+| <a id="repositorytreereftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 
 ### `RepositoryBlob`
 
@@ -26023,6 +26070,15 @@ Project member relation.
 | <a id="projectmemberrelationinvited_groups"></a>`INVITED_GROUPS` | Invited Groups members. |
 | <a id="projectmemberrelationshared_into_ancestors"></a>`SHARED_INTO_ANCESTORS` | Shared Into Ancestors members. |
 
+### `RefType`
+
+Type of ref.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="reftypeheads"></a>`HEADS` | Ref type for branches. |
+| <a id="reftypetags"></a>`TAGS` | Ref type for tags. |
+
 ### `RegistryState`
 
 State of a Geo registry.
@@ -27025,6 +27081,12 @@ An example `DiscussionID` is: `"gid://gitlab/Discussion/1"`.
 Duration between two instants, represented as a fractional number of seconds.
 
 For example: 12.3334.
+
+### `EmailID`
+
+A `EmailID` is a global ID. It is encoded as a string.
+
+An example `EmailID` is: `"gid://gitlab/Email/1"`.
 
 ### `EnvironmentID`
 

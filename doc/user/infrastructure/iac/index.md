@@ -64,8 +64,8 @@ In each GitLab major release (for example, 15.0), the latest templates replace t
 
 To use a Terraform template:
 
-1. On the top bar, select **Main menu > Projects** and find the project you want to integrate with Terraform.
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project you want to integrate with Terraform.
+1. Select **Code > Repository**.
 1. Edit your `.gitlab-ci.yml` file, use the `include` attribute to fetch the Terraform template:
 
    ```yaml
@@ -73,7 +73,7 @@ To use a Terraform template:
     # To fetch the latest template, use:
      - template: Terraform.latest.gitlab-ci.yml
     # To fetch the advanced latest template, use:
-     - template: Terraform/Base.latest.gitlab-ci.yml 
+     - template: Terraform/Base.latest.gitlab-ci.yml
     # To fetch the stable template, use:
      - template: Terraform.gitlab-ci.yml
     # To fetch the advanced stable template, use:

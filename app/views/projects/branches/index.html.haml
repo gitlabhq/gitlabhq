@@ -1,7 +1,7 @@
 - add_page_specific_style 'page_bundles/branches'
 - page_title _('Branches')
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
-- is_branch_rules_available = (can? current_user, :maintainer_access, @project) && Feature.enabled?(:branch_rules, @project)
+- can_access_branch_rules = can?(current_user, :maintainer_access, @project)
 - can_push_code = (can? current_user, :push_code, @project)
 
 -# Possible values for variables passed down from the projects/branches_controller.rb
@@ -24,7 +24,7 @@
         sorted_by: @sort }
     }
 
-    - if is_branch_rules_available
+    - if can_access_branch_rules
       = link_to project_settings_repository_path(@project, anchor: 'js-branch-rules'), class: 'gl-button btn btn-default' do
         = s_('Branches|View branch rules')
 
@@ -38,7 +38,7 @@
 
 = render_if_exists 'projects/commits/mirror_status'
 
-- if is_branch_rules_available
+- if can_access_branch_rules
   = render 'branch_rules_info'
 
 .js-branch-list{ data: { diverging_counts_endpoint: diverging_commit_counts_namespace_project_branches_path(@project.namespace, @project, format: :json), default_branch: @project.default_branch } }

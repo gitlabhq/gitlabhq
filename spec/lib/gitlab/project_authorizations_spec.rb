@@ -9,8 +9,10 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     end
   end
 
+  let(:service) { described_class.new(user) }
+
   subject(:authorizations) do
-    described_class.new(user).calculate
+    service.calculate
   end
 
   # Inline this shared example while cleaning up feature flag linear_project_authorization
@@ -421,9 +423,53 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     end
   end
 
-  context 'when feature_flag linear_project_authorization_is disabled' do
+  context 'it compares values for correctness' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when values returned by the queries are the same' do
+      it 'logs a message indicating that the values are the same' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(event: 'linear_authorized_projects_check',
+          user_id: user.id,
+          matching_results: true)
+        service.calculate
+      end
+    end
+
+    context 'when values returned by queries are diffrent' do
+      before do
+        create(:project_authorization)
+        allow(service).to receive(:calculate_with_linear_query).and_return(ProjectAuthorization.all)
+      end
+
+      it 'logs a message indicating that the values are different' do
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(event: 'linear_authorized_projects_check',
+          user_id: user.id,
+          matching_results: false)
+        service.calculate
+      end
+    end
+  end
+
+  context 'when feature_flag linear_project_authorization is disabled' do
     before do
       stub_feature_flags(linear_project_authorization: false)
+    end
+
+    it_behaves_like 'project authorizations'
+  end
+
+  context 'when feature_flag compare_project_authorization_linear_cte is disabled' do
+    before do
+      stub_feature_flags(compare_project_authorization_linear_cte: false)
+    end
+
+    it_behaves_like 'project authorizations'
+  end
+
+  context 'when feature_flag linear_project_authorization and compare_project_authorization_linear_cte are disabled' do
+    before do
+      stub_feature_flags(linear_project_authorization: false)
+      stub_feature_flags(compare_project_authorization_linear_cte: false)
     end
 
     it_behaves_like 'project authorizations'

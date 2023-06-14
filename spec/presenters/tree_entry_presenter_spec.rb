@@ -17,4 +17,20 @@ RSpec.describe TreeEntryPresenter do
   describe '#web_path' do
     it { expect(presenter.web_path).to eq("/#{project.full_path}/-/tree/#{tree.commit_id}/#{tree.path}") }
   end
+
+  context 'when blob has ref_type' do
+    before do
+      tree.ref_type = 'heads'
+    end
+
+    describe '.web_url' do
+      it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/tree/#{tree.commit_id}/#{tree.path}?ref_type=heads") }
+    end
+
+    describe '#web_path' do
+      it {
+        expect(presenter.web_path).to eq("/#{project.full_path}/-/tree/#{tree.commit_id}/#{tree.path}?ref_type=heads")
+      }
+    end
+  end
 end

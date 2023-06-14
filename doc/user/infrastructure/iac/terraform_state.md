@@ -116,8 +116,8 @@ inconsistent. Instead, use a remote storage resource.
    [initialized for CI/CD](#initialize-a-terraform-state-as-a-backend-by-using-gitlab-cicd).
 1. Copy a pre-populated Terraform `init` command:
 
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Infrastructure > Terraform states**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Operate > Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       (**{ellipsis_v}**) and select **Copy Terraform init command**.
 
@@ -294,8 +294,8 @@ To read the Terraform state in the target project, you need at least the Develop
 
 To view Terraform state files:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Infrastructure > Terraform states**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 

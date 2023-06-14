@@ -1,0 +1,8 @@
+---
+name: compare_project_authorization_linear_cte
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122886
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414310
+milestone: '16.1'
+type: development
+group: group::authentication and authorization
+default_enabled: false

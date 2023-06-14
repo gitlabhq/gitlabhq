@@ -330,6 +330,74 @@ Example response:
 
 By default, the `GET` request returns 20 results, because the API is [paginated](rest/index.md#pagination).
 
+## List package pipelines
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+
+Get a list of pipelines for a single package. The results are sorted by `id` in descending order.
+
+The results are [paginated](rest/index.md#keyset-based-pagination) and return up to 20 records per page.
+
+```plaintext
+GET /projects/:id/packages/:package_id/pipelines
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `package_id`      | integer | yes | ID of a package. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/pipelines"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "iid": 1,
+    "project_id": 9,
+    "sha": "2b6127f6bb6f475c4e81afcc2251e3f941e554f9",
+    "ref": "mytag",
+    "status": "failed",
+    "source": "push",
+    "created_at": "2023-02-01T12:19:21.895Z",
+    "updated_at": "2023-02-01T14:00:05.922Z",
+    "web_url": "http://gdk.test:3001/feature-testing/composer-repository/-/pipelines/1",
+    "user": {
+      "id": 1,
+      "username": "root",
+      "name": "Administrator",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+      "web_url": "http://gdk.test:3001/root"
+    }
+  },
+  {
+    "id": 2,
+    "iid": 2,
+    "project_id": 9,
+    "sha": "e564015ac6cb3d8617647802c875b27d392f72a6",
+    "ref": "master",
+    "status": "canceled",
+    "source": "push",
+    "created_at": "2023-02-01T12:23:23.694Z",
+    "updated_at": "2023-02-01T12:26:28.635Z",
+    "web_url": "http://gdk.test:3001/feature-testing/composer-repository/-/pipelines/2",
+    "user": {
+      "id": 1,
+      "username": "root",
+      "name": "Administrator",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+      "web_url": "http://gdk.test:3001/root"
+    }
+  }
+]
+```
+
 ## Delete a project package
 
 Deletes a project package.

@@ -16799,6 +16799,9 @@ msgstr ""
 msgid "Email display name"
 msgstr ""
 
+msgid "Email must be provided."
+msgstr ""
+
 msgid "Email not verified. Please verify your email in Salesforce."
 msgstr ""
 
@@ -18801,6 +18804,9 @@ msgid "Failed to retrieve page"
 msgstr ""
 
 msgid "Failed to save merge conflicts resolutions. Please try again!"
+msgstr ""
+
+msgid "Failed to save namespace commit email."
 msgstr ""
 
 msgid "Failed to save new settings"
@@ -27346,7 +27352,7 @@ msgstr ""
 msgid "Loading snippet"
 msgstr ""
 
-msgid "Loading the GitLab IDE..."
+msgid "Loading the GitLab IDE"
 msgstr ""
 
 msgid "Loading, please wait."
@@ -29703,6 +29709,12 @@ msgid "Namespace ID:"
 msgstr ""
 
 msgid "Namespace Limits"
+msgstr ""
+
+msgid "Namespace doesn't exist or you don't have permission."
+msgstr ""
+
+msgid "Namespace must be provided."
 msgstr ""
 
 msgid "Namespace or group to import repository into does not exist."
@@ -49491,6 +49503,9 @@ msgid "User does not have a pending request"
 msgstr ""
 
 msgid "User does not have permission to create a Security Policy project."
+msgstr ""
+
+msgid "User doesn't exist or you don't have permission to change namespace commit emails."
 msgstr ""
 
 msgid "User has already been deactivated"

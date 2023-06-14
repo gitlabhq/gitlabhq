@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::BlobsResolver do
+RSpec.describe Resolvers::BlobsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
+  include RepoHelpers
 
   describe '.resolver_complexity' do
     it 'adds one per path being resolved' do
@@ -59,15 +60,89 @@ RSpec.describe Resolvers::BlobsResolver do
           end
         end
 
-        context 'specifying a different ref' do
+        context 'when specifying a branch ref' do
           let(:ref) { 'add-pdf-file' }
+          let(:args) { { paths: paths, ref: ref, ref_type: ref_type } }
           let(:paths) { ['files/pdf/test.pdf', 'README.md'] }
 
-          it 'returns the specified blobs for that ref' do
-            is_expected.to contain_exactly(
-              have_attributes(path: 'files/pdf/test.pdf'),
-              have_attributes(path: 'README.md')
-            )
+          context 'and no ref_type is specified' do
+            let(:ref_type) { nil }
+
+            it 'returns the specified blobs for that ref' do
+              is_expected.to contain_exactly(
+                have_attributes(path: 'files/pdf/test.pdf'),
+                have_attributes(path: 'README.md')
+              )
+            end
+
+            context 'and a tag with the same name exists' do
+              let(:ref) { SecureRandom.uuid }
+
+              before do
+                project.repository.create_branch(ref)
+                create_file_in_repo(project, ref, ref, 'branch_file', 'Test file', commit_message: 'Add new content')
+                project.repository.add_tag(project.owner, sample_commit.id, ref)
+              end
+
+              it 'returns the specified blobs for the tag' do
+                is_expected.to contain_exactly(
+                  have_attributes(path: 'README.md')
+                )
+              end
+            end
+          end
+
+          context 'and ref_type is for branches' do
+            let(:args) { { paths: paths, ref: ref, ref_type: 'heads' } }
+
+            it 'returns nothing' do
+              is_expected.to contain_exactly(
+                have_attributes(path: 'files/pdf/test.pdf'),
+                have_attributes(path: 'README.md')
+              )
+            end
+          end
+
+          context 'and ref_type is for tags' do
+            let(:args) { { paths: paths, ref: ref, ref_type: 'tags' } }
+
+            it 'returns nothing' do
+              is_expected.to be_empty
+            end
+          end
+        end
+
+        context 'when specifying a tag ref' do
+          let(:ref) { 'v1.0.0' }
+
+          let(:args) { { paths: paths, ref: ref, ref_type: ref_type } }
+
+          context 'and no ref_type is specified' do
+            let(:ref_type) { nil }
+
+            it 'returns the specified blobs for that ref' do
+              is_expected.to contain_exactly(
+                have_attributes(path: 'README.md')
+              )
+            end
+          end
+
+          context 'and ref_type is for tags' do
+            let(:ref_type) { 'tags' }
+
+            it 'returns the specified blobs for that ref' do
+              is_expected.to contain_exactly(
+                have_attributes(path: 'README.md')
+              )
+            end
+          end
+
+          context 'and ref_type is for branches' do
+            let(:ref_type) { 'heads' }
+
+            it 'returns nothing' do
+              is_expected.to be_empty
+            end
           end
         end
 

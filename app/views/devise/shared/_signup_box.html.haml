@@ -75,4 +75,5 @@
       .gl-pt-5
         = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
     = render 'devise/shared/terms_of_service_notice', button_text: button_text
-    = yield :omniauth_providers_bottom if show_omniauth_providers
+
+  = yield :omniauth_providers_bottom if show_omniauth_providers

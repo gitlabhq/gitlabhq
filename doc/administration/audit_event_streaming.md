@@ -44,8 +44,8 @@ Streaming destinations receive **all** audit event data, which could include sen
 
 Users with the Owner role for a group can add streaming destinations for it:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** to show the section for adding destinations.
 1. Enter the destination URL to add.
@@ -70,7 +70,8 @@ Prerequisites:
 
 To add a streaming destination for an instance:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** to show the section for adding destinations.
@@ -180,8 +181,8 @@ Users with the Owner role for a group can list streaming destinations.
 
 To list the streaming destinations for a top-level group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**) to see all the custom HTTP headers.
 
@@ -199,7 +200,8 @@ Prerequisites:
 
 To list the streaming destinations for an instance:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit events**.
 1. On the main area, select **Streams** tab.
 
@@ -276,8 +278,8 @@ Users with the Owner role for a group and instance administrators can update str
 
 To update a streaming destinations custom HTTP headers:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
@@ -368,15 +370,15 @@ When the last destination is successfully deleted, streaming is disabled for the
 
 To delete a streaming destination:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, select **Delete** (**{remove}**).
 
 To delete only the custom HTTP headers for a streaming destination:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
@@ -398,7 +400,8 @@ Prerequisites:
 
 To delete the streaming destinations for an instance:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, select **Delete** (**{remove}**).
@@ -484,8 +487,8 @@ the destination's value when [listing streaming destinations](#list-streaming-de
 
 Users with the Owner role for a group can list streaming destinations and see the verification tokens:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
 
@@ -503,7 +506,8 @@ Prerequisites:
 
 To list streaming destinations for an instance and see the verification tokens:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit events**.
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.

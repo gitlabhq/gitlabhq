@@ -32019,6 +32019,8 @@ CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_
 
 CREATE INDEX index_packages_build_infos_on_pipeline_id ON packages_build_infos USING btree (pipeline_id);
 
+CREATE INDEX index_packages_build_infos_package_id_id ON packages_build_infos USING btree (package_id, id);
+
 CREATE INDEX index_packages_build_infos_package_id_pipeline_id_id ON packages_build_infos USING btree (package_id, pipeline_id, id);
 
 CREATE UNIQUE INDEX index_packages_composer_cache_namespace_and_sha ON packages_composer_cache_files USING btree (namespace_id, file_sha256);

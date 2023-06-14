@@ -17,14 +17,18 @@ module Resolvers
     argument :ref, GraphQL::Types::String,
               required: false,
               description: 'Commit ref to get the tree for. Default value is HEAD.'
+    argument :ref_type, Types::RefTypeEnum,
+              required: false,
+              description: 'Type of ref.'
 
     alias_method :repository, :object
 
     def resolve(**args)
       return unless repository.exists?
 
-      args[:ref] ||= :head
-      repository.tree(args[:ref], args[:path], recursive: args[:recursive])
+      ref = (args[:ref].presence || :head)
+
+      repository.tree(ref, args[:path], recursive: args[:recursive], ref_type: args[:ref_type])
     end
   end
 end

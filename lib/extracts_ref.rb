@@ -7,6 +7,28 @@ module ExtractsRef
   InvalidPathError = Class.new(StandardError)
   BRANCH_REF_TYPE = 'heads'
   TAG_REF_TYPE = 'tags'
+  REF_TYPES = [BRANCH_REF_TYPE, TAG_REF_TYPE].freeze
+
+  def self.ref_type(type)
+    return unless REF_TYPES.include?(type)
+
+    type
+  end
+
+  def self.qualify_ref(ref, type)
+    validated_type = ref_type(type)
+    return ref unless validated_type
+
+    %(refs/#{validated_type}/#{ref})
+  end
+
+  def self.unqualify_ref(ref, type)
+    validated_type = ref_type(type)
+    return ref unless validated_type
+
+    ref.sub(%r{^refs/#{validated_type}/}, '')
+  end
+
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
   #
@@ -60,7 +82,6 @@ module ExtractsRef
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
-  #
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
     @id, @ref, @path = extract_ref_path
@@ -70,7 +91,7 @@ module ExtractsRef
     return unless @ref.present?
 
     @commit = if ref_type
-                @fully_qualified_ref = %(refs/#{ref_type}/#{@ref})
+                @fully_qualified_ref = ExtractsRef.qualify_ref(@ref, ref_type)
                 @repo.commit(@fully_qualified_ref)
               else
                 @repo.commit(@ref)
@@ -90,9 +111,7 @@ module ExtractsRef
   end
 
   def ref_type
-    return unless params[:ref_type].present?
-
-    params[:ref_type] == TAG_REF_TYPE ? TAG_REF_TYPE : BRANCH_REF_TYPE
+    ExtractsRef.ref_type(params[:ref_type])
   end
 
   private
@@ -156,6 +175,7 @@ module ExtractsRef
     raise NotImplementedError
   end
 
+  # deprecated in favor of ExtractsRef::RequestedRef
   def ambiguous_ref?(project, ref)
     return false unless ref
     return true if project.repository.ambiguous_ref?(ref)

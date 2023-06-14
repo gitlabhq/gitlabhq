@@ -1,4 +1,5 @@
 - page_title _("IDE"), @project.full_name
+- add_page_specific_style 'page_bundles/web_ide_loader'
 
 - unless use_new_web_ide?
   - add_page_specific_style 'page_bundles/build'
@@ -9,4 +10,4 @@
 
 - data = ide_data(project: @project, fork_info: @fork_info, params: params)
 
-= render partial: 'shared/ide_root', locals: { data: data, loading_text: _('Loading the GitLab IDE...') }
+= render partial: 'shared/ide_root', locals: { data: data, loading_text: _('Loading the GitLab IDE') }
