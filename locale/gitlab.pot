@@ -17225,7 +17225,7 @@ msgstr ""
 msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"
 msgstr ""
 
-msgid "EnterpriseUsers|The user is already an enterprise user"
+msgid "EnterpriseUsers|The user is already an enterprise user of the group"
 msgstr ""
 
 msgid "EnterpriseUsers|The user is not a member of the group"

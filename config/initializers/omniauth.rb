@@ -29,5 +29,5 @@ omniauth_login_counter =
 
 OmniAuth.config.before_request_phase do |env|
   provider = env['omniauth.strategy']&.name
-  omniauth_login_counter.increment(provider: provider, status: :initiated)
+  omniauth_login_counter.increment(omniauth_provider: provider, status: 'initiated')
 end

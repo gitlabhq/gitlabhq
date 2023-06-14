@@ -87,7 +87,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def update_login_counter_metric(provider, status)
-    omniauth_login_counter.increment(provider: provider, status: status)
+    omniauth_login_counter.increment(omniauth_provider: provider, status: status)
   end
 
   def omniauth_login_counter

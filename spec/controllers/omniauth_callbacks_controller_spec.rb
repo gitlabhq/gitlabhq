@@ -28,7 +28,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             change do
               Gitlab::Metrics.registry
                              .get(:gitlab_omniauth_login_total)
-                             .get(provider: 'github', status: 'succeeded')
+                             .get(omniauth_provider: 'github', status: 'succeeded')
             end.by(1)
           )
         end
@@ -44,7 +44,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             change do
               Gitlab::Metrics.registry
                              .get(:gitlab_omniauth_login_total)
-                             .get(provider: 'github', status: 'succeeded')
+                             .get(omniauth_provider: 'github', status: 'succeeded')
             end.by(1)
           )
         end
@@ -149,7 +149,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             change do
               Gitlab::Metrics.registry
                              .get(:gitlab_omniauth_login_total)
-                             .get(provider: 'saml', status: 'failed')
+                             .get(omniauth_provider: 'saml', status: 'failed')
             end.by(1)
           )
         end

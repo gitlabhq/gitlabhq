@@ -564,8 +564,19 @@ Before taking the decision to merge:
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 At least one maintainer must approve an MR before it can be merged. MR authors and
-people who add commits to an MR are not authorized to approve or merge the MR and
-must seek a maintainer who has not contributed to the MR to approve and merge it.
+people who add commits to an MR are not authorized to approve the MR and
+must seek a maintainer who has not contributed to the MR to approve it. In
+general, the final required approver should merge the MR.
+
+Scenarios in which the final approver might not merge an MR:
+
+- Approver forgets to set auto-merge after approving.
+- Approver doesn't realize that they are the final approver.
+- Approver sets auto-merge but it is un-set by GitLab.
+
+If any of these scenarios occurs, an MR author may merge their own MR if it
+has all required approvals and they have merge rights to the repository.
+This is also in line with the GitLab [bias for action](https://handbook.gitlab.com/handbook/values/#bias-for-action) value.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
 [Change Management Controls](https://about.gitlab.com/handbook/security/change-management-policy.html).
@@ -576,14 +587,14 @@ settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
 - [Prevent approval by author](../user/project/merge_requests/approvals/settings.md#prevent-approval-by-author).
 - [Prevent approvals by users who add commits](../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - [Prevent editing approval rules in merge requests](../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests).
-- [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)
+- [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
 
 To update the code owners in the `CODEOWNERS` file for `gitlab-org/gitlab`, follow
 the process explained in the [code owners approvals handbook section](https://about.gitlab.com/handbook/engineering/workflow/code-review/#code-owner-approvals).
 
-  There are scenarios such as rebasing locally or applying suggestions that are considered
-  the same as adding a commit and could reset existing approvals. Approvals are not removed
-  when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).
+Some actions, such as rebasing locally or applying suggestions, are considered
+the same as adding a commit and could reset existing approvals. Approvals are not removed
+when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).
 
 When ready to merge:
 
