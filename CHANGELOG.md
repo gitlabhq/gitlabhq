@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.9 (2023-06-15)
+
+### Changed (1 change)
+
+- [Make MigrateSharedVulnerabilityIdentifiers use slow iteration](gitlab-org/gitlab@1d91c7b295b22e844b81fb665748c447028525cd) ([merge request](gitlab-org/gitlab!122856)) **GitLab Enterprise Edition**
+
 ## 15.11.8 (2023-06-06)
 
 ### Fixed (2 changes)
