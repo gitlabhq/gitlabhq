@@ -33,8 +33,8 @@ a pipeline deploys your Pages website.
 
 To complete the setup and generate a GitLab Pages deployment:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).

@@ -22,8 +22,10 @@ you do not expect public users to sign up for an account.
 
 To disable sign ups:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Sign-up restrictions**.
 1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
 
 ## Require administrator approval for new sign ups
@@ -38,8 +40,10 @@ enabled by default for new GitLab instances. It is only applicable if sign ups a
 
 To require administrator approval for new sign ups:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Sign-up restrictions**.
 1. Select the **Require admin approval for new sign-ups** checkbox, then select **Save changes**.
 
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/273258), if an administrator disables this setting, the users in pending approval state are
@@ -62,8 +66,10 @@ their email address before they are allowed to sign in.
 
 For example, to enforce confirmation of the email address used for new sign ups:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Sign-up restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
 
 The following settings are available:
@@ -97,8 +103,9 @@ User cap can be used instead. As noted above, set the cap to value that ensures 
 
 ### Set the user cap number
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Enter a number in **User cap**.
 1. Select **Save changes**.
@@ -107,8 +114,9 @@ New user sign ups are subject to the user cap restriction.
 
 ## Remove the user cap
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
@@ -135,8 +143,9 @@ You can add additional complexity requirements. Changes to password complexity r
 
 Existing passwords are unaffected. To change password complexity requirements:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
    and symbols.
@@ -164,8 +173,10 @@ reduce the risk of malicious users creating spam accounts with disposable email 
 
 To create an email domain allowlist or denylist:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Sign-up restrictions**.
 1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list
    manually or upload a `.txt` file that contains list entries.
 

@@ -21,8 +21,9 @@ rate limits.
 Git LFS rate limits are disabled by default. If enabled and configured, these limits
 supersede the [general user and IP rate limits](user_and_ip_rate_limits.md):
 
-1. On the top bar, select **Main menu >** **{admin}** **Admin**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Git LFS Rate Limits**.
 1. Select **Enable authenticated Git LFS request rate limit**.
 1. Enter a value for **Max authenticated Git LFS requests per period per user**.

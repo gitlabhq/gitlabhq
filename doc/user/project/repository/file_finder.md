@@ -14,8 +14,8 @@ File finder is powered by the [`fuzzaldrin-plus`](https://github.com/jeancroy/fu
 
 To search for a file:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Repository**.
 1. In the upper right, select **Find file**.
 1. In the search box, start typing the filename.
 1. From the dropdown list, select the file.

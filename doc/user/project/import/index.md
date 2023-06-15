@@ -41,8 +41,9 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
@@ -113,8 +114,7 @@ You can view all project imports created by you. This list includes the followin
 To view project import history:
 
 1. Sign in to GitLab.
-1. On the top bar, select **Create new...** (**{plus-square}**).
-1. Select **New project/repository**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.

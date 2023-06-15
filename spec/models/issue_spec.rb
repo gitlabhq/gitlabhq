@@ -1167,10 +1167,12 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue = create(:issue, project: project)
         user = create(:user)
 
-        create(:note_on_issue,
-               noteable: issue,
-               project: project,
-               note: user.to_reference)
+        create(
+          :note_on_issue,
+          noteable: issue,
+          project: project,
+          note: user.to_reference
+        )
 
         expect(issue.participants).not_to include(user)
       end
@@ -1423,8 +1425,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'checks the external service to determine if an issue is readable by a user' do
-          project = build(:project, :public,
-                          external_authorization_classification_label: 'a-label')
+          project = build(:project, :public, external_authorization_classification_label: 'a-label')
           issue = build(:issue, project: project)
           user = build(:user)
 
@@ -1434,8 +1435,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'does not check the external service if a user does not have access to the project' do
-          project = build(:project, :private,
-                          external_authorization_classification_label: 'a-label')
+          project = build(:project, :private, external_authorization_classification_label: 'a-label')
           issue = build(:issue, project: project)
           user = build(:user)
 
@@ -1457,8 +1457,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
           context 'when admin mode is disabled' do
             it 'checks the external service to determine if an issue is readable by the admin' do
-              project = build(:project, :public,
-                              external_authorization_classification_label: 'a-label')
+              project = build(:project, :public, external_authorization_classification_label: 'a-label')
               issue = build(:issue, project: project)
               user = build(:admin)
 

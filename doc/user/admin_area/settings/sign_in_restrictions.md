@@ -12,8 +12,9 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
@@ -75,8 +76,9 @@ Open the [Rails console](../../../administration/operations/rails_console.md) an
 
 To enable Admin Mode through the UI:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**.
 1. In the **Admin Mode** section, select the **Require additional authentication for administrative tasks** checkbox.
 
@@ -84,7 +86,8 @@ To enable Admin Mode through the UI:
 
 To turn on Admin Mode for your current session and access potentially dangerous resources:
 
-1. On the top bar, select **Main menu > Enter Admin Mode**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Enter Admin Mode**.
 1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
 
 When Admin Mode status is disabled or turned off, administrators cannot access resources unless
@@ -99,7 +102,10 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 ### Turn off Admin Mode for your session
 
-To turn off Admin Mode for your current session, on the top bar, select **Main menu > Leave Admin mode**.
+To turn off Admin Mode for your current session:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Leave Admin Mode**.
 
 ### Limitations of Admin Mode
 
@@ -173,8 +179,10 @@ For example, if you include the following information in the noted text box:
 
 To access this text box:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand the **Sign-in restrictions** section.
 ```
 
 Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your

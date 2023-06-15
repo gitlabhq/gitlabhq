@@ -31,23 +31,23 @@ The filtering options are:
 
 ### On an epic
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Epics** (**{epic}**).
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Epics**.
 1. Identify your desired epic, and select its title.
 1. Go to the **Activity** section.
 1. For **Sort or filter**, select **Show all activity**.
 
 ### On an issue
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues** and find your issue.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues** and find your issue.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 
 ### On a merge request
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 

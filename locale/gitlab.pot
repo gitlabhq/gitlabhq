@@ -2406,6 +2406,9 @@ msgstr ""
 msgid "AccessTokens|Access token limit reached"
 msgstr ""
 
+msgid "AccessTokens|Add a %{type}"
+msgstr ""
+
 msgid "AccessTokens|Are you sure?"
 msgstr ""
 
@@ -2424,10 +2427,19 @@ msgstr ""
 msgid "AccessTokens|Copy static object token"
 msgstr ""
 
+msgid "AccessTokens|Create %{type}"
+msgstr ""
+
 msgid "AccessTokens|Created"
 msgstr ""
 
+msgid "AccessTokens|Enter the name of your application, and we'll return a unique %{type}."
+msgstr ""
+
 msgid "AccessTokens|Feed token"
+msgstr ""
+
+msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
 msgid "AccessTokens|Incoming email token"
@@ -2448,6 +2460,15 @@ msgstr ""
 msgid "AccessTokens|Personal Access Tokens"
 msgstr ""
 
+msgid "AccessTokens|Scopes set the permission levels granted to the token."
+msgstr ""
+
+msgid "AccessTokens|Select a role"
+msgstr ""
+
+msgid "AccessTokens|Select scopes"
+msgstr ""
+
 msgid "AccessTokens|Static object token"
 msgstr ""
 
@@ -2455,6 +2476,9 @@ msgid "AccessTokens|The last time a token was used"
 msgstr ""
 
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
+msgstr ""
+
+msgid "AccessTokens|Token name"
 msgstr ""
 
 msgid "AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP."
@@ -2623,9 +2647,6 @@ msgid "Add Wiki"
 msgstr ""
 
 msgid "Add Zoom meeting"
-msgstr ""
-
-msgid "Add a %{type}"
 msgstr ""
 
 msgid "Add a GCP region"
@@ -12911,9 +12932,6 @@ msgstr ""
 msgid "Create %{humanized_resource_name}"
 msgstr ""
 
-msgid "Create %{type}"
-msgstr ""
-
 msgid "Create %{workspace} label"
 msgstr ""
 
@@ -17201,9 +17219,6 @@ msgstr ""
 msgid "Enter the following to confirm:"
 msgstr ""
 
-msgid "Enter the name of your application, and we'll return a unique %{type}."
-msgstr ""
-
 msgid "Enter the number of seconds, or other human-readable input, like \"1 hour\". This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
@@ -19409,9 +19424,6 @@ msgid "For each job, clone the repository."
 msgstr ""
 
 msgid "For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}."
-msgstr ""
-
-msgid "For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
 msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."
@@ -48027,12 +48039,6 @@ msgid "Token valid until revoked"
 msgstr ""
 
 msgid "TokenRevocation|This Personal Access Token has been automatically revoked on detection. Consider investigating and rotating before marking this vulnerability as resolved."
-msgstr ""
-
-msgid "Tokens|Scopes set the permission levels granted to the token."
-msgstr ""
-
-msgid "Tokens|Select scopes"
 msgstr ""
 
 msgid "Tomorrow"

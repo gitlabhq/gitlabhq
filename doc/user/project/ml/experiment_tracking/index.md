@@ -70,8 +70,8 @@ Prerequisites:
 
 To list the current active experiments, either go to `https/-/ml/experiments` or:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Packages & registries > Model experiments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Model experiments**.
 1. To display all candidates that have been logged, along with their metrics, parameters, and metadata, select an experiment.
 1. To display details for a candidate, select **Details**.
 

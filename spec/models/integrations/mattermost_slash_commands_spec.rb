@@ -20,11 +20,13 @@ RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integra
 
     describe '#configure' do
       subject do
-        integration.configure(user,
-                              team_id: 'abc',
-                              trigger: 'gitlab',
-                              url: 'http://trigger.url',
-                              icon_url: 'http://icon.url/icon.png')
+        integration.configure(
+          user,
+          team_id: 'abc',
+          trigger: 'gitlab',
+          url: 'http://trigger.url',
+          icon_url: 'http://icon.url/icon.png'
+        )
       end
 
       context 'when the request succeeds' do

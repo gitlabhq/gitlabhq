@@ -91,11 +91,11 @@ RSpec.describe Namespace::PackageSetting do
   end
 
   describe 'package forwarding attributes' do
-    %i[maven_package_requests_forwarding
-       pypi_package_requests_forwarding
-       npm_package_requests_forwarding].each do |attribute|
-      it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: attribute,
-                                                                         settings_association: :package_settings
-    end
+    %i[maven_package_requests_forwarding pypi_package_requests_forwarding npm_package_requests_forwarding]
+      .each do |attribute|
+        it_behaves_like 'a cascading namespace setting boolean attribute',
+          settings_attribute_name: attribute,
+          settings_association: :package_settings
+      end
   end
 end

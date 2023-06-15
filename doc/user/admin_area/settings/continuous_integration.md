@@ -15,8 +15,9 @@ job artifacts.
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/requirements.md#auto-devops-base-domain)
    which is used for Auto Deploy and Auto Review Apps.
@@ -32,8 +33,9 @@ If you want to disable it for a specific project, you can do so in
 
 You can set all new projects to have the instance's shared runners available by default.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Select the **Enable shared runners for new projects** checkbox.
 
@@ -51,7 +53,8 @@ you can assign that runner to other projects.
 
 To enable a project runner for more than one project:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
 1. In the upper-right corner, select **Edit** (**{pencil}**).
@@ -64,8 +67,9 @@ To enable a project runner for more than one project:
 To display details about the instance's shared runners in all projects'
 runner settings:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Enter text, including Markdown if you want, in the **Shared runner details** field. For example:
 
@@ -73,10 +77,8 @@ runner settings:
 
 To view the rendered details:
 
-1. On the top bar, select **Main menu**, and:
-   - For a project, select **Projects** and find your project.
-   - For a group, select **Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
 ![Shared runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
@@ -95,7 +97,8 @@ The value is in MB and the default is 100 MB per job. To change it at the:
 
 - Instance level:
 
-  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
   1. Select **Save changes** for the changes to take effect.
@@ -122,8 +125,9 @@ can be set in the Admin Area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Change the value of default expiration time.
 1. Select **Save changes** for the changes to take effect.
 
@@ -153,8 +157,9 @@ If disabled at the instance level, you cannot enable this per-project.
 
 To disable the setting:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
 1. Select **Save changes**
@@ -173,8 +178,9 @@ but persisting the traces and artifacts for auditing purposes.
 
 To set the duration for which the jobs are considered as old and expired:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. Set the value of **Archive jobs**.
 1. Select **Save changes** for the changes to take effect.
@@ -190,8 +196,9 @@ For the value set for GitLab.com, see [Scheduled job archiving](../../gitlab_com
 To set all new [CI/CD variables](../../../ci/variables/index.md) as
 [protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Select **Protect CI/CD variables by default**.
 
 ## Maximum includes
@@ -201,8 +208,9 @@ To set all new [CI/CD variables](../../../ci/variables/index.md) as
 The maximum number of [includes](../../../ci/yaml/includes.md) per pipeline can be set at the instance level.
 The default is `150`.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Change the value of **Maximum includes**.
 1. Select **Save changes** for the changes to take effect.
 
@@ -213,8 +221,9 @@ The default is `150`.
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Input the new file and path in the **Default CI/CD configuration file** field.
 1. Select **Save changes** for the changes to take effect.
 
@@ -227,8 +236,9 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 You can configure some [CI/CD limits](../../../administration/instance_limits.md#cicd-limits)
 from the Admin Area:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of jobs in a single pipeline**
@@ -250,8 +260,9 @@ walkthrough on how to add one.
 
 To enable or disable the banner:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Select or clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
 
@@ -286,8 +297,9 @@ in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown list.
 1. Select **Save changes**.
@@ -300,8 +312,9 @@ GitLab administrators can disable the forwarding of Maven requests to [Maven Cen
 
 To disable forwarding Maven requests:
 
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
@@ -312,8 +325,9 @@ GitLab administrators can disable the forwarding of npm requests to [npmjs.com](
 
 To disable it:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
@@ -324,8 +338,9 @@ GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](
 
 To disable it:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Clear the checkbox **Forward PyPI package requests to the PyPI Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
@@ -336,8 +351,9 @@ GitLab administrators can adjust the maximum allowed file size for each package 
 
 To set the maximum file size:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
@@ -356,8 +372,9 @@ By default, all members of a project and group are able to register runners.
 
 To restrict all users in an instance from registering runners:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Runner registration** section, clear the **Members of the project can register runners** and
    **Members of the group can register runners** checkboxes to remove runner registration from the UI.
@@ -378,8 +395,9 @@ GitLab administrators can adjust group permissions to restrict runner registrati
 
 To restrict runner registration by members in a specific group:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Overview > Groups** and find your group.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Groups** and find your group.
 1. Select **Edit**.
 1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
 1. Select **Save changes**.
@@ -392,8 +410,9 @@ By default, GitLab instances periodically fetch official runner version data fro
 
 To disable your instance fetching this data:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
 1. Select **Save changes**.

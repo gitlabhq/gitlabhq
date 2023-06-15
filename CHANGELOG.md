@@ -827,6 +827,12 @@ entry.
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
 
+## 15.11.9 (2023-06-15)
+
+### Changed (1 change)
+
+- [Make MigrateSharedVulnerabilityIdentifiers use slow iteration](gitlab-org/gitlab@1d91c7b295b22e844b81fb665748c447028525cd) ([merge request](gitlab-org/gitlab!122856)) **GitLab Enterprise Edition**
+
 ## 15.11.8 (2023-06-06)
 
 ### Fixed (2 changes)

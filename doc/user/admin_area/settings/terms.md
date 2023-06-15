@@ -17,8 +17,9 @@ for example `https://gitlab.example.com/-/users/terms`.
 
 To enforce acceptance of a Terms of Service and Privacy Policy:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Terms of Service and Privacy Policy** section.
 1. Check the **All users must accept the Terms of Service and Privacy Policy to access GitLab** checkbox.
 1. Input the text of the **Terms of Service and Privacy Policy**. You can use [Markdown](../../markdown.md)

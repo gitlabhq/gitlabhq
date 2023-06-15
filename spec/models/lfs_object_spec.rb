@@ -28,9 +28,7 @@ RSpec.describe LfsObject do
     lfs_object = create(:lfs_object)
     project = create(:project)
     [:project, :design].each do |repository_type|
-      create(:lfs_objects_project, project: project,
-                                   lfs_object: lfs_object,
-                                   repository_type: repository_type)
+      create(:lfs_objects_project, project: project, lfs_object: lfs_object, repository_type: repository_type)
     end
 
     expect(lfs_object.lfs_objects_projects.size).to eq(2)

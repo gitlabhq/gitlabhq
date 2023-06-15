@@ -208,10 +208,7 @@ RSpec.describe ProjectMember do
         stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
 
         expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-          receive(:bulk_perform_in)
-            .with(1.hour,
-                  [[user.id]],
-                  batch_delay: 30.seconds, batch_size: 100)
+          receive(:bulk_perform_in).with(1.hour, [[user.id]], batch_delay: 30.seconds, batch_size: 100)
         )
 
         action

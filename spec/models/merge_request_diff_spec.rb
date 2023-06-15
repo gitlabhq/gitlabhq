@@ -385,8 +385,12 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
         expect(Compare)
           .to receive(:new)
-          .with(instance_of(Gitlab::Git::Compare), merge_request.target_project,
-                base_sha: diff.base_commit_sha, straight: false)
+          .with(
+            instance_of(Gitlab::Git::Compare),
+            merge_request.target_project,
+            base_sha: diff.base_commit_sha,
+            straight: false
+          )
           .and_call_original
 
         diff.diffs

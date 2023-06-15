@@ -1576,6 +1576,16 @@
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
 
+.qa:rules:trigger-omnibus:
+  rules:
+    - !reference [".qa:rules:package-and-test-nightly", rules]
+    - !reference [".qa:rules:package-and-test-ee", rules]
+
+.qa:rules:trigger-omnibus-ce:
+  rules:
+    - !reference [".qa:rules:package-and-test-nightly", rules]
+    - !reference [".qa:rules:package-and-test-ce", rules]
+
 ###############
 # Rails rules #
 ###############

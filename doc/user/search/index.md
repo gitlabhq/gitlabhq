@@ -106,7 +106,7 @@ For example, the search query:
 - `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
 - `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
 
-### Search archived projects
+### Exclude archived projects from project search results
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
 
@@ -114,7 +114,9 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
 
-By default, archived projects are excluded from the search results. To include archived projects, add the parameter `include_archived=true` to the URL.
+Archived projects are included in project search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
+
+To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
 
 ## Search for a SHA
 

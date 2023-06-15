@@ -42,8 +42,8 @@ For **self-managed** GitLab instances, make sure your administrator has
 
 Once you've met the requirements, enable Let's Encrypt integration:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
@@ -72,8 +72,8 @@ associated Pages domain. GitLab also renews it automatically.
 
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
@@ -90,8 +90,8 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
 
 If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).

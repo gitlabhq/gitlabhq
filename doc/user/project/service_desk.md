@@ -59,8 +59,8 @@ Prerequisites:
 
 To enable Service Desk in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
 1. Optional. Complete the fields.
@@ -171,8 +171,8 @@ Prerequisite:
 
 To use a custom description template with Service Desk:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
@@ -194,8 +194,8 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
@@ -469,8 +469,8 @@ Prerequisites:
 
 - You must have configured a [custom mailbox](#configure-a-custom-mailbox).
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.
 1. Select **Save changes**.
@@ -627,8 +627,8 @@ In these issues, you can also see our friendly neighborhood [Support Bot](#suppo
 
 To check what the Service Desk email address is for your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Service Desk**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Service Desk**.
 
 The email address is available at the top of the issue list.
 
@@ -679,8 +679,8 @@ Prerequisites:
 
 To view Service Desk issues:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Service Desk**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Service Desk**.
 
 ### Email contents and formatting
 

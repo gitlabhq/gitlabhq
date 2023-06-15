@@ -21,8 +21,7 @@ RSpec.describe GroupMember, feature_category: :cell do
       group_1.add_owner(user_2)
       group_2.add_owner(user_1)
 
-      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2,
-                                                            group_2.id => 1)
+      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2, group_2.id => 1)
     end
 
     describe '.of_ldap_type' do

@@ -34,8 +34,9 @@ Prerequisite:
 
 To override the general user and IP rate limits for requests to deprecated API endpoints:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Deprecated API Rate Limits**.
 1. Select the checkboxes for the types of rate limits you want to enable:
    - **Unauthenticated API request rate limit**

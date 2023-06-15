@@ -28,7 +28,7 @@ To better explain this, let's imagine the page that has one toggle, and toggling
 - when you have to maintain any form of application state and share it between tags/elements;
 - when you expect complex logic to be added in the future - it's easier to start with basic Vue application than having to rewrite JS/HAML to Vue on the next step.
 
-## Avoid multiple Vue applications on the page?
+## Avoid multiple Vue applications on the page
 
 In the past, we added interactivity to the page piece-by-piece, adding multiple small Vue applications to different parts of the rendered HAML page. However, this approach led us to multiple complications:
 

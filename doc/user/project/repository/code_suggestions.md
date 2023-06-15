@@ -56,7 +56,7 @@ Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://
 
 Each user can enable Code Suggestions for themselves:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. On the left sidebar, select **Preferences**.
 1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
 1. Select **Save changes**.

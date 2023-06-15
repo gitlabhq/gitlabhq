@@ -64,8 +64,9 @@ Registration is not yet required for participation, but may be added in a future
 ### Enable registration features
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. If not enabled, select the **Enable Service Ping** checkbox.
 1. Select the **Enable Registration Features** checkbox.
@@ -121,8 +122,9 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 To enable or disable Service Ping and version check:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
 1. Select **Save changes**.
@@ -178,8 +180,9 @@ the Admin Area:
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Select **Preview payload**.
 
@@ -196,8 +199,9 @@ or if the Service Ping [cron job](../../../development/service_ping/index.md#how
 To upload the payload manually:
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Service** usage data.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Service** usage data.
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).

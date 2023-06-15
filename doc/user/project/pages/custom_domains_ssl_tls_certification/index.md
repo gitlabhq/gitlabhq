@@ -53,8 +53,8 @@ this document for an [overview on DNS records](dns_concepts.md).
 
 To add your custom domain to GitLab Pages:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
@@ -165,10 +165,10 @@ If you're using Cloudflare, check
 
 #### 4. Verify the domain's ownership
 
-Once you have added all the DNS records:
+After you have added all the DNS records:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
@@ -262,8 +262,8 @@ meet these requirements.
 
 - To add the certificate at the time you add a new domain:
 
-  1. On the top bar, select **Main menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings > Pages**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. Select **Settings > Pages**.
 
      If this path is not visible, select **Deployments > Pages**.
      [This location is part of an experiment](../index.md#menu-position-test).
@@ -274,8 +274,8 @@ meet these requirements.
 
 - To add the certificate to a domain previously added:
 
-  1. On the top bar, select **Main menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings > Pages**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. Select **Settings > Pages**.
 
      If this path is not visible, select **Deployments > Pages**.
      [This location is part of an experiment](../index.md#menu-position-test).
@@ -308,8 +308,8 @@ domain (as long as you've set a valid certificate for it).
 
 To enable this setting:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).

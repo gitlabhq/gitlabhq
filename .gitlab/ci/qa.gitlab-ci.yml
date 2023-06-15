@@ -82,7 +82,7 @@ qa:update-qa-cache:
 trigger-omnibus:
   stage: qa
   extends:
-    - .qa:rules:package-and-test-ee
+    - .qa:rules:trigger-omnibus
   needs:
     - trigger-omnibus-env
     - build-assets-image
@@ -116,7 +116,7 @@ trigger-omnibus:
 trigger-omnibus as-if-foss:
   extends:
     - trigger-omnibus
-    - .qa:rules:package-and-test-ce
+    - .qa:rules:trigger-omnibus-ce
   needs:
     - trigger-omnibus-env as-if-foss
     - build-assets-image as-if-foss

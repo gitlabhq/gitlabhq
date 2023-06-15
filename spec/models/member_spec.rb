@@ -598,15 +598,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     describe '.authorizable' do
       subject { described_class.authorizable.to_a }
 
-      it 'includes the member who has an associated user record,'\
-        'but also having an invite_token' do
-          member = create(:project_member,
-                          :developer,
-                          :invited,
-                          user: create(:user))
+      it 'includes the member who has an associated user record, but also having an invite_token' do
+        member = create(:project_member, :developer, :invited, user: create(:user))
 
-          expect(subject).to include(member)
-        end
+        expect(subject).to include(member)
+      end
 
       it { is_expected.to include @owner }
       it { is_expected.to include @maintainer }
